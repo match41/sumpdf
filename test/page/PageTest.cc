@@ -1,0 +1,88 @@
+/***************************************************************************
+ *   Copyright (C) 2006 by Nestal Wan                                      *
+ *   me@nestal.net                                                         *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
+
+/*!
+	\file	PageTest.cc
+	\brief	implementation the PageTest class
+	\date	Thu Mar 20 2008
+	\author	Nestal Wan
+*/
+
+#include "PageTest.hh"
+
+#include "mock/MockFile.hh"
+
+#include "core/Ref.hh"
+#include "core/Dictionary.hh"
+#include "core/Stream.hh"
+
+#include "file/ElementSrc.hh"
+#include "page/RealPage.hh"
+#include "util/Rect.hh"
+
+#include <sstream>
+
+PageTest::PageTest( )
+{
+}
+
+void PageTest::TestNormal( )
+{
+	std::istringstream ss( "<</Contents 611 0 R /CropBox [0 0 297 419 ] "
+	                       "/MediaBox [0 0 297 419 ] /Parent "
+	                       "697 0 R /Resources <</ColorSpace"
+	                       "<</CS0 708 0 R >> /ExtGState <</GS0 713 0 R"
+	                       "/GS1 721 0 R >> /Font <</T1_0 707 0 R "
+	                       "/T1_1 627 0 R /T1_2 674 0 R >> /ProcSet"
+	                       "[/PDF /Text ]  >> "
+	                       "/Rotate 0 /Type /Page >>" ) ;
+	pdf::Dictionary d ;
+	CPPUNIT_ASSERT( ss >> d ) ;
+	
+	std::istringstream fss( "<</BaseFont /Helvetica-Bold\n"
+	                        "/Encoding /WinAnsiEncoding\n"
+	                        "/FirstChar 0\n"
+	                        "/LastChar 0\n"
+	                        "/Subtype /Type1\n"
+	                        "/Type /Font\n"
+	                        ">>" ) ;
+	pdf::Dictionary fd ;
+	CPPUNIT_ASSERT( fss >> fd ) ;
+
+	std::istringstream pss( "<< /Count 1 /Kids [1 0 R]\n"
+	                        "/MediaBox [0 0 595.1 842.1]\n"
+	                        "/Type /Pages >>" ) ;
+	pdf::Dictionary pd ;
+	CPPUNIT_ASSERT( pss >> pd ) ;
+
+	MockFile file ;
+	file.AddObj( pdf::Ref(1,0), d ) ;
+	file.AddObj( pdf::Ref( 611, 0 ), pdf::Stream() ) ;
+	file.AddObj( pdf::Ref( 707, 0 ), fd ) ;
+	file.AddObj( pdf::Ref( 627, 0 ), fd ) ;
+	file.AddObj( pdf::Ref( 674, 0 ), fd ) ;
+	file.AddObj( pdf::Ref( 697, 0 ), pd ) ;
+	
+	pdf::ElementSrc src( &file ) ;
+	
+	pdf::RealPage p ;
+	p.Read( pdf::Ref(1,0), &src ) ;
+	CPPUNIT_ASSERT( p.MediaBox() == pdf::Rect( 0, 0, 297, 419 ) ) ;
+}

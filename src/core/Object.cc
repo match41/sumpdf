@@ -1,0 +1,350 @@
+/***************************************************************************\
+ *   Copyright (C) 2006 by Nestal Wan                                      *
+ *   me@nestal.net                                                         *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+\***************************************************************************/
+
+/*!
+	\file	Object.cc
+	\brief	implementation the Object class
+	\date	Wed Mar 5 2008
+	\author	Nestal Wan
+*/
+
+#include "Object.hh"
+
+#include "Array.hh"
+#include "Dictionary.hh"
+#include "String.hh"
+#include "Stream.hh"
+#include "Token.hh"
+#include "TokenSrc.hh"
+
+#include "util/Util.hh"
+
+#include <boost/variant/apply_visitor.hpp>
+
+#include <map>
+#include <istream>
+
+#include <cassert>
+#include <iostream>
+#include <limits>
+#include <stdexcept>
+
+namespace pdf {
+
+struct Bool
+{
+	operator bool( ) const { return value ; }
+	bool value ;
+	friend std::istream& operator>>( std::istream& is, Bool& b ) ;
+	friend std::ostream& operator<<( std::ostream& os, const Bool& b ) ;
+	friend TokenSrc& operator>>( TokenSrc& os, Bool& b ) ;
+	bool operator==( const Bool& b ) const { return value == b.value ; }
+} ;
+
+Object::Object( )
+{
+}
+
+Object::Object( const Object& obj )
+	: m_obj( obj.m_obj )
+{
+}
+
+template <typename T>
+Object::Object( const T& v ) : m_obj( v )
+{
+}
+
+Object::Object( const char *a )
+	: m_obj( std::string( a ) )
+{
+}
+
+// explicit instanciation for known types
+template Object::Object( const Null& a ) ;
+template Object::Object( const std::string& a ) ;
+template Object::Object( const Name& a ) ;
+template Object::Object( const Stream& a ) ;
+template Object::Object( const Ref& a ) ;
+template Object::Object( const Array& a ) ;
+template Object::Object( const Dictionary& a ) ;
+
+Object::Object( std::size_t st )
+	: m_obj( static_cast<int>( st ) )
+{
+	if ( st > static_cast<std::size_t>( std::numeric_limits<int>::max( ) ) )
+		throw std::out_of_range( "integer out of range" ) ;
+}
+
+Object::Object( int value )
+	: m_obj( value )
+{
+}
+
+Object::Object( double value )
+	: m_obj( value )
+{
+}
+
+Object::Object( float value )
+	: m_obj( static_cast<double>( value ) )
+{
+}
+
+Object::Object( bool value )
+	: m_obj( value )
+{
+}
+
+Object::~Object( )
+{
+}
+
+void Object::Swap( Object& obj )
+{
+	m_obj.swap( obj.m_obj ) ;
+}
+
+Object& Object::operator=( const Object& obj )
+{
+	Object temp( obj ) ;
+	Swap( temp ) ;
+	return *this ;
+}
+
+Object::ObjType Object::Type( ) const
+{
+	return static_cast<ObjType>( m_obj.which( ) ) ;
+}
+
+const std::type_info& Object::TypeID( ) const
+{
+	return m_obj.type() ;
+}
+
+bool Object::IsNull( ) const
+{
+	return Type() == null ;
+}
+
+template <typename T>
+bool Object::DecodeObject( TokenSrc& src, const Token& tok )
+{
+	src.PutBack( tok ) ;
+	
+	T t ;
+	if ( src >> t )
+	{
+		m_obj = t ;
+		return true ;
+	}
+	else
+		return false ;
+}
+
+bool Object::DecodeNumberOrIndirectObj( TokenSrc& is, const Token& token )
+{
+	if ( DecodeObject<Ref>( is, token ) )
+		return true ;
+	else
+	{
+		is.ResetState( ) ;
+
+		Token t ;
+		if ( is >> t )
+		{
+			const std::string& str = t.Get() ;
+			assert( t == token ) ;
+			
+			if ( str.find( '.' ) != str.npos )
+				m_obj = token.As<double>( ) ;
+			else
+				m_obj = token.As<int>( ) ;
+
+			return true ;
+		}
+		else
+		{
+			assert( false ) ;
+			return false ;
+		}
+	}
+}
+
+std::istream& operator>>( std::istream& is, Object& obj )
+{
+	// decoded token is treated as failure. only object accepted.
+	TokenSrc s( is ) ;
+	return (s >> obj).Stream() ;
+}
+
+TokenSrc& operator>>( TokenSrc& src, Object& obj )
+{
+	static const std::string numeric = "0123456789.+-" ;
+	
+	typedef bool (Object::*FuncPtr)( TokenSrc&, const Token& ) ;
+	
+	static const std::pair<const Token, FuncPtr> table[] =
+	{
+		std::make_pair( Token( "<<" ),		&Object::DecodeObject<Dictionary> ),
+		std::make_pair( Token( "[" ),		&Object::DecodeObject<Array> ),
+		std::make_pair( Token( "(" ),		&Object::DecodeObject<String> ),
+		std::make_pair( Token( "<" ),		&Object::DecodeObject<String> ),
+		std::make_pair( Token( "/" ),		&Object::DecodeObject<Name> ),
+		std::make_pair( Token( "true" ),	&Object::DecodeObject<Bool> ),
+		std::make_pair( Token( "false" ),	&Object::DecodeObject<Bool> ),
+	} ;
+	typedef std::map<Token, FuncPtr> FuncMap ;
+	static const FuncMap map( Begin( table ), End( table ) ) ;
+	
+	// decode tokens from stream
+	Token t ;
+	if ( src >> t )
+	{
+		assert( !t.Get().empty( ) ) ;
+
+		FuncMap::const_iterator it = map.find( t ) ;
+		
+		// token that represents objects with known types
+		if ( it != map.end( ) )
+			(obj.*it->second)( src, t ) ;
+		
+		// numeric tokens. can represent number (int/double) or indirect
+		// objects (reference)
+		else if ( numeric.find( t.Get()[0] ) != numeric.npos )
+			obj.DecodeNumberOrIndirectObj( src, t ) ;
+		
+		// "null" represent null object of course
+		// null object is a default construct Object, so no need to set
+		// explicitly, i.e. nothing to do.
+		// if not null object, then it is a parse error.
+		else if ( t.Get() != "null" )
+		{
+			src.PutBack( t ) ;
+			src.SetState( std::ios::failbit ) ;
+		}
+	}
+		
+	return src ;
+}
+
+namespace {
+
+struct Op : public boost::static_visitor<>
+{
+	std::ostream& m_os ;
+	Op( std::ostream& os ) : m_os( os )
+	{
+	}
+	
+	template <typename T>
+	void operator()( const T& t ) const
+	{
+		m_os << std::dec << t ;
+	}
+	
+	void operator()( const std::string& str ) const
+	{
+		m_os << String(str) ;
+	}
+	
+	void operator()( bool b ) const
+	{
+		m_os << std::boolalpha << b ;
+	}
+} ;
+
+} // end of anonymous namespace
+
+std::ostream& operator<<( std::ostream& os, const Object& obj )
+{
+	boost::apply_visitor( Op(os), obj.m_obj ) ;
+
+	return os ;
+}
+
+std::istream& operator>>( std::istream& is, Null& )
+{
+	Token t ;
+	if ( !(is >> t) || t.Get() != "null" )
+		is.setstate( is.failbit ) ;
+		
+	return is ;
+}
+
+std::ostream& operator<<( std::ostream& os, const Null& )
+{
+	return os << "null" ;
+}
+
+std::istream& operator>>( std::istream& is, Bool& b )
+{
+	TokenSrc src( is ) ;
+	return (src >> b).Stream() ;
+}
+
+TokenSrc& operator>>( TokenSrc& is, Bool& b )
+{
+	Token t ;
+	if ( is >> t )
+	{
+		if ( t.Get() == "true" )
+			b.value = true ;
+		else if ( t.Get() == "false" )
+			b.value = false ;
+		else
+			is.SetState( std::ios::failbit ) ;
+	}
+	
+	return is ;
+}
+
+std::ostream& operator<<( std::ostream& os, const Bool& b )
+{
+	return os << (b.value ? "true" : "false") ;
+}
+
+bool operator==( const Object& obj1, const Object& obj2 )
+{
+	return obj1.m_obj == obj2.m_obj ;
+}
+
+bool operator!=( const Object& obj1, const Object& obj2 )
+{
+	return !operator==( obj1, obj2 ) ;
+}
+
+template <> Object::operator long() const
+{
+	return As<int>( ) ;
+}
+
+template <> Object::operator float() const
+{
+	return static_cast<float>( double(*this) ) ;
+}
+
+template <> Object::operator double() const
+{
+	// the PDF specification said integers can be converted to doubles
+	return Type() == integer ? As<int>() : As<double>() ;
+}
+
+} // end of namespace
