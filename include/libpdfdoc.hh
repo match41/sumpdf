@@ -19,22 +19,44 @@
  ***************************************************************************/
 
 /*!
-	\file	TrueTypeFileTest.cc
-	\brief	implementation the TrueTypeFileTest class
-	\date	Fri Mar 6 2009
+	\file	libpdfdoc.hh
+	\brief	definition the libpdfdoc class
+	\date	Fri Apr 11 2008
 	\author	Nestal Wan
 */
 
-#include "TrueTypeFileTest.hh"
+#ifndef __LIB_PDF_DOC_HEADER_INCLUDED__
+#define __LIB_PDF_DOC_HEADER_INCLUDED__
 
-#include "font/TrueTypeFile.hh"
+#include <string>
 
-TrueTypeFileTest::TrueTypeFileTest( )
-{
-}
+#define LIBPDFDOC_API 
 
-void TrueTypeFileTest::TestRead( )
-{
-	font::TrueTypeFile file( std::string(TEST_DATA_DIR) +
-	                         "FreeMonoBoldOblique.ttf" ) ;
-}
+/*
+#ifdef DLL_EXPORTS
+    #ifdef _MSC_VER
+    	#define LIBPDFDOC_API __declspec( dllexport )
+    #else
+    	#define LIBPDFDOC_API __attribute__ ((visibility("default")))
+    #endif
+#else
+    #ifdef _MSC_VER
+	    #define LIBPDFDOC_API __declspec( dllimport )
+	#else
+		#define LIBPDFDOC_API 
+	#endif
+#endif
+*/
+
+namespace pdf {
+
+class Doc ;
+class Page ;
+
+LIBPDFDOC_API Doc*  CreateDoc( ) ;
+LIBPDFDOC_API Page* CreatePage( ) ;
+
+
+} // end of namespace
+
+#endif

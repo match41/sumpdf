@@ -19,22 +19,31 @@
  ***************************************************************************/
 
 /*!
-	\file	TrueTypeFileTest.cc
-	\brief	implementation the TrueTypeFileTest class
-	\date	Fri Mar 6 2009
+	\file	Font.hh
+	\brief	definition the Font class
+	\date	Fri Apr 11 2008
 	\author	Nestal Wan
 */
 
-#include "TrueTypeFileTest.hh"
+#ifndef __PDF_FONT_HEADER_INCLUDED__
+#define __PDF_FONT_HEADER_INCLUDED__
 
-#include "font/TrueTypeFile.hh"
+#include <string>
 
-TrueTypeFileTest::TrueTypeFileTest( )
+namespace pdf {
+
+/*!	\brief	brief description
+	
+	this class represents
+*/
+class Font
 {
-}
+public :
+	virtual ~Font( ) ;
+	
+	virtual std::string BaseName( ) const = 0 ;
+} ;
 
-void TrueTypeFileTest::TestRead( )
-{
-	font::TrueTypeFile file( std::string(TEST_DATA_DIR) +
-	                         "FreeMonoBoldOblique.ttf" ) ;
-}
+} // end of namespace
+
+#endif

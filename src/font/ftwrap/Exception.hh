@@ -26,17 +26,17 @@
 #ifndef __FREETYPE_ERROR_HEADER_INCLUDED__
 #define __FREETYPE_ERROR_HEADER_INCLUDED__
 
+#include "util/Exception.hh"
+
 // standard headers
 #include <string>
-#include <stdexcept>
 
 namespace freetype {
 
-class Exception : public std::runtime_error
+class Exception : public pdf::Exception
 {
 public :
-	Exception( const std::string& msg = std::string( ) )
-		: runtime_error( msg ) { }
+	Exception( const std::string& msg = std::string( ) ) ;
 } ;
 
 } // end of namespace

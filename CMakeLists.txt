@@ -151,7 +151,8 @@ set( FONT_SRCS		${FONT_DIR}/TrueTypeFile.cc
 
 set( FT_SRCS		${FT_DIR}/Face.cc
 					${FT_DIR}/Glyph.cc
-					${FT_DIR}/Library.cc )
+					${FT_DIR}/Library.cc
+					${FT_DIR}/Exception.cc )
 # sources
 set( SRCS	src/Doc.cc src/RealDoc.cc src/libpdfdoc.cc
 			${PAGE_SRCS} ${FILE_SRCS} ${CORE_SRCS} ${IMG_SRCS} ${UTIL_SRCS}

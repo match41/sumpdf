@@ -1,5 +1,5 @@
-/***************************************************************************
- *   Copyright (C) 2006 by Nestal Wan                                      *
+/***************************************************************************\
+ *   Copyright (C) 2009 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -16,25 +16,22 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+\***************************************************************************/
 
 /*!
-	\file	TrueTypeFileTest.cc
-	\brief	implementation the TrueTypeFileTest class
-	\date	Fri Mar 6 2009
+	\file	Exception.cc
+	\brief	implementation the Exception class
+	\date	Mon Mar 16 2009
 	\author	Nestal Wan
 */
 
-#include "TrueTypeFileTest.hh"
+#include "Exception.hh"
 
-#include "font/TrueTypeFile.hh"
+namespace freetype {
 
-TrueTypeFileTest::TrueTypeFileTest( )
+Exception::Exception( const std::string& err )
+	: pdf::Exception( err + "\n" + Backtrace( ) )
 {
 }
 
-void TrueTypeFileTest::TestRead( )
-{
-	font::TrueTypeFile file( std::string(TEST_DATA_DIR) +
-	                         "FreeMonoBoldOblique.ttf" ) ;
-}
+} // end of namespace

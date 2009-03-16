@@ -19,22 +19,38 @@
  ***************************************************************************/
 
 /*!
-	\file	TrueTypeFileTest.cc
-	\brief	implementation the TrueTypeFileTest class
-	\date	Fri Mar 6 2009
+	\file	Page.hh
+	\brief	definition the Page class
+	\date	Fri Apr 11 2008
 	\author	Nestal Wan
 */
 
-#include "TrueTypeFileTest.hh"
+#ifndef __PDF_PAGE_HEADER_INCLUDED__
+#define __PDF_PAGE_HEADER_INCLUDED__
 
-#include "font/TrueTypeFile.hh"
+#include <string>
 
-TrueTypeFileTest::TrueTypeFileTest( )
+namespace pdf {
+
+class Rect ;
+class Font ;
+
+/*!	\brief	A page in a PDF document.
+	
+	This class represents a page in a PDF document. It is created by calling
+	Doc::AddPage(). It contains function to allow modifying the content of
+	the page, e.g. DrawText().
+*/
+class Page
 {
-}
+public :
+	virtual ~Page( ) ;
 
-void TrueTypeFileTest::TestRead( )
-{
-	font::TrueTypeFile file( std::string(TEST_DATA_DIR) +
-	                         "FreeMonoBoldOblique.ttf" ) ;
-}
+	virtual Rect MediaBox( ) const = 0 ;
+	virtual void DrawText( double x, double y, Font *font,
+	                       const std::string& text ) = 0 ;
+} ;
+
+} // end of namespace
+
+#endif

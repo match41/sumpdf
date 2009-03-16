@@ -40,6 +40,13 @@ Exception::Exception( const std::string& err )
 {
 }
 
+std::string Exception::Backtrace( )
+{
+	std::ostringstream ss ;
+	SymbolInfo::Instance()->Backtrace( ss ) ;
+	return ss.str() ;
+}
+
 InvalidType::InvalidType( const std::type_info& from, const std::type_info& to,
 				          const std::exception& e )
 	: Exception( ErrorMsg( from, to, e ) )

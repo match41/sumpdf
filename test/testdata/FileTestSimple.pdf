@@ -1,0 +1,82 @@
+%PDF-1.4
+3 0 obj
+<<
+/Contents 4 0 R
+/Parent 1 0 R
+/Resources 2 0 R
+/Type /Page
+>>
+endobj
+4 0 obj
+<<
+/Length 70
+>>
+stream
+2 J
+0.57 w
+BT /F1 16.00 Tf ET
+BT 31.19 794.57 Td (Hello World!) Tj ET
+endstream
+endobj
+1 0 obj
+<<
+/Count 1
+/Kids [3 0 R]
+/MediaBox [0 0 595.28 841.89]
+/Type /Pages
+>>
+endobj
+5 0 obj
+<<
+/BaseFont /Helvetica-Bold
+/Encoding /WinAnsiEncoding
+/Subtype /Type1
+/Type /Font
+>>
+endobj
+2 0 obj
+<<
+/Font <<
+/F1 5 0 R
+>>
+/ProcSet [/PDF /Text]
+>>
+endobj
+6 0 obj
+<<
+/CreationDate (D:20080410074227)
+/Producer (nestal)
+>>
+endobj
+7 0 obj
+<<
+/Pages 1 0 R
+/Type /Catalog
+>>
+endobj
+8 0 obj
+<<
+/CreationDate (D:20080410074227)
+/Producer (nestal)
+>>
+endobj
+xref
+0 9
+0000000000 65535 f 
+0000000208 00000 n 
+0000000397 00000 n 
+0000000009 00000 n 
+0000000089 00000 n 
+0000000295 00000 n 
+0000000462 00000 n 
+0000000535 00000 n 
+0000000584 00000 n 
+trailer
+<<
+/Info 8 0 R
+/Root 7 0 R
+/Size 9
+>>
+startxref
+657
+%%EOF

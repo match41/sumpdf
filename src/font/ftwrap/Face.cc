@@ -33,17 +33,30 @@
 #include "Exception.hh"
 #include "Types.hh"
 
+// standard headers
+#include <cassert>
+
 // freetype headers
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_TRUETYPE_TABLES_H
 
-// standard headers
-#include <cassert>
+// build freetype error strings table
+#define FT_ERROR_START_LIST     {
+#define FT_ERRORDEF( e, v, s )  { e, s },
+#define FT_ERROR_END_LIST       { 0, 0 } };
 
-// local functions
+#undef __FTERRORS_H__
 namespace {
 
+const struct
+{
+	int          code;
+	const char*  msg;
+} ft_errors[] =
+#include FT_ERRORS_H
+
+// local functions
 inline TT_PCLT* PcltTable( FT_Face face )
 {
 	TT_PCLT *table = reinterpret_cast<TT_PCLT*>(
@@ -94,7 +107,8 @@ Face::Face( Library *lib, const std::string& filename, long index )
 
 	// should throw something better later
 	if ( error )
-		throw Exception( ) ;
+		throw Exception( "Cannot open font face " + filename
+		                 + ": " + ft_errors[error].msg ) ;
 	
 	assert( IsValid( ) ) ;
 }
@@ -117,7 +131,7 @@ Face::Face( Library *lib, const unsigned char *buffer, std::size_t size,
 
 	// should throw something better later
 	if ( error )
-		throw Exception( ) ;
+		throw Exception( ft_errors[error].msg ) ;
 	
 	assert( IsValid( ) ) ;
 }

@@ -39,6 +39,7 @@ SimpleFontTest::SimpleFontTest( )
 void SimpleFontTest::TestSimple( )
 {
 	freetype::Library lib ;
-	pdf::SimpleFont subject( &lib, std::string(TEST_DATA_DIR) + "arialn.ttf" ) ;
-	CPPUNIT_ASSERT( subject.BaseName( ) == "ArialNarrow" ) ;
+	pdf::SimpleFont subject( &lib, std::string(TEST_DATA_DIR) +
+	                         "FreeMonoBoldOblique.ttf" ) ;
+	CPPUNIT_ASSERT( subject.BaseName( ) == "FreeMonoBoldOblique" ) ;
 }

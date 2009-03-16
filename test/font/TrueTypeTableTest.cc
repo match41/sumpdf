@@ -65,19 +65,20 @@ void TrueTypeTableTest::TestRead( )
 
 void TrueTypeTableTest::TestChecksum( )
 {
-	std::ifstream infile( (std::string(TEST_DATA_DIR) + "arialn.ttf").c_str(),
+	std::ifstream infile( (std::string(TEST_DATA_DIR) +
+	                       "FreeMonoBoldOblique.ttf").c_str(),
 	                      std::ios::in | std::ios::binary ) ;
 	infile.rdbuf()->pubseekpos( 39900 ) ;
 	
 	std::ostringstream oss ;
 	font::TrueTypeTable subject( oss.rdbuf() ) ;
 	CPPUNIT_ASSERT( subject.Copy( infile.rdbuf(), 81174 ) ) ;
-	CPPUNIT_ASSERT( subject.Size() == 81174 ) ;
-	CPPUNIT_ASSERT( oss.str().size() == 81174 ) ;
+	CPPUNIT_ASSERT( subject.Size() == 79924 ) ;
+	CPPUNIT_ASSERT( oss.str().size() == 79924 ) ;
 	
 	// after calling EndStream(), size will be 4-byte algined.
 	subject.EndStream( ) ;
-	CPPUNIT_ASSERT( subject.Checksum() == 1776672475 ) ;
-	CPPUNIT_ASSERT( subject.Size() == 81174 ) ;
-	CPPUNIT_ASSERT( oss.str().size() == 81176 ) ;
+	CPPUNIT_ASSERT( subject.Checksum() == 45303795 ) ;
+	CPPUNIT_ASSERT( subject.Size() == 79924 ) ;
+	CPPUNIT_ASSERT( oss.str().size() == 79924 ) ;
 }
