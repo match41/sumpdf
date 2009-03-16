@@ -36,7 +36,11 @@ namespace freetype {
 class Exception : public pdf::Exception
 {
 public :
-	Exception( const std::string& msg = std::string( ) ) ;
+	explicit Exception( const std::string& msg = std::string( ) ) ;
+	Exception( int error, const std::string& msg = std::string( ) ) ;
+
+private :
+	static std::string Message( int err, const std::string& msg ) ;
 } ;
 
 } // end of namespace

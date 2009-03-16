@@ -41,22 +41,9 @@
 #include FT_FREETYPE_H
 #include FT_TRUETYPE_TABLES_H
 
-// build freetype error strings table
-#define FT_ERROR_START_LIST     {
-#define FT_ERRORDEF( e, v, s )  { e, s },
-#define FT_ERROR_END_LIST       { 0, 0 } };
-
-#undef __FTERRORS_H__
+// local functions
 namespace {
 
-const struct
-{
-	int          code;
-	const char*  msg;
-} ft_errors[] =
-#include FT_ERRORS_H
-
-// local functions
 inline TT_PCLT* PcltTable( FT_Face face )
 {
 	TT_PCLT *table = reinterpret_cast<TT_PCLT*>(
@@ -107,8 +94,8 @@ Face::Face( Library *lib, const std::string& filename, long index )
 
 	// should throw something better later
 	if ( error )
-		throw Exception( "Cannot open font face " + filename
-		                 + ": " + ft_errors[error].msg ) ;
+		throw Exception( error, "Cannot open font face from file \""
+		                        + filename + "\"" ) ;
 	
 	assert( IsValid( ) ) ;
 }
@@ -131,7 +118,7 @@ Face::Face( Library *lib, const unsigned char *buffer, std::size_t size,
 
 	// should throw something better later
 	if ( error )
-		throw Exception( ft_errors[error].msg ) ;
+		throw Exception( error, "Cannot open font face from memory" ) ;
 	
 	assert( IsValid( ) ) ;
 }
@@ -259,7 +246,7 @@ void Face::SetSize( double width, double height, int hres, int vres )
 										static_cast<FT_F26Dot6>( height * 64.0),
 										hres, vres ) ;
 	if ( result != 0 )
-		throw Exception( ) ;
+		throw Exception( result, "Cannot set character size" ) ;
 }
 
 unsigned int Face::GetGlyphCode( unsigned long char_code ) const

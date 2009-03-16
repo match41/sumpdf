@@ -88,7 +88,8 @@ set( FONT_HDRS		${FONT_DIR}/TrueTypeFile.hh
 set( FT_HDRS		${FT_DIR}/Face.hh
 					${FT_DIR}/Glyph.hh
 					${FT_DIR}/Library.hh
-					${FT_DIR}/Exception.hh )
+					${FT_DIR}/Exception.hh
+					${FT_DIR}/ErrorTable.hh )
 
 set( HDRS	src/RealDoc.hh
 			
@@ -152,7 +153,8 @@ set( FONT_SRCS		${FONT_DIR}/TrueTypeFile.cc
 set( FT_SRCS		${FT_DIR}/Face.cc
 					${FT_DIR}/Glyph.cc
 					${FT_DIR}/Library.cc
-					${FT_DIR}/Exception.cc )
+					${FT_DIR}/Exception.cc
+					${FT_DIR}/ErrorTable.cc )
 # sources
 set( SRCS	src/Doc.cc src/RealDoc.cc src/libpdfdoc.cc
 			${PAGE_SRCS} ${FILE_SRCS} ${CORE_SRCS} ${IMG_SRCS} ${UTIL_SRCS}

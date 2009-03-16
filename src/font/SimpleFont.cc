@@ -39,8 +39,6 @@
 #include "font/ftwrap/Face.hh"
 #include "font/ftwrap/Glyph.hh"
 
-#include <iostream>
-
 namespace pdf {
 
 const Name SimpleFont::m_font_types[] =
@@ -68,8 +66,6 @@ SimpleFont::SimpleFont( const Name& base_font, Type type )
 SimpleFont::SimpleFont( freetype::Library *lib, const std::string& filename )
 	: m_encoding( "WinAnsiEncoding" )
 {
-std::cout << "face name: " << filename << std::endl ;
-
 	freetype::Face face( lib, filename ) ;
 	m_base_font = Name( face.PSName() ) ;
 	m_type		= truetype ;

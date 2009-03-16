@@ -19,44 +19,47 @@
 \***************************************************************************/
 
 /*!
-	\file	Exception.cc
-	\brief	implementation the Exception class
-	\date	Mon Mar 16 2009
+	\file	ErrorTable.cc
+	\brief	implementation the ErrorTable class
+	\date	Tue Mar 17 2009
 	\author	Nestal Wan
 */
 
-#include "Exception.hh"
 #include "ErrorTable.hh"
 
-#ifdef _DEBUG
-#include "SymbolInfo.hh"
-#endif
+#include "util/Util.hh"
 
-#include <sstream>
+#include <cassert>
+
+// build freetype error strings table
+#include <ft2build.h>
+#include FT_FREETYPE_H
+#define FT_ERROR_START_LIST     {
+#define FT_ERRORDEF( e, v, s )  { e, s },
+#define FT_ERROR_END_LIST       { 0, 0 } };
+
+#undef __FTERRORS_H__
+
+namespace
+{
+	const struct ErrorTable
+	{
+		int          code;
+		const char*  msg;
+	} ft_errors[] =
+	#include FT_ERRORS_H 
+	
+	// add semi-colon to satisfy kdevelop's syntax highlight
+	;
+}
 
 namespace freetype {
 
-Exception::Exception( const std::string& err )
-	: pdf::Exception( err )
+const char* LookupError( int error )
 {
-}
-
-Exception::Exception( int err, const std::string& msg )
-	: pdf::Exception( Message( err, msg ) )
-{
-}
-
-std::string Exception::Message( int err, const std::string& msg )
-{
-	std::ostringstream ss ;
-	ss << msg << ": " << LookupError( err ) ;
-
-#ifdef _DEBUG
-	ss << std::endl ;
-	pdf::SymbolInfo::Backtrace( ss ) ;
-#endif
-
-	return ss.str( ) ;
+	assert( error >= 0 ) ;
+	assert( error < static_cast<int>( pdf::Count( ft_errors ) ) ) ;
+	return ft_errors[error].msg ;
 }
 
 } // end of namespace

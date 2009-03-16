@@ -19,44 +19,19 @@
 \***************************************************************************/
 
 /*!
-	\file	Exception.cc
-	\brief	implementation the Exception class
+	\file	ErrorTable.hh
+	\brief	definition the ErrorTable class
 	\date	Mon Mar 16 2009
 	\author	Nestal Wan
 */
 
-#include "Exception.hh"
-#include "ErrorTable.hh"
+#ifndef __FREETYPE_ERROR_TABLE_HEADER_INCLUDED__
+#define __FREETYPE_ERROR_TABLE_HEADER_INCLUDED__
 
-#ifdef _DEBUG
-#include "SymbolInfo.hh"
-#endif
-
-#include <sstream>
-
-namespace freetype {
-
-Exception::Exception( const std::string& err )
-	: pdf::Exception( err )
+namespace freetype
 {
-}
-
-Exception::Exception( int err, const std::string& msg )
-	: pdf::Exception( Message( err, msg ) )
-{
-}
-
-std::string Exception::Message( int err, const std::string& msg )
-{
-	std::ostringstream ss ;
-	ss << msg << ": " << LookupError( err ) ;
-
-#ifdef _DEBUG
-	ss << std::endl ;
-	pdf::SymbolInfo::Backtrace( ss ) ;
-#endif
-
-	return ss.str( ) ;
-}
+	const char* LookupError( int error ) ;
 
 } // end of namespace
+
+#endif
