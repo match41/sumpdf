@@ -1,4 +1,4 @@
-#***************************************************************************\
+#***************************************************************************#
  #   Copyright (C) 2002 by Nestal Wan                                      *
  #   me@nestal.net                                                         *
  #                                                                         *
@@ -16,9 +16,19 @@
  #   along with this program; if not, write to the                         *
  #   Free Software Foundation, Inc.,                                       *
  #   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
-#***************************************************************************/
+#***************************************************************************#
 
 PROJECT( libpdfdoc )
+
+cmake_minimum_required(VERSION 2.6)
+
+set( Boost_USE_STATIC_LIBS OFF )
+set( Boost_USE_MULTITHREAD ON )
+find_package( Boost 1.34.1 )
+find_package( Freetype )
+find_package( ZLIB )
+find_package( PNG )
+find_package( JPEG )
 
 set( PAGE_DIR		src/page/ )
 set( FILE_DIR		src/file/ )
@@ -173,19 +183,25 @@ SOURCE_GROUP( "Header Files\\core" FILES ${CORE_HDRS} )
 
 IF ( MSVC )
 	ADD_DEFINITIONS( -D_SCL_SECURE_NO_WARNINGS -DDLL_EXPORTS )
-    SET( ZLIB zlib )
 ELSE ( MSVC )
 	ADD_DEFINITIONS( -DDLL_EXPORTS )
-    SET( ZLIB z )
 ENDIF ( MSVC )
 
-#target_link_libraries( pdfdoc ${ZLIB} )
-target_link_libraries( pdfdoc_static jpeg ${ZLIB} png dl bfd freetype)
+target_link_libraries( pdfdoc_static
+                       ${JPEG_LIBRARIES}
+                       ${ZLIB_LIBRARIES}
+                       ${PNG_LIBRARIES}
+                       dl bfd
+                       ${FREETYPE_LIBRARIES} )
 
 include_directories( ${libpdfdoc_SOURCE_DIR}/src
                      ${libpdfdoc_SOURCE_DIR}/include
                      ${libpdfdoc_SOURCE_DIR}/test
-                     ${FREETYPE_PREFIX} )
+                     ${Boost_INCLUDE_DIRS}
+                     ${JPEG_INCLUDE_DIR}
+                     ${PNG_INCLUDE_DIR}
+                     ${ZLIB_INCLUDE_DIR}
+                     ${FREETYPE_INCLUDE_DIRS} )
 
 # INSTALL( TARGETS pdfdoc
 #          RUNTIME DESTINATION bin
@@ -232,7 +248,7 @@ set( UT_SRCS	test/core/TokenTest.cc
 				test/mock/MockFile.cc
 )
 
-add_definitions( -DTEST_DATA_DIR='"${libpdfdoc_SOURCE_DIR}/test/testdata/"' )
-add_definitions( -DSRC_DIR='"${libpdfdoc_SOURCE_DIR}/src/"' )
+add_definitions(-DTEST_DATA_DIR="\\"${libpdfdoc_SOURCE_DIR}/test/testdata/"\\")
+add_definitions(-DSRC_DIR="\\"${libpdfdoc_SOURCE_DIR}/src/\\"")
 add_executable( unittest ${UT_SRCS} test/UnitTest.cc )
 target_link_libraries( unittest pdfdoc_static cppunit )
