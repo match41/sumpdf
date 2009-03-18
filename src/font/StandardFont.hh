@@ -28,23 +28,24 @@
 #ifndef __PDF_STANDARD_FONT_HEADER_INCLUDED__
 #define __PDF_STANDARD_FONT_HEADER_INCLUDED__
 
-#include "SimpleFont.hh"
+#include "BaseFont.hh"
+#include "core/Name.hh"
 
 namespace pdf {
-
-class Name ;
 
 /*!	\brief	The standard 14 Type 1 fonts.
 	
 	this class represents
 */
-class StandardFont : public SimpleFont
+class StandardFont : public BaseFont
 {
 public :
-	StandardFont( ) ;
-	~StandardFont( ) ;
+	StandardFont( const Name& name ) ;
 	
 	static bool IsStandardFont( const Name& font_name ) ;
+
+private :
+	Name	m_font_name ;
 } ;
 
 } // end of namespace

@@ -41,10 +41,7 @@ namespace pdf {
 class Exception : public std::runtime_error
 {
 public :
-	Exception( const std::string& err ) ;
-
-protected :
-	static std::string Backtrace( ) ;
+	explicit Exception( const std::string& err ) ;
 } ;
 
 /*!	\brief	Invalid type exception.

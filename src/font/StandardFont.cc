@@ -33,7 +33,8 @@
 
 namespace pdf {
 
-StandardFont::StandardFont( )
+StandardFont::StandardFont( const Name& name )
+	: m_font_name( name )
 {
 }
 
@@ -41,33 +42,22 @@ bool StandardFont::IsStandardFont( const Name& font_name )
 {
 	static const Name std_font_name[] =
 	{
-		"Courier",
-		"CourierNew",
-		"Courier?Oblique",
-		"CourierNew,Italic",
-		"Courier?Bold",
-		"CourierNew,Bold",
-		"Courier?BoldOblique",
-		"CourierNew,BoldItalic",
-		"Helvetica",
-		"Arial",
-		"Helvetica?Oblique",
-		"Arial,Italic",
-		"Helvetica?Bold",
-		"Arial,Bold",
-		"Helvetica?BoldOblique",
-		"Arial,BoldItalic",
-		"Times?Roman",
-		"TimesNewRoman",
-		"Times?Italic",
-		"TimesNewRoman,Italic",
-		"Times?Bold",
-		"TimesNewRoman,Bold",
-		"Times?BoldItalic",
-		"TimesNewRoman,BoldItalic",
+		"Courier",				"CourierNew",
+		"Courier-Oblique",		"CourierNew,Italic",
+		"Courier-Bold",			"CourierNew,Bold",
+		"Courier-BoldOblique",	"CourierNew,BoldItalic",
+		"Helvetica",			"Arial",
+		"Helvetica-Oblique",	"Arial,Italic",
+		"Helvetica-Bold",		"Arial,Bold",
+		"Helvetica-BoldOblique","Arial,BoldItalic",
+		"Times-Roman",			"TimesNewRoman",
+		"Times-Italic",			"TimesNewRoman,Italic",
+		"Times-Bold",			"TimesNewRoman,Bold",
+		"Times-BoldItalic",		"TimesNewRoman,BoldItalic",
 		"Symbol",
 		"ZapfDingbats",
 	} ;
+	
 	static const std::set<Name> s( Begin(std_font_name), End(std_font_name) ) ;
 	return s.find( font_name ) != s.end( ) ; 
 }

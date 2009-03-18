@@ -165,12 +165,6 @@ SimpleFont::Type SimpleFont::SubType( const Name& name )
 	return static_cast<Type>( ptr - pdf::Begin( m_font_types ) ) ;
 }
 
-const SimpleFont& SimpleFont::TimesRoman( )
-{
-	static const SimpleFont font( Name("Times-Roman"), type1 ) ;
-	return font ;
-}
-
 std::string SimpleFont::BaseName( ) const
 {
 	return m_base_font.Str( ) ;

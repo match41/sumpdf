@@ -40,13 +40,6 @@ Exception::Exception( const std::string& err )
 {
 }
 
-std::string Exception::Backtrace( )
-{
-	std::ostringstream ss ;
-	SymbolInfo::Instance()->Backtrace( ss ) ;
-	return ss.str() ;
-}
-
 InvalidType::InvalidType( const std::type_info& from, const std::type_info& to,
 				          const std::exception& e )
 	: Exception( ErrorMsg( from, to, e ) )
@@ -61,9 +54,13 @@ std::string InvalidType::ErrorMsg( const std::type_info& from,
 	
 	ss << "Cannot convert \"" << Demangle( from.name() )
 	   << "\" object to \""   << Demangle( to.name() )
-	   << "\". exception: \"" << e.what() << "\"\n" ;
+	   << "\". exception: \"" << e.what() << "\"" ;
 
+#ifdef _DEBUG
+	ss << "\n" ;
 	SymbolInfo::Instance()->Backtrace( ss ) ;
+#endif
+	
 	return ss.str() ;
 }
 
