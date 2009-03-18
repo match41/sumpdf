@@ -29,8 +29,11 @@
 
 #include "core/Dictionary.hh"
 #include "core/Stream.hh"
+#include "core/Token.hh"
+#include "core/TokenSrc.hh"
 
 #include <sstream>
+#include <iostream>
 
 StreamTest::StreamTest( )
 {
@@ -38,6 +41,16 @@ StreamTest::StreamTest( )
 
 void StreamTest::TestRead( )
 {
+	std::istringstream oss( "<<\n/Length 45\n>>\nstream\nBT\n"
+	                          "/F0 12 Tf 100 100 Td (Hello world!) Tj\n"
+	                          "ET\nendstream" ) ;
+	pdf::TokenSrc src( oss ) ;
+	pdf::Dictionary d ;
+	CPPUNIT_ASSERT( src >> d ) ;
+	
+	pdf::Token objstr ;
+	CPPUNIT_ASSERT( src >> objstr ) ;
+	CPPUNIT_ASSERT( objstr.Get() == "stream" ) ;
 }
 
 void StreamTest::TestWrite( )

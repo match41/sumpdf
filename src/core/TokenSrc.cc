@@ -48,6 +48,7 @@ TokenSrc& TokenSrc::ReadToken( Token& token )
 		token.Swap( m_cache.back() ) ;
 		m_cache.pop_back( ) ;
 	}
+
 	return *this ;
 }
 
@@ -79,6 +80,11 @@ void TokenSrc::SetState( std::ios::iostate state )
 void TokenSrc::ResetState( )
 {
 	m_file.clear( ) ;
+}
+
+bool TokenSrc::HasCache( ) const
+{
+	return !m_cache.empty( ) ;
 }
 
 } // end of namespace

@@ -248,7 +248,7 @@ set( UT_SRCS	test/core/TokenTest.cc
 				test/mock/MockFile.cc
 )
 
-add_definitions(-DTEST_DATA_DIR="\\"${libpdfdoc_SOURCE_DIR}/test/testdata/"\\")
+add_definitions(-DTEST_DATA_DIR="${libpdfdoc_SOURCE_DIR}/test/testdata/")
 add_definitions(-DSRC_DIR="\\"${libpdfdoc_SOURCE_DIR}/src/\\"")
 add_executable( unittest ${UT_SRCS} test/UnitTest.cc )
 target_link_libraries( unittest pdfdoc_static cppunit )

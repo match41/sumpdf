@@ -61,7 +61,6 @@ void ElementSrc::Dereference( Object& obj )
 
 IElement* ElementSrc::Init( IElement *element, const Ref& link )
 {
-// std::cout << "reading " << Demangle( typeid(*element).name() ) << std::endl ;
 	try
 	{
 		// insert before Read(). this is important!

@@ -23,8 +23,6 @@
 #include "Font.hh"
 #include "libpdfdoc.hh"
 
-#include "util/SymbolInfo.hh"
-
 #include <sstream>
 #include <iostream>
 #include <cstdlib>
@@ -37,8 +35,8 @@ int main( int argc, char **argv )
 		doc->Read( argv[1] ) ;
 	
 	pdf::Page *p = doc->AddPage( ) ;
-	pdf::Font *f = doc->CreateSimpleFont( "" ) ;
-	p->DrawText( 0, 0, f, "Hello world!" ) ;
+	pdf::Font *f = doc->CreateSimpleFont( "Helvetica" ) ;
+	p->DrawText( 100, 100, f, "Hello world!" ) ;
 
 	doc->Write( "test.pdf" ) ;
 

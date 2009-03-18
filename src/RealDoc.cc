@@ -117,9 +117,9 @@ RealPage* RealDoc::GetPage( std::size_t index )
 	return m_catalog->GetPage( index ) ;
 }
 
-SimpleFont* RealDoc::CreateSimpleFont( const std::string& name )
+StandardFont* RealDoc::CreateSimpleFont( const std::string& name )
 {
-	return new SimpleFont( ) ;
+	return new StandardFont( Name(name) ) ;
 }
 
 } // end of namespace

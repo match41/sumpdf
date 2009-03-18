@@ -40,7 +40,7 @@ namespace pdf {
 class IElementDest ;
 class IElementSrc ;
 class IFile ;
-class SimpleFont ;
+class BaseFont ;
 class RealImage ;
 class XObject ;
 
@@ -54,7 +54,7 @@ public :
 	Resources( ) ;
 	Resources( const Dictionary& dict, IElementSrc *repo ) ;
 
-	Name AddFont( SimpleFont *font ) ;
+	Name AddFont( BaseFont *font ) ;
 
 	void Read( const Dictionary& dict, IElementSrc *repo ) ;
 	void Read( const Ref& link, IElementSrc *repo ) ;
@@ -79,7 +79,7 @@ private :
 	Dictionary			m_self ;
 	Dictionary			m_ext_gstate ;
 
-	typedef std::map<Name, SimpleFont*> FontMap ;
+	typedef std::map<Name, BaseFont*> FontMap ;
 	FontMap				m_fonts ;
 
 	typedef std::map<Name, RealImage*> ImageMap ;

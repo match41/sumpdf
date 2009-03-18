@@ -34,7 +34,7 @@
 #include "file/IElementSrc.hh"
 #include "file/IElementDest.hh"
 #include "file/ElementList.hh"
-#include "font/SimpleFont.hh"
+#include "font/BaseFont.hh"
 #include "util/Util.hh"
 
 #include <boost/bind.hpp>
@@ -126,7 +126,7 @@ XObject* Resources::ReadXObj( const Ref& link )
 	return 0 ;
 }
 
-Name Resources::AddFont( SimpleFont *font )
+Name Resources::AddFont( BaseFont *font )
 {
 	// first, see if the font is already added
 	using boost::lambda::bind ;

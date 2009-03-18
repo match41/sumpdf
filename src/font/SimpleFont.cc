@@ -184,4 +184,9 @@ template <> SimpleFont* IElementSrc::Read( const Ref& link )
 						: NewElement<SimpleFont>( link ) ;
 }
 
+template <> BaseFont* CreateNewElement( const Ref& link )
+{
+	return new SimpleFont ;
+}
+
 } // end of namespace

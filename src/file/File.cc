@@ -31,6 +31,7 @@
 #include "core/Object.hh"
 #include "core/Stream.hh"
 #include "core/Token.hh"
+#include "core/TokenSrc.hh"
 #include "util/Exception.hh"
 #include "util/Util.hh"
 
@@ -117,18 +118,30 @@ Object File::ReadObj( const Ref& obj )
 	std::size_t id, gen ;
 	
 	Token objstr ;
+	
 	if ( (*m_ifile >> id >> gen >> objstr)	&&
 	     objstr.Get()		== "obj"		&&
 	     obj.ID()			== id			&&
 	     obj.Generation( )	== gen )
 	{
+		// from now on, we must use TokenSrc to read the PDF objects.
+		// it is because when reading the objects, some tokens may be
+		// PutBack() to the TokenSrc. if we use operator>>(std::istream&)
+		// to read the objects, it will internally construct and destruct
+		// the TokenSrc objects, and the PutBack()'ed tokens will be lost.
+		TokenSrc src( *m_ifile ) ;
+		
 		// read the underlying object
 		Object r ;
-		if ( *m_ifile >> r )
+		if ( src >> r )
 		{
-			*m_ifile >> objstr ;	// endobj or stream
-			return objstr.Get() == "endobj" ? r :
-			       objstr.Get() == "stream" ? ReadStream( r ) : Object() ;
+			src >> objstr ;	// endobj or stream
+			
+			if      ( objstr.Get() == "endobj" ) return r ;
+			else if ( objstr.Get() == "stream" ) return ReadStream( r ) ;
+			
+			// if the objstr is neither "endobj" nor "stream", it will
+			// fall through to the following throw
 		}
 	}
 	
@@ -158,7 +171,7 @@ Object File::ReadStream( const Dictionary& dict )
 		length = ReadObj( length ) ;
 		m_ifile->seekg( pos ) ;
 	}
-	
+
 	std::vector<unsigned char> data( length.As<int>( ) ) ;
 	if ( m_ifile->rdbuf()->sgetn( reinterpret_cast<char*>( &data[0]),
 	                                                        data.size() )

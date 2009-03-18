@@ -40,7 +40,7 @@ PngImage::PngImage( const std::string& fname )
 {
 	try
 	{
-		if ( m_png == 0 )
+		if ( m_png == 0 || m_fp == 0 )
 			throw -1 ;
 		
 		m_info = ::png_create_info_struct( m_png ) ;
@@ -52,12 +52,6 @@ PngImage::PngImage( const std::string& fname )
 		png_init_io( m_png, m_fp ) ;
 		png_read_info( m_png, m_info ) ;
 
-		// get image info
-/*		png_uint_32 width, height;
-		int bit_depth, color_type, interlace_type;
-		png_get_IHDR( m_png, m_info, &width, &height, &bit_depth, &color_type,
-		              &interlace_type, int_p_NULL, int_p_NULL ) ;
-*/
 		// set libpng transformation
 		SetTransform( ) ;
 		
@@ -78,7 +72,8 @@ PngImage::PngImage( const std::string& fname )
 PngImage::~PngImage( )
 {
 	png_destroy_read_struct( &m_png, &m_info, png_infopp_NULL ) ;
-	std::fclose( m_fp ) ;
+	if ( m_fp != 0 )
+		std::fclose( m_fp ) ;
 }
 
 void PngImage::SetTransform( )

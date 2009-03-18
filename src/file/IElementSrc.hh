@@ -39,6 +39,12 @@ class Name ;
 class Ref ;
 class Object ;
 
+template <class Element>
+Element* CreateNewElement( const Ref& )
+{
+	return new Element ;
+}
+
 /*!	\brief	brief description
 	
 	this class represents
@@ -65,7 +71,7 @@ public :
 	bool Detach( Dictionary& dict, const Name& name, T& result ) ;
 
 	// helper function to create objects
-	template <typename Element>
+	template <class Element>
 	Element* Read( const Ref& link )
 	{
 		// dynamic cast reference
@@ -76,10 +82,10 @@ public :
 	}
 
 private :
-	template <typename Element>
+	template <class Element>
 	Element* NewElement( const Ref& link )
 	{
-		Element *element = new Element ;
+		Element *element = CreateNewElement<Element>( link ) ;
 		Init( element, link ) ;
 		return element ;
 	}

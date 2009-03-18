@@ -32,7 +32,7 @@
 
 #include "file/Catalog.hh"
 #include "page/RealPage.hh"
-#include "font/SimpleFont.hh"
+#include "font/StandardFont.hh"
 #include "font/ftwrap/Library.hh"
 
 #include <string>
@@ -57,7 +57,7 @@ public :
 	std::size_t PageCount( ) const ;
 	RealPage* GetPage( std::size_t index ) ;
 
-	SimpleFont* CreateSimpleFont( const std::string& name ) ;
+	StandardFont* CreateSimpleFont( const std::string& name ) ;
 
 private :
 	//! Catalog of the document

@@ -53,6 +53,8 @@ public :
 	void SetState( std::ios::iostate state ) ;
 	void ResetState( ) ;
 	
+	bool HasCache( ) const ;
+	
 private :
 	std::istream&		m_file ;
 	std::vector<Token>	m_cache ;

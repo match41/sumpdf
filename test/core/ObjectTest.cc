@@ -204,6 +204,8 @@ void ObjectTest::TestObj9020( )
 	const std::string filename = std::string(TEST_DATA_DIR) + "obj9020" ;
 	std::ifstream testdata( filename.c_str( ), std::ios::in |
 	                                           std::ios::binary ) ;
+	CPPUNIT_ASSERT( testdata ) ;
+	
 	pdf::Object obj ;
 	CPPUNIT_ASSERT( testdata >> obj ) ;
 	CPPUNIT_ASSERT( !obj.IsNull( ) ) ;

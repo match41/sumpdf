@@ -44,12 +44,11 @@ public :
 	BaseFont( ) ;
 
 	virtual std::string BaseName( ) const = 0 ;
-	
+
 	ElementList GetChildren( ) const ;
 } ;
 
-// specialization for reading from file
-template <> BaseFont* IElementSrc::Read( const Ref& link ) ;
+template <> BaseFont* CreateNewElement( const Ref& link ) ;
 
 } // end of namespace
 

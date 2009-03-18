@@ -42,6 +42,11 @@ class StandardFont : public BaseFont
 public :
 	StandardFont( const Name& name ) ;
 	
+	std::string BaseName( ) const ;
+
+	void Read( const Ref& link, IElementSrc *src ) ;
+	void Write( const Ref& link, IElementDest *dest ) const ;
+
 	static bool IsStandardFont( const Name& font_name ) ;
 
 private :

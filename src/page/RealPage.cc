@@ -40,7 +40,7 @@
 #include "file/IElementDest.hh"
 #include "file/DeRef.hh"
 
-#include "font/SimpleFont.hh"
+#include "font/BaseFont.hh"
 
 #include "util/Rect.hh"
 #include "util/Util.hh"
@@ -78,20 +78,11 @@ void RealPage::Read( const Ref& link, IElementSrc *repo )
 	// read content
 	ReadContent( m_self["Contents"], repo ) ;
 	m_self.erase( "Contents" ) ;
-	DecodeContent( ) ;
-	
+// 	DecodeContent( ) ;
+
 	// resources may not always be indirect objects
 	ReadResource( m_self["Resources"], repo ) ;
-/*	delete m_resources ;
-	Object r = m_self["Resources"] ;
- 	if ( r.Type() == Object::ref )
- 		m_resources = repo->Read<Resources>( r ) ;
- 	else
- 	{
- 		m_resources = new Resources ;
- 		m_resources->Read( r.As<Dictionary>(), repo ) ;
- 	}
-*/	
+	
 	// media box
 	Array a ;
 	if ( repo->Detach( m_self, "MediaBox", a ) )
@@ -148,18 +139,16 @@ void RealPage::Write( const Ref& link, IElementDest *file ) const
 void RealPage::DrawText( double x, double y, Font *f, const std::string& text )
 {
 	assert( f != 0 ) ;
-	assert( typeid(*f) == typeid(SimpleFont) ) ;
 	assert( GetResource( ) != 0 ) ;
-
-	m_content << "BT\n" ;
-
-	SimpleFont *font = static_cast<SimpleFont*>( f ) ;
 	
+	BaseFont *font = dynamic_cast<BaseFont*>( f ) ;
+	assert( font != 0 ) ;
 	Name fname = GetResource( )->AddFont( font ) ;
-	m_content << fname << " 12 Tf 100 100 Td " << String( text )
-	                << " Tj\n" ;
-	
-	m_content << "ET\n" ;
+
+	m_content << "BT\n"
+              << fname << " 12 Tf " << x << ' ' << y << " Td "
+	                   << String( text ) << " Tj\n"
+	          << "ET\n" ;
 }
 
 std::size_t RealPage::Count( ) const

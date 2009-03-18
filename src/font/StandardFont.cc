@@ -27,6 +27,8 @@
 
 #include "StandardFont.hh"
 
+#include "core/Dictionary.hh"
+#include "file/IElementDest.hh"
 #include "util/Util.hh"
 
 #include <set>
@@ -36,6 +38,11 @@ namespace pdf {
 StandardFont::StandardFont( const Name& name )
 	: m_font_name( name )
 {
+}
+
+std::string StandardFont::BaseName( ) const
+{
+	return m_font_name.Str() ;
 }
 
 bool StandardFont::IsStandardFont( const Name& font_name )
@@ -60,6 +67,21 @@ bool StandardFont::IsStandardFont( const Name& font_name )
 	
 	static const std::set<Name> s( Begin(std_font_name), End(std_font_name) ) ;
 	return s.find( font_name ) != s.end( ) ; 
+}
+
+void StandardFont::Read( const Ref& link, IElementSrc *src )
+{
+	// reading is now supported
+}
+
+void StandardFont::Write( const Ref& link, IElementDest *dest ) const
+{
+	// the standard 14 font dictionary is much simpler
+	Dictionary dict ;
+	dict["Type"]		= Name( "Font" ) ;
+	dict["Subtype"]		= Name( "Type1" ) ;
+	dict["BaseFont"]	= m_font_name ;
+	dest->WriteObj( dict, link ) ;
 }
 
 } // end of namespace
