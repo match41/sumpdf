@@ -22,9 +22,8 @@ PROJECT( libpdfdoc )
 
 cmake_minimum_required(VERSION 2.6)
 
-set( Boost_USE_STATIC_LIBS OFF )
 set( Boost_USE_MULTITHREAD ON )
-find_package( Boost 1.34.1 )
+find_package( Boost REQUIRED)
 find_package( Freetype )
 find_package( ZLIB )
 find_package( PNG )
@@ -101,11 +100,6 @@ set( FT_HDRS		${FT_DIR}/Face.hh
 					${FT_DIR}/Exception.hh
 					${FT_DIR}/ErrorTable.hh )
 
-set( HDRS	src/RealDoc.hh
-			
-			${PAGE_HDRS} ${FILE_HDRS} ${CORE_HDRS} ${IMG_HDRS}
-			${FONT_HDRS} ${FT_HDRS} )
-
 # source in subdirs
 set( PAGE_SRCS  	${PAGE_DIR}/RealPage.cc
 					${PAGE_DIR}/Resources.cc
@@ -150,21 +144,56 @@ set( UTIL_SRCS  	${UTIL_DIR}/Rect.cc
 					${UTIL_DIR}/Exception.cc
 					${UTIL_DIR}/SymbolInfo.cc )
 
-set( IMG_SRCS  		${IMG_DIR}/Image.cc
-					${IMG_DIR}/PngImage.cc
-					${IMG_DIR}/JpegImage.cc )
+set( IMG_SRCS  		${IMG_DIR}/Image.cc )
 
 set( FONT_SRCS		${FONT_DIR}/TrueTypeFile.cc
 					${FONT_DIR}/TrueTypeTable.cc
 					${FONT_DIR}/BaseFont.cc
-					${FONT_DIR}/SimpleFont.cc
 					${FONT_DIR}/StandardFont.cc )
 
-set( FT_SRCS		${FT_DIR}/Face.cc
+if ( FREETYPE_FOUND )
+    set( FONT_SRCS  ${FONT_SRCS}
+                    ${FONT_DIR}/SimpleFont.cc )
+    set( FONT_HDRS  ${FONT_HDRS}
+                    ${FONT_DIR}/SimpleFont.hh )
+    set( FT_SRCS	${FT_DIR}/Face.cc
 					${FT_DIR}/Glyph.cc
 					${FT_DIR}/Library.cc
 					${FT_DIR}/Exception.cc
 					${FT_DIR}/ErrorTable.cc )
+    set( OPT_LIBS   ${OPT_LIBS}
+                    ${FREETYPE_LIBRARIES} )
+    set( OPT_INCS   ${OPT_INCS}
+                    ${FREETYPE_INCLUDE_DIRS} )
+endif ( Freetype_FOUND )
+
+if ( PNG_FOUND )
+    set( IMG_SRCS   ${IMG_SRCS}
+                    ${IMG_DIR}/PngImage.cc )
+    set( IMG_HDRS   ${IMG_HDRS}
+                    ${IMG_DIR}/PngImage.hh )
+    set( OPT_LIBS   ${OPT_LIBS}
+                    ${PNG_LIBRARIES} )
+    set( OPT_INCS   ${OPT_INCS}
+                    ${PNG_INCLUDE_DIR} )
+endif ( PNG_FOUND )
+
+if ( JPEG_FOUND )
+    set( IMG_SRCS   ${IMG_SRCS}
+                    ${IMG_DIR}/JpegImage.cc )
+    set( IMG_HDRS   ${IMG_HDRS}
+                    ${IMG_DIR}/JpegImage.hh )
+    set( OPT_LIBS   ${OPT_LIBS}
+                    ${JPEG_LIBRARIES} )
+    set( OPT_INCS   ${OPT_INCS}
+                    ${JPEG_INCLUDE_DIR} )
+endif ( JPEG_FOUND )
+
+# headers
+set( HDRS	src/RealDoc.hh
+			${PAGE_HDRS} ${FILE_HDRS} ${CORE_HDRS} ${IMG_HDRS}
+			${FONT_HDRS} ${FT_HDRS} )
+
 # sources
 set( SRCS	src/Doc.cc src/RealDoc.cc src/libpdfdoc.cc
 			${PAGE_SRCS} ${FILE_SRCS} ${CORE_SRCS} ${IMG_SRCS} ${UTIL_SRCS}
@@ -188,20 +217,16 @@ ELSE ( MSVC )
 ENDIF ( MSVC )
 
 target_link_libraries( pdfdoc_static
-                       ${JPEG_LIBRARIES}
                        ${ZLIB_LIBRARIES}
-                       ${PNG_LIBRARIES}
-                       dl bfd
-                       ${FREETYPE_LIBRARIES} )
+                       ${OPT_LIBS}
+                       dl bfd )
 
 include_directories( ${libpdfdoc_SOURCE_DIR}/src
                      ${libpdfdoc_SOURCE_DIR}/include
                      ${libpdfdoc_SOURCE_DIR}/test
-                     ${Boost_INCLUDE_DIRS}
-                     ${JPEG_INCLUDE_DIR}
-                     ${PNG_INCLUDE_DIR}
                      ${ZLIB_INCLUDE_DIR}
-                     ${FREETYPE_INCLUDE_DIRS} )
+                     ${Boost_INCLUDE_DIRS}
+                     ${OPT_INCS} )
 
 # INSTALL( TARGETS pdfdoc
 #          RUNTIME DESTINATION bin
