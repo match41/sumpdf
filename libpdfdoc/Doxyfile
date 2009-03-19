@@ -4,7 +4,7 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 PROJECT_NAME           = libpdfdoc
-PROJECT_NUMBER         = $VERSION$
+PROJECT_NUMBER         = 0.0.4
 OUTPUT_DIRECTORY       = 
 CREATE_SUBDIRS         = NO
 OUTPUT_LANGUAGE        = English
@@ -33,7 +33,7 @@ MULTILINE_CPP_IS_BRIEF = NO
 DETAILS_AT_TOP         = NO
 INHERIT_DOCS           = YES
 SEPARATE_MEMBER_PAGES  = NO
-TAB_SIZE               = 8
+TAB_SIZE               = 4
 ALIASES                = 
 OPTIMIZE_OUTPUT_FOR_C  = NO
 OPTIMIZE_OUTPUT_JAVA   = NO
@@ -168,7 +168,7 @@ HTML_OUTPUT            = html
 HTML_FILE_EXTENSION    = .html
 HTML_HEADER            = 
 HTML_FOOTER            = 
-HTML_STYLESHEET        = 
+HTML_STYLESHEET        = libpdfdoc.css
 HTML_ALIGN_MEMBERS     = YES
 GENERATE_HTMLHELP      = NO
 CHM_FILE               = 

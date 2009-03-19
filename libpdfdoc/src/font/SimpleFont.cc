@@ -184,7 +184,7 @@ template <> SimpleFont* IElementSrc::Read( const Ref& link )
 						: NewElement<SimpleFont>( link ) ;
 }
 
-template <> BaseFont* CreateNewElement( const Ref& link )
+template <> BaseFont* CreateNewElement( const Ref& , IElementSrc * )
 {
 	return new SimpleFont ;
 }

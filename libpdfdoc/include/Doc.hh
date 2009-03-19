@@ -53,9 +53,26 @@ public :
         all data from the file. It will only read the trailer and cross
         reference table to know the structure of the PDF document. Page
         contents will be read on-demand.
-        \param  filename    The name of file to be read from.
+        
+        \note	The file will be opened throughout the life time of the
+        		document object. It will be read for document data when
+        		it is needed. The file will only be closed when the document
+        		object is destroyed.
+        
+        \note	The file must be a regular file that supports seeking.
+        		libpdfdoc does not support reading PDF files from a pipe
+        		or socket.
+        
+        \param  filename    The name of file to be read from. It must be
+        					readable, but not nesscarrily writable.
+		\throw	ParseError	is thrown when their is parser error in the PDF
+							file.
+    	\sa		Write()
     */
 	virtual void Read( const std::string& filename ) = 0 ;
+	
+	/*!	\brief	Write the PDF document to a file
+	*/
 	virtual void Write( const std::string& filename ) const = 0 ;
 
     /*! \brief  Add a page to the document.

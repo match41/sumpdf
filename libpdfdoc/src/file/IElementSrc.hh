@@ -35,19 +35,21 @@ namespace pdf {
 
 class Dictionary ;
 class IElement ;
+class IElementSrc ;
 class Name ;
 class Ref ;
 class Object ;
 
 template <class Element>
-Element* CreateNewElement( const Ref& )
+Element* CreateNewElement( const Ref&, IElementSrc * )
 {
 	return new Element ;
 }
 
-/*!	\brief	brief description
+/*!	\brief	somewhere that can provide IElement's
 	
-	this class represents
+	This class represents an abstraction on something that can Read() IElement
+	objects.
 */
 class IElementSrc
 {
@@ -85,7 +87,7 @@ private :
 	template <class Element>
 	Element* NewElement( const Ref& link )
 	{
-		Element *element = CreateNewElement<Element>( link ) ;
+		Element *element = CreateNewElement<Element>( link, this ) ;
 		Init( element, link ) ;
 		return element ;
 	}

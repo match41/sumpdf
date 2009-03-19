@@ -165,7 +165,7 @@ if ( FREETYPE_FOUND )
                     ${FREETYPE_LIBRARIES} )
     set( OPT_INCS   ${OPT_INCS}
                     ${FREETYPE_INCLUDE_DIRS} )
-endif ( Freetype_FOUND )
+endif ( FREETYPE_FOUND )
 
 if ( PNG_FOUND )
     set( IMG_SRCS   ${IMG_SRCS}

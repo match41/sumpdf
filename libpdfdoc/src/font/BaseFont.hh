@@ -34,9 +34,9 @@
 
 namespace pdf {
 
-/*!	\brief	brief description
+/*!	\brief	base class for all fonts
 	
-	this class represents
+	This class is the base class of all font classes in libpdfdoc.
 */
 class BaseFont : public Font, public IElement
 {
@@ -48,7 +48,7 @@ public :
 	ElementList GetChildren( ) const ;
 } ;
 
-template <> BaseFont* CreateNewElement( const Ref& link ) ;
+template <> BaseFont* CreateNewElement( const Ref& link, IElementSrc * ) ;
 
 } // end of namespace
 

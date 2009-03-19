@@ -20,9 +20,11 @@
 
 /*!
 	\file	Util.hh
-	\brief	definition the Util class
+	\brief	Utility functions
 	\date	Sun Mar 9 2008
 	\author	Nestal Wan
+	
+	This file contains some utility functions that is not PDF specific.
 */
 
 #ifndef __PDF_UTIL_HEADER_INCLUDED__
@@ -34,9 +36,19 @@
 
 namespace pdf {
 
-/*!	\brief	brief description
+/*!	\brief	get the begin iterator from an array
 	
-	this class represents
+	This function returns the begin "iterator" of an array. It is useful to
+	treat an array like an STL container.
+	
+	For example:
+\code
+int array[10] = { 1, 2, 3, 4, 5 } ;
+std::vector<int> v ;
+std::copy( Begin(array), End(array), std::back_inserter( v ) ;
+\endcode
+
+	
 */
 template <typename T, std::size_t n>
 T* Begin( T (&array)[n] )

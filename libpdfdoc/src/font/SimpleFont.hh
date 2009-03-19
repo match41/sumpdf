@@ -43,9 +43,9 @@ namespace pdf {
 
 class Dictionary ;
 
-/*!	\brief	Base class for fonts
+/*!	\brief	general font for PDF files
 	
-	This class is the base class of all fonts.
+	This class represent a simple Type 1 or TrueType font.
 */
 class SimpleFont : public BaseFont
 {
