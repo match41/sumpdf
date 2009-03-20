@@ -105,6 +105,12 @@ cmake -G 'Visual Studio 8 2005' c:\path\to\libpdfdoc\
 	You can also use <tt>-DBOOST_ROOT=c:\path\to\boost\library</tt> to specify
 	the path to the boost library.
 
+\code
+C:\VSS\make\libpdfdoc>cmake -G "Visual Studio 8 2005" -DBOOST_ROOT=c:\VSS\boost_
+1_38_0 -DCMAKE_PREFIX_PATH=c:\VSS\zlib123-dll -DCPPUNIT_PREFIX=c:\VSS\cppunit-1.
+12.0 ..\..\libpdfxx\libpdfdoc
+\endcode
+
 	<a href="http://sourceforge.net">
 		<img src="http://sourceforge.net/sflogo.php?group_id=14057&amp;type=5"
 	         width="210" height="62" border="0" alt="SourceForge Logo" />

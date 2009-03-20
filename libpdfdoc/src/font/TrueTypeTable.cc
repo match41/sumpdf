@@ -73,7 +73,7 @@ TrueTypeTable& operator<<( TrueTypeTable& bs, T val )
     std::size_t s = sizeof( val ) ;
     while ( s-- > 0 )
     {
-        *p++ = val & 0xFF;
+        *p++ = static_cast<char>(val) & 0xFF;
         val >>= 8;
     }
     p--;

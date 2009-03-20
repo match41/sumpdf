@@ -141,8 +141,7 @@ set( CORE_SRCS  	${CORE_DIR}/Object.cc
 
 set( UTIL_SRCS  	${UTIL_DIR}/Rect.cc
 					${UTIL_DIR}/Util.cc
-					${UTIL_DIR}/Exception.cc
-					${UTIL_DIR}/SymbolInfo.cc )
+					${UTIL_DIR}/Exception.cc )
 
 set( IMG_SRCS  		${IMG_DIR}/Image.cc )
 
@@ -151,6 +150,23 @@ set( FONT_SRCS		${FONT_DIR}/TrueTypeFile.cc
 					${FONT_DIR}/BaseFont.cc
 					${FONT_DIR}/StandardFont.cc )
 
+###############################################################################
+# unix specific sources
+###############################################################################
+if ( UNIX )
+    set( UTIL_SRCS  ${UTIL_SRCS}
+					${UTIL_DIR}/SymbolInfo.cc )
+###############################################################################
+# win32 specific sources
+###############################################################################
+elseif ( WIN32)
+    set( UTIL_SRCS  ${UTIL_SRCS}
+					${UTIL_DIR}/SymbolInfo32.cpp )
+endif (UNIX )
+
+###############################################################################
+# win32 optional sources
+###############################################################################
 if ( FREETYPE_FOUND )
     set( FONT_SRCS  ${FONT_SRCS}
                     ${FONT_DIR}/SimpleFont.cc )
@@ -165,6 +181,7 @@ if ( FREETYPE_FOUND )
                     ${FREETYPE_LIBRARIES} )
     set( OPT_INCS   ${OPT_INCS}
                     ${FREETYPE_INCLUDE_DIRS} )
+    add_definitions( -DHAVE_FREETYPE )
 endif ( FREETYPE_FOUND )
 
 if ( PNG_FOUND )
@@ -189,26 +206,41 @@ if ( JPEG_FOUND )
                     ${JPEG_INCLUDE_DIR} )
 endif ( JPEG_FOUND )
 
-# headers
+###############################################################################
+# all headers
+###############################################################################
 set( HDRS	src/RealDoc.hh
 			${PAGE_HDRS} ${FILE_HDRS} ${CORE_HDRS} ${IMG_HDRS}
 			${FONT_HDRS} ${FT_HDRS} )
 
-# sources
+###############################################################################
+# all sources
+###############################################################################
 set( SRCS	src/Doc.cc src/RealDoc.cc src/libpdfdoc.cc
 			${PAGE_SRCS} ${FILE_SRCS} ${CORE_SRCS} ${IMG_SRCS} ${UTIL_SRCS}
 			${FONT_SRCS} ${FT_SRCS} )
 
+###############################################################################
+# libpdfdoc library
+###############################################################################
 #add_library( pdfdoc SHARED ${SRCS} )
 add_library( pdfdoc_static STATIC ${SRCS} ${HDRS} )
 
-SOURCE_GROUP( "Header Files" FILES ${HDRS} )
+###############################################################################
+# source groups
+###############################################################################
 SOURCE_GROUP( "Source Files\\page" FILES ${PAGE_SRCS} )
 SOURCE_GROUP( "Source Files\\file" FILES ${FILE_SRCS} )
 SOURCE_GROUP( "Source Files\\core" FILES ${CORE_SRCS} )
+SOURCE_GROUP( "Source Files\\util" FILES ${UTIL_SRCS} )
+SOURCE_GROUP( "Source Files\\font" FILES ${FONT_SRCS} )
+SOURCE_GROUP( "Source Files\\image" FILES ${IMG_SRCS} )
 SOURCE_GROUP( "Header Files\\page" FILES ${PAGE_HDRS} )
 SOURCE_GROUP( "Header Files\\file" FILES ${FILE_HDRS} )
 SOURCE_GROUP( "Header Files\\core" FILES ${CORE_HDRS} )
+SOURCE_GROUP( "Header Files\\util" FILES ${UTIL_HDRS} )
+SOURCE_GROUP( "Header Files\\font" FILES ${FONT_HDRS} )
+SOURCE_GROUP( "Header Files\\image" FILES ${IMG_HDRS} )
 
 IF ( MSVC )
 	ADD_DEFINITIONS( -D_SCL_SECURE_NO_WARNINGS -DDLL_EXPORTS )
@@ -216,34 +248,55 @@ ELSE ( MSVC )
 	ADD_DEFINITIONS( -DDLL_EXPORTS )
 ENDIF ( MSVC )
 
+###############################################################################
+# unix specific libraries
+###############################################################################
+if ( UNIX )
+    set( OPT_LIBS   ${OPT_LIBS}
+                    dl bfd )
+
+###############################################################################
+# win32 specific libraries
+###############################################################################
+elseif ( WIN32 )
+    set( OPT_LIBS   ${OPT_LIBS}
+                    Dbghelp )
+endif ( WIN32 )
+
+
+###############################################################################
+# all compiler settings
+###############################################################################
+add_definitions( -DDLL_EXPORTS )
+
 target_link_libraries( pdfdoc_static
                        ${ZLIB_LIBRARIES}
-                       ${OPT_LIBS}
-                       dl bfd )
+                       ${OPT_LIBS} )
 
 include_directories( ${libpdfdoc_SOURCE_DIR}/src
                      ${libpdfdoc_SOURCE_DIR}/include
                      ${libpdfdoc_SOURCE_DIR}/test
                      ${ZLIB_INCLUDE_DIR}
                      ${Boost_INCLUDE_DIRS}
+                     ${CPPUNIT_PREFIX}/include
                      ${OPT_INCS} )
 
-# INSTALL( TARGETS pdfdoc
-#          RUNTIME DESTINATION bin
-#          LIBRARY DESTINATION lib
-#          ARCHIVE DESTINATION lib )
+INSTALL( TARGETS pdfdoc_static
+         RUNTIME DESTINATION bin
+         LIBRARY DESTINATION lib
+         ARCHIVE DESTINATION lib )
 
 INSTALL( FILES ${HDRS} DESTINATION include )
 
+###############################################################################
+# test driver
+###############################################################################
 add_executable( testpdf src/testpdf.cc )
 target_link_libraries( testpdf pdfdoc_static )
 
-# headers
-# set( HDRS	TokenTest.hh NameTest.hh IndirectObjTest.hh ObjectTest.hh
-# 			StringTest.hh DictionaryTest.hh ArrayTest.hh PageTest.hh 
-# 			MockFile.hh StreamTest.hh FileTest.hh )
-
-# sources
+###############################################################################
+# unit test sources
+###############################################################################
 set( UT_SRCS	test/core/TokenTest.cc
 				test/core/NameTest.cc
 				test/core/RefTest.cc
@@ -263,15 +316,31 @@ set( UT_SRCS	test/core/TokenTest.cc
 				
 				test/file/FileTest.cc
 				test/ElementTrackerTest.cc
-				test/image/PngImageTest.cc
-				test/image/JpegImageTest.cc
 				
 				test/font/TrueTypeFileTest.cc
 				test/font/TrueTypeTableTest.cc
-				test/font/SimpleFontTest.cc
 				
 				test/mock/MockFile.cc
 )
+
+if ( PNG_FOUND )
+    set( UT_SRCS    ${UT_SRCS}
+				    test/image/PngImageTest.cc )
+endif ( PNG_FOUND )
+
+if ( JPEG_FOUND )
+    set( UT_SRCS    ${UT_SRCS}
+				    test/image/JpegImageTest.cc )
+endif ( JPEG_FOUND )
+
+if ( FREETYPE_FOUND )
+    set( UT_SRCS    ${UT_SRCS}
+    				test/font/SimpleFontTest.cc )
+endif ( FREETYPE_FOUND )
+
+if ( CPPUNIT_PREFIX )
+    link_directories( ${CPPUNIT_PREFIX}/lib )
+endif ( CPPUNIT_PREFIX )
 
 add_definitions(-DTEST_DATA_DIR="${libpdfdoc_SOURCE_DIR}/test/testdata/")
 add_definitions(-DSRC_DIR="\\"${libpdfdoc_SOURCE_DIR}/src/\\"")

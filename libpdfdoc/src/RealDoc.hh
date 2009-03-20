@@ -33,7 +33,11 @@
 #include "file/Catalog.hh"
 #include "page/RealPage.hh"
 #include "font/StandardFont.hh"
+
+// freetype library is optional
+#ifdef HAVE_FREETYPE
 #include "font/ftwrap/Library.hh"
+#endif
 
 #include <string>
 #include <fstream>
@@ -67,8 +71,10 @@ private :
 	//! Some objects from the document will only be read on-demand.
 	std::ifstream		m_readfs ;
 	
+#ifdef HAVE_FREETYPE
 	//! Freetype library for loading the font files.
 	freetype::Library	m_ft_lib ;
+#endif
 } ;
 
 } // end of namespace

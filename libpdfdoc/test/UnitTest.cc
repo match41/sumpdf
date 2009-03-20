@@ -40,7 +40,12 @@
 #include "core/filter/RawFilterTest.hh"
 #include "page/ResourcesTest.hh"
 #include "page/PageTest.hh"
-#include "font/SimpleFontTest.hh"
+
+// freetype library is optional
+#ifdef HAVE_FREETYPE
+    #include "font/SimpleFontTest.hh"
+#endif
+
 #include "page/XObjectTest.hh"
 #include "file/FileTest.hh"
 #include "ElementTrackerTest.hh"
@@ -67,7 +72,12 @@ int main( int argc, char **argv )
 	runner.addTest( FileTest::suite( ) ) ;
 	runner.addTest( ElementTrackerTest::suite( ) ) ;
 	runner.addTest( PageNodeTest::suite( ) ) ;
+
+// freetype library is optional
+#ifdef HAVE_FREETYPE
 	runner.addTest( SimpleFontTest::suite( ) ) ;
+#endif
+
 #ifdef __GNUC__
 	runner.addTest( PngImageTest::suite( ) ) ;
 	runner.addTest( JpegImageTest::suite( ) ) ;

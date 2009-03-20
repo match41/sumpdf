@@ -84,4 +84,13 @@ void StandardFont::Write( const Ref& link, IElementDest *dest ) const
 	dest->WriteObj( dict, link ) ;
 }
 
+
+// freetype library is optional
+#ifndef HAVE_FREETYPE
+template <> BaseFont* CreateNewElement( const Ref& , IElementSrc * )
+{
+	return new StandardFont( "Arial" ) ;
+}
+#endif
+
 } // end of namespace
