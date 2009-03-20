@@ -75,7 +75,7 @@ Stream::Stream( std::vector<unsigned char>& data, const Dictionary& dict )
 	else if ( filter.Type() == Object::name )
 		ApplyFilter( filter ) ;
 	
-	else if ( filter != Null() )
+	else if ( !filter.IsNull() )
 		throw ParseError( "filter error" ) ;
 
 	// these two fields will be generated again when writing.

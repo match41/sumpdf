@@ -30,6 +30,8 @@
 #include "Util.hh"
 #include "SymbolInfo.hh"
 
+#include <boost/format.hpp>
+
 #include <cstdlib>
 #include <sstream>
 
@@ -40,15 +42,28 @@ Exception::Exception( const std::string& err )
 {
 }
 
-InvalidType::InvalidType( const std::type_info& from, const std::type_info& to,
-				          const std::exception& e )
-	: Exception( ErrorMsg( from, to, e ) )
+Exception::Exception( boost::format fmt )
+	: runtime_error( fmt.str() )
 {
 }
 
-std::string InvalidType::ErrorMsg( const std::type_info& from,
-	                               const std::type_info& to,
-	                               const std::exception& e )
+BadType::BadType( const std::type_info& from, const std::type_info& to,
+				  const std::exception& e )
+	: Exception( boost::format( "Cannot convert \"%1%\" object to \"%2%\". "
+	                            "exception: \"%3%\""
+#ifndef NDEBUG
+	                            "\n%4%"
+#endif
+	                            )
+	             % Demangle( from.name() )
+	             % Demangle( to.name() )
+	             % e.what() )
+{
+}
+
+std::string BadType::ErrorMsg( const std::type_info& from,
+	                           const std::type_info& to,
+	                           const std::exception& e )
 {
 	std::ostringstream ss ;
 	
@@ -56,7 +71,7 @@ std::string InvalidType::ErrorMsg( const std::type_info& from,
 	   << "\" object to \""   << Demangle( to.name() )
 	   << "\". exception: \"" << e.what() << "\"" ;
 
-#ifdef _DEBUG
+#ifndef NDEBUG
 	ss << "\n" ;
 	SymbolInfo::Instance()->Backtrace( ss ) ;
 #endif

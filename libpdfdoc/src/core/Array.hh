@@ -63,7 +63,6 @@ public :
 	}
 
 	friend std::istream& operator>>( std::istream& is, Array& array ) ;
-// 	std::istream& Decode( std::istream& is, const Token& first ) ;
 	friend TokenSrc& operator>>( TokenSrc& src, Array& obj ) ;
 	
 	void swap( Array& array ) ;

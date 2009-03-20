@@ -28,20 +28,23 @@
 #ifndef __PDF_EXCEPTION_HEADER_INCLUDED__
 #define __PDF_EXCEPTION_HEADER_INCLUDED__
 
+#include <boost/format/format_fwd.hpp>
+
 #include <iosfwd>
 #include <stdexcept>
 #include <typeinfo>
 
 namespace pdf {
 
-/*!	\brief	brief description
+/*!	\brief	base class for exception in libpdfdoc
 	
-	this class represents
+	This class is the base class for all exception class in libpdfdoc.
 */
 class Exception : public std::runtime_error
 {
 public :
 	explicit Exception( const std::string& err ) ;
+	explicit Exception( boost::format fmt ) ;
 } ;
 
 /*!	\brief	Invalid type exception.
@@ -50,11 +53,11 @@ public :
 	underlying data to a specific type. The what() member function will
 	describe the expected and actual type of the data.
 */
-class InvalidType : public Exception
+class BadType : public Exception
 {
 public :
-	InvalidType( const std::type_info& from, const std::type_info& to,
-	             const std::exception& e ) ;
+	BadType( const std::type_info& from, const std::type_info& to,
+	         const std::exception& e ) ;
 
 private :
 	static std::string ErrorMsg( const std::type_info& from,

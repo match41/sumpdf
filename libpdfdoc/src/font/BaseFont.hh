@@ -35,6 +35,7 @@
 namespace pdf {
 
 /*!	\brief	base class for all fonts
+	\internal
 	
 	This class is the base class of all font classes in libpdfdoc.
 */

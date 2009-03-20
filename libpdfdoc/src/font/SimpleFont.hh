@@ -43,8 +43,8 @@ namespace pdf {
 
 class Dictionary ;
 
-/*!	\internal
-	\brief	general font for PDF files
+/*!	\brief	general font for PDF files
+	\internal
 	
 	This class represent a simple Type 1 or TrueType font.
 */

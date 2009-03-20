@@ -100,16 +100,25 @@ VERBOSE=1 make
 cmake -G 'Visual Studio 8 2005' c:\path\to\libpdfdoc\
 \endverbatim
 
-	You may have to add <tt>-DCMAKE_PREFIX_PATH=c:\path\to\libraries\</tt> to
-	the cmake command line to make sure it can find the library dependencies.
-	You can also use <tt>-DBOOST_ROOT=c:\path\to\boost\library</tt> to specify
+	You may have to add <tt>-DCMAKE_PREFIX_PATH=c:\\path\\to\\libraries</tt>
+	to the cmake command line to make sure it can find the library
+	dependencies. You can also use
+	<tt>-DBOOST_ROOT=c:\\path\\to\\boost\\library</tt> to specify
 	the path to the boost library.
 
-\code
-C:\VSS\make\libpdfdoc>cmake -G "Visual Studio 8 2005" -DBOOST_ROOT=c:\VSS\boost_
-1_38_0 -DCMAKE_PREFIX_PATH=c:\VSS\zlib123-dll -DCPPUNIT_PREFIX=c:\VSS\cppunit-1.
-12.0 ..\..\libpdfxx\libpdfdoc
-\endcode
+	cmake recommends separating the source code directory and the build
+	directory. Suppose the libpdfdoc source code is located at
+	<tt>c:\\code\\libpdfdoc</tt>, and you want to create the VS project files
+	at <tt>c:\\build\\libpdfdoc</tt>, you may want to run the following
+	commands:
+	
+\verbatim
+C:\build\libpdfdoc>cmake -G "Visual Studio 8 2005" \
+                         -DBOOST_ROOT=c:\path\to\boost\library \
+                         -DCMAKE_PREFIX_PATH=c:\path\to\other\libraries \
+                         -DCPPUNIT_PREFIX=c:\path\to\cppunit \
+                         c:\code\libpdfdoc
+\endverbatim
 
 	<a href="http://sourceforge.net">
 		<img src="http://sourceforge.net/sflogo.php?group_id=14057&amp;type=5"

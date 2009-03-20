@@ -79,12 +79,18 @@ Object::Object( const char *a )
 
 // explicit instanciation for known types
 template Object::Object( const Null& a ) ;
+template Object::Object( const int& a ) ;
+template Object::Object( const double& a ) ;
+template Object::Object( const bool& a ) ;
 template Object::Object( const std::string& a ) ;
 template Object::Object( const Name& a ) ;
 template Object::Object( const Stream& a ) ;
 template Object::Object( const Ref& a ) ;
 template Object::Object( const Array& a ) ;
 template Object::Object( const Dictionary& a ) ;
+template <> Object::operator long() const ;
+template <> Object::operator double() const ;
+template <> Object::operator float() const ;
 
 Object::Object( std::size_t st )
 	: m_obj( static_cast<int>( st ) )
@@ -93,23 +99,8 @@ Object::Object( std::size_t st )
 		throw std::out_of_range( "integer out of range" ) ;
 }
 
-Object::Object( int value )
-	: m_obj( value )
-{
-}
-
-Object::Object( double value )
-	: m_obj( value )
-{
-}
-
 Object::Object( float value )
 	: m_obj( static_cast<double>( value ) )
-{
-}
-
-Object::Object( bool value )
-	: m_obj( value )
 {
 }
 
@@ -117,6 +108,14 @@ Object::~Object( )
 {
 }
 
+/*!	\brief	swapping two Object
+	\internal
+	
+	This function will swap two Object's. Unfortunately this function cannot
+	guarantee that it does not throw.
+	\throw	std::bad_alloc	when insufficient memory for boost::variant,
+							std::string, std::map and std::vector
+*/
 void Object::Swap( Object& obj )
 {
 	m_obj.swap( obj.m_obj ) ;
@@ -129,6 +128,12 @@ Object& Object::operator=( const Object& obj )
 	return *this ;
 }
 
+/*!	\brief	get the type of the object
+	\internal
+	
+	It returns the enum representing the underlying type of the object.
+	\return	the type of the object
+*/
 Object::ObjType Object::Type( ) const
 {
 	return static_cast<ObjType>( m_obj.which( ) ) ;
@@ -173,6 +178,7 @@ bool Object::DecodeNumberOrIndirectObj( TokenSrc& is, const Token& token )
 			const std::string& str = t.Get() ;
 			assert( t == token ) ;
 			
+			// can't use ?: because the types are different
 			if ( str.find( '.' ) != str.npos )
 				m_obj = token.As<double>( ) ;
 			else
@@ -280,7 +286,7 @@ std::ostream& operator<<( std::ostream& os, const Object& obj )
 	return os ;
 }
 
-std::istream& operator>>( std::istream& is, Null& )
+std::istream& operator>>( std::istream& is, Object::Null& )
 {
 	Token t ;
 	if ( !(is >> t) || t.Get() != "null" )
@@ -289,7 +295,7 @@ std::istream& operator>>( std::istream& is, Null& )
 	return is ;
 }
 
-std::ostream& operator<<( std::ostream& os, const Null& )
+std::ostream& operator<<( std::ostream& os, const Object::Null& )
 {
 	return os << "null" ;
 }
@@ -348,3 +354,11 @@ template <> Object::operator double() const
 }
 
 } // end of namespace
+
+namespace std
+{
+	void swap( pdf::Object& obj1, pdf::Object& obj2 )
+	{
+		obj1.Swap( obj2 ) ;
+	}
+}

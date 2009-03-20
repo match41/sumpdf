@@ -22,13 +22,23 @@ PROJECT( libpdfdoc )
 
 cmake_minimum_required(VERSION 2.6)
 
+###############################################################################
+# required packages
+###############################################################################
 set( Boost_USE_MULTITHREAD ON )
-find_package( Boost REQUIRED)
+find_package( Boost REQUIRED )
+find_package( ZLIB REQUIRED )
+
+###############################################################################
+# optional packages
+###############################################################################
 find_package( Freetype )
-find_package( ZLIB )
 find_package( PNG )
 find_package( JPEG )
 
+###############################################################################
+# source subdirectories
+###############################################################################
 set( PAGE_DIR		src/page/ )
 set( FILE_DIR		src/file/ )
 set( CORE_DIR		src/core/ )
@@ -37,7 +47,9 @@ set( UTIL_DIR		src/util/ )
 set( FONT_DIR		src/font/ )
 set( FT_DIR			${FONT_DIR}/ftwrap )
 
+###############################################################################
 # headers
+###############################################################################
 set( PAGE_HDRS		${PAGE_DIR}/RealPage.hh
 					${PAGE_DIR}/Resources.hh
 					${PAGE_DIR}/PageNode.hh
@@ -100,7 +112,14 @@ set( FT_HDRS		${FT_DIR}/Face.hh
 					${FT_DIR}/Exception.hh
 					${FT_DIR}/ErrorTable.hh )
 
+set( INCLUDE_HDRS	include/Doc.hh
+					include/Font.hh
+					include/libpdfdoc.hh
+					include/Page.hh )
+
+###############################################################################
 # source in subdirs
+###############################################################################
 set( PAGE_SRCS  	${PAGE_DIR}/RealPage.cc
 					${PAGE_DIR}/Resources.cc
 					${PAGE_DIR}/Page.cc
@@ -156,17 +175,21 @@ set( FONT_SRCS		${FONT_DIR}/TrueTypeFile.cc
 if ( UNIX )
     set( UTIL_SRCS  ${UTIL_SRCS}
 					${UTIL_DIR}/SymbolInfo.cc )
+endif ( UNIX )
+
 ###############################################################################
 # win32 specific sources
 ###############################################################################
-elseif ( WIN32)
+if ( WIN32 )
     set( UTIL_SRCS  ${UTIL_SRCS}
 					${UTIL_DIR}/SymbolInfo32.cpp )
-endif (UNIX )
+endif ( WIN32 )
 
 ###############################################################################
-# win32 optional sources
+# optional sources
 ###############################################################################
+
+# freetype
 if ( FREETYPE_FOUND )
     set( FONT_SRCS  ${FONT_SRCS}
                     ${FONT_DIR}/SimpleFont.cc )
@@ -184,6 +207,7 @@ if ( FREETYPE_FOUND )
     add_definitions( -DHAVE_FREETYPE )
 endif ( FREETYPE_FOUND )
 
+# libpng
 if ( PNG_FOUND )
     set( IMG_SRCS   ${IMG_SRCS}
                     ${IMG_DIR}/PngImage.cc )
@@ -195,6 +219,7 @@ if ( PNG_FOUND )
                     ${PNG_INCLUDE_DIR} )
 endif ( PNG_FOUND )
 
+# libjpeg
 if ( JPEG_FOUND )
     set( IMG_SRCS   ${IMG_SRCS}
                     ${IMG_DIR}/JpegImage.cc )
@@ -229,56 +254,81 @@ add_library( pdfdoc_static STATIC ${SRCS} ${HDRS} )
 ###############################################################################
 # source groups
 ###############################################################################
-SOURCE_GROUP( "Source Files\\page" FILES ${PAGE_SRCS} )
-SOURCE_GROUP( "Source Files\\file" FILES ${FILE_SRCS} )
-SOURCE_GROUP( "Source Files\\core" FILES ${CORE_SRCS} )
-SOURCE_GROUP( "Source Files\\util" FILES ${UTIL_SRCS} )
-SOURCE_GROUP( "Source Files\\font" FILES ${FONT_SRCS} )
-SOURCE_GROUP( "Source Files\\image" FILES ${IMG_SRCS} )
-SOURCE_GROUP( "Header Files\\page" FILES ${PAGE_HDRS} )
-SOURCE_GROUP( "Header Files\\file" FILES ${FILE_HDRS} )
-SOURCE_GROUP( "Header Files\\core" FILES ${CORE_HDRS} )
-SOURCE_GROUP( "Header Files\\util" FILES ${UTIL_HDRS} )
-SOURCE_GROUP( "Header Files\\font" FILES ${FONT_HDRS} )
-SOURCE_GROUP( "Header Files\\image" FILES ${IMG_HDRS} )
-
-IF ( MSVC )
-	ADD_DEFINITIONS( -D_SCL_SECURE_NO_WARNINGS -DDLL_EXPORTS )
-ELSE ( MSVC )
-	ADD_DEFINITIONS( -DDLL_EXPORTS )
-ENDIF ( MSVC )
+SOURCE_GROUP( "Source Files\\page"	FILES ${PAGE_SRCS} )
+SOURCE_GROUP( "Source Files\\file"	FILES ${FILE_SRCS} )
+SOURCE_GROUP( "Source Files\\core"	FILES ${CORE_SRCS} )
+SOURCE_GROUP( "Source Files\\util"	FILES ${UTIL_SRCS} )
+SOURCE_GROUP( "Source Files\\font"	FILES ${FONT_SRCS} )
+SOURCE_GROUP( "Source Files\\image"	FILES ${IMG_SRCS} )
+SOURCE_GROUP( "Header Files\\page"	FILES ${PAGE_HDRS} )
+SOURCE_GROUP( "Header Files\\file"	FILES ${FILE_HDRS} )
+SOURCE_GROUP( "Header Files\\core"	FILES ${CORE_HDRS} )
+SOURCE_GROUP( "Header Files\\util"	FILES ${UTIL_HDRS} )
+SOURCE_GROUP( "Header Files\\font"	FILES ${FONT_HDRS} )
+SOURCE_GROUP( "Header Files\\image"	FILES ${IMG_HDRS} )
 
 ###############################################################################
 # unix specific libraries
 ###############################################################################
 if ( UNIX )
-    set( OPT_LIBS   ${OPT_LIBS}
-                    dl bfd )
+	find_library( DL_LIBRARY 	NAMES dl	PATH /usr/lib /usr/lib64 )
+	find_library( BFD_LIBRARY	NAMES bfd	PATH /usr/lib /usr/lib64 )
+    set( OPT_LIBS   ${OPT_LIBS}	${DL_LIBRARY} ${BFD_LIBRARY} )
+endif ( UNIX )
 
 ###############################################################################
 # win32 specific libraries
 ###############################################################################
-elseif ( WIN32 )
+if ( WIN32 )
     set( OPT_LIBS   ${OPT_LIBS}
                     Dbghelp )
 endif ( WIN32 )
 
-
 ###############################################################################
-# all compiler settings
+# all libraries
 ###############################################################################
-add_definitions( -DDLL_EXPORTS )
-
 target_link_libraries( pdfdoc_static
                        ${ZLIB_LIBRARIES}
                        ${OPT_LIBS} )
 
+###############################################################################
+# compiler settings
+###############################################################################
+add_definitions(-DDLL_EXPORTS)
+add_definitions(-DTEST_DATA_DIR="${libpdfdoc_SOURCE_DIR}/test/testdata/")
+add_definitions(-DSRC_DIR="${libpdfdoc_SOURCE_DIR}/src/")
+
+# MSVC has stupid warnings on STD
+if ( MSVC )
+	add_definitions( -D_SCL_SECURE_NO_WARNINGS )
+endif ( MSVC )
+
+###############################################################################
+# finding cppunit
+###############################################################################
+find_path( CPPUNIT_INCLUDE_DIR cppunit/TestFixture.h /usr/include
+                                                     /usr/local/include
+                                                     ${CPPUNIT_PREFIX}/include )
+find_library( CPPUNIT_LIBRARY NAMES cppunit PATH /usr/lib
+                                                 /usr/lib64
+                                                 /usr/local/lib
+                                                 /usr/local/lib64
+                                                 ${CPPUNIT_PREFIX}/lib )
+if ( CPPUNIT_INCLUDE_DIR AND CPPUNIT_LIBRARY )
+	message( STATUS "found cppunit in ${CPPUNIT_LIBRARY}" )
+	set( CPPUNIT_FOUND TRUE )
+	set( OPT_INCS	${OPT_INCS}
+	                ${CPPUNIT_INCLUDE_DIR} )
+endif ( CPPUNIT_INCLUDE_DIR AND CPPUNIT_LIBRARY )
+
+###############################################################################
+# include directories
+###############################################################################
 include_directories( ${libpdfdoc_SOURCE_DIR}/src
                      ${libpdfdoc_SOURCE_DIR}/include
                      ${libpdfdoc_SOURCE_DIR}/test
                      ${ZLIB_INCLUDE_DIR}
                      ${Boost_INCLUDE_DIRS}
-                     ${CPPUNIT_PREFIX}/include
                      ${OPT_INCS} )
 
 INSTALL( TARGETS pdfdoc_static
@@ -286,7 +336,7 @@ INSTALL( TARGETS pdfdoc_static
          LIBRARY DESTINATION lib
          ARCHIVE DESTINATION lib )
 
-INSTALL( FILES ${HDRS} DESTINATION include )
+INSTALL( FILES ${INCLUDE_HDRS} DESTINATION include )
 
 ###############################################################################
 # test driver
@@ -297,6 +347,8 @@ target_link_libraries( testpdf pdfdoc_static )
 ###############################################################################
 # unit test sources
 ###############################################################################
+if ( CPPUNIT_FOUND )
+
 set( UT_SRCS	test/core/TokenTest.cc
 				test/core/NameTest.cc
 				test/core/RefTest.cc
@@ -338,11 +390,9 @@ if ( FREETYPE_FOUND )
     				test/font/SimpleFontTest.cc )
 endif ( FREETYPE_FOUND )
 
-if ( CPPUNIT_PREFIX )
-    link_directories( ${CPPUNIT_PREFIX}/lib )
-endif ( CPPUNIT_PREFIX )
-
-add_definitions(-DTEST_DATA_DIR="${libpdfdoc_SOURCE_DIR}/test/testdata/")
-add_definitions(-DSRC_DIR="\\"${libpdfdoc_SOURCE_DIR}/src/\\"")
 add_executable( unittest ${UT_SRCS} test/UnitTest.cc )
-target_link_libraries( unittest pdfdoc_static cppunit )
+target_link_libraries( unittest pdfdoc_static ${CPPUNIT_LIBRARY} )
+
+else ( CPPUNIT_FOUND )
+	message( STATUS "skip building unittest" )
+endif ( CPPUNIT_FOUND )
