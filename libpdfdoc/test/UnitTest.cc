@@ -28,6 +28,7 @@
 #include <cppunit/ui/text/TestRunner.h>
 
 #include "core/TokenTest.hh"
+#include "core/TokenSrcTest.hh"
 #include "core/NameTest.hh"
 #include "core/RefTest.hh"
 #include "core/ObjectTest.hh"
@@ -59,6 +60,7 @@ int main( int argc, char **argv )
 {
 	CppUnit::TextUi::TestRunner runner;
 	runner.addTest( TokenTest::suite( ) ) ;
+	runner.addTest( TokenSrcTest::suite( ) ) ;
 	runner.addTest( NameTest::suite( ) ) ;
 	runner.addTest( RefTest::suite( ) ) ;
 	runner.addTest( ObjectTest::suite( ) ) ;

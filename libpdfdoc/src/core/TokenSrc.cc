@@ -57,6 +57,8 @@ TokenSrc& TokenSrc::ReadToken( Token& token )
 			std::string t = token.Get( ) ;
 			t.erase( 0, m_pos ) ;
 			m_pos = 0 ;
+			
+			token.Swap( t ) ;
 		}
 	}
 

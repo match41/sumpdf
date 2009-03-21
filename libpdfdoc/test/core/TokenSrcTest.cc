@@ -1,5 +1,5 @@
-/***************************************************************************
- *   Copyright (C) 2006 by Nestal Wan                                      *
+/***************************************************************************\
+ *   Copyright (C) 2009 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -16,38 +16,52 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+\***************************************************************************/
 
 /*!
-	\file	TokenTest.hh
-	\brief	definition the TokenTest class
-	\date	Sun Mar 9 2008
+	\file	TokenSrcTest.cc
+	\brief	implementation the TokenSrcTest class
+	\date	Sun Mar 22 2009
 	\author	Nestal Wan
 */
 
-#ifndef __PDFUT_TOKEN_TEST_HEADER_INCLUDED__
-#define __PDFUT_TOKEN_TEST_HEADER_INCLUDED__
+#include "TokenSrcTest.hh"
 
-#include <cppunit/TestFixture.h>
+#include "core/TokenSrc.hh"
 
-#include <cppunit/extensions/HelperMacros.h>
+#include <sstream>
+#include <iostream>
 
-class TokenTest : public CppUnit::TestFixture
+TokenSrcTest::TokenSrcTest( )
 {
-public :
-	TokenTest( ) ;
+}
 
-	// declare suit function
-	CPPUNIT_TEST_SUITE( TokenTest );
-		CPPUNIT_TEST( TestAllNumbers );
-		CPPUNIT_TEST( TestAllDelimitor );
-		CPPUNIT_TEST( TestMixChar );
-	CPPUNIT_TEST_SUITE_END();
+void TokenSrcTest::TestGetChar( )
+{
+	std::istringstream ss ;
+	pdf::TokenSrc subject( ss ) ;
+	subject.PutBack( pdf::Token("world") ) ;
+	subject.PutBack( pdf::Token("hello") ) ;
+	
+	char ch ;
+	CPPUNIT_ASSERT( subject.GetChar( ch ) ) ;
+	CPPUNIT_ASSERT( ch == 'h' ) ;
 
-private :
-	void TestAllNumbers( ) ;
-	void TestAllDelimitor( ) ;
-	void TestMixChar( ) ;
-} ;
+	pdf::Token t ;
+	CPPUNIT_ASSERT( subject >> t ) ;
+	CPPUNIT_ASSERT( t.Get() == "ello" ) ;
+	
+	subject.PutBack( t ) ;
+	char ello[4] ;
+	CPPUNIT_ASSERT( subject.GetChar( ello[0] ) ) ;
+	CPPUNIT_ASSERT( subject.GetChar( ello[1] ) ) ;
+	CPPUNIT_ASSERT( subject.GetChar( ello[2] ) ) ;
+	CPPUNIT_ASSERT( subject.GetChar( ello[3] ) ) ;
+	CPPUNIT_ASSERT( ello == std::string("ello") ) ;
 
-#endif
+	pdf::Token t2 ;
+	CPPUNIT_ASSERT( subject >> t2 ) ;
+	CPPUNIT_ASSERT( t2.Get() == "world" ) ;
+	
+	CPPUNIT_ASSERT( !subject.HasCache() ) ;
+}

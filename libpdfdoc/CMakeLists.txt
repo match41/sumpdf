@@ -365,6 +365,7 @@ target_link_libraries( testpdf pdfdoc_static )
 if ( CPPUNIT_FOUND )
 
 set( UT_SRCS	test/core/TokenTest.cc
+				test/core/TokenSrcTest.cc
 				test/core/NameTest.cc
 				test/core/RefTest.cc
 				test/core/ObjectTest.cc

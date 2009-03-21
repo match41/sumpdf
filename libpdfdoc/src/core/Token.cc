@@ -117,6 +117,11 @@ void Token::Swap( Token& token )
 	m_token.swap( token.m_token ) ;
 }
 
+void Token::Swap( std::string& token )
+{
+	m_token.swap( token ) ;
+}
+
 template <>
 int Token::As<int>( ) const
 {
