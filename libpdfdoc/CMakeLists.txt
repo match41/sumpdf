@@ -301,6 +301,7 @@ add_definitions(-DSRC_DIR="${libpdfdoc_SOURCE_DIR}/src/")
 # MSVC has stupid warnings on STD
 if ( MSVC )
 	add_definitions( -D_SCL_SECURE_NO_WARNINGS )
+	add_definitions( /wd4345 )
 endif ( MSVC )
 
 ###############################################################################

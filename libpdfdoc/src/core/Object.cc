@@ -88,9 +88,6 @@ template Object::Object( const Stream& a ) ;
 template Object::Object( const Ref& a ) ;
 template Object::Object( const Array& a ) ;
 template Object::Object( const Dictionary& a ) ;
-template <> Object::operator long() const ;
-template <> Object::operator double() const ;
-template <> Object::operator float() const ;
 
 Object::Object( std::size_t st )
 	: m_obj( static_cast<int>( st ) )

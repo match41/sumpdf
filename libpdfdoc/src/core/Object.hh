@@ -266,6 +266,10 @@ private :
 	Variant	m_obj ;
 } ;
 
+template <> Object::operator long() const ;
+template <> Object::operator float() const ;
+template <> Object::operator double() const ;
+
 } // end of namespace
 
 namespace std
