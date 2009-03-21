@@ -40,6 +40,7 @@
 #include <iostream>
 #include <iomanip>
 #include <iterator>
+#include <cassert>
 
 namespace pdf {
 
@@ -71,10 +72,10 @@ TokenSrc& operator>>( TokenSrc& src, String& obj )
 	if ( src >> t )
 	{
 		if ( t.Get() == "(" )
-			obj.DecodeLiteralString( src.Stream() ) ;
+			obj.DecodeLiteralString( src ) ;
 		
 		else if ( t.Get() == "<" )
-			obj.DecodeHexString( src.Stream() ) ;
+			obj.DecodeHexString( src ) ;
 	
 		else
 			src.SetState( std::ios::failbit ) ;
@@ -82,12 +83,12 @@ TokenSrc& operator>>( TokenSrc& src, String& obj )
 	return src ;
 }
 
-void String::DecodeLiteralString( std::istream& is )
+void String::DecodeLiteralString( TokenSrc& is )
 {
 	int bracket_balance = 0 ;
 
 	char ch ;
-	while ( is.get( ch ) )
+	while ( is.GetChar( ch ) )
 	{
 		// escape character
 		switch ( ch )
@@ -109,9 +110,9 @@ void String::DecodeLiteralString( std::istream& is )
 	} 
 }
 
-bool String::HandleEscapeCharacter( std::istream& is, char& ch )
+bool String::HandleEscapeCharacter( TokenSrc& is, char& ch )
 {
-	if ( is.get( ch ) )
+	if ( is.GetChar( ch ) )
 	{
 		switch ( ch )
 		{
@@ -132,16 +133,16 @@ bool String::HandleEscapeCharacter( std::istream& is, char& ch )
 	return true ;
 }
 
-std::istream& String::ReadXDigit( std::istream& is, char& digit )
+TokenSrc& String::ReadXDigit( TokenSrc& is, char& digit )
 {
 	// skip space characters
-	while ( is.get( digit ) && std::isspace( digit ) )
+	while ( is.GetChar( digit ) && std::isspace( digit ) )
 	{
 	}
 	return is ;
 }
 
-void String::DecodeHexString( std::istream& is )
+void String::DecodeHexString( TokenSrc& is )
 {
 	char ch ;
 	while ( ReadXDigit( is, ch ) )
@@ -157,7 +158,7 @@ void String::DecodeHexString( std::istream& is )
 			m_value.push_back( static_cast<char>(std::strtol( result, 0, 16 )));
 		}
 		else
-			is.setstate( is.failbit ) ;
+			is.SetState( std::ios::failbit ) ;
 	}
 }
 

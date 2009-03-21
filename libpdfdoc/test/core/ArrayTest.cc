@@ -64,7 +64,7 @@ void ArrayTest::TestDifferent( )
 
 void ArrayTest::TestRead( )
 {
-	std::istringstream ss( "[10 /Hello 123.0 ()]");
+	std::istringstream ss( "[10 /Hello 123.0 (am a string)]");
 	pdf::Array sub ;
 	CPPUNIT_ASSERT( ss >> sub ) ;
 	CPPUNIT_ASSERT( sub[0] == 10 ) ;

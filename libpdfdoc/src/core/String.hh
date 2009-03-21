@@ -50,7 +50,6 @@ public :
 	
 	friend std::istream& operator>>( std::istream& is, String& b ) ;
 	friend std::ostream& operator<<( std::ostream& os, const String& b ) ;
-// 	std::istream& Decode( std::istream& is, const Token& first ) ;
 	friend TokenSrc& operator>>( TokenSrc& src, String& obj ) ;
 	
 	const std::string& Get( ) const ;
@@ -62,13 +61,13 @@ public :
 	bool IsHex( ) const ;
 
 private :
-	static std::istream& ReadXDigit( std::istream& is, char& digit ) ;
+	static TokenSrc& ReadXDigit( TokenSrc& is, char& digit ) ;
 
 private :
-	void DecodeLiteralString( std::istream& is ) ;
-	void DecodeHexString( std::istream& is ) ;
+	void DecodeLiteralString( TokenSrc& is ) ;
+	void DecodeHexString( TokenSrc& is ) ;
 
-	bool HandleEscapeCharacter( std::istream& is, char& ch ) ;
+	bool HandleEscapeCharacter( TokenSrc& is, char& ch ) ;
 } ;
 
 } // end of namespace

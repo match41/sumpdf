@@ -55,9 +55,13 @@ public :
 	
 	bool HasCache( ) const ;
 	
+	TokenSrc& GetChar( char& ch ) ;
+	
 private :
 	std::istream&		m_file ;
 	std::vector<Token>	m_cache ;
+
+	std::size_t			m_pos ;
 } ;
 
 TokenSrc& operator>>( TokenSrc& src, Token& token ) ;

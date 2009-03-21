@@ -60,7 +60,6 @@ std::istream& operator>>( std::istream& is, Array& array )
 	return (s >> array).Stream() ;
 }
 
-// std::istream& Array::Decode( std::istream& is, const Token& first )
 TokenSrc& operator>>( TokenSrc& src, Array& array )
 {
 	Token t ;

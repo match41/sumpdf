@@ -46,10 +46,9 @@ FilterIOStream::~FilterIOStream( )
 int FilterIOStream::underflow( )
 {
 	assert( m_str != 0 ) ;
-//	std::strcpy( m_buf, "hello world" ) ;
 	std::size_t count = m_str->Read( (unsigned char*)m_buf, sizeof( m_buf ) ) ;
 	if ( count == 0 )
-		return /*traits::eof()*/ -1 ;
+		return traits_type::eof( ) ;
 	
 	setg( m_buf, m_buf, m_buf + count ) ;
 	return m_buf[0] ;

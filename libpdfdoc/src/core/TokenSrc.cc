@@ -29,13 +29,17 @@
 
 #include "util/SymbolInfo.hh"
 
+#include <boost/bind.hpp>
+
 #include <istream>
 #include <iostream>
+#include <cassert>
 
 namespace pdf {
 
 TokenSrc::TokenSrc( std::istream& file )
-	: m_file( file )
+	: m_file( file ),
+	  m_pos( 0 )
 {
 }
 
@@ -47,6 +51,13 @@ TokenSrc& TokenSrc::ReadToken( Token& token )
 	{
 		token.Swap( m_cache.back() ) ;
 		m_cache.pop_back( ) ;
+		
+		if ( m_pos > 0 )
+		{
+			std::string t = token.Get( ) ;
+			t.erase( 0, m_pos ) ;
+			m_pos = 0 ;
+		}
 	}
 
 	return *this ;
@@ -85,6 +96,25 @@ void TokenSrc::ResetState( )
 bool TokenSrc::HasCache( ) const
 {
 	return !m_cache.empty( ) ;
+}
+
+TokenSrc& TokenSrc::GetChar( char& ch )
+{
+	if ( m_cache.empty() )
+		m_file.get( ch ) ;
+	else
+	{
+		const std::string& s = m_cache.back().Get() ;
+		assert( m_pos < s.size( ) ) ;
+		ch = s[m_pos] ;
+		if ( ++m_pos == s.size( ) )
+		{
+			m_cache.pop_back( ) ;	// remember, s is now invalid
+			m_pos = 0 ;
+		}
+	}
+	
+	return *this ;
 }
 
 } // end of namespace
