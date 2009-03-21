@@ -309,13 +309,27 @@ endif ( MSVC )
 find_path( CPPUNIT_INCLUDE_DIR cppunit/TestFixture.h /usr/include
                                                      /usr/local/include
                                                      ${CPPUNIT_PREFIX}/include )
-find_library( CPPUNIT_LIBRARY NAMES cppunit PATH /usr/lib
-                                                 /usr/lib64
-                                                 /usr/local/lib
-                                                 /usr/local/lib64
-                                                 ${CPPUNIT_PREFIX}/lib )
+find_library( CPPUNIT_LIBRARY_DEBUG NAMES cppunit cppunit_dll
+              PATHS /usr/lib
+                    /usr/lib64
+                    /usr/local/lib
+                    /usr/local/lib64
+                    ${CPPUNIT_PREFIX}/lib
+              PATH_SUFFIXES debug )
+
+find_library( CPPUNIT_LIBRARY_RELEASE NAMES cppunit cppunit_dll
+              PATHS /usr/lib
+                    /usr/lib64
+                    /usr/local/lib
+                    /usr/local/lib64
+                    ${CPPUNIT_PREFIX}/lib
+              PATH_SUFFIXES release )
+
+set( CPPUNIT_LIBRARY debug     ${CPPUNIT_LIBRARY_DEBUG}
+                     optimized ${CPPUNIT_LIBRARY_RELEASE} )
+
 if ( CPPUNIT_INCLUDE_DIR AND CPPUNIT_LIBRARY )
-	message( STATUS "found cppunit in ${CPPUNIT_LIBRARY}" )
+	message( STATUS "found cppunit" )
 	set( CPPUNIT_FOUND TRUE )
 	set( OPT_INCS	${OPT_INCS}
 	                ${CPPUNIT_INCLUDE_DIR} )
