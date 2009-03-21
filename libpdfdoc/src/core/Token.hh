@@ -34,6 +34,7 @@
 namespace pdf {
 
 /*!	\brief	tokens in a PDF file
+	\internal
 	
 	A token is a basic unit of the PDF file. The PDF parser will divide the
 	bytes in a PDF file into tokens. Each token is a non-divisable unit of

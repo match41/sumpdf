@@ -1,4 +1,4 @@
-/***************************************************************************
+/***************************************************************************\
  *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+\***************************************************************************/
 
 /*!
 	\file	Name.hh
@@ -36,9 +36,12 @@ class Object ;
 class Token ;
 class TokenSrc ;
 
-/*!	\brief	brief description
+/*!	\brief	PDF name object
+	\internal
 	
-	this class represents
+	This class represents a PDF name object. A PDF name object is a string
+	starts with the '/' character. It is used as identifiers in the PDF files,
+	e.g. the keys to PDF dictionaries.
 */
 class Name
 {

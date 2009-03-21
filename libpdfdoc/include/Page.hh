@@ -46,6 +46,13 @@ class Page
 public :
 	virtual ~Page( ) ;
 
+	/*!	\brief	get the media box of the page
+	
+		According to the PDF specification, the media box is a rectangle
+		expressed in default user space units, defining the boundaries of
+		the physical medium on which the page is intended to be displayed or
+		printed.
+	*/
 	virtual Rect MediaBox( ) const = 0 ;
 	virtual void DrawText( double x, double y, Font *font,
 	                       const std::string& text ) = 0 ;

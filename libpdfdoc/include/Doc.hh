@@ -54,24 +54,33 @@ public :
         reference table to know the structure of the PDF document. Page
         contents will be read on-demand.
         
-        \note	The file will be opened throughout the life time of the
-        		document object. It will be read for document data when
-        		it is needed. The file will only be closed when the document
-        		object is destroyed.
+        The file will be opened throughout the life time of the
+        document object. It will be read for document data when
+        it is needed. The file will only be closed when the document
+        object is destroyed.
         
-        \note	The file must be a regular file that supports seeking.
-        		libpdfdoc does not support reading PDF files from a pipe
-        		or socket.
+        The file must be a regular file that supports seeking. Since libpdfdoc
+        will read and seek the file when page contents are read on-demand, it
+		does not support reading PDF files from a pipe or socket.
         
         \param  filename    The name of file to be read from. It must be
         					readable, but not nesscarrily writable.
-		\throw	ParseError	is thrown when their is parser error in the PDF
+		\throw	ParseError	is thrown when there is parser error in the PDF
 							file.
     	\sa		Write()
     */
 	virtual void Read( const std::string& filename ) = 0 ;
 	
 	/*!	\brief	Write the PDF document to a file
+	
+		This function writes the PDF document to a file. The file should not be
+		the one that is specified in Read(). During Write(), all page content
+		of the PDF document will be read and saved in \a filename .
+		
+		\param	filename	The name of the file to be written to. If it does
+							not exist, it will be created. It must be writable.
+		\throw	ParseError	is thrown when there is parser error when reading
+							the page contents from the file.
 	*/
 	virtual void Write( const std::string& filename ) const = 0 ;
 
