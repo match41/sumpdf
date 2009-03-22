@@ -40,10 +40,12 @@ public :
 	// declare suit function
 	CPPUNIT_TEST_SUITE( TokenSrcTest ) ;
 		CPPUNIT_TEST( TestGetChar ) ;
+		CPPUNIT_TEST( TestReadToken ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
 private :
 	void TestGetChar( ) ;
+	void TestReadToken( ) ;
 } ;
 
 #endif

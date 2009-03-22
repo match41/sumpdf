@@ -36,6 +36,27 @@ TokenSrcTest::TokenSrcTest( )
 {
 }
 
+void TokenSrcTest::TestReadToken( )
+{
+	std::istringstream ss( "Hello world" ) ;
+	pdf::TokenSrc subject( ss ) ;
+	
+	pdf::Token t ;
+	CPPUNIT_ASSERT( subject.ReadToken( t ) ) ;
+	CPPUNIT_ASSERT( t.Get() == "Hello" ) ;
+	CPPUNIT_ASSERT( !subject.HasCache( ) ) ;
+	
+	subject.PutBack( t ) ;
+	CPPUNIT_ASSERT( subject.HasCache( ) ) ;
+	CPPUNIT_ASSERT( subject.ReadToken( t ) ) ;
+	CPPUNIT_ASSERT( t.Get() == "Hello" ) ;
+	CPPUNIT_ASSERT( !subject.HasCache( ) ) ;
+
+	CPPUNIT_ASSERT( subject.ReadToken( t ) ) ;
+	CPPUNIT_ASSERT( t.Get() == "world" ) ;
+	CPPUNIT_ASSERT( !subject.HasCache( ) ) ;
+}
+
 void TokenSrcTest::TestGetChar( )
 {
 	std::istringstream ss ;
