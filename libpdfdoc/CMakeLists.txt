@@ -86,6 +86,7 @@ set( CORE_HDRS  	${CORE_DIR}/Object.hh
 					${CORE_DIR}/filter/StreamFilter.hh
 					${CORE_DIR}/filter/RawFilter.hh
 					${CORE_DIR}/filter/DeflateFilter.hh
+					${CORE_DIR}/filter/DeflateStreamBuf.hh
 					${CORE_DIR}/filter/FilterIOStream.hh )
 
 set( UTIL_HDRS  	${UTIL_DIR}/Rect.hh
@@ -156,6 +157,7 @@ set( CORE_SRCS  	${CORE_DIR}/Object.cc
 					${CORE_DIR}/filter/StreamFilter.cc
 					${CORE_DIR}/filter/RawFilter.cc
 					${CORE_DIR}/filter/DeflateFilter.cc
+					${CORE_DIR}/filter/DeflateStreamBuf.cc
 					${CORE_DIR}/filter/FilterIOStream.cc )
 
 set( UTIL_SRCS  	${UTIL_DIR}/Rect.cc

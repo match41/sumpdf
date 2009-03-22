@@ -74,6 +74,8 @@ private :
 
 private :
 	struct Impl ;
+	
+	/// use shared_ptr for copy-on-write reference counting
 	boost::shared_ptr<Impl>	m_impl ;
 } ;
 
