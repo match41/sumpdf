@@ -53,9 +53,6 @@ public :
 	void Reset( ) ;
 
 private :
-	void ReadFromSrc( ) ;
-
-private :
 	z_stream		m_zstr ;
 	StreamFilter	*m_src ;
 	

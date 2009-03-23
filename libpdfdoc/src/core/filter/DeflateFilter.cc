@@ -58,7 +58,9 @@ std::size_t DeflateFilter::Read( unsigned char *data, std::size_t size )
 	{
 	    if ( m_zstr.avail_in == 0 )
 	    {
-		    ReadFromSrc( ) ;
+			m_buf.resize( m_buf_size ) ;
+			m_buf.resize( m_src->Read( &m_buf[0], m_buf_size ) ) ;
+		    
 		    // no more input to be read. return number of byte read so far
 		    if ( m_buf.empty( ) )
 			    break ;
@@ -77,9 +79,6 @@ std::size_t DeflateFilter::Read( unsigned char *data, std::size_t size )
 			// update offset
 			offset = size - m_zstr.avail_out ;
 		
-			// the input is consumed, so erase them
-// 			m_buf.erase( m_buf.begin( ), m_buf.end( ) - m_zstr.avail_in ) ;
-			
 			if ( m_zstr.avail_out == 0 )
 				break ;
 		}
@@ -91,16 +90,6 @@ std::size_t DeflateFilter::Read( unsigned char *data, std::size_t size )
 std::size_t DeflateFilter::Write( const unsigned char *data, std::size_t size )
 {
 	return 0 ;
-}
-
-void DeflateFilter::ReadFromSrc( )
-{
-	std::size_t original = 0 ;//m_buf.size( ) ;
-	if ( m_buf.size( ) <= m_buf_size )
-		m_buf.resize( m_buf_size ) ;
-
-	std::size_t count = m_src->Read( &m_buf[original], m_buf_size - original ) ;
-	m_buf.resize( original + count ) ;
 }
 
 void DeflateFilter::Reset( )
