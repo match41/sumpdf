@@ -56,15 +56,17 @@ std::size_t DeflateFilter::Read( unsigned char *data, std::size_t size )
 	
 	do
 	{
-		ReadFromSrc( ) ;
+	    if ( m_zstr.avail_in == 0 )
+	    {
+		    ReadFromSrc( ) ;
+		    // no more input to be read. return number of byte read so far
+		    if ( m_buf.empty( ) )
+			    break ;
+		    
+		    m_zstr.next_in	= &m_buf[0] ;
+		    m_zstr.avail_in	= m_buf.size( ) ;
+		}
 		
-		// no more input to be read. return number of byte read so far
-		if ( m_buf.empty( ) )
-			break ;
-		
-		m_zstr.next_in	= &m_buf[0] ;
-		m_zstr.avail_in	= m_buf.size( ) ;
-
 		m_zstr.next_out		= data + offset ;
 		m_zstr.avail_out	= size - offset ;
 		result = ::inflate( &m_zstr, Z_SYNC_FLUSH ) ;
@@ -76,7 +78,7 @@ std::size_t DeflateFilter::Read( unsigned char *data, std::size_t size )
 			offset = size - m_zstr.avail_out ;
 		
 			// the input is consumed, so erase them
-			m_buf.erase( m_buf.begin( ), m_buf.end( ) - m_zstr.avail_in ) ;
+//			m_buf.erase( m_buf.begin( ), m_buf.end( ) - m_zstr.avail_in ) ;
 			
 			if ( m_zstr.avail_out == 0 )
 				break ;
