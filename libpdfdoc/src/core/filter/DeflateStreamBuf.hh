@@ -51,7 +51,7 @@ private :
 
 private :
 	static const std::streamsize	m_buf_size	= 16 ;
-	static const std::streamsize m_pb_size	= 4 ;
+	static const std::streamsize    m_pb_size	= 4 ;
 
 	std::streambuf	*m_str ;
 	char_type		m_buf[m_buf_size], m_comp[80] ;
