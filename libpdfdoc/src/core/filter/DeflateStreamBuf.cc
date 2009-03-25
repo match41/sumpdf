@@ -28,6 +28,7 @@
 #include "DeflateStreamBuf.hh"
 
 #include <cassert>
+#include <cstring>
 
 namespace pdf {
 
@@ -51,29 +52,10 @@ DeflateStreamBuf::int_type DeflateStreamBuf::underflow( )
 
 DeflateStreamBuf::int_type DeflateStreamBuf::BufferIn( )
 {
-	std::streamsize n = std::min( gptr() - eback(), m_pb_size ) ;
+	std::streamsize num_pb = std::min( gptr() - eback(), m_pb_size ) ;
+	std::memcpy( m_buf + (m_pb_size - num_pb), gptr() - num_pb, num_pb ) ;
+	
 	return traits_type::eof( ) ;
-	
-/*	// consumed all compressed data, read more
-	if ( m_zstr.avail_in == 0 )
-	{
-		std::size_t count = m_str->sgetn( &m_comp[0], sizeof( m_comp ) ) ;
-		if ( count > 0 )
-		{
-			m_zstr.next_in	= m_comp ;
-			m_zstr.avail_in	= count ;
-		}
-		else*/
-			return traits_type::eof( ) ;
-//	}
-	
-/*	m_zstr.next_out		= m_buf ;
-	m_zstr.avail_out	= sizeof( m_buf ) ;
-	int result = ::inflate( &m_zstr, Z_SYNC_FLUSH ) ;
-	if ( result == Z_OK || result == Z_STREAM_END )
-	{
-		setbuf( 
-	}*/
 }
 
 } // end of namespace

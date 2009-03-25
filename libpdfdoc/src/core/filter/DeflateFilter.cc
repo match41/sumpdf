@@ -43,10 +43,8 @@ DeflateFilter::DeflateFilter( StreamFilter *src )
 
 	if ( ::inflateInit( &m_zstr ) != Z_OK )
 		throw ParseError( "inflate init fail" ) ;
-}
 
-DeflateFilter::~DeflateFilter( )
-{
+    m_buf.reserve( m_buf_size ) ;
 }
 
 std::size_t DeflateFilter::Read( unsigned char *data, std::size_t size )

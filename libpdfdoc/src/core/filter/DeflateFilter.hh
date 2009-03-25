@@ -45,7 +45,6 @@ class DeflateFilter : public StreamFilter
 {
 public :
 	DeflateFilter( StreamFilter *src ) ;
-	~DeflateFilter( ) ;
 
 	std::size_t Read( unsigned char *data, std::size_t size ) ;
 	std::size_t Write( const unsigned char *data, std::size_t size ) ;
