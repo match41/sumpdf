@@ -40,6 +40,10 @@ Token::Token( const std::string& t )
 {
 }
 
+/*!	\brief	reading a token from input stream
+
+	This function does the actual parsing. It will extract 
+*/
 std::istream& operator>>( std::istream& is, Token& token )
 {
 	std::string text ;
@@ -48,21 +52,22 @@ std::istream& operator>>( std::istream& is, Token& token )
 	while ( std::isspace( is.peek() ) && is )
 		is.get() ;
 	
-	char ch ;
-	while ( is.get( ch ) )
+	int ich ;
+	while ( (ich = is.peek()) != std::char_traits<char>::eof() )
 	{
+		char ch = std::char_traits<char>::to_char_type( ich ) ;
+		
 		if ( !Token::IsCharInToken( ch, text ) )
-		{
-			is.putback( ch ) ;
 			break ;
-		}
 		
 		text.push_back( ch ) ;
+		is.ignore( ) ;
 	}
 	
 	// only commit when parsing is successful
 	if ( !text.empty() )
 	{
+		// really need clear?
 		is.clear( ) ;
 		text.swap( token.m_token ) ;
 	}

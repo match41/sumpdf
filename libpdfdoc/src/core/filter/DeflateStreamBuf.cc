@@ -51,6 +51,9 @@ DeflateStreamBuf::int_type DeflateStreamBuf::underflow( )
 
 DeflateStreamBuf::int_type DeflateStreamBuf::BufferIn( )
 {
+	std::streamsize n = std::min( gptr() - eback(), m_pb_size ) ;
+	return traits_type::eof( ) ;
+	
 /*	// consumed all compressed data, read more
 	if ( m_zstr.avail_in == 0 )
 	{
