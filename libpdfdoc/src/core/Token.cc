@@ -66,11 +66,10 @@ std::istream& operator>>( std::istream& is, Token& token )
 	
 	// only commit when parsing is successful
 	if ( !text.empty() )
-	{
-		// really need clear?
-		is.clear( ) ;
 		text.swap( token.m_token ) ;
-	}
+
+	// set stream state to failed if extracted token is empty
+	// to prevend infinite loop
 	else
 		is.setstate( is.failbit ) ;
 	
@@ -137,6 +136,12 @@ template <>
 double Token::As<double>( ) const
 {
 	return std::atof( m_token.c_str( ) ) ;
+}
+
+template <>
+std::string Token::As<std::string>( ) const
+{
+	return m_token ;
 }
 
 bool Token::IsInt( ) const
