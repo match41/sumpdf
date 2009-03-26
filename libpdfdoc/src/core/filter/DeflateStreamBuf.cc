@@ -28,6 +28,7 @@
 #include "DeflateStreamBuf.hh"
 
 #include <cassert>
+#include <cstring>
 
 namespace pdf {
 
@@ -51,6 +52,10 @@ DeflateStreamBuf::int_type DeflateStreamBuf::underflow( )
 
 DeflateStreamBuf::int_type DeflateStreamBuf::BufferIn( )
 {
+	std::streamsize num_pb = std::min( gptr() - eback(), m_pb_size ) ;
+	std::memcpy( m_buf + (m_pb_size - num_pb), gptr() - num_pb, num_pb ) ;
+	
+	return traits_type::eof( ) ;
 }
 
 } // end of namespace

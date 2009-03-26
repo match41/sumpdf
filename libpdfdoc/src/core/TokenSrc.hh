@@ -65,6 +65,8 @@ private :
 } ;
 
 TokenSrc& operator>>( TokenSrc& src, Token& token ) ;
+// TokenSrc& operator>>( TokenSrc& src, int& val ) ;
+// TokenSrc& operator>>( TokenSrc& src, double& val ) ;
 
 } // end of namespace
 

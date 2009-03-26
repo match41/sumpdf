@@ -79,7 +79,23 @@ TokenSrc& operator>>( TokenSrc& src, Token& token )
 {
 	return src.ReadToken( token ) ;
 }
+/*
+TokenSrc& operator>>( TokenSrc& src, int& val )
+{
+	Token temp ;
+	if ( src >> temp )
+		val = temp.As<int>( ) ;
+	return src ;
+}
 
+TokenSrc& operator>>( TokenSrc& src, double& val )
+{
+	Token temp ;
+	if ( src >> temp )
+		val = temp.As<double>( ) ;
+	return src ;
+}
+*/
 std::istream& TokenSrc::Stream( )
 {
 	return m_file ;
