@@ -32,9 +32,9 @@
 
 namespace img {
 
-/*!	\brief	brief description
+/*!	\brief	image interface
 	
-	this class represents
+	This is the image interface. It provides an abstraction on images.
 */
 class Image
 {
