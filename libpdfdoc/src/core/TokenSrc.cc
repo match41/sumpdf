@@ -34,6 +34,7 @@
 #include <istream>
 #include <iostream>
 #include <cassert>
+#include <algorithm>
 
 namespace pdf {
 
@@ -79,23 +80,7 @@ TokenSrc& operator>>( TokenSrc& src, Token& token )
 {
 	return src.ReadToken( token ) ;
 }
-/*
-TokenSrc& operator>>( TokenSrc& src, int& val )
-{
-	Token temp ;
-	if ( src >> temp )
-		val = temp.As<int>( ) ;
-	return src ;
-}
 
-TokenSrc& operator>>( TokenSrc& src, double& val )
-{
-	Token temp ;
-	if ( src >> temp )
-		val = temp.As<double>( ) ;
-	return src ;
-}
-*/
 std::istream& TokenSrc::Stream( )
 {
 	return m_file ;
@@ -109,6 +94,7 @@ void TokenSrc::SetState( std::ios::iostate state )
 void TokenSrc::ResetState( )
 {
 	m_file.clear( ) ;
+	assert( m_file ) ;
 }
 
 bool TokenSrc::HasCache( ) const
@@ -133,6 +119,51 @@ TokenSrc& TokenSrc::GetChar( char& ch )
 	}
 	
 	return *this ;
+}
+
+/*!	\brief	ensure the cache has a number of tokens
+
+	This function will ensure the cache has \a count number of tokens. If the
+	cache already has so, it will do nothing. Otherwise, it will read from
+	the stream for tokens and store them to the cache.
+	\param	count	the number of tokens
+	\return	true if the required number of token is cached. otherwise false.
+*/
+bool TokenSrc::Cache( std::size_t count )
+{
+	while ( m_cache.size() < count )
+	{
+		pdf::Token t ;
+		if ( m_file >> t )
+			m_cache.push_front( t ) ;
+		else
+			break ;
+	}
+	
+	return m_file && m_cache.size( ) >= count ;
+}
+
+/*!	\brief	extract and discard tokens
+
+	This function will extract and discard \a count tokens. It will start with
+	cached tokens of course. Then continue to extract tokens from streams to
+	meet the requirement.
+	\param	count	number of token to extract and discard
+*/
+void TokenSrc::Ignore( std::size_t count )
+{
+	while ( !m_cache.empty( ) && count > 0 )
+	{
+		m_cache.pop_back( ) ;
+		count-- ;
+	}
+
+	Token t ;
+	while ( count > 0 && m_file )
+	{
+		m_file >> t ;
+		count-- ;
+	}
 }
 
 } // end of namespace
