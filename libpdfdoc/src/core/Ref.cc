@@ -29,6 +29,7 @@
 
 #include "Token.hh"
 #include "TokenSrc.hh"
+#include "util/Util.hh"
 
 #include <cassert>
 #include <cstdlib>
@@ -71,43 +72,28 @@ std::istream& operator>>( std::istream& is, Ref& b )
 	return ( src >> b ).Stream( ) ;
 }
 
-//TokenSrc& Ref::Decode( TokenSrc& is, const Token& first )
 TokenSrc& operator>>( TokenSrc& is, Ref& obj )
 {
-	Token id, gen, s ;
-	if ( is >> id )
+	// ID generation "R"
+	Token t[3] ;
+	
+	// peek 3 tokens. and check if they are in the reference format
+	if ( is.Peek( t, Count(t) ) == End(t) &&
+		 t[0].IsInt( ) && t[1].IsInt() && t[2].Get( ) == "R" )
 	{
-		if ( is >> gen )
-		{
-			if ( is >> s )
-			{
-				if ( id.IsInt( ) && gen.IsInt() && s.Get( ) == "R" )
-				{
-					obj.m_obj_id		= id.As<int>() ;
-					obj.m_generation	= gen.As<int>() ;
-				}
-				else
-				{
-					// decode failed. need to put back the tokens
-					is.PutBack( s ) ;
-					is.PutBack( gen ) ;
-					is.PutBack( id ) ;
-					
-					// set stream state to indicate failure
-					is.SetState( std::ios::failbit ) ;
-				}
-			}
-			else
-			{
-				is.PutBack( gen ) ;
-				is.PutBack( id ) ;
-			}
-		}
-		else
-		{
-			is.PutBack( id ) ;
-		}
+		// get the object ID and generation
+		obj.m_obj_id		= t[0].As<int>() ;
+		obj.m_generation	= t[1].As<int>() ;
+		
+		// discard the three tokens as we consumed it
+		is.Ignore( Count(t) ) ;
 	}
+	else
+	{
+		// set stream state to indicate failure
+		is.SetState( std::ios::failbit ) ;
+	}
+
 	return is ;
 }
 

@@ -47,12 +47,14 @@ public :
 		CPPUNIT_TEST( TestNormal );
 		CPPUNIT_TEST( TestError );
 		CPPUNIT_TEST( TestNonIntError );
+		CPPUNIT_TEST( TestTooFewToken );
 	CPPUNIT_TEST_SUITE_END();
 
 private :
 	void TestNormal( ) ;
 	void TestError( ) ;
 	void TestNonIntError( ) ;
+	void TestTooFewToken( ) ;
 } ;
 
 #endif

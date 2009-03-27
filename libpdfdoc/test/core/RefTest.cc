@@ -28,6 +28,8 @@
 #include "RefTest.hh"
 
 #include "core/Ref.hh"
+#include "core/TokenSrc.hh"
+#include "util/Util.hh"
 
 #include <sstream>
 
@@ -56,8 +58,38 @@ void RefTest::TestError( )
 void RefTest::TestNonIntError( )
 {
 	std::istringstream ss( "82/R" ) ;
+	pdf::TokenSrc src( ss ) ;
+	
 	pdf::Ref obj ;
-	CPPUNIT_ASSERT( !(ss >> obj) ) ;
+	CPPUNIT_ASSERT( !(src >> obj) ) ;
 	CPPUNIT_ASSERT( obj.ID( ) == 0 ) ;
 	CPPUNIT_ASSERT( obj.Generation( ) == 0 ) ;
+	
+	// the 3 tokens can still be read
+	pdf::Token t[3] ;
+	src.ResetState( ) ;
+	CPPUNIT_ASSERT( src.Peek( t, pdf::Count(t) ) == pdf::End(t) ) ;
+	CPPUNIT_ASSERT( t[0].Get() == "82" ) ;
+	CPPUNIT_ASSERT( t[1].Get() == "/" ) ;
+	CPPUNIT_ASSERT( t[2].Get() == "R" ) ;
+
+}
+
+void RefTest::TestTooFewToken( )
+{
+	std::istringstream ss( "a" ) ;
+	pdf::TokenSrc src( ss ) ;
+	src.PutBack( pdf::Token( "2" ) ) ;
+	
+	pdf::Ref obj ;
+	CPPUNIT_ASSERT( !(src >> obj) ) ;
+	CPPUNIT_ASSERT( obj.ID( ) == 0 ) ;
+	CPPUNIT_ASSERT( obj.Generation( ) == 0 ) ;
+
+	// the 2 tokens can still be read
+	pdf::Token t[2] ;
+	src.ResetState( ) ;
+	CPPUNIT_ASSERT( src.Peek( t, pdf::Count(t) ) == pdf::End(t) ) ;
+	CPPUNIT_ASSERT( t[0].Get() == "2" ) ;
+	CPPUNIT_ASSERT( t[1].Get() == "a" ) ;
 }

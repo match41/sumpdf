@@ -29,7 +29,7 @@
 #define __PDF_TOKEN_SRC_HEADER_INCLUDED__
 
 #include "Token.hh"
-#include <vector>
+#include <deque>
 #include <ios>
 
 namespace pdf {
@@ -50,23 +50,42 @@ public :
 	
 	std::istream& Stream() ;
 	
+	template <typename OutIt>
+	OutIt Peek( OutIt outit, std::size_t count = 1 )
+	{
+		// read tokens to cache
+		if ( Cache( count ) )
+		{
+			// copy token from cache to output
+			for ( std::size_t i = 0 ; i < count ; i++ )
+			{
+				*outit = m_cache[count-i-1] ;
+				outit++ ;
+			}
+		}
+		return outit ;
+	}
+	
+	void Ignore( std::size_t count = 1 ) ;
+	
 	void SetState( std::ios::iostate state ) ;
 	void ResetState( ) ;
 	
 	bool HasCache( ) const ;
 	
 	TokenSrc& GetChar( char& ch ) ;
-	
+
+private :
+	bool Cache( std::size_t count ) ;
+
 private :
 	std::istream&		m_file ;
-	std::vector<Token>	m_cache ;
+	std::deque<Token>	m_cache ;
 
 	std::size_t			m_pos ;
 } ;
 
 TokenSrc& operator>>( TokenSrc& src, Token& token ) ;
-// TokenSrc& operator>>( TokenSrc& src, int& val ) ;
-// TokenSrc& operator>>( TokenSrc& src, double& val ) ;
 
 } // end of namespace
 

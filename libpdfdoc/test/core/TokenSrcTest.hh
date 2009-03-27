@@ -41,11 +41,15 @@ public :
 	CPPUNIT_TEST_SUITE( TokenSrcTest ) ;
 		CPPUNIT_TEST( TestGetChar ) ;
 		CPPUNIT_TEST( TestReadToken ) ;
+		CPPUNIT_TEST( TestPeekAllCache ) ;
+		CPPUNIT_TEST( TestPeekWithRead ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
 private :
 	void TestGetChar( ) ;
 	void TestReadToken( ) ;
+	void TestPeekAllCache( ) ;
+	void TestPeekWithRead( ) ;
 } ;
 
 #endif
