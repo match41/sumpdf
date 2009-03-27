@@ -68,7 +68,8 @@ private :
 class ParseError : public Exception
 {
 public :
-	ParseError( const std::string& err ) ;
+	explicit ParseError( const std::string& err ) ;
+	explicit ParseError( boost::format fmt ) ;
 } ;
 
 } // end of namespace

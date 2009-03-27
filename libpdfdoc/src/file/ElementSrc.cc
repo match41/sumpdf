@@ -35,6 +35,7 @@
 #include "util/Util.hh"
 
 #include <boost/bind.hpp>
+#include <boost/format.hpp>
 
 #include <algorithm>
 
@@ -73,10 +74,9 @@ IElement* ElementSrc::Init( IElement *element, const Ref& link )
 	}
 	catch ( std::exception& e )
 	{
-		std::ostringstream oss ;
-		oss << "Cannot read " << Demangle( typeid(*element).name() )
-		    << " from " << link << ":\n" << e.what() ;
-		throw ParseError( oss.str() ) ;
+		throw ParseError( boost::format( "Cannon read %1% from %2%:\n%3%" )
+		                  % Demangle( typeid(*element).name() )
+		                  % link % e.what() ) ;
 	}
 }
 
