@@ -130,10 +130,39 @@ void TokenSrcTest::TestPeekWithRead( )
 	CPPUNIT_ASSERT( t[3].Get() == "bar" ) ;
 
 	pdf::Token a[4] ;
-	CPPUNIT_ASSERT( subject >> a[0] >> a[1] ) ;
-	CPPUNIT_ASSERT( subject >> a[2] >> a[3] ) ;
+	CPPUNIT_ASSERT( subject >> a[0] >> a[1] >> a[2] >> a[3] ) ;
 	CPPUNIT_ASSERT( a[0].Get() == "hello" ) ;
 	CPPUNIT_ASSERT( a[1].Get() == "world" ) ;
 	CPPUNIT_ASSERT( a[2].Get() == "foo" ) ;
 	CPPUNIT_ASSERT( a[3].Get() == "bar" ) ;
+}
+
+void TokenSrcTest::TestIgnoreCache( )
+{
+	std::istringstream ss ;
+	pdf::TokenSrc subject( ss ) ;
+
+	subject.PutBack( pdf::Token("flower") ) ;
+	subject.PutBack( pdf::Token("a") ) ;
+	subject.PutBack( pdf::Token("am") ) ;
+	subject.PutBack( pdf::Token("I") ) ;
+
+	subject.Ignore( 2 ) ;
+	
+	pdf::Token t[2] ;
+	CPPUNIT_ASSERT( subject.Peek( t, pdf::Count(t) ) == pdf::End(t) ) ;
+	CPPUNIT_ASSERT( t[0].Get() == "a" ) ;
+	CPPUNIT_ASSERT( t[1].Get() == "flower" ) ;
+}
+
+void TokenSrcTest::TestIgnoreRead( )
+{
+	std::istringstream ss( "is a pig" ) ;
+	pdf::TokenSrc subject( ss ) ;
+	subject.PutBack( pdf::Token( "there" ) ) ;
+
+	subject.Ignore( 3 ) ;
+	pdf::Token t ;
+	CPPUNIT_ASSERT( subject >> t ) ;	
+	CPPUNIT_ASSERT( t.Get() == "pig" ) ;
 }

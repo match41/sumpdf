@@ -88,11 +88,10 @@ TokenSrc& operator>>( TokenSrc& is, Ref& obj )
 		// discard the three tokens as we consumed it
 		is.Ignore( Count(t) ) ;
 	}
+	
+	// set stream state to indicate failure
 	else
-	{
-		// set stream state to indicate failure
 		is.SetState( std::ios::failbit ) ;
-	}
 
 	return is ;
 }
