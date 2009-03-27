@@ -78,6 +78,10 @@ File::File( std::ostream *os )
 	*m_ofile << "%PDF-1.4\n" ;
 }
 
+/*!	\brief	write the PDF file trailer
+	\internal
+
+*/
 void File::WriteTrailer( const Ref& catalog, const std::string& producer,
 	                                         const std::string& creator )
 {

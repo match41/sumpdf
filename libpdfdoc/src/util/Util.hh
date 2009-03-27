@@ -37,6 +37,7 @@
 namespace pdf {
 
 /*!	\brief	get the begin iterator from an array
+	\internal
 	
 	This function returns the begin "iterator" of an array. It is useful to
 	treat an array like an STL container.
@@ -48,7 +49,9 @@ std::vector<int> v ;
 std::copy( Begin(array), End(array), std::back_inserter( v ) ;
 \endcode
 
-	
+	\param	array	reference to the array
+	\return	the begin iterator of the array. i.e. \a array itself
+	\sa End(), Count()
 */
 template <typename T, std::size_t n>
 T* Begin( T (&array)[n] )
@@ -56,12 +59,29 @@ T* Begin( T (&array)[n] )
 	return array ;
 }
 
+/*!	\brief	get the end iterator from an array
+	\internal
+	
+	This function returns the end "iterator" of an array. It is useful to
+	treat an array like an STL container.
+	
+	\param	array	reference to the array
+	\return	the end iterator of the array. i.e. \a array+n
+	\sa Begin(), Count()
+*/
 template <typename T, std::size_t n>
 T* End( T (&array)[n] )
 {
 	return array + n ;
 }
 
+/*!	\brief	get the number of elements in the array
+	\internal
+
+	This function will return the number of elements in the array.
+	\return	the number of elements in the array
+	\sa Begin(), End()
+*/
 template <typename T, std::size_t n>
 std::size_t Count( T (&array)[n] )
 {
