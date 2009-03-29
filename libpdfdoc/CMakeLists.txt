@@ -219,6 +219,7 @@ if ( PNG_FOUND )
                     ${PNG_LIBRARIES} )
     set( OPT_INCS   ${OPT_INCS}
                     ${PNG_INCLUDE_DIR} )
+	add_definitions( -DHAVE_PNG )
 endif ( PNG_FOUND )
 
 # libjpeg
@@ -231,6 +232,7 @@ if ( JPEG_FOUND )
                     ${JPEG_LIBRARIES} )
     set( OPT_INCS   ${OPT_INCS}
                     ${JPEG_INCLUDE_DIR} )
+	add_definitions( -DHAVE_JPEG )
 endif ( JPEG_FOUND )
 
 ###############################################################################

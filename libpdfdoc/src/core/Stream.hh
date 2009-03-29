@@ -67,6 +67,8 @@ public :
 
 	void Swap( Stream& str ) ;
 
+	std::istream& Str( ) ;
+
 private :
 	void Inflate( ) ;
 
@@ -80,5 +82,10 @@ private :
 } ;
 
 } // end of namespace
+
+namespace std
+{
+	void swap( pdf::Stream& s1, pdf::Stream& s2 ) ;
+}
 
 #endif

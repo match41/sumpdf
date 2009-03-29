@@ -80,8 +80,11 @@ int main( int argc, char **argv )
 	runner.addTest( SimpleFontTest::suite( ) ) ;
 #endif
 
-#ifdef __GNUC__
+#ifdef HAVE_PNG
 	runner.addTest( PngImageTest::suite( ) ) ;
+#endif
+
+#ifdef HAVE_JPEG
 	runner.addTest( JpegImageTest::suite( ) ) ;
 #endif
 	runner.addTest( DeflateFilterTest::suite( ) ) ;

@@ -33,6 +33,7 @@
 
 #include "core/Array.hh"
 #include "core/Ref.hh"
+#include "file/DeRef.hh"
 
 #include "page/RealPage.hh"
 #include "page/PageTree.hh"
@@ -46,7 +47,10 @@
 namespace pdf {
 
 Catalog::Catalog( )
-	: m_tree( 0 )
+	: m_tree( 0 ),
+	  m_version		( "1.4" ),
+	  m_page_layout	( "SinglePage" ),
+	  m_page_mode	( "UseNode" )
 {
 }
 
@@ -68,6 +72,10 @@ void Catalog::Read( const Ref& link, IElementSrc *file )
 	
 	// TODO: no know how to handle it yet
 	m_self.erase( Name( "OpenAction" ) ) ;
+	
+	file->Detach( m_self,	"Version",		m_version ) ;
+	file->Detach( m_self,	"PageLayout",	m_page_layout ) ;
+	file->Detach( m_self,	"PageMode",		m_page_mode ) ;
 }
 
 void Catalog::Write( const Ref& link, IElementDest *dest ) const
@@ -75,7 +83,9 @@ void Catalog::Write( const Ref& link, IElementDest *dest ) const
 	Dictionary self( m_self ) ;
 	self["Pages"] 	    = dest->Write( m_tree ) ;
 	self["Type"]	    = Name( "Catalog" ) ;
-	self["PageLayout"]	= Name( "OneColumn" ) ;
+	self["Version"]		= m_version ;
+	self["PageLayout"]	= m_page_layout ;
+	self["PageMode"]	= m_page_mode ;
 	
 	dest->WriteObj( self, link ) ;
 }
