@@ -48,7 +48,13 @@ protected :
 	int underflow( ) ;
 
 private :
-	char 			m_buf[80] ;
+    int BufferIn( ) ;
+
+private :
+	static const std::streamsize	m_buf_size	= 80 ;
+	static const std::streamsize    m_pb_size	= 4 ;
+
+	char 			m_buf[m_buf_size] ;
 	StreamFilter	*m_str ;
 } ;
 

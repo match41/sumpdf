@@ -46,7 +46,6 @@ struct Stream::Impl
 {
 	std::vector<unsigned char>	bytes ;
 	Dictionary					self ;
-	std::istringstream			str ;
 } ;
 
 Stream::Stream( )
@@ -82,9 +81,6 @@ Stream::Stream( std::vector<unsigned char>& data, const Dictionary& dict )
 	// these two fields will be generated again when writing.
 	m_impl->self.erase( "Filter" ) ;
 	m_impl->self.erase( "Length" ) ;
-	
-	m_impl->str.str( std::string( m_impl->bytes.begin(),
-	                              m_impl->bytes.end() ) ) ;
 }
 
 Stream::Stream( const std::string& str )
@@ -162,20 +158,6 @@ std::ostream& operator<<( std::ostream& os, const Stream& b )
 	return os ;
 }
 
-const unsigned char* Stream::Data( ) const
-{
-	assert( m_impl.get( ) != 0 ) ;
-	return m_impl.get() != 0 ? (!m_impl->bytes.empty() ? &m_impl->bytes[0] : 0)
-	                         : 0 ;
-}
-
-std::size_t Stream::Size( ) const
-{
-	assert( m_impl.get( ) != 0 ) ;
-	return m_impl.get() != 0 ? m_impl->bytes.size() : 0 ;
-}
-
-
 bool Stream::operator==( const Stream& str ) const
 {
 	assert( m_impl.get( ) != 0 ) ;
@@ -201,9 +183,12 @@ bool Stream::IsEmpty( ) const
 	return m_impl->bytes.empty( ) ;
 }
 
-std::istream& Stream::Str( )
+void Stream::ReadAll( std::streambuf *buf ) const
 {
-	return m_impl->str ;
+    assert( buf != 0 ) ;
+    if ( !m_impl->bytes.empty( ) )
+	    buf->sputn( reinterpret_cast<const char*>( &m_impl->bytes[0] ),
+	                m_impl->bytes.size( ) ) ;
 }
 
 } // end of namespace

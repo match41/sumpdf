@@ -84,4 +84,9 @@ ParseError::ParseError( const std::string& err )
 {
 }
 
+ParseError::ParseError( boost::format fmt )
+	: Exception( fmt )
+{
+}
+
 } // end of namespace

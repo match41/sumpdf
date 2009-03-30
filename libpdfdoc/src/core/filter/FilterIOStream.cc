@@ -46,12 +46,27 @@ FilterIOStream::~FilterIOStream( )
 int FilterIOStream::underflow( )
 {
 	assert( m_str != 0 ) ;
+
+	if ( gptr() < egptr() )
+		return traits_type::to_int_type( *gptr() ) ;
+	
+	if ( BufferIn() < 0 )
+		return traits_type::eof() ;
+	else
+		return traits_type::to_int_type( *gptr() ) ;
+}
+
+int FilterIOStream::BufferIn( )
+{
+/*	std::streamsize num_pb = std::min( gptr() - eback(), m_pb_size ) ;
+	std::memcpy( m_buf + (m_pb_size - num_pb), gptr() - num_pb, num_pb ) ;
+*/
 	std::size_t count = m_str->Read( (unsigned char*)m_buf, sizeof( m_buf ) ) ;
 	if ( count == 0 )
-		return traits_type::eof( ) ;
+		return -1 ;
 	
 	setg( m_buf, m_buf, m_buf + count ) ;
-	return m_buf[0] ;
+	return static_cast<int>( count ) ;
 }
 
 } // end of namespace

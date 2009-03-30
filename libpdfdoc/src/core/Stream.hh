@@ -32,6 +32,7 @@
 #include <vector>
 
 #include <boost/shared_ptr.hpp>
+#include <iosfwd>
 
 namespace pdf {
 
@@ -54,10 +55,6 @@ public :
 	~Stream( ) ;
 
 	friend std::ostream& operator<<( std::ostream& os, const Stream& str ) ;
-
-	const unsigned char* Data( ) const ;
-	std::size_t Size( ) const ;
-
 	bool operator==( const Stream& str ) const ;
 
 	const Dictionary& GetDictionary( ) const ;
@@ -67,7 +64,7 @@ public :
 
 	void Swap( Stream& str ) ;
 
-	std::istream& Str( ) ;
+    void ReadAll( std::streambuf *buf ) const ;
 
 private :
 	void Inflate( ) ;
