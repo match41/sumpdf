@@ -28,6 +28,8 @@
 #ifndef __PDF_BACK_TRACE_HEADER_INCLUDED__
 #define __PDF_BACK_TRACE_HEADER_INCLUDED__
 
+#include "SymbolInfo.hh"
+
 #include <iosfwd>
 
 namespace pdf {
@@ -43,7 +45,11 @@ std::cout << Backtrace() << std::endl ;
 	
 	\sa SymbolInfo
 */
-struct Backtrace {} ;
+struct Backtrace
+{
+	SymbolInfo::Stack	m_stack ;
+	Backtrace( ) ;
+} ;
 
 } // end of namespace
 

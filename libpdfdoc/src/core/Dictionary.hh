@@ -38,9 +38,15 @@ namespace pdf {
 class Token ;
 class TokenSrc ;
 
-/*!	\brief	brief description
+/*!	\brief	PDF dictionary object
 	
-	this class represents
+	This class represents a PDF dictionary object. According to the PDF
+	specification, a dictionary object is an associative table containing
+	pairs of objects, known as the dictionary's entries. The first element of
+	each entry is the key and the second element is the value. The key must be
+	a name. The value can be any kind of object, including another dictionary.
+	A dictionary entry whose value is null (see is equivalent to an absent
+	entry.
 */
 class Dictionary
 {
@@ -71,8 +77,8 @@ public :
 	void erase( iterator pos ) ;
 	void erase( const Name& name ) ;
 
-	const Object& operator[]( const Name& name ) const ;
-	Object& operator[]( const Name& name ) ;
+	const Object& operator[]( const Name& key ) const ;
+	Object& operator[]( const Name& key ) ;
 
 	std::size_t size( ) const ;
 	bool empty( ) const ;
@@ -86,6 +92,16 @@ public :
 	
 	void Add( const Name& key, const Object& value ) ;
 
+	/*!	\brief	get and remove a value from the dictionary
+	
+		This function will search the dictionary for \a key and swap it to
+		\a value . The value is then removed.
+		\param	key		the key to search
+		\param	value	the result
+		\return			true if \a key is found in the dictionary, otherwise
+						false
+		\throw	BadType	if \a key is found but the value is not of type \a T
+	*/
 	template <typename T>
 	bool Extract( const Name& key, T& value )
 	{

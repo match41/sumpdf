@@ -40,12 +40,26 @@ namespace pdf {
 class SymbolInfo
 {
 public :
+	struct Stack
+	{
+#ifdef WIN32
+#else
+		void 		*m_stack[100] ;
+		std::size_t	m_count ;
+#endif
+	} ;
+
+public :
 	SymbolInfo( ) ;
 	~SymbolInfo( ) ;
 
 	static SymbolInfo* Instance( ) ;
 
 	void Backtrace( std::ostream& os,
+	                std::size_t limit = 999 ) const ;
+
+	bool GetStack( Stack& s ) const ;
+	void Backtrace( const Stack& s, std::ostream& os,
 	                std::size_t limit = 999 ) const ;
 
 private :

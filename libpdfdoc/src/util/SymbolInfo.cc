@@ -146,14 +146,25 @@ void SymbolInfo::BacktraceInfo::Callback( bfd *abfd, asection *section,
 
 void SymbolInfo::Backtrace( std::ostream& os, std::size_t limit ) const
 {
-	void *stack[100] ;
-	int count = backtrace( stack, Count(stack) ) ;
-	std::size_t loop = std::min<std::size_t>( count, 1 + limit ) ;
+	Stack s ;
+	GetStack( s ) ;
+	Backtrace( s, os, limit ) ;
+}
+
+bool SymbolInfo::GetStack( Stack& s ) const
+{
+	s.m_count = backtrace( s.m_stack, Count(s.m_stack) ) ;
+}
+
+void SymbolInfo::Backtrace( const Stack& s, std::ostream& os,
+                            std::size_t limit ) const
+{
+	std::size_t loop = std::min<std::size_t>( s.m_count, 1 + limit ) ;
 	for ( std::size_t i = 1 ; i < loop ; i++ )
 	{
 		BacktraceInfo btinfo =
 		{
-			this, stack[i], 0, 0, 0, false
+			this, s.m_stack[i], 0, 0, 0, false
 		} ;
 		
 		Dl_info sym ;
@@ -169,13 +180,13 @@ void SymbolInfo::Backtrace( std::ostream& os, std::size_t limit ) const
 			if ( pos != std::string::npos )
 				filename.erase( pos, std::strlen( SRC_DIR ) ) ;
 #endif
-			os << "#" << i << " " << stack[i] << " "
+			os << "#" << i << " " << s.m_stack[i] << " "
 			   << filename << ":" << btinfo.m_lineno 
 			   << " " << Demangle(btinfo.m_func_name)
 			   << std::endl ;
 		}
-		else if ( dladdr( stack[i], &sym ) )
-			os << "#" << i << " " << stack[i] << " "
+		else if ( dladdr( s.m_stack[i], &sym ) )
+			os << "#" << i << " " << s.m_stack[i] << " "
 				<< sym.dli_fname
 				<< " " << Demangle( sym.dli_sname )
 				<< std::endl ;

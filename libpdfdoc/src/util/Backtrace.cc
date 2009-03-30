@@ -31,6 +31,14 @@
 
 #include <ostream>
 
+namespace pdf
+{
+	Backtrace::Backtrace( )
+	{
+		SymbolInfo::Instance()->GetStack( m_stack ) ;
+	}
+}
+
 namespace std
 {
 	/*!	\brief	operator<< for printing backtraces
@@ -41,9 +49,9 @@ namespace std
 		\param	os	the output stream
 		\sa SymbolInfo::Backtrace(), SymbolInfo::Instance()
 	*/
-	ostream& operator<<( ostream& os, const pdf::Backtrace& )
+	ostream& operator<<( ostream& os, const pdf::Backtrace& b )
 	{
-		pdf::SymbolInfo::Instance()->Backtrace( os ) ;
+		pdf::SymbolInfo::Instance()->Backtrace( b.m_stack, os ) ;
 		return os ;
 	}
 }
