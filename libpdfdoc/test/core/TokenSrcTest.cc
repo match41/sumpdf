@@ -79,7 +79,7 @@ void TokenSrcTest::TestGetChar( )
 	CPPUNIT_ASSERT( subject.GetChar( ello[1] ) ) ;
 	CPPUNIT_ASSERT( subject.GetChar( ello[2] ) ) ;
 	CPPUNIT_ASSERT( subject.GetChar( ello[3] ) ) ;
-	CPPUNIT_ASSERT( ello == std::string("ello") ) ;
+	CPPUNIT_ASSERT( std::string( ello, pdf::Count(ello) ) == "ello" ) ;
 
 	pdf::Token t2 ;
 	CPPUNIT_ASSERT( subject >> t2 ) ;
