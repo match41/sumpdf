@@ -102,8 +102,9 @@ void RealPage::ReadContent( const Object& str_obj, IElementSrc *src )
 	else if ( str_obj.Type( ) == Object::stream )
 	{
 		const Stream& s = str_obj.As<Stream>( ) ;
-		m_content.rdbuf()->sputn(
-			reinterpret_cast<const char*>( s.Data( ) ), s.Size( ) ) ;
+		s.ReadAll( m_content.rdbuf() ) ;
+/*		m_content.rdbuf()->sputn(
+			reinterpret_cast<const char*>( s.Data( ) ), s.Size( ) ) ;*/
 	}
 	
 	// catenate individual objects in array
