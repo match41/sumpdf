@@ -43,6 +43,8 @@ public :
 		CPPUNIT_TEST( TestReadToken ) ;
 		CPPUNIT_TEST( TestPeekAllCache ) ;
 		CPPUNIT_TEST( TestPeekWithRead ) ;
+		CPPUNIT_TEST( TestIgnoreCache ) ;
+		CPPUNIT_TEST( TestIgnoreRead ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
 private :
@@ -50,6 +52,8 @@ private :
 	void TestReadToken( ) ;
 	void TestPeekAllCache( ) ;
 	void TestPeekWithRead( ) ;
+	void TestIgnoreCache( ) ;
+	void TestIgnoreRead( ) ;
 } ;
 
 #endif

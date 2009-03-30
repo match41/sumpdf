@@ -31,6 +31,7 @@
 #include "IElement.hh"
 
 #include "core/Dictionary.hh"
+#include "core/Name.hh"
 
 #include <vector>
 
@@ -62,9 +63,12 @@ public :
 	RealPage*	GetPage( std::size_t index ) ;
 
 private :
-	Dictionary				m_self ;
+	Dictionary	m_self ;
+	Name		m_version ;	
+	Name		m_page_layout ;
+	Name		m_page_mode ;
 	
-	PageTree				*m_tree ;
+	PageTree	*m_tree ;
 } ;
 
 } // end of namespace

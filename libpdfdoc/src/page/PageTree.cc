@@ -154,7 +154,7 @@ ElementList PageTree::GetChildren( ) const
 	return ElementList( m_kids.begin( ), m_kids.end( ) ) ;
 }
 
-PageNode*	PageTree::GetLeaf( std::size_t index )
+PageNode* PageTree::GetLeaf( std::size_t index )
 {
 	std::size_t current = 0 ;
 	for ( std::vector<PageNode*>::iterator i  = m_kids.begin( ) ;
@@ -169,6 +169,12 @@ PageNode*	PageTree::GetLeaf( std::size_t index )
 	}
 	
 	return 0 ;
+}
+
+void PageTree::AddLeaf( std::size_t index, RealPage *child )
+{
+/*	PageNode *n = GetLeaf( index ) ;
+	PageTree *parent = n->Parent( ) ;*/
 }
 
 } // end of namespace

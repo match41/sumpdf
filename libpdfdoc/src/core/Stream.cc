@@ -46,6 +46,7 @@ struct Stream::Impl
 {
 	std::vector<unsigned char>	bytes ;
 	Dictionary					self ;
+	std::istringstream			str ;
 } ;
 
 Stream::Stream( )
@@ -81,6 +82,9 @@ Stream::Stream( std::vector<unsigned char>& data, const Dictionary& dict )
 	// these two fields will be generated again when writing.
 	m_impl->self.erase( "Filter" ) ;
 	m_impl->self.erase( "Length" ) ;
+	
+	m_impl->str.str( std::string( m_impl->bytes.begin(),
+	                              m_impl->bytes.end() ) ) ;
 }
 
 Stream::Stream( const std::string& str )
@@ -171,6 +175,7 @@ std::size_t Stream::Size( ) const
 	return m_impl.get() != 0 ? m_impl->bytes.size() : 0 ;
 }
 
+
 bool Stream::operator==( const Stream& str ) const
 {
 	assert( m_impl.get( ) != 0 ) ;
@@ -196,4 +201,17 @@ bool Stream::IsEmpty( ) const
 	return m_impl->bytes.empty( ) ;
 }
 
+std::istream& Stream::Str( )
+{
+	return m_impl->str ;
+}
+
 } // end of namespace
+
+namespace std
+{
+	void swap( pdf::Stream& s1, pdf::Stream& s2 )
+	{
+		s1.Swap( s2 ) ;
+	}
+}

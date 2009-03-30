@@ -44,8 +44,6 @@ public :
 	PageTree( ) ;
 	explicit PageTree( PageTree *parent ) ;
 
-	void AddLeaf( RealPage *child ) ;
-
 	void Read( const Ref& link, IElementSrc *repo ) ;
 	void Write( const Ref& link, IElementDest *repo ) const ;
 
@@ -54,6 +52,8 @@ public :
 	ElementList GetChildren( ) const ;
 	
 	PageNode* GetLeaf( std::size_t index ) ;
+	void AddLeaf( RealPage *child ) ;
+	void AddLeaf( std::size_t index, RealPage *child ) ;
 
 private :
 	void AddNode( PageNode *child ) ;
