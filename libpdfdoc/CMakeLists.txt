@@ -93,7 +93,8 @@ set( UTIL_HDRS  	${UTIL_DIR}/Rect.hh
 					${UTIL_DIR}/Export.hh
 					${UTIL_DIR}/Util.hh
 					${UTIL_DIR}/Exception.hh
-					${UTIL_DIR}/SymbolInfo.hh )
+					${UTIL_DIR}/SymbolInfo.hh
+					${UTIL_DIR}/Backtrace.hh )
 					
 set( IMG_HDRS  		${IMG_DIR}/Image.hh
 					${IMG_DIR}/PngImage.hh
@@ -162,7 +163,8 @@ set( CORE_SRCS  	${CORE_DIR}/Object.cc
 
 set( UTIL_SRCS  	${UTIL_DIR}/Rect.cc
 					${UTIL_DIR}/Util.cc
-					${UTIL_DIR}/Exception.cc )
+					${UTIL_DIR}/Exception.cc
+					${UTIL_DIR}/Backtrace.cc )
 
 set( IMG_SRCS  		${IMG_DIR}/Image.cc )
 

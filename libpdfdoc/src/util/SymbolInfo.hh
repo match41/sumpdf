@@ -49,8 +49,6 @@ public :
 	                std::size_t limit = 999 ) const ;
 
 private :
-	static const char* GuessExeFilename( ) ;
-	
 	struct Impl ;
 	const std::auto_ptr<Impl> m_impl ;
 	

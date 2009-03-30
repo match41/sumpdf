@@ -37,7 +37,7 @@
 #include <cassert>
 #include <cstring>
 #include <cstdlib>
-#include <ostream>
+#include <iostream>
 #include <iomanip>
 #include <algorithm>
 
@@ -53,34 +53,44 @@ struct SymbolInfo::Impl
 SymbolInfo::SymbolInfo( )
 	: m_impl( new Impl )
 {
+	m_impl->m_bfd		= 0 ;
+	m_impl->m_symbols	= 0 ;
+	m_impl->m_symbol_count	= 0 ;
+	
 	bfd_init( ) ;
 	
 	// opening itself
 	bfd *b = bfd_openr( "/proc/self/exe", 0 ) ;
-	if ( bfd_check_format(b, bfd_archive) )
+	if ( b == NULL )
+	{
+		std::cerr << "cannot open executable: "
+		          << bfd_errmsg( bfd_get_error() ) << std::endl ;
+		return ;
+	}
+	
+	if ( bfd_check_format( b, bfd_archive ) )
 	{
 		bfd_close( b ) ;
-		throw -1 ;
+		return ;
 	}
+	
 	char **matching ;
-	if ( !bfd_check_format_matches (b, bfd_object, &matching))
+	if ( !bfd_check_format_matches( b, bfd_object, &matching ) )
 	{
-		fprintf (stderr, "%s: %s\n", bfd_get_filename (b),
-				bfd_errmsg (bfd_get_error ()));
-		if (bfd_get_error () == bfd_error_file_ambiguously_recognized)
+		std::cerr << "cannot read symbols from " << bfd_get_filename( b )
+		          << ": " << bfd_errmsg( bfd_get_error() ) << std::endl ;
+
+		if ( bfd_get_error( ) == bfd_error_file_ambiguously_recognized )
 		{
-			char **p = matching;
-			fprintf (stderr, "%s: Matching formats:", bfd_get_filename (b));
-			while (*p)
-			{
-				fprintf (stderr, " %s", *p++);
-			}
-			fprintf (stderr, "\n");
-			std::free (matching);
+			std::cerr << bfd_get_filename( b ) << ": Matching formats: " ;
+			for ( char **p = matching ; *p != 0 ; p++ )
+				std::cerr << " " << *p ;
+			
+			std::cerr << std::endl ;
+			std::free( matching ) ;
 		}
-		bfd_close (b);
-		b = NULL;
-		throw -1;
+		bfd_close( b ) ;
+		return ;
 	}
 	m_impl->m_bfd = b ;
 
@@ -99,13 +109,13 @@ SymbolInfo::~SymbolInfo( )
 struct SymbolInfo::BacktraceInfo
 {
 	const SymbolInfo	*m_pthis ;
-	void		*m_addr ;
-	const char	*m_filename ;
-	const char	*m_func_name ;
-	unsigned int	m_lineno ;
-	unsigned int	m_is_found ;
+	void				*m_addr ;
+	const char			*m_filename ;
+	const char			*m_func_name ;
+	unsigned int		m_lineno ;
+	unsigned int		m_is_found ;
 	
-	static void Callback(bfd *abfd, asection *section, void* _address ) ;
+	static void Callback( bfd *abfd, asection *section, void* addr ) ;
 } ;
 
 void SymbolInfo::BacktraceInfo::Callback( bfd *abfd, asection *section,
@@ -113,21 +123,17 @@ void SymbolInfo::BacktraceInfo::Callback( bfd *abfd, asection *section,
 {
 	BacktraceInfo *info = (BacktraceInfo *)data ;
 	if ((section->flags & SEC_ALLOC) == 0)
-	{
-		return;
-	}
+		return ;
 	
 	bfd_vma vma = bfd_get_section_vma(abfd, section);
 	
 	unsigned long address = (unsigned long)(info->m_addr);
-	if (address < vma)
+	if ( address < vma )
 		return;
 	
 	bfd_size_type size = bfd_section_size(abfd, section);
 	if ( address > (vma + size))
-	{
-		return;
-	}
+		return ;
 	
 	const SymbolInfo *pthis	= info->m_pthis ;
 	info->m_is_found	=  bfd_find_nearest_line( abfd, section,
@@ -135,14 +141,14 @@ void SymbolInfo::BacktraceInfo::Callback( bfd *abfd, asection *section,
 	                                              address - vma,
 	                                              &info->m_filename,
 	                                              &info->m_func_name,
-	                                              &info->m_lineno);
+	                                              &info->m_lineno ) ;
 }
 
 void SymbolInfo::Backtrace( std::ostream& os, std::size_t limit ) const
 {
 	void *stack[100] ;
 	int count = backtrace( stack, Count(stack) ) ;
-	std::size_t loop = std::min( (std::size_t)count, 1+limit ) ;
+	std::size_t loop = std::min<std::size_t>( count, 1 + limit ) ;
 	for ( std::size_t i = 1 ; i < loop ; i++ )
 	{
 		BacktraceInfo btinfo =

@@ -30,13 +30,6 @@
 extern "C" void * _ReturnAddress(void);
 
 #pragma intrinsic(_ReturnAddress)
-/*#pragma auto_inline(off)
-DWORD_PTR GetProgramCounter()
-{
-    return (DWORD_PTR)_ReturnAddress();
-}
-#pragma auto_inline(on)
-*/
 
 namespace pdf {
 
@@ -91,7 +84,8 @@ void SymbolInfo::Backtrace( std::ostream& os, std::size_t limit ) const
                               SymGetModuleBase64, 0 ) ;
         if ( b )
         {
-            IMAGEHLP_SYMBOL64 *sym = (IMAGEHLP_SYMBOL64 *)malloc( sizeof(IMAGEHLP_SYMBOL64) + 1024 );
+            IMAGEHLP_SYMBOL64 *sym =
+            	(IMAGEHLP_SYMBOL64 *)malloc( sizeof(IMAGEHLP_SYMBOL64) + 1024 );
         
             DWORD64 offset ;
             if ( SymGetSymFromAddr64( GetCurrentProcess(), frame.AddrPC.Offset,
@@ -100,9 +94,11 @@ void SymbolInfo::Backtrace( std::ostream& os, std::size_t limit ) const
                 IMAGEHLP_LINE64 line = { sizeof(IMAGEHLP_LINE64) } ;
                 SymGetLineFromAddr64( GetCurrentProcess(), frame.AddrPC.Offset,
                                       0, &line ) ;
-			    os << "#" << i++ << " " << std::hex << frame.AddrPC.Offset << " "
+			    os << "#" << i++ << " " << std::hex << frame.AddrPC.Offset
+			       << " "
 			       << (line.FileName != 0 ? std::string(line.FileName)
-                                          : std::string() ) << ":" << line.LineNumber 
+                                          : std::string() ) << ":"
+                   << line.LineNumber 
 			       << " " << sym->Name
 			       << std::endl ;
             }

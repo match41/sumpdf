@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2006 by Nestal Wan                                      *
+ *   Copyright (C) 2009 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,37 +18,32 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-#include "Doc.hh"
-#include "Page.hh"
-#include "Font.hh"
-#include "libpdfdoc.hh"
-#include "util/Exception.hh"
+/*!
+	\file	Backtrace.cc
+	\brief	implementation the Backtrace class
+	\date	Mon Mar 30 2009
+	\author	Nestal Wan
+*/
 
-#include <sstream>
-#include <iostream>
-#include <cstdlib>
+#include "Backtrace.hh"
 
-int main( int argc, char **argv )
+#include "SymbolInfo.hh"
+
+#include <ostream>
+
+namespace std
 {
-	pdf::Doc *doc = pdf::CreateDoc( ) ;
-	try
-	{
-		throw pdf::BadType( typeid(int), typeid(double),
-		                    std::runtime_error("haha" ) ) ;
-	}
-	catch ( std::exception& e )
-	{
-		std::cerr << e.what() << std::endl ;
-	}
-
-	if ( argc >= 2 )
-		doc->Read( argv[1] ) ;
+	/*!	\brief	operator<< for printing backtraces
 	
-	pdf::Page *p = doc->AddPage( ) ;
-	pdf::Font *f = doc->CreateSimpleFont( "Helvetica" ) ;
-	p->DrawText( 100, 100, f, "Hello world!" ) ;
-
-	doc->Write( "test.pdf" ) ;
-
-	return 0 ;
+		This function will call SymbolInfo::Backtrace() to print out a backtrace
+		to the stream. It will use the SymbolInfo::Instance() singleton to get
+		the symbol info.
+		\param	os	the output stream
+		\sa SymbolInfo::Backtrace(), SymbolInfo::Instance()
+	*/
+	ostream& operator<<( ostream& os, const pdf::Backtrace& )
+	{
+		pdf::SymbolInfo::Instance()->Backtrace( os ) ;
+		return os ;
+	}
 }

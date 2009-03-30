@@ -58,11 +58,6 @@ class BadType : public Exception
 public :
 	BadType( const std::type_info& from, const std::type_info& to,
 	         const std::exception& e ) ;
-
-private :
-	static std::string ErrorMsg( const std::type_info& from,
-	                             const std::type_info& to,
-	                             const std::exception& e ) ;
 } ;
 
 class ParseError : public Exception
