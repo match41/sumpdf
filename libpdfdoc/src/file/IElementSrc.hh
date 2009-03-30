@@ -65,9 +65,9 @@ private :
 	virtual IElement* Find( const Ref& link ) = 0 ;
 
 public :
-	// define elsewhere
+	// defined in DeRef.hh
 	template <typename T>
-	T DeRef( const Object& obj ) ;
+	T& DeRef( Object& obj ) ;
 
 	template <typename T>
 	bool Detach( Dictionary& dict, const Name& name, T& result ) ;
