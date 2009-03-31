@@ -38,6 +38,7 @@ namespace pdf {
 
 class Dictionary ;
 class Name ;
+class Ref ;
 
 /*!	\brief	PDF stream object
 	
@@ -56,6 +57,8 @@ public :
 
 	friend std::ostream& operator<<( std::ostream& os, const Stream& str ) ;
 	bool operator==( const Stream& str ) const ;
+
+	std::size_t Write( std::ostream& os, const Ref& length_ref ) const ;
 
 	const Dictionary& GetDictionary( ) const ;
 	Dictionary& GetDictionary( ) ;

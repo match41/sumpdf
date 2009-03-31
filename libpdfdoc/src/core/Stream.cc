@@ -78,9 +78,8 @@ Stream::Stream( std::vector<unsigned char>& data, const Dictionary& dict )
 	else if ( !filter.IsNull() )
 		throw ParseError( "filter error" ) ;
 
-	// these two fields will be generated again when writing.
-	m_impl->self.erase( "Filter" ) ;
-	m_impl->self.erase( "Length" ) ;
+// 	m_impl->self.erase( "Filter" ) ;
+// 	m_impl->self.erase( "Length" ) ;
 }
 
 Stream::Stream( const std::string& str )
@@ -131,6 +130,20 @@ void Stream::Inflate( )
 	output.resize( output.size() - z.avail_out ) ;
 
 	m_impl->bytes.swap( output ) ;
+}
+
+std::size_t Stream::Write( std::ostream& os, const Ref& length_ref ) const
+{
+	Dictionary dict( m_impl->self ) ;
+	dict["Length"]	= length_ref ;
+	os << dict ;
+
+	os << "\nstream\n" ;
+	os.rdbuf()->sputn( reinterpret_cast<const char*>( &m_impl->bytes[0] ),
+	                   m_impl->bytes.size( ) ) ;
+	os << "endstream" ;
+	
+	return m_impl->bytes.size( ) ;
 }
 
 std::ostream& operator<<( std::ostream& os, const Stream& b )
