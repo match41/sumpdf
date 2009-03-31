@@ -117,7 +117,8 @@ TokenSrc& operator>>( TokenSrc& src, Dictionary& dict )
 		Name	key ;
 		Object	value ;
 		
-		if ( src >> key >> value )
+		// null value means absent entry
+		if ( src >> key >> value && !value.IsNull( ) )
 			temp.m_map.insert( std::make_pair( key, value ) ) ;
 	}
 	
@@ -132,7 +133,11 @@ std::ostream& operator<<( std::ostream& os, const Dictionary& dict )
 	os << "<<\n" ;
 	for ( Dictionary::const_iterator i  = dict.begin( ) ;
 	                                 i != dict.end( ) ; ++i )
-		os << i->first << ' ' << i->second << '\n' ;
+	{
+		// according to PDF spec, an absent key-pair is considered null
+		if ( !i->second.IsNull( ) )
+			os << i->first << ' ' << i->second << '\n' ;
+	}
 	return os << ">>" ;
 }
 
@@ -147,15 +152,33 @@ const Object& Dictionary::Default( )
 	return null_obj ;
 }
 
-const Object& Dictionary::operator[]( const Name& name ) const
+/*!	\brief	look-up the dictionary
+
+	This operator will search the dictionary and try to find an entry with key
+	\a key .
+	\param	key	the key of the entry to be found
+	\return		a reference to the value if \a key is found. otherwise
+				a reference to a default null object
+	\sa	Object::Object()
+*/
+const Object& Dictionary::operator[]( const Name& key ) const
 {
-	const_iterator i = find( name ) ;
+	const_iterator i = find( key ) ;
 	return i == end( ) ? Default() : i->second ;
 }
 
-Object& Dictionary::operator[]( const Name& name )
+/*!	\brief	look-up the dictionary and create a value if it does not exists
+
+	This operator will search the dictionary and try to find an entry with
+	key \a key . If the entry cannot be found, it will be created with a
+	default null object as value.
+	\param	key	the key of the entry to be found
+	\return		a reference to the value
+	\sa	Object::Object()
+*/
+Object& Dictionary::operator[]( const Name& key )
 {
-	return m_map[name] ;
+	return m_map[key] ;
 }
 
 void Dictionary::erase( iterator pos )

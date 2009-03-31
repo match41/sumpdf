@@ -28,7 +28,7 @@
 #include "Exception.hh"
 
 #include "Util.hh"
-#include "SymbolInfo.hh"
+#include "Backtrace.hh"
 
 #include <boost/format.hpp>
 
@@ -57,26 +57,9 @@ BadType::BadType( const std::type_info& from, const std::type_info& to,
 	                            )
 	             % Demangle( from.name() )
 	             % Demangle( to.name() )
-	             % e.what() )
+	             % e.what()
+	             % Backtrace() )
 {
-}
-
-std::string BadType::ErrorMsg( const std::type_info& from,
-	                           const std::type_info& to,
-	                           const std::exception& e )
-{
-	std::ostringstream ss ;
-	
-	ss << "Cannot convert \"" << Demangle( from.name() )
-	   << "\" object to \""   << Demangle( to.name() )
-	   << "\". exception: \"" << e.what() << "\"" ;
-
-#ifndef NDEBUG
-	ss << "\n" ;
-	SymbolInfo::Instance()->Backtrace( ss ) ;
-#endif
-	
-	return ss.str() ;
 }
 
 ParseError::ParseError( const std::string& err )

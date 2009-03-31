@@ -42,13 +42,12 @@ class FilterIOStream : public std::streambuf
 {
 public :
 	FilterIOStream( StreamFilter *str ) ;
-	~FilterIOStream( ) ;
 
 protected :
 	int underflow( ) ;
 
 private :
-    int BufferIn( ) ;
+    bool BufferIn( ) ;
 
 private :
 	static const std::streamsize	m_buf_size	= 80 ;

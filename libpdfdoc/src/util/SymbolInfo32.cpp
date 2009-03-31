@@ -30,13 +30,6 @@
 extern "C" void * _ReturnAddress(void);
 
 #pragma intrinsic(_ReturnAddress)
-/*#pragma auto_inline(off)
-DWORD_PTR GetProgramCounter()
-{
-    return (DWORD_PTR)_ReturnAddress();
-}
-#pragma auto_inline(on)
-*/
 
 namespace pdf {
 
@@ -59,39 +52,39 @@ SymbolInfo* SymbolInfo::Instance( )
 
 void SymbolInfo::Backtrace( std::ostream& os, std::size_t limit ) const
 {
-    CONTEXT      context;
-    STACKFRAME64 frame;
-    DWORD_PTR    framepointer;
-
     // Get the required values for initialization of the STACKFRAME64
     // structure to be passed to StackWalk64(). Required fields are
     // AddrPC and AddrFrame.
     DWORD_PTR programcounter = (DWORD_PTR)_ReturnAddress( ) ;
     
     // Get the frame pointer (aka base pointer)
+    DWORD_PTR    framepointer;
     __asm mov [framepointer], ebp
 
     // Initialize the STACKFRAME64 structure.
-    memset(&frame, 0, sizeof(frame));
+    STACKFRAME64 frame;
+    memset( &frame, 0, sizeof(frame) ) ;
     frame.AddrPC.Offset    = programcounter;
     frame.AddrPC.Mode      = AddrModeFlat;
     frame.AddrFrame.Offset = framepointer;
     frame.AddrFrame.Mode   = AddrModeFlat;
 
     // .. use StackWalk to walk the stack ..
-    int i = 0 ;
-    BOOL b = TRUE ;
+    int		i = 0 ;
+    BOOL	result = TRUE ;
+	CONTEXT	context;
     do
     {
-        b = StackWalk64( IMAGE_FILE_MACHINE_I386,
-                              GetCurrentProcess( ),
-                              GetCurrentThread( ),
-                              &frame, &context, 0, 
-                              SymFunctionTableAccess64, 
-                              SymGetModuleBase64, 0 ) ;
-        if ( b )
+		result = StackWalk64( IMAGE_FILE_MACHINE_I386,
+						      GetCurrentProcess( ),
+						 	  GetCurrentThread( ),
+						      &frame, &context, 0, 
+						 	  SymFunctionTableAccess64, 
+						 	  SymGetModuleBase64, 0 ) ;
+        if ( result )
         {
-            IMAGEHLP_SYMBOL64 *sym = (IMAGEHLP_SYMBOL64 *)malloc( sizeof(IMAGEHLP_SYMBOL64) + 1024 );
+            IMAGEHLP_SYMBOL64 *sym =
+            	(IMAGEHLP_SYMBOL64 *)malloc( sizeof(IMAGEHLP_SYMBOL64) + 1024 );
         
             DWORD64 offset ;
             if ( SymGetSymFromAddr64( GetCurrentProcess(), frame.AddrPC.Offset,
@@ -100,14 +93,18 @@ void SymbolInfo::Backtrace( std::ostream& os, std::size_t limit ) const
                 IMAGEHLP_LINE64 line = { sizeof(IMAGEHLP_LINE64) } ;
                 SymGetLineFromAddr64( GetCurrentProcess(), frame.AddrPC.Offset,
                                       0, &line ) ;
-			    os << "#" << i++ << " " << std::hex << frame.AddrPC.Offset << " "
+			    os << "#" << i++ << " " << std::hex << frame.AddrPC.Offset
+			       << " "
 			       << (line.FileName != 0 ? std::string(line.FileName)
-                                          : std::string() ) << ":" << line.LineNumber 
+                                          : std::string() ) << ":"
+                   << line.LineNumber 
 			       << " " << sym->Name
 			       << std::endl ;
             }
+            
+            free( sym ) ;
         }
-    } while ( b ) ;
+    } while ( result ) ;
 }
 
 } // end of namespace

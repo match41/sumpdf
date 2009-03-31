@@ -37,10 +37,10 @@ FilterIOStream::FilterIOStream( StreamFilter *str )
 	: m_str( str )
 {
 	assert( m_str != 0 ) ;
-}
+	setg( m_buf + m_pb_size,
+		  m_buf + m_pb_size,
+		  m_buf + m_pb_size ) ;
 
-FilterIOStream::~FilterIOStream( )
-{
 }
 
 int FilterIOStream::underflow( )
@@ -50,23 +50,34 @@ int FilterIOStream::underflow( )
 	if ( gptr() < egptr() )
 		return traits_type::to_int_type( *gptr() ) ;
 	
-	if ( BufferIn() < 0 )
-		return traits_type::eof() ;
-	else
-		return traits_type::to_int_type( *gptr() ) ;
+	return BufferIn( ) ? traits_type::to_int_type( *gptr() )
+	                   : traits_type::eof() ;
 }
 
-int FilterIOStream::BufferIn( )
+bool FilterIOStream::BufferIn( )
 {
-/*	std::streamsize num_pb = std::min( gptr() - eback(), m_pb_size ) ;
-	std::memcpy( m_buf + (m_pb_size - num_pb), gptr() - num_pb, num_pb ) ;
-*/
-	std::size_t count = m_str->Read( (unsigned char*)m_buf, sizeof( m_buf ) ) ;
-	if ( count == 0 )
-		return -1 ;
+	// cannot directly use m_pb_size in template functions.
+	// it should be a bug in gcc
+	std::streamsize pb_size	= m_pb_size ;
 	
-	setg( m_buf, m_buf, m_buf + count ) ;
-	return static_cast<int>( count ) ;
+	std::streamsize num_pb	= std::min( gptr() - eback(), pb_size ) ;
+	std::memcpy( m_buf + (m_pb_size - num_pb), gptr() - num_pb, num_pb ) ;
+
+	unsigned char *buf = reinterpret_cast<unsigned char*>( m_buf ) ;
+	std::size_t count = m_str->Read( buf + m_pb_size,
+	                                 m_buf_size - m_pb_size ) ;
+	if ( count == 0 )
+	{
+		setg( 0, 0, 0 ) ;
+		return false ;
+	}
+	else
+	{
+		setg( m_buf + m_pb_size - num_pb,
+		      m_buf + m_pb_size,
+		      m_buf + m_pb_size + count ) ;
+		return true ;
+	}
 }
 
 } // end of namespace

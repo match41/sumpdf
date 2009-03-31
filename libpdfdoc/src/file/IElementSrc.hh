@@ -49,7 +49,7 @@ Element* CreateNewElement( const Ref&, IElementSrc * )
 /*!	\brief	somewhere that can provide IElement's
 	
 	This class represents an abstraction on something that can Read() IElement
-	objects.
+	objects. It provides the ReadObj() function to provide 
 */
 class IElementSrc
 {
@@ -57,6 +57,8 @@ protected :
 	virtual ~IElementSrc( ) ;
 
 public :
+	/*!	\brief	reading objects
+	*/
 	virtual Object ReadObj( const Ref& obj, bool deref = false ) = 0 ;
 
 private :
@@ -65,9 +67,9 @@ private :
 	virtual IElement* Find( const Ref& link ) = 0 ;
 
 public :
-	// define elsewhere
+	// defined in DeRef.hh
 	template <typename T>
-	T DeRef( const Object& obj ) ;
+	T& DeRef( Object& obj ) ;
 
 	template <typename T>
 	bool Detach( Dictionary& dict, const Name& name, T& result ) ;

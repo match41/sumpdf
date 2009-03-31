@@ -33,6 +33,7 @@
 
 #include "core/TraverseObject.hh"
 #include "util/Util.hh"
+#include "util/Backtrace.hh"
 
 #include <boost/bind.hpp>
 #include <boost/format.hpp>
@@ -74,9 +75,10 @@ IElement* ElementSrc::Init( IElement *element, const Ref& link )
 	}
 	catch ( std::exception& e )
 	{
-		throw ParseError( boost::format( "Cannon read %1% from %2%:\n%3%" )
+		throw ParseError( boost::format( "Cannot read %1% from %2%:\n%3%"
+		                                 "\nBacktrace:\n%4%" )
 		                  % Demangle( typeid(*element).name() )
-		                  % link % e.what() ) ;
+		                  % link % e.what() % Backtrace() ) ;
 	}
 }
 

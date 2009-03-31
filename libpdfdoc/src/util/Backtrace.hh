@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2006 by Nestal Wan                                      *
+ *   Copyright (C) 2009 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,37 +18,44 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-#include "Doc.hh"
-#include "Page.hh"
-#include "Font.hh"
-#include "libpdfdoc.hh"
-#include "util/Exception.hh"
+/*!
+	\file	Backtrace.hh
+	\brief	definition the Backtrace class
+	\date	Mon Mar 30 2009
+	\author	Nestal Wan
+*/
 
-#include <sstream>
-#include <iostream>
-#include <cstdlib>
+#ifndef __PDF_BACK_TRACE_HEADER_INCLUDED__
+#define __PDF_BACK_TRACE_HEADER_INCLUDED__
 
-int main( int argc, char **argv )
-{
-	pdf::Doc *doc = pdf::CreateDoc( ) ;
-	try
-	{
-		throw pdf::BadType( typeid(int), typeid(double),
-		                    std::runtime_error("haha" ) ) ;
-	}
-	catch ( std::exception& e )
-	{
-		std::cerr << e.what() << std::endl ;
-	}
+#include "SymbolInfo.hh"
 
-	if ( argc >= 2 )
-		doc->Read( argv[1] ) ;
+#include <iosfwd>
+
+namespace pdf {
+
+/*!	\brief	a shortcut to print out backtrace information
 	
-	pdf::Page *p = doc->AddPage( ) ;
-	pdf::Font *f = doc->CreateSimpleFont( "Helvetica" ) ;
-	p->DrawText( 100, 100, f, "Hello world!" ) ;
+	The sole reason for this class to exists is to provide the
+	operator<< overload to allow:
+	
+\code
+std::cout << Backtrace() << std::endl ;
+\endcode
+	
+	\sa SymbolInfo
+*/
+struct Backtrace
+{
+	SymbolInfo::Stack	m_stack ;
+	Backtrace( ) ;
+} ;
 
-	doc->Write( "test.pdf" ) ;
+} // end of namespace
 
-	return 0 ;
+namespace std
+{
+	ostream& operator<<( ostream& os, const pdf::Backtrace& ) ;
 }
+
+#endif
