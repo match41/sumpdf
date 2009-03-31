@@ -38,7 +38,7 @@ namespace pdf {
 DeflateFilter::DeflateFilter( StreamFilter *src )
 	: m_src( src )
 {
-	assert( m_src != 0 ) ;
+	assert( m_src.get() != 0 ) ;
 	std::memset( &m_zstr, 0, sizeof(m_zstr) ) ;
 
 	if ( ::inflateInit( &m_zstr ) != Z_OK )

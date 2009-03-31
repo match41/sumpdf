@@ -27,8 +27,9 @@
 
 #include "Stream.hh"
 
-#include "core/Array.hh"
-#include "core/Dictionary.hh"
+#include "Array.hh"
+#include "Dictionary.hh"
+#include "filter/StreamFilter.hh"
 #include "util/Exception.hh"
 
 #include <boost/bind.hpp>
@@ -44,7 +45,8 @@ namespace pdf {
 
 struct Stream::Impl
 {
-	std::vector<unsigned char>	bytes ;
+// 	std::vector<unsigned char>	bytes ;
+	std::auto_ptr<StreamFilter>	filter ;
 	Dictionary					self ;
 } ;
 
@@ -59,7 +61,7 @@ Stream::Stream( )
 	\param	data	data to be swapped.
 	\param	dict	dictionary of the stream.
 */
-Stream::Stream( std::vector<unsigned char>& data, const Dictionary& dict )
+/*Stream::Stream( std::vector<unsigned char>& data, const Dictionary& dict )
 	: m_impl( new Impl )
 {
 	m_impl->bytes.swap( data ) ;
@@ -88,6 +90,12 @@ Stream::Stream( const std::string& str )
 {
 	m_impl->bytes.assign( str.begin( ), str.end( ) ) ;
 }
+*/
+Stream::Stream( std::streambuf *file, std::streamoff offset,
+	            const Dictionary& dict )
+	: m_impl( new Impl )
+{
+}
 
 Stream::~Stream( )
 {
@@ -97,7 +105,7 @@ void Stream::Swap( Stream& str )
 {
 	std::swap( m_impl, str.m_impl ) ;
 }
-
+/*
 void Stream::ApplyFilter( const Name& filter )
 {
 	if ( filter == Name( "FlateDecode" ) )
@@ -132,7 +140,7 @@ void Stream::Inflate( )
 
 	m_impl->bytes.swap( output ) ;
 }
-
+*/
 std::ostream& operator<<( std::ostream& os, const Stream& b )
 {
 	assert( b.m_impl.get( ) != 0 ) ;
@@ -143,16 +151,16 @@ std::ostream& operator<<( std::ostream& os, const Stream& b )
 ), 9 ) ;
 	c.resize( dest_len ) ;
 */
-	const std::vector<unsigned char>& c = b.m_impl->bytes ;
+// 	const std::vector<unsigned char>& c = b.m_impl->bytes ;
 
 	Dictionary dict( b.m_impl->self ) ;
-	dict["Length"]	= c.size( ) ;
+// 	dict["Length"]	= c.size( ) ;
 // 	dict["Filter"]	= Name( "FlateDecode" ) ;
 	os << dict ;
 
 	os << "\nstream\n" ;
-	std::copy( c.begin( ), c.end( ),
-	           std::ostreambuf_iterator<char>( os ) ) ;
+/*	std::copy( c.begin( ), c.end( ),
+	           std::ostreambuf_iterator<char>( os ) ) ;*/
 	os << "endstream" ;
 	
 	return os ;
@@ -163,7 +171,8 @@ bool Stream::operator==( const Stream& str ) const
 	assert( m_impl.get( ) != 0 ) ;
 	assert( str.m_impl.get( ) != 0 ) ;
 	
-	return m_impl->bytes == str.m_impl->bytes ;
+// 	return m_impl->bytes == str.m_impl->bytes ;
+	return m_impl.get() == str.m_impl.get() ;
 }
 
 const Dictionary& Stream::GetDictionary( ) const
@@ -180,15 +189,15 @@ Dictionary& Stream::GetDictionary( )
 
 bool Stream::IsEmpty( ) const
 {
-	return m_impl->bytes.empty( ) ;
+	return true ;//m_impl->bytes.empty( ) ;
 }
 
 void Stream::ReadAll( std::streambuf *buf ) const
 {
     assert( buf != 0 ) ;
-    if ( !m_impl->bytes.empty( ) )
+/*    if ( !m_impl->bytes.empty( ) )
 	    buf->sputn( reinterpret_cast<const char*>( &m_impl->bytes[0] ),
-	                m_impl->bytes.size( ) ) ;
+	                m_impl->bytes.size( ) ) ;*/
 }
 
 } // end of namespace

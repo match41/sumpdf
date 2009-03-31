@@ -176,13 +176,13 @@ Object File::ReadStream( const Dictionary& dict )
 		m_ifile->seekg( pos ) ;
 	}
 
-	std::vector<unsigned char> data( length.As<int>( ) ) ;
+/*	std::vector<unsigned char> data( length.As<int>( ) ) ;
 	if ( m_ifile->rdbuf()->sgetn( reinterpret_cast<char*>( &data[0]),
 	                                                        data.size() )
 			!= static_cast<std::streampos>( data.size() ) )
 		throw ParseError( "cannot read stream data" ) ;
-
-	return Stream( data, dict ) ;
+*/
+	return Stream( m_ifile->rdbuf(), m_ifile->tellg( ), dict ) ;
 }
 
 Ref File::WriteObj( const Object& obj )

@@ -64,13 +64,13 @@ void FileTest::TestSimple( )
 	obj3["Resources"] = Ref( 2, 0 ) ;
 	obj3["Contents"] = Ref( 4, 0 ) ;
 	f.WriteObj( obj3, link[3] ) ;
-
+/*
 	Stream obj4( "2 J\n\
 0.57 w\n\
 BT /F1 16.00 Tf ET\n\
 BT 31.19 794.57 Td (Hello World!) Tj ET\n" ) ;
 	f.WriteObj( obj4, link[4] ) ;
-
+*/
 	Ref pages[] = { Ref( 3, 0 ) } ;
 	double mbox[] = { 0, 0, 595.28, 841.89 } ;
 	Dictionary obj1 ;

@@ -48,8 +48,8 @@ class Stream
 {
 public :
 	Stream( ) ;
-	Stream( const std::string& str ) ;
-	Stream( std::vector<unsigned char>& data, const Dictionary& dict ) ;
+/*	Stream( const std::string& str ) ;
+	Stream( std::vector<unsigned char>& data, const Dictionary& dict ) ;*/
 	Stream( std::streambuf *file, std::streamoff offset,
 	        const Dictionary& dict ) ;
 	~Stream( ) ;
@@ -67,10 +67,10 @@ public :
     void ReadAll( std::streambuf *buf ) const ;
 
 private :
-	void Inflate( ) ;
+/*	void Inflate( ) ;
 
 	void ApplyFilter( const Name& filter ) ;
-
+*/
 private :
 	struct Impl ;
 	

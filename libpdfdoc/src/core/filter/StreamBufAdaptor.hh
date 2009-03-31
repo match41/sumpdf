@@ -34,9 +34,9 @@ namespace pdf {
 
 class StreamFilter ;
 
-/*!	\brief	brief description
+/*!	\brief	an adaptor from StreamFilter to streambuf
 	
-	this class represents
+	This class transform a StreamFilter to an std::streambuf.
 */
 class StreamBufAdaptor : public std::streambuf
 {
