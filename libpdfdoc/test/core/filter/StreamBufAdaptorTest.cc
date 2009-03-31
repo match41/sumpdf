@@ -19,44 +19,45 @@
  ***************************************************************************/
 
 /*!
-	\file	FilterIOStream.hh
-	\brief	definition the FilterIOStream class
+	\file	StreamBufAdaptorTest.cc
+	\brief	implementation the StreamBufAdaptorTest class
 	\date	Wed Mar 4 2009
 	\author	Nestal Wan
 */
 
-#ifndef __PDF_FILTER_IO_STREAM_HEADER_INCLUDED__
-#define __PDF_FILTER_IO_STREAM_HEADER_INCLUDED__
+#include "StreamBufAdaptorTest.hh"
 
-#include <streambuf>
+#include "core/filter/StreamBufAdaptor.hh"
+#include "core/filter/DeflateFilter.hh"
+#include "core/filter/RawFilter.hh"
+#include "core/Dictionary.hh"
+#include "core/Token.hh"
 
-namespace pdf {
+#include <iostream>
 
-class StreamFilter ;
-
-/*!	\brief	brief description
-	
-	this class represents
-*/
-class FilterIOStream : public std::streambuf
+StreamBufAdaptorTest::StreamBufAdaptorTest( )
 {
-public :
-	FilterIOStream( StreamFilter *str ) ;
+}
 
-protected :
-	int underflow( ) ;
+void StreamBufAdaptorTest::TestRead( )
+{
+	std::ifstream file( (std::string(TEST_DATA_DIR) + "obj9020").c_str() ) ;
+	std::vector<unsigned char> src( (std::istreambuf_iterator<char>( file )),
+	                                (std::istreambuf_iterator<char>( )) ) ;
 
-private :
-    bool BufferIn( ) ;
+	std::vector<unsigned char> c( ::compressBound( src.size() ) ) ;
+	::uLongf dest_len = c.size( ) ;
+	::compress2( &c[0], &dest_len, &src[0], src.size(), 9 ) ;
 
-private :
-	static const std::streamsize	m_buf_size	= 80 ;
-	static const std::streamsize    m_pb_size	= 4 ;
+	std::istringstream ss( std::string( &c[0], &c[dest_len] ) ) ;
+	pdf::RawFilter raw( ss.rdbuf() ) ;
+	pdf::DeflateFilter def( &raw ) ;
 
-	char 			m_buf[m_buf_size] ;
-	StreamFilter	*m_str ;
-} ;
-
-} // end of namespace
-
-#endif
+	pdf::StreamBufAdaptor subject( &def ) ;
+	std::istream is( &subject ) ;
+	
+	pdf::Dictionary d ;
+	CPPUNIT_ASSERT( is >> d ) ;
+	CPPUNIT_ASSERT( d["Subtype"].As<pdf::Name>() == pdf::Name("CIDFontType0"));
+	CPPUNIT_ASSERT( d["Type"].As<pdf::Name>() == pdf::Name("Font"));
+}

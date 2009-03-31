@@ -19,35 +19,44 @@
  ***************************************************************************/
 
 /*!
-	\file	FilterIOStreamTest.hh
-	\brief	definition the FilterIOStreamTest class
+	\file	StreamBufAdaptor.hh
+	\brief	definition the StreamBufAdaptor class
 	\date	Wed Mar 4 2009
 	\author	Nestal Wan
 */
 
-#ifndef __PDFUT_FILTER_IO_STREAM_TEST_HEADER_INCLUDED__
-#define __PDFUT_FILTER_IO_STREAM_TEST_HEADER_INCLUDED__
+#ifndef __PDF_STREAM_BUF_ADAPTOR_HEADER_INCLUDED__
+#define __PDF_STREAM_BUF_ADAPTOR_HEADER_INCLUDED__
 
-#include <cppunit/TestFixture.h>
+#include <streambuf>
 
-#include <cppunit/extensions/HelperMacros.h>
+namespace pdf {
+
+class StreamFilter ;
 
 /*!	\brief	brief description
 	
 	this class represents
 */
-class FilterIOStreamTest : public CppUnit::TestFixture
+class StreamBufAdaptor : public std::streambuf
 {
 public :
-	FilterIOStreamTest( ) ;
+	StreamBufAdaptor( StreamFilter *str ) ;
 
-	// declare suit function
-	CPPUNIT_TEST_SUITE( FilterIOStreamTest );
-		CPPUNIT_TEST( TestRead ) ;
-	CPPUNIT_TEST_SUITE_END( ) ;
+protected :
+	int underflow( ) ;
 
 private :
-	void TestRead( ) ;
+    bool BufferIn( ) ;
+
+private :
+	static const std::streamsize	m_buf_size	= 80 ;
+	static const std::streamsize    m_pb_size	= 4 ;
+
+	char 			m_buf[m_buf_size] ;
+	StreamFilter	*m_str ;
 } ;
+
+} // end of namespace
 
 #endif

@@ -19,13 +19,13 @@
  ***************************************************************************/
 
 /*!
-	\file	FilterIOStream.cc
-	\brief	implementation the FilterIOStream class
+	\file	StreamBufAdaptor.cc
+	\brief	implementation the StreamBufAdaptor class
 	\date	Wed Mar 4 2009
 	\author	Nestal Wan
 */
 
-#include "FilterIOStream.hh"
+#include "StreamBufAdaptor.hh"
 #include "StreamFilter.hh"
 
 #include <cassert>
@@ -33,7 +33,7 @@
 
 namespace pdf {
 
-FilterIOStream::FilterIOStream( StreamFilter *str )
+StreamBufAdaptor::StreamBufAdaptor( StreamFilter *str )
 	: m_str( str )
 {
 	assert( m_str != 0 ) ;
@@ -43,7 +43,7 @@ FilterIOStream::FilterIOStream( StreamFilter *str )
 
 }
 
-int FilterIOStream::underflow( )
+int StreamBufAdaptor::underflow( )
 {
 	assert( m_str != 0 ) ;
 
@@ -54,7 +54,7 @@ int FilterIOStream::underflow( )
 	                   : traits_type::eof() ;
 }
 
-bool FilterIOStream::BufferIn( )
+bool StreamBufAdaptor::BufferIn( )
 {
 	// cannot directly use m_pb_size in template functions.
 	// it should be a bug in gcc

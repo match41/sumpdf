@@ -19,45 +19,35 @@
  ***************************************************************************/
 
 /*!
-	\file	FilterIOStreamTest.cc
-	\brief	implementation the FilterIOStreamTest class
+	\file	StreamBufAdaptorTest.hh
+	\brief	definition the StreamBufAdaptorTest class
 	\date	Wed Mar 4 2009
 	\author	Nestal Wan
 */
 
-#include "FilterIOStreamTest.hh"
+#ifndef __PDFUT_STREAM_BUF_ADAPTOR_TEST_HEADER_INCLUDED__
+#define __PDFUT_STREAM_BUF_ADAPTOR_TEST_HEADER_INCLUDED__
 
-#include "core/filter/FilterIOStream.hh"
-#include "core/filter/DeflateFilter.hh"
-#include "core/filter/RawFilter.hh"
-#include "core/Dictionary.hh"
-#include "core/Token.hh"
+#include <cppunit/TestFixture.h>
 
-#include <iostream>
+#include <cppunit/extensions/HelperMacros.h>
 
-FilterIOStreamTest::FilterIOStreamTest( )
-{
-}
-
-void FilterIOStreamTest::TestRead( )
-{
-	std::ifstream file( (std::string(TEST_DATA_DIR) + "obj9020").c_str() ) ;
-	std::vector<unsigned char> src( (std::istreambuf_iterator<char>( file )),
-	                                (std::istreambuf_iterator<char>( )) ) ;
-
-	std::vector<unsigned char> c( ::compressBound( src.size() ) ) ;
-	::uLongf dest_len = c.size( ) ;
-	::compress2( &c[0], &dest_len, &src[0], src.size(), 9 ) ;
-
-	std::istringstream ss( std::string( &c[0], &c[dest_len] ) ) ;
-	pdf::RawFilter raw( ss.rdbuf() ) ;
-	pdf::DeflateFilter def( &raw ) ;
-
-	pdf::FilterIOStream subject( &def ) ;
-	std::istream is( &subject ) ;
+/*!	\brief	brief description
 	
-	pdf::Dictionary d ;
-	CPPUNIT_ASSERT( is >> d ) ;
-	CPPUNIT_ASSERT( d["Subtype"].As<pdf::Name>() == pdf::Name("CIDFontType0"));
-	CPPUNIT_ASSERT( d["Type"].As<pdf::Name>() == pdf::Name("Font"));
-}
+	this class represents
+*/
+class StreamBufAdaptorTest : public CppUnit::TestFixture
+{
+public :
+	StreamBufAdaptorTest( ) ;
+
+	// declare suit function
+	CPPUNIT_TEST_SUITE( StreamBufAdaptorTest );
+		CPPUNIT_TEST( TestRead ) ;
+	CPPUNIT_TEST_SUITE_END( ) ;
+
+private :
+	void TestRead( ) ;
+} ;
+
+#endif
