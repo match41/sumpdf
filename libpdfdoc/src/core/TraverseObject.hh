@@ -33,7 +33,6 @@
 #include "Object.hh"
 
 #include <algorithm>
-//#include <ext/functional>
 #include <boost/bind.hpp>
 
 #include <iostream>
