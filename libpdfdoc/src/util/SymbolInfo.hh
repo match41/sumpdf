@@ -42,11 +42,8 @@ class SymbolInfo
 public :
 	struct Stack
 	{
-#ifdef WIN32
-#else
 		void 		*m_stack[100] ;
 		std::size_t	m_count ;
-#endif
 	} ;
 
 public :

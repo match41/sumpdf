@@ -252,6 +252,12 @@ public :
 		boost::apply_visitor( func, m_obj ) ;
 	}
 
+    template <typename T>
+    bool IsType( ) const
+    {
+        return boost::get<T>( &m_obj ) != 0 ;
+    }
+
 	const std::type_info& TypeID( ) const ;
 
 private :
