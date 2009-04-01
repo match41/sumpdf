@@ -74,17 +74,17 @@ BT 31.19 794.57 Td (Hello World!) Tj ET\n" ) ;
 	Ref pages[] = { Ref( 3, 0 ) } ;
 	double mbox[] = { 0, 0, 595.28, 841.89 } ;
 	Dictionary obj1 ;
-	obj1["Type"] = Name( "Pages" ) ;
-	obj1["Kids"] = Array( pages, pages + 1 ) ;
-	obj1["Count"] = 1 ;
-	obj1["MediaBox"] = Array( mbox, mbox+4 ) ;
+	obj1["Type"]		= Name( "Pages" ) ;
+	obj1["Kids"]		= Array( pages, pages + 1 ) ;
+	obj1["Count"]		= 1 ;
+	obj1["MediaBox"]	= Array( mbox, mbox+4 ) ;
 	f.WriteObj( obj1, link[1] ) ;
 	
 	Dictionary obj5 ;
-	obj5["Type"] = Name( "Font" ) ;
-	obj5["BaseFont"] = Name( "Helvetica-Bold" ) ;
-	obj5["Subtype"] = Name( "Type1" ) ;
-	obj5["Encoding"] = Name( "WinAnsiEncoding" ) ;
+	obj5["Type"]		= Name( "Font" ) ;
+	obj5["BaseFont"]	= Name( "Helvetica-Bold" ) ;
+	obj5["Subtype"]		= Name( "Type1" ) ;
+	obj5["Encoding"]	= Name( "WinAnsiEncoding" ) ;
 	f.WriteObj( obj5, link[5] ) ;
 	
 	Name pset[] = { Name("PDF"), Name("Text") } ;
