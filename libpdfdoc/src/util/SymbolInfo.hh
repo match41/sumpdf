@@ -41,7 +41,6 @@ namespace pdf {
 class SymbolInfo
 {
 public :
-public :
 	SymbolInfo( ) ;
 	~SymbolInfo( ) ;
 

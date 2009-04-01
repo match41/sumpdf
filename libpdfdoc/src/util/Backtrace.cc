@@ -31,11 +31,13 @@
 #include "Util.hh"
 
 #include <ostream>
+#include <algorithm>
 
 namespace pdf {
 
-Backtrace::Backtrace( )
-	: m_count( SymbolInfo::Instance()->Backtrace(m_stack, Count(m_stack) ))
+Backtrace::Backtrace( std::size_t skip )
+	: m_count( SymbolInfo::Instance()->Backtrace(m_stack, Count(m_stack) )),
+	  m_skip( std::min( skip, m_count ) )
 {
 }
 
@@ -52,8 +54,8 @@ std::ostream& operator<<( std::ostream& os, const pdf::Backtrace& b )
 	// the 1st function in the stack is SymbolInfo::Backtrace()
 	// the 2nd one is the Backtrace() constructor
 	// both are not interesting to user
-	for ( std::size_t i = 2 ; i < b.m_count ; i++ )
-		SymbolInfo::Instance()->PrintTrace( b.m_stack[i], os, i - 2 ) ;
+	for ( std::size_t i = b.m_skip ; i < b.m_count ; i++ )
+		SymbolInfo::Instance()->PrintTrace( b.m_stack[i], os, i - b.m_skip ) ;
 
 	return os ;
 }

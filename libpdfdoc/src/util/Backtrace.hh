@@ -46,13 +46,13 @@ std::cout << Backtrace() << std::endl ;
 class Backtrace
 {
 public :
-	Backtrace( ) ;
+	explicit Backtrace( std::size_t skip = 2 ) ;
 	friend std::ostream& operator<<( std::ostream& os,
 	                                 const pdf::Backtrace& bt ) ;
 
 private :
 	void		*m_stack[100] ;
-	std::size_t	m_count ;
+	std::size_t	m_count, m_skip ;
 } ;
 
 } // end of namespace

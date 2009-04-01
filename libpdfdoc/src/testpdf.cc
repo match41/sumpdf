@@ -27,6 +27,7 @@
 #include <sstream>
 #include <iostream>
 #include <cstdlib>
+#include <stdexcept>
 
 int main( int argc, char **argv )
 {

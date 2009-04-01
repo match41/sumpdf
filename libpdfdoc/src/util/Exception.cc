@@ -34,17 +34,35 @@
 
 #include <cstdlib>
 #include <sstream>
+#include <iostream>
 
 namespace pdf {
 
-Exception::Exception( const std::string& err )
-	: runtime_error( err )
+Exception::Exception( boost::format fmt, bool backtrace )
+{
+	FormatErrorMsg( fmt, backtrace ) ;
+}
+
+Exception::Exception( const std::string& str )
+	: m_err_msg( str )
 {
 }
 
-Exception::Exception( boost::format fmt )
-	: runtime_error( fmt.str() )
+Exception::~Exception( ) throw( )
 {
+}
+
+const char* Exception::what() const throw()
+{
+	return m_err_msg.c_str( ) ;
+}
+
+void Exception::FormatErrorMsg( boost::format fmt, bool backtrace )
+{
+	if ( backtrace )
+		fmt % m_bt ;
+
+	m_err_msg = fmt.str( ) ;
 }
 
 BadType::BadType( const std::type_info& from, const std::type_info& to,
@@ -57,8 +75,7 @@ BadType::BadType( const std::type_info& from, const std::type_info& to,
 	                            )
 	             % Demangle( from.name() )
 	             % Demangle( to.name() )
-	             % e.what()
-	             % Backtrace() )
+	             % e.what(), true )
 {
 }
 
