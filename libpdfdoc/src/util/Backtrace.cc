@@ -28,30 +28,34 @@
 #include "Backtrace.hh"
 
 #include "SymbolInfo.hh"
+#include "Util.hh"
 
 #include <ostream>
 
-namespace pdf
+namespace pdf {
+
+Backtrace::Backtrace( )
+	: m_count( SymbolInfo::Instance()->Backtrace(m_stack, Count(m_stack) ))
 {
-	Backtrace::Backtrace( )
-	{
-		SymbolInfo::Instance()->GetStack( m_stack ) ;
-	}
 }
 
-namespace std
+/*!	\brief	operator<< for printing backtraces
+
+	This function will call SymbolInfo::Backtrace() to print out a backtrace
+	to the stream. It will use the SymbolInfo::Instance() singleton to get
+	the symbol info.
+	\param	os	the output stream
+	\sa SymbolInfo::Backtrace(), SymbolInfo::Instance()
+*/
+std::ostream& operator<<( std::ostream& os, const pdf::Backtrace& b )
 {
-	/*!	\brief	operator<< for printing backtraces
-	
-		This function will call SymbolInfo::Backtrace() to print out a backtrace
-		to the stream. It will use the SymbolInfo::Instance() singleton to get
-		the symbol info.
-		\param	os	the output stream
-		\sa SymbolInfo::Backtrace(), SymbolInfo::Instance()
-	*/
-	ostream& operator<<( ostream& os, const pdf::Backtrace& b )
-	{
-		pdf::SymbolInfo::Instance()->Backtrace( b.m_stack, os ) ;
-		return os ;
-	}
+	// the 1st function in the stack is SymbolInfo::Backtrace()
+	// the 2nd one is the Backtrace() constructor
+	// both are not interesting to user
+	for ( std::size_t i = 2 ; i < b.m_count ; i++ )
+		SymbolInfo::Instance()->PrintTrace( b.m_stack[i], os, i - 2 ) ;
+
+	return os ;
 }
+
+} // end of namespace

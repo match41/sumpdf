@@ -30,6 +30,7 @@
 
 #include <memory>
 #include <iosfwd>
+#include <cstdlib>
 
 namespace pdf {
 
@@ -40,25 +41,15 @@ namespace pdf {
 class SymbolInfo
 {
 public :
-	struct Stack
-	{
-		void 		*m_stack[100] ;
-		std::size_t	m_count ;
-	} ;
-
 public :
 	SymbolInfo( ) ;
 	~SymbolInfo( ) ;
 
 	static SymbolInfo* Instance( ) ;
 
-	void Backtrace( std::ostream& os,
-	                std::size_t limit = 999 ) const ;
-
-	bool GetStack( Stack& s ) const ;
-	void Backtrace( const Stack& s, std::ostream& os,
-	                std::size_t limit = 999 ) const ;
-
+	std::size_t Backtrace( void **stack, std::size_t count ) ;
+	void PrintTrace( void *addr, std::ostream& os, std::size_t idx = 0 ) ;
+	
 private :
 	struct Impl ;
 	const std::auto_ptr<Impl> m_impl ;
