@@ -32,6 +32,8 @@
 #include "core/Token.hh"
 #include "core/TokenSrc.hh"
 
+#include <zlib.h>
+
 #include <sstream>
 #include <iostream>
 
@@ -67,12 +69,65 @@ void StreamTest::TestRead2( )
 void StreamTest::TestWrite( )
 {
 	std::string str = "0 12 TD (string string) Tj" ;
-/*	pdf::Stream stream( str ) ;
+	pdf::Stream subject( str ) ;
 	
 	std::stringstream ss ; 
-	ss << stream ;
+	std::size_t count = subject.Write( ss, pdf::Ref( 101, 0 ) ) ;
+	CPPUNIT_ASSERT( count == str.size() ) ;
 
 	pdf::Dictionary dict ;
 	ss >> dict ;
-	CPPUNIT_ASSERT( dict["Length"] == str.size( ) ) ;*/
+	CPPUNIT_ASSERT( dict["Length"] == pdf::Ref( 101, 0 ) ) ;
+}
+
+void StreamTest::TestReset( )
+{
+	std::string str = "0 12 TD (string string) Tj" ;
+	pdf::Stream subject( str ) ;
+	
+	std::ostringstream ss ; 
+	std::size_t count = subject.Write( ss, pdf::Ref( 101, 0 ) ) ;
+	CPPUNIT_ASSERT( count == str.size() ) ;
+// 	CPPUNIT_ASSERT( ss.str() == str ) ;
+	
+	subject.Reset( ) ;
+	std::ostringstream ss2 ; 
+	count = subject.Write( ss2, pdf::Ref( 101, 0 ) ) ;
+	CPPUNIT_ASSERT( count == str.size() ) ;
+// 	CPPUNIT_ASSERT( ss2.str() == str ) ;
+}
+
+void StreamTest::TestReadDeflate( )
+{
+	std::string str( m_compressed.begin(), m_compressed.end() ) ;
+	pdf::Stream subject( m_compressed, pdf::Name( "FlateDecode" ) ) ;
+	
+	std::ostringstream ss ; 
+	std::size_t count = subject.Write( ss, pdf::Ref( 101, 0 ) ) ;
+	CPPUNIT_ASSERT( count == m_original.size() ) ;
+	
+	subject.Reset( ) ;
+	
+	pdf::Dictionary d ;
+	CPPUNIT_ASSERT( subject.InStream() >> d ) ;
+	CPPUNIT_ASSERT( d["Subtype"].As<pdf::Name>() == "CIDFontType0" ) ;
+}
+
+void StreamTest::setUp( )
+{
+	std::ifstream file( (std::string(TEST_DATA_DIR) + "obj9020").c_str() ) ;
+	m_original.assign( (std::istreambuf_iterator<char>( file )),
+	                   (std::istreambuf_iterator<char>( )) ) ;
+
+	std::vector<unsigned char> c( ::compressBound( m_original.size() ) ) ;
+	::uLongf dest_len = c.size( ) ;
+	::compress2( &c[0], &dest_len, &m_original[0], m_original.size(), 9 ) ;
+	c.resize( dest_len ) ;
+	
+	m_compressed.swap( c ) ;
+}
+
+void StreamTest::tearDown( )
+{
+	m_compressed.clear( ) ;
 }

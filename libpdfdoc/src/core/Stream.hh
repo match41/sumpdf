@@ -39,6 +39,7 @@ namespace pdf {
 class Dictionary ;
 class Name ;
 class Ref ;
+class Object ;
 
 /*!	\brief	PDF stream object
 	
@@ -49,6 +50,7 @@ class Stream
 {
 public :
 	explicit Stream( const std::string& str = std::string() ) ;
+	Stream( const std::vector<unsigned char>& data, const Object& filter ) ;
 	Stream( std::streambuf *file, std::streamoff offset,
 	        const Dictionary& dict ) ;
 	~Stream( ) ;
@@ -65,8 +67,11 @@ public :
     std::size_t ReadAll( std::streambuf *buf ) const ;
 
 	std::istream& InStream( ) ;
+	
+	void Reset( ) ;
 
 private :
+	void ApplyFilter( const Object& filter ) ;
 	void CreateFilter( const Name& filter ) ;
 	
 private :

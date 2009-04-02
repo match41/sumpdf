@@ -78,7 +78,21 @@ Stream::Stream( std::streambuf *file, std::streamoff offset,
 	m_impl->filter.reset( new RawFilter( file, offset,
 	                                     dict["Length"].As<int>() ) ) ;
 
-	const Object& filter = dict["Filter"] ;
+	ApplyFilter( dict["Filter"] ) ;
+}
+	
+Stream::Stream( const std::vector<unsigned char>& data, const Object& filter )
+	: m_impl( new Impl )
+{
+	m_impl->filter.reset( new BufferedFilter(std::string(data.begin(),
+	                                                     data.end() ) ) ) ;
+	ApplyFilter( filter ) ;
+}
+
+void Stream::ApplyFilter( const Object& filter )
+{
+	assert( m_impl->filter.get() != 0 ) ;
+
 	if ( filter.Type() == Object::array )
 	{
 		const Array& filters = filter.As<Array>() ;
@@ -136,7 +150,7 @@ std::size_t Stream::Write( std::ostream& os, const Ref& length_ref ) const
 
 	os << "\nstream\n" ;
 	std::size_t count = ReadAll( os.rdbuf() ) ;
-	os << "endstream" ;
+	os << "\nendstream" ;
 	
 	return count ;
 }
@@ -182,6 +196,12 @@ std::size_t Stream::ReadAll( std::streambuf *buf ) const
 std::istream& Stream::InStream( )
 {
 	return m_impl->istr ;
+}
+
+void Stream::Reset( )
+{
+	m_impl->istr.clear( ) ;
+	m_impl->filter->Reset( ) ;
 }
 
 } // end of namespace
