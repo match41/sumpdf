@@ -29,6 +29,7 @@
 #define __PDF_BACK_TRACE_HEADER_INCLUDED__
 
 #include <iosfwd>
+#include <string>
 
 namespace pdf {
 
@@ -49,6 +50,8 @@ public :
 	explicit Backtrace( std::size_t skip = 2 ) ;
 	friend std::ostream& operator<<( std::ostream& os,
 	                                 const pdf::Backtrace& bt ) ;
+
+	std::string ToString( ) const ;
 
 private :
 	void		*m_stack[100] ;
