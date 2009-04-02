@@ -19,17 +19,18 @@
 \***************************************************************************/
 
 /*!
-	\file	DeflateStreamBuf.hh
-	\brief	definition the DeflateStreamBuf class
-	\date	Sun Mar 22 2009
+	\file	BufferedFilter.hh
+	\brief	definition the BufferedFilter class
+	\date	Thu Apr 2 2009
 	\author	Nestal Wan
 */
 
-#ifndef __PDF_DEFLATE_STREAM_BUF_HEADER_INCLUDED__
-#define __PDF_DEFLATE_STREAM_BUF_HEADER_INCLUDED__
+#ifndef __PDF_BUFFERED_FILTER_HEADER_INCLUDED__
+#define __PDF_BUFFERED_FILTER_HEADER_INCLUDED__
 
-#include <streambuf>
-#include <zlib.h>
+#include "RawFilter.hh"
+
+#include <sstream>
 
 namespace pdf {
 
@@ -37,25 +38,25 @@ namespace pdf {
 	
 	this class represents
 */
-class DeflateStreamBuf : public std::streambuf
+class BufferedFilter : public StreamFilter
 {
 public :
-	DeflateStreamBuf( std::streambuf *str ) ;
+	explicit BufferedFilter( const std::string& str = std::string() ) ;
 
-protected :
-	int_type underflow( ) ;
-	int_type pbackfail( int_type c ) ;
+	template <typename InputIt>
+	BufferedFilter( InputIt first, InputIt last )
+		: m_buf( std::string( first, last ) ),
+		  m_filter( m_buf.rdbuf() )
+	{
+	}
+	
+	std::size_t Read( unsigned char *data, std::size_t size ) ;
+	std::size_t Write( const unsigned char *data, std::size_t size ) ;
+	void Reset( ) ;
 
 private :
-	int_type BufferIn( ) ;
-
-private :
-	static const std::streamsize	m_buf_size	= 16 ;
-	static const std::streamsize    m_pb_size	= 4 ;
-
-	std::streambuf	*m_str ;
-	char_type		m_buf[m_buf_size], m_comp[80] ;
-	z_stream		m_zstr ;
+	std::stringstream	m_buf ;
+	RawFilter			m_filter ;
 } ;
 
 } // end of namespace

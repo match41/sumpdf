@@ -50,8 +50,8 @@ void StreamBufAdaptorTest::TestRead( )
 	::compress2( &c[0], &dest_len, &src[0], src.size(), 9 ) ;
 
 	std::istringstream ss( std::string( &c[0], &c[dest_len] ) ) ;
-	pdf::RawFilter raw( ss.rdbuf() ) ;
-	pdf::DeflateFilter def( &raw ) ;
+	pdf::RawFilter *raw = new pdf::RawFilter( ss.rdbuf() ) ;
+	pdf::DeflateFilter def( raw ) ;
 
 	pdf::StreamBufAdaptor subject( &def ) ;
 	std::istream is( &subject ) ;

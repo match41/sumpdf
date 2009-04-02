@@ -19,43 +19,36 @@
 \***************************************************************************/
 
 /*!
-	\file	DeflateStreamBuf.cc
-	\brief	implementation the DeflateStreamBuf class
-	\date	Sun Mar 22 2009
+	\file	BufferedFilter.cc
+	\brief	implementation the BufferedFilter class
+	\date	Thu Apr 2 2009
 	\author	Nestal Wan
 */
 
-#include "DeflateStreamBuf.hh"
-
-#include <cassert>
-#include <cstring>
+#include "BufferedFilter.hh"
 
 namespace pdf {
 
-DeflateStreamBuf::DeflateStreamBuf( std::streambuf *str )
-	: m_str( str )
+BufferedFilter::BufferedFilter( const std::string& str )
+	: m_buf( str ),
+	  m_filter( m_buf.rdbuf() )
 {
-	assert( m_str != 0 ) ;
-	setg( m_buf + 4, m_buf + 4, m_buf + 4 ) ;
 }
 
-DeflateStreamBuf::int_type DeflateStreamBuf::underflow( )
+std::size_t BufferedFilter::Read( unsigned char *data, std::size_t size )
 {
-	if ( gptr() < egptr() )
-		return traits_type::to_int_type( *gptr() ) ;
-	
-	if ( BufferIn() < 0 )
-		return traits_type::eof() ;
-	else
-		return traits_type::to_int_type( *gptr() ) ;
+	return m_filter.Read( data, size ) ;
 }
 
-DeflateStreamBuf::int_type DeflateStreamBuf::BufferIn( )
+std::size_t BufferedFilter::Write( const unsigned char *data, std::size_t size )
 {
-	std::streamsize num_pb = std::min( gptr() - eback(), m_pb_size ) ;
-	std::memcpy( m_buf + (m_pb_size - num_pb), gptr() - num_pb, num_pb ) ;
-	
-	return traits_type::eof( ) ;
+	return m_filter.Write( data, size ) ;
+}
+
+void BufferedFilter::Reset( )
+{
+	m_buf.clear( ) ;
+	m_filter.Reset( ) ;
 }
 
 } // end of namespace
