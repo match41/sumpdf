@@ -53,6 +53,17 @@ void StreamTest::TestRead( )
 	CPPUNIT_ASSERT( objstr.Get() == "stream" ) ;
 }
 
+void StreamTest::TestRead2( )
+{
+	pdf::Dictionary d ;
+	d["Length"] = 5 ;
+	std::istringstream iss( "hello" ) ;
+	pdf::Stream subject( iss.rdbuf(), 0, d ) ;
+	pdf::Token t ;
+	CPPUNIT_ASSERT( subject.InStream() >> t ) ;
+	CPPUNIT_ASSERT( t.Get() == "hello" ) ;
+}
+
 void StreamTest::TestWrite( )
 {
 	std::string str = "0 12 TD (string string) Tj" ;

@@ -33,6 +33,7 @@
 #include "filter/DeflateFilter.hh"
 #include "filter/RawFilter.hh"
 #include "filter/StreamFilter.hh"
+#include "filter/StreamBufAdaptor.hh"
 #include "util/Exception.hh"
 
 #include <boost/bind.hpp>
@@ -48,14 +49,21 @@ namespace pdf {
 
 struct Stream::Impl
 {
-	std::auto_ptr<StreamFilter>	filter ;
 	Dictionary					self ;
+	std::auto_ptr<StreamFilter>	filter ;
+	StreamBufAdaptor			sbuf ;
+	std::istream				istr ;
+	
+	Impl( ) : istr( &sbuf )
+	{
+	}
 } ;
 
 Stream::Stream( const std::string& str )
 	: m_impl( new Impl )
 {
 	m_impl->filter.reset( new BufferedFilter(str) ) ;
+	m_impl->sbuf.Set( m_impl->filter.get() ) ;
 }
 
 Stream::Stream( std::streambuf *file, std::streamoff offset,
@@ -79,6 +87,8 @@ Stream::Stream( std::streambuf *file, std::streamoff offset,
 	}
 	else if ( filter.Type() == Object::name )
 		CreateFilter( filter ) ;
+
+	m_impl->sbuf.Set( m_impl->filter.get() ) ;
 }
 
 Stream::~Stream( )
@@ -135,7 +145,6 @@ bool Stream::operator==( const Stream& str ) const
 	assert( m_impl.get( ) != 0 ) ;
 	assert( str.m_impl.get( ) != 0 ) ;
 	
-// 	return m_impl->bytes == str.m_impl->bytes ;
 	return m_impl.get() == str.m_impl.get() ;
 }
 
@@ -168,6 +177,11 @@ std::size_t Stream::ReadAll( std::streambuf *buf ) const
 	}
 
 	return total ;
+}
+
+std::istream& Stream::InStream( )
+{
+	return m_impl->istr ;
 }
 
 } // end of namespace

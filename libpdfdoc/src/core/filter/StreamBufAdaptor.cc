@@ -36,11 +36,17 @@ namespace pdf {
 StreamBufAdaptor::StreamBufAdaptor( StreamFilter *str )
 	: m_str( str )
 {
-	assert( m_str != 0 ) ;
 	setg( m_buf + m_pb_size,
 		  m_buf + m_pb_size,
 		  m_buf + m_pb_size ) ;
 
+}
+
+void StreamBufAdaptor::Set( StreamFilter *str )
+{
+	assert( str != 0 ) ;
+	assert( m_str == 0 ) ;
+	m_str = str ;
 }
 
 int StreamBufAdaptor::underflow( )

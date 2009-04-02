@@ -34,6 +34,7 @@
 #include "core/Array.hh"
 #include "core/Stream.hh"
 #include "core/Object.hh"
+#include "core/Token.hh"
 
 FileTest::FileTest( )
 {
@@ -129,10 +130,16 @@ void FileTest::TestReadStream( )
 	
 	pdf::Object obj = f.ReadObj( pdf::Ref( 4, 0 ) ) ;
 	CPPUNIT_ASSERT( obj.IsType<pdf::Stream>() ) ;
-	
+/*	
 	std::stringstream output ;
 	std::size_t count = obj.As<pdf::Stream>().ReadAll( output.rdbuf() ) ;
 	CPPUNIT_ASSERT( count == 70 ) ;
 	CPPUNIT_ASSERT( output.str() == "2 J\n0.57 w\nBT /F1 16.00 Tf ET\n"
 	                        "BT 31.19 794.57 Td (Hello World!) Tj ET\n" ) ;
+*/
+
+	std::istream& is = obj.As<pdf::Stream>().InStream() ;
+	pdf::Token t ;
+	CPPUNIT_ASSERT( is >> t ) ;
+	CPPUNIT_ASSERT( t.Get() == "2" ) ;
 }

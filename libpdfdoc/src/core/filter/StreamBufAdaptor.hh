@@ -41,7 +41,9 @@ class StreamFilter ;
 class StreamBufAdaptor : public std::streambuf
 {
 public :
-	StreamBufAdaptor( StreamFilter *str ) ;
+	explicit StreamBufAdaptor( StreamFilter *str = 0 ) ;
+
+	void Set( StreamFilter *str ) ;
 
 protected :
 	int underflow( ) ;

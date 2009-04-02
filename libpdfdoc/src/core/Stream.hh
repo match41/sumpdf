@@ -64,6 +64,8 @@ public :
 
     std::size_t ReadAll( std::streambuf *buf ) const ;
 
+	std::istream& InStream( ) ;
+
 private :
 	void CreateFilter( const Name& filter ) ;
 	

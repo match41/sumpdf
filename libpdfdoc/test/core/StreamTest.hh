@@ -45,11 +45,13 @@ public :
 	// declare suit function
 	CPPUNIT_TEST_SUITE( StreamTest );
 		CPPUNIT_TEST( TestRead );
+		CPPUNIT_TEST( TestRead2 );
 		CPPUNIT_TEST( TestWrite );
 	CPPUNIT_TEST_SUITE_END();
 
 private :
 	void TestRead( ) ;
+	void TestRead2( ) ;
 	void TestWrite( ) ;
 } ;
 
