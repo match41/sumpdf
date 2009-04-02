@@ -34,31 +34,29 @@
 
 #include <cstdlib>
 #include <sstream>
+#include <iostream>
 
 namespace pdf {
 
-Exception::Exception( const std::string& err )
-	: runtime_error( err )
+Exception::Exception( boost::format fmt, bool backtrace )
+	: runtime_error( backtrace ? fmt.str() + "\nBacktrace:\n" +
+                                 Backtrace().ToString() : fmt.str() )
 {
 }
 
-Exception::Exception( boost::format fmt )
-	: runtime_error( fmt.str() )
+Exception::Exception( const std::string& str, bool backtrace )
+	: runtime_error( backtrace ? str + "\nBacktrace:\n"
+	                                 + Backtrace().ToString( ) : str )
 {
 }
 
 BadType::BadType( const std::type_info& from, const std::type_info& to,
 				  const std::exception& e )
 	: Exception( boost::format( "Cannot convert \"%1%\" object to \"%2%\". "
-	                            "exception: \"%3%\""
-#ifndef NDEBUG
-	                            "\n%4%"
-#endif
-	                            )
+	                            "exception: \"%3%\"" )
 	             % Demangle( from.name() )
 	             % Demangle( to.name() )
-	             % e.what()
-	             % Backtrace() )
+	             % e.what() )
 {
 }
 

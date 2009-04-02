@@ -61,7 +61,7 @@ PageTree::PageTree( PageTree *parent )
 {
 	assert( parent != this ) ;
 	if ( parent )
-		parent->AddNode( this ) ;
+		parent->AppendNode( this ) ;
 }
 
 PageNode* PageTree::ReadNode( const Ref& link, IElementSrc *repo )
@@ -113,10 +113,8 @@ void PageTree::Write( const Ref& link, IElementDest *repo ) const
 	repo->WriteObj( self, link ) ;
 }
 
-void PageTree::AddLeaf( RealPage *child )
+void PageTree::IncChildCount( )
 {
-	assert( child != 0 ) ;
-
 	// increment count in all tree nodes include myself
 	PageTree *tree = this ;
 	while ( tree != 0 )
@@ -124,11 +122,25 @@ void PageTree::AddLeaf( RealPage *child )
 		tree->m_count++ ;
 		tree = tree->Parent( ) ;
 	}
-
-	AddNode( child ) ;
 }
 
-void PageTree::AddNode( PageNode *child )
+void PageTree::AppendLeaf( RealPage *child )
+{
+	assert( child != 0 ) ;
+    IncChildCount( ) ;
+	AppendNode( child ) ;
+}
+
+void PageTree::AddLeaf( std::size_t index, RealPage *child )
+{
+	assert( child != 0 ) ;
+    IncChildCount( ) ;
+	
+	child->SetParent( this ) ;
+	m_kids.insert( m_kids.begin() + index, child ) ;
+}
+
+void PageTree::AppendNode( PageNode *child )
 {
 	assert( child != 0 ) ;
 	
@@ -169,12 +181,6 @@ PageNode* PageTree::GetLeaf( std::size_t index )
 	}
 	
 	return 0 ;
-}
-
-void PageTree::AddLeaf( std::size_t index, RealPage *child )
-{
-/*	PageNode *n = GetLeaf( index ) ;
-	PageTree *parent = n->Parent( ) ;*/
 }
 
 } // end of namespace

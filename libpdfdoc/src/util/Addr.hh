@@ -18,54 +18,16 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/*!
-	\file	Backtrace.cc
-	\brief	implementation the Backtrace class
-	\date	Mon Mar 30 2009
-	\author	Nestal Wan
-*/
+#ifndef __PDF_ADDR_HEADER_INCLUDED__
+#define __PDF_ADDR_HEADER_INCLUDED__
 
-#include "Backtrace.hh"
-
-#include "SymbolInfo.hh"
-#include "Util.hh"
-
-#include <sstream>
-#include <algorithm>
-
-namespace pdf {
-
-Backtrace::Backtrace( std::size_t skip )
-	: m_count( SymbolInfo::Instance()->Backtrace(m_stack, Count(m_stack) )),
-	  m_skip( std::min( skip, m_count ) )
+namespace pdf
 {
+#ifdef WIN32
+        typedef unsigned long long  addr_t ;
+#else
+        typedef void*               addr_t ;
+#endif
 }
 
-/*!	\brief	operator<< for printing backtraces
-    \internal
-
-	This function will call SymbolInfo::Backtrace() to print out a backtrace
-	to the stream. It will use the SymbolInfo::Instance() singleton to get
-	the symbol info.
-	\param	os	the output stream
-	\sa SymbolInfo::Backtrace(), SymbolInfo::Instance()
-*/
-std::ostream& operator<<( std::ostream& os, const pdf::Backtrace& b )
-{
-	// the 1st function in the stack is SymbolInfo::Backtrace()
-	// the 2nd one is the Backtrace() constructor
-	// both are not interesting to user
-	for ( std::size_t i = b.m_skip ; i < b.m_count ; i++ )
-		SymbolInfo::Instance()->PrintTrace( b.m_stack[i], os, i - b.m_skip ) ;
-
-	return os ;
-}
-
-std::string Backtrace::ToString( ) const
-{
-	std::ostringstream oss ;
-	oss << *this ;
-	return oss.str( ) ;
-}
-
-} // end of namespace
+#endif

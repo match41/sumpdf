@@ -144,53 +144,41 @@ void SymbolInfo::BacktraceInfo::Callback( bfd *abfd, asection *section,
 	                                              &info->m_lineno ) ;
 }
 
-void SymbolInfo::Backtrace( std::ostream& os, std::size_t limit ) const
+std::size_t SymbolInfo::Backtrace( void **stack, std::size_t count )
 {
-	Stack s ;
-	GetStack( s ) ;
-	Backtrace( s, os, limit ) ;
+	return ::backtrace( stack, count ) ;
 }
 
-bool SymbolInfo::GetStack( Stack& s ) const
+void SymbolInfo::PrintTrace( void *addr, std::ostream& os, std::size_t idx )
 {
-	s.m_count = backtrace( s.m_stack, Count(s.m_stack) ) ;
-}
-
-void SymbolInfo::Backtrace( const Stack& s, std::ostream& os,
-                            std::size_t limit ) const
-{
-	std::size_t loop = std::min<std::size_t>( s.m_count, 1 + limit ) ;
-	for ( std::size_t i = 1 ; i < loop ; i++ )
+	BacktraceInfo btinfo =
 	{
-		BacktraceInfo btinfo =
-		{
-			this, s.m_stack[i], 0, 0, 0, false
-		} ;
-		
-		Dl_info sym ;
-		bfd_map_over_sections( m_impl->m_bfd,
-		                       &SymbolInfo::BacktraceInfo::Callback,
-		                       &btinfo ) ;
-		if ( btinfo.m_is_found )
-		{
-			std::string filename = ( btinfo.m_filename == 0 ? std::string()
-			                         : btinfo.m_filename ) ;
+		this, addr, 0, 0, 0, false
+	} ;
+	
+	Dl_info sym ;
+	bfd_map_over_sections( m_impl->m_bfd,
+							&SymbolInfo::BacktraceInfo::Callback,
+							&btinfo ) ;
+	if ( btinfo.m_is_found )
+	{
+		std::string filename = ( btinfo.m_filename == 0 ? std::string()
+									                    : btinfo.m_filename ) ;
 #ifdef SRC_DIR
-			std::size_t pos = filename.find( SRC_DIR ) ;
-			if ( pos != std::string::npos )
-				filename.erase( pos, std::strlen( SRC_DIR ) ) ;
+		std::size_t pos = filename.find( SRC_DIR ) ;
+		if ( pos != std::string::npos )
+			filename.erase( pos, std::strlen( SRC_DIR ) ) ;
 #endif
-			os << "#" << i << " " << s.m_stack[i] << " "
-			   << filename << ":" << btinfo.m_lineno 
-			   << " " << Demangle(btinfo.m_func_name)
-			   << std::endl ;
-		}
-		else if ( dladdr( s.m_stack[i], &sym ) )
-			os << "#" << i << " " << s.m_stack[i] << " "
-				<< sym.dli_fname
-				<< " " << Demangle( sym.dli_sname )
-				<< std::endl ;
+		os << "#"  << idx << " " << addr << " "
+			<< filename << ":" << btinfo.m_lineno 
+			<< " " << Demangle(btinfo.m_func_name)
+			<< std::endl ;
 	}
+	else if ( dladdr( addr, &sym ) )
+		os << "#"  << idx << " " << addr << " "
+			<< sym.dli_fname
+			<< " " << Demangle( sym.dli_sname )
+			<< std::endl ;
 }
 
 SymbolInfo* SymbolInfo::Instance( )

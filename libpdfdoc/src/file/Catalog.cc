@@ -96,7 +96,7 @@ void Catalog::AddPage( RealPage *page )
 		m_tree = new PageTree ;
 	
 	// for now the pages are arranged linearly for now
-	m_tree->AddLeaf( page ) ;
+	m_tree->AppendLeaf( page ) ;
 }
 
 std::size_t Catalog::PageCount( ) const

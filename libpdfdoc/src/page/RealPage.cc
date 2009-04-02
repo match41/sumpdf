@@ -60,7 +60,7 @@ RealPage::RealPage( PageTree *parent )
       m_rotate( 0 )
 {
 	if ( parent )
-		parent->AddLeaf( this ) ;
+		parent->AppendLeaf( this ) ;
 }
 
 Rect RealPage::MediaBox( ) const

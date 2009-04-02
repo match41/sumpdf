@@ -43,8 +43,9 @@ namespace pdf {
 class Exception : public std::runtime_error
 {
 public :
-	explicit Exception( const std::string& err ) ;
-	explicit Exception( boost::format fmt ) ;
+	explicit Exception( const std::string& err = std::string( ),
+	                    bool backtrace = true ) ;
+	explicit Exception( boost::format fmt, bool backtrace = true ) ;
 } ;
 
 /*!	\brief	Invalid type exception.
