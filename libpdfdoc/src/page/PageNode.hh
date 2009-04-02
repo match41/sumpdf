@@ -30,6 +30,8 @@
 
 #include "file/IElement.hh"
 
+#include <cstddef>
+
 namespace pdf {
 
 class Object ;

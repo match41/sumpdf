@@ -81,6 +81,20 @@ File::File( std::ostream *os )
 /*!	\brief	write the PDF file trailer
 	\internal
 
+	This function writes the PDF file trailer. A PDF file trailer has a 
+	trailer dictionary and a cross reference table. The trailer dictionary
+	contains core information about the PDF file, e.g. number of object,
+	link to document catalog. The cross reference table maps object IDs to
+	offsets in the file. It allows fast look-up for the PDF objects stored
+	in the file.
+	\param	catalog		reference to the document catalog
+	\param	producer	if the document was converted to PDF from another
+						format, the name of the application (for example,
+						libpdfdoc) that converted it to PDF.
+	\param	creator		if the document was converted to PDF from another
+						format, the name of the application (for example,
+						Adobe FrameMaker®) that created the original document
+						from which it was converted.
 */
 void File::WriteTrailer( const Ref& catalog, const std::string& producer,
 	                                         const std::string& creator )
@@ -89,7 +103,7 @@ void File::WriteTrailer( const Ref& catalog, const std::string& producer,
 	
 	Dictionary info ;
 	info["Producer"]		= producer ;
-	info["CreationDate"]	= creator ;
+	info["Creator"]			= creator ;
 
 	m_trailer["Info"]	= WriteObj( info ) ;
 	m_trailer["Root"]	= catalog ;
