@@ -84,7 +84,7 @@ bool SymbolInfo::GetStack( Stack& s ) const
 						 	  SymGetModuleBase64, 0 ) ;
         if ( result )
         {
-            s.m_stack[s.m_count] = reinterpret_cast<void*>(frame.AddrPC.Offset) ;
+            s.m_stack[s.m_count] = frame.AddrPC.Offset ;
             s.m_count++ ;
         }
     }
@@ -98,15 +98,14 @@ void SymbolInfo::Backtrace( const Stack& s, std::ostream& os,
         IMAGEHLP_SYMBOL64 *sym =
         	(IMAGEHLP_SYMBOL64 *)malloc( sizeof(IMAGEHLP_SYMBOL64) + 1024 );
     
-        DWORD64 addr_pc = reinterpret_cast<DWORD64>( s.m_stack[i] ) ;
         DWORD64 offset ;
-        if ( SymGetSymFromAddr64( GetCurrentProcess(), addr_pc,
+        if ( SymGetSymFromAddr64( GetCurrentProcess(), s.m_stack[i],
                                   &offset, sym ) )
         {
             IMAGEHLP_LINE64 line = { sizeof(IMAGEHLP_LINE64) } ;
-            SymGetLineFromAddr64( GetCurrentProcess(), addr_pc,
+            SymGetLineFromAddr64( GetCurrentProcess(), s.m_stack[i],
                                   0, &line ) ;
-		    os << "#" << i++ << " " << std::hex << addr_pc
+		    os << "#" << i++ << " " << std::hex << s.m_stack[i]
 		       << " "
 		       << (line.FileName != 0 ? std::string(line.FileName)
                                       : std::string() ) << ":"

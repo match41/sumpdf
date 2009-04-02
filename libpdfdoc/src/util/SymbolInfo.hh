@@ -33,16 +33,24 @@
 
 namespace pdf {
 
-/*!	\brief	brief description
+/*!	\brief	source code symbolic information
 	
-	this class represents
+	This class represents symbolic information about the source code,
+	e.g. function names and line numbers. It provides an interface to
+	lookup these informations by address.
 */
 class SymbolInfo
 {
 public :
 	struct Stack
 	{
-		void 		*m_stack[100] ;
+#ifdef WIN32
+        typedef unsigned long long  addr_t ;
+#else
+        typedef void*               addr_t ;
+#endif
+
+		addr_t      m_stack[100] ;
 		std::size_t	m_count ;
 	} ;
 
