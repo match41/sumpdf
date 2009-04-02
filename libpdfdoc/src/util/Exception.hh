@@ -28,10 +28,12 @@
 #ifndef __PDF_EXCEPTION_HEADER_INCLUDED__
 #define __PDF_EXCEPTION_HEADER_INCLUDED__
 
+#include "Backtrace.hh"
+
 #include <boost/format/format_fwd.hpp>
 
 #include <iosfwd>
-#include <stdexcept>
+#include <exception>
 #include <typeinfo>
 
 namespace pdf {
@@ -40,11 +42,21 @@ namespace pdf {
 	
 	This class is the base class for all exception class in libpdfdoc.
 */
-class Exception : public std::runtime_error
+class Exception : public std::exception
 {
 public :
-	explicit Exception( const std::string& err ) ;
-	explicit Exception( boost::format fmt ) ;
+	explicit Exception( const std::string& err = std::string( ) ) ;
+	explicit Exception( boost::format fmt, bool backtrace = false ) ;
+	~Exception( ) throw( ) ;
+
+	const char* what() const throw( ) ;
+
+protected :
+	void FormatErrorMsg( boost::format fmt, bool backtrace = false ) ;
+
+private :
+	Backtrace	m_bt ;
+	std::string	m_err_msg ;
 } ;
 
 /*!	\brief	Invalid type exception.

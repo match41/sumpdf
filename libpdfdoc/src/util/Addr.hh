@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2006 by Nestal Wan                                      *
+ *   Copyright (C) 2009 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,38 +18,16 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-#include "Doc.hh"
-#include "Page.hh"
-#include "Font.hh"
-#include "libpdfdoc.hh"
-#include "util/Exception.hh"
+#ifndef __PDF_ADDR_HEADER_INCLUDED__
+#define __PDF_ADDR_HEADER_INCLUDED__
 
-#include <sstream>
-#include <iostream>
-#include <cstdlib>
-#include <stdexcept>
-
-int main( int argc, char **argv )
+namespace pdf
 {
-	pdf::Doc *doc = pdf::CreateDoc( ) ;
-	try
-	{
-		throw pdf::BadType( typeid(int), typeid(double),
-		                    std::runtime_error("haha" ) ) ;
-	}
-	catch ( std::exception& e )
-	{
-		std::cerr << e.what() << std::endl ;
-	}
-
-	if ( argc >= 2 )
-		doc->Read( argv[1] ) ;
-	
-	pdf::Page *p = doc->AddPage( ) ;
-	pdf::Font *f = doc->CreateSimpleFont( "Helvetica" ) ;
-	p->DrawText( 100, 100, f, "Hello world!" ) ;
-
-	doc->Write( "test.pdf" ) ;
-
-	return 0 ;
+#ifdef WIN32
+        typedef unsigned long long  addr_t ;
+#else
+        typedef void*               addr_t ;
+#endif
 }
+
+#endif

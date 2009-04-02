@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2006 by Nestal Wan                                      *
+ *   Copyright (C) 2009 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -28,6 +28,8 @@
 #ifndef __PDF_SYMBOL_INFO_HEADER_INCLUDED__
 #define __PDF_SYMBOL_INFO_HEADER_INCLUDED__
 
+#include "Addr.hh"
+
 #include <memory>
 #include <iosfwd>
 
@@ -42,31 +44,14 @@ namespace pdf {
 class SymbolInfo
 {
 public :
-	struct Stack
-	{
-#ifdef WIN32
-        typedef unsigned long long  addr_t ;
-#else
-        typedef void*               addr_t ;
-#endif
-
-		addr_t      m_stack[100] ;
-		std::size_t	m_count ;
-	} ;
-
-public :
 	SymbolInfo( ) ;
 	~SymbolInfo( ) ;
 
 	static SymbolInfo* Instance( ) ;
 
-	void Backtrace( std::ostream& os,
-	                std::size_t limit = 999 ) const ;
-
-	bool GetStack( Stack& s ) const ;
-	void Backtrace( const Stack& s, std::ostream& os,
-	                std::size_t limit = 999 ) const ;
-
+	std::size_t Backtrace( addr_t *stack, std::size_t count ) ;
+	void PrintTrace( addr_t addr, std::ostream& os, std::size_t idx = 0 ) ;
+	
 private :
 	struct Impl ;
 	const std::auto_ptr<Impl> m_impl ;

@@ -78,9 +78,8 @@ Stream::Stream( std::vector<unsigned char>& data, const Dictionary& dict )
 	else if ( !filter.IsNull() )
 		throw ParseError( "filter error" ) ;
 
-	// these two fields will be generated again when writing.
-	m_impl->self.erase( "Filter" ) ;
-	m_impl->self.erase( "Length" ) ;
+// 	m_impl->self.erase( "Filter" ) ;
+// 	m_impl->self.erase( "Length" ) ;
 }
 
 Stream::Stream( const std::string& str )
@@ -131,6 +130,40 @@ void Stream::Inflate( )
 	output.resize( output.size() - z.avail_out ) ;
 
 	m_impl->bytes.swap( output ) ;
+}
+
+/*!	\brief	write the stream with an indirect length field
+
+	This function is different from the operator<<() in which it writes the
+	"Length" field in the stream dictionary as an indirect object. It is
+	because normally for streams with filters the length of the stream is not
+	known until after the stream content is written. However, the stream
+	dictionary, which contains the length field, is written \e before the
+	actual stream content. Therefore, when writing the stream dictionary, as
+	the length is still unknown, this function writes an indirect object and
+	returns the stream content length. The caller should write the returned
+	length to the indirect object it just specified, i.e. \a length_ref .
+	\param	os			the output to be written to
+	\param	length_ref	the indirect object (or link) of the length field.
+						caller should write the returned value (i.e. the
+						length) to this link.
+	\return	the actual number of bytes written to file for stream content,
+			i.e. the length of filtered stream content. stream dictionary is
+			not included. 
+*/
+std::size_t Stream::Write( std::ostream& os, const Ref& length_ref ) const
+{
+	Dictionary dict( m_impl->self ) ;
+	dict["Length"]	= length_ref ;
+	os << dict ;
+
+	os << "\nstream\n" ;
+	std::size_t count =
+		os.rdbuf()->sputn( reinterpret_cast<const char*>( &m_impl->bytes[0] ),
+	                       m_impl->bytes.size( ) ) ;
+	os << "endstream" ;
+	
+	return count ;
 }
 
 std::ostream& operator<<( std::ostream& os, const Stream& b )
