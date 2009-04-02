@@ -42,6 +42,7 @@ Backtrace::Backtrace( std::size_t skip )
 }
 
 /*!	\brief	operator<< for printing backtraces
+    \internal
 
 	This function will call SymbolInfo::Backtrace() to print out a backtrace
 	to the stream. It will use the SymbolInfo::Instance() singleton to get

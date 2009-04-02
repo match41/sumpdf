@@ -52,11 +52,12 @@ public :
 	ElementList GetChildren( ) const ;
 	
 	PageNode* GetLeaf( std::size_t index ) ;
-	void AddLeaf( RealPage *child ) ;
+	void AppendLeaf( RealPage *child ) ;
 	void AddLeaf( std::size_t index, RealPage *child ) ;
 
 private :
-	void AddNode( PageNode *child ) ;
+	void AppendNode( PageNode *child ) ;
+	void IncChildCount( ) ;
 	
 	static PageNode* ReadNode( const Ref& link, IElementSrc *repo ) ;
 

@@ -36,6 +36,7 @@
 namespace pdf {
 
 /*!	\brief	source code symbolic information
+    \internal
 	
 	This class represents symbolic information about the source code,
 	e.g. function names and line numbers. It provides an interface to
@@ -47,6 +48,14 @@ public :
 	SymbolInfo( ) ;
 	~SymbolInfo( ) ;
 
+    /*! \brief  singleton function
+        \internal
+        
+        Returns the SymbolInfo singleton. Normally only one object
+        of SymbolInfo is enough for one application, so a singleton
+        is enough. This function will create the SymbolInfo object
+        in the first call.
+    */
 	static SymbolInfo* Instance( ) ;
 
 	std::size_t Backtrace( addr_t *stack, std::size_t count ) ;
