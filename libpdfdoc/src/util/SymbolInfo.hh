@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2006 by Nestal Wan                                      *
+ *   Copyright (C) 2009 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -28,15 +28,19 @@
 #ifndef __PDF_SYMBOL_INFO_HEADER_INCLUDED__
 #define __PDF_SYMBOL_INFO_HEADER_INCLUDED__
 
+#include "Addr.hh"
+
 #include <memory>
 #include <iosfwd>
-#include <cstdlib>
 
 namespace pdf {
 
-/*!	\brief	brief description
+/*!	\brief	source code symbolic information
+    \internal
 	
-	this class represents
+	This class represents symbolic information about the source code,
+	e.g. function names and line numbers. It provides an interface to
+	lookup these informations by address.
 */
 class SymbolInfo
 {
@@ -44,10 +48,18 @@ public :
 	SymbolInfo( ) ;
 	~SymbolInfo( ) ;
 
+    /*! \brief  singleton function
+        \internal
+        
+        Returns the SymbolInfo singleton. Normally only one object
+        of SymbolInfo is enough for one application, so a singleton
+        is enough. This function will create the SymbolInfo object
+        in the first call.
+    */
 	static SymbolInfo* Instance( ) ;
 
-	std::size_t Backtrace( void **stack, std::size_t count ) ;
-	void PrintTrace( void *addr, std::ostream& os, std::size_t idx = 0 ) ;
+	std::size_t Backtrace( addr_t *stack, std::size_t count ) ;
+	void PrintTrace( addr_t addr, std::ostream& os, std::size_t idx = 0 ) ;
 	
 private :
 	struct Impl ;

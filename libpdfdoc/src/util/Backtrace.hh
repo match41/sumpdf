@@ -28,6 +28,8 @@
 #ifndef __PDF_BACK_TRACE_HEADER_INCLUDED__
 #define __PDF_BACK_TRACE_HEADER_INCLUDED__
 
+#include "Addr.hh"
+
 #include <iosfwd>
 #include <string>
 
@@ -54,7 +56,7 @@ public :
 	std::string ToString( ) const ;
 
 private :
-	void		*m_stack[100] ;
+	addr_t		m_stack[100] ;
 	std::size_t	m_count, m_skip ;
 } ;
 

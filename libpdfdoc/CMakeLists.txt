@@ -204,6 +204,11 @@ if ( FREETYPE_FOUND )
 					${FT_DIR}/Library.cc
 					${FT_DIR}/Exception.cc
 					${FT_DIR}/ErrorTable.cc )
+    set( FT_HDRS	${FT_DIR}/Face.hh
+					${FT_DIR}/Glyph.hh
+					${FT_DIR}/Library.hh
+					${FT_DIR}/Exception.hh
+					${FT_DIR}/ErrorTable.hh )
     set( OPT_LIBS   ${OPT_LIBS}
                     ${FREETYPE_LIBRARIES} )
     set( OPT_INCS   ${OPT_INCS}
@@ -265,6 +270,8 @@ SOURCE_GROUP( "Source Files\\file"	FILES ${FILE_SRCS} )
 SOURCE_GROUP( "Source Files\\core"	FILES ${CORE_SRCS} )
 SOURCE_GROUP( "Source Files\\util"	FILES ${UTIL_SRCS} )
 SOURCE_GROUP( "Source Files\\font"	FILES ${FONT_SRCS} )
+SOURCE_GROUP( "Source Files\\font\\ftwrap"	FILES ${FT_SRCS} )
+SOURCE_GROUP( "Header Files\\font\\ftwrap"	FILES ${FT_HDRS} )
 SOURCE_GROUP( "Source Files\\image"	FILES ${IMG_SRCS} )
 SOURCE_GROUP( "Header Files\\page"	FILES ${PAGE_HDRS} )
 SOURCE_GROUP( "Header Files\\file"	FILES ${FILE_HDRS} )
