@@ -66,10 +66,8 @@ void FileTest::TestSimple( )
 	obj3["Contents"] = Ref( 4, 0 ) ;
 	f.WriteObj( obj3, link[3] ) ;
 
-	Stream obj4( "2 J\n\
-0.57 w\n\
-BT /F1 16.00 Tf ET\n\
-BT 31.19 794.57 Td (Hello World!) Tj ET\n" ) ;
+	Stream obj4( "2 J\n0.57 w\nBT /F1 16.00 Tf ET\n"
+	             "BT 31.19 794.57 Td (Hello World!) Tj ET\n" ) ;
 	f.WriteObj( obj4, link[4] ) ;
 
 	Ref pages[] = { Ref( 3, 0 ) } ;
@@ -119,4 +117,22 @@ BT 31.19 794.57 Td (Hello World!) Tj ET\n" ) ;
 	CPPUNIT_ASSERT( std::equal( file_str.begin( ), file_str.end( ),
 	                            std::istreambuf_iterator<char>( exp ) ) ) ;
 
+}
+
+void FileTest::TestReadStream( )
+{
+	// open expected file to compare and verify
+	std::ifstream file( (std::string(TEST_DATA_DIR) +
+	                    "FileTestSimple.pdf").c_str( ),
+	                    std::ios::in | std::ios::binary ) ;
+	pdf::File f( &file ) ;
+	
+	pdf::Object obj = f.ReadObj( pdf::Ref( 4, 0 ) ) ;
+	CPPUNIT_ASSERT( obj.IsType<pdf::Stream>() ) ;
+	
+	std::stringstream output ;
+	std::size_t count = obj.As<pdf::Stream>().ReadAll( output.rdbuf() ) ;
+	CPPUNIT_ASSERT( count == 70 ) ;
+	CPPUNIT_ASSERT( output.str() == "2 J\n0.57 w\nBT /F1 16.00 Tf ET\n"
+	                        "BT 31.19 794.57 Td (Hello World!) Tj ET\n" ) ;
 }

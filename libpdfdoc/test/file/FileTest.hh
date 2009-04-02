@@ -42,13 +42,14 @@ public :
 	FileTest( ) ;
 
 	// declare suit function
-	CPPUNIT_TEST_SUITE( FileTest );
-		CPPUNIT_TEST( TestSimple );
-// 		CPPUNIT_TEST( TestTwoNames );
+	CPPUNIT_TEST_SUITE( FileTest ) ;
+		CPPUNIT_TEST( TestSimple ) ;
+		CPPUNIT_TEST( TestReadStream ) ;
 	CPPUNIT_TEST_SUITE_END();
 
 private :
 	void TestSimple( ) ;
+	void TestReadStream( ) ;
 } ;
 
 #endif
