@@ -86,8 +86,8 @@ set( CORE_HDRS  	${CORE_DIR}/Object.hh
 					${CORE_DIR}/filter/StreamFilter.hh
 					${CORE_DIR}/filter/RawFilter.hh
 					${CORE_DIR}/filter/DeflateFilter.hh
-					${CORE_DIR}/filter/DeflateStreamBuf.hh
-					${CORE_DIR}/filter/FilterIOStream.hh )
+					${CORE_DIR}/filter/BufferedFilter.hh
+					${CORE_DIR}/filter/StreamBufAdaptor.hh )
 
 set( UTIL_HDRS  	${UTIL_DIR}/Rect.hh
 					${UTIL_DIR}/Export.hh
@@ -158,8 +158,8 @@ set( CORE_SRCS  	${CORE_DIR}/Object.cc
 					${CORE_DIR}/filter/StreamFilter.cc
 					${CORE_DIR}/filter/RawFilter.cc
 					${CORE_DIR}/filter/DeflateFilter.cc
-					${CORE_DIR}/filter/DeflateStreamBuf.cc
-					${CORE_DIR}/filter/FilterIOStream.cc )
+					${CORE_DIR}/filter/BufferedFilter.cc
+					${CORE_DIR}/filter/StreamBufAdaptor.cc )
 
 set( UTIL_SRCS  	${UTIL_DIR}/Rect.cc
 					${UTIL_DIR}/Util.cc
@@ -388,7 +388,7 @@ set( UT_SRCS	test/core/TokenTest.cc
 				test/core/StreamTest.cc
 				test/core/filter/RawFilterTest.cc
 				test/core/filter/DeflateFilterTest.cc
-				test/core/filter/FilterIOStreamTest.cc
+				test/core/filter/StreamBufAdaptorTest.cc
 				
 				test/page/PageTest.cc
 				test/page/PageNodeTest.cc

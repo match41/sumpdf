@@ -44,8 +44,8 @@ void DeflateFilterTest::TestRead( )
 {
 	std::istringstream ss( std::string( m_compressed.begin(),
 	                                    m_compressed.end() ) ) ;
-	pdf::RawFilter raw( ss.rdbuf() ) ;
-	pdf::DeflateFilter subject( &raw ) ;
+	pdf::RawFilter *raw = new pdf::RawFilter( ss.rdbuf() ) ;
+	pdf::DeflateFilter subject( raw ) ;
 	
 	std::vector<unsigned char> src = m_original ;
 	
@@ -64,8 +64,8 @@ void DeflateFilterTest::TestReset( )
 {
 	std::istringstream ss( std::string( m_compressed.begin(),
 	                                    m_compressed.end() ) ) ;
-	pdf::RawFilter raw( ss.rdbuf() ) ;
-	pdf::DeflateFilter subject( &raw ) ;
+	pdf::RawFilter *raw = new pdf::RawFilter( ss.rdbuf() ) ;
+	pdf::DeflateFilter subject( raw ) ;
 	
 	std::vector<unsigned char> src = m_original ;
 	

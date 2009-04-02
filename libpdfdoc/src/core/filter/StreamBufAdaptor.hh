@@ -1,5 +1,5 @@
-/***************************************************************************\
- *   Copyright (C) 2009 by Nestal Wan                                      *
+/***************************************************************************
+ *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -16,46 +16,49 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
-\***************************************************************************/
+ ***************************************************************************/
 
 /*!
-	\file	DeflateStreamBuf.cc
-	\brief	implementation the DeflateStreamBuf class
-	\date	Sun Mar 22 2009
+	\file	StreamBufAdaptor.hh
+	\brief	definition the StreamBufAdaptor class
+	\date	Wed Mar 4 2009
 	\author	Nestal Wan
 */
 
-#include "DeflateStreamBuf.hh"
+#ifndef __PDF_STREAM_BUF_ADAPTOR_HEADER_INCLUDED__
+#define __PDF_STREAM_BUF_ADAPTOR_HEADER_INCLUDED__
 
-#include <cassert>
-#include <cstring>
+#include <streambuf>
 
 namespace pdf {
 
-DeflateStreamBuf::DeflateStreamBuf( std::streambuf *str )
-	: m_str( str )
-{
-	assert( m_str != 0 ) ;
-	setg( m_buf + 4, m_buf + 4, m_buf + 4 ) ;
-}
+class StreamFilter ;
 
-DeflateStreamBuf::int_type DeflateStreamBuf::underflow( )
-{
-	if ( gptr() < egptr() )
-		return traits_type::to_int_type( *gptr() ) ;
+/*!	\brief	an adaptor from StreamFilter to streambuf
 	
-	if ( BufferIn() < 0 )
-		return traits_type::eof() ;
-	else
-		return traits_type::to_int_type( *gptr() ) ;
-}
+	This class transform a StreamFilter to an std::streambuf.
+*/
+class StreamBufAdaptor : public std::streambuf
+{
+public :
+	explicit StreamBufAdaptor( StreamFilter *str = 0 ) ;
 
-DeflateStreamBuf::int_type DeflateStreamBuf::BufferIn( )
-{
-	std::streamsize num_pb = std::min( gptr() - eback(), m_pb_size ) ;
-	std::memcpy( m_buf + (m_pb_size - num_pb), gptr() - num_pb, num_pb ) ;
-	
-	return traits_type::eof( ) ;
-}
+	void Set( StreamFilter *str ) ;
+
+protected :
+	int underflow( ) ;
+
+private :
+    bool BufferIn( ) ;
+
+private :
+	static const std::streamsize	m_buf_size	= 80 ;
+	static const std::streamsize    m_pb_size	= 4 ;
+
+	char 			m_buf[m_buf_size] ;
+	StreamFilter	*m_str ;
+} ;
 
 } // end of namespace
+
+#endif

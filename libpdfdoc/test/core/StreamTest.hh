@@ -32,6 +32,8 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+#include <vector>
+
 namespace CppUnit
 {
 	class Test ;
@@ -43,14 +45,27 @@ public :
 	StreamTest( ) ;
 
 	// declare suit function
-	CPPUNIT_TEST_SUITE( StreamTest );
-		CPPUNIT_TEST( TestRead );
-		CPPUNIT_TEST( TestWrite );
-	CPPUNIT_TEST_SUITE_END();
+	CPPUNIT_TEST_SUITE( StreamTest ) ;
+		CPPUNIT_TEST( TestRead ) ;
+		CPPUNIT_TEST( TestRead2 ) ;
+		CPPUNIT_TEST( TestReadDeflate ) ;
+		CPPUNIT_TEST( TestWrite ) ;
+		CPPUNIT_TEST( TestReset ) ;
+	CPPUNIT_TEST_SUITE_END( ) ;
+
+public :
+	void setUp( ) ;
+	void tearDown( ) ;
 
 private :
 	void TestRead( ) ;
+	void TestRead2( ) ;
 	void TestWrite( ) ;
+	void TestReset( ) ;
+	void TestReadDeflate( ) ;
+
+private :
+	std::vector<unsigned char> m_original, m_compressed ;
 } ;
 
 #endif

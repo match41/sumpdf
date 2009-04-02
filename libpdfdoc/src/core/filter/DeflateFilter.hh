@@ -31,6 +31,7 @@
 #include "StreamFilter.hh"
 
 #include <vector>
+#include <memory>
 
 #include <zlib.h>
 
@@ -52,11 +53,11 @@ public :
 	void Reset( ) ;
 
 private :
-	z_stream		m_zstr ;
-	StreamFilter	*m_src ;
+	z_stream					m_zstr ;
+	std::auto_ptr<StreamFilter>	m_src ;
 	
 	static const std::size_t	m_buf_size = 80 ;
-	std::vector<unsigned char> m_buf ;
+	std::vector<unsigned char>	m_buf ;
 } ;
 
 } // end of namespace

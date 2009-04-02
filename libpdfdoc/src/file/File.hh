@@ -73,15 +73,15 @@ private :
 	bool ReadTailer( Dictionary& trailer, std::size_t& offset ) ;
 	static std::istream& ReadLine( std::istream& is, std::string& line ) ;
 	
-	Object ReadStream( const Dictionary& dict ) ;
+	Object ReadStream( Dictionary& dict ) ;
 
 	class ObjectWriter ;
 
 private :
 	std::vector<std::size_t>	m_objs ;
 
-	std::istream	*m_ifile ;
-	std::ostream	*m_ofile ;
+	std::istream	*m_in ;
+	std::ostream	*m_out ;
 		
 	Dictionary		m_trailer ;
 } ;
