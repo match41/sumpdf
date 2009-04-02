@@ -80,8 +80,6 @@ private :
 private :
 	std::vector<std::size_t>	m_objs ;
 
-// 	std::fstream	m_file ;
-	
 	std::istream	*m_ifile ;
 	std::ostream	*m_ofile ;
 		

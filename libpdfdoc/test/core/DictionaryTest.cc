@@ -171,3 +171,12 @@ void DictionaryTest::TestSwap( )
 	CPPUNIT_ASSERT( s1["bbb"] == "AAA" ) ;
 	CPPUNIT_ASSERT( s2["AAA"] == "bbb" ) ;
 }
+
+void DictionaryTest::TestNull( )
+{
+	pdf::Dictionary s ;
+	CPPUNIT_ASSERT( s["???"].IsNull() ) ;
+	
+	s["haha"] = pdf::Object() ;
+	CPPUNIT_ASSERT( s.find( "haha" ) == s.end() ) ;
+}
