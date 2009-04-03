@@ -124,6 +124,8 @@ void PageTree::IncChildCount( )
 	}
 }
 
+/*! \brief  append the leaf node at the end of the tree node
+*/
 void PageTree::AppendLeaf( RealPage *child )
 {
 	assert( child != 0 ) ;
