@@ -36,9 +36,10 @@ namespace pdf {
 class Token ;
 class TokenSrc ;
 
-/*!	\brief	brief description
+/*!	\brief	PDF string object
+	\internal
 	
-	this class represents
+	This class represents the PDF string object.
 */
 class String
 {
