@@ -35,14 +35,21 @@
 
 namespace pdf {
 
+/*!	default constructor. This is the default constructor. It initializes the
+	object to an empty token.
+*/
 Token::Token( const std::string& t )
 	: m_token( t )
 {
 }
 
-/*!	\brief	reading a token from input stream
-
-	This function does the actual parsing. It will extract 
+/*!	extracts a token from input stream. This function does the actual parsing.
+	It will extract the characters one-by-one using istream::peek() and
+	istream::ignore(). Characters will not be putback()'d back to the input
+	stream.
+	\param	is		input stream to be extracted from
+	\param	token	reference to output token
+	\return	the input stream \a is
 */
 std::istream& operator>>( std::istream& is, Token& token )
 {
