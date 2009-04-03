@@ -30,6 +30,8 @@
 
 #include "PageNode.hh"
 
+#include <vector>
+
 namespace pdf {
 
 class RealPage ;

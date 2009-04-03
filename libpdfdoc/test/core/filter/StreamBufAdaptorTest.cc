@@ -19,65 +19,45 @@
  ***************************************************************************/
 
 /*!
-	\file	FilterIOStream.cc
-	\brief	implementation the FilterIOStream class
+	\file	StreamBufAdaptorTest.cc
+	\brief	implementation the StreamBufAdaptorTest class
 	\date	Wed Mar 4 2009
 	\author	Nestal Wan
 */
 
-#include "FilterIOStream.hh"
-#include "StreamFilter.hh"
+#include "StreamBufAdaptorTest.hh"
 
-#include <cassert>
-#include <cstring>
+#include "core/filter/StreamBufAdaptor.hh"
+#include "core/filter/DeflateFilter.hh"
+#include "core/filter/RawFilter.hh"
+#include "core/Dictionary.hh"
+#include "core/Token.hh"
 
-namespace pdf {
+#include <iostream>
 
-FilterIOStream::FilterIOStream( StreamFilter *str )
-	: m_str( str )
+StreamBufAdaptorTest::StreamBufAdaptorTest( )
 {
-	assert( m_str != 0 ) ;
-	setg( m_buf + m_pb_size,
-		  m_buf + m_pb_size,
-		  m_buf + m_pb_size ) ;
-
 }
 
-int FilterIOStream::underflow( )
+void StreamBufAdaptorTest::TestRead( )
 {
-	assert( m_str != 0 ) ;
+	std::ifstream file( (std::string(TEST_DATA_DIR) + "obj9020").c_str() ) ;
+	std::vector<unsigned char> src( (std::istreambuf_iterator<char>( file )),
+	                                (std::istreambuf_iterator<char>( )) ) ;
 
-	if ( gptr() < egptr() )
-		return traits_type::to_int_type( *gptr() ) ;
+	std::vector<unsigned char> c( ::compressBound( src.size() ) ) ;
+	::uLongf dest_len = c.size( ) ;
+	::compress2( &c[0], &dest_len, &src[0], src.size(), 9 ) ;
+
+	std::istringstream ss( std::string( &c[0], &c[dest_len] ) ) ;
+	pdf::RawFilter *raw = new pdf::RawFilter( ss.rdbuf() ) ;
+	pdf::DeflateFilter def( raw ) ;
+
+	pdf::StreamBufAdaptor subject( &def ) ;
+	std::istream is( &subject ) ;
 	
-	return BufferIn( ) ? traits_type::to_int_type( *gptr() )
-	                   : traits_type::eof() ;
+	pdf::Dictionary d ;
+	CPPUNIT_ASSERT( is >> d ) ;
+	CPPUNIT_ASSERT( d["Subtype"].As<pdf::Name>() == pdf::Name("CIDFontType0"));
+	CPPUNIT_ASSERT( d["Type"].As<pdf::Name>() == pdf::Name("Font"));
 }
-
-bool FilterIOStream::BufferIn( )
-{
-	// cannot directly use m_pb_size in template functions.
-	// it should be a bug in gcc
-	std::streamsize pb_size	= m_pb_size ;
-	
-	std::streamsize num_pb	= std::min( gptr() - eback(), pb_size ) ;
-	std::memcpy( m_buf + (m_pb_size - num_pb), gptr() - num_pb, num_pb ) ;
-
-	unsigned char *buf = reinterpret_cast<unsigned char*>( m_buf ) ;
-	std::size_t count = m_str->Read( buf + m_pb_size,
-	                                 m_buf_size - m_pb_size ) ;
-	if ( count == 0 )
-	{
-		setg( 0, 0, 0 ) ;
-		return false ;
-	}
-	else
-	{
-		setg( m_buf + m_pb_size - num_pb,
-		      m_buf + m_pb_size,
-		      m_buf + m_pb_size + count ) ;
-		return true ;
-	}
-}
-
-} // end of namespace

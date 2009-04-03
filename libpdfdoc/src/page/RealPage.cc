@@ -127,7 +127,7 @@ void RealPage::Write( const Ref& link, IElementDest *file ) const
 
 	Dictionary self( m_self ) ;
 	self["Type"]		= Name( "Page" ) ;
-	self["Contents"]    = file->WriteObj( Stream( m_content.str( ) ) ) ;
+// 	self["Contents"]    = file->WriteObj( Stream( m_content.str( ) ) ) ;
 	self["Resources"]   = file->Write( GetResource( ) ) ;
 	self["Parent"]   	= file->Write( Parent( ) ) ;
     

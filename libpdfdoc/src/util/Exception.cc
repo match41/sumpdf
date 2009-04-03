@@ -39,43 +39,24 @@
 namespace pdf {
 
 Exception::Exception( boost::format fmt, bool backtrace )
-{
-	FormatErrorMsg( fmt, backtrace ) ;
-}
-
-Exception::Exception( const std::string& str )
-	: m_err_msg( str )
+	: runtime_error( backtrace ? fmt.str() + "\nBacktrace:\n" +
+                                 Backtrace().ToString() : fmt.str() )
 {
 }
 
-Exception::~Exception( ) throw( )
+Exception::Exception( const std::string& str, bool backtrace )
+	: runtime_error( backtrace ? str + "\nBacktrace:\n"
+	                                 + Backtrace().ToString( ) : str )
 {
-}
-
-const char* Exception::what() const throw()
-{
-	return m_err_msg.c_str( ) ;
-}
-
-void Exception::FormatErrorMsg( boost::format fmt, bool backtrace )
-{
-	if ( backtrace )
-		fmt % m_bt ;
-
-	m_err_msg = fmt.str( ) ;
 }
 
 BadType::BadType( const std::type_info& from, const std::type_info& to,
 				  const std::exception& e )
 	: Exception( boost::format( "Cannot convert \"%1%\" object to \"%2%\". "
-	                            "exception: \"%3%\""
-#ifndef NDEBUG
-	                            "\n%4%"
-#endif
-	                            )
+	                            "exception: \"%3%\"" )
 	             % Demangle( from.name() )
 	             % Demangle( to.name() )
-	             % e.what(), true )
+	             % e.what() )
 {
 }
 

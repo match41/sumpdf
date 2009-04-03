@@ -46,6 +46,7 @@ public :
 		CPPUNIT_TEST( TestImage ) ;
 		CPPUNIT_TEST( TestExtract ) ;
 		CPPUNIT_TEST( TestSwap ) ;
+		CPPUNIT_TEST( TestNull ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
 private :
@@ -56,6 +57,7 @@ private :
 	void TestImage( ) ;
 	void TestExtract( ) ;
 	void TestSwap( ) ;
+	void TestNull( ) ;
 } ;
 
 #endif

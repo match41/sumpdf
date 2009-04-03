@@ -1,5 +1,5 @@
-/***************************************************************************
- *   Copyright (C) 2006 by Nestal Wan                                      *
+/***************************************************************************\
+ *   Copyright (C) 2009 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -16,38 +16,39 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+\***************************************************************************/
 
 /*!
-	\file	FilterIOStreamTest.hh
-	\brief	definition the FilterIOStreamTest class
-	\date	Wed Mar 4 2009
+	\file	BufferedFilter.cc
+	\brief	implementation the BufferedFilter class
+	\date	Thu Apr 2 2009
 	\author	Nestal Wan
 */
 
-#ifndef __PDFUT_FILTER_IO_STREAM_TEST_HEADER_INCLUDED__
-#define __PDFUT_FILTER_IO_STREAM_TEST_HEADER_INCLUDED__
+#include "BufferedFilter.hh"
 
-#include <cppunit/TestFixture.h>
+namespace pdf {
 
-#include <cppunit/extensions/HelperMacros.h>
-
-/*!	\brief	brief description
-	
-	this class represents
-*/
-class FilterIOStreamTest : public CppUnit::TestFixture
+BufferedFilter::BufferedFilter( const std::string& str )
+	: m_buf( str ),
+	  m_filter( m_buf.rdbuf() )
 {
-public :
-	FilterIOStreamTest( ) ;
+}
 
-	// declare suit function
-	CPPUNIT_TEST_SUITE( FilterIOStreamTest );
-		CPPUNIT_TEST( TestRead ) ;
-	CPPUNIT_TEST_SUITE_END( ) ;
+std::size_t BufferedFilter::Read( unsigned char *data, std::size_t size )
+{
+	return m_filter.Read( data, size ) ;
+}
 
-private :
-	void TestRead( ) ;
-} ;
+std::size_t BufferedFilter::Write( const unsigned char *data, std::size_t size )
+{
+	return m_filter.Write( data, size ) ;
+}
 
-#endif
+void BufferedFilter::Reset( )
+{
+	m_buf.clear( ) ;
+	m_filter.Reset( ) ;
+}
+
+} // end of namespace

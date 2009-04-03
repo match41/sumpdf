@@ -19,45 +19,71 @@
  ***************************************************************************/
 
 /*!
-	\file	FilterIOStreamTest.cc
-	\brief	implementation the FilterIOStreamTest class
+	\file	StreamBufAdaptor.cc
+	\brief	implementation the StreamBufAdaptor class
 	\date	Wed Mar 4 2009
 	\author	Nestal Wan
 */
 
-#include "FilterIOStreamTest.hh"
+#include "StreamBufAdaptor.hh"
+#include "StreamFilter.hh"
 
-#include "core/filter/FilterIOStream.hh"
-#include "core/filter/DeflateFilter.hh"
-#include "core/filter/RawFilter.hh"
-#include "core/Dictionary.hh"
-#include "core/Token.hh"
+#include <cassert>
+#include <cstring>
 
-#include <iostream>
+namespace pdf {
 
-FilterIOStreamTest::FilterIOStreamTest( )
+StreamBufAdaptor::StreamBufAdaptor( StreamFilter *str )
+	: m_str( str )
 {
+	setg( m_buf + m_pb_size,
+		  m_buf + m_pb_size,
+		  m_buf + m_pb_size ) ;
+
 }
 
-void FilterIOStreamTest::TestRead( )
+void StreamBufAdaptor::Set( StreamFilter *str )
 {
-	std::ifstream file( (std::string(TEST_DATA_DIR) + "obj9020").c_str() ) ;
-	std::vector<unsigned char> src( (std::istreambuf_iterator<char>( file )),
-	                                (std::istreambuf_iterator<char>( )) ) ;
+	assert( str != 0 ) ;
+	assert( m_str == 0 ) ;
+	m_str = str ;
+}
 
-	std::vector<unsigned char> c( ::compressBound( src.size() ) ) ;
-	::uLongf dest_len = c.size( ) ;
-	::compress2( &c[0], &dest_len, &src[0], src.size(), 9 ) ;
+int StreamBufAdaptor::underflow( )
+{
+	assert( m_str != 0 ) ;
 
-	std::istringstream ss( std::string( &c[0], &c[dest_len] ) ) ;
-	pdf::RawFilter raw( ss.rdbuf() ) ;
-	pdf::DeflateFilter def( &raw ) ;
-
-	pdf::FilterIOStream subject( &def ) ;
-	std::istream is( &subject ) ;
+	if ( gptr() < egptr() )
+		return traits_type::to_int_type( *gptr() ) ;
 	
-	pdf::Dictionary d ;
-	CPPUNIT_ASSERT( is >> d ) ;
-	CPPUNIT_ASSERT( d["Subtype"].As<pdf::Name>() == pdf::Name("CIDFontType0"));
-	CPPUNIT_ASSERT( d["Type"].As<pdf::Name>() == pdf::Name("Font"));
+	return BufferIn( ) ? traits_type::to_int_type( *gptr() )
+	                   : traits_type::eof() ;
 }
+
+bool StreamBufAdaptor::BufferIn( )
+{
+	// cannot directly use m_pb_size in template functions.
+	// it should be a bug in gcc
+	std::streamsize pb_size	= m_pb_size ;
+	
+	std::streamsize num_pb	= std::min( gptr() - eback(), pb_size ) ;
+	std::memcpy( m_buf + (m_pb_size - num_pb), gptr() - num_pb, num_pb ) ;
+
+	unsigned char *buf = reinterpret_cast<unsigned char*>( m_buf ) ;
+	std::size_t count = m_str->Read( buf + m_pb_size,
+	                                 m_buf_size - m_pb_size ) ;
+	if ( count == 0 )
+	{
+		setg( 0, 0, 0 ) ;
+		return false ;
+	}
+	else
+	{
+		setg( m_buf + m_pb_size - num_pb,
+		      m_buf + m_pb_size,
+		      m_buf + m_pb_size + count ) ;
+		return true ;
+	}
+}
+
+} // end of namespace

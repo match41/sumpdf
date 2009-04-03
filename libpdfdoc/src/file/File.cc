@@ -51,7 +51,7 @@ namespace pdf {
 				std::ios::binary.
 */
 File::File( std::istream *is )
-	: m_objs( 1, 0 ), m_ifile( is ), m_ofile( 0 )
+	: m_objs( 1, 0 ), m_in( is ), m_out( 0 )
 {
 	ReadXRef( ReadXRefOffset( ), m_trailer ) ;
 	
@@ -72,58 +72,72 @@ File::File( std::istream *is )
 				std::ios::binary.
 */
 File::File( std::ostream *os )
-	: m_objs( 1, 0 ), m_ifile( 0 ), m_ofile( os )
+	: m_objs( 1, 0 ), m_in( 0 ), m_out( os )
 {
-	assert( m_ofile != 0 ) ;
-	*m_ofile << "%PDF-1.4\n" ;
+	assert( m_out != 0 ) ;
+	*m_out << "%PDF-1.4\n" ;
 }
 
 /*!	\brief	write the PDF file trailer
 	\internal
 
+	This function writes the PDF file trailer. A PDF file trailer has a 
+	trailer dictionary and a cross reference table. The trailer dictionary
+	contains core information about the PDF file, e.g. number of object,
+	link to document catalog. The cross reference table maps object IDs to
+	offsets in the file. It allows fast look-up for the PDF objects stored
+	in the file.
+	\param	catalog		reference to the document catalog
+	\param	producer	if the document was converted to PDF from another
+						format, the name of the application (for example,
+						libpdfdoc) that converted it to PDF.
+	\param	creator		if the document was converted to PDF from another
+						format, the name of the application (for example,
+						Adobe FrameMaker®) that created the original document
+						from which it was converted.
 */
 void File::WriteTrailer( const Ref& catalog, const std::string& producer,
 	                                         const std::string& creator )
 {
-	assert( m_ofile != 0 ) ;
+	assert( m_out != 0 ) ;
 	
 	Dictionary info ;
 	info["Producer"]		= producer ;
-	info["CreationDate"]	= creator ;
+	info["Creator"]			= creator ;
 
 	m_trailer["Info"]	= WriteObj( info ) ;
 	m_trailer["Root"]	= catalog ;
 	m_trailer["Size"]	= m_objs.size( ) ;
 
-	std::streampos xref_pos = m_ofile->tellp( ) ;
-	*m_ofile << "xref\n"
+	std::streampos xref_pos = m_out->tellp( ) ;
+	*m_out << "xref\n"
 	         << "0 " << m_objs.size( ) << "\n" ;
 
 	for ( std::vector<std::size_t>::const_iterator i = m_objs.begin( ) ;
 	                                               i != m_objs.end( ) ; ++i )
 	{
-		*m_ofile << std::setw( 10 ) << std::setfill( '0' )
+		*m_out << std::setw( 10 ) << std::setfill( '0' )
 		         << *i << (i == m_objs.begin() ? " 65535 f \n"
 		                                       : " 00000 n \n" ) ;
 	}
 	
-	*m_ofile << "trailer\n" << m_trailer << "\nstartxref\n" << (int)xref_pos
+	*m_out << "trailer\n" << m_trailer << "\nstartxref\n" << (int)xref_pos
 	         << "\n%%EOF\n" ;
 }
 
 Object File::ReadObj( const Ref& obj )
 {
-	assert( m_ifile != 0 ) ;
+	assert( m_in != 0 ) ;
 
 	// use at() because it will check bounding
 	std::size_t offset = m_objs.at( obj.ID() ) ;
-	m_ifile->seekg( offset ) ;
+	m_in->seekg( offset ) ;
 	
 	std::size_t id, gen ;
 	
 	Token objstr ;
 	
-	if ( (*m_ifile >> id >> gen >> objstr)	&&
+	if ( (*m_in >> id >> gen >> objstr)	&&
 	     objstr.Get()		== "obj"		&&
 	     obj.ID()			== id			&&
 	     obj.Generation( )	== gen )
@@ -133,7 +147,7 @@ Object File::ReadObj( const Ref& obj )
 		// PutBack() to the TokenSrc. if we use operator>>(std::istream&)
 		// to read the objects, it will internally construct and destruct
 		// the TokenSrc objects, and the PutBack()'ed tokens will be lost.
-		TokenSrc src( *m_ifile ) ;
+		TokenSrc src( *m_in ) ;
 		
 		// read the underlying object
 		Object r ;
@@ -142,7 +156,8 @@ Object File::ReadObj( const Ref& obj )
 			src >> objstr ;	// endobj or stream
 			
 			if      ( objstr.Get() == "endobj" ) return r ;
-			else if ( objstr.Get() == "stream" ) return ReadStream( r ) ;
+			else if ( objstr.Get() == "stream" )
+				return ReadStream( r.As<Dictionary>() ) ;
 			
 			// if the objstr is neither "endobj" nor "stream", it will
 			// fall through to the following throw
@@ -156,33 +171,27 @@ Object File::ReadObj( const Ref& obj )
 	throw ParseError( ss.str() ) ;
 }
 
-Object File::ReadStream( const Dictionary& dict )
+Object File::ReadStream( Dictionary& dict )
 {
-	assert( m_ifile != 0 ) ;
+	assert( m_in != 0 ) ;
 
 	char ch ;
-	if ( !m_ifile->get( ch ) || ( ch != '\r' && ch != '\n' ) )
+	if ( !m_in->get( ch ) || ( ch != '\r' && ch != '\n' ) )
 		throw ParseError( "no newline after stream" ) ;
 	
-	if ( ch == '\r' && m_ifile->peek() == '\n' )
-		m_ifile->get( ch ) ;
+	if ( ch == '\r' && m_in->peek() == '\n' )
+		m_in->get( ch ) ;
 	
 	// Length may be indirect object
 	Object length = dict["Length"] ;
 	if ( length.Type() == Object::ref )
 	{
-		std::streampos pos	= m_ifile->tellg( ) ;
-		length = ReadObj( length ) ;
-		m_ifile->seekg( pos ) ;
+		std::streampos pos	= m_in->tellg( ) ;
+		dict["Length"] = ReadObj( length ) ;
+		m_in->seekg( pos ) ;
 	}
-
-	std::vector<unsigned char> data( length.As<int>( ) ) ;
-	if ( m_ifile->rdbuf()->sgetn( reinterpret_cast<char*>( &data[0]),
-	                                                        data.size() )
-			!= static_cast<std::streampos>( data.size() ) )
-		throw ParseError( "cannot read stream data" ) ;
-
-	return Stream( data, dict ) ;
+	
+	return Stream( m_in->rdbuf(), m_in->tellg( ), dict ) ;
 }
 
 Ref File::WriteObj( const Object& obj )
@@ -201,16 +210,16 @@ Ref File::AllocLink( )
 
 void File::WriteObj( const Object& obj, const Ref& link )
 {
-	assert( m_ofile != 0 ) ;
+	assert( m_out != 0 ) ;
 	assert( link.ID( ) < m_objs.size( ) ) ;
 	assert( m_objs[link.ID()] == 0 ) ;
 	
-	m_objs[link.ID()] = m_ofile->tellp( ) ;
+	m_objs[link.ID()] = m_out->tellp( ) ;
 	
-	*m_ofile << link.ID() << " 0 obj\n" ;
+	*m_out << link.ID() << " 0 obj\n" ;
 	
 	if ( obj.Type() != Object::stream )
-		*m_ofile << obj << "\nendobj\n" ;
+		*m_out << obj << "\nendobj\n" ;
 	
 	// for stream objects, do not use operator<<() to write it to file.
 	// it is because the length of the stream may be known only after
@@ -221,8 +230,8 @@ void File::WriteObj( const Object& obj, const Ref& link )
 	else
 	{
 		Ref len_ref = AllocLink( ) ;
-		std::size_t length = obj.As<Stream>().Write( *m_ofile, len_ref ) ;
-		*m_ofile << "\nendobj\n" ;
+		std::size_t length = obj.As<Stream>().Write( *m_out, len_ref ) ;
+		*m_out << "\nendobj\n" ;
 
 		// the return value of Stream::Write() is the length of the stream,
 		// i.e. the number of bytes written to file. it is only known after
@@ -233,17 +242,17 @@ void File::WriteObj( const Object& obj, const Ref& link )
 
 void File::ReadXRef( std::size_t offset, Dictionary& trailer )
 {
-	assert( m_ifile != 0 ) ;
-	m_ifile->rdbuf()->pubseekoff( offset, std::ios::beg ) ;
+	assert( m_in != 0 ) ;
+	m_in->rdbuf()->pubseekoff( offset, std::ios::beg ) ;
 	
 	// reading xref	
 	std::string line ;
-	if ( !ReadLine( *m_ifile, line ) /*|| line != "xref" */)
+	if ( !ReadLine( *m_in, line ) /*|| line != "xref" */)
 		throw ParseError( "can't read xref marker" ) ;
 	
 	// start ID and number of object
 	std::size_t start, count ;
-	if ( ReadLine( *m_ifile, line ) )
+	if ( ReadLine( *m_in, line ) )
 	{
 		std::istringstream ss ( line ) ;
 		if ( !( ss >> start >> count ) )
@@ -256,7 +265,7 @@ void File::ReadXRef( std::size_t offset, Dictionary& trailer )
 		m_objs.resize( start + count ) ;
 	
 	std::size_t index = 0 ;
-	while ( ReadLine( *m_ifile, line ) && index < count )
+	while ( ReadLine( *m_in, line ) && index < count )
 	{
 		std::istringstream ss( line ) ;
 		std::size_t obj_offset, obj_gen ;
@@ -279,7 +288,7 @@ void File::ReadXRef( std::size_t offset, Dictionary& trailer )
 bool File::ReadTailer( Dictionary& trailer, std::size_t& prev_offset )
 {	
 	Dictionary t ;
-	if ( !(*m_ifile >> t ) )
+	if ( !(*m_in >> t ) )
 		return false ;
 
 	bool found_prev = false ;
@@ -305,10 +314,10 @@ std::size_t File::ReadXRefOffset( )
 	// PDF spec said the startxref word will appear at the last 1024 bytes
 	// in the file
 	const int end_size = 1024 ;
-	m_ifile->rdbuf()->pubseekoff( -end_size, std::ios::end ) ;
+	m_in->rdbuf()->pubseekoff( -end_size, std::ios::end ) ;
 	
 	char bytes[end_size], startxref[] = "startxref" ;
-	std::size_t count =  m_ifile->rdbuf()->sgetn( bytes, sizeof(bytes) ) ;
+	std::size_t count =  m_in->rdbuf()->sgetn( bytes, sizeof(bytes) ) ;
 	char *result = std::search( bytes, bytes + count,
 	                            startxref, startxref + sizeof(startxref) - 1 ) ;
 	if ( result != bytes + sizeof(startxref) )

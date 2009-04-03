@@ -31,6 +31,7 @@
 #include "Addr.hh"
 
 #include <iosfwd>
+#include <string>
 
 namespace pdf {
 
@@ -51,6 +52,8 @@ public :
 	explicit Backtrace( std::size_t skip = 2 ) ;
 	friend std::ostream& operator<<( std::ostream& os,
 	                                 const pdf::Backtrace& bt ) ;
+
+	std::string ToString( ) const ;
 
 private :
 	addr_t		m_stack[100] ;

@@ -30,7 +30,7 @@
 #include "SymbolInfo.hh"
 #include "Util.hh"
 
-#include <ostream>
+#include <sstream>
 #include <algorithm>
 
 namespace pdf {
@@ -59,6 +59,13 @@ std::ostream& operator<<( std::ostream& os, const pdf::Backtrace& b )
 		SymbolInfo::Instance()->PrintTrace( b.m_stack[i], os, i - b.m_skip ) ;
 
 	return os ;
+}
+
+std::string Backtrace::ToString( ) const
+{
+	std::ostringstream oss ;
+	oss << *this ;
+	return oss.str( ) ;
 }
 
 } // end of namespace

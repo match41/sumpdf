@@ -27,8 +27,13 @@
 
 #include "Stream.hh"
 
-#include "core/Array.hh"
-#include "core/Dictionary.hh"
+#include "Array.hh"
+#include "Dictionary.hh"
+#include "filter/BufferedFilter.hh"
+#include "filter/DeflateFilter.hh"
+#include "filter/RawFilter.hh"
+#include "filter/StreamFilter.hh"
+#include "filter/StreamBufAdaptor.hh"
 #include "util/Exception.hh"
 
 #include <boost/bind.hpp>
@@ -44,48 +49,60 @@ namespace pdf {
 
 struct Stream::Impl
 {
-	std::vector<unsigned char>	bytes ;
 	Dictionary					self ;
-} ;
-
-Stream::Stream( )
-	: m_impl( new Impl )
-{
-}
-
-/*!	Non-copying constructor. This contructor will not copy the data specified
-	by its argument. It will use std::vector<>::swap() to assign it to its
-	members.
-	\param	data	data to be swapped.
-	\param	dict	dictionary of the stream.
-*/
-Stream::Stream( std::vector<unsigned char>& data, const Dictionary& dict )
-	: m_impl( new Impl )
-{
-	m_impl->bytes.swap( data ) ;
-	m_impl->self = dict ;
-
-	const Object& filter = dict["Filter"] ;
-	if ( filter.Type() == Object::array )
-	{
-		const Array& filters = filter.As<Array>() ;
-		std::for_each( filters.begin( ), filters.end( ),
-		               boost::bind( &Stream::ApplyFilter, this, _1 ) ) ;
-	}
-	else if ( filter.Type() == Object::name )
-		ApplyFilter( filter ) ;
+	std::auto_ptr<StreamFilter>	filter ;
+	StreamBufAdaptor			sbuf ;
+	std::istream				istr ;
 	
-	else if ( !filter.IsNull() )
-		throw ParseError( "filter error" ) ;
-
-// 	m_impl->self.erase( "Filter" ) ;
-// 	m_impl->self.erase( "Length" ) ;
-}
+	Impl( ) : istr( &sbuf )
+	{
+	}
+} ;
 
 Stream::Stream( const std::string& str )
 	: m_impl( new Impl )
 {
-	m_impl->bytes.assign( str.begin( ), str.end( ) ) ;
+	m_impl->filter.reset( new BufferedFilter(str) ) ;
+	m_impl->sbuf.Set( m_impl->filter.get() ) ;
+}
+
+Stream::Stream( std::streambuf *file, std::streamoff offset,
+	            const Dictionary& dict )
+	: m_impl( new Impl )
+{
+	assert( file != 0 ) ;
+	assert( dict.find( "Length" ) != dict.end() ) ;
+	assert( dict["Length"].IsType<int>() ) ;
+
+	m_impl->self = dict ;
+	m_impl->filter.reset( new RawFilter( file, offset,
+	                                     dict["Length"].As<int>() ) ) ;
+
+	ApplyFilter( dict["Filter"] ) ;
+}
+	
+Stream::Stream( const std::vector<unsigned char>& data, const Object& filter )
+	: m_impl( new Impl )
+{
+	m_impl->filter.reset( new BufferedFilter(std::string(data.begin(),
+	                                                     data.end() ) ) ) ;
+	ApplyFilter( filter ) ;
+}
+
+void Stream::ApplyFilter( const Object& filter )
+{
+	assert( m_impl->filter.get() != 0 ) ;
+
+	if ( filter.Type() == Object::array )
+	{
+		const Array& filters = filter.As<Array>() ;
+		std::for_each( filters.begin( ), filters.end( ),
+		               boost::bind( &Stream::CreateFilter, this, _1 ) ) ;
+	}
+	else if ( filter.Type() == Object::name )
+		CreateFilter( filter ) ;
+
+	m_impl->sbuf.Set( m_impl->filter.get() ) ;
 }
 
 Stream::~Stream( )
@@ -97,39 +114,13 @@ void Stream::Swap( Stream& str )
 	std::swap( m_impl, str.m_impl ) ;
 }
 
-void Stream::ApplyFilter( const Name& filter )
+void Stream::CreateFilter( const Name& filter )
 {
 	if ( filter == Name( "FlateDecode" ) )
-		Inflate( ) ;
-}
-
-void Stream::Inflate( )
-{
-	::z_stream z = {} ;
-	z.next_in	= &m_impl->bytes[0] ;
-	z.avail_in	= m_impl->bytes.size( ) ;
-	if ( ::inflateInit( &z ) != Z_OK )
-		throw ParseError( "inflate init fail" ) ;
-	
-	std::vector<unsigned char> output ;
-	const std::size_t block_size = 100 ;
-	
-	int result = Z_OK ;
-	while ( result == Z_OK && z.avail_out == 0 )
 	{
-		std::size_t ori_size = output.size() ; 
-		output.resize( ori_size + block_size ) ;
-		z.next_out	= &output[ori_size] ;
-		z.avail_out	= block_size ;
-		result = ::inflate( &z, Z_SYNC_FLUSH ) ;
+		StreamFilter *sf = m_impl->filter.release( ) ;
+		m_impl->filter.reset( new DeflateFilter( sf ) ) ;
 	}
-	
-	if ( result != Z_STREAM_END )
-		throw ParseError( "zlib error: " + std::string(z.msg) ) ;
-
-	output.resize( output.size() - z.avail_out ) ;
-
-	m_impl->bytes.swap( output ) ;
 }
 
 /*!	\brief	write the stream with an indirect length field
@@ -158,45 +149,17 @@ std::size_t Stream::Write( std::ostream& os, const Ref& length_ref ) const
 	os << dict ;
 
 	os << "\nstream\n" ;
-	std::size_t count =
-		os.rdbuf()->sputn( reinterpret_cast<const char*>( &m_impl->bytes[0] ),
-	                       m_impl->bytes.size( ) ) ;
-	os << "endstream" ;
+	std::size_t count = ReadAll( os.rdbuf() ) ;
+	os << "\nendstream" ;
 	
 	return count ;
 }
-
-std::ostream& operator<<( std::ostream& os, const Stream& b )
-{
-	assert( b.m_impl.get( ) != 0 ) ;
-/*
-	std::vector<unsigned char> c( ::compressBound( b.m_impl->bytes.size( ) ) ) ;
-	::uLongf dest_len = c.size( ) ;
-	::compress2( &c[0], &dest_len, &b.m_impl->bytes[0], b.m_impl->bytes.size(
-), 9 ) ;
-	c.resize( dest_len ) ;
-*/
-	const std::vector<unsigned char>& c = b.m_impl->bytes ;
-
-	Dictionary dict( b.m_impl->self ) ;
-	dict["Length"]	= c.size( ) ;
-// 	dict["Filter"]	= Name( "FlateDecode" ) ;
-	os << dict ;
-
-	os << "\nstream\n" ;
-	std::copy( c.begin( ), c.end( ),
-	           std::ostreambuf_iterator<char>( os ) ) ;
-	os << "endstream" ;
-	
-	return os ;
-}
-
 bool Stream::operator==( const Stream& str ) const
 {
 	assert( m_impl.get( ) != 0 ) ;
 	assert( str.m_impl.get( ) != 0 ) ;
 	
-	return m_impl->bytes == str.m_impl->bytes ;
+	return m_impl.get() == str.m_impl.get() ;
 }
 
 const Dictionary& Stream::GetDictionary( ) const
@@ -211,17 +174,34 @@ Dictionary& Stream::GetDictionary( )
 	return m_impl->self ;
 }
 
-bool Stream::IsEmpty( ) const
-{
-	return m_impl->bytes.empty( ) ;
-}
-
-void Stream::ReadAll( std::streambuf *buf ) const
+std::size_t Stream::ReadAll( std::streambuf *buf ) const
 {
     assert( buf != 0 ) ;
-    if ( !m_impl->bytes.empty( ) )
-	    buf->sputn( reinterpret_cast<const char*>( &m_impl->bytes[0] ),
-	                m_impl->bytes.size( ) ) ;
+	assert( m_impl.get() != 0 ) ;
+	assert( m_impl->filter.get() != 0 ) ;
+
+	unsigned char data[80] ;
+	std::size_t count = m_impl->filter->Read( data, sizeof(data) ) ;
+	std::size_t total = 0 ;
+	
+	while ( count > 0 )
+	{
+		total += buf->sputn( reinterpret_cast<const char*>( data ), count ) ;
+		count = m_impl->filter->Read( data, sizeof(data) ) ;
+	}
+
+	return total ;
+}
+
+std::istream& Stream::InStream( )
+{
+	return m_impl->istr ;
+}
+
+void Stream::Reset( )
+{
+	m_impl->istr.clear( ) ;
+	m_impl->filter->Reset( ) ;
 }
 
 } // end of namespace
