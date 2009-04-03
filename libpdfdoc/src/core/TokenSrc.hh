@@ -34,9 +34,11 @@
 
 namespace pdf {
 
-/*!	\brief	brief description
+/*!	\brief	source of tokens
 	
-	this class represents
+	This class represents a place where tokens can be read from. It also has
+	a cache so unused tokens can be put back. Further more, you can read bytes
+	one-by-one from the TokenSrc also.
 */
 class TokenSrc
 {
@@ -50,6 +52,16 @@ public :
 	
 	std::istream& Stream() ;
 	
+	/*!	peek tokens without removing them. This function will copy \a count
+		tokens from the TokenSrc to \a outit . The copied tokens will \em not
+		be removed from the token source. It is equal to calling ReadToken()
+		\a count times and then call PutBack() \a count times.
+		\param	outit	output iterator for storing output. can be a
+						std::back_inserter or iterators to containers.
+		\param	count	number of tokens to be peek
+		\return	\a outit after incrementing it by number-of-token-extracted
+				times.
+	*/
 	template <typename OutIt>
 	OutIt Peek( OutIt outit, std::size_t count = 1 )
 	{

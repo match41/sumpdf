@@ -47,9 +47,10 @@ class Name ;
 class Stream ;
 class Resources ;
 
-/*!	\brief	brief description
+/*!	\brief	real implementation of a page
 	
-	this class represents
+	This class represents a page in the PDF document. It is an implementation
+	of the Page interface.
 */
 class RealPage : public Page, public PageNode
 {

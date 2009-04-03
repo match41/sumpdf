@@ -68,6 +68,9 @@ Rect RealPage::MediaBox( ) const
 	return m_media_box ;
 }
 
+/*!	read a page from file. This function will read the page from file. It will
+	also decode the stream content data.
+*/
 void RealPage::Read( const Ref& link, IElementSrc *repo )
 {
 	assert( repo != 0 ) ;
