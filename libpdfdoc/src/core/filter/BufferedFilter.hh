@@ -28,9 +28,9 @@
 #ifndef __PDF_BUFFERED_FILTER_HEADER_INCLUDED__
 #define __PDF_BUFFERED_FILTER_HEADER_INCLUDED__
 
-#include "RawFilter.hh"
+#include "StreamFilter.hh"
 
-#include <sstream>
+#include <vector>
 
 namespace pdf {
 
@@ -41,22 +41,22 @@ namespace pdf {
 class BufferedFilter : public StreamFilter
 {
 public :
-	explicit BufferedFilter( const std::string& str = std::string() ) ;
-
 	template <typename InputIt>
 	BufferedFilter( InputIt first, InputIt last )
-		: m_buf( std::string( first, last ) ),
-		  m_filter( m_buf.rdbuf() )
+		: m_buf( first, last ),
+		  m_offset( 0 )
 	{
 	}
-	
+
+	BufferedFilter( std::vector<unsigned char>& buf ) ;
+
 	std::size_t Read( unsigned char *data, std::size_t size ) ;
 	std::size_t Write( const unsigned char *data, std::size_t size ) ;
 	void Reset( ) ;
 
 private :
-	std::stringstream	m_buf ;
-	RawFilter			m_filter ;
+	std::vector<unsigned char>	m_buf ;
+	std::size_t					m_offset ;
 } ;
 
 } // end of namespace

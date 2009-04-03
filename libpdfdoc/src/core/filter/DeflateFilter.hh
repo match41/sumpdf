@@ -37,10 +37,15 @@
 
 namespace pdf {
 
-/*!	\brief	brief description
-	\ingroup	filter
+/*!	\brief		the "FlateDecode" filter for streams
+	\internal
 
-	this class represents
+	This class represents the "FlateDecode" filter (i.e. zlib) for compressing
+	data. It is the most commonly used filter. It is used to save space by a
+	lossless compression. Usually it is used by page content stream to store
+	large amount of page data.
+	
+	\ingroup	filter
 */
 class DeflateFilter : public StreamFilter
 {

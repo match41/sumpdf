@@ -45,12 +45,18 @@ class Object ;
 	
 	This class represents a PDF stream object. A stream is a number of bytes
 	stored in a PDF file. It may be encoded by a number of filters.
+	Unlike other PDF object classes, this class does not support operator>>()
+	and operator<<(). It is because although the Stream classes represents one
+	of the fundamental data types, it may depend on references to other objects
+	such as its length. It cannot be fully extracted by operator>>() and it
+	can't be written completely by operator<<(). The constructor and the
+	Write() function will perform reading and writing from and to file.
 */
 class Stream
 {
 public :
 	explicit Stream( const std::string& str = std::string() ) ;
-	Stream( const std::vector<unsigned char>& data, const Object& filter ) ;
+	Stream( std::vector<unsigned char>& data, const Object& filter ) ;
 	Stream( std::streambuf *file, std::streamoff offset,
 	        const Dictionary& dict ) ;
 	~Stream( ) ;
@@ -77,7 +83,8 @@ private :
 private :
 	struct Impl ;
 	
-	/// use shared_ptr for copy-on-write reference counting
+	/// pointer to implementation. It uses shared_ptr for copy-on-write
+	///	reference counting.
 	boost::shared_ptr<Impl>	m_impl ;
 } ;
 

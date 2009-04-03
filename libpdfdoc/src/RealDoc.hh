@@ -56,7 +56,7 @@ public :
 	void Read( const std::string& filename ) ;
 	void Write( const std::string& filename ) const ;
 
-	RealPage* AddPage( ) ;
+	RealPage* AppendPage( ) ;
 	RealPage* AddPage( std::size_t index ) ;
 
 	std::size_t PageCount( ) const ;

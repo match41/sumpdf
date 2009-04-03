@@ -27,28 +27,38 @@
 
 #include "BufferedFilter.hh"
 
+#include <algorithm>
+#include <cassert>
+#include <cstring>
+
 namespace pdf {
 
-BufferedFilter::BufferedFilter( const std::string& str )
-	: m_buf( str ),
-	  m_filter( m_buf.rdbuf() )
+BufferedFilter::BufferedFilter( std::vector<unsigned char>& buf )
+	: m_offset( 0 )
 {
+	m_buf.swap( buf ) ;
 }
 
 std::size_t BufferedFilter::Read( unsigned char *data, std::size_t size )
 {
-	return m_filter.Read( data, size ) ;
+	assert( m_offset <= m_buf.size() ) ;
+
+	std::size_t count = std::min( size, m_buf.size() - m_offset ) ;
+	if ( count > 0 )
+		std::memcpy( data, &m_buf[m_offset], count ) ;
+	
+	m_offset += count ;		
+	return count ;
 }
 
 std::size_t BufferedFilter::Write( const unsigned char *data, std::size_t size )
 {
-	return m_filter.Write( data, size ) ;
+	return 0 ;
 }
 
 void BufferedFilter::Reset( )
 {
-	m_buf.clear( ) ;
-	m_filter.Reset( ) ;
+	m_offset = 0 ;
 }
 
 } // end of namespace

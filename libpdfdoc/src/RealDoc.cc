@@ -97,7 +97,7 @@ void RealDoc::Write( const std::string& filename ) const
 	file.WriteTrailer( repo.Write( m_catalog ) ) ;
 }
 
-RealPage* RealDoc::AddPage( )
+RealPage* RealDoc::AppendPage( )
 {
 	assert( m_catalog != 0 ) ;
 

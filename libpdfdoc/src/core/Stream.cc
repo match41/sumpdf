@@ -62,10 +62,19 @@ struct Stream::Impl
 Stream::Stream( const std::string& str )
 	: m_impl( new Impl )
 {
-	m_impl->filter.reset( new BufferedFilter(str) ) ;
+	m_impl->filter.reset( new BufferedFilter(str.begin(), str.end() ) ) ;
 	m_impl->sbuf.Set( m_impl->filter.get() ) ;
 }
 
+/*!	constructor for streams from file. This constructor will create a stream
+	whose content is about to be read from file. Data will be actually read
+	on-demand. Therefore, this function will actually read nothing but just
+	remember the file and the position in the file to be read from.
+	\param	file	the file that the stream data will be read from
+	\param	offset	the position of the file that the stream data will
+					be read from
+	\param	dict	stream dictionary
+*/
 Stream::Stream( std::streambuf *file, std::streamoff offset,
 	            const Dictionary& dict )
 	: m_impl( new Impl )
@@ -81,14 +90,23 @@ Stream::Stream( std::streambuf *file, std::streamoff offset,
 	ApplyFilter( dict["Filter"] ) ;
 }
 	
-Stream::Stream( const std::vector<unsigned char>& data, const Object& filter )
+Stream::Stream( std::vector<unsigned char>& data, const Object& filter )
 	: m_impl( new Impl )
 {
-	m_impl->filter.reset( new BufferedFilter(std::string(data.begin(),
-	                                                     data.end() ) ) ) ;
+	m_impl->filter.reset( new BufferedFilter( data ) ) ;
 	ApplyFilter( filter ) ;
 }
 
+/*!	create the filters and chain them together. This function will chain up
+	the filters. It will handle two types of PDF objects to represent filters:
+	
+	-	Name objects:	the name of the filter. e.g. "FlateDecode" for the
+		deflate algorithm.
+	
+	-	Array objects:	each of the members in the array is treated to be
+		a name of a filter, or another array. the filters will be applied
+		in the same sequence as the array.
+*/
 void Stream::ApplyFilter( const Object& filter )
 {
 	assert( m_impl->filter.get() != 0 ) ;

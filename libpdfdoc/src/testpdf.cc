@@ -45,7 +45,7 @@ int main( int argc, char **argv )
 	if ( argc >= 2 )
 		doc->Read( argv[1] ) ;
 	
-	pdf::Page *p = doc->AddPage( ) ;
+	pdf::Page *p = doc->AppendPage( ) ;
 	pdf::Font *f = doc->CreateSimpleFont( "Helvetica" ) ;
 	p->DrawText( 100, 100, f, "Hello world!" ) ;
 

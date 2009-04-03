@@ -47,8 +47,10 @@ class Doc
 public :
 	virtual ~Doc( ) ;
 
-    //! File input/output functions
-    //@{
+	/*!	\name	File I/O functions
+		File input/output functions
+	*/
+	//@{
 	/*! \brief  Read a PDF document from a file
 	
 		This function reads a PDF document from a file. It will not read
@@ -83,43 +85,63 @@ public :
 							not exist, it will be created. It must be writable.
 		\throw	ParseError	is thrown when there is parser error when reading
 							the page contents from the file.
-	    \sa     Read()
+		\sa	 Read()
 	*/
 	virtual void Write( const std::string& filename ) const = 0 ;
-    //@}
-    
-	//! Page accessing functions.
+	//@}
+	
+	/*!	\name	Page Accessing Functions
+		These functions allow adding and remove pages from the document.
+	*/
 	//@{
 	/*! Add a page to the document. This function creates a new page and add
 		it to the document. The page will be appended at the end of the
 		document. The pointer to the newly added page will be returned and
 		the caller can put content to the new page.
 		\return A pointer to the newly created page. This pointer will be
-		        invalidated after the document is destroyed.
+				invalidated after the document is destroyed.
 	*/
-	virtual Page* AddPage( ) = 0 ;
+	virtual Page* AppendPage( ) = 0 ;
 
 	/*! Add a page to the document. It will add a page to the specified
-	    index.
+		index.
+		\param	index	the index of the old page. If it is too large (i.e.
+						larger than the number of pages), the page will
+						be added at the end of the document.
+		\return A pointer to the newly created page. This pointer will be
+				invalidated after the document is destroyed.
 	*/
 	virtual Page* AddPage( std::size_t index ) = 0 ;
 	
 	/*! Get the number of pages in the document.
-	    \return number of page in the document
+		\return number of page in the document
 	*/
 	virtual std::size_t PageCount( ) const = 0 ;
 	
-	/*! 
+	/*!	Get the page by its index.
+		\param	index	index to the page.
+		\return	A pointer to the page, or null if the index does not
+				refer to a page. The pointer pointed by it will be
+				invalidated after the document is destroyed. 
 	*/
 	virtual Page* GetPage( std::size_t index ) = 0 ;
 	//@}
 	
+	/*!	\name	Resources Functions
+		These functions provide interfaces to accessing the resources of the
+		document.
+	*/
+	//@{
 	/*!	\brief	Create a font to be used with the document.
 	
 		This function creates a new font object that only this document
 		can use.
+		\param	name	the name of the font, e.g. "Arial"
+		\return	A pointer to the newly created font object. The pointer pointed
+				by it will be invalidated after the document is destroyed. 
 	*/
 	virtual Font* CreateSimpleFont( const std::string& name ) = 0 ;
+	//@}
 } ;
 
 } // end of namespace
