@@ -1,21 +1,21 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Nestal Wan                                      *
- *   me@nestal.net                                                         *
- *                                                                         *
+ *   Copyright (C) 2006 by Nestal Wan									  *
+ *   me@nestal.net														 *
+ *																		 *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ *   the Free Software Foundation; either version 2 of the License, or	 *
+ *   (at your option) any later version.								   *
+ *																		 *
+ *   This program is distributed in the hope that it will be useful,	   *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of		*
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the		 *
+ *   GNU General Public License for more details.						  *
+ *																		 *
+ *   You should have received a copy of the GNU General Public License	 *
+ *   along with this program; if not, write to the						 *
+ *   Free Software Foundation, Inc.,									   *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.			 *
  ***************************************************************************/
 
 /*!
@@ -47,28 +47,30 @@ class Doc
 public :
 	virtual ~Doc( ) ;
 
-    /*! \brief  Read a PDF document from a file
-    
-        This function reads a PDF document from a file. It will not read
-        all data from the file. It will only read the trailer and cross
-        reference table to know the structure of the PDF document. Page
-        contents will be read on-demand.
-        
-        The file will be opened throughout the life time of the
-        document object. It will be read for document data when
-        it is needed. The file will only be closed when the document
-        object is destroyed.
-        
-        The file must be a regular file that supports seeking. Since libpdfdoc
-        will read and seek the file when page contents are read on-demand, it
+    //! File input/output functions
+    //@{
+	/*! \brief  Read a PDF document from a file
+	
+		This function reads a PDF document from a file. It will not read
+		all data from the file. It will only read the trailer and cross
+		reference table to know the structure of the PDF document. Page
+		contents will be read on-demand.
+		
+		The file will be opened throughout the life time of the
+		document object. It will be read for document data when
+		it is needed. The file will only be closed when the document
+		object is destroyed.
+		
+		The file must be a regular file that supports seeking. Since libpdfdoc
+		will read and seek the file when page contents are read on-demand, it
 		does not support reading PDF files from a pipe or socket.
-        
-        \param  filename    The name of file to be read from. It must be
-        					readable, but not nesscarrily writable.
+		
+		\param  filename	The name of file to be read from. It must be
+							readable, but not nesscarrily writable.
 		\throw	ParseError	is thrown when there is parser error in the PDF
 							file.
-    	\sa		Write()
-    */
+		\sa		Write()
+	*/
 	virtual void Read( const std::string& filename ) = 0 ;
 	
 	/*!	\brief	Write the PDF document to a file
@@ -81,21 +83,36 @@ public :
 							not exist, it will be created. It must be writable.
 		\throw	ParseError	is thrown when there is parser error when reading
 							the page contents from the file.
+	    \sa     Read()
 	*/
 	virtual void Write( const std::string& filename ) const = 0 ;
-
-    /*! \brief  Add a page to the document.
-       
-        This function creates a new page and add it to the document. The
-        page will be appended at the end of the document. The pointer to
-        the newly added page will be returned and the caller can put
-        content to the new page.
-        \return The newly created page.
-    */
+    //@}
+    
+	//! Page accessing functions.
+	//@{
+	/*! Add a page to the document. This function creates a new page and add
+		it to the document. The page will be appended at the end of the
+		document. The pointer to the newly added page will be returned and
+		the caller can put content to the new page.
+		\return A pointer to the newly created page. This pointer will be
+		        invalidated after the document is destroyed.
+	*/
 	virtual Page* AddPage( ) = 0 ;
+
+	/*! Add a page to the document. It will add a page to the specified
+	    index.
+	*/
+	virtual Page* AddPage( std::size_t index ) = 0 ;
 	
+	/*! Get the number of pages in the document.
+	    \return number of page in the document
+	*/
 	virtual std::size_t PageCount( ) const = 0 ;
+	
+	/*! 
+	*/
 	virtual Page* GetPage( std::size_t index ) = 0 ;
+	//@}
 	
 	/*!	\brief	Create a font to be used with the document.
 	

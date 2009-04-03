@@ -122,4 +122,9 @@ StandardFont* RealDoc::CreateSimpleFont( const std::string& name )
 	return new StandardFont( Name(name) ) ;
 }
 
+RealPage* RealDoc::AddPage( std::size_t index )
+{
+    return 0 ;
+}
+
 } // end of namespace

@@ -36,7 +36,7 @@ namespace pdf {
 
 class RealPage ;
 
-/*!	\brief	brief description
+/*!	\brief	tree nodes in page tree
 	
 	this class represents
 */
