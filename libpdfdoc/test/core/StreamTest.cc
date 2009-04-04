@@ -131,3 +131,11 @@ void StreamTest::tearDown( )
 {
 	m_compressed.clear( ) ;
 }
+
+void StreamTest::TestWriteOstream( )
+{
+	pdf::Stream subject( "hello world" ) ;
+	pdf::Object obj( subject ) ;
+	std::ostringstream ss ;
+	ss << obj ;
+}

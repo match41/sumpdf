@@ -32,16 +32,6 @@
 int main( int argc, char **argv )
 {
 	pdf::Doc *doc = pdf::CreateDoc( ) ;
-	try
-	{
-		throw pdf::BadType( typeid(int), typeid(double),
-		                    std::runtime_error("haha" ) ) ;
-	}
-	catch ( std::exception& e )
-	{
-		std::cerr << e.what() << std::endl ;
-	}
-
 	if ( argc >= 2 )
 		doc->Read( argv[1] ) ;
 	

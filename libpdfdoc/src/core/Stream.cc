@@ -172,6 +172,23 @@ std::size_t Stream::Write( std::ostream& os, const Ref& length_ref ) const
 	
 	return count ;
 }
+
+std::ostream& operator<<( std::ostream& os, const Stream& b )
+{
+	std::ostringstream oss ;
+	Dictionary dict( b.m_impl->self ) ;
+	dict["Length"]	= b.ReadAll( oss.rdbuf() ) ;
+	os << dict ;
+
+	std::string s = oss.str() ;
+
+	os << "\nstream\n" ;
+	oss.rdbuf()->sputn( &s[0], s.size() ) ;
+	os << "\nendstream" ;
+	
+	return os ;
+}
+
 bool Stream::operator==( const Stream& str ) const
 {
 	assert( m_impl.get( ) != 0 ) ;
@@ -211,12 +228,12 @@ std::size_t Stream::ReadAll( std::streambuf *buf ) const
 	return total ;
 }
 
-std::istream& Stream::InStream( )
+std::istream& Stream::InStream( ) const
 {
 	return m_impl->istr ;
 }
 
-void Stream::Reset( )
+void Stream::Reset( ) const
 {
 	m_impl->istr.clear( ) ;
 	m_impl->filter->Reset( ) ;

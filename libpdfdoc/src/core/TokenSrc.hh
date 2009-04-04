@@ -38,7 +38,8 @@ namespace pdf {
 	
 	This class represents a place where tokens can be read from. It also has
 	a cache so unused tokens can be put back. Further more, you can read bytes
-	one-by-one from the TokenSrc also.
+	one-by-one from the TokenSrc also. The TokenSrc has a cache to store tokens
+	that has been put back.
 */
 class TokenSrc
 {

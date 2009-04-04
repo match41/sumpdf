@@ -257,6 +257,10 @@ struct Op : public boost::static_visitor<>
 	{
 	}
 	
+	void operator()( const Stream& ) const
+	{
+	}
+	
 	template <typename T>
 	void operator()( const T& t ) const
 	{

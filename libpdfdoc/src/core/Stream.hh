@@ -63,6 +63,7 @@ public :
 
 	bool operator==( const Stream& str ) const ;
 
+	friend std::ostream& operator<<( std::ostream& os, const Stream& b ) ;
 	std::size_t Write( std::ostream& os, const Ref& length_ref ) const ;
 
 	const Dictionary& GetDictionary( ) const ;
@@ -72,13 +73,15 @@ public :
 
     std::size_t ReadAll( std::streambuf *buf ) const ;
 
-	std::istream& InStream( ) ;
+	std::istream& InStream( ) const ;
 	
-	void Reset( ) ;
+	void Reset( ) const ;
 
 private :
 	void ApplyFilter( const Object& filter ) ;
 	void CreateFilter( const Name& filter ) ;
+	
+	
 	
 private :
 	struct Impl ;

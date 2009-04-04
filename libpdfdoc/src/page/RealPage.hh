@@ -34,10 +34,10 @@
 #include "Resources.hh"
 #include "core/Dictionary.hh"
 #include "core/Ref.hh"
+#include "core/Token.hh"
 #include "util/Rect.hh"
 
 #include <string>
-#include <sstream>
 
 namespace pdf {
 
@@ -70,14 +70,13 @@ public :
 	
 private :
 	void ReadContent( const Object& str_obj, IElementSrc *src ) ;
-
-	void DecodeContent( ) ;
+	void DecodeContent( const Stream& s ) ;
 	
 private :
 	Dictionary	m_self ;
 	Rect		m_media_box ;
 	
-	std::stringstream	m_content ;
+	std::vector<Token>	m_contents ;
 
 	mutable enum Status { disk_newer, memory_newer, sync } m_status ;
 
