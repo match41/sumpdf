@@ -46,7 +46,7 @@ public :
 	Ref( std::size_t id, std::size_t gen ) ;
 
 	std::size_t ID( ) const ;
-	std::size_t Generation( ) const ;
+	std::size_t Gen( ) const ;
 	
 	bool operator==( const Ref& obj ) const ;
 	bool operator!=( const Ref& obj ) const ;

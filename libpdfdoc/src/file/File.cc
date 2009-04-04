@@ -138,9 +138,9 @@ Object File::ReadObj( const Ref& obj )
 	Token objstr ;
 	
 	if ( (*m_in >> id >> gen >> objstr)	&&
-	     objstr.Get()		== "obj"		&&
-	     obj.ID()			== id			&&
-	     obj.Generation( )	== gen )
+	     objstr.Get()	== "obj"	&&
+	     obj.ID()		== id		&&
+	     obj.Gen()		== gen )
 	{
 		// from now on, we must use TokenSrc to read the PDF objects.
 		// it is because when reading the objects, some tokens may be

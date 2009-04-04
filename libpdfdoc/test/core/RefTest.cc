@@ -43,7 +43,7 @@ void RefTest::TestNormal( )
 	pdf::Ref obj ;
 	CPPUNIT_ASSERT( ss >> obj ) ;
 	CPPUNIT_ASSERT( obj.ID( ) == 1 ) ;
-	CPPUNIT_ASSERT( obj.Generation( ) == 9 ) ;
+	CPPUNIT_ASSERT( obj.Gen( ) == 9 ) ;
 }
 
 void RefTest::TestError( )
@@ -52,7 +52,7 @@ void RefTest::TestError( )
 	pdf::Ref obj ;
 	CPPUNIT_ASSERT( !(ss >> obj) ) ;
 	CPPUNIT_ASSERT( obj.ID( ) == 0 ) ;
-	CPPUNIT_ASSERT( obj.Generation( ) == 0 ) ;
+	CPPUNIT_ASSERT( obj.Gen( ) == 0 ) ;
 }
 
 void RefTest::TestNonIntError( )
@@ -63,7 +63,7 @@ void RefTest::TestNonIntError( )
 	pdf::Ref obj ;
 	CPPUNIT_ASSERT( !(src >> obj) ) ;
 	CPPUNIT_ASSERT( obj.ID( ) == 0 ) ;
-	CPPUNIT_ASSERT( obj.Generation( ) == 0 ) ;
+	CPPUNIT_ASSERT( obj.Gen( ) == 0 ) ;
 	
 	// the 3 tokens can still be read
 	pdf::Token t[3] ;
@@ -84,7 +84,7 @@ void RefTest::TestTooFewToken( )
 	pdf::Ref obj ;
 	CPPUNIT_ASSERT( !(src >> obj) ) ;
 	CPPUNIT_ASSERT( obj.ID( ) == 0 ) ;
-	CPPUNIT_ASSERT( obj.Generation( ) == 0 ) ;
+	CPPUNIT_ASSERT( obj.Gen( ) == 0 ) ;
 
 	// the 2 tokens can still be read
 	pdf::Token t[2] ;
