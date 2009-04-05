@@ -27,26 +27,39 @@
 
 #include "PaintOp.hh"
 
+#include "util/Util.hh"
+
+#include <string>
+#include <map>
+#include <iostream>
+
 namespace pdf {
 
 PaintOp::PaintOp( const std::string& ops, const Object *args,
                                           std::size_t count )
 {
-/*	typedef bool (Object::*FuncPtr)( std::istream&, std::streampos ) ;
+std::cout << " got cmd: " << ops << ' ' << count << std::endl ;
+
+	typedef void (PaintOp::*FuncPtr)( const Object*, std::size_t ) ;
 	
-	static const std::pair<const Token, FuncPtr> table[] =
+	static const std::pair<const std::string, FuncPtr> table[] =
 	{
-		std::make_pair( "BT",		&Object::DecodeObject<Dictionary> ),
-		std::make_pair( Token( "[" ),		&Object::DecodeObject<Array> ),
-		std::make_pair( Token( "(" ),		&Object::DecodeObject<String> ),
-		std::make_pair( Token( "<" ),		&Object::DecodeObject<String> ),
-		std::make_pair( Token( "/" ),		&Object::DecodeObject<Name> ),
-		std::make_pair( Token( "true" ),	&Object::DecodeObject<Bool> ),
-		std::make_pair( Token( "false" ),	&Object::DecodeObject<Bool> ),
+		std::make_pair( "BT",		&PaintOp::DecodeNoArg<BeginText> ),
+		std::make_pair( "ET",		&PaintOp::DecodeNoArg<EndText> ),
 	} ;
-	typedef std::map<Token, FuncPtr> FuncMap ;
+	typedef std::map<std::string, FuncPtr> FuncMap ;
 	static const FuncMap map( Begin( table ), End( table ) ) ;
-*/
+
+	FuncMap::const_iterator i = map.find( ops ) ;
+	if ( i != map.end() )
+		(this->*i->second)( args, count ) ;
+}
+
+template <typename Op>
+void PaintOp::DecodeNoArg( const Object *args, std::size_t count )
+{
+	Op op = {} ;
+	m_ops = op ;
 }
 
 } // end of namespace

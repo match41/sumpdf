@@ -45,11 +45,12 @@ public :
 	PaintOp( const std::string& ops, const Object *args, std::size_t count ) ;
 
 private :
-
+	template <typename Op>
+	void DecodeNoArg( const Object *args, std::size_t count ) ;
 
 private :
 	boost::variant<TextState, TextPosition, TextMatrix, TextString,
-	               TextPosString> m_ops ;
+	               TextPosString, BeginText, EndText> m_ops ;
 } ;
 
 } // end of namespace

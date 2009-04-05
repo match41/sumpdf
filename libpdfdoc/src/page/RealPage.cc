@@ -163,21 +163,25 @@ PageNode* RealPage::GetLeaf( std::size_t index )
 void RealPage::DecodeContent( const Stream& s )
 {
 	TokenSrc src( s.InStream() ) ;
+	std::vector<Object> args ;
+
 	while ( true )
 	{
-		Object obj ;
 		Token  cmd ;
+		Object obj ;
 		
 		if ( src >> obj )
-		{
-			std::cout << obj << " is object" << std::endl ;
-		}
+			args.push_back( obj ) ;
+		
 		else
 		{
 			src.ResetState( ) ;
 			if ( src >> cmd )
 			{
-				std::cout << " got cmd: " << cmd.Get() << std::endl ;
+				m_contents.push_back( PaintOp( cmd.Get(),
+				                               args.empty() ? 0 : &args[0],
+				                               args.size() ) ) ;
+				args.clear( ) ;
 			}
 			else
 				break ;

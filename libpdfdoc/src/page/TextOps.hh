@@ -41,7 +41,6 @@ struct TextState
 {
 	enum Type
 	{
-		// 
 		char_space, word_space, scale, leading, font_size, render_mode,
 		text_rise
 	} ;

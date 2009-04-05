@@ -31,7 +31,9 @@
 #include "Page.hh"
 #include "PageNode.hh"
 
+#include "PaintOp.hh"
 #include "Resources.hh"
+
 #include "core/Dictionary.hh"
 #include "core/Ref.hh"
 #include "core/Token.hh"
@@ -76,7 +78,7 @@ private :
 	Dictionary	m_self ;
 	Rect		m_media_box ;
 	
-	std::vector<Token>	m_contents ;
+	std::vector<PaintOp>	m_contents ;
 
 	int	m_rotate ;
 } ;
