@@ -61,8 +61,6 @@ private :
 	void AppendNode( PageNode *child ) ;
 	void IncChildCount( ) ;
 	
-	static PageNode* ReadNode( const Ref& link, IElementSrc *repo ) ;
-
 	void UpdateCount( ) const ;
 
 private :

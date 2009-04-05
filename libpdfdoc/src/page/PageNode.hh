@@ -30,6 +30,8 @@
 
 #include "file/IElement.hh"
 
+#include "file/ElementFactory.hh"
+
 #include <cstddef>
 
 namespace pdf {
@@ -71,6 +73,8 @@ private :
 	
 	Resources	*m_resources ;
 } ;
+
+template <> PageNode* CreateNewElement( const Object&, IElementSrc * ) ;
 
 } // end of namespace
 

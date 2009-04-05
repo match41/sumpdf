@@ -19,38 +19,22 @@
 \***************************************************************************/
 
 /*!
-	\file	BaseFont.hh
-	\brief	definition the BaseFont class
-	\date	Sun Mar 8 2009
+	\file	ElementFactory.hh
+	\brief	definition the ElementFactory class
+	\date	Sun Apr 5 2009
 	\author	Nestal Wan
 */
 
-#ifndef __PDF_BASE_FONT_HEADER_INCLUDED__
-#define __PDF_BASE_FONT_HEADER_INCLUDED__
-
-#include "Font.hh"
-#include "file/IElement.hh"
-
-#include "file/ElementFactory.hh"
+#ifndef __PDF_ELEMENT_FACTORY_HEADER_INCLUDED__
+#define __PDF_ELEMENT_FACTORY_HEADER_INCLUDED__
 
 namespace pdf {
 
-/*!	\brief	base class for all fonts
-	\internal
-	
-	This class is the base class of all font classes in libpdfdoc.
-*/
-class BaseFont : public Font, public IElement
+template <class Element>
+Element* CreateNewElement( const Object&, IElementSrc * )
 {
-public :
-	BaseFont( ) ;
-
-	virtual std::string BaseName( ) const = 0 ;
-
-	ElementList GetChildren( ) const ;
-} ;
-
-template <> BaseFont* CreateNewElement( const Object& link, IElementSrc * ) ;
+	return new Element ;
+}
 
 } // end of namespace
 

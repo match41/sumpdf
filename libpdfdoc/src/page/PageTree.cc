@@ -37,13 +37,13 @@
 #include "file/IFile.hh"
 #include "file/ElementList.hh"
 
+#include "util/Exception.hh"
 #include "util/Util.hh"
 
 #include <boost/bind.hpp>
 
 #include <cassert>
 #include <numeric>
-#include <stdexcept>
 
 #include <iostream>
 
@@ -64,30 +64,32 @@ PageTree::PageTree( PageTree *parent )
 		parent->AppendNode( this ) ;
 }
 
-PageNode* PageTree::ReadNode( const Ref& link, IElementSrc *repo )
+template <> PageNode* CreateNewElement( const Object& obj, IElementSrc *src )
 {
-	Dictionary d = repo->ReadObj( link ) ;
+	const Dictionary d = obj.As<Dictionary>() ;
 	if ( d["Type"].As<Name>() == Name( "Pages" ) )
-		return repo->Read<PageTree>( link ) ;
+		return new PageTree ;
 	
 	else if ( d["Type"].As<Name>() == Name( "Page" ) )
-		return repo->Read<RealPage>( link ) ;
+		return new RealPage ;
 	
 	else
-		throw std::runtime_error( "invalid page type" ) ;
+		throw ParseError( "invalid page type" ) ;
 }
 
-void PageTree::Init( Object& obj, IElementSrc *repo )
+void PageTree::Init( Object& obj, IElementSrc *src )
 {
+	PageNode::Init( obj, src ) ;
+
 	Dictionary d ;
-	std::swap( d, obj.As<Dictionary>() ) ;
+	obj.Swap( d ) ;
 	
 	using namespace boost ;
 
 	const Array& pages = d["Kids"].As<Array>() ;
 	std::transform( pages.begin( ), pages.end( ),
 					std::back_inserter( m_kids ),
-					bind( &PageTree::ReadNode, _1, repo ) ) ;
+					bind( &IElementSrc::Read<PageNode>, src, _1 ) ) ;
 
 	// leaf count is required
 	m_count	= d["Count"].As<int>( ) ;

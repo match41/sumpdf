@@ -33,6 +33,8 @@
 #include "core/Name.hh"
 #include "core/Object.hh"
 
+#include <vector>
+
 namespace freetype
 {
 	class Library ;

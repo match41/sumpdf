@@ -29,6 +29,8 @@
 #define __PDF_IDOC_BODY_HEADER_INCLUDED__
 
 #include "IElement.hh"
+#include "ElementFactory.hh"
+
 #include "core/Object.hh"
 #include "core/Dictionary.hh"
 
@@ -41,12 +43,6 @@ class Dictionary ;
 class IElementSrc ;
 class Name ;
 class Ref ;
-
-template <class Element>
-Element* CreateNewElement( const Object&, IElementSrc * )
-{
-	return new Element ;
-}
 
 /*!	\brief	somewhere that can provide IElement's
 	
@@ -93,7 +89,9 @@ public :
 		}
 	}
 
-	// helper function to create objects
+	/*!	helper function to create elements. This function is the primary
+		function for users of this class to read elements.
+	*/
 	template <class Element>
 	Element* Read( const Ref& link )
 	{
