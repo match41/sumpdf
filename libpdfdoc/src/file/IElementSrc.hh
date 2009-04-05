@@ -30,6 +30,7 @@
 
 #include "IElement.hh"
 #include "core/Object.hh"
+#include "core/Dictionary.hh"
 
 #include <typeinfo>
 #include <vector>
@@ -74,6 +75,23 @@ public :
 
 	template <typename T>
 	bool Detach( Dictionary& dict, const Name& name, T& result ) ;
+
+	template <class Element>
+	Element* DetachElement( Dictionary& dict, const Name& name )
+	{
+		Dictionary::iterator i = dict.find( name ) ;
+		if ( i == dict.end() )
+			return 0 ;
+		
+		if ( i->second.IsType<Ref>() )
+			return Read<Element>( i->second ) ;
+		else
+		{
+			Element *element = CreateNewElement<Element>( i->second, this ) ;
+			element->Init( i->second, this ) ;
+			return element ;
+		}
+	}
 
 	// helper function to create objects
 	template <class Element>

@@ -57,7 +57,6 @@ namespace pdf {
 
 RealPage::RealPage( PageTree *parent )
     : PageNode( parent ),
-      m_status( disk_newer ),
       m_rotate( 0 )
 {
 	if ( parent )
@@ -72,20 +71,18 @@ Rect RealPage::MediaBox( ) const
 /*!	read a page from file. This function will read the page from file. It will
 	also decode the stream content data.
 */
-void RealPage::Init( Object& link, IElementSrc *repo )
+void RealPage::Init( Object& self, IElementSrc *repo )
 {
 	assert( repo != 0 ) ;
+	PageNode::Init( self, repo ) ;
 
-	std::swap( m_self, link.As<Dictionary>() ) ;
-	m_status = sync ;
+	m_self.clear( ) ;
+	self.Swap( m_self ) ;
 	
 	// read content
 	ReadContent( m_self["Contents"], repo ) ;
 	m_self.erase( "Contents" ) ;
 
-	// resources may not always be indirect objects
-	ReadResource( m_self["Resources"], repo ) ;
-	
 	// media box
 	Array a ;
 	if ( repo->Detach( m_self, "MediaBox", a ) )
@@ -97,6 +94,24 @@ void RealPage::Init( Object& link, IElementSrc *repo )
 
 void RealPage::ReadContent( const Object& str_obj, IElementSrc *src )
 {
+	// for indirect objects, dereference it
+	if ( str_obj.IsType<Ref>( ) )
+		ReadContent( src->ReadObj( str_obj ), src ) ;
+	
+	// append individual stream objects
+	else if ( str_obj.IsType<Stream>( ) )
+		DecodeContent( str_obj.As<Stream>( ) ) ;
+	
+	// catenate individual objects in array
+	else if ( str_obj.IsType<Array>( ) )
+	{
+		const Array& a = str_obj.As<Array>( ) ;
+		std::for_each( a.begin( ), a.end( ),
+		               boost::bind( &RealPage::ReadContent, this, _1, src ) ) ;
+	}
+	
+	else if ( !str_obj.IsNull( ) )
+		throw std::runtime_error( "invalid page content" ) ;
 }
 
 void RealPage::Write( const Ref& link, IElementDest *file ) const

@@ -94,6 +94,11 @@ bool Dictionary::empty( ) const
 	return m_map.empty( ) ;
 }
 
+void Dictionary::clear( )
+{
+	m_map.clear( ) ;
+}
+
 void Dictionary::Add( const Name& key, const Object& value )
 {
 	m_map.insert( std::make_pair( key, value ) ) ;

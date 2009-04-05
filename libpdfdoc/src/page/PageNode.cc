@@ -79,12 +79,17 @@ const Resources* PageNode::GetResource( ) const
 	return m_resources ;
 }
 
-void PageNode::ReadResource( const Object& robj, IElementSrc *repo )
+void PageNode::Init( Object& self, IElementSrc *src )
 {
 	// resources may not always be indirect objects
-	delete m_resources ;
-	m_resources = ( robj.Type() == Object::ref ? repo->Read<Resources>( robj )
-		                        : new Resources( robj.As<Dictionary>(), repo ));
+	Resources* res = src->DetachElement<Resources>( self.As<Dictionary>(),
+	                                                "Resources" ) ;
+	
+	if ( res != 0 )
+	{
+		delete m_resources ;
+		m_resources = res ;
+	}
 }
 
 ElementList PageNode::GetChildren( ) const

@@ -50,6 +50,8 @@ public :
 	PageNode( ) ;
 	explicit PageNode( PageTree *parent ) ;
 
+	void Init( Object& link, IElementSrc *src ) ;
+
 	PageTree* Parent( ) ;
 	const PageTree* Parent( ) const ;
 
@@ -62,9 +64,6 @@ public :
 	
 	virtual std::size_t Count( ) const = 0 ;
 	virtual PageNode* GetLeaf( std::size_t index ) = 0 ;
-	
-protected :
-	void ReadResource( const Object& robj, IElementSrc *repo ) ;
 
 private :
 	//! parent of this node. if 0, it is the root node.

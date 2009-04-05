@@ -82,6 +82,7 @@ public :
 
 	std::size_t size( ) const ;
 	bool empty( ) const ;
+	void clear( ) ;
 
 	friend std::istream& operator>>( std::istream& is, Dictionary& dict ) ;
 	friend std::ostream& operator<<( std::ostream& os,

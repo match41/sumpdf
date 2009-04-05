@@ -38,7 +38,7 @@ namespace pdf {
 	
 	this class represents
 */
-class StreamElement : public IElement, private Stream
+class StreamElement : public IElement, public Stream
 {
 public :
 	StreamElement( ) ;

@@ -78,8 +78,6 @@ private :
 	
 	std::vector<Token>	m_contents ;
 
-	mutable enum Status { disk_newer, memory_newer, sync } m_status ;
-
 	int	m_rotate ;
 } ;
 
