@@ -56,7 +56,7 @@ class RealPage : public Page, public PageNode
 public :
 	explicit RealPage( PageTree *parent = 0 ) ;
 
-	void Read( const Ref& link, IElementSrc *repo ) ;
+	void Init( Object& link, IElementSrc *repo ) ;
 	void Write( const Ref& link, IElementDest *repo ) const ;
 	
 	Rect MediaBox( ) const ;

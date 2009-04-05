@@ -69,9 +69,9 @@ bool StandardFont::IsStandardFont( const Name& font_name )
 	return s.find( font_name ) != s.end( ) ; 
 }
 
-void StandardFont::Read( const Ref& link, IElementSrc *src )
+void StandardFont::Init( Object& link, IElementSrc *src )
 {
-	// reading is now supported
+	// reading is not supported
 }
 
 void StandardFont::Write( const Ref& link, IElementDest *dest ) const

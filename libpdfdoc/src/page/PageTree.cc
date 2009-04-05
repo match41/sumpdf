@@ -77,9 +77,10 @@ PageNode* PageTree::ReadNode( const Ref& link, IElementSrc *repo )
 		throw std::runtime_error( "invalid page type" ) ;
 }
 
-void PageTree::Read( const Ref& link, IElementSrc *repo )
+void PageTree::Init( Object& obj, IElementSrc *repo )
 {
-	Dictionary d = repo->ReadObj( link ) ;
+	Dictionary d ;
+	std::swap( d, obj.As<Dictionary>() ) ;
 	
 	using namespace boost ;
 

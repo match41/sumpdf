@@ -39,10 +39,9 @@ StreamElement::StreamElement( )
 {
 }
 
-void StreamElement::Read( const Ref& link, IElementSrc *src )
+void StreamElement::Init( Object& obj, IElementSrc *src )
 {
-	Stream s = src->ReadObj( link ).As<Stream>() ;
-	Swap( s ) ;
+	Swap( obj.As<Stream>() ) ;
 }
 
 void StreamElement::Write( const Ref& link, IElementDest *dest ) const

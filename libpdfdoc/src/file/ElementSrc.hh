@@ -51,7 +51,7 @@ public :
 	Object ReadObj( const Ref& obj, bool deref = false ) ;
 
 private :
-	IElement* Init( IElement *element, const Ref& link ) ;
+	void Store( IElement *element, const Ref& link ) ;
 	IElement* Find( const Ref& link ) ;
 	
 	void Dereference( Object& obj ) ;

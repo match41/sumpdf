@@ -85,7 +85,8 @@ void PageTest::TestNormal( )
 	
 	pdf::ElementSrc src( &file ) ;
 	
+	pdf::Object obj( d ) ;
 	pdf::RealPage p ;
-	p.Read( pdf::Ref(1,0), &src ) ;
+	p.Init( obj, &src ) ;
 	CPPUNIT_ASSERT( p.MediaBox() == pdf::Rect( 0, 0, 297, 419 ) ) ;
 }

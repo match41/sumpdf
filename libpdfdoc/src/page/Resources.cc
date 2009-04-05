@@ -62,11 +62,11 @@ Resources::Resources( const Dictionary& dict, IElementSrc *repo )
 	OnRead( repo ) ;
 }
 
-void Resources::Read( const Ref& link, IElementSrc *repo )
+void Resources::Init( Object& obj, IElementSrc *repo )
 {
 	assert( repo != 0 ) ;
 
-	m_self = repo->ReadObj( link ) ;
+	std::swap( m_self, obj.As<Dictionary>() ) ;
 	OnRead( repo ) ;
 }
 

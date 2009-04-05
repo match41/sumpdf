@@ -46,7 +46,7 @@ public :
 	PageTree( ) ;
 	explicit PageTree( PageTree *parent ) ;
 
-	void Read( const Ref& link, IElementSrc *repo ) ;
+	void Init( Object& link, IElementSrc *repo ) ;
 	void Write( const Ref& link, IElementDest *repo ) const ;
 
 	std::size_t Count( ) const ;

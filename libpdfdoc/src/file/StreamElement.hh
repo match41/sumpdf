@@ -43,7 +43,7 @@ class StreamElement : public IElement, private Stream
 public :
 	StreamElement( ) ;
 
-	void Read( const Ref& link, IElementSrc *src ) ;
+	void Init( Object& link, IElementSrc *src ) ;
 	void Write( const Ref& link, IElementDest *dest ) const ;
 	ElementList GetChildren( ) const ;
 	

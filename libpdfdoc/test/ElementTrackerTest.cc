@@ -50,7 +50,7 @@ namespace
 		{
 		}
 	
-		void Read( const pdf::Ref& link, pdf::IElementSrc *repo )
+		void Init( pdf::Object& link, pdf::IElementSrc *repo )
 		{
 		}
 		

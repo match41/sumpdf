@@ -157,6 +157,12 @@ public :
 	void Swap( Object& obj ) ;
 	Object& operator=( const Object& obj ) ;
 
+	template <typename T>
+	void Swap( T& t )
+	{
+		std::swap( As<T>(), t ) ;
+	}
+
 	friend bool operator==( const Object& obj1, const Object& obj2 ) ;
 	friend bool operator!=( const Object& obj1, const Object& obj2 ) ;
 

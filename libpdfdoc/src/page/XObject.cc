@@ -57,9 +57,9 @@ void XObject::Read( Stream& str, IElementSrc *repo )
 	}
 }
 */
-void XObject::Read( const Ref& link, IElementSrc *src )
+void XObject::Init( Object& obj, IElementSrc *src )
 {
-	StreamElement::Read( link, src ) ;
+	StreamElement::Init( obj, src ) ;
 
 	std::cout << "this is an xobject: " << Dict()["Subtype"] << std::endl ;
 }
@@ -75,21 +75,16 @@ ElementList XObject::GetChildren( ) const
 }
 */
 
-template <> XObject* CreateNewElement( const Ref& link, IElementSrc *src )
+template <> XObject* CreateNewElement( const Object& obj, IElementSrc *src )
 {
 	assert( src != 0 ) ;
 
-// 	Stream s = src->ReadObj( link ) ;
-	
-/*	Name type ;
-	if ( !src->Detach( dict, "Type", type ) )
-		throw Exception( "invalid XObject:" ) ;
-	
+	Name type = obj.As<Stream>().Subtype( ) ;
 	if ( type.Str() == "Image" )
 		return new RealImage ; 
+	
 	else
-		return 0 ;*/
-	return new XObject ;
+		return new XObject ;
 }
 
 } // end of namespace

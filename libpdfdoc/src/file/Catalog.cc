@@ -54,10 +54,10 @@ Catalog::Catalog( )
 {
 }
 
-void Catalog::Read( const Ref& link, IElementSrc *file )
+void Catalog::Init( Object& obj, IElementSrc *file )
 {
 	assert( file != 0 ) ;
-	m_self = file->ReadObj( link ) ;
+	std::swap( m_self, obj.As<Dictionary>() ) ;
 
 	if ( m_self["Type"].As<Name>() != "Catalog" )
 	{

@@ -71,6 +71,9 @@ public :
 	
 	void Reset( ) ;
 
+	Name Type( ) const ;
+	Name Subtype( ) const ;
+
 protected :
 	const Dictionary& Dict( ) const ;
 	Dictionary& Dict( ) ;

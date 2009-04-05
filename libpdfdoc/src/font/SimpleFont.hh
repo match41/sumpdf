@@ -58,7 +58,7 @@ public :
 	SimpleFont( freetype::Library *lib, const std::string& filename ) ;
 
 	void Read( const Dictionary& dict, IElementSrc *repo ) ;
-	void Read( const Ref& link, IElementSrc *src ) ;
+	void Init( Object& link, IElementSrc *src ) ;
 	void Write( const Ref& link, IElementDest *dest ) const ;
 
 	std::string BaseName( ) const ;

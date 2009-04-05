@@ -65,6 +65,7 @@ void ResourcesTest::TestNormal( )
 
 	pdf::ElementSrc src( &file ) ;
 
+	pdf::Object obj( rdict ) ;
 	pdf::Resources subject ;
-	subject.Read( pdf::Ref(1,0), &src ) ;
+	subject.Init( obj, &src ) ;
 }

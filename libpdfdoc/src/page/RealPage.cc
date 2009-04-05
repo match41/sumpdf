@@ -69,11 +69,11 @@ Rect RealPage::MediaBox( ) const
 	return m_media_box ;
 }
 
-void RealPage::Read( const Ref& link, IElementSrc *repo )
+void RealPage::Init( Object& link, IElementSrc *repo )
 {
 	assert( repo != 0 ) ;
 
-	m_self = repo->ReadObj( link ) ;
+	std::swap( m_self, link.As<Dictionary>() ) ;
 	m_status = sync ;
 	
 	// read content

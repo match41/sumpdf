@@ -57,7 +57,7 @@ public :
 	Name AddFont( BaseFont *font ) ;
 
 	void Read( const Dictionary& dict, IElementSrc *repo ) ;
-	void Read( const Ref& link, IElementSrc *repo ) ;
+	void Init( Object& link, IElementSrc *repo ) ;
 	void Write( const Ref& link, IElementDest *repo ) const ;
 
 	ElementList GetChildren( ) const ;

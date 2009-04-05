@@ -233,6 +233,16 @@ void Stream::Reset( )
 	m_impl->filter->Reset( ) ;
 }
 
+Name Stream::Type( ) const
+{
+	return m_impl->self["Type"] ;
+}
+
+Name Stream::Subtype( ) const
+{
+	return m_impl->self["Subtype"] ;
+}
+
 } // end of namespace
 
 namespace std

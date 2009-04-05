@@ -28,20 +28,21 @@
 #ifndef __PDF_IDOC_BODY_HEADER_INCLUDED__
 #define __PDF_IDOC_BODY_HEADER_INCLUDED__
 
+#include "IElement.hh"
+#include "core/Object.hh"
+
 #include <typeinfo>
 #include <vector>
 
 namespace pdf {
 
 class Dictionary ;
-class IElement ;
 class IElementSrc ;
 class Name ;
 class Ref ;
-class Object ;
 
 template <class Element>
-Element* CreateNewElement( const Ref&, IElementSrc * )
+Element* CreateNewElement( const Object&, IElementSrc * )
 {
 	return new Element ;
 }
@@ -63,7 +64,7 @@ public :
 
 private :
 	// override only
-	virtual IElement* Init( IElement *element, const Ref& link ) = 0 ;
+	virtual void Store( IElement *element, const Ref& link ) = 0 ;
 	virtual IElement* Find( const Ref& link ) = 0 ;
 
 public :
@@ -78,20 +79,27 @@ public :
 	template <class Element>
 	Element* Read( const Ref& link )
 	{
-		// dynamic cast reference
-		// it will throw bad_cast if failed
 		IElement *temp = Find( link ) ;
-		return temp != 0 ? &dynamic_cast<Element&>( *temp )
-		                 : NewElement<Element>( link ) ;
-	}
+		
+		// element found in cache, try to re-use it
+		if ( temp != 0 )
+			// dynamic cast reference
+			// it will throw bad_cast if failed
+			return &dynamic_cast<Element&>( *temp ) ;
 
-private :
-	template <class Element>
-	Element* NewElement( const Ref& link )
-	{
-		Element *element = CreateNewElement<Element>( link, this ) ;
-		Init( element, link ) ;
-		return element ;
+		else
+		{
+			Object obj = ReadObj( link ) ;
+			Element *element = CreateNewElement<Element>( obj, this ) ;
+
+			// insert before Read(). this is important!
+			// there may be lookups for "link" inside Read(). if not insert
+			// before Read(), these lookups will fail and re-create again,
+			// causing infinite recursion.
+			Store( element, link ) ;
+			element->Init( obj, this ) ;
+			return element ;
+		}
 	}
 } ;
 

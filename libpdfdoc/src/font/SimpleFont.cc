@@ -91,9 +91,10 @@ SimpleFont::SimpleFont( freetype::Library *lib, const std::string& filename )
 	assert( (int)m_widths.size() == m_last_char - m_first_char + 1 ) ;
 }
 
-void SimpleFont::Read( const Ref& link, IElementSrc *src )
+void SimpleFont::Init( Object& obj, IElementSrc *src )
 {
-	Dictionary dict = src->ReadObj( link ) ;
+	Dictionary dict ;
+	obj.Swap( dict ) ;
 	
 	try
 	{
@@ -174,7 +175,7 @@ ElementList SimpleFont::GetChildren( ) const
 {
 	return ElementList( ) ;
 }
-
+/*
 template <> SimpleFont* IElementSrc::Read( const Ref& link )
 {
 	// dynamic cast reference
@@ -183,8 +184,8 @@ template <> SimpleFont* IElementSrc::Read( const Ref& link )
 	return temp != 0 ? &dynamic_cast<SimpleFont&>( *temp )
 						: NewElement<SimpleFont>( link ) ;
 }
-
-template <> BaseFont* CreateNewElement( const Ref& , IElementSrc * )
+*/
+template <> BaseFont* CreateNewElement( const Object& , IElementSrc * )
 {
 	return new SimpleFont ;
 }

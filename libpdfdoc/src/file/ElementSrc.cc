@@ -61,25 +61,9 @@ void ElementSrc::Dereference( Object& obj )
 		obj = ReadObj( obj, true ) ;
 }
 
-IElement* ElementSrc::Init( IElement *element, const Ref& link )
+void ElementSrc::Store( IElement *element, const Ref& link )
 {
-	try
-	{
-		// insert before Read(). this is important!
-		// there may be lookups for "link" inside Read(). if not insert before
-		// Read(), these lookups will fail and re-create again, causing 
-		// infinite recursion.
-		m_map.insert( std::make_pair( link, element ) ) ;
-		element->Read( link, this ) ;
-		return element ;
-	}
-	catch ( std::exception& e )
-	{
-		throw ParseError( boost::format( "Cannot read %1% from %2%:\n%3%"
-		                                 "\nBacktrace:\n%4%" )
-		                  % Demangle( typeid(*element).name() )
-		                  % link % e.what() % Backtrace() ) ;
-	}
+	m_map.insert( std::make_pair( link, element ) ) ;
 }
 
 IElement* ElementSrc::Find( const Ref& link )

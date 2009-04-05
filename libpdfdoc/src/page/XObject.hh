@@ -47,14 +47,14 @@ class XObject : public StreamElement
 public :
 	XObject( ) ;
 
-	void Read( const Ref& link, IElementSrc *repo ) ;
+	void Init( Object& link, IElementSrc *repo ) ;
 /*	void Read( Stream& str, IElementSrc *repo ) ;
 	void Write( const Ref& link, IElementDest *repo ) const ;
 
 	ElementList GetChildren( ) const ;*/
 } ;
 
-template <> XObject* CreateNewElement( const Ref& link, IElementSrc * ) ;
+template <> XObject* CreateNewElement( const Object& link, IElementSrc * ) ;
 
 } // end of namespace
 
