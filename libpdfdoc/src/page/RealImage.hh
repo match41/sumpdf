@@ -30,7 +30,12 @@
 
 #include "XObject.hh"
 
+#include <string>
+
 namespace pdf {
+
+class Ref ;
+class IElementSrc ;
 
 /*!	\brief	brief description
 	
@@ -39,9 +44,9 @@ namespace pdf {
 class RealImage : public XObject
 {
 public :
-	RealImage( const std::string& filename ) ;
+	explicit RealImage( const std::string& filename = std::string() ) ;
 
-	
+	void Read( const Ref& link, IElementSrc *src ) ;
 } ;
 
 } // end of namespace

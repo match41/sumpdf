@@ -1,5 +1,5 @@
-/***************************************************************************
- *   Copyright (C) 2006 by Nestal Wan                                      *
+/***************************************************************************\
+ *   Copyright (C) 2009 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -16,46 +16,43 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+\***************************************************************************/
 
 /*!
-	\file	XObject.hh
-	\brief	definition the XObject class
-	\date	Sat May 10 2008
+	\file	StreamElement.cc
+	\brief	implementation the StreamElement class
+	\date	Sun Apr 5 2009
 	\author	Nestal Wan
 */
 
-#ifndef __PDF_XOBJECT_HEADER_INCLUDED__
-#define __PDF_XOBJECT_HEADER_INCLUDED__
+#include "StreamElement.hh"
 
-#include "file/StreamElement.hh"
+#include "IElementSrc.hh"
+#include "IElementDest.hh"
+#include "ElementList.hh"
 
-#include "file/IElementSrc.hh"
+#include "core/Object.hh"
 
 namespace pdf {
 
-class Stream ;
-
-/*!	\brief	PDF external objects
-	
-	According to the PDF specification: "An external object (commonly called an
-	XObject) is a graphics object whose contents are defined by a self-contained
-	content stream."
-*/
-class XObject : public StreamElement
+StreamElement::StreamElement( )
 {
-public :
-	XObject( ) ;
+}
 
-	void Read( const Ref& link, IElementSrc *repo ) ;
-/*	void Read( Stream& str, IElementSrc *repo ) ;
-	void Write( const Ref& link, IElementDest *repo ) const ;
+void StreamElement::Read( const Ref& link, IElementSrc *src )
+{
+	Stream s = src->ReadObj( link ).As<Stream>() ;
+	Swap( s ) ;
+}
 
-	ElementList GetChildren( ) const ;*/
-} ;
+void StreamElement::Write( const Ref& link, IElementDest *dest ) const
+{
+	dest->WriteObj( static_cast<const Stream&>(*this), link ) ;
+}
 
-template <> XObject* CreateNewElement( const Ref& link, IElementSrc * ) ;
+ElementList StreamElement::GetChildren( ) const
+{
+	return ElementList( ) ;
+}
 
 } // end of namespace
-
-#endif

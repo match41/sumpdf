@@ -27,10 +27,19 @@
 
 #include "RealImage.hh"
 
+#include <iostream>
+
 namespace pdf {
 
 RealImage::RealImage( const std::string& filename )
 {
+}
+
+void RealImage::Read( const Ref& link, IElementSrc *src )
+{
+	StreamElement::Read( link, src ) ;
+	
+	std::cerr << "this is an image" << std::endl ;
 }
 
 } // end of namespace

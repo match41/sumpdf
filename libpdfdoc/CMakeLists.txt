@@ -64,6 +64,7 @@ set( PAGE_HDRS		${PAGE_DIR}/RealPage.hh
 set( FILE_HDRS		${FILE_DIR}/File.hh
 					${FILE_DIR}/IFile.hh
 					${FILE_DIR}/Catalog.hh
+					${FILE_DIR}/StreamElement.hh
 					${FILE_DIR}/IElement.hh
 					${FILE_DIR}/IElementSrc.hh
 					${FILE_DIR}/ElementSrc.hh
@@ -138,6 +139,7 @@ set( PAGE_SRCS  	${PAGE_DIR}/RealPage.cc
 set( FILE_SRCS		${FILE_DIR}/File.cc
 					${FILE_DIR}/IFile.cc
 					${FILE_DIR}/Catalog.cc
+					${FILE_DIR}/StreamElement.cc
 					${FILE_DIR}/IElement.cc
 					${FILE_DIR}/IElementSrc.cc
 					${FILE_DIR}/ElementSrc.cc

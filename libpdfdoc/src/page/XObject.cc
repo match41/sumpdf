@@ -27,6 +27,8 @@
 
 #include "XObject.hh"
 
+#include "RealImage.hh"
+
 #include "core/Dictionary.hh"
 #include "core/Object.hh"
 
@@ -34,30 +36,34 @@
 #include "file/IElementSrc.hh"
 #include "file/IElementDest.hh"
 
+#include <iostream>
+
 namespace pdf {
 
 XObject::XObject( )
 {
 }
-
+/*
 void XObject::Read( Stream& str, IElementSrc *repo )
 {
 	m_self.Swap( str ) ;
 	
 	// dereference
-/*	Dictionary& dict = m_self.GetDictionary( ) ;
+	Dictionary& dict = m_self.GetDictionary( ) ;
 	for ( Dictionary::iterator i = dict.begin( ) ; i != dict.end( ) ; ++i )
 	{
 		if ( i->second.Type( ) == Object::ref )
 			i->second = repo->ReadObj( i->second ) ;
-	}*/
+	}
 }
-
-void XObject::Read( const Ref& link, IElementSrc *repo )
+*/
+void XObject::Read( const Ref& link, IElementSrc *src )
 {
-	Read( repo->ReadObj( link ).As<Stream>(), repo ) ;
-}
+	StreamElement::Read( link, src ) ;
 
+	std::cout << "this is an xobject: " << Dict()["Subtype"] << std::endl ;
+}
+/*
 void XObject::Write( const Ref& link, IElementDest *repo ) const
 {
 	repo->WriteObj( m_self, link ) ;
@@ -66,6 +72,24 @@ void XObject::Write( const Ref& link, IElementDest *repo ) const
 ElementList XObject::GetChildren( ) const
 {
 	return ElementList( ) ;
+}
+*/
+
+template <> XObject* CreateNewElement( const Ref& link, IElementSrc *src )
+{
+	assert( src != 0 ) ;
+
+// 	Stream s = src->ReadObj( link ) ;
+	
+/*	Name type ;
+	if ( !src->Detach( dict, "Type", type ) )
+		throw Exception( "invalid XObject:" ) ;
+	
+	if ( type.Str() == "Image" )
+		return new RealImage ; 
+	else
+		return 0 ;*/
+	return new XObject ;
 }
 
 } // end of namespace

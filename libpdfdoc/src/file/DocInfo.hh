@@ -1,5 +1,5 @@
-/***************************************************************************
- *   Copyright (C) 2006 by Nestal Wan                                      *
+/***************************************************************************\
+ *   Copyright (C) 2009 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -16,45 +16,30 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+\***************************************************************************/
 
 /*!
-	\file	XObject.hh
-	\brief	definition the XObject class
-	\date	Sat May 10 2008
+	\file	DocInfo.hh
+	\brief	definition the DocInfo class
+	\date	Fri Apr 3 2009
 	\author	Nestal Wan
 */
 
-#ifndef __PDF_XOBJECT_HEADER_INCLUDED__
-#define __PDF_XOBJECT_HEADER_INCLUDED__
-
-#include "file/StreamElement.hh"
-
-#include "file/IElementSrc.hh"
+#ifndef __PDF_DOC_INFO_HEADER_INCLUDED__
+#define __PDF_DOC_INFO_HEADER_INCLUDED__
 
 namespace pdf {
 
-class Stream ;
-
-/*!	\brief	PDF external objects
+/*!	\brief	brief description
 	
-	According to the PDF specification: "An external object (commonly called an
-	XObject) is a graphics object whose contents are defined by a self-contained
-	content stream."
+	this class represents
 */
-class XObject : public StreamElement
+class DocInfo
 {
 public :
-	XObject( ) ;
-
-	void Read( const Ref& link, IElementSrc *repo ) ;
-/*	void Read( Stream& str, IElementSrc *repo ) ;
-	void Write( const Ref& link, IElementDest *repo ) const ;
-
-	ElementList GetChildren( ) const ;*/
+	DocInfo( ) ;
+	~DocInfo( ) ;
 } ;
-
-template <> XObject* CreateNewElement( const Ref& link, IElementSrc * ) ;
 
 } // end of namespace
 
