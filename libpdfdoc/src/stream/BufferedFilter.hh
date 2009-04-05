@@ -34,9 +34,11 @@
 
 namespace pdf {
 
-/*!	\brief	brief description
-	
-	this class represents
+/*!	\brief	stream filter with whole data in memory
+	\ingroup	filter
+
+	The BufferedFilter is a StreamFilter with all its data in memory. It stores
+	a chunk of memory and an current read pointer.
 */
 class BufferedFilter : public StreamFilter
 {
@@ -55,8 +57,8 @@ public :
 	void Reset( ) ;
 
 private :
-	std::vector<unsigned char>	m_buf ;
-	std::size_t					m_offset ;
+	std::vector<unsigned char>	m_buf ;		//!< chunk of data in memory
+	std::size_t					m_offset ;	//!< current read position
 } ;
 
 } // end of namespace

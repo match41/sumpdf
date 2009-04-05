@@ -66,6 +66,9 @@ TokenSrc& TokenSrc::ReadToken( Token& token )
 	return *this ;
 }
 
+/*!	put back tokens to the TokenSrc. Tokens are put back in a first-in-last-out
+	order.
+*/
 void TokenSrc::PutBack( const Token& token )
 {
 	m_cache.push_back( token ) ;

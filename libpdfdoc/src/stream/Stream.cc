@@ -222,12 +222,12 @@ std::size_t Stream::WriteData( std::streambuf *buf ) const
 	return total ;
 }
 
-std::istream& Stream::InStream( )
+std::istream& Stream::InStream( ) const
 {
 	return m_impl->istr ;
 }
 
-void Stream::Reset( )
+void Stream::Reset( ) const
 {
 	m_impl->istr.clear( ) ;
 	m_impl->filter->Reset( ) ;

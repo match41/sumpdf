@@ -66,7 +66,7 @@ std::size_t Ref::ID( ) const
 	return m_obj_id ;
 }
 
-std::size_t Ref::Generation( ) const
+std::size_t Ref::Gen( ) const
 {
 	return m_generation ;
 }
@@ -76,7 +76,7 @@ std::ostream& operator<<( std::ostream& os, const Ref& obj )
 	return os << std::dec << obj.m_obj_id << ' ' << obj.m_generation << " R" ;
 }
 
-/*!	\brief	extractio operator from std::istream
+/*!	\brief	extraction operator from std::istream
 	\internal
 
 	This function extracts a Ref object \a b from an std::istream \a is . It
@@ -139,12 +139,14 @@ bool Ref::operator!=( const Ref& obj ) const
 
 bool operator<( const Ref& obj1, const Ref& obj2 )
 {
-	return obj1.ID() < obj2.ID() ;
+	return obj1.ID() != obj2.ID() ? obj1.ID()  < obj2.ID()
+	                              : obj1.Gen() < obj2.Gen() ;
 }
 
 bool operator>( const Ref& obj1, const Ref& obj2 )
 {
-	return obj1.ID() > obj2.ID() ;
+	return obj1.ID() != obj2.ID() ? obj1.ID()  > obj2.ID()
+	                              : obj1.Gen() > obj2.Gen() ;
 }
 
 } // end of namespace

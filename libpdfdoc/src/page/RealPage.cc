@@ -69,6 +69,9 @@ Rect RealPage::MediaBox( ) const
 	return m_media_box ;
 }
 
+/*!	read a page from file. This function will read the page from file. It will
+	also decode the stream content data.
+*/
 void RealPage::Init( Object& link, IElementSrc *repo )
 {
 	assert( repo != 0 ) ;
@@ -79,7 +82,6 @@ void RealPage::Init( Object& link, IElementSrc *repo )
 	// read content
 	ReadContent( m_self["Contents"], repo ) ;
 	m_self.erase( "Contents" ) ;
-// 	DecodeContent( ) ;
 
 	// resources may not always be indirect objects
 	ReadResource( m_self["Resources"], repo ) ;
@@ -95,27 +97,6 @@ void RealPage::Init( Object& link, IElementSrc *repo )
 
 void RealPage::ReadContent( const Object& str_obj, IElementSrc *src )
 {
-/*	// for indirect objects, dereference it
-	if ( str_obj.Type( ) == Object::ref )
-		ReadContent( src->ReadObj( str_obj ), src ) ;
-	
-	// append individual stream objects
-	else if ( str_obj.Type( ) == Object::stream )
-	{
-		const Stream& s = str_obj.As<Stream>( ) ;
-		s.ReadAll( m_content.rdbuf() ) ;
-	}
-	
-	// catenate individual objects in array
-	else if ( str_obj.Type( ) == Object::array )
-	{
-		const Array& a = str_obj.As<Array>( ) ;
-		std::for_each( a.begin( ), a.end( ),
-		               boost::bind( &RealPage::ReadContent, this, _1, src ) ) ;
-	}
-	
-	else if ( str_obj.Type( ) != Object::null )
-		throw std::runtime_error( "invalid page content" ) ;*/
 }
 
 void RealPage::Write( const Ref& link, IElementDest *file ) const
@@ -144,11 +125,12 @@ void RealPage::DrawText( double x, double y, Font *f, const std::string& text )
 	BaseFont *font = dynamic_cast<BaseFont*>( f ) ;
 	assert( font != 0 ) ;
 	Name fname = GetResource( )->AddFont( font ) ;
-
+/*
 	m_content << "BT\n"
               << fname << " 12 Tf " << x << ' ' << y << " Td "
 	                   << String( text ) << " Tj\n"
 	          << "ET\n" ;
+*/
 }
 
 std::size_t RealPage::Count( ) const
@@ -163,9 +145,9 @@ PageNode* RealPage::GetLeaf( std::size_t index )
 	return index == 0 ? this : 0 ;
 }
 
-void RealPage::DecodeContent( )
+void RealPage::DecodeContent( const Stream& s )
 {
-	TokenSrc src( m_content ) ;
+	TokenSrc src( s.InStream() ) ;
 	while ( true )
 	{
 		Object obj ;
@@ -173,16 +155,14 @@ void RealPage::DecodeContent( )
 		
 		if ( src >> obj )
 		{
-			std::cout << (std::size_t)m_content.tellg( ) << " is object: "
-			          << obj << std::endl ;
+			std::cout << obj << " is object" << std::endl ;
 		}
 		else
 		{
 			src.ResetState( ) ;
 			if ( src >> cmd )
 			{
-				std::cout << (std::size_t)m_content.tellg( )
-				          << " got cmd: " << cmd.Get() << std::endl ;
+				std::cout << " got cmd: " << cmd.Get() << std::endl ;
 			}
 			else
 				break ;

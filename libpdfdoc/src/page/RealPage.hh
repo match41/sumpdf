@@ -34,10 +34,10 @@
 #include "Resources.hh"
 #include "core/Dictionary.hh"
 #include "core/Ref.hh"
+#include "core/Token.hh"
 #include "util/Rect.hh"
 
 #include <string>
-#include <sstream>
 
 namespace pdf {
 
@@ -47,9 +47,10 @@ class Name ;
 class Stream ;
 class Resources ;
 
-/*!	\brief	brief description
+/*!	\brief	real implementation of a page
 	
-	this class represents
+	This class represents a page in the PDF document. It is an implementation
+	of the Page interface.
 */
 class RealPage : public Page, public PageNode
 {
@@ -69,14 +70,13 @@ public :
 	
 private :
 	void ReadContent( const Object& str_obj, IElementSrc *src ) ;
-
-	void DecodeContent( ) ;
+	void DecodeContent( const Stream& s ) ;
 	
 private :
 	Dictionary	m_self ;
 	Rect		m_media_box ;
 	
-	std::stringstream	m_content ;
+	std::vector<Token>	m_contents ;
 
 	mutable enum Status { disk_newer, memory_newer, sync } m_status ;
 

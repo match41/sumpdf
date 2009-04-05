@@ -67,9 +67,9 @@ public :
     std::size_t WriteData( std::streambuf *buf ) const ;
 
 	void Swap( Stream& str ) ;
-	std::istream& InStream( ) ;
+	std::istream& InStream( ) const ;
 	
-	void Reset( ) ;
+	void Reset( ) const ;
 
 	Name Type( ) const ;
 	Name Subtype( ) const ;
@@ -81,6 +81,8 @@ protected :
 private :
 	void ApplyFilter( const Object& filter ) ;
 	void CreateFilter( const Name& filter ) ;
+	
+	
 	
 private :
 	struct Impl ;

@@ -33,6 +33,14 @@
 
 namespace pdf {
 
+/*!	grand theft constructor. This constructor will steal the data
+	from the argument vector \a buf . After calling this function, \a buf will
+	be empty and the data originally in \a buf will be in the BufferedFilter
+	objet.
+	\param	buf		data to be put in the BufferedFilter. it will be empty
+					after calling this function.
+	\post	\a buf will be empty
+*/
 BufferedFilter::BufferedFilter( std::vector<unsigned char>& buf )
 	: m_offset( 0 )
 {
