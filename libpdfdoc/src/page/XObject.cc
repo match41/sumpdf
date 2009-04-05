@@ -45,12 +45,12 @@ void XObject::Read( Stream& str, IElementSrc *repo )
 	m_self.Swap( str ) ;
 	
 	// dereference
-	Dictionary& dict = m_self.GetDictionary( ) ;
+/*	Dictionary& dict = m_self.GetDictionary( ) ;
 	for ( Dictionary::iterator i = dict.begin( ) ; i != dict.end( ) ; ++i )
 	{
 		if ( i->second.Type( ) == Object::ref )
 			i->second = repo->ReadObj( i->second ) ;
-	}
+	}*/
 }
 
 void XObject::Read( const Ref& link, IElementSrc *repo )

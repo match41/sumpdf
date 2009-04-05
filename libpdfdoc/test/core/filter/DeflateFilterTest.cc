@@ -27,8 +27,8 @@
 
 #include "DeflateFilterTest.hh"
 
-#include "core/filter/DeflateFilter.hh"
-#include "core/filter/RawFilter.hh"
+#include "stream/DeflateFilter.hh"
+#include "stream/RawFilter.hh"
 
 #include <vector>
 #include <fstream>

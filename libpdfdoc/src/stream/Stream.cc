@@ -27,13 +27,14 @@
 
 #include "Stream.hh"
 
-#include "Array.hh"
-#include "Dictionary.hh"
-#include "filter/BufferedFilter.hh"
-#include "filter/DeflateFilter.hh"
-#include "filter/RawFilter.hh"
-#include "filter/StreamFilter.hh"
-#include "filter/StreamBufAdaptor.hh"
+#include "BufferedFilter.hh"
+#include "DeflateFilter.hh"
+#include "RawFilter.hh"
+#include "StreamFilter.hh"
+#include "StreamBufAdaptor.hh"
+
+#include "core/Array.hh"
+#include "core/Dictionary.hh"
 #include "util/Exception.hh"
 
 #include <boost/bind.hpp>
@@ -160,7 +161,8 @@ void Stream::CreateFilter( const Name& filter )
 			i.e. the length of filtered stream content. stream dictionary is
 			not included. 
 */
-std::size_t Stream::Write( std::ostream& os, const Ref& length_ref ) const
+// std::size_t Stream::Write( std::ostream& os, const Ref& length_ref ) const
+/*void Stream::Write( const Ref& link, IElementDest *dest ) const
 {
 	Dictionary dict( m_impl->self ) ;
 	dict["Length"]	= length_ref ;
@@ -171,7 +173,8 @@ std::size_t Stream::Write( std::ostream& os, const Ref& length_ref ) const
 	os << "\nendstream" ;
 	
 	return count ;
-}
+}*/
+
 bool Stream::operator==( const Stream& str ) const
 {
 	assert( m_impl.get( ) != 0 ) ;
@@ -180,19 +183,27 @@ bool Stream::operator==( const Stream& str ) const
 	return m_impl.get() == str.m_impl.get() ;
 }
 
-const Dictionary& Stream::GetDictionary( ) const
+const Dictionary& Stream::Dict( ) const
 {
 	assert( m_impl.get( ) != 0 ) ;
 	return m_impl->self ;
 }
 
-Dictionary& Stream::GetDictionary( )
+Dictionary& Stream::Dict( )
 {
 	assert( m_impl.get( ) != 0 ) ;
 	return m_impl->self ;
 }
 
-std::size_t Stream::ReadAll( std::streambuf *buf ) const
+Dictionary Stream::MakeDictWithLength( const Ref& length_link ) const
+{
+	assert( m_impl.get( ) != 0 ) ;
+	Dictionary self( m_impl->self ) ;
+	self["Length"] = length_link ;
+	return self ;
+}
+
+std::size_t Stream::WriteData( std::streambuf *buf ) const
 {
     assert( buf != 0 ) ;
 	assert( m_impl.get() != 0 ) ;

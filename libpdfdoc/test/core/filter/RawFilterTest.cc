@@ -27,7 +27,7 @@
 
 #include "RawFilterTest.hh"
 
-#include "core/filter/RawFilter.hh"
+#include "stream/RawFilter.hh"
 
 #include <sstream>
 

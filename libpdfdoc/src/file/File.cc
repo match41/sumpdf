@@ -29,13 +29,14 @@
 
 #include "core/Array.hh"
 #include "core/Object.hh"
-#include "core/Stream.hh"
 #include "core/Token.hh"
 #include "core/TokenSrc.hh"
+
 #include "util/Exception.hh"
+#include "util/SymbolInfo.hh"
 #include "util/Util.hh"
 
-#include "util/SymbolInfo.hh"
+#include "stream/Stream.hh"
 
 #include <cassert>
 #include <iomanip>
@@ -229,9 +230,14 @@ void File::WriteObj( const Object& obj, const Ref& link )
 	// stream dictionary. that is why we call Stream::Write() instead.
 	else
 	{
+		const Stream& s = obj.As<Stream>() ;
+	
 		Ref len_ref = AllocLink( ) ;
-		std::size_t length = obj.As<Stream>().Write( *m_out, len_ref ) ;
-		*m_out << "\nendobj\n" ;
+		*m_out << s.MakeDictWithLength( len_ref ) ;
+		
+		*m_out << "\nstream\n" ;
+		std::size_t length = s.WriteData( m_out->rdbuf() ) ;
+		*m_out << "\nendstream\nendobj\n" ;
 
 		// the return value of Stream::Write() is the length of the stream,
 		// i.e. the number of bytes written to file. it is only known after

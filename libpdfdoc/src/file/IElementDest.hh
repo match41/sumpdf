@@ -33,6 +33,7 @@ namespace pdf {
 class Ref ;
 class IElement ;
 class Object ;
+class StreamFilter ;
 
 /*!	\brief	brief description
 	
@@ -44,10 +45,10 @@ protected :
 	virtual ~IElementDest( ) ;
 
 public :
-	virtual Ref WriteObj( const Object& obj ) = 0 ;
 	virtual Ref AllocLink( ) = 0 ;
-	virtual void WriteObj( const Object& obj, const Ref& link ) = 0 ;
 	virtual Ref Write( const IElement *element ) = 0 ;
+	virtual Ref WriteObj( const Object& obj ) = 0 ;
+	virtual void WriteObj( const Object& obj, const Ref& link ) = 0 ;
 } ;
 
 } // end of namespace

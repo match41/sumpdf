@@ -30,9 +30,10 @@
 #include "Array.hh"
 #include "Dictionary.hh"
 #include "String.hh"
-#include "Stream.hh"
 #include "Token.hh"
 #include "TokenSrc.hh"
+
+#include "stream/Stream.hh"
 
 #include "util/Util.hh"
 
@@ -271,6 +272,11 @@ struct Op : public boost::static_visitor<>
 	void operator()( bool b ) const
 	{
 		m_os << std::boolalpha << b ;
+	}
+	
+	void operator()( const Stream& b ) const
+	{
+		throw Exception( "cannot write stream directly" ) ;
 	}
 } ;
 

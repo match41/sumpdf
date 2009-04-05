@@ -30,7 +30,7 @@
 
 #include "file/IElement.hh"
 
-#include "core/Stream.hh"
+#include "stream/Stream.hh"
 
 namespace pdf {
 

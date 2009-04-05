@@ -32,6 +32,7 @@ namespace pdf {
 
 class Object ;
 class Ref ;
+class StreamFilter ;
 
 /*!	\brief	brief description
 	

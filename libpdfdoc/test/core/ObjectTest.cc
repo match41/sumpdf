@@ -30,7 +30,8 @@
 #include "core/Object.hh"
 #include "core/TraverseObject.hh"
 #include "core/Array.hh"
-#include "core/Stream.hh"
+
+#include "stream/Stream.hh"
 
 #include "util/Util.hh"
 

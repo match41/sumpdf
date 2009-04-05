@@ -31,7 +31,6 @@
 
 #include "core/Array.hh"
 #include "core/Object.hh"
-#include "core/Stream.hh"
 #include "core/String.hh"
 #include "core/Token.hh"
 #include "core/TokenSrc.hh"
@@ -41,6 +40,8 @@
 #include "file/DeRef.hh"
 
 #include "font/BaseFont.hh"
+
+#include "stream/Stream.hh"
 
 #include "util/Rect.hh"
 #include "util/Util.hh"
@@ -94,7 +95,7 @@ void RealPage::Read( const Ref& link, IElementSrc *repo )
 
 void RealPage::ReadContent( const Object& str_obj, IElementSrc *src )
 {
-	// for indirect objects, dereference it
+/*	// for indirect objects, dereference it
 	if ( str_obj.Type( ) == Object::ref )
 		ReadContent( src->ReadObj( str_obj ), src ) ;
 	
@@ -103,8 +104,6 @@ void RealPage::ReadContent( const Object& str_obj, IElementSrc *src )
 	{
 		const Stream& s = str_obj.As<Stream>( ) ;
 		s.ReadAll( m_content.rdbuf() ) ;
-/*		m_content.rdbuf()->sputn(
-			reinterpret_cast<const char*>( s.Data( ) ), s.Size( ) ) ;*/
 	}
 	
 	// catenate individual objects in array
@@ -116,7 +115,7 @@ void RealPage::ReadContent( const Object& str_obj, IElementSrc *src )
 	}
 	
 	else if ( str_obj.Type( ) != Object::null )
-		throw std::runtime_error( "invalid page content" ) ;
+		throw std::runtime_error( "invalid page content" ) ;*/
 }
 
 void RealPage::Write( const Ref& link, IElementDest *file ) const

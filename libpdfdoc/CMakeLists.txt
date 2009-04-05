@@ -42,6 +42,7 @@ find_package( JPEG )
 set( PAGE_DIR		src/page/ )
 set( FILE_DIR		src/file/ )
 set( CORE_DIR		src/core/ )
+set( STRM_DIR		src/stream/ )
 set( IMG_DIR		src/image/ )
 set( UTIL_DIR		src/util/ )
 set( FONT_DIR		src/font/ )
@@ -79,15 +80,16 @@ set( CORE_HDRS  	${CORE_DIR}/Object.hh
 					${CORE_DIR}/TokenSrc.hh
 					${CORE_DIR}/String.hh
 					${CORE_DIR}/Name.hh
-					${CORE_DIR}/Stream.hh
-					${CORE_DIR}/TraverseObject.hh
+					${CORE_DIR}/TraverseObject.hh )
+					
+set( STRM_HDRS		${STRM_DIR}/Stream.hh
 					
 					# stream filters
-					${CORE_DIR}/filter/StreamFilter.hh
-					${CORE_DIR}/filter/RawFilter.hh
-					${CORE_DIR}/filter/DeflateFilter.hh
-					${CORE_DIR}/filter/BufferedFilter.hh
-					${CORE_DIR}/filter/StreamBufAdaptor.hh )
+					${STRM_DIR}/StreamFilter.hh
+					${STRM_DIR}/RawFilter.hh
+					${STRM_DIR}/DeflateFilter.hh
+					${STRM_DIR}/BufferedFilter.hh
+					${STRM_DIR}/StreamBufAdaptor.hh )
 
 set( UTIL_HDRS  	${UTIL_DIR}/Rect.hh
 					${UTIL_DIR}/Export.hh
@@ -151,15 +153,16 @@ set( CORE_SRCS  	${CORE_DIR}/Object.cc
 					${CORE_DIR}/Token.cc
 					${CORE_DIR}/TokenSrc.cc
 					${CORE_DIR}/String.cc
-					${CORE_DIR}/Name.cc
-					${CORE_DIR}/Stream.cc
+					${CORE_DIR}/Name.cc )
+
+set( STRM_SRCS		${STRM_DIR}/Stream.cc
 					
 					# stream filters
-					${CORE_DIR}/filter/StreamFilter.cc
-					${CORE_DIR}/filter/RawFilter.cc
-					${CORE_DIR}/filter/DeflateFilter.cc
-					${CORE_DIR}/filter/BufferedFilter.cc
-					${CORE_DIR}/filter/StreamBufAdaptor.cc )
+					${STRM_DIR}/StreamFilter.cc
+					${STRM_DIR}/RawFilter.cc
+					${STRM_DIR}/DeflateFilter.cc
+					${STRM_DIR}/BufferedFilter.cc
+					${STRM_DIR}/StreamBufAdaptor.cc )
 
 set( UTIL_SRCS  	${UTIL_DIR}/Rect.cc
 					${UTIL_DIR}/Util.cc
@@ -247,14 +250,14 @@ endif ( JPEG_FOUND )
 ###############################################################################
 set( HDRS	src/RealDoc.hh
 			${PAGE_HDRS} ${FILE_HDRS} ${CORE_HDRS} ${IMG_HDRS}
-			${FONT_HDRS} ${FT_HDRS} )
+			${FONT_HDRS} ${FT_HDRS} ${STRM_HDRS} )
 
 ###############################################################################
 # all sources
 ###############################################################################
 set( SRCS	src/Doc.cc src/RealDoc.cc src/libpdfdoc.cc
 			${PAGE_SRCS} ${FILE_SRCS} ${CORE_SRCS} ${IMG_SRCS} ${UTIL_SRCS}
-			${FONT_SRCS} ${FT_SRCS} )
+			${FONT_SRCS} ${FT_SRCS} ${STRM_SRCS} )
 
 ###############################################################################
 # libpdfdoc library
@@ -265,20 +268,23 @@ add_library( pdfdoc_static STATIC ${SRCS} ${HDRS} )
 ###############################################################################
 # source groups
 ###############################################################################
-SOURCE_GROUP( "Source Files\\page"	FILES ${PAGE_SRCS} )
-SOURCE_GROUP( "Source Files\\file"	FILES ${FILE_SRCS} )
-SOURCE_GROUP( "Source Files\\core"	FILES ${CORE_SRCS} )
-SOURCE_GROUP( "Source Files\\util"	FILES ${UTIL_SRCS} )
-SOURCE_GROUP( "Source Files\\font"	FILES ${FONT_SRCS} )
+SOURCE_GROUP( "Source Files\\page"		FILES ${PAGE_SRCS} )
+SOURCE_GROUP( "Source Files\\file"		FILES ${FILE_SRCS} )
+SOURCE_GROUP( "Source Files\\core"		FILES ${CORE_SRCS} )
+SOURCE_GROUP( "Source Files\\util"		FILES ${UTIL_SRCS} )
+SOURCE_GROUP( "Source Files\\font"		FILES ${FONT_SRCS} )
 SOURCE_GROUP( "Source Files\\font\\ftwrap"	FILES ${FT_SRCS} )
+SOURCE_GROUP( "Source Files\\image"		FILES ${IMG_SRCS} )
+SOURCE_GROUP( "Source Files\\stream"	FILES ${STRM_SRCS} )
+
+SOURCE_GROUP( "Header Files\\page"		FILES ${PAGE_HDRS} )
+SOURCE_GROUP( "Header Files\\file"		FILES ${FILE_HDRS} )
+SOURCE_GROUP( "Header Files\\core"		FILES ${CORE_HDRS} )
+SOURCE_GROUP( "Header Files\\util"		FILES ${UTIL_HDRS} )
+SOURCE_GROUP( "Header Files\\font"		FILES ${FONT_HDRS} )
 SOURCE_GROUP( "Header Files\\font\\ftwrap"	FILES ${FT_HDRS} )
-SOURCE_GROUP( "Source Files\\image"	FILES ${IMG_SRCS} )
-SOURCE_GROUP( "Header Files\\page"	FILES ${PAGE_HDRS} )
-SOURCE_GROUP( "Header Files\\file"	FILES ${FILE_HDRS} )
-SOURCE_GROUP( "Header Files\\core"	FILES ${CORE_HDRS} )
-SOURCE_GROUP( "Header Files\\util"	FILES ${UTIL_HDRS} )
-SOURCE_GROUP( "Header Files\\font"	FILES ${FONT_HDRS} )
-SOURCE_GROUP( "Header Files\\image"	FILES ${IMG_HDRS} )
+SOURCE_GROUP( "Header Files\\image"		FILES ${IMG_HDRS} )
+SOURCE_GROUP( "Header Files\\stream"	FILES ${STRM_HDRS} )
 
 ###############################################################################
 # unix specific libraries

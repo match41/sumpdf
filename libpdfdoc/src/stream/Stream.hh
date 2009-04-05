@@ -63,18 +63,17 @@ public :
 
 	bool operator==( const Stream& str ) const ;
 
-	std::size_t Write( std::ostream& os, const Ref& length_ref ) const ;
-
-	const Dictionary& GetDictionary( ) const ;
-	Dictionary& GetDictionary( ) ;
+	Dictionary MakeDictWithLength( const Ref& length_link ) const ;
+    std::size_t WriteData( std::streambuf *buf ) const ;
 
 	void Swap( Stream& str ) ;
-
-    std::size_t ReadAll( std::streambuf *buf ) const ;
-
 	std::istream& InStream( ) ;
 	
 	void Reset( ) ;
+
+protected :
+	const Dictionary& Dict( ) const ;
+	Dictionary& Dict( ) ;
 
 private :
 	void ApplyFilter( const Object& filter ) ;

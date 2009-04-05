@@ -31,10 +31,13 @@
 
 #include "core/Ref.hh"
 #include "core/Dictionary.hh"
-#include "core/Stream.hh"
 
 #include "file/ElementSrc.hh"
+
 #include "page/RealPage.hh"
+
+#include "stream/Stream.hh"
+
 #include "util/Rect.hh"
 
 #include <sstream>

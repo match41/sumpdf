@@ -27,9 +27,9 @@
 
 #include "StreamBufAdaptorTest.hh"
 
-#include "core/filter/StreamBufAdaptor.hh"
-#include "core/filter/DeflateFilter.hh"
-#include "core/filter/RawFilter.hh"
+#include "stream/StreamBufAdaptor.hh"
+#include "stream/DeflateFilter.hh"
+#include "stream/RawFilter.hh"
 #include "core/Dictionary.hh"
 #include "core/Token.hh"
 

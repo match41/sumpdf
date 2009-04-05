@@ -28,9 +28,10 @@
 #include "StreamTest.hh"
 
 #include "core/Dictionary.hh"
-#include "core/Stream.hh"
 #include "core/Token.hh"
 #include "core/TokenSrc.hh"
+
+#include "stream/Stream.hh"
 
 #include <zlib.h>
 
@@ -71,8 +72,9 @@ void StreamTest::TestWrite( )
 	std::string str = "0 12 TD (string string) Tj" ;
 	pdf::Stream subject( str ) ;
 	
-	std::stringstream ss ; 
-	std::size_t count = subject.Write( ss, pdf::Ref( 101, 0 ) ) ;
+	std::stringstream ss ;
+	ss << subject.MakeDictWithLength( pdf::Ref( 101, 0 ) ) ;
+	std::size_t count = subject.WriteData( ss.rdbuf() ) ;
 	CPPUNIT_ASSERT( count == str.size() ) ;
 
 	pdf::Dictionary dict ;
@@ -86,13 +88,13 @@ void StreamTest::TestReset( )
 	pdf::Stream subject( str ) ;
 	
 	std::ostringstream ss ; 
-	std::size_t count = subject.Write( ss, pdf::Ref( 101, 0 ) ) ;
+	std::size_t count = subject.WriteData( ss.rdbuf() ) ;
 	CPPUNIT_ASSERT( count == str.size() ) ;
 // 	CPPUNIT_ASSERT( ss.str() == str ) ;
 	
 	subject.Reset( ) ;
 	std::ostringstream ss2 ; 
-	count = subject.Write( ss2, pdf::Ref( 101, 0 ) ) ;
+	count = subject.WriteData( ss2.rdbuf() ) ;
 	CPPUNIT_ASSERT( count == str.size() ) ;
 // 	CPPUNIT_ASSERT( ss2.str() == str ) ;
 }
@@ -103,7 +105,7 @@ void StreamTest::TestReadDeflate( )
 	pdf::Stream subject( m_compressed, pdf::Name( "FlateDecode" ) ) ;
 	
 	std::ostringstream ss ; 
-	std::size_t count = subject.Write( ss, pdf::Ref( 101, 0 ) ) ;
+	std::size_t count = subject.WriteData( ss.rdbuf() ) ;
 	CPPUNIT_ASSERT( count == m_original.size() ) ;
 	
 	subject.Reset( ) ;

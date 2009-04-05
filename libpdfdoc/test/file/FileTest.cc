@@ -32,7 +32,7 @@
 #include "core/Ref.hh"
 #include "core/Dictionary.hh"
 #include "core/Array.hh"
-#include "core/Stream.hh"
+#include "stream/Stream.hh"
 #include "core/Object.hh"
 #include "core/Token.hh"
 
@@ -114,9 +114,14 @@ void FileTest::TestSimple( )
 	                   std::ios::in | std::ios::binary ) ;
 	CPPUNIT_ASSERT( exp ) ;
 	
-	std::string file_str = file.str() ; 
-	CPPUNIT_ASSERT( std::equal( file_str.begin( ), file_str.end( ),
-	                            std::istreambuf_iterator<char>( exp ) ) ) ;
+	std::string file_str = file.str() ;
+	
+	if ( !std::equal( file_str.begin( ), file_str.end( ),
+	                            std::istreambuf_iterator<char>( exp ) ) )
+	{
+		std::cerr << file_str << std::endl ;
+		CPPUNIT_ASSERT( false ) ;
+	}
 }
 
 void FileTest::TestReadStream( )
@@ -131,7 +136,7 @@ void FileTest::TestReadStream( )
 	CPPUNIT_ASSERT( obj.IsType<pdf::Stream>() ) ;
 
 	std::stringstream output ;
-	std::size_t count = obj.As<pdf::Stream>().ReadAll( output.rdbuf() ) ;
+	std::size_t count = obj.As<pdf::Stream>().WriteData( output.rdbuf() ) ;
 	CPPUNIT_ASSERT( count == 70 ) ;
 	CPPUNIT_ASSERT( output.str() == "2 J\n0.57 w\nBT /F1 16.00 Tf ET\n"
 	                        "BT 31.19 794.57 Td (Hello World!) Tj ET\n" ) ;
