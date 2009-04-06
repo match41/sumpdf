@@ -88,6 +88,7 @@ void SymbolInfo::PrintTrace( addr_t addr, std::ostream& os, std::size_t idx )
 {
     IMAGEHLP_SYMBOL64 *sym =
     	(IMAGEHLP_SYMBOL64 *)malloc( sizeof(IMAGEHLP_SYMBOL64) + 1024 );
+    sym->MaxNameLength = 1024 ;
 
     DWORD64 offset ;
     if ( SymGetSymFromAddr64( GetCurrentProcess(), addr, &offset, sym ) )
