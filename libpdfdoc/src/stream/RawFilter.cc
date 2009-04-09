@@ -63,15 +63,22 @@ std::size_t RawFilter::Read( unsigned char *data, std::size_t size )
 	std::size_t count = std::min<std::size_t>( m_length - m_current, size ) ;
 	
 	std::size_t c = m_file->sgetn( reinterpret_cast<char*>( data ), count ) ;
-	if ( c > 0 )
-		m_current += c ;
+	m_current += c ;
+	
 	return c ;
 }
 
 std::size_t RawFilter::Write( const unsigned char *data, std::size_t size )
 {
 	assert( m_file != 0 ) ;
-	return m_file->sputn( reinterpret_cast<const char*>( data ), size ) ;
+	m_file->pubseekpos( m_start + m_current, std::ios::out ) ;
+	
+	std::size_t count = std::min<std::size_t>( m_length - m_current, size ) ;
+	
+	std::size_t c = m_file->sputn(reinterpret_cast<const char*>( data ), count);
+	m_current += c ;
+	
+	return c ;
 }
 
 void RawFilter::Reset( )

@@ -44,3 +44,13 @@ void RawFilterTest::TestRead( )
 	CPPUNIT_ASSERT( t.Read( buf, sizeof(buf) ) == 5 ) ;
 	CPPUNIT_ASSERT( std::string(buf, buf+5) == "hello" ) ;
 }
+
+void RawFilterTest::TestWrite( )
+{
+	std::ostringstream ss ;
+	pdf::RawFilter t( ss.rdbuf(), 0 ) ;
+	
+	unsigned char buf[] = "hello" ;
+	CPPUNIT_ASSERT( t.Write( buf, sizeof(buf)-1 ) == 5 ) ;
+	CPPUNIT_ASSERT( ss.str() == "hello" ) ;
+}

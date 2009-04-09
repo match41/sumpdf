@@ -40,10 +40,12 @@ public :
 	// declare suit function
 	CPPUNIT_TEST_SUITE( RawFilterTest );
 		CPPUNIT_TEST( TestRead ) ;
+		CPPUNIT_TEST( TestWrite ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
 private :
 	void TestRead( ) ;
+	void TestWrite( ) ;
 } ;
 
 #endif

@@ -393,10 +393,10 @@ set( UT_SRCS	test/core/TokenTest.cc
 				test/core/StringTest.cc
 				test/core/DictionaryTest.cc
 				test/core/ArrayTest.cc
-				test/core/StreamTest.cc
-				test/core/filter/RawFilterTest.cc
-				test/core/filter/DeflateFilterTest.cc
-				test/core/filter/StreamBufAdaptorTest.cc
+				test/stream/StreamTest.cc
+				test/stream/RawFilterTest.cc
+				test/stream/DeflateFilterTest.cc
+				test/stream/StreamBufAdaptorTest.cc
 				
 				test/page/PageTest.cc
 				test/page/PageNodeTest.cc
