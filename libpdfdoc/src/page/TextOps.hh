@@ -29,6 +29,9 @@
 #define __PDF_TEXT_OPS_HEADER_INCLUDED__
 
 #include <boost/variant.hpp>
+
+// stdc++ headers
+#include <iosfwd>
 #include <vector>
 
 namespace pdf {
@@ -48,6 +51,8 @@ struct TextState
 	Type	m_type ;
 	double	m_arg ;
 } ;
+
+std::ostream& operator<<( std::ostream& os, const TextState& ts ) ;
 
 struct TextPosition
 {
