@@ -46,12 +46,16 @@ DeflateFilter::DeflateFilter( StreamFilter *src )
 	: m_src( src )
 {
 	assert( m_src.get() != 0 ) ;
-	std::memset( &m_decomp, 0, sizeof(m_decomp) ) ;
+	std::memset( &m_decomp.str, 0, sizeof(m_decomp.str) ) ;
+	std::memset( &m_comp.str, 0, sizeof(m_comp.str) ) ;
 
-	if ( ::inflateInit( &m_decomp ) != Z_OK )
-		throw Error( "inflateInit()", m_decomp.msg ) ;
+	if ( ::inflateInit( &m_decomp.str ) != Z_OK )
+		throw Error( "inflateInit(): ", m_decomp.str.msg ) ;
+	if ( ::deflateInit( &m_comp.str, 9 ) != Z_OK )
+		throw Error( "deflateInit(): ", m_decomp.str.msg ) ;
 
-    m_buf.reserve( m_buf_size ) ;
+    m_decomp.buf.reserve( m_buf_size ) ;
+    m_comp.buf.reserve( m_buf_size ) ;
 }
 
 std::size_t DeflateFilter::Read( unsigned char *data, std::size_t size )
@@ -61,33 +65,33 @@ std::size_t DeflateFilter::Read( unsigned char *data, std::size_t size )
 	
 	do
 	{
-	    if ( m_decomp.avail_in == 0 )
+	    if ( m_decomp.str.avail_in == 0 )
 	    {
-			m_buf.resize( m_buf_size ) ;
-			m_buf.resize( m_src->Read( &m_buf[0], m_buf_size ) ) ;
+			m_decomp.buf.resize( m_buf_size ) ;
+			m_decomp.buf.resize( m_src->Read( &m_decomp.buf[0], m_buf_size ) ) ;
 		    
 		    // no more input to be read. return number of byte read so far
-		    if ( m_buf.empty( ) )
+		    if ( m_decomp.buf.empty( ) )
 			    break ;
 		    
-		    m_decomp.next_in	= &m_buf[0] ;
-		    m_decomp.avail_in	= m_buf.size( ) ;
+		    m_decomp.str.next_in	= &m_decomp.buf[0] ;
+		    m_decomp.str.avail_in	= m_decomp.buf.size( ) ;
 		}
 		
-		m_decomp.next_out	= data + offset ;
-		m_decomp.avail_out	= size - offset ;
-		result = ::inflate( &m_decomp, Z_SYNC_FLUSH ) ;
+		m_decomp.str.next_out	= data + offset ;
+		m_decomp.str.avail_out	= size - offset ;
+		result = ::inflate( &m_decomp.str, Z_SYNC_FLUSH ) ;
 		
 		// finish filling up the output data
 		if ( result == Z_OK || result == Z_STREAM_END )
 		{
 			// update offset
-			offset = size - m_decomp.avail_out ;
+			offset = size - m_decomp.str.avail_out ;
 		
-			if ( m_decomp.avail_out == 0 )
+			if ( m_decomp.str.avail_out == 0 )
 				break ;
 		}
-	} while ( result == Z_OK && m_decomp.avail_in == 0 ) ;
+	} while ( result == Z_OK && m_decomp.str.avail_in == 0 ) ;
 
 	return offset ;
 }
@@ -99,10 +103,10 @@ std::size_t DeflateFilter::Write( const unsigned char *data, std::size_t size )
 
 void DeflateFilter::Reset( )
 {
-	m_buf.clear( ) ;
+	m_decomp.buf.clear( ) ;
 	m_src->Reset( ) ;
 
-	if ( ::inflateReset( &m_decomp ) != Z_OK )
+	if ( ::inflateReset( &m_decomp.str ) != Z_OK )
 		throw ParseError( "inflate init fail" ) ;
 }
 

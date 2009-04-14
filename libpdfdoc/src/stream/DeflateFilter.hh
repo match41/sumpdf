@@ -66,11 +66,18 @@ public :
 	} ;
 
 private :
-	z_stream					m_comp, m_decomp ;
+	struct ZData ;
+
+private :
+	struct ZData
+	{
+		z_stream	str ;
+		std::vector<unsigned char>	buf ;
+	} m_comp, m_decomp ;
+
 	std::auto_ptr<StreamFilter>	m_src ;
 	
 	static const std::size_t	m_buf_size = 80 ;
-	std::vector<unsigned char>	m_buf ;
 } ;
 
 } // end of namespace
