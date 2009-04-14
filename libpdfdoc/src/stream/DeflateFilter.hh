@@ -30,6 +30,8 @@
 
 #include "StreamFilter.hh"
 
+#include "util/Exception.hh"
+
 #include <vector>
 #include <memory>
 
@@ -56,6 +58,12 @@ public :
 	std::size_t Write( const unsigned char *data, std::size_t size ) ;
 
 	void Reset( ) ;
+
+	class Error : public Exception
+	{
+	public :
+		Error( const char *func, const char *msg ) ;
+	} ;
 
 private :
 	z_stream					m_zstr ;

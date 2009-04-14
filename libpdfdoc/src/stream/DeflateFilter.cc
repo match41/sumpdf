@@ -29,11 +29,18 @@
 
 #include "util/Exception.hh"
 
+#include <boost/format.hpp>
+
 #include <cassert>
 #include <cstring>
 #include <iostream>
 
 namespace pdf {
+
+DeflateFilter::Error::Error( const char *func, const char *msg )
+	: Exception( boost::format( "%1% error: %2%" ) % msg )
+{
+}
 
 DeflateFilter::DeflateFilter( StreamFilter *src )
 	: m_src( src )
@@ -42,7 +49,7 @@ DeflateFilter::DeflateFilter( StreamFilter *src )
 	std::memset( &m_zstr, 0, sizeof(m_zstr) ) ;
 
 	if ( ::inflateInit( &m_zstr ) != Z_OK )
-		throw ParseError( "inflate init fail" ) ;
+		throw Error( "inflateInit()", m_zstr.msg ) ;
 
     m_buf.reserve( m_buf_size ) ;
 }

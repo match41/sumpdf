@@ -42,10 +42,10 @@ public :
 	DeflateFilterTest( ) ;
 
 	// declare suit function
-	CPPUNIT_TEST_SUITE( DeflateFilterTest );
-		CPPUNIT_TEST( TestRead );
-		CPPUNIT_TEST( TestReset );
-	CPPUNIT_TEST_SUITE_END();
+	CPPUNIT_TEST_SUITE( DeflateFilterTest ) ;
+		CPPUNIT_TEST( TestRead ) ;
+		CPPUNIT_TEST( TestReset ) ;
+	CPPUNIT_TEST_SUITE_END( ) ;
 
 public :
 	void setUp( ) ;
