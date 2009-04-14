@@ -70,13 +70,13 @@ Dictionary::const_iterator Dictionary::end( ) const
 Dictionary::iterator Dictionary::find( const Name& name )
 {
 	iterator i = m_map.find( name ) ;
-	return i->second.IsNull() ? m_map.end() : i ;
+	return i != m_map.end() && i->second.IsNull() ? m_map.end() : i ;
 }
 
 Dictionary::const_iterator Dictionary::find( const Name& name ) const
 {
 	const_iterator i = m_map.find( name ) ;
-	return i->second.IsNull() ? m_map.end() : i ;
+	return i != m_map.end() && i->second.IsNull() ? m_map.end() : i ;
 }
 
 std::pair<Dictionary::iterator, bool> Dictionary::insert( const value_type& v )
