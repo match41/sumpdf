@@ -46,10 +46,10 @@ DeflateFilter::DeflateFilter( StreamFilter *src )
 	: m_src( src )
 {
 	assert( m_src.get() != 0 ) ;
-	std::memset( &m_zstr, 0, sizeof(m_zstr) ) ;
+	std::memset( &m_decomp, 0, sizeof(m_decomp) ) ;
 
-	if ( ::inflateInit( &m_zstr ) != Z_OK )
-		throw Error( "inflateInit()", m_zstr.msg ) ;
+	if ( ::inflateInit( &m_decomp ) != Z_OK )
+		throw Error( "inflateInit()", m_decomp.msg ) ;
 
     m_buf.reserve( m_buf_size ) ;
 }
@@ -61,7 +61,7 @@ std::size_t DeflateFilter::Read( unsigned char *data, std::size_t size )
 	
 	do
 	{
-	    if ( m_zstr.avail_in == 0 )
+	    if ( m_decomp.avail_in == 0 )
 	    {
 			m_buf.resize( m_buf_size ) ;
 			m_buf.resize( m_src->Read( &m_buf[0], m_buf_size ) ) ;
@@ -70,24 +70,24 @@ std::size_t DeflateFilter::Read( unsigned char *data, std::size_t size )
 		    if ( m_buf.empty( ) )
 			    break ;
 		    
-		    m_zstr.next_in	= &m_buf[0] ;
-		    m_zstr.avail_in	= m_buf.size( ) ;
+		    m_decomp.next_in	= &m_buf[0] ;
+		    m_decomp.avail_in	= m_buf.size( ) ;
 		}
 		
-		m_zstr.next_out		= data + offset ;
-		m_zstr.avail_out	= size - offset ;
-		result = ::inflate( &m_zstr, Z_SYNC_FLUSH ) ;
+		m_decomp.next_out	= data + offset ;
+		m_decomp.avail_out	= size - offset ;
+		result = ::inflate( &m_decomp, Z_SYNC_FLUSH ) ;
 		
 		// finish filling up the output data
 		if ( result == Z_OK || result == Z_STREAM_END )
 		{
 			// update offset
-			offset = size - m_zstr.avail_out ;
+			offset = size - m_decomp.avail_out ;
 		
-			if ( m_zstr.avail_out == 0 )
+			if ( m_decomp.avail_out == 0 )
 				break ;
 		}
-	} while ( result == Z_OK && m_zstr.avail_in == 0 ) ;
+	} while ( result == Z_OK && m_decomp.avail_in == 0 ) ;
 
 	return offset ;
 }
@@ -102,7 +102,7 @@ void DeflateFilter::Reset( )
 	m_buf.clear( ) ;
 	m_src->Reset( ) ;
 
-	if ( ::inflateReset( &m_zstr ) != Z_OK )
+	if ( ::inflateReset( &m_decomp ) != Z_OK )
 		throw ParseError( "inflate init fail" ) ;
 }
 

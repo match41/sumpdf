@@ -66,7 +66,7 @@ public :
 	} ;
 
 private :
-	z_stream					m_zstr ;
+	z_stream					m_comp, m_decomp ;
 	std::auto_ptr<StreamFilter>	m_src ;
 	
 	static const std::size_t	m_buf_size = 80 ;
