@@ -98,7 +98,19 @@ std::size_t DeflateFilter::Read( unsigned char *data, std::size_t size )
 
 std::size_t DeflateFilter::Write( const unsigned char *data, std::size_t size )
 {
-	return 0 ;
+	int result = Z_OK ;
+	std::size_t offset = 0 ;
+	
+	assert( m_comp.str.avail_in == 0 ) ;
+	m_comp.str.next_in	= const_cast<unsigned char*>( data ) ;
+	m_comp.str.avail_in	= size ;
+	
+	while ( result == Z_OK && m_decomp.str.avail_in > 0 )
+	{
+		break ;
+	}
+
+	return offset ;
 }
 
 void DeflateFilter::Reset( )
