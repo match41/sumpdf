@@ -31,6 +31,8 @@
 #include "TextOps.hh"
 #include "PathSegment.hh"
 
+#include <iosfwd>
+
 namespace pdf {
 
 class Object ;
@@ -43,6 +45,8 @@ class PaintOp
 {
 public :
 	PaintOp( const std::string& ops, const Object *args, std::size_t count ) ;
+
+    friend std::ostream& operator<<( std::ostream& os, const PaintOp& op ) ;
 
 private :
 	template <typename Op>

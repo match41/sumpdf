@@ -62,4 +62,9 @@ void PaintOp::DecodeNoArg( const Object *args, std::size_t count )
 	m_ops = op ;
 }
 
+std::ostream& operator<<( std::ostream& os, const PaintOp& op )
+{
+    return os ;
+}
+
 } // end of namespace

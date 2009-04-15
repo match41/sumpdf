@@ -270,23 +270,15 @@ add_library( pdfdoc_static STATIC ${SRCS} ${HDRS} )
 ###############################################################################
 # source groups
 ###############################################################################
-SOURCE_GROUP( "Source Files\\page"		FILES ${PAGE_SRCS} )
-SOURCE_GROUP( "Source Files\\file"		FILES ${FILE_SRCS} )
-SOURCE_GROUP( "Source Files\\core"		FILES ${CORE_SRCS} )
-SOURCE_GROUP( "Source Files\\util"		FILES ${UTIL_SRCS} )
-SOURCE_GROUP( "Source Files\\font"		FILES ${FONT_SRCS} )
-SOURCE_GROUP( "Source Files\\font\\ftwrap"	FILES ${FT_SRCS} )
-SOURCE_GROUP( "Source Files\\image"		FILES ${IMG_SRCS} )
-SOURCE_GROUP( "Source Files\\stream"	FILES ${STRM_SRCS} )
 
-SOURCE_GROUP( "Header Files\\page"		FILES ${PAGE_HDRS} )
-SOURCE_GROUP( "Header Files\\file"		FILES ${FILE_HDRS} )
-SOURCE_GROUP( "Header Files\\core"		FILES ${CORE_HDRS} )
-SOURCE_GROUP( "Header Files\\util"		FILES ${UTIL_HDRS} )
-SOURCE_GROUP( "Header Files\\font"		FILES ${FONT_HDRS} )
-SOURCE_GROUP( "Header Files\\font\\ftwrap"	FILES ${FT_HDRS} )
-SOURCE_GROUP( "Header Files\\image"		FILES ${IMG_HDRS} )
-SOURCE_GROUP( "Header Files\\stream"	FILES ${STRM_HDRS} )
+SOURCE_GROUP( "page"		FILES ${PAGE_SRCS} ${PAGE_HDRS} )
+SOURCE_GROUP( "file"		FILES ${FILE_SRCS} ${FILE_HDRS} )
+SOURCE_GROUP( "core"		FILES ${CORE_SRCS} ${CORE_HDRS} )
+SOURCE_GROUP( "util"		FILES ${UTIL_SRCS} ${UTIL_HDRS} )
+SOURCE_GROUP( "font"		FILES ${FONT_SRCS} ${FONT_HDRS} )
+SOURCE_GROUP( "font\\ftwrap"	FILES ${FT_SRCS} ${FT_HDRS} )
+SOURCE_GROUP( "image"		FILES ${IMG_SRCS} ${IMG_HDRS} )
+SOURCE_GROUP( "stream"	FILES ${STRM_SRCS} ${STRM_HDRS} )
 
 ###############################################################################
 # unix specific libraries
