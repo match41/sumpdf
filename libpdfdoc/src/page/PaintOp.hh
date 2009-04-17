@@ -31,6 +31,8 @@
 #include "TextOps.hh"
 #include "PathSegment.hh"
 
+#include "util/Exception.hh"
+
 #include <map>
 #include <iosfwd>
 
@@ -45,6 +47,12 @@ class Object ;
 class PaintOp
 {
 public :
+	class DecodeError : public Exception
+	{
+	public :
+		DecodeError( const char *type ) ;
+	} ;
+
 	PaintOp( const std::string& ops, const Object *args, std::size_t count ) ;
 
     friend std::ostream& operator<<( std::ostream& os, const PaintOp& op ) ;
