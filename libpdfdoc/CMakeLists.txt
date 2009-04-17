@@ -122,6 +122,8 @@ set( INCLUDE_HDRS	include/Doc.hh
 					include/libpdfdoc.hh
 					include/Page.hh )
 
+set( BASE_HDRS		src/RealDoc.hh )
+
 ###############################################################################
 # source in subdirs
 ###############################################################################
@@ -177,6 +179,10 @@ set( FONT_SRCS		${FONT_DIR}/TrueTypeFile.cc
 					${FONT_DIR}/TrueTypeTable.cc
 					${FONT_DIR}/BaseFont.cc
 					${FONT_DIR}/StandardFont.cc )
+
+set( BASE_SRCS		src/Doc.cc
+					src/RealDoc.cc
+					src/libpdfdoc.cc )
 
 ###############################################################################
 # unix specific sources
@@ -250,14 +256,14 @@ endif ( JPEG_FOUND )
 ###############################################################################
 # all headers
 ###############################################################################
-set( HDRS	src/RealDoc.hh
+set( HDRS	${BASE_HDRS}
 			${PAGE_HDRS} ${FILE_HDRS} ${CORE_HDRS} ${IMG_HDRS}
-			${FONT_HDRS} ${FT_HDRS} ${STRM_HDRS} )
+			${FONT_HDRS} ${FT_HDRS} ${STRM_HDRS} ${INCLUDE_HDRS} )
 
 ###############################################################################
 # all sources
 ###############################################################################
-set( SRCS	src/Doc.cc src/RealDoc.cc src/libpdfdoc.cc
+set( SRCS	${BASE_SRCS}
 			${PAGE_SRCS} ${FILE_SRCS} ${CORE_SRCS} ${IMG_SRCS} ${UTIL_SRCS}
 			${FONT_SRCS} ${FT_SRCS} ${STRM_SRCS} )
 
@@ -278,7 +284,9 @@ SOURCE_GROUP( "util"		FILES ${UTIL_SRCS} ${UTIL_HDRS} )
 SOURCE_GROUP( "font"		FILES ${FONT_SRCS} ${FONT_HDRS} )
 SOURCE_GROUP( "font\\ftwrap"	FILES ${FT_SRCS} ${FT_HDRS} )
 SOURCE_GROUP( "image"		FILES ${IMG_SRCS} ${IMG_HDRS} )
-SOURCE_GROUP( "stream"	FILES ${STRM_SRCS} ${STRM_HDRS} )
+SOURCE_GROUP( "stream"		FILES ${STRM_SRCS} ${STRM_HDRS} )
+SOURCE_GROUP( "base"		FILES ${BASE_SRCS} ${BASE_HDRS} )
+SOURCE_GROUP( "include"		FILES ${INCLUDE_HDRS} )
 
 ###############################################################################
 # unix specific libraries
