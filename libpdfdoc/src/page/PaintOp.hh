@@ -31,6 +31,7 @@
 #include "TextOps.hh"
 #include "PathSegment.hh"
 
+#include <map>
 #include <iosfwd>
 
 namespace pdf {
@@ -49,8 +50,31 @@ public :
     friend std::ostream& operator<<( std::ostream& os, const PaintOp& op ) ;
 
 private :
+    // function pointer mapping
+    typedef void (PaintOp::*FuncPtr)( const Object*, std::size_t ) ;
+	static const std::pair<const std::string, FuncPtr> m_table[] ;
+
+	typedef std::map<std::string, FuncPtr> FuncMap ;
+	static const FuncMap m_func_map ;
+
+private :
 	template <typename Op>
 	void DecodeNoArg( const Object *args, std::size_t count ) ;
+
+	template <typename Op, typename Arg1>
+	void DecodeOneArg( const Object *args, std::size_t count ) ;
+
+	template <typename Op, typename Arg1, typename Arg2>
+	void DecodeTwoArgs( const Object *args, std::size_t count ) ;
+
+	template <typename Op, typename Arg>
+	void Decode6Args( const Object *args, std::size_t count ) ;
+
+	template <typename Op, typename Arg1, Arg1 arg1, typename Arg2>
+	void DecodeTwoArgBind1st( const Object *args, std::size_t count ) ;
+
+    template <TextState::Type t>
+    void DecodeTextState( const Object *args, std::size_t count ) ;
 
 private :
 	boost::variant<TextState, TextPosition, TextMatrix, TextString,
