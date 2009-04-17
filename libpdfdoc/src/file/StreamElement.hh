@@ -38,7 +38,7 @@ namespace pdf {
 	
 	this class represents
 */
-class StreamElement : public IElement, public Stream
+class StreamElement : public IElement, private Stream
 {
 public :
 	StreamElement( ) ;
@@ -46,6 +46,13 @@ public :
 	void Init( Object& link, IElementSrc *src ) ;
 	void Write( const Ref& link, IElementDest *dest ) const ;
 	ElementList GetChildren( ) const ;
+	
+    using Stream::InStream ;
+	
+	using Stream::Reset ;
+
+	using Stream::Type ;
+	using Stream::Subtype ;
 	
 protected :
 	using Stream::Dict ;

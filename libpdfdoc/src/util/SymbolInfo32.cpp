@@ -86,9 +86,11 @@ std::size_t SymbolInfo::Backtrace( addr_t *stack, std::size_t count )
 
 void SymbolInfo::PrintTrace( addr_t addr, std::ostream& os, std::size_t idx )
 {
+    static const DWORD name_length = 1024 ;
     IMAGEHLP_SYMBOL64 *sym =
-    	(IMAGEHLP_SYMBOL64 *)malloc( sizeof(IMAGEHLP_SYMBOL64) + 1024 );
-    sym->MaxNameLength = 1024 ;
+    	(IMAGEHLP_SYMBOL64 *)malloc( sizeof(IMAGEHLP_SYMBOL64) + name_length );
+    sym->SizeOfStruct   = sizeof(IMAGEHLP_SYMBOL64) ;
+    sym->MaxNameLength  = name_length ;
 
     DWORD64 offset ;
     if ( SymGetSymFromAddr64( GetCurrentProcess(), addr, &offset, sym ) )
