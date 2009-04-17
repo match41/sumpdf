@@ -1,5 +1,5 @@
-/***************************************************************************
- *   Copyright (C) 2006 by Nestal Wan                                      *
+/***************************************************************************\
+ *   Copyright (C) 2009 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -16,51 +16,49 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+\***************************************************************************/
 
 /*!
-	\file	ElementSrc.hh
-	\brief	definition the ElementSrc class
-	\date	Sun Mar 30 2008
+	\file	RawElement.hh
+	\brief	definition the RawElement class
+	\date	Sat Apr 18 2009
 	\author	Nestal Wan
 */
 
-#ifndef __PDF_ELEMENT_REPO_HEADER_INCLUDED__
-#define __PDF_ELEMENT_REPO_HEADER_INCLUDED__
+#ifndef __PDF_RAW_ELEMENT_HEADER_INCLUDED__
+#define __PDF_RAW_ELEMENT_HEADER_INCLUDED__
 
-#include "IElementSrc.hh"
+#include "IElement.hh"
 
+#include "core/Object.hh"
 #include "core/Ref.hh"
 
 #include <map>
 
 namespace pdf {
 
-class IElement ;
-class IFile ;
-
-/*!	\brief	A source for elements
+/*!	\brief	brief description
 	
-	This class represents a place to read elements from.
+	this class represents
 */
-class ElementSrc : public IElementSrc
+class RawElement : public IElement
 {
 public :
-	ElementSrc( IFile *file ) ;
+	RawElement( ) ;
 
-	Object ReadObj( const Ref& obj, bool deref = false ) ;
+	void Init( Object& obj, IElementSrc *src ) ;
+	void Write( const Ref& link, IElementDest *dest ) const ;
+
+	ElementList GetChildren( ) const ;
 
 private :
-	void Store( IElement *element, const Ref& link ) ;
-	IElement* Find( const Ref& link ) ;
-	
-	void Dereference( Object& obj ) ;
-	
+	void ReadChild( Object& obj, IElementSrc *src ) ;
+	void WriteChild( const Object& obj, IElementDest *dest ) const ;
+
 private :
-	typedef std::map<Ref, IElement*> Map ;
-	Map	m_map ;
+	Object	m_self ;
 	
-	IFile *m_file ;
+	std::map<Ref, IElement*>	m_children ;
 } ;
 
 } // end of namespace
