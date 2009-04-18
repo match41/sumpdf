@@ -32,9 +32,8 @@
 #include "core/Array.hh"
 #include "core/Dictionary.hh"
 
-#include "file/IElementSrc.hh"
+#include "file/ElementReader.hh"
 #include "file/IElementDest.hh"
-#include "file/IFile.hh"
 #include "file/ElementList.hh"
 
 #include "util/Exception.hh"
@@ -64,7 +63,7 @@ PageTree::PageTree( PageTree *parent )
 		parent->AppendNode( this ) ;
 }
 
-template <> PageNode* CreateNewElement( const Object& obj, IElementSrc *src )
+template <> PageNode* CreateNewElement( const Object& obj, ElementReader * )
 {
 	const Dictionary d = obj.As<Dictionary>() ;
 	if ( d["Type"].As<Name>() == Name( "Pages" ) )
@@ -77,7 +76,7 @@ template <> PageNode* CreateNewElement( const Object& obj, IElementSrc *src )
 		throw ParseError( "invalid page type" ) ;
 }
 
-void PageTree::Init( Object& obj, IElementSrc *src )
+void PageTree::Init( Object& obj, ElementReader *src )
 {
 	PageNode::Init( obj, src ) ;
 
@@ -89,7 +88,7 @@ void PageTree::Init( Object& obj, IElementSrc *src )
 	const Array& pages = d["Kids"].As<Array>() ;
 	std::transform( pages.begin( ), pages.end( ),
 					std::back_inserter( m_kids ),
-					bind( &IElementSrc::Read<PageNode>, src, _1 ) ) ;
+					bind( &ElementReader::Read<PageNode>, src, _1 ) ) ;
 
 	// leaf count is required
 	m_count	= d["Count"].As<int>( ) ;

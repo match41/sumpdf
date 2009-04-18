@@ -35,9 +35,8 @@
 #include "core/Token.hh"
 #include "core/TokenSrc.hh"
 
-#include "file/IElementSrc.hh"
+#include "file/ElementReader.hh"
 #include "file/IElementDest.hh"
-#include "file/DeRef.hh"
 
 #include "font/BaseFont.hh"
 
@@ -71,7 +70,7 @@ Rect RealPage::MediaBox( ) const
 /*!	read a page from file. This function will read the page from file. It will
 	also decode the stream content data.
 */
-void RealPage::Init( Object& self, IElementSrc *repo )
+void RealPage::Init( Object& self, ElementReader *repo )
 {
 	assert( repo != 0 ) ;
 	PageNode::Init( self, repo ) ;
@@ -93,7 +92,7 @@ void RealPage::Init( Object& self, IElementSrc *repo )
 	SetParent( repo->Read<PageTree>( m_self["Parent"] ) ) ;
 }
 
-void RealPage::ReadContent( Object& str_obj, IElementSrc *src )
+void RealPage::ReadContent( Object& str_obj, ElementReader *src )
 {
 	// for indirect objects, dereference it
 /*    if ( str_obj.IsType<Ref>( ) )

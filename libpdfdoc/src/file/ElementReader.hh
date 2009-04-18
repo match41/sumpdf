@@ -51,6 +51,7 @@ public :
 	ElementReader( IFile *file ) ;
 
 	IElement* Find( const Ref& link ) ;
+    Object& DeRef( Object& obj ) ;
 	
 	/*!	helper function to create elements. This function is the primary
 		function for users of this class to read elements.

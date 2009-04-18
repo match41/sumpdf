@@ -69,7 +69,7 @@ bool StandardFont::IsStandardFont( const Name& font_name )
 	return s.find( font_name ) != s.end( ) ; 
 }
 
-void StandardFont::Init( Object& link, IElementSrc *src )
+void StandardFont::Init( Object& link, ElementReader *src )
 {
 	// reading is not supported
 }

@@ -38,8 +38,6 @@
 namespace pdf {
 
 class IElementDest ;
-class IElementSrc ;
-class IFile ;
 class BaseFont ;
 class RealImage ;
 class XObject ;
@@ -52,21 +50,21 @@ class Resources : public IElement
 {
 public :
 	Resources( ) ;
-	Resources( const Dictionary& dict, IElementSrc *repo ) ;
+	Resources( const Dictionary& dict, ElementReader *repo ) ;
 
 	Name AddFont( BaseFont *font ) ;
 
-	void Read( const Dictionary& dict, IElementSrc *repo ) ;
-	void Init( Object& link, IElementSrc *repo ) ;
+	void Read( const Dictionary& dict, ElementReader *repo ) ;
+	void Init( Object& link, ElementReader *repo ) ;
 	void Write( const Ref& link, IElementDest *repo ) const ;
 
 	ElementList GetChildren( ) const ;
 	
 private :
-	void OnRead( IElementSrc *repo ) ;
+	void OnRead( ElementReader *repo ) ;
 
 	template <typename T>
-	void ReadSubDict( const Name& name, IElementSrc *file,
+	void ReadSubDict( const Name& name, ElementReader *file,
 	                  std::map<Name, T*>& output ) ;
 	
 	template <typename T>

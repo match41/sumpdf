@@ -58,4 +58,11 @@ void ElementReader::InitElement( IElement *element, Object& obj )
 	element->Init( obj, this ) ;
 }
 
+Object& ElementReader::DeRef( Object& obj )
+{
+	if ( obj.IsType<Ref>( ) )
+		obj = m_file->ReadObj( obj ) ;
+	return obj ;
+}
+
 } // end of namespace

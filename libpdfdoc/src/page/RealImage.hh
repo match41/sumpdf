@@ -46,7 +46,7 @@ class RealImage : public XObject
 public :
 	explicit RealImage( const std::string& filename = std::string() ) ;
 
-	void Init( Object& obj, IElementSrc *src ) ;
+	void Init( Object& obj, ElementReader *src ) ;
 } ;
 
 } // end of namespace

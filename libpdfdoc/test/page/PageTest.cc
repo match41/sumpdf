@@ -32,7 +32,7 @@
 #include "core/Ref.hh"
 #include "core/Dictionary.hh"
 
-#include "file/ElementSrc.hh"
+#include "file/ElementReader.hh"
 
 #include "page/RealPage.hh"
 
@@ -83,7 +83,7 @@ void PageTest::TestNormal( )
 	file.AddObj( pdf::Ref( 674, 0 ), fd ) ;
 	file.AddObj( pdf::Ref( 697, 0 ), pd ) ;
 	
-	pdf::ElementSrc src( &file ) ;
+	pdf::ElementReader src( &file ) ;
 	
 	pdf::Object obj( d ) ;
 	pdf::RealPage p ;

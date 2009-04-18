@@ -46,7 +46,6 @@ class RawElement : public IElement
 public :
 	RawElement( ) ;
 
-	void Init( Object& obj, IElementSrc *src ) ;
 	void Init( Object& obj, ElementReader *src ) ;
 	void Write( const Ref& link, IElementDest *dest ) const ;
 
@@ -56,7 +55,7 @@ public :
 	const Object& Get( ) const ;
 
 private :
-	void ReadChild( Object& obj, IElementSrc *src ) ;
+	void ReadChild( Object& obj, ElementReader *src ) ;
 	void WriteChild( const Object& obj, IElementDest *dest ) const ;
 
 private :

@@ -44,7 +44,7 @@ public :
 	
 	std::string BaseName( ) const ;
 
-	void Init( Object& link, IElementSrc *src ) ;
+	void Init( Object& link, ElementReader *src ) ;
 	void Write( const Ref& link, IElementDest *dest ) const ;
 
 	static bool IsStandardFont( const Name& font_name ) ;

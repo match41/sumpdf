@@ -35,7 +35,7 @@ RealImage::RealImage( const std::string& filename )
 {
 }
 
-void RealImage::Init( Object& obj, IElementSrc *src )
+void RealImage::Init( Object& obj, ElementReader *src )
 {
 	StreamElement::Init( obj, src ) ;
 	

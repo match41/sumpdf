@@ -35,7 +35,6 @@
 #include "Resources.hh"
 
 #include "core/Dictionary.hh"
-#include "core/Ref.hh"
 #include "core/Token.hh"
 #include "util/Rect.hh"
 
@@ -59,7 +58,7 @@ class RealPage : public Page, public PageNode
 public :
 	explicit RealPage( PageTree *parent = 0 ) ;
 
-	void Init( Object& link, IElementSrc *repo ) ;
+	void Init( Object& link, ElementReader *repo ) ;
 	void Write( const Ref& link, IElementDest *repo ) const ;
 	
 	Rect MediaBox( ) const ;
@@ -71,7 +70,7 @@ public :
 	PageNode* GetLeaf( std::size_t index ) ;
 	
 private :
-	void ReadContent( Object& str_obj, IElementSrc *src ) ;
+	void ReadContent( Object& str_obj, ElementReader *src ) ;
 	void DecodeContent( const Stream& s ) ;
 	
 private :

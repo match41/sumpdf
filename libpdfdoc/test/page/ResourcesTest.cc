@@ -32,7 +32,7 @@
 #include "core/Ref.hh"
 #include "core/Dictionary.hh"
 #include "core/Ref.hh"
-#include "file/ElementSrc.hh"
+#include "file/ElementReader.hh"
 #include "page/Resources.hh"
 #include "util/Rect.hh"
 
@@ -63,7 +63,7 @@ void ResourcesTest::TestNormal( )
 	file.AddObj( pdf::Ref(1,0),  rdict ) ;
 	file.AddObj( pdf::Ref(18,0), fd ) ;
 
-	pdf::ElementSrc src( &file ) ;
+	pdf::ElementReader src( &file ) ;
 
 	pdf::Object obj( rdict ) ;
 	pdf::Resources subject ;

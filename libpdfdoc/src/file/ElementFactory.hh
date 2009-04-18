@@ -30,14 +30,7 @@
 
 namespace pdf {
 
-class IElementSrc ;
 class ElementReader ;
-
-template <class Element>
-Element* CreateNewElement( const Object&, IElementSrc * )
-{
-	return new Element ;
-}
 
 template <class Element>
 Element* CreateNewElement( const Object&, ElementReader * )
