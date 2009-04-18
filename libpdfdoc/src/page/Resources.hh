@@ -44,9 +44,11 @@ class BaseFont ;
 class RealImage ;
 class XObject ;
 
-/*!	\brief	brief description
+/*!	\brief	page resources
 	
-	this class represents
+	Resources are PDF objects used for rendering but not saved in the content
+	streams. These objects are refered by names in the content stream. The
+	resources dictionary maps their names to the actual objects
 */
 class Resources : public IElement
 {
