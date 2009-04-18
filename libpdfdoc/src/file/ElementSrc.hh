@@ -48,6 +48,9 @@ class ElementSrc : public IElementSrc
 public :
 	ElementSrc( IFile *file ) ;
 
+    Object& DeRef( Object& obj ) ;
+
+private :
 	Object ReadObj( const Ref& obj, bool deref = false ) ;
 
 private :

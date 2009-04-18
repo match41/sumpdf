@@ -47,7 +47,7 @@ namespace pdf {
 	\throw	BadType	if \a obj or the object it refers to is not of type \a T
 	\sa	Object::As(), ReadObj(), Detach()
 */
-template <typename T>
+/*template <typename T>
 T& IElementSrc::DeRef( Object& obj )
 {
 	// de-reference it if it is a reference
@@ -56,7 +56,7 @@ T& IElementSrc::DeRef( Object& obj )
 	
 	return obj.As<T>( ) ;
 }
-
+*/
 /*!	\brief	detach and de-reference object in dictionary
 
 	This function looks up the \a name in \a dict , and put it in \a result .

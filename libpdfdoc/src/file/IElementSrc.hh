@@ -54,10 +54,12 @@ class IElementSrc
 protected :
 	virtual ~IElementSrc( ) ;
 
-public :
+    virtual Object& DeRef( Object& obj ) = 0 ;
+
+private :
 	/*!	\brief	reading objects
 	*/
-	virtual Object ReadObj( const Ref& obj, bool deref = false ) = 0 ;
+    virtual Object ReadObj( const Ref& obj, bool deref = false ) = 0 ;
 
 public :
 	// override only
@@ -66,8 +68,8 @@ public :
 
 public :
 	// defined in DeRef.hh
-	template <typename T>
-	T& DeRef( Object& obj ) ;
+//	template <typename T>
+//	T& DeRef( Object& obj ) ;
 
 	template <typename T>
 	bool Detach( Dictionary& dict, const Name& name, T& result ) ;

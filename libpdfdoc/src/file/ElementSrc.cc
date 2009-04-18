@@ -27,7 +27,6 @@
 
 #include "ElementSrc.hh"
 
-#include "DeRefVisitor.hh"
 #include "IElement.hh"
 #include "IFile.hh"
 
@@ -70,6 +69,15 @@ IElement* ElementSrc::Find( const Ref& link )
 {
 	Map::iterator i = m_map.find( link ) ;
 	return i != m_map.end( ) ? i->second : 0 ;
+}
+
+Object& ElementSrc::DeRef( Object& obj )
+{
+	// de-reference it if it is a reference
+	if ( obj.IsType<Ref>( ) )
+		obj = ReadObj( obj ) ;
+
+    return obj ;
 }
 
 } // end of namespace

@@ -71,7 +71,7 @@ public :
 	PageNode* GetLeaf( std::size_t index ) ;
 	
 private :
-	void ReadContent( const Object& str_obj, IElementSrc *src ) ;
+	void ReadContent( Object& str_obj, IElementSrc *src ) ;
 	void DecodeContent( const Stream& s ) ;
 	
 private :
