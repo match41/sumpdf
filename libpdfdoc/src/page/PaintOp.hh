@@ -69,23 +69,23 @@ private :
 	template <typename Op>
 	void DecodeNoArg( const Object *args, std::size_t count ) ;
 
-	template <typename Op, typename Arg1>
+	template <typename Op>
 	void DecodeOneArg( const Object *args, std::size_t count ) ;
 
-	template <typename Op, typename Arg1, typename Arg2>
+	template <typename Op>
 	void DecodeTwoArgs( const Object *args, std::size_t count ) ;
 
-	template <typename Op, typename Arg>
+	template <typename Op>
 	void Decode6Args( const Object *args, std::size_t count ) ;
 
-	template <typename Op, typename Arg1, Arg1 arg1, typename Arg2>
+	template <typename Op, typename Op::Arg1 arg1>
 	void DecodeTwoArgBind1st( const Object *args, std::size_t count ) ;
 
     template <TextState::Type t>
     void DecodeTextState( const Object *args, std::size_t count ) ;
 
 private :
-	boost::variant<TextState, TextPosition, TextMatrix, TextString,
+	boost::variant<TextState, TextFont, TextPosition, TextMatrix, TextString,
 	               TextPosString, BeginText, EndText> m_ops ;
 } ;
 
