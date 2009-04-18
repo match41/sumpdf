@@ -59,7 +59,7 @@ public :
 	*/
 	virtual Object ReadObj( const Ref& obj, bool deref = false ) = 0 ;
 
-private :
+public :
 	// override only
 	virtual void Store( IElement *element, const Ref& link ) = 0 ;
 	virtual IElement* Find( const Ref& link ) = 0 ;
