@@ -30,6 +30,7 @@
 
 #include "core/Ref.hh"
 #include "core/Object.hh"
+#include "core/Dictionary.hh"
 
 #include "ElementFactory.hh"
 
@@ -70,15 +71,77 @@ public :
 			Object obj = ReadObj( link ) ;
 			Element *element = CreateNewElement<Element>( obj, this ) ;
 
-			Store( element, obj, link ) ;
+			// store before Read(). this is important!
+			// there may be lookups for "link" inside Read(). if not insert
+			// before Read(), these lookups will fail and re-create again,
+			// causing infinite recursion.
+			Store( element, link ) ;
+			InitElement( element, obj ) ;
+			
 			return element ;
 		}
+	}
+
+	template <class Element>
+	Element* DetachElement( Dictionary& dict, const Name& name )
+	{
+		Dictionary::iterator i = dict.find( name ) ;
+		if ( i == dict.end() )
+			return 0 ;
+		
+		if ( i->second.IsType<Ref>() )
+			return Read<Element>( i->second ) ;
+		else
+		{
+			Element *element = CreateNewElement<Element>( i->second, this ) ;
+			InitElement( element, i->second ) ;
+			dict.erase( i ) ;
+			
+			return element ;
+		}
+	}
+
+	/*!	\brief	detach and de-reference object in dictionary
+	
+		This function looks up the \a name in \a dict , and put it in
+		\a result. If \a result is a Ref, it will de-reference it and put the
+		de-reference'd object in \a result instead. It will then be erased from
+		the dictionary.	This function will use std::swap() on the objects to
+		reduce deep	copying.
+		
+		\param	dict	the dictionary to look up and detach
+		\param	name	the key to the value in \a dict to detach
+		\param	result	reference to output
+		\return	true if the \a name is found in \a dict . otherwise false.
+		\throw	BadType	if \a name is found but its type is not \a T
+		
+		\sa		Dictionary::Extract(), Object::Swap(), ReadObj(), DeRef()
+		\note	This template function is defined in DeRef.hh. Callers must
+				include this header when user or else a link error will be
+				generated.
+	*/
+	template <typename T>
+	bool Detach( Dictionary& dict, const Name& name, T& result )
+	{
+		Dictionary::iterator i = dict.find( name ) ;
+		if ( i != dict.end( ) )
+		{
+			if ( i->second.Type( ) == Object::ref )
+				result = ReadObj( i->second ) ;
+			else
+				std::swap( i->second.As<T>(), result ) ;
+			
+			dict.erase( i ) ;
+			return true ;
+		}
+		return false ;
 	}
 
 private :
 	Object ReadObj( const Ref& obj ) ;
 	
-	void Store( IElement *element, Object& obj, const Ref& link ) ;
+	void Store( IElement *element, const Ref& link ) ;
+	void InitElement( IElement *element, Object& obj ) ;
 
 private :
 	typedef std::map<Ref, IElement*> Map ;

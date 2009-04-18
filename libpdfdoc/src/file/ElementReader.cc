@@ -37,14 +37,9 @@ ElementReader::ElementReader( IFile *file )
 {
 }
 
-void ElementReader::Store( IElement *element, Object& obj, const Ref& link )
+void ElementReader::Store( IElement *element, const Ref& link )
 {
-	// insert before Read(). this is important!
-	// there may be lookups for "link" inside Read(). if not insert
-	// before Read(), these lookups will fail and re-create again,
-	// causing infinite recursion.
 	m_map.insert( std::make_pair( link, element ) ) ;
-	element->Init( obj, this ) ;
 }
 
 IElement* ElementReader::Find( const Ref& link )
@@ -56,6 +51,11 @@ IElement* ElementReader::Find( const Ref& link )
 Object ElementReader::ReadObj( const Ref& link )
 {
 	return m_file->ReadObj( link ) ;
+}
+
+void ElementReader::InitElement( IElement *element, Object& obj )
+{
+	element->Init( obj, this ) ;
 }
 
 } // end of namespace
