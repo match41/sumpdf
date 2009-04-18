@@ -31,9 +31,10 @@
 namespace pdf {
 
 class Ref ;
-class IElementSrc ;
+// class IElementSrc ;
 class IElementDest ;
 class ElementList ;
+class ElementReader ;
 class Object ;
 
 /*!	\brief	PDF file element.
@@ -53,7 +54,8 @@ class IElement
 public :
 	virtual ~IElement( ) ;
 	
-	virtual void Init( Object& obj, IElementSrc *src ) = 0 ;
+// 	virtual void Init( Object& obj, IElementSrc *src ) = 0 ;
+	virtual void Init( Object& obj, ElementReader *src ) = 0 ;
 	
 	/*!	\brief	read an element
 		\internal

@@ -30,8 +30,10 @@
 
 namespace pdf {
 
+class ElementReader ;
+
 template <class Element>
-Element* CreateNewElement( const Object&, IElementSrc * )
+Element* CreateNewElement( const Object&, ElementReader * )
 {
 	return new Element ;
 }

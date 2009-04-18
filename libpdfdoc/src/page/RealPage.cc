@@ -35,9 +35,8 @@
 #include "core/Token.hh"
 #include "core/TokenSrc.hh"
 
-#include "file/IElementSrc.hh"
+#include "file/ElementReader.hh"
 #include "file/IElementDest.hh"
-#include "file/DeRef.hh"
 
 #include "font/BaseFont.hh"
 
@@ -71,7 +70,7 @@ Rect RealPage::MediaBox( ) const
 /*!	read a page from file. This function will read the page from file. It will
 	also decode the stream content data.
 */
-void RealPage::Init( Object& self, IElementSrc *repo )
+void RealPage::Init( Object& self, ElementReader *repo )
 {
 	assert( repo != 0 ) ;
 	PageNode::Init( self, repo ) ;
@@ -80,8 +79,9 @@ void RealPage::Init( Object& self, IElementSrc *repo )
 	self.Swap( m_self ) ;
 	
 	// read content
-	ReadContent( m_self["Contents"], repo ) ;
-	m_self.erase( "Contents" ) ;
+	Object contents ;
+	if ( repo->Detach( m_self, "Contents", contents ) )
+	    ReadContent( contents, repo ) ;
 
 	// media box
 	Array a ;
@@ -92,20 +92,20 @@ void RealPage::Init( Object& self, IElementSrc *repo )
 	SetParent( repo->Read<PageTree>( m_self["Parent"] ) ) ;
 }
 
-void RealPage::ReadContent( const Object& str_obj, IElementSrc *src )
+void RealPage::ReadContent( Object& str_obj, ElementReader *src )
 {
 	// for indirect objects, dereference it
-	if ( str_obj.IsType<Ref>( ) )
+/*    if ( str_obj.IsType<Ref>( ) )
 		ReadContent( src->ReadObj( str_obj ), src ) ;
 	
 	// append individual stream objects
-	else if ( str_obj.IsType<Stream>( ) )
+	else*/ if ( str_obj.IsType<Stream>( ) )
 		DecodeContent( str_obj.As<Stream>( ) ) ;
 	
 	// catenate individual objects in array
 	else if ( str_obj.IsType<Array>( ) )
 	{
-		const Array& a = str_obj.As<Array>( ) ;
+		Array& a = str_obj.As<Array>( ) ;
 		std::for_each( a.begin( ), a.end( ),
 		               boost::bind( &RealPage::ReadContent, this, _1, src ) ) ;
 	}

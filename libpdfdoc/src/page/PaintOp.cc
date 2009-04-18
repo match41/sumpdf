@@ -112,8 +112,11 @@ void PaintOp::Decode6Args( const Object *args, std::size_t count )
     if ( count != 6 )
     	throw DecodeError( typeid(Op).name() ) ;
 
-	Op op = { args[0].As<Arg>(), args[1].As<Arg>(), args[2].As<Arg>(),
-				args[3].As<Arg>(), args[4].As<Arg>(), args[5].As<Arg>() } ;
+	Op op =
+	{
+	    args[0].As<Arg>(), args[1].As<Arg>(), args[2].As<Arg>(),
+		args[3].As<Arg>(), args[4].As<Arg>(), args[5].As<Arg>()
+	} ;
 	m_ops = op ;
 }
 

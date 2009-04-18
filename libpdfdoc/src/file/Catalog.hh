@@ -51,7 +51,7 @@ class Catalog : public IElement
 public :
 	Catalog( ) ;
 
-	void Init( Object& obj, IElementSrc *repo ) ;
+	void Init( Object& obj, ElementReader *repo ) ;
 	void Write( const Ref& link, IElementDest *dest ) const ;
 
 	void AddPage( RealPage *page ) ;

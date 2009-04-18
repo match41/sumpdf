@@ -1,5 +1,5 @@
-/***************************************************************************
- *   Copyright (C) 2006 by Nestal Wan                                      *
+/***************************************************************************\
+ *   Copyright (C) 2009 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -16,53 +16,53 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+\***************************************************************************/
 
 /*!
-	\file	ElementSrc.hh
-	\brief	definition the ElementSrc class
-	\date	Sun Mar 30 2008
+	\file	ElementReader.cc
+	\brief	implementation the ElementReader class
+	\date	Sat Apr 18 2009
 	\author	Nestal Wan
 */
 
-#ifndef __PDF_ELEMENT_REPO_HEADER_INCLUDED__
-#define __PDF_ELEMENT_REPO_HEADER_INCLUDED__
+#include "ElementReader.hh"
 
-#include "IElementSrc.hh"
-
-#include "core/Ref.hh"
-
-#include <map>
+#include "IFile.hh"
+#include "IElement.hh"
 
 namespace pdf {
 
-class IElement ;
-class IFile ;
-
-/*!	\brief	A source for elements
-	
-	This class represents a place to read elements from.
-*/
-class ElementSrc : public IElementSrc
+ElementReader::ElementReader( IFile *file )
+	: m_file( file )
 {
-public :
-	ElementSrc( IFile *file ) ;
+}
 
-	Object ReadObj( const Ref& obj, bool deref = false ) ;
+void ElementReader::Store( IElement *element, const Ref& link )
+{
+	m_map.insert( std::make_pair( link, element ) ) ;
+}
 
-private :
-	void Store( IElement *element, const Ref& link ) ;
-	IElement* Find( const Ref& link ) ;
-	
-	void Dereference( Object& obj ) ;
-	
-private :
-	typedef std::map<Ref, IElement*> Map ;
-	Map	m_map ;
-	
-	IFile *m_file ;
-} ;
+IElement* ElementReader::Find( const Ref& link )
+{
+	Map::iterator i = m_map.find( link ) ;
+	return i != m_map.end( ) ? i->second : 0 ;
+}
+
+Object ElementReader::ReadObj( const Ref& link )
+{
+	return m_file->ReadObj( link ) ;
+}
+
+void ElementReader::InitElement( IElement *element, Object& obj )
+{
+	element->Init( obj, this ) ;
+}
+
+Object& ElementReader::DeRef( Object& obj )
+{
+	if ( obj.IsType<Ref>( ) )
+		obj = m_file->ReadObj( obj ) ;
+	return obj ;
+}
 
 } // end of namespace
-
-#endif

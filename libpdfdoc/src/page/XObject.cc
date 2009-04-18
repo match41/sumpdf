@@ -33,7 +33,7 @@
 #include "core/Object.hh"
 
 #include "file/ElementList.hh"
-#include "file/IElementSrc.hh"
+#include "file/ElementReader.hh"
 #include "file/IElementDest.hh"
 
 #include <iostream>
@@ -57,7 +57,7 @@ void XObject::Read( Stream& str, IElementSrc *repo )
 	}
 }
 */
-void XObject::Init( Object& obj, IElementSrc *src )
+void XObject::Init( Object& obj, ElementReader *src )
 {
 	StreamElement::Init( obj, src ) ;
 
@@ -75,7 +75,7 @@ ElementList XObject::GetChildren( ) const
 }
 */
 
-template <> XObject* CreateNewElement( const Object& obj, IElementSrc *src )
+template <> XObject* CreateNewElement( const Object& obj, ElementReader *src )
 {
 	assert( src != 0 ) ;
 

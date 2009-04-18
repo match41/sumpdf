@@ -27,13 +27,12 @@
 
 #include "Catalog.hh"
 
-#include "IElementSrc.hh"
+#include "ElementReader.hh"
 #include "IElementDest.hh"
 #include "ElementList.hh"
 
 #include "core/Array.hh"
 #include "core/Ref.hh"
-#include "file/DeRef.hh"
 
 #include "page/RealPage.hh"
 #include "page/PageTree.hh"
@@ -54,7 +53,7 @@ Catalog::Catalog( )
 {
 }
 
-void Catalog::Init( Object& obj, IElementSrc *file )
+void Catalog::Init( Object& obj, ElementReader *file )
 {
 	assert( file != 0 ) ;
 	std::swap( m_self, obj.As<Dictionary>() ) ;

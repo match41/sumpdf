@@ -30,8 +30,7 @@
 #include "XObject.hh"
 
 #include "core/Array.hh"
-#include "file/DeRef.hh"
-#include "file/IElementSrc.hh"
+#include "file/ElementReader.hh"
 #include "file/IElementDest.hh"
 #include "file/ElementList.hh"
 #include "font/BaseFont.hh"
@@ -53,7 +52,7 @@ Resources::Resources( )
     m_proc_set.push_back( Name( "Text" ) ) ;
 }
 
-Resources::Resources( const Dictionary& dict, IElementSrc *repo )
+Resources::Resources( const Dictionary& dict, ElementReader *repo )
 	: m_proc_set( 1, Name( "PDF" ) )
 {
 	assert( repo != 0 ) ;
@@ -62,7 +61,7 @@ Resources::Resources( const Dictionary& dict, IElementSrc *repo )
 	OnRead( repo ) ;
 }
 
-void Resources::Init( Object& obj, IElementSrc *repo )
+void Resources::Init( Object& obj, ElementReader *repo )
 {
 	assert( repo != 0 ) ;
 
@@ -70,7 +69,7 @@ void Resources::Init( Object& obj, IElementSrc *repo )
 	OnRead( repo ) ;
 }
 
-void Resources::OnRead( IElementSrc *repo )
+void Resources::OnRead( ElementReader *repo )
 {
 	Array proc_set ;
 	repo->Detach( m_self, "ExtGState",	m_ext_gstate ) ;
@@ -105,7 +104,7 @@ Dictionary Resources::WriteSubDict( const std::map<Name, T*>& input,
 }
 
 template <typename T>
-void Resources::ReadSubDict( const Name& name, IElementSrc *file,
+void Resources::ReadSubDict( const Name& name, ElementReader *file,
 					         std::map<Name, T*>& output )
 {
 	assert( file != 0 ) ;

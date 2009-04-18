@@ -281,6 +281,8 @@ private :
 template <> Object::operator long() const ;
 template <> Object::operator float() const ;
 template <> Object::operator double() const ;
+template <> Object& Object::As( ) ;
+template <> const Object& Object::As( ) const ;
 
 } // end of namespace
 

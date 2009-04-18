@@ -50,7 +50,7 @@ public :
 	ElementList GetChildren( ) const ;
 } ;
 
-template <> BaseFont* CreateNewElement( const Object& link, IElementSrc * ) ;
+template <> BaseFont* CreateNewElement( const Object& link, ElementReader * ) ;
 
 } // end of namespace
 

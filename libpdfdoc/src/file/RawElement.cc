@@ -29,7 +29,7 @@
 
 #include "ElementList.hh"
 #include "IElementDest.hh"
-#include "IElementSrc.hh"
+#include "ElementReader.hh"
 
 #include "core/TraverseObject.hh"
 
@@ -41,14 +41,14 @@ RawElement::RawElement( )
 {
 }
 
-void RawElement::Init( Object& obj, IElementSrc *src )
+void RawElement::Init( Object& obj, ElementReader *src )
 {
 	m_self.Swap( obj ) ;
 
 	ForEachObj( m_self, boost::bind( &RawElement::ReadChild, this, _1, src ) ) ;
 }
 
-void RawElement::ReadChild( Object& obj, IElementSrc *src )
+void RawElement::ReadChild( Object& obj, ElementReader *src )
 {
 	if ( obj.IsType<Ref>() )
 		m_children[obj.As<Ref>()] = src->Read<RawElement>( obj.As<Ref>() ) ;
@@ -66,6 +66,16 @@ void RawElement::WriteChild( const Object& obj, IElementDest *dest ) const
 ElementList RawElement::GetChildren( ) const
 {
 	return ElementList() ;
+}
+
+Object& RawElement::Get( )
+{
+	return m_self ;
+}
+
+const Object& RawElement::Get( ) const
+{
+	return m_self ;
 }
 
 } // end of namespace

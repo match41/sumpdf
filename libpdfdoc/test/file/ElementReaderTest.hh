@@ -1,5 +1,5 @@
-/***************************************************************************
- *   Copyright (C) 2006 by Nestal Wan                                      *
+/***************************************************************************\
+ *   Copyright (C) 2009 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -16,60 +16,38 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+\***************************************************************************/
 
 /*!
-	\file	ElementSrc.cc
-	\brief	implementation the ElementSrc class
-	\date	Sun Mar 30 2008
+	\file	ElementReaderTest.hh
+	\brief	definition the ElementReaderTest class
+	\date	Sat Apr 18 2009
 	\author	Nestal Wan
 */
 
-#include "ElementSrc.hh"
+#ifndef __PDFUT_ELEMENT_READER_TEST_HEADER_INCLUDED__
+#define __PDFUT_ELEMENT_READER_TEST_HEADER_INCLUDED__
 
-#include "DeRefVisitor.hh"
-#include "IElement.hh"
-#include "IFile.hh"
+#include <cppunit/TestFixture.h>
 
-#include "core/TraverseObject.hh"
-#include "util/Util.hh"
-#include "util/Backtrace.hh"
+#include <cppunit/extensions/HelperMacros.h>
 
-#include <boost/bind.hpp>
-#include <boost/format.hpp>
-
-#include <algorithm>
-
-namespace pdf {
-
-ElementSrc::ElementSrc( IFile *file )
-	: m_file( file )
+/*!	\brief	brief description
+	
+	this class represents
+*/
+class ElementReaderTest : public CppUnit::TestFixture
 {
-}
+public :
+	ElementReaderTest( ) ;
 
-Object ElementSrc::ReadObj( const Ref& obj, bool deref )
-{
-	Object r = m_file->ReadObj( obj ) ;
-	if ( deref )
-		ForEachObj( r, boost::bind( &ElementSrc::Dereference, this, _1 ) );
-	return r ;
-}
+	// declare suit function
+	CPPUNIT_TEST_SUITE( ElementReaderTest ) ;
+		CPPUNIT_TEST( TestStoreFind ) ;
+	CPPUNIT_TEST_SUITE_END( ) ;
 
-void ElementSrc::Dereference( Object& obj )
-{
-	if ( obj.Type( ) == Object::ref )
-		obj = ReadObj( obj, true ) ;
-}
+private :
+	void TestStoreFind( ) ;
+} ;
 
-void ElementSrc::Store( IElement *element, const Ref& link )
-{
-	m_map.insert( std::make_pair( link, element ) ) ;
-}
-
-IElement* ElementSrc::Find( const Ref& link )
-{
-	Map::iterator i = m_map.find( link ) ;
-	return i != m_map.end( ) ? i->second : 0 ;
-}
-
-} // end of namespace
+#endif

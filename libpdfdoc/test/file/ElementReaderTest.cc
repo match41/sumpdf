@@ -1,5 +1,5 @@
-/***************************************************************************
- *   Copyright (C) 2006 by Nestal Wan                                      *
+/***************************************************************************\
+ *   Copyright (C) 2009 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -16,21 +16,34 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+\***************************************************************************/
 
 /*!
-	\file	IElementSrc.cc
-	\brief	implementation the IElementSrc class
-	\date	Sat Mar 22 2008
+	\file	ElementReaderTest.cc
+	\brief	implementation the ElementReaderTest class
+	\date	Sat Apr 18 2009
 	\author	Nestal Wan
 */
 
-#include "IElementSrc.hh"
+#include "ElementReaderTest.hh"
 
-namespace pdf {
+#include "file/ElementReader.hh"
+#include "file/RawElement.hh"
 
-IElementSrc::~IElementSrc( )
+#include "mock/MockFile.hh"
+
+ElementReaderTest::ElementReaderTest( )
 {
 }
 
-} // end of namespace
+void ElementReaderTest::TestStoreFind( )
+{
+	MockFile f ;
+	pdf::ElementReader sub( &f ) ;
+
+	f.AddObj( pdf::Ref( 1, 0 ), pdf::Object( 1.0f ) ) ;
+
+	pdf::RawElement *e = sub.Read<pdf::RawElement>( pdf::Ref( 1, 0 ) ) ;
+	CPPUNIT_ASSERT( e == sub.Find( pdf::Ref( 1, 0 ) ) ) ;
+	CPPUNIT_ASSERT( e->Get().As<double>() == 1.0f ) ;
+}
