@@ -81,9 +81,7 @@ protected :
 private :
 	void ApplyFilter( const Object& filter ) ;
 	void CreateFilter( const Name& filter ) ;
-	
-	
-	
+
 private :
 	struct Impl ;
 	
