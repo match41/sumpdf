@@ -43,6 +43,10 @@ PaintOp::DecodeError::DecodeError( const char *type )
 {
 }
 
+/*!	lookup table for the decoding functions. This table maps operation
+	strings to their corresponding decoding functions, which will decode
+	the arguments and save them in the operation structures.
+*/
 const std::pair<const std::string, PaintOp::FuncPtr> PaintOp::m_table[] =
 {
 	std::make_pair( "BT",	&PaintOp::DecodeNoArg<BeginText> ),

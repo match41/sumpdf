@@ -40,9 +40,10 @@ namespace pdf {
 
 class Object ;
 
-/*!	\brief	brief description
+/*!	\brief	paint operations
 	
-	this class represents
+	This class represents the paint operations used to paint a page in an PDF
+	document. These operations are stored in the page's content streams.
 */
 class PaintOp
 {
