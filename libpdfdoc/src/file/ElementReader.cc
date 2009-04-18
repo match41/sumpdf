@@ -19,32 +19,43 @@
 \***************************************************************************/
 
 /*!
-	\file	ElementFactory.hh
-	\brief	definition the ElementFactory class
-	\date	Sun Apr 5 2009
+	\file	ElementReader.cc
+	\brief	implementation the ElementReader class
+	\date	Sat Apr 18 2009
 	\author	Nestal Wan
 */
 
-#ifndef __PDF_ELEMENT_FACTORY_HEADER_INCLUDED__
-#define __PDF_ELEMENT_FACTORY_HEADER_INCLUDED__
+#include "ElementReader.hh"
+
+#include "IFile.hh"
+#include "IElement.hh"
 
 namespace pdf {
 
-class IElementSrc ;
-class ElementReader ;
-
-template <class Element>
-Element* CreateNewElement( const Object&, IElementSrc * )
+ElementReader::ElementReader( IFile *file )
+	: m_file( file )
 {
-	return new Element ;
 }
 
-template <class Element>
-Element* CreateNewElement( const Object&, ElementReader * )
+void ElementReader::Store( IElement *element, Object& obj, const Ref& link )
 {
-	return new Element ;
+	// insert before Read(). this is important!
+	// there may be lookups for "link" inside Read(). if not insert
+	// before Read(), these lookups will fail and re-create again,
+	// causing infinite recursion.
+	m_map.insert( std::make_pair( link, element ) ) ;
+	element->Init( obj, this ) ;
+}
+
+IElement* ElementReader::Find( const Ref& link )
+{
+	Map::iterator i = m_map.find( link ) ;
+	return i != m_map.end( ) ? i->second : 0 ;
+}
+
+Object ElementReader::ReadObj( const Ref& link )
+{
+	return m_file->ReadObj( link ) ;
 }
 
 } // end of namespace
-
-#endif

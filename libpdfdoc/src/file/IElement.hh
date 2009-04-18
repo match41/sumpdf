@@ -34,6 +34,7 @@ class Ref ;
 class IElementSrc ;
 class IElementDest ;
 class ElementList ;
+class ElementReader ;
 class Object ;
 
 /*!	\brief	PDF file element.
@@ -54,6 +55,9 @@ public :
 	virtual ~IElement( ) ;
 	
 	virtual void Init( Object& obj, IElementSrc *src ) = 0 ;
+	virtual void Init( Object& obj, ElementReader *src )
+	{
+	}
 	
 	/*!	\brief	read an element
 		\internal

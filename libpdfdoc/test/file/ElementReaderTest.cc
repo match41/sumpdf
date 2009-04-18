@@ -19,32 +19,31 @@
 \***************************************************************************/
 
 /*!
-	\file	ElementFactory.hh
-	\brief	definition the ElementFactory class
-	\date	Sun Apr 5 2009
+	\file	ElementReaderTest.cc
+	\brief	implementation the ElementReaderTest class
+	\date	Sat Apr 18 2009
 	\author	Nestal Wan
 */
 
-#ifndef __PDF_ELEMENT_FACTORY_HEADER_INCLUDED__
-#define __PDF_ELEMENT_FACTORY_HEADER_INCLUDED__
+#include "ElementReaderTest.hh"
 
-namespace pdf {
+#include "file/ElementReader.hh"
+#include "file/RawElement.hh"
 
-class IElementSrc ;
-class ElementReader ;
+#include "mock/MockFile.hh"
 
-template <class Element>
-Element* CreateNewElement( const Object&, IElementSrc * )
+ElementReaderTest::ElementReaderTest( )
 {
-	return new Element ;
 }
 
-template <class Element>
-Element* CreateNewElement( const Object&, ElementReader * )
+void ElementReaderTest::TestStoreFind( )
 {
-	return new Element ;
+	MockFile f ;
+	pdf::ElementReader sub( &f ) ;
+
+	f.AddObj( pdf::Ref( 1, 0 ), pdf::Object( 1.0f ) ) ;
+
+	pdf::RawElement *e = sub.Read<pdf::RawElement>( pdf::Ref( 1, 0 ) ) ;
+	CPPUNIT_ASSERT( e == sub.Find( pdf::Ref( 1, 0 ) ) ) ;
+	CPPUNIT_ASSERT( e->Get().As<double>() == 1.0f ) ;
 }
-
-} // end of namespace
-
-#endif

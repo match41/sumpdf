@@ -19,32 +19,35 @@
 \***************************************************************************/
 
 /*!
-	\file	ElementFactory.hh
-	\brief	definition the ElementFactory class
-	\date	Sun Apr 5 2009
+	\file	ElementReaderTest.hh
+	\brief	definition the ElementReaderTest class
+	\date	Sat Apr 18 2009
 	\author	Nestal Wan
 */
 
-#ifndef __PDF_ELEMENT_FACTORY_HEADER_INCLUDED__
-#define __PDF_ELEMENT_FACTORY_HEADER_INCLUDED__
+#ifndef __PDFUT_ELEMENT_READER_TEST_HEADER_INCLUDED__
+#define __PDFUT_ELEMENT_READER_TEST_HEADER_INCLUDED__
 
-namespace pdf {
+#include <cppunit/TestFixture.h>
 
-class IElementSrc ;
-class ElementReader ;
+#include <cppunit/extensions/HelperMacros.h>
 
-template <class Element>
-Element* CreateNewElement( const Object&, IElementSrc * )
+/*!	\brief	brief description
+	
+	this class represents
+*/
+class ElementReaderTest : public CppUnit::TestFixture
 {
-	return new Element ;
-}
+public :
+	ElementReaderTest( ) ;
 
-template <class Element>
-Element* CreateNewElement( const Object&, ElementReader * )
-{
-	return new Element ;
-}
+	// declare suit function
+	CPPUNIT_TEST_SUITE( ElementReaderTest ) ;
+		CPPUNIT_TEST( TestStoreFind ) ;
+	CPPUNIT_TEST_SUITE_END( ) ;
 
-} // end of namespace
+private :
+	void TestStoreFind( ) ;
+} ;
 
 #endif

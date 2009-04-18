@@ -67,6 +67,7 @@ set( FILE_HDRS		${FILE_DIR}/File.hh
 					${FILE_DIR}/StreamElement.hh
 					${FILE_DIR}/IElement.hh
 					${FILE_DIR}/RawElement.hh
+					${FILE_DIR}/ElementReader.hh
 					${FILE_DIR}/IElementSrc.hh
 					${FILE_DIR}/ElementSrc.hh
             		${FILE_DIR}/ElementDest.hh
@@ -145,6 +146,7 @@ set( FILE_SRCS		${FILE_DIR}/File.cc
 					${FILE_DIR}/StreamElement.cc
 					${FILE_DIR}/IElement.cc
 					${FILE_DIR}/RawElement.cc
+					${FILE_DIR}/ElementReader.cc
 					${FILE_DIR}/IElementSrc.cc
 					${FILE_DIR}/ElementSrc.cc
 					${FILE_DIR}/ElementDest.cc
@@ -406,6 +408,7 @@ set( UT_SRCS	test/core/TokenTest.cc
 				test/page/XObjectTest.cc
 				
 				test/file/FileTest.cc
+				test/file/ElementReaderTest.cc
 				test/ElementTrackerTest.cc
 				
 				test/font/TrueTypeFileTest.cc

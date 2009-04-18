@@ -48,6 +48,11 @@ void RawElement::Init( Object& obj, IElementSrc *src )
 	ForEachObj( m_self, boost::bind( &RawElement::ReadChild, this, _1, src ) ) ;
 }
 
+void RawElement::Init( Object& obj, ElementReader *src )
+{
+	m_self.Swap( obj ) ;
+}
+
 void RawElement::ReadChild( Object& obj, IElementSrc *src )
 {
 	if ( obj.IsType<Ref>() )
@@ -66,6 +71,16 @@ void RawElement::WriteChild( const Object& obj, IElementDest *dest ) const
 ElementList RawElement::GetChildren( ) const
 {
 	return ElementList() ;
+}
+
+Object& RawElement::Get( )
+{
+	return m_self ;
+}
+
+const Object& RawElement::Get( ) const
+{
+	return m_self ;
 }
 
 } // end of namespace

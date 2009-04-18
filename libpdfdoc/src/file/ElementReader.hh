@@ -19,31 +19,73 @@
 \***************************************************************************/
 
 /*!
-	\file	ElementFactory.hh
-	\brief	definition the ElementFactory class
-	\date	Sun Apr 5 2009
+	\file	ElementReader.hh
+	\brief	definition the ElementReader class
+	\date	Sat Apr 18 2009
 	\author	Nestal Wan
 */
 
-#ifndef __PDF_ELEMENT_FACTORY_HEADER_INCLUDED__
-#define __PDF_ELEMENT_FACTORY_HEADER_INCLUDED__
+#ifndef __PDF_ELEMENT_READER_INCLUDED__
+#define __PDF_ELEMENT_READER_INCLUDED__
+
+#include "core/Ref.hh"
+#include "core/Object.hh"
+
+#include "ElementFactory.hh"
+
+#include <map>
 
 namespace pdf {
 
-class IElementSrc ;
-class ElementReader ;
+class IFile ;
+class IElement ;
 
-template <class Element>
-Element* CreateNewElement( const Object&, IElementSrc * )
+/*!	\brief	brief description
+	
+	this class represents
+*/
+class ElementReader
 {
-	return new Element ;
-}
+public :
+	ElementReader( IFile *file ) ;
 
-template <class Element>
-Element* CreateNewElement( const Object&, ElementReader * )
-{
-	return new Element ;
-}
+	IElement* Find( const Ref& link ) ;
+	
+	/*!	helper function to create elements. This function is the primary
+		function for users of this class to read elements.
+	*/
+	template <class Element>
+	Element* Read( const Ref& link )
+	{
+		IElement *temp = Find( link ) ;
+		
+		// element found in cache, try to re-use it
+		if ( temp != 0 )
+			// dynamic cast reference
+			// it will throw bad_cast if failed
+			return &dynamic_cast<Element&>( *temp ) ;
+
+		else
+		{
+			Object obj = ReadObj( link ) ;
+			Element *element = CreateNewElement<Element>( obj, this ) ;
+
+			Store( element, obj, link ) ;
+			return element ;
+		}
+	}
+
+private :
+	Object ReadObj( const Ref& obj ) ;
+	
+	void Store( IElement *element, Object& obj, const Ref& link ) ;
+
+private :
+	typedef std::map<Ref, IElement*> Map ;
+	Map	m_map ;
+	
+	IFile *m_file ;
+} ;
 
 } // end of namespace
 
