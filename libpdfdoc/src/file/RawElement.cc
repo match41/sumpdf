@@ -1,5 +1,5 @@
-/***************************************************************************
- *   Copyright (C) 2006 by Nestal Wan                                      *
+/***************************************************************************\
+ *   Copyright (C) 2009 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -16,53 +16,56 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+\***************************************************************************/
 
 /*!
-	\file	ElementSrc.hh
-	\brief	definition the ElementSrc class
-	\date	Sun Mar 30 2008
+	\file	RawElement.cc
+	\brief	implementation the RawElement class
+	\date	Sat Apr 18 2009
 	\author	Nestal Wan
 */
 
-#ifndef __PDF_ELEMENT_REPO_HEADER_INCLUDED__
-#define __PDF_ELEMENT_REPO_HEADER_INCLUDED__
+#include "RawElement.hh"
 
+#include "ElementList.hh"
+#include "IElementDest.hh"
 #include "IElementSrc.hh"
 
-#include "core/Ref.hh"
+#include "core/TraverseObject.hh"
 
-#include <map>
+#include <boost/bind.hpp>
 
 namespace pdf {
 
-class IElement ;
-class IFile ;
-
-/*!	\brief	A source for elements
-	
-	This class represents a place to read elements from.
-*/
-class ElementSrc : public IElementSrc
+RawElement::RawElement( )
 {
-public :
-	ElementSrc( IFile *file ) ;
+}
 
-	Object ReadObj( const Ref& obj, bool deref = false ) ;
+void RawElement::Init( Object& obj, IElementSrc *src )
+{
+	m_self.Swap( obj ) ;
 
-private :
-	void Store( IElement *element, const Ref& link ) ;
-	IElement* Find( const Ref& link ) ;
-	
-	void Dereference( Object& obj ) ;
-	
-private :
-	typedef std::map<Ref, IElement*> Map ;
-	Map	m_map ;
-	
-	IFile *m_file ;
-} ;
+	ForEachObj( m_self, boost::bind( &RawElement::ReadChild, this, _1, src ) ) ;
+}
+
+void RawElement::ReadChild( Object& obj, IElementSrc *src )
+{
+	if ( obj.IsType<Ref>() )
+		m_children[obj.As<Ref>()] = src->Read<RawElement>( obj.As<Ref>() ) ;
+}
+
+void RawElement::Write( const Ref& link, IElementDest *dest ) const
+{
+	dest->WriteObj( m_self, link ) ;
+}
+
+void RawElement::WriteChild( const Object& obj, IElementDest *dest ) const
+{
+}
+
+ElementList RawElement::GetChildren( ) const
+{
+	return ElementList() ;
+}
 
 } // end of namespace
-
-#endif

@@ -30,11 +30,18 @@
 #include "core/Object.hh"
 #include "util/Util.hh"
 
+#include <boost/format.hpp>
+
 #include <string>
 #include <map>
 #include <iostream>
 
 namespace pdf {
+
+PaintOp::DecodeError::DecodeError( const char *type )
+	: Exception( boost::format( "invalid %1% object" ) % type )
+{
+}
 
 const std::pair<const std::string, PaintOp::FuncPtr> PaintOp::m_table[] =
 {
@@ -64,8 +71,6 @@ PaintOp::PaintOp( const std::string& ops, const Object *args,
                                           std::size_t count )
 {
 std::cout << " got cmd: " << ops << ' ' << count << std::endl ;
-
-
 	FuncMap::const_iterator i = m_func_map.find( ops ) ;
 	if ( i != m_func_map.end() )
 		(this->*i->second)( args, count ) ;
@@ -75,66 +80,54 @@ template <typename Op>
 void PaintOp::DecodeNoArg( const Object *args, std::size_t count )
 {
     if ( count != 0 )
-    {
-	    Op op = {} ;
-	    m_ops = op ;
-    }
-    else
-        throw ParseError( "invalid " + std::string(typeid(Op).name() ) +
-                          " object" ) ;
+        throw DecodeError( typeid(Op).name() ) ;
+	    
+	Op op = {} ;
+	m_ops = op ;
 }
 
 template <typename Op, typename Arg1>
 void PaintOp::DecodeOneArg( const Object *args, std::size_t count )
 {
     if ( count != 1 )
-    {
-        Op op = { args[0].As<Arg1>() } ;
-        m_ops = op ;
-    }
-    else
-        throw ParseError( "invalid " + std::string(typeid(Op).name() ) +
-                          " object" ) ;
+        throw DecodeError( typeid(Op).name() ) ;
+
+	Op op = { args[0].As<Arg1>() } ;
+	m_ops = op ;
 }
 
 template <typename Op, typename Arg1, typename Arg2>
 void PaintOp::DecodeTwoArgs( const Object *args, std::size_t count )
 {
     if ( count != 2 )
-    {
-        Op op = { args[0].As<Arg1>(), args[1].As<Arg2>() } ;
-        m_ops = op ;
-    }
-    else
-        throw ParseError( "invalid " + std::string(typeid(Op).name() ) +
-                          " object" ) ;
+        throw DecodeError( typeid(Op).name() ) ;
+	
+	Op op = { args[0].As<Arg1>(), args[1].As<Arg2>() } ;
+	m_ops = op ;
 }
 
 template <typename Op, typename Arg>
 void PaintOp::Decode6Args( const Object *args, std::size_t count )
 {
     if ( count != 6 )
-    {
-        Op op = { args[0].As<Arg>(), args[1].As<Arg>(), args[2].As<Arg>(),
-                  args[3].As<Arg>(), args[4].As<Arg>(), args[5].As<Arg>() } ;
-        m_ops = op ;
-    }
-    else
-        throw ParseError( "invalid " + std::string(typeid(Op).name() ) +
-                          " object" ) ;
+    	throw DecodeError( typeid(Op).name() ) ;
+
+	Op op =
+	{
+	    args[0].As<Arg>(), args[1].As<Arg>(), args[2].As<Arg>(),
+		args[3].As<Arg>(), args[4].As<Arg>(), args[5].As<Arg>()
+	} ;
+	m_ops = op ;
 }
 
 template <typename Op, typename Arg1, Arg1 arg1, typename Arg2>
 void PaintOp::DecodeTwoArgBind1st( const Object *args, std::size_t count )
 {
     if ( count != 1 )
-    {
-        Op op = { arg1, args[0].As<Arg2>() } ;
-        m_ops = op ;
-    }
-    else
-        throw ParseError( "invalid " + std::string(typeid(Op).name() ) +
-                          " object" ) ;
+    	throw DecodeError( typeid(Op).name() ) ;
+        
+	Op op = { arg1, args[0].As<Arg2>() } ;
+	m_ops = op ;
 }
 
 // help function for instantiating text state decoders
