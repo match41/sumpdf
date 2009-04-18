@@ -36,9 +36,9 @@
 
 namespace pdf {
 
-/*!	\brief	brief description
+/*!	\brief	text state operations
 	
-	this class represents
+	These are operations that affect text state.
 */
 struct TextState
 {
