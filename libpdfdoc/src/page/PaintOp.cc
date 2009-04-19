@@ -49,21 +49,21 @@ PaintOp::DecodeError::DecodeError( const char *type )
 */
 const std::pair<const std::string, PaintOp::FuncPtr> PaintOp::m_table[] =
 {
-	std::make_pair( "BT",	&PaintOp::DecodeNoArg<BeginText> ),
-	std::make_pair( "ET",	&PaintOp::DecodeNoArg<EndText> ),
+	std::make_pair( "BT",	&PaintOp::Decode<BeginText::_> ),
+	std::make_pair( "ET",	&PaintOp::Decode<EndText::_> ),
 
 	// text state
-	std::make_pair( "Tc",   &PaintOp::DecodeTextState<TextState::char_space> ),
-	std::make_pair( "Tw",   &PaintOp::DecodeTextState<TextState::word_space> ),
-	std::make_pair( "Tz",   &PaintOp::DecodeTextState<TextState::scale> ),
-	std::make_pair( "TL",   &PaintOp::DecodeTextState<TextState::leading> ),
-	std::make_pair( "Tf",   &PaintOp::DecodeTwoArgs<TextFont::_> ),
-	std::make_pair( "Tr",   &PaintOp::DecodeTextState<TextState::render_mode> ),
-	std::make_pair( "Ts",   &PaintOp::DecodeTextState<TextState::text_rise> ),
+	std::make_pair( "Tc",   &PaintOp::Decode<CharSpace::_> ),
+	std::make_pair( "Tw",   &PaintOp::Decode<WordSpace::_> ),
+	std::make_pair( "Tz",   &PaintOp::Decode<TextScale::_> ),
+	std::make_pair( "TL",   &PaintOp::Decode<TextLeading::_> ),
+	std::make_pair( "Tf",   &PaintOp::Decode<TextFont::_> ),
+	std::make_pair( "Tr",   &PaintOp::Decode<TextRender::_> ),
+	std::make_pair( "Ts",   &PaintOp::Decode<TextRise::_> ),
 	
 	// text positioning operators
-	std::make_pair( "Td",	&PaintOp::DecodeTwoArgs<TextPosition::_> ),
-	std::make_pair( "Tm",	&PaintOp::Decode6Args<TextMatrix::_> ),
+	std::make_pair( "Td",	&PaintOp::Decode<TextPosition::_> ),
+	std::make_pair( "Tm",	&PaintOp::Decode<TextMatrix::_> ),
 	
 } ;
 
@@ -79,57 +79,75 @@ std::cout << " got cmd: " << ops << ' ' << count << std::endl ;
 		(this->*i->second)( args, count ) ;
 }
 
-template <typename Op>
-void PaintOp::DecodeNoArg( const Object *args, std::size_t count )
-{
-    if ( count != 0 )
-        throw DecodeError( typeid(Op).name() ) ;
-	    
-	Op op = {} ;
-	m_ops = op ;
-}
-
-template <typename Op>
-void PaintOp::DecodeOneArg( const Object *args, std::size_t count )
-{
-    if ( count != 1 )
-        throw DecodeError( typeid(Op).name() ) ;
-
-	m_ops = Op( args[0] ) ;
-}
-
-template <typename Op>
-void PaintOp::DecodeTwoArgs( const Object *args, std::size_t count )
-{
-    if ( count != 2 )
-        throw DecodeError( typeid(Op).name() ) ;
-	
-	m_ops = Op( args[0], args[1] ) ;
-}
-
-template <typename Op>
-void PaintOp::Decode6Args( const Object *args, std::size_t count )
-{
-    if ( count != 6 )
-    	throw DecodeError( typeid(Op).name() ) ;
-
-	m_ops = Op( args[0], args[1], args[2], args[3], args[4], args[5] ) ;
-}
-
-// help function for instantiating text state decoders
-template <TextState::Type t>
-void PaintOp::DecodeTextState( const Object *args, std::size_t count )
-{
-//     DecodeTwoArgBind1st<TextState::_, t>( args, count ) ;
-    if ( count != 1 )
-    	throw DecodeError( typeid(TextState::_).name() ) ;
-        
-	m_ops = TextState::_( t, args[0] ) ;
-}
-
 std::ostream& operator<<( std::ostream& os, const PaintOp& op )
 {
     return os ;
 }
+
+template <typename Op, std::size_t N>
+class DecodeTuple
+{
+public :
+	Op operator()( const Object *args, std::size_t count ) const ;
+} ;
+
+template <typename Op>
+class PaintOp::Decoder
+{
+public :
+	Op operator()( const Object *args, std::size_t count ) const
+	{
+		return DecodeTuple<Op,
+			boost::tuples::length<Op>::value>()( args, count ) ;
+	}
+} ;
+
+template <typename Op>
+class DecodeTuple<Op,0>
+{
+public :
+	Op operator()( const Object *, std::size_t ) const
+	{
+		return Op( ) ;
+	}
+} ;
+
+template <typename Op>
+class DecodeTuple<Op,1>
+{
+public :
+	Op operator()( const Object *args, std::size_t count ) const
+	{
+		typename boost::tuples::element<0, Op>::type arg(args[0]) ;
+		return Op( arg ) ;
+	}
+} ;
+
+template <typename Op>
+class DecodeTuple<Op,2>
+{
+public :
+	Op operator()( const Object *args, std::size_t count ) const
+	{
+		return Op( args[0], args[1] ) ;
+	}
+} ;
+
+template <typename Op>
+class DecodeTuple<Op,6>
+{
+public :
+	Op operator()( const Object *args, std::size_t count ) const
+	{
+		return Op( args[0], args[1], args[2], args[3], args[4], args[5] ) ;
+	}
+} ;
+
+template <typename Op>
+void PaintOp::Decode( const Object *args, std::size_t count )
+{
+	m_ops = Decoder<Op>()( args, count ) ;
+}
+
 
 } // end of namespace

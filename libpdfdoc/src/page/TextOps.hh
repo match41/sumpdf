@@ -39,29 +39,34 @@
 
 namespace pdf {
 
-namespace TextState
-{
-	enum Type
-	{
-		char_space, word_space, scale, leading, render_mode,
-		text_rise, none
-	} ;
+#define MAKE_TYPE( name ) \
+	namespace name \
+	{ \
+		typedef boost::tuple<> _ ; \
+	}
 	
-	enum { type, arg } ;
-	typedef boost::tuple<Type, double>	_ ;
-}
+#define MAKE_ONE_TYPE( name, type ) \
+	namespace name \
+	{ \
+		typedef boost::tuple<type> _ ; \
+	}
 
-namespace TextFont
-{
-	enum { font, size } ;
-	typedef boost::tuple<Name, double> _ ;
-}
+#define MAKE_TWO_TYPE( name, type1, tag1, type2, tag2 ) \
+	namespace name \
+	{ \
+		enum { tag1, tag2 } ; \
+		typedef boost::tuple<type1, type2> _ ; \
+	}
 
-namespace TextPosition
-{
-	enum { offx, offy } ;
-	typedef boost::tuple<double, double> _ ;
-}
+MAKE_ONE_TYPE( CharSpace, double ) ;
+MAKE_ONE_TYPE( WordSpace, double ) ;
+MAKE_ONE_TYPE( TextScale, double ) ;
+MAKE_ONE_TYPE( TextLeading, double ) ;
+MAKE_ONE_TYPE( TextRender, double ) ;
+MAKE_ONE_TYPE( TextRise, double ) ;
+
+MAKE_TWO_TYPE( TextFont, 		Name,	font, double, size ) ;
+MAKE_TWO_TYPE( TextPosition, 	double, offx, double, offy ) ;
 
 namespace TextMatrix
 {
@@ -69,19 +74,16 @@ namespace TextMatrix
 	typedef boost::tuple<double, double, double, double, double, double> _ ;
 }
 
-namespace TextString
-{
-	typedef std::string _ ;
-}
+MAKE_ONE_TYPE( TextString, std::string ) ;
 
 namespace TextPosString
 {
 	typedef boost::variant<std::string, int> Entry ;
-	typedef std::vector<Entry>	_ ;
+	typedef boost::tuple<std::vector<Entry>	>	_ ;
 }
 
-struct BeginText {} ;
-struct EndText {} ;
+MAKE_TYPE( BeginText ) ;
+MAKE_TYPE( EndText ) ;
 
 } // end of namespace
 
