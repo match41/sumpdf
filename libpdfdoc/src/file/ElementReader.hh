@@ -80,18 +80,18 @@ public :
 		if ( i == dict.end() )
 			return 0 ;
 		
+		Element *result = 0 ;
 		if ( i->second.IsType<Ref>() )
-			return Read<Element>( i->second ) ;
+			result = Read<Element>( i->second ) ;
 		else
 		{
 			// this is a special case. the new element is not from an indirect
 			// object. we don't store it in our map.
-			Element *element = CreateNewElement<Element>( i->second, this ) ;
-			InitElement( element, i->second ) ;
-			dict.erase( i ) ;
-			
-			return element ;
+			result = CreateNewElement<Element>( i->second, this ) ;
+			InitElement( result, i->second ) ;
 		}
+		dict.erase( i ) ;
+		return result ;
 	}
 
 	/*!	\brief	detach and de-reference object in dictionary

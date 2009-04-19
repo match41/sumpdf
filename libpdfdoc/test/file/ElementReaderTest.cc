@@ -61,3 +61,52 @@ void ElementReaderTest::TestRead( )
 	CPPUNIT_ASSERT( re != 0 ) ;
 	CPPUNIT_ASSERT( re->Get().As<std::string>() == "I am a string" ) ;
 }
+
+void ElementReaderTest::TestDetach( )
+{
+	MockFile f ;
+	pdf::ElementReader sub( &f ) ;
+
+	pdf::Dictionary dict ;
+	dict["Type"]	= pdf::Name( "Font" ) ;
+	dict["Field1"]	= 100.1f ;
+	f.AddObj( pdf::Ref( 1, 0 ), dict ) ;
+
+	pdf::Name out ;
+	CPPUNIT_ASSERT( sub.Detach( dict, "Type", out ) ) ;
+	CPPUNIT_ASSERT( out == pdf::Name( "Font" ) ) ;
+	CPPUNIT_ASSERT( dict.find( "Type" ) == dict.end( ) ) ;
+}
+
+void ElementReaderTest::TestDeRef( )
+{
+	MockFile f ;
+	pdf::ElementReader sub( &f ) ;
+	
+	f.AddObj( pdf::Ref( 1, 0 ), pdf::Object( false ) ) ;
+	pdf::Object obj( "hahaha" ) ;
+	CPPUNIT_ASSERT( &obj == &sub.DeRef( obj ) ) ;
+	CPPUNIT_ASSERT( obj.As<std::string>() == "hahaha" ) ;
+	
+	pdf::Object ref( pdf::Ref( 1, 0 ) ) ;
+	CPPUNIT_ASSERT( &ref == &sub.DeRef(ref) ) ;
+	CPPUNIT_ASSERT( ref.As<bool>() == false ) ;
+}
+
+void ElementReaderTest::TestDetachElement( )
+{
+	MockFile f ;
+	pdf::ElementReader sub( &f ) ;
+	
+	f.AddObj( pdf::Ref( 1, 0 ), pdf::Name( "Nobuo" ) ) ;
+	
+	pdf::Dictionary dict ;
+	dict["Link"] = pdf::Ref( 1, 0 ) ;
+	
+	std::auto_ptr<pdf::RawElement> e(
+		sub.DetachElement<pdf::RawElement>( dict, "Link" ) ) ;
+
+	CPPUNIT_ASSERT( e.get() != 0 ) ;
+	CPPUNIT_ASSERT( dict.find( "Link" ) == dict.end() ) ;
+	CPPUNIT_ASSERT( e->Get().As<pdf::Name>() == pdf::Name( "Nobuo" ) ) ;
+}

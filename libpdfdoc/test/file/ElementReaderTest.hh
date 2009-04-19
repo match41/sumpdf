@@ -45,11 +45,17 @@ public :
 	CPPUNIT_TEST_SUITE( ElementReaderTest ) ;
 		CPPUNIT_TEST( TestStoreFind ) ;
 		CPPUNIT_TEST( TestRead ) ;
+		CPPUNIT_TEST( TestDetach ) ;
+		CPPUNIT_TEST( TestDeRef ) ;
+		CPPUNIT_TEST( TestDetachElement ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
 private :
 	void TestStoreFind( ) ;
 	void TestRead( ) ;
+	void TestDetach( ) ;
+	void TestDeRef( ) ;
+	void TestDetachElement( ) ;
 } ;
 
 #endif

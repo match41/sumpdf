@@ -80,4 +80,5 @@ IElement* ElementReader::Read( const Ref& link )
 	return temp != 0 ? temp : NewElement<RawElement>( link ) ;
 }
 
+
 } // end of namespace
