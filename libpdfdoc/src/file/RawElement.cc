@@ -56,7 +56,7 @@ void RawElement::ReadChild( Object& obj, ElementReader *src )
 {
 	assert( src != 0 ) ;
 
-	if ( obj.IsType<Ref>() )
+	if ( obj.Type() == Object::ref )
 		m_children[obj.As<Ref>()] = src->Read( obj.As<Ref>() ) ;
 }
 
@@ -75,7 +75,15 @@ void RawElement::Write( const Ref& link, IElementDest *dest ) const
 void RawElement::WriteChild( Object& obj, IElementDest *dest ) const
 {
 	assert( dest != 0 ) ;
-	obj = dest->WriteObj( obj ) ;
+	if ( obj.Type() == Object::ref )
+	{
+		assert( m_children.find( obj.As<Ref>() ) != m_children.end() ) ;
+		
+		IElement *e = m_children[obj.As<Ref>()] ;
+		assert( e != 0 ) ;
+		
+		obj = dest->Write( e ) ;
+	}
 }
 
 ElementList RawElement::GetChildren( ) const
