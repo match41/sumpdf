@@ -405,7 +405,7 @@ set( UT_SRCS	test/core/TokenTest.cc
 				
 				test/file/FileTest.cc
 				test/file/ElementReaderTest.cc
-				test/ElementTrackerTest.cc
+				test/file/ElementTrackerTest.cc
 				
 				test/font/TrueTypeFileTest.cc
 				test/font/TrueTypeTableTest.cc

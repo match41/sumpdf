@@ -20,7 +20,7 @@
 
 /*!
 	\file	ElementFactory.hh
-	\brief	definition the ElementFactory class
+	\brief	definition the default CreateNewElement() function
 	\date	Sun Apr 5 2009
 	\author	Nestal Wan
 */
@@ -32,8 +32,26 @@ namespace pdf {
 
 class ElementReader ;
 
-template <class Element>
-Element* CreateNewElement( const Object&, ElementReader * )
+/*!	factory function for elements. This function is used to create elements.
+	Sometimes it is required to create different element base on their types,
+	because the actual type of the object is not known yet. This function
+	provides a chance for individual element hierachy to determine which
+	concrete class to be created. e.g.
+	
+\code
+template <> BaseFont* CreateNewElement( const Object& obj, ElemenReader *src )
+{
+	if ( obj["Type"] == "TrueType" )
+		return new TrueTypeFont( obj, src ) ;
+	else if ( obj["Type"] == "Type1" )
+		return new Type1Font( obj, src ) ;
+	else
+		throw Exception( "unknown font!" ) ;
+}
+\endcode
+*/
+template <class BaseElement>
+BaseElement* CreateNewElement( const Object&, ElementReader * )
 {
 	return new Element ;
 }

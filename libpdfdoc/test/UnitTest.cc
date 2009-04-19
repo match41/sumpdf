@@ -50,7 +50,7 @@
 #include "page/XObjectTest.hh"
 #include "file/FileTest.hh"
 #include "file/ElementReaderTest.hh"
-#include "ElementTrackerTest.hh"
+#include "file/ElementTrackerTest.hh"
 #include "page/PageNodeTest.hh"
 #include "image/PngImageTest.hh"
 #include "image/JpegImageTest.hh"
