@@ -68,9 +68,6 @@ private :
 
 private :
 	template <typename Op>
-	class Decoder ;
-
-	template <typename Op>
 	void Decode( const Object *args, std::size_t count ) ;
 
 private :

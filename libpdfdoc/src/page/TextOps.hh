@@ -58,12 +58,12 @@ namespace pdf {
 		typedef boost::tuple<type1, type2> _ ; \
 	}
 
-MAKE_ONE_TYPE( CharSpace, double ) ;
-MAKE_ONE_TYPE( WordSpace, double ) ;
-MAKE_ONE_TYPE( TextScale, double ) ;
-MAKE_ONE_TYPE( TextLeading, double ) ;
-MAKE_ONE_TYPE( TextRender, double ) ;
-MAKE_ONE_TYPE( TextRise, double ) ;
+MAKE_ONE_TYPE( CharSpace,	double ) ;
+MAKE_ONE_TYPE( WordSpace,	double ) ;
+MAKE_ONE_TYPE( TextScale,	double ) ;
+MAKE_ONE_TYPE( TextLeading,	double ) ;
+MAKE_ONE_TYPE( TextRender,	double ) ;
+MAKE_ONE_TYPE( TextRise,	double ) ;
 
 MAKE_TWO_TYPE( TextFont, 		Name,	font, double, size ) ;
 MAKE_TWO_TYPE( TextPosition, 	double, offx, double, offy ) ;

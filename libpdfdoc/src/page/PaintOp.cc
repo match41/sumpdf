@@ -92,17 +92,6 @@ public :
 } ;
 
 template <typename Op>
-class PaintOp::Decoder
-{
-public :
-	Op operator()( const Object *args, std::size_t count ) const
-	{
-		return DecodeTuple<Op,
-			boost::tuples::length<Op>::value>()( args, count ) ;
-	}
-} ;
-
-template <typename Op>
 class DecodeTuple<Op,0>
 {
 public :
@@ -146,7 +135,11 @@ public :
 template <typename Op>
 void PaintOp::Decode( const Object *args, std::size_t count )
 {
-	m_ops = Decoder<Op>()( args, count ) ;
+	if ( count != boost::tuples::length<Op>::value )
+		throw DecodeError( typeid(Op).name() ) ;
+
+	m_ops = DecodeTuple<Op,
+		boost::tuples::length<Op>::value>()( args, count ) ;
 }
 
 
