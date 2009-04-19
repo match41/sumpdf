@@ -79,15 +79,20 @@ private :
 	template <typename Op>
 	void Decode6Args( const Object *args, std::size_t count ) ;
 
-	template <typename Op, typename Op::Arg1 arg1>
-	void DecodeTwoArgBind1st( const Object *args, std::size_t count ) ;
-
     template <TextState::Type t>
     void DecodeTextState( const Object *args, std::size_t count ) ;
 
 private :
-	boost::variant<TextState, TextFont, TextPosition, TextMatrix, TextString,
-	               TextPosString, BeginText, EndText> m_ops ;
+	boost::variant<
+		TextState::_,
+		TextFont::_,
+		TextPosition::_,
+		TextMatrix::_,
+		TextString::_,
+		TextPosString::_,
+		BeginText,
+		EndText>
+			m_ops ;
 } ;
 
 } // end of namespace

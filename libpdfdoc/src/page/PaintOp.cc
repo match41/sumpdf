@@ -57,13 +57,13 @@ const std::pair<const std::string, PaintOp::FuncPtr> PaintOp::m_table[] =
 	std::make_pair( "Tw",   &PaintOp::DecodeTextState<TextState::word_space> ),
 	std::make_pair( "Tz",   &PaintOp::DecodeTextState<TextState::scale> ),
 	std::make_pair( "TL",   &PaintOp::DecodeTextState<TextState::leading> ),
-	std::make_pair( "Tf",   &PaintOp::DecodeTwoArgs<TextFont> ),
+	std::make_pair( "Tf",   &PaintOp::DecodeTwoArgs<TextFont::_> ),
 	std::make_pair( "Tr",   &PaintOp::DecodeTextState<TextState::render_mode> ),
 	std::make_pair( "Ts",   &PaintOp::DecodeTextState<TextState::text_rise> ),
 	
 	// text positioning operators
-	std::make_pair( "Td",	&PaintOp::DecodeTwoArgs<TextPosition> ),
-	std::make_pair( "Tm",	&PaintOp::Decode6Args<TextMatrix> ),
+	std::make_pair( "Td",	&PaintOp::DecodeTwoArgs<TextPosition::_> ),
+	std::make_pair( "Tm",	&PaintOp::Decode6Args<TextMatrix::_> ),
 	
 } ;
 
@@ -95,8 +95,7 @@ void PaintOp::DecodeOneArg( const Object *args, std::size_t count )
     if ( count != 1 )
         throw DecodeError( typeid(Op).name() ) ;
 
-	Op op = { args[0] } ;
-	m_ops = op ;
+	m_ops = Op( args[0] ) ;
 }
 
 template <typename Op>
@@ -105,8 +104,7 @@ void PaintOp::DecodeTwoArgs( const Object *args, std::size_t count )
     if ( count != 2 )
         throw DecodeError( typeid(Op).name() ) ;
 	
-	Op op = { typename Op::Arg1(args[0]), typename Op::Arg2(args[1]) } ;
-	m_ops = op ;
+	m_ops = Op( args[0], args[1] ) ;
 }
 
 template <typename Op>
@@ -115,33 +113,18 @@ void PaintOp::Decode6Args( const Object *args, std::size_t count )
     if ( count != 6 )
     	throw DecodeError( typeid(Op).name() ) ;
 
-	Op op =
-	{
-	    typename Op::Arg1(args[0]),
-	    typename Op::Arg2(args[1]),
-	    typename Op::Arg3(args[2]),
-		typename Op::Arg4(args[3]),
-		typename Op::Arg5(args[4]),
-		typename Op::Arg6(args[5])
-	} ;
-	m_ops = op ;
-}
-
-template <typename Op, typename Op::Arg1 arg1>
-void PaintOp::DecodeTwoArgBind1st( const Object *args, std::size_t count )
-{
-    if ( count != 1 )
-    	throw DecodeError( typeid(Op).name() ) ;
-        
-	Op op = { arg1, typename Op::Arg2(args[0]) } ;
-	m_ops = op ;
+	m_ops = Op( args[0], args[1], args[2], args[3], args[4], args[5] ) ;
 }
 
 // help function for instantiating text state decoders
 template <TextState::Type t>
 void PaintOp::DecodeTextState( const Object *args, std::size_t count )
 {
-    DecodeTwoArgBind1st<TextState, t>( args, count ) ;
+//     DecodeTwoArgBind1st<TextState::_, t>( args, count ) ;
+    if ( count != 1 )
+    	throw DecodeError( typeid(TextState::_).name() ) ;
+        
+	m_ops = TextState::_( t, args[0] ) ;
 }
 
 std::ostream& operator<<( std::ostream& os, const PaintOp& op )

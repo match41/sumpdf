@@ -136,6 +136,7 @@ set( PAGE_SRCS  	${PAGE_DIR}/RealPage.cc
 					${PAGE_DIR}/XObject.cc
 					${PAGE_DIR}/RealImage.cc
 					${PAGE_DIR}/PaintOp.cc
+					${PAGE_DIR}/TextOps.cc
 					${PAGE_DIR}/PathSegment.cc )
 
 set( FILE_SRCS		${FILE_DIR}/File.cc

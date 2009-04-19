@@ -27,8 +27,10 @@
 
 #include "TextOps.hh"
 
-namespace pdf {
+#include <boost/tuple/tuple.hpp>
 
+namespace pdf { namespace gfx {
+/*
 std::ostream& operator<<( std::ostream& os, const TextState& ts )
 {
 	const char *map[] =
@@ -41,5 +43,5 @@ std::ostream& operator<<( std::ostream& os, const TextState& ts )
 	
 	os << map[ts.type - TextState::char_space] << ' ' << ts.arg << ' ' ;
 }
-
-} // end of namespace
+*/
+} } // end of namespace

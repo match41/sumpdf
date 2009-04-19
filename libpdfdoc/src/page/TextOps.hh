@@ -31,7 +31,7 @@
 #include "core/Name.hh"
 
 #include <boost/variant.hpp>
-#include <boost/typeof/typeof.hpp>
+#include <boost/tuple/tuple.hpp>
 
 // stdc++ headers
 #include <iosfwd>
@@ -39,70 +39,46 @@
 
 namespace pdf {
 
-/*!	\brief	text state operations
-	
-	These are operations that affect text state.
-*/
-struct TextState
+namespace TextState
 {
 	enum Type
 	{
 		char_space, word_space, scale, leading, render_mode,
-		text_rise
+		text_rise, none
 	} ;
-
-	Type	type ;
-	double	arg ;
 	
-	typedef Type	Arg1 ;
-	typedef double	Arg2 ;
-} ;
+	enum { type, arg } ;
+	typedef boost::tuple<Type, double>	_ ;
+}
 
-std::ostream& operator<<( std::ostream& os, const TextState& ts ) ;
-
-struct TextFont
+namespace TextFont
 {
-	typedef Name	Arg1 ;
-	typedef double	Arg2 ;
-	
-	Name	font ;
-	double	size ;
-} ;
+	enum { font, size } ;
+	typedef boost::tuple<Name, double> _ ;
+}
 
-struct TextPosition
+namespace TextPosition
 {
-	double	offx, offy ;
-	
-	typedef double	Arg1 ;
-	typedef double	Arg2 ;
-	
-} ;
+	enum { offx, offy } ;
+	typedef boost::tuple<double, double> _ ;
+}
 
-struct TextMatrix
+namespace TextMatrix
 {
-	typedef double	Arg1 ;
-	typedef double	Arg2 ;
-	typedef double	Arg3 ;
-	typedef double	Arg4 ;
-	typedef double	Arg5 ;
-	typedef double	Arg6 ;
+	enum { a, b, c, d, e, f } ;
+	typedef boost::tuple<double, double, double, double, double, double> _ ;
+}
 
-	double a, b, c, d, e, f ;
-} ;
-
-struct TextString
+namespace TextString
 {
-	typedef std::string	Arg1 ;
+	typedef std::string _ ;
+}
 
-	std::string	text ;
-} ;
-
-struct TextPosString
+namespace TextPosString
 {
 	typedef boost::variant<std::string, int> Entry ;
-	typedef std::vector<Entry>	Arg1 ;
-	std::vector<Entry> m_entries ;
-} ;
+	typedef std::vector<Entry>	_ ;
+}
 
 struct BeginText {} ;
 struct EndText {} ;
