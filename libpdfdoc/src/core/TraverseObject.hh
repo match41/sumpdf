@@ -63,6 +63,30 @@ void ForEachObj( Object& obj, F func )
 		func( obj ) ;
 }
 
+template <typename F>
+void ForEachObj( const Object& obj, F func )
+{
+	if ( obj.Type( ) == Object::dictionary )
+	{
+		const Dictionary& dict = obj.As<Dictionary>( ) ;
+		for ( Dictionary::const_iterator i  = dict.begin( ) ;
+								         i != dict.end( ) ; ++i )
+		{
+			ForEachObj( i->second, func ) ;
+		}
+	}
+	
+	else if ( obj.Type( ) == Object::array )
+	{
+		const Array& array = obj.As<Array>( ) ;
+		for ( Array::const_iterator i  = array.begin( ) ;
+							        i != array.end( ) ; ++i )
+			ForEachObj( *i, func ) ;
+	}
+	else
+		func( obj ) ;
+}
+
 } // end of namespace
 
 #endif

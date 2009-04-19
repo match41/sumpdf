@@ -44,10 +44,12 @@ public :
 	// declare suit function
 	CPPUNIT_TEST_SUITE( ElementReaderTest ) ;
 		CPPUNIT_TEST( TestStoreFind ) ;
+		CPPUNIT_TEST( TestRead ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
 private :
 	void TestStoreFind( ) ;
+	void TestRead( ) ;
 } ;
 
 #endif

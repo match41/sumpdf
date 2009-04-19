@@ -53,7 +53,7 @@ template <> BaseFont* CreateNewElement( const Object& obj, ElemenReader *src )
 template <class BaseElement>
 BaseElement* CreateNewElement( const Object&, ElementReader * )
 {
-	return new Element ;
+	return new BaseElement ;
 }
 
 } // end of namespace

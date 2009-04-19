@@ -53,6 +53,8 @@ public :
 	IElement* Find( const Ref& link ) ;
     Object& DeRef( Object& obj ) ;
 	
+	IElement* Read( const Ref& link ) ;
+	
 	/*!	helper function to create elements. This function is the primary
 		function for users of this class to read elements.
 	*/
@@ -68,19 +70,7 @@ public :
 			return &dynamic_cast<Element&>( *temp ) ;
 
 		else
-		{
-			Object obj = ReadObj( link ) ;
-			Element *element = CreateNewElement<Element>( obj, this ) ;
-
-			// store before Read(). this is important!
-			// there may be lookups for "link" inside Read(). if not insert
-			// before Read(), these lookups will fail and re-create again,
-			// causing infinite recursion.
-			Store( element, link ) ;
-			InitElement( element, obj ) ;
-			
-			return element ;
-		}
+			return NewElement<Element>( link ) ;
 	}
 
 	template <class Element>
@@ -94,6 +84,8 @@ public :
 			return Read<Element>( i->second ) ;
 		else
 		{
+			// this is a special case. the new element is not from an indirect
+			// object. we don't store it in our map.
 			Element *element = CreateNewElement<Element>( i->second, this ) ;
 			InitElement( element, i->second ) ;
 			dict.erase( i ) ;
@@ -143,6 +135,22 @@ private :
 	
 	void Store( IElement *element, const Ref& link ) ;
 	void InitElement( IElement *element, Object& obj ) ;
+
+	template <class Element>
+	Element* NewElement( const Ref& link )
+	{
+		Object obj = ReadObj( link ) ;
+		Element *element = CreateNewElement<Element>( obj, this ) ;
+
+		// store before Read(). this is important!
+		// there may be lookups for "link" inside Read(). if not insert
+		// before Read(), these lookups will fail and re-create again,
+		// causing infinite recursion.
+		Store( element, link ) ;
+		InitElement( element, obj ) ;
+		
+		return element ;
+	}
 
 private :
 	typedef std::map<Ref, IElement*> Map ;

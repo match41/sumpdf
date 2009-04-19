@@ -35,6 +35,8 @@
 
 #include <boost/bind.hpp>
 
+#include <cassert>
+
 namespace pdf {
 
 RawElement::RawElement( )
@@ -43,6 +45,8 @@ RawElement::RawElement( )
 
 void RawElement::Init( Object& obj, ElementReader *src )
 {
+	assert( src != 0 ) ;
+
 	m_self.Swap( obj ) ;
 
 	ForEachObj( m_self, boost::bind( &RawElement::ReadChild, this, _1, src ) ) ;
@@ -50,17 +54,28 @@ void RawElement::Init( Object& obj, ElementReader *src )
 
 void RawElement::ReadChild( Object& obj, ElementReader *src )
 {
+	assert( src != 0 ) ;
+
 	if ( obj.IsType<Ref>() )
-		m_children[obj.As<Ref>()] = src->Read<RawElement>( obj.As<Ref>() ) ;
+		m_children[obj.As<Ref>()] = src->Read( obj.As<Ref>() ) ;
 }
 
 void RawElement::Write( const Ref& link, IElementDest *dest ) const
 {
-	dest->WriteObj( m_self, link ) ;
+	assert( dest != 0 ) ;
+
+	// constant function can't update self
+	Object temp = m_self ;
+	
+	ForEachObj( temp, boost::bind( &RawElement::WriteChild, this, _1, dest ) ) ;
+	
+	dest->WriteObj( temp, link ) ;
 }
 
-void RawElement::WriteChild( const Object& obj, IElementDest *dest ) const
+void RawElement::WriteChild( Object& obj, IElementDest *dest ) const
 {
+	assert( dest != 0 ) ;
+	obj = dest->WriteObj( obj ) ;
 }
 
 ElementList RawElement::GetChildren( ) const

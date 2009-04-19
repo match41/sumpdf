@@ -56,7 +56,7 @@ public :
 
 private :
 	void ReadChild( Object& obj, ElementReader *src ) ;
-	void WriteChild( const Object& obj, IElementDest *dest ) const ;
+	void WriteChild( Object& obj, IElementDest *dest ) const ;
 
 private :
 	Object	m_self ;

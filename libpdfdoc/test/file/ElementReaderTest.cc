@@ -47,3 +47,17 @@ void ElementReaderTest::TestStoreFind( )
 	CPPUNIT_ASSERT( e == sub.Find( pdf::Ref( 1, 0 ) ) ) ;
 	CPPUNIT_ASSERT( e->Get().As<double>() == 1.0f ) ;
 }
+
+void ElementReaderTest::TestRead( )
+{
+	MockFile f ;
+	pdf::ElementReader sub( &f ) ;
+
+	f.AddObj( pdf::Ref( 1, 0 ), pdf::Object( "I am a string" ) ) ;
+	
+	pdf::IElement *e = sub.Read( pdf::Ref( 1, 0 ) ) ;
+	CPPUNIT_ASSERT( e == sub.Find( pdf::Ref( 1, 0 ) ) ) ;
+	pdf::RawElement *re = dynamic_cast<pdf::RawElement*>( e ) ;
+	CPPUNIT_ASSERT( re != 0 ) ;
+	CPPUNIT_ASSERT( re->Get().As<std::string>() == "I am a string" ) ;
+}

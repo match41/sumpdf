@@ -30,6 +30,8 @@
 #include "IFile.hh"
 #include "IElement.hh"
 
+#include "RawElement.hh"
+
 namespace pdf {
 
 ElementReader::ElementReader( IFile *file )
@@ -63,6 +65,19 @@ Object& ElementReader::DeRef( Object& obj )
 	if ( obj.IsType<Ref>( ) )
 		obj = m_file->ReadObj( obj ) ;
 	return obj ;
+}
+
+/*!	general read element function. This function can be used instead of
+	its templated brother when the caller does not need to know the exact
+	type of element returned. It will first look up its cache to find an
+	existing one, and return it if found. Otheriwse, it will create a
+	RawElement, add it to the cache and returns it.
+*/
+IElement* ElementReader::Read( const Ref& link )
+{
+	IElement *temp = Find( link ) ;
+	
+	return temp != 0 ? temp : NewElement<RawElement>( link ) ;
 }
 
 } // end of namespace
