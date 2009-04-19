@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2006 by Nestal Wan                                      *
+ *   Copyright (C) 2009 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -19,65 +19,27 @@
 \***************************************************************************/
 
 /*!
-	\file	TextOps.hh
-	\brief	definition the TextSegment class
-	\date	Mon Mar 2 2009
+	\file	TextOps.cc
+	\brief	implementation the TextOps class
+	\date	Sun Apr 19 2009
 	\author	Nestal Wan
 */
 
-#ifndef __PDF_TEXT_OPS_HEADER_INCLUDED__
-#define __PDF_TEXT_OPS_HEADER_INCLUDED__
-
-#include <boost/variant.hpp>
-
-// stdc++ headers
-#include <iosfwd>
-#include <vector>
+#include "TextOps.hh"
 
 namespace pdf {
 
-/*!	\brief	text state operations
-	
-	These are operations that affect text state.
-*/
-struct TextState
+std::ostream& operator<<( std::ostream& os, const TextState& ts )
 {
-	enum Type
+	const char *map[] =
 	{
-		char_space, word_space, scale, leading, font_size, render_mode,
-		text_rise
+		"Tc", "Tw", "Tz", "TL", "Tr", "Ts"
 	} ;
-
-	Type	type ;
-	double	arg ;
-} ;
-
-std::ostream& operator<<( std::ostream& os, const TextState& ts ) ;
-
-struct TextPosition
-{
-	double	offx, offy ;
-} ;
-
-struct TextMatrix
-{
-	double a, b, c, d, e, f ;
-} ;
-
-struct TextString
-{
-	std::string	m_text ;
-} ;
-
-struct TextPosString
-{
-	typedef boost::variant<std::string, int> Entry ;
-	std::vector<Entry> m_entries ;
-} ;
-
-struct BeginText {} ;
-struct EndText {} ;
+	
+	assert( ts.type >= TextState::char_space ) ;
+	assert( ts.type <= TextState::text_rise ) ;
+	
+	os << map[ts.type - TextState::char_space] << ' ' << ts.arg << ' ' ;
+}
 
 } // end of namespace
-
-#endif
