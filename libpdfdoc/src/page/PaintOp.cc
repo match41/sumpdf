@@ -39,7 +39,7 @@
 namespace pdf {
 
 PaintOp::DecodeError::DecodeError( const char *type )
-	: Exception( boost::format( "invalid %1% object" ) % type )
+	: Exception( boost::format( "invalid %1% object" ) % Demangle(type) )
 {
 }
 
@@ -51,20 +51,19 @@ const std::pair<const std::string, PaintOp::FuncPtr> PaintOp::m_table[] =
 {
 	std::make_pair( "BT",	&PaintOp::DecodeNoArg<BeginText> ),
 	std::make_pair( "ET",	&PaintOp::DecodeNoArg<EndText> ),
-	
+
 	// text state
 	std::make_pair( "Tc",   &PaintOp::DecodeTextState<TextState::char_space> ),
 	std::make_pair( "Tw",   &PaintOp::DecodeTextState<TextState::word_space> ),
 	std::make_pair( "Tz",   &PaintOp::DecodeTextState<TextState::scale> ),
 	std::make_pair( "TL",   &PaintOp::DecodeTextState<TextState::leading> ),
-	std::make_pair( "Tf",   &PaintOp::DecodeTextState<TextState::font_size> ),
+	std::make_pair( "Tf",   &PaintOp::DecodeTwoArgs<TextFont> ),
 	std::make_pair( "Tr",   &PaintOp::DecodeTextState<TextState::render_mode> ),
 	std::make_pair( "Ts",   &PaintOp::DecodeTextState<TextState::text_rise> ),
 	
 	// text positioning operators
-	std::make_pair( "Td",	&PaintOp::DecodeTwoArgs<TextPosition,
-	                                                double, double> ),
-	std::make_pair( "Tm",	&PaintOp::Decode6Args<TextMatrix, double> ),
+	std::make_pair( "Td",	&PaintOp::DecodeTwoArgs<TextPosition> ),
+	std::make_pair( "Tm",	&PaintOp::Decode6Args<TextMatrix> ),
 	
 } ;
 
@@ -90,44 +89,51 @@ void PaintOp::DecodeNoArg( const Object *args, std::size_t count )
 	m_ops = op ;
 }
 
-template <typename Op, typename Arg1>
+template <typename Op>
 void PaintOp::DecodeOneArg( const Object *args, std::size_t count )
 {
     if ( count != 1 )
         throw DecodeError( typeid(Op).name() ) ;
 
-	Op op = { args[0].As<Arg1>() } ;
+	Op op = { args[0] } ;
 	m_ops = op ;
 }
 
-template <typename Op, typename Arg1, typename Arg2>
+template <typename Op>
 void PaintOp::DecodeTwoArgs( const Object *args, std::size_t count )
 {
     if ( count != 2 )
         throw DecodeError( typeid(Op).name() ) ;
 	
-	Op op = { args[0].As<Arg1>(), args[1].As<Arg2>() } ;
+	Op op = { typename Op::Arg1(args[0]), typename Op::Arg2(args[1]) } ;
 	m_ops = op ;
 }
 
-template <typename Op, typename Arg>
+template <typename Op>
 void PaintOp::Decode6Args( const Object *args, std::size_t count )
 {
     if ( count != 6 )
     	throw DecodeError( typeid(Op).name() ) ;
 
-	Op op = { args[0].As<Arg>(), args[1].As<Arg>(), args[2].As<Arg>(),
-				args[3].As<Arg>(), args[4].As<Arg>(), args[5].As<Arg>() } ;
+	Op op =
+	{
+	    typename Op::Arg1(args[0]),
+	    typename Op::Arg2(args[1]),
+	    typename Op::Arg3(args[2]),
+		typename Op::Arg4(args[3]),
+		typename Op::Arg5(args[4]),
+		typename Op::Arg6(args[5])
+	} ;
 	m_ops = op ;
 }
 
-template <typename Op, typename Arg1, Arg1 arg1, typename Arg2>
+template <typename Op, typename Op::Arg1 arg1>
 void PaintOp::DecodeTwoArgBind1st( const Object *args, std::size_t count )
 {
     if ( count != 1 )
     	throw DecodeError( typeid(Op).name() ) ;
         
-	Op op = { arg1, args[0].As<Arg2>() } ;
+	Op op = { arg1, typename Op::Arg2(args[0]) } ;
 	m_ops = op ;
 }
 
@@ -135,7 +141,7 @@ void PaintOp::DecodeTwoArgBind1st( const Object *args, std::size_t count )
 template <TextState::Type t>
 void PaintOp::DecodeTextState( const Object *args, std::size_t count )
 {
-    DecodeTwoArgBind1st<TextState, TextState::Type, t, double>( args, count ) ;
+    DecodeTwoArgBind1st<TextState, t>( args, count ) ;
 }
 
 std::ostream& operator<<( std::ostream& os, const PaintOp& op )

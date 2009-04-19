@@ -28,16 +28,16 @@
 #include "SimpleFont.hh"
 
 #include "core/Array.hh"
+#include "core/Dictionary.hh"
 
 #include "file/IElementDest.hh"
 #include "file/ElementList.hh"
-#include "file/DeRef.hh"
 
 #include "util/Exception.hh"
 #include "util/Util.hh"
 
-#include "font/ftwrap/Face.hh"
-#include "font/ftwrap/Glyph.hh"
+#include "ftwrap/Face.hh"
+#include "ftwrap/Glyph.hh"
 
 namespace pdf {
 
@@ -91,7 +91,7 @@ SimpleFont::SimpleFont( freetype::Library *lib, const std::string& filename )
 	assert( (int)m_widths.size() == m_last_char - m_first_char + 1 ) ;
 }
 
-void SimpleFont::Init( Object& obj, IElementSrc *src )
+void SimpleFont::Init( Object& obj, ElementReader *src )
 {
 	Dictionary dict ;
 	obj.Swap( dict ) ;
@@ -185,7 +185,7 @@ template <> SimpleFont* IElementSrc::Read( const Ref& link )
 						: NewElement<SimpleFont>( link ) ;
 }
 */
-template <> BaseFont* CreateNewElement( const Object& , IElementSrc * )
+template <> BaseFont* CreateNewElement( const Object& , ElementReader * )
 {
 	return new SimpleFont ;
 }

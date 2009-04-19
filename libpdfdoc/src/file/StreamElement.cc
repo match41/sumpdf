@@ -27,7 +27,6 @@
 
 #include "StreamElement.hh"
 
-#include "IElementSrc.hh"
 #include "IElementDest.hh"
 #include "ElementList.hh"
 
@@ -39,7 +38,7 @@ StreamElement::StreamElement( )
 {
 }
 
-void StreamElement::Init( Object& obj, IElementSrc *src )
+void StreamElement::Init( Object& obj, ElementReader * )
 {
 	Swap( obj.As<Stream>() ) ;
 }

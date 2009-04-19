@@ -1,5 +1,5 @@
-/***************************************************************************
- *   Copyright (C) 2006 by Nestal Wan                                      *
+/***************************************************************************\
+ *   Copyright (C) 2009 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -16,53 +16,40 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+\***************************************************************************/
 
 /*!
-	\file	ElementSrc.hh
-	\brief	definition the ElementSrc class
-	\date	Sun Mar 30 2008
+	\file	ElementReaderTest.hh
+	\brief	definition the ElementReaderTest class
+	\date	Sat Apr 18 2009
 	\author	Nestal Wan
 */
 
-#ifndef __PDF_ELEMENT_REPO_HEADER_INCLUDED__
-#define __PDF_ELEMENT_REPO_HEADER_INCLUDED__
+#ifndef __PDFUT_ELEMENT_READER_TEST_HEADER_INCLUDED__
+#define __PDFUT_ELEMENT_READER_TEST_HEADER_INCLUDED__
 
-#include "IElementSrc.hh"
+#include <cppunit/TestFixture.h>
 
-#include "core/Ref.hh"
+#include <cppunit/extensions/HelperMacros.h>
 
-#include <map>
-
-namespace pdf {
-
-class IElement ;
-class IFile ;
-
-/*!	\brief	A source for elements
+/*!	\brief	brief description
 	
 	this class represents
 */
-class ElementSrc : public IElementSrc
+class ElementReaderTest : public CppUnit::TestFixture
 {
 public :
-	ElementSrc( IFile *file ) ;
+	ElementReaderTest( ) ;
 
-	Object ReadObj( const Ref& obj, bool deref = false ) ;
+	// declare suit function
+	CPPUNIT_TEST_SUITE( ElementReaderTest ) ;
+		CPPUNIT_TEST( TestStoreFind ) ;
+		CPPUNIT_TEST( TestRead ) ;
+	CPPUNIT_TEST_SUITE_END( ) ;
 
 private :
-	void Store( IElement *element, const Ref& link ) ;
-	IElement* Find( const Ref& link ) ;
-	
-	void Dereference( Object& obj ) ;
-	
-private :
-	typedef std::map<Ref, IElement*> Map ;
-	Map	m_map ;
-	
-	IFile *m_file ;
+	void TestStoreFind( ) ;
+	void TestRead( ) ;
 } ;
-
-} // end of namespace
 
 #endif

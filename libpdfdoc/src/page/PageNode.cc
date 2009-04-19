@@ -31,7 +31,7 @@
 #include "Resources.hh"
 
 #include "core/Object.hh"
-#include "file/IElementSrc.hh"
+#include "file/ElementReader.hh"
 #include "file/ElementList.hh"
 
 #include <iostream>
@@ -79,7 +79,7 @@ const Resources* PageNode::GetResource( ) const
 	return m_resources ;
 }
 
-void PageNode::Init( Object& self, IElementSrc *src )
+void PageNode::Init( Object& self, ElementReader *src )
 {
 	// resources may not always be indirect objects
 	Resources* res = src->DetachElement<Resources>( self.As<Dictionary>(),

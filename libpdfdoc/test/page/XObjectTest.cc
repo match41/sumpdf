@@ -31,7 +31,7 @@
 #include "core/Dictionary.hh"
 #include "stream/Stream.hh"
 #include "file/ElementDest.hh"
-#include "file/ElementSrc.hh"
+#include "file/ElementReader.hh"
 #include "mock/MockFile.hh"
 #include "page/XObject.hh"
 

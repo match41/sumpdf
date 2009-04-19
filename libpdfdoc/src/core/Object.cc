@@ -356,6 +356,16 @@ template <> Object::operator double() const
 	return Type() == integer ? As<int>() : As<double>() ;
 }
 
+template <> Object& Object::As( )
+{
+    return *this ;
+}
+
+template <> const Object& Object::As( ) const
+{
+    return *this ;
+}
+
 } // end of namespace
 
 namespace std

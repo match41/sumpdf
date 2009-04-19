@@ -19,43 +19,85 @@
 \***************************************************************************/
 
 /*!
-	\file	ElementFactory.hh
-	\brief	definition the default CreateNewElement() function
-	\date	Sun Apr 5 2009
+	\file	RawElement.cc
+	\brief	implementation the RawElement class
+	\date	Sat Apr 18 2009
 	\author	Nestal Wan
 */
 
-#ifndef __PDF_ELEMENT_FACTORY_HEADER_INCLUDED__
-#define __PDF_ELEMENT_FACTORY_HEADER_INCLUDED__
+#include "RawElement.hh"
+
+#include "ElementList.hh"
+#include "IElementDest.hh"
+#include "ElementReader.hh"
+
+#include "core/TraverseObject.hh"
+
+#include <boost/bind.hpp>
+
+#include <cassert>
 
 namespace pdf {
 
-class ElementReader ;
-
-/*!	factory function for elements. This function is used to create elements.
-	Sometimes it is required to create different element base on their types,
-	because the actual type of the object is not known yet. This function
-	provides a chance for individual element hierachy to determine which
-	concrete class to be created. e.g.
-	
-\code
-template <> BaseFont* CreateNewElement( const Object& obj, ElemenReader *src )
+RawElement::RawElement( )
 {
-	if ( obj["Type"] == "TrueType" )
-		return new TrueTypeFont( obj, src ) ;
-	else if ( obj["Type"] == "Type1" )
-		return new Type1Font( obj, src ) ;
-	else
-		throw Exception( "unknown font!" ) ;
 }
-\endcode
-*/
-template <class BaseElement>
-BaseElement* CreateNewElement( const Object&, ElementReader * )
+
+void RawElement::Init( Object& obj, ElementReader *src )
 {
-	return new BaseElement ;
+	assert( src != 0 ) ;
+
+	m_self.Swap( obj ) ;
+
+	ForEachObj( m_self, boost::bind( &RawElement::ReadChild, this, _1, src ) ) ;
+}
+
+void RawElement::ReadChild( Object& obj, ElementReader *src )
+{
+	assert( src != 0 ) ;
+
+	if ( obj.Type() == Object::ref )
+		m_children[obj.As<Ref>()] = src->Read( obj.As<Ref>() ) ;
+}
+
+void RawElement::Write( const Ref& link, IElementDest *dest ) const
+{
+	assert( dest != 0 ) ;
+
+	// constant function can't update self
+	Object temp = m_self ;
+	
+	ForEachObj( temp, boost::bind( &RawElement::WriteChild, this, _1, dest ) ) ;
+	
+	dest->WriteObj( temp, link ) ;
+}
+
+void RawElement::WriteChild( Object& obj, IElementDest *dest ) const
+{
+	assert( dest != 0 ) ;
+	if ( obj.Type() == Object::ref )
+	{
+		std::map<Ref, IElement*>::const_iterator it = m_children.find( obj ) ;
+		assert( it != m_children.end() ) ;
+		assert( it->second != 0 ) ;
+		
+		obj = dest->Write( it->second ) ;
+	}
+}
+
+ElementList RawElement::GetChildren( ) const
+{
+	return ElementList() ;
+}
+
+Object& RawElement::Get( )
+{
+	return m_self ;
+}
+
+const Object& RawElement::Get( ) const
+{
+	return m_self ;
 }
 
 } // end of namespace
-
-#endif

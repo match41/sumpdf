@@ -28,7 +28,10 @@
 #ifndef __PDF_TEXT_OPS_HEADER_INCLUDED__
 #define __PDF_TEXT_OPS_HEADER_INCLUDED__
 
+#include "core/Name.hh"
+
 #include <boost/variant.hpp>
+#include <boost/typeof/typeof.hpp>
 
 // stdc++ headers
 #include <iosfwd>
@@ -44,34 +47,60 @@ struct TextState
 {
 	enum Type
 	{
-		char_space, word_space, scale, leading, font_size, render_mode,
+		char_space, word_space, scale, leading, render_mode,
 		text_rise
 	} ;
 
 	Type	type ;
 	double	arg ;
+	
+	typedef Type	Arg1 ;
+	typedef double	Arg2 ;
 } ;
 
 std::ostream& operator<<( std::ostream& os, const TextState& ts ) ;
 
+struct TextFont
+{
+	typedef Name	Arg1 ;
+	typedef double	Arg2 ;
+	
+	Name	font ;
+	double	size ;
+} ;
+
 struct TextPosition
 {
 	double	offx, offy ;
+	
+	typedef double	Arg1 ;
+	typedef double	Arg2 ;
+	
 } ;
 
 struct TextMatrix
 {
+	typedef double	Arg1 ;
+	typedef double	Arg2 ;
+	typedef double	Arg3 ;
+	typedef double	Arg4 ;
+	typedef double	Arg5 ;
+	typedef double	Arg6 ;
+
 	double a, b, c, d, e, f ;
 } ;
 
 struct TextString
 {
-	std::string	m_text ;
+	typedef std::string	Arg1 ;
+
+	std::string	text ;
 } ;
 
 struct TextPosString
 {
 	typedef boost::variant<std::string, int> Entry ;
+	typedef std::vector<Entry>	Arg1 ;
 	std::vector<Entry> m_entries ;
 } ;
 

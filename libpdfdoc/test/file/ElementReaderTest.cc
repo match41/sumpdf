@@ -1,5 +1,5 @@
-/***************************************************************************
- *   Copyright (C) 2006 by Nestal Wan                                      *
+/***************************************************************************\
+ *   Copyright (C) 2009 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -16,60 +16,48 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+\***************************************************************************/
 
 /*!
-	\file	ElementSrc.cc
-	\brief	implementation the ElementSrc class
-	\date	Sun Mar 30 2008
+	\file	ElementReaderTest.cc
+	\brief	implementation the ElementReaderTest class
+	\date	Sat Apr 18 2009
 	\author	Nestal Wan
 */
 
-#include "ElementSrc.hh"
+#include "ElementReaderTest.hh"
 
-#include "DeRefVisitor.hh"
-#include "IElement.hh"
-#include "IFile.hh"
+#include "file/ElementReader.hh"
+#include "file/RawElement.hh"
 
-#include "core/TraverseObject.hh"
-#include "util/Util.hh"
-#include "util/Backtrace.hh"
+#include "mock/MockFile.hh"
 
-#include <boost/bind.hpp>
-#include <boost/format.hpp>
-
-#include <algorithm>
-
-namespace pdf {
-
-ElementSrc::ElementSrc( IFile *file )
-	: m_file( file )
+ElementReaderTest::ElementReaderTest( )
 {
 }
 
-Object ElementSrc::ReadObj( const Ref& obj, bool deref )
+void ElementReaderTest::TestStoreFind( )
 {
-	Object r = m_file->ReadObj( obj ) ;
-	if ( deref )
-		ForEachObj( r, boost::bind( &ElementSrc::Dereference, this, _1 ) );
-	return r ;
+	MockFile f ;
+	pdf::ElementReader sub( &f ) ;
+
+	f.AddObj( pdf::Ref( 1, 0 ), pdf::Object( 1.0f ) ) ;
+
+	pdf::RawElement *e = sub.Read<pdf::RawElement>( pdf::Ref( 1, 0 ) ) ;
+	CPPUNIT_ASSERT( e == sub.Find( pdf::Ref( 1, 0 ) ) ) ;
+	CPPUNIT_ASSERT( e->Get().As<double>() == 1.0f ) ;
 }
 
-void ElementSrc::Dereference( Object& obj )
+void ElementReaderTest::TestRead( )
 {
-	if ( obj.Type( ) == Object::ref )
-		obj = ReadObj( obj, true ) ;
-}
+	MockFile f ;
+	pdf::ElementReader sub( &f ) ;
 
-void ElementSrc::Store( IElement *element, const Ref& link )
-{
-	m_map.insert( std::make_pair( link, element ) ) ;
+	f.AddObj( pdf::Ref( 1, 0 ), pdf::Object( "I am a string" ) ) ;
+	
+	pdf::IElement *e = sub.Read( pdf::Ref( 1, 0 ) ) ;
+	CPPUNIT_ASSERT( e == sub.Find( pdf::Ref( 1, 0 ) ) ) ;
+	pdf::RawElement *re = dynamic_cast<pdf::RawElement*>( e ) ;
+	CPPUNIT_ASSERT( re != 0 ) ;
+	CPPUNIT_ASSERT( re->Get().As<std::string>() == "I am a string" ) ;
 }
-
-IElement* ElementSrc::Find( const Ref& link )
-{
-	Map::iterator i = m_map.find( link ) ;
-	return i != m_map.end( ) ? i->second : 0 ;
-}
-
-} // end of namespace

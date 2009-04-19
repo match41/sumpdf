@@ -31,7 +31,7 @@
 #include "core/Ref.hh"
 #include "core/Object.hh"
 
-#include "file/ElementSrc.hh"
+#include "file/ElementReader.hh"
 #include "file/ElementDest.hh"
 #include "file/ElementList.hh"
 #include "file/ElementTracker.hh"
@@ -81,7 +81,7 @@ void RealDoc::Read( const std::string& filename )
 	// read the cross reference of the PDF file
 	File file( &m_readfs ) ;
 	
-	ElementSrc repo( &file ) ;
+	ElementReader repo( &file ) ;
 	m_catalog = repo.Read<Catalog>( file.Root( ) ) ;
 }
 

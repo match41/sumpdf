@@ -35,10 +35,10 @@
 #include "core/StringTest.hh"
 #include "core/DictionaryTest.hh"
 #include "core/ArrayTest.hh"
-#include "core/StreamTest.hh"
-#include "core/filter/DeflateFilterTest.hh"
-#include "core/filter/StreamBufAdaptorTest.hh"
-#include "core/filter/RawFilterTest.hh"
+#include "stream/StreamTest.hh"
+#include "stream/DeflateFilterTest.hh"
+#include "stream/StreamBufAdaptorTest.hh"
+#include "stream/RawFilterTest.hh"
 #include "page/ResourcesTest.hh"
 #include "page/PageTest.hh"
 
@@ -49,7 +49,8 @@
 
 #include "page/XObjectTest.hh"
 #include "file/FileTest.hh"
-#include "ElementTrackerTest.hh"
+#include "file/ElementReaderTest.hh"
+#include "file/ElementTrackerTest.hh"
 #include "page/PageNodeTest.hh"
 #include "image/PngImageTest.hh"
 #include "image/JpegImageTest.hh"
@@ -72,6 +73,7 @@ int main( int argc, char **argv )
 	runner.addTest( XObjectTest::suite( ) ) ;
 	runner.addTest( StreamTest::suite( ) ) ;
 	runner.addTest( FileTest::suite( ) ) ;
+	runner.addTest( ElementReaderTest::suite( ) ) ;
 	runner.addTest( ElementTrackerTest::suite( ) ) ;
 	runner.addTest( PageNodeTest::suite( ) ) ;
 

@@ -1,5 +1,5 @@
-/***************************************************************************
- *   Copyright (C) 2006 by Nestal Wan                                      *
+/***************************************************************************\
+ *   Copyright (C) 2009 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -16,75 +16,52 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+\***************************************************************************/
 
 /*!
-	\file	DeRefVisitor.hh
-	\brief	definition the DeRefVisitor class
-	\date	Sun May 25 2008
+	\file	RawElement.hh
+	\brief	definition the RawElement class
+	\date	Sat Apr 18 2009
 	\author	Nestal Wan
 */
 
-#ifndef __PDF_DE_REF_VISITOR_HEADER_INCLUDED__
-#define __PDF_DE_REF_VISITOR_HEADER_INCLUDED__
+#ifndef __PDF_RAW_ELEMENT_HEADER_INCLUDED__
+#define __PDF_RAW_ELEMENT_HEADER_INCLUDED__
 
-#include "IElementSrc.hh"
+#include "IElement.hh"
 
-#include "core/Array.hh"
-#include "core/Dictionary.hh"
 #include "core/Object.hh"
+#include "core/Ref.hh"
 
-#include "util/Util.hh"
-
-#include <boost/variant/static_visitor.hpp>
-#include <boost/bind.hpp>
-
-#include <algorithm>
-#include <iostream>
+#include <map>
 
 namespace pdf {
-
-class IElementSrc ;
 
 /*!	\brief	brief description
 	
 	this class represents
 */
-class DeRefVisitor : public boost::static_visitor<>
+class RawElement : public IElement
 {
 public :
-	DeRefVisitor( IElementSrc *file ) : m_file( file )
-	{
-	}
-	
-	void operator()( Array& array )
-	{
-		std::for_each( array.begin( ), array.end( ),
-		               boost::bind( &DeRefVisitor::Dereference, this, _1 ) ) ;
-	}
+	RawElement( ) ;
 
-	void operator()( Dictionary& dict )
-	{
-		for ( Dictionary::iterator i  = dict.begin( ) ;
-		                           i != dict.end( ) ; ++i )
-			Dereference( i->second ) ;
-	}
-	
-	template <typename T>
-	void operator()( T& t )
-	{
-std::cerr << "wa" ;
-	}
+	void Init( Object& obj, ElementReader *src ) ;
+	void Write( const Ref& link, IElementDest *dest ) const ;
+
+	ElementList GetChildren( ) const ;
+
+	Object& Get( ) ;
+	const Object& Get( ) const ;
 
 private :
-	void Dereference( Object& obj )
-	{
-		if ( obj.Type( ) == Object::ref )
-			obj = m_file->ReadObj( obj, true ) ;
-	}
+	void ReadChild( Object& obj, ElementReader *src ) ;
+	void WriteChild( Object& obj, IElementDest *dest ) const ;
 
 private :
-	IElementSrc	*m_file ;
+	Object	m_self ;
+	
+	std::map<Ref, IElement*>	m_children ;
 } ;
 
 } // end of namespace

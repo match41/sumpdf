@@ -52,7 +52,7 @@ public :
 	PageNode( ) ;
 	explicit PageNode( PageTree *parent ) ;
 
-	void Init( Object& link, IElementSrc *src ) ;
+	void Init( Object& link, ElementReader *src ) ;
 
 	PageTree* Parent( ) ;
 	const PageTree* Parent( ) const ;
@@ -74,7 +74,7 @@ private :
 	Resources	*m_resources ;
 } ;
 
-template <> PageNode* CreateNewElement( const Object&, IElementSrc * ) ;
+template <> PageNode* CreateNewElement( const Object&, ElementReader * ) ;
 
 } // end of namespace
 
