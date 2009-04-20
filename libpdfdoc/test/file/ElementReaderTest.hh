@@ -32,10 +32,6 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-/*!	\brief	brief description
-	
-	this class represents
-*/
 class ElementReaderTest : public CppUnit::TestFixture
 {
 public :

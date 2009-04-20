@@ -60,6 +60,11 @@ void ElementReader::InitElement( IElement *element, Object& obj )
 	element->Init( obj, this ) ;
 }
 
+/*!	dereference objects. This function will dereference the object \a obj
+	if it is a Ref. Otherwise, it will do nothing.
+	\param	obj		reference to be dereference
+	\return	\a obj
+*/
 Object& ElementReader::DeRef( Object& obj )
 {
 	if ( obj.IsType<Ref>( ) )
