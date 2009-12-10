@@ -40,8 +40,8 @@ namespace pdf {
 class Token ;
 
 /*!	\brief	brief description
-	
-	this class represents
+
+	This class represents the PDF array object.
 */
 class Array
 {
@@ -55,7 +55,7 @@ public :
 
 public :
 	Array( ) ;
-	
+
 	template <typename InputIt>
 	Array( InputIt first, InputIt last )
 		: m_array( first, last )
@@ -64,31 +64,32 @@ public :
 
 	friend std::istream& operator>>( std::istream& is, Array& array ) ;
 	friend TokenSrc& operator>>( TokenSrc& src, Array& obj ) ;
-	
+
 	void swap( Array& array ) ;
 
 	iterator begin( ) ;
 	iterator end( ) ;
 	const_iterator begin( ) const ;
 	const_iterator end( ) const ;
-	
+
 	std::size_t size( ) const ;
 	bool empty( ) const ;
 	void clear( ) ;
-	
+
 	void push_back( const Object& obj ) ;
-	
+
 	bool operator==( const Array& array ) const ;
-	
+
+	/// converts the array to an STL container
 	template <template <typename> class Tem, typename T>
 	operator Tem<T>( ) const
 	{
 		return Tem<T>( begin( ), end( ) ) ;
 	}
-	
+
 	Object& operator[]( std::size_t index ) ;
 	const Object& operator[]( std::size_t index ) const ;
-	
+
 	Object& at( std::size_t i ) ;
 	const Object& at( std::size_t i ) const ;
 } ;

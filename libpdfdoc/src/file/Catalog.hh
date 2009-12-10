@@ -41,9 +41,10 @@ class Ref ;
 class RealPage ;
 class PageTree ;
 class ElementList ;
+class IFile ;
 
 /*!	\brief	brief description
-	
+
 	this class represents the document catalog of a PDF file
 */
 class Catalog : public IElement
@@ -51,23 +52,24 @@ class Catalog : public IElement
 public :
 	Catalog( ) ;
 
+	void Read( const Ref& link, IFile *file ) ;
 	void Init( Object& obj, ElementReader *repo ) ;
 	void Write( const Ref& link, IElementDest *dest ) const ;
 
 	void AddPage( RealPage *page ) ;
 
 	std::size_t PageCount( ) const ;
-	
+
 	ElementList GetChildren( ) const ;
-	
+
 	RealPage*	GetPage( std::size_t index ) ;
 
 private :
 	Dictionary	m_self ;
-	Name		m_version ;	
+	Name		m_version ;
 	Name		m_page_layout ;
 	Name		m_page_mode ;
-	
+
 	PageTree	*m_tree ;
 } ;
 

@@ -57,19 +57,19 @@ RealDoc::RealDoc( )
 }
 
 /*!	The destructor will delete all the elements contained. It traverses the
-	whole document to find out all elements and free them up.	
+	whole document to find out all elements and free them up.
 */
 RealDoc::~RealDoc( )
 {
 	// traverse the document to get all elements
-	ElementTracker tracker ;
-	tracker.Traverse( m_catalog ) ;
-	
-	ElementList list ;
-	tracker.Get( list ) ;
-	
-	// delete them all
-	std::for_each( list.begin( ), list.end( ), boost::lambda::delete_ptr( ) ) ;
+//	ElementTracker tracker ;
+//	tracker.Traverse( m_catalog ) ;
+//
+//	ElementList list ;
+//	tracker.Get( list ) ;
+//
+//	// delete them all
+//	std::for_each( list.begin( ), list.end( ), boost::lambda::delete_ptr( ) ) ;
 }
 
 void RealDoc::Read( const std::string& filename )
@@ -80,9 +80,11 @@ void RealDoc::Read( const std::string& filename )
 
 	// read the cross reference of the PDF file
 	File file( &m_readfs ) ;
-	
+
 	ElementReader repo( &file ) ;
-	m_catalog = repo.Read<Catalog>( file.Root( ) ) ;
+//	m_catalog = repo.Read<Catalog>( file.Root( ) ) ;
+	m_catalog = new Catalog ;
+	m_catalog->Read( file.Root( ), &file ) ;
 }
 
 void RealDoc::Write( const std::string& filename ) const
@@ -92,7 +94,7 @@ void RealDoc::Write( const std::string& filename ) const
 		throw std::runtime_error( "cannot open file " + filename ) ;
 
 	File file( &fs ) ;
-	
+
 	ElementDest repo( &file ) ;
 	file.WriteTrailer( repo.Write( m_catalog ) ) ;
 }

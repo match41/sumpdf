@@ -30,6 +30,7 @@
 #include "ElementReader.hh"
 #include "IElementDest.hh"
 #include "ElementList.hh"
+#include "IFile.hh"
 
 #include "core/Array.hh"
 #include "core/Ref.hh"
@@ -53,6 +54,31 @@ Catalog::Catalog( )
 {
 }
 
+void Catalog::Read( const Ref& link, IFile *file )
+{
+	assert( file != 0 ) ;
+	m_self = file->ReadObj( link ).As<Dictionary>() ;
+
+	if ( m_self["Type"].As<Name>() != "Catalog" )
+	{
+		std::ostringstream oss ;
+		oss << "invalid catalog type: " << m_self["Type"] ;
+		throw ParseError( oss.str( ) ) ;
+	}
+
+	// page tree is manatory
+	ElementReader reader( file ) ;
+	m_tree = reader.Read<PageTree>( m_self["Pages"] ) ;
+	m_self.erase( "Pages" ) ;
+
+	// TODO: no know how to handle it yet
+	m_self.erase( Name( "OpenAction" ) ) ;
+
+	m_self.Extract( "Version",		m_version ) ;
+	m_self.Extract( "PageLayout",	m_page_layout ) ;
+	m_self.Extract( "PageMode",		m_page_mode ) ;
+}
+
 void Catalog::Init( Object& obj, ElementReader *file )
 {
 	assert( file != 0 ) ;
@@ -64,14 +90,14 @@ void Catalog::Init( Object& obj, ElementReader *file )
 		oss << "invalid catalog type: " << m_self["Type"] ;
 		throw ParseError( oss.str( ) ) ;
 	}
-	
+
 	// page tree is manatory
 	m_tree = file->Read<PageTree>( m_self["Pages"] ) ;
 	m_self.erase( "Pages" ) ;
-	
+
 	// TODO: no know how to handle it yet
 	m_self.erase( Name( "OpenAction" ) ) ;
-	
+
 	file->Detach( m_self,	"Version",		m_version ) ;
 	file->Detach( m_self,	"PageLayout",	m_page_layout ) ;
 	file->Detach( m_self,	"PageMode",		m_page_mode ) ;
@@ -85,7 +111,7 @@ void Catalog::Write( const Ref& link, IElementDest *dest ) const
 	self["Version"]		= m_version ;
 	self["PageLayout"]	= m_page_layout ;
 	self["PageMode"]	= m_page_mode ;
-	
+
 	dest->WriteObj( self, link ) ;
 }
 
@@ -93,7 +119,7 @@ void Catalog::AddPage( RealPage *page )
 {
 	if ( m_tree == 0 )
 		m_tree = new PageTree ;
-	
+
 	// for now the pages are arranged linearly for now
 	m_tree->AppendLeaf( page ) ;
 }
@@ -113,7 +139,7 @@ RealPage* Catalog::GetPage( std::size_t index )
 {
 	PageNode *p = m_tree->GetLeaf( index ) ;
 	assert( typeid(*p) == typeid(RealPage) ) ;
-	
+
 	return static_cast<RealPage*>( p ) ;
 }
 

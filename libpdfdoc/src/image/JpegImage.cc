@@ -50,13 +50,13 @@ JpegImage::JpegImage( const std::string& filename )
 	if ( m_fp == 0 )
 		throw std::runtime_error( "cannot open file " + filename + ": " +
 		                          strerror( errno ) ) ;
-	
+
 	// initialize decompression structures
 	m_cinfo.err			= jpeg_std_error( &m_jerr ) ;
 	m_jerr.error_exit	= my_error_exit;
-	
+
 	::jpeg_create_decompress( &m_cinfo ) ;
-	
+
 	::jpeg_stdio_src( &m_cinfo, m_fp ) ;
 	::jpeg_read_header( &m_cinfo, true ) ;
 
@@ -67,7 +67,7 @@ JpegImage::~JpegImage( )
 {
 	if ( m_cinfo.output_scanline >= m_cinfo.output_height )
 		::jpeg_finish_decompress( &m_cinfo ) ;
-	
+
 	::jpeg_destroy_decompress( &m_cinfo ) ;
 	std::fclose( m_fp ) ;
 }
@@ -103,10 +103,10 @@ JpegImage::PixFormat JpegImage::Format( ) const
 
 bool JpegImage::ReadRow( unsigned char *pixel )
 {
-	// decompress the scanlines one by one
+	// decompress the scan lines one by one
 	if ( m_cinfo.output_scanline < m_cinfo.output_height )
 	{
-		JSAMPLE *buf[] = { (JSAMPLE*)pixel } ;
+		JSAMPLE *buf[] = { reinterpret_cast<JSAMPLE*>( pixel ) } ;
 		::jpeg_read_scanlines( &m_cinfo, buf, 1 ) ;
 		return true ;
 	}
