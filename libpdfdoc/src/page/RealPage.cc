@@ -77,7 +77,7 @@ void RealPage::Init( Object& self, ElementReader *repo )
 
 	m_self.clear( ) ;
 	self.Swap( m_self ) ;
-	
+
 	// read content
 	Object contents ;
 	if ( repo->Detach( m_self, "Contents", contents ) )
@@ -87,7 +87,7 @@ void RealPage::Init( Object& self, ElementReader *repo )
 	Array a ;
 	if ( repo->Detach( m_self, "MediaBox", a ) )
 		m_media_box = Rect( a.begin( ), a.end( ) ) ;
-	
+
 	// parent
 	SetParent( repo->Read<PageTree>( m_self["Parent"] ) ) ;
 }
@@ -97,11 +97,11 @@ void RealPage::ReadContent( Object& str_obj, ElementReader *src )
 	// for indirect objects, dereference it
 /*    if ( str_obj.IsType<Ref>( ) )
 		ReadContent( src->ReadObj( str_obj ), src ) ;
-	
+
 	// append individual stream objects
 	else*/ if ( str_obj.IsType<Stream>( ) )
 		DecodeContent( str_obj.As<Stream>( ) ) ;
-	
+
 	// catenate individual objects in array
 	else if ( str_obj.IsType<Array>( ) )
 	{
@@ -109,7 +109,7 @@ void RealPage::ReadContent( Object& str_obj, ElementReader *src )
 		std::for_each( a.begin( ), a.end( ),
 		               boost::bind( &RealPage::ReadContent, this, _1, src ) ) ;
 	}
-	
+
 	else if ( !str_obj.IsNull( ) )
 		throw std::runtime_error( "invalid page content" ) ;
 }
@@ -123,12 +123,12 @@ void RealPage::Write( const Ref& link, IElementDest *file ) const
 	Dictionary self( m_self ) ;
 	self["Type"]		= Name( "Page" ) ;
 // 	self["Contents"]    = file->WriteObj( Stream( m_content.str( ) ) ) ;
-	self["Resources"]   = file->Write( GetResource( ) ) ;
+	self["Resources"]   = GetResource( )->Write( file->GetFile( ) ) ;
 	self["Parent"]   	= file->Write( Parent( ) ) ;
-    
+
     if ( m_media_box != Rect() )
     	self["MediaBox"] = Array( m_media_box.begin( ), m_media_box.end( ) ) ;
-    
+
 	file->WriteObj( self, link ) ;
 }
 
@@ -136,7 +136,7 @@ void RealPage::DrawText( double x, double y, Font *f, const std::string& text )
 {
 	assert( f != 0 ) ;
 	assert( GetResource( ) != 0 ) ;
-	
+
 	BaseFont *font = dynamic_cast<BaseFont*>( f ) ;
 	assert( font != 0 ) ;
 	Name fname = GetResource( )->AddFont( font ) ;
@@ -169,10 +169,10 @@ void RealPage::DecodeContent( const Stream& s )
 	{
 		Token  cmd ;
 		Object obj ;
-		
+
 		if ( src >> obj )
 			args.push_back( obj ) ;
-		
+
 		else
 		{
 			src.ResetState( ) ;

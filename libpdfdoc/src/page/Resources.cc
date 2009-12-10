@@ -30,9 +30,11 @@
 #include "XObject.hh"
 
 #include "core/Array.hh"
-#include "file/ElementReader.hh"
-#include "file/IElementDest.hh"
 #include "file/ElementList.hh"
+#include "file/IFile.hh"
+#include "file/ObjectReader.hh"
+#include "file/ElementReader.hh"
+#include "file/ElementDest.hh"
 #include "font/BaseFont.hh"
 #include "util/Util.hh"
 
@@ -52,70 +54,58 @@ Resources::Resources( )
     m_proc_set.push_back( Name( "Text" ) ) ;
 }
 
-Resources::Resources( const Dictionary& dict, ElementReader *repo )
-	: m_proc_set( 1, Name( "PDF" ) )
+void Resources::Read( const Object& self, IFile *file )
 {
-	assert( repo != 0 ) ;
-	
-	m_self = dict ;
-	OnRead( repo ) ;
-}
+	m_self = self.IsType<Dictionary>() ? self.As<Dictionary>()
+			                           : file->ReadObj( self.As<Ref>() ).As<Dictionary>() ;
 
-void Resources::Init( Object& obj, ElementReader *repo )
-{
-	assert( repo != 0 ) ;
-
-	std::swap( m_self, obj.As<Dictionary>() ) ;
-	OnRead( repo ) ;
-}
-
-void Resources::OnRead( ElementReader *repo )
-{
 	Array proc_set ;
-	repo->Detach( m_self, "ExtGState",	m_ext_gstate ) ;
-	repo->Detach( m_self, "ProcSet",	proc_set ) ;
+	Detach( file, m_self, "ExtGState",	m_ext_gstate ) ;
+	Detach( file, m_self, "ProcSet",	proc_set ) ;
 	m_proc_set.assign( proc_set.begin( ), proc_set.end( ) ) ;
-	
-	ReadSubDict( "Font",    repo, m_fonts ) ;
-	ReadSubDict( "XObject", repo, m_xobjs ) ;
+
+	ReadSubDict( "Font",    file, m_fonts ) ;
+	ReadSubDict( "XObject", file, m_xobjs ) ;
 }
 
-void Resources::Write( const Ref& link, IElementDest *repo ) const
+Ref Resources::Write( IFile *repo ) const
 {
     Dictionary dict( m_self ) ;
 	dict["ProcSet"]	= Array( m_proc_set.begin( ), m_proc_set.end( ) ) ;
     dict["Font"]	= WriteSubDict( m_fonts, repo ) ;
     dict["XObject"]	= WriteSubDict( m_xobjs, repo ) ;
-    
-    return repo->WriteObj( dict, link ) ;
+
+    return repo->WriteObj( dict ) ;
 }
 
 template <typename T>
 Dictionary Resources::WriteSubDict( const std::map<Name, T*>& input,
-                                    IElementDest *file ) const
+                                    IFile *file ) const
 {
 	Dictionary dict ;
-	
+
+	ElementDest dest( file ) ;
 	typedef typename std::map<Name, T*>::const_iterator FontIt ;
 	for ( FontIt i = input.begin( ) ; i != input.end( ) ; ++i )
-		dict.insert( std::make_pair( i->first, file->Write( i->second ) ) ) ;
+		dict.insert( std::make_pair( i->first, dest.Write( i->second ) ) ) ;
 
 	return dict ;
 }
 
 template <typename T>
-void Resources::ReadSubDict( const Name& name, ElementReader *file,
+void Resources::ReadSubDict( const Name& name, IFile *file,
 					         std::map<Name, T*>& output )
 {
 	assert( file != 0 ) ;
-	
+
 	Dictionary dict ;
-	if ( file->Detach( m_self, name, dict ) )
-	{	
+	if ( Detach( file, m_self, name, dict ) )
+	{
+		ElementReader repo( file ) ;
 		for ( Dictionary::const_iterator i  = dict.begin( ) ;
 										 i != dict.end( ) ; ++i )
-			output.insert( std::make_pair( i->first,
-										file->Read<T>( i->second ) ) ) ;
+			output.insert( std::make_pair(
+				i->first, repo.Read<T>( i->second ) ) ) ;
 	}
 }
 
@@ -134,7 +124,7 @@ Name Resources::AddFont( BaseFont *font )
 		bind( &FontMap::value_type::second, _1 ) == font ) ;
 	if ( it != m_fonts.end( ) )
 		return it->first ;
-	
+
 	// create a new name
 	Name name ;
 	do
@@ -143,19 +133,9 @@ Name Resources::AddFont( BaseFont *font )
 		oss << "F" << m_fonts.size( ) ;
 		name = Name( oss.str() ) ;
 	} while ( m_fonts.find( name ) != m_fonts.end( ) ) ;
-	
+
 	m_fonts.insert( std::make_pair( name, font ) ) ;
 	return name ;
-}
-
-ElementList Resources::GetChildren( ) const
-{
-	ElementList e ;
-	std::transform( m_fonts.begin( ), m_fonts.end( ), std::back_inserter( e ),
-	                SelectSecond( ) ) ;
-	std::transform( m_xobjs.begin( ), m_xobjs.end( ), std::back_inserter( e ),
-	                SelectSecond( ) ) ;
-	return e ;
 }
 
 } // end of namespace

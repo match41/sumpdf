@@ -1,4 +1,4 @@
-/***************************************************************************
+/***************************************************************************\
  *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+\***************************************************************************/
 
 /*!
 	\file	PageNode.hh
@@ -41,7 +41,7 @@ class PageTree ;
 class Resources ;
 
 /*!	\brief	brief description
-	
+
 	this class represents the PageNode class, which is a node in the page tree.
 	it can be a leaf node (i.e. a page) or a tree node (which contains other
 	nodes)
@@ -61,16 +61,16 @@ public :
 	const Resources* GetResource( ) const ;
 
 	void SetParent( PageTree *parent ) ;
-	
+
 	ElementList GetChildren( ) const ;
-	
+
 	virtual std::size_t Count( ) const = 0 ;
 	virtual PageNode* GetLeaf( std::size_t index ) = 0 ;
 
 private :
 	//! parent of this node. if 0, it is the root node.
 	PageTree	*m_parent ;
-	
+
 	Resources	*m_resources ;
 } ;
 

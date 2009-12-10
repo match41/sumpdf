@@ -70,6 +70,7 @@ RealDoc::~RealDoc( )
 //
 //	// delete them all
 //	std::for_each( list.begin( ), list.end( ), boost::lambda::delete_ptr( ) ) ;
+	delete m_catalog ;
 }
 
 void RealDoc::Read( const std::string& filename )
@@ -82,7 +83,6 @@ void RealDoc::Read( const std::string& filename )
 	File file( &m_readfs ) ;
 
 	ElementReader repo( &file ) ;
-//	m_catalog = repo.Read<Catalog>( file.Root( ) ) ;
 	m_catalog = new Catalog ;
 	m_catalog->Read( file.Root( ), &file ) ;
 }
@@ -94,9 +94,7 @@ void RealDoc::Write( const std::string& filename ) const
 		throw std::runtime_error( "cannot open file " + filename ) ;
 
 	File file( &fs ) ;
-
-	ElementDest repo( &file ) ;
-	file.WriteTrailer( repo.Write( m_catalog ) ) ;
+	file.WriteTrailer( m_catalog->Write( &file ) ) ;
 }
 
 RealPage* RealDoc::AppendPage( )

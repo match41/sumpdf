@@ -42,7 +42,7 @@ class IFile ;
 class IElement ;
 
 /*!	\brief	brief description
-	
+
 	this class represents
 */
 class ElementReader
@@ -52,9 +52,9 @@ public :
 
 	IElement* Find( const Ref& link ) ;
     Object& DeRef( Object& obj ) ;
-	
+
 	IElement* Read( const Ref& link ) ;
-	
+
 	/*!	helper function to create elements. This function is the primary
 		function for users of this class to read elements.
 	*/
@@ -62,7 +62,7 @@ public :
 	Element* Read( const Ref& link )
 	{
 		IElement *temp = Find( link ) ;
-		
+
 		// element found in cache, try to re-use it
 		if ( temp != 0 )
 			// dynamic cast reference
@@ -79,7 +79,7 @@ public :
 		Dictionary::iterator i = dict.find( name ) ;
 		if ( i == dict.end() )
 			return 0 ;
-		
+
 		Element *result = 0 ;
 		if ( i->second.IsType<Ref>() )
 			result = Read<Element>( i->second ) ;
@@ -95,19 +95,19 @@ public :
 	}
 
 	/*!	\brief	detach and de-reference object in dictionary
-	
+
 		This function looks up the \a name in \a dict , and put it in
 		\a result. If \a result is a Ref, it will de-reference it and put the
 		de-reference'd object in \a result instead. It will then be erased from
 		the dictionary.	This function will use std::swap() on the objects to
 		reduce deep	copying.
-		
+
 		\param	dict	the dictionary to look up and detach
 		\param	name	the key to the value in \a dict to detach
 		\param	result	reference to output
 		\return	true if the \a name is found in \a dict . otherwise false.
 		\throw	BadType	if \a name is found but its type is not \a T
-		
+
 		\sa		Dictionary::Extract(), Object::Swap(), ReadObj(), DeRef()
 		\note	This template function is defined in DeRef.hh. Callers must
 				include this header when user or else a link error will be
@@ -123,7 +123,7 @@ public :
 				result = ReadObj( i->second ) ;
 			else
 				std::swap( i->second.As<T>(), result ) ;
-			
+
 			dict.erase( i ) ;
 			return true ;
 		}
@@ -132,7 +132,7 @@ public :
 
 private :
 	Object ReadObj( const Ref& obj ) ;
-	
+
 	void Store( IElement *element, const Ref& link ) ;
 	void InitElement( IElement *element, Object& obj ) ;
 
@@ -148,14 +148,15 @@ private :
 		// causing infinite recursion.
 		Store( element, link ) ;
 		InitElement( element, obj ) ;
-		
+
 		return element ;
 	}
 
 private :
 	typedef std::map<Ref, IElement*> Map ;
 	Map	m_map ;
-	
+
+public :
 	IFile *m_file ;
 } ;
 

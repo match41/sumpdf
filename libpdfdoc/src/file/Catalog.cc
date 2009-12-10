@@ -28,8 +28,7 @@
 #include "Catalog.hh"
 
 #include "ElementReader.hh"
-#include "IElementDest.hh"
-#include "ElementList.hh"
+#include "ElementDest.hh"
 #include "IFile.hh"
 
 #include "core/Array.hh"
@@ -66,7 +65,7 @@ void Catalog::Read( const Ref& link, IFile *file )
 		throw ParseError( oss.str( ) ) ;
 	}
 
-	// page tree is manatory
+	// page tree is mandatory
 	ElementReader reader( file ) ;
 	m_tree = reader.Read<PageTree>( m_self["Pages"] ) ;
 	m_self.erase( "Pages" ) ;
@@ -79,40 +78,18 @@ void Catalog::Read( const Ref& link, IFile *file )
 	m_self.Extract( "PageMode",		m_page_mode ) ;
 }
 
-void Catalog::Init( Object& obj, ElementReader *file )
-{
-	assert( file != 0 ) ;
-	std::swap( m_self, obj.As<Dictionary>() ) ;
-
-	if ( m_self["Type"].As<Name>() != "Catalog" )
-	{
-		std::ostringstream oss ;
-		oss << "invalid catalog type: " << m_self["Type"] ;
-		throw ParseError( oss.str( ) ) ;
-	}
-
-	// page tree is manatory
-	m_tree = file->Read<PageTree>( m_self["Pages"] ) ;
-	m_self.erase( "Pages" ) ;
-
-	// TODO: no know how to handle it yet
-	m_self.erase( Name( "OpenAction" ) ) ;
-
-	file->Detach( m_self,	"Version",		m_version ) ;
-	file->Detach( m_self,	"PageLayout",	m_page_layout ) ;
-	file->Detach( m_self,	"PageMode",		m_page_mode ) ;
-}
-
-void Catalog::Write( const Ref& link, IElementDest *dest ) const
+Ref Catalog::Write( IFile *file ) const
 {
 	Dictionary self( m_self ) ;
-	self["Pages"] 	    = dest->Write( m_tree ) ;
+
+	ElementDest dest( file ) ;
+	self["Pages"] 	    = dest.Write( m_tree ) ;
 	self["Type"]	    = Name( "Catalog" ) ;
 	self["Version"]		= m_version ;
 	self["PageLayout"]	= m_page_layout ;
 	self["PageMode"]	= m_page_mode ;
 
-	dest->WriteObj( self, link ) ;
+	return file->WriteObj( self ) ;
 }
 
 void Catalog::AddPage( RealPage *page )
@@ -127,12 +104,6 @@ void Catalog::AddPage( RealPage *page )
 std::size_t Catalog::PageCount( ) const
 {
 	return m_tree->Count( ) ;
-}
-
-ElementList Catalog::GetChildren( ) const
-{
-	IElement *list[] = { m_tree } ;
-	return ElementList( list, list + 1 ) ;
 }
 
 RealPage* Catalog::GetPage( std::size_t index )

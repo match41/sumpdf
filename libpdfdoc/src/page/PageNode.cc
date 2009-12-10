@@ -82,9 +82,12 @@ const Resources* PageNode::GetResource( ) const
 void PageNode::Init( Object& self, ElementReader *src )
 {
 	// resources may not always be indirect objects
-	Resources* res = src->DetachElement<Resources>( self.As<Dictionary>(),
-	                                                "Resources" ) ;
-	
+//	Resources* res = src->DetachElement<Resources>( self.As<Dictionary>(),
+//	                                                "Resources" ) ;
+	// TODO: we need to share the resources here. some kind of pool is needed
+	Resources* res = new Resources ;
+	res->Read( self, src->m_file ) ;
+
 	if ( res != 0 )
 	{
 		delete m_resources ;
@@ -96,7 +99,7 @@ ElementList PageNode::GetChildren( ) const
 {
 	assert( m_resources != 0 ) ;
 	ElementList l ;
-	l.push_back( m_resources ) ;
+//	l.push_back( m_resources ) ;
 	return l ;
 }
 

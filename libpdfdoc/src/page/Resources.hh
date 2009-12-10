@@ -28,8 +28,6 @@
 #ifndef __PDF_RESOURCES_HEADER_INCLUDED__
 #define __PDF_RESOURCES_HEADER_INCLUDED__
 
-#include "file/IElement.hh"
-
 #include "core/Dictionary.hh"
 #include "core/Name.hh"
 
@@ -37,41 +35,38 @@
 
 namespace pdf {
 
-class IElementDest ;
+class IFile ;
 class BaseFont ;
 class RealImage ;
 class XObject ;
+class Object ;
 
 /*!	\brief	page resources
-	
+
 	Resources are PDF objects used for rendering but not saved in the content
-	streams. These objects are refered by names in the content stream. The
-	resources dictionary maps their names to the actual objects
+	streams. These objects are referred by names in the content stream. The
+	resources dictionary maps their names to the actual objects.
+
+	這是中文字。
 */
-class Resources : public IElement
+class Resources
 {
 public :
 	Resources( ) ;
-	Resources( const Dictionary& dict, ElementReader *repo ) ;
 
 	Name AddFont( BaseFont *font ) ;
 
-	void Read( const Dictionary& dict, ElementReader *repo ) ;
-	void Init( Object& link, ElementReader *repo ) ;
-	void Write( const Ref& link, IElementDest *repo ) const ;
+	void Read( const Object& self, IFile *file ) ;
+	Ref  Write( IFile *file ) const ;
 
-	ElementList GetChildren( ) const ;
-	
 private :
-	void OnRead( ElementReader *repo ) ;
-
 	template <typename T>
-	void ReadSubDict( const Name& name, ElementReader *file,
+	void ReadSubDict( const Name& name, IFile *file,
 	                  std::map<Name, T*>& output ) ;
-	
+
 	template <typename T>
 	Dictionary WriteSubDict( const std::map<Name, T*>& input,
-	                         IElementDest *repo ) const ;
+	                         IFile *repo ) const ;
 
 	XObject* ReadXObj( const Ref& link ) ;
 

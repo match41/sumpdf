@@ -35,7 +35,7 @@ class Ref ;
 class StreamFilter ;
 
 /*!	\brief	brief description
-	
+
 	this class represents
 */
 class IFile
@@ -46,7 +46,7 @@ protected :
 public :
 	virtual Object ReadObj( const Ref& obj ) = 0 ;
 	virtual Ref WriteObj( const Object& obj ) = 0 ;
-	
+
 	virtual Ref AllocLink( ) = 0 ;
 	virtual void WriteObj( const Object& obj, const Ref& link ) = 0 ;
 } ;

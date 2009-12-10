@@ -28,8 +28,6 @@
 #ifndef __PDF_CATALOG_HEADER_INCLUDED__
 #define __PDF_CATALOG_HEADER_INCLUDED__
 
-#include "IElement.hh"
-
 #include "core/Dictionary.hh"
 #include "core/Name.hh"
 
@@ -45,22 +43,19 @@ class IFile ;
 
 /*!	\brief	brief description
 
-	this class represents the document catalog of a PDF file
+	This class represents the document catalog of a PDF file.
 */
-class Catalog : public IElement
+class Catalog
 {
 public :
 	Catalog( ) ;
 
 	void Read( const Ref& link, IFile *file ) ;
-	void Init( Object& obj, ElementReader *repo ) ;
-	void Write( const Ref& link, IElementDest *dest ) const ;
+	Ref Write( IFile *file ) const ;
 
 	void AddPage( RealPage *page ) ;
 
 	std::size_t PageCount( ) const ;
-
-	ElementList GetChildren( ) const ;
 
 	RealPage*	GetPage( std::size_t index ) ;
 

@@ -1,5 +1,5 @@
-/***************************************************************************
- *   Copyright (C) 2006 by Nestal Wan                                      *
+/***************************************************************************\
+ *   Copyright (C) 2009 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -16,57 +16,41 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+\***************************************************************************/
 
 /*!
-	\file	ElementDest.hh
-	\brief	definition the ElementDest class
-	\date	Sun Apr 13 2008
-	\author	Nestal Wan
+	\file	ObjectReader.hh
+	\brief	definition the ObjectReader class
+	\date	Dec 11, 2009
+	\author	nestal
 */
 
-#ifndef __PDF_ELEMENT_DEST_HEADER_INCLUDED__
-#define __PDF_ELEMENT_DEST_HEADER_INCLUDED__
 
-#include "IElementDest.hh"
+#ifndef __PDF_OBJECT_READER_HEADER_INCLUDED__
+#define __PDF_OBJECT_READER_HEADER_INCLUDED__
 
-#include "core/Ref.hh"
-
-#include <map>
+#include "IFile.hh"
+#include "core/Dictionary.hh"
 
 namespace pdf {
 
-class IElement ;
-class IFile ;
-
-/*!	\brief	brief description
-
-	this class represents
-*/
-class ElementDest : public IElementDest
+template <typename ObjType>
+bool Detach( IFile *file, Dictionary& dict, const Name& name, ObjType& result )
 {
-public :
-	ElementDest( IFile *output ) ;
+	Dictionary::iterator i = dict.find( name ) ;
+	if ( i != dict.end( ) )
+	{
+		if ( i->second.Type( ) == Object::ref )
+			result = file->ReadObj( i->second ) ;
+		else
+			std::swap( i->second.As<ObjType>(), result ) ;
 
-	Ref WriteObj( const Object& obj ) ;
-
-	Ref AllocLink( ) ;
-	void WriteObj( const Object& obj, const Ref& link ) ;
-
-	Ref Write( const IElement *element ) ;
-
-	IFile* GetFile( ) ;
-
-private :
-	void Dereference( Object& obj ) ;
-
-private :
-	typedef std::map<const IElement*, Ref> Map ;
-	Map	m_map ;
-
-	IFile *m_file ;
-} ;
+		dict.erase( i ) ;
+		return true ;
+	}
+	return false ;
+}
 
 } // end of namespace
 
-#endif
+#endif // OBJECTREADER_HH_

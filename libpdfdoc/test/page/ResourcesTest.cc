@@ -48,7 +48,7 @@ void ResourcesTest::TestNormal( )
 	                        "/XObject << >> >>" ) ;
 	pdf::Dictionary rdict ;
 	CPPUNIT_ASSERT( iss >> rdict ) ;
-	
+
 	std::istringstream fss( "<</BaseFont /Helvetica-Bold\n"
 	                        "/Encoding /WinAnsiEncoding\n"
 	                        "/FirstChar 0\n"
@@ -63,9 +63,7 @@ void ResourcesTest::TestNormal( )
 	file.AddObj( pdf::Ref(1,0),  rdict ) ;
 	file.AddObj( pdf::Ref(18,0), fd ) ;
 
-	pdf::ElementReader src( &file ) ;
-
 	pdf::Object obj( rdict ) ;
 	pdf::Resources subject ;
-	subject.Init( obj, &src ) ;
+	subject.Read( rdict, &file ) ;
 }

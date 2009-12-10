@@ -56,7 +56,7 @@ Ref ElementDest::Write( const IElement *element )
 	{
 		Ref link = m_file->AllocLink( ) ;
 		i = m_map.insert( std::make_pair( element, link ) ).first ;
-		
+
 		element->Write( link, this ) ;
 	}
 	return i->second ;
@@ -71,7 +71,7 @@ Ref ElementDest::WriteObj( const Object& obj )
 		// we can't modify the original object. we can only make a copy.
 		Object copy = obj ;
 		ForEachObj( copy, boost::bind( &ElementDest::Dereference, this, _1 ) ) ;
-		
+
 		return m_file->WriteObj( copy ) ;
 	}
 	else
@@ -102,6 +102,11 @@ void ElementDest::WriteObj( const Object& obj, const Ref& link )
 	}
 	else
 		return m_file->WriteObj( obj, link ) ;
+}
+
+IFile* ElementDest::GetFile( )
+{
+	return m_file ;
 }
 
 } // end of namespace

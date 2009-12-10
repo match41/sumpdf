@@ -47,7 +47,7 @@ class Dictionary ;
 
 /*!	\brief	general font for PDF files
 	\internal
-	
+
 	This class represent a simple Type 1 or TrueType font.
 */
 class SimpleFont : public BaseFont
@@ -59,12 +59,11 @@ public :
 	SimpleFont( ) ;
 	SimpleFont( freetype::Library *lib, const std::string& filename ) ;
 
-// 	void Read( const Dictionary& dict, ElementReader *repo ) ;
 	void Init( Object& link, ElementReader *src ) ;
 	void Write( const Ref& link, IElementDest *dest ) const ;
 
 	std::string BaseName( ) const ;
-	
+
 	ElementList GetChildren( ) const ;
 
 private :
@@ -79,7 +78,7 @@ private :
 	Name	m_base_font ;
 	Type	m_type ;
 	int		m_first_char, m_last_char ;
-	
+
 	std::vector<int>	m_widths ;
 	Object				m_descriptor ;
 	Object				m_to_unicode ;
