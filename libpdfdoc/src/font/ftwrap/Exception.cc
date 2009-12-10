@@ -29,7 +29,7 @@
 #include "ErrorTable.hh"
 
 #ifdef _DEBUG
-#include "SymbolInfo.hh"
+#include "Util/Backtrace.hh"
 #endif
 
 #include <sstream>
@@ -52,8 +52,9 @@ std::string Exception::Message( int err, const std::string& msg )
 	ss << msg << ": " << LookupError( err ) ;
 
 #ifdef _DEBUG
-	ss << std::endl ;
-	pdf::SymbolInfo::Backtrace( ss ) ;
+	ss << std::endl << pdf::Backtrace() << std::endl ;
+	
+	
 #endif
 
 	return ss.str( ) ;
