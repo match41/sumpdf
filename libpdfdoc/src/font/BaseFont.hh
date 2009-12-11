@@ -33,6 +33,8 @@
 
 #include "file/ElementFactory.hh"
 
+class IFile ;
+
 namespace pdf {
 
 /*!	\brief	base class for all fonts
@@ -40,17 +42,18 @@ namespace pdf {
 	
 	This class is the base class of all font classes in libpdfdoc.
 */
-class BaseFont : public Font, public IElement
+class BaseFont : public Font//, public IElement
 {
 public :
 	BaseFont( ) ;
 
 	virtual std::string BaseName( ) const = 0 ;
 
-	ElementList GetChildren( ) const ;
+//	ElementList GetChildren( ) const ;
 } ;
 
-template <> BaseFont* CreateNewElement( const Object& link, ElementReader * ) ;
+//template <> BaseFont* CreateNewElement( const Object& link, ElementReader * ) ;
+BaseFont* CreateFont( const Object& obj, IFile *file ) ;
 
 } // end of namespace
 

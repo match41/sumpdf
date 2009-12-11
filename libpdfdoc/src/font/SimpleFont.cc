@@ -86,7 +86,7 @@ SimpleFont::SimpleFont( freetype::Library *lib, const std::string& filename )
 	for ( int i = m_first_char ; i <= m_last_char ; i++ )
 	{
 		freetype::Glyph g( &face, face.GetGlyphCode( i ) ) ;
-		m_widths.push_back( g.HoriAdvance( ) ) ;
+		m_widths.push_back( static_cast<int>(g.HoriAdvance( )) ) ;
 	}
 	assert( (int)m_widths.size() == m_last_char - m_first_char + 1 ) ;
 }
@@ -175,17 +175,13 @@ ElementList SimpleFont::GetChildren( ) const
 {
 	return ElementList( ) ;
 }
-/*
-template <> SimpleFont* IElementSrc::Read( const Ref& link )
-{
-	// dynamic cast reference
-	// it will throw bad_cast if failed
-	IElement *temp = Find( link ) ;
-	return temp != 0 ? &dynamic_cast<SimpleFont&>( *temp )
-						: NewElement<SimpleFont>( link ) ;
-}
-*/
+
 template <> BaseFont* CreateNewElement( const Object& , ElementReader * )
+{
+	return new SimpleFont ;
+}
+
+BaseFont* CreateFont( const Object& obj, IFile *file )
 {
 	return new SimpleFont ;
 }

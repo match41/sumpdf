@@ -34,10 +34,10 @@ namespace pdf {
 BaseFont::BaseFont( )
 {
 }
-
+/*
 ElementList BaseFont::GetChildren( ) const
 {
 	return ElementList( ) ;
 }
-
+*/
 } // end of namespace

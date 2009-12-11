@@ -64,7 +64,7 @@ void Resources::Read( const Object& self, IFile *file )
 	Detach( file, m_self, "ProcSet",	proc_set ) ;
 	m_proc_set.assign( proc_set.begin( ), proc_set.end( ) ) ;
 
-	ReadSubDict( "Font",    file, m_fonts ) ;
+//	ReadSubDict( "Font",    file, m_fonts ) ;
 	ReadSubDict( "XObject", file, m_xobjs ) ;
 }
 
@@ -72,7 +72,7 @@ Ref Resources::Write( IFile *repo ) const
 {
     Dictionary dict( m_self ) ;
 	dict["ProcSet"]	= Array( m_proc_set.begin( ), m_proc_set.end( ) ) ;
-    dict["Font"]	= WriteSubDict( m_fonts, repo ) ;
+//  dict["Font"]	= WriteSubDict( m_fonts, repo ) ;
     dict["XObject"]	= WriteSubDict( m_xobjs, repo ) ;
 
     return repo->WriteObj( dict ) ;
