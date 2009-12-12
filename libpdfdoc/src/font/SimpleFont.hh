@@ -58,13 +58,10 @@ public :
 public :
 	SimpleFont( ) ;
 	SimpleFont( freetype::Library *lib, const std::string& filename ) ;
-
-	void Init( Object& link, ElementReader *src ) ;
-	void Write( const Ref& link, IElementDest *dest ) const ;
+	SimpleFont( const Object& self, IFile *file ) ;
 
 	std::string BaseName( ) const ;
-
-	ElementList GetChildren( ) const ;
+	Ref Write( IFile *file ) const ;
 
 private :
 	SimpleFont( const Name& base_font, Type type ) ;

@@ -18,39 +18,18 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/*!
-	\file	BaseFont.hh
-	\brief	definition the BaseFont class
-	\date	Sun Mar 8 2009
-	\author	Nestal Wan
+/**
+	\file	pdfobj.h
+	\brief	definition the pdfobj class
+	\date	Dec 12, 2009
+	\author	nestal
 */
 
-#ifndef __PDF_BASE_FONT_HEADER_INCLUDED__
-#define __PDF_BASE_FONT_HEADER_INCLUDED__
 
-#include "Font.hh"
-#include "util/RefCountObj.hh"
+#ifndef __PDF_PDFOBJ_HEADER_INCLUDED__
+#define __PDF_PDFOBJ_HEADER_INCLUDED__
 
-namespace pdf {
+// this is the replacement pdfobj header
+typedef struct {} pdf_obj ;
 
-class IFile ;
-class Object ;
-
-/*!	\brief	base class for all fonts
-	\internal
-
-	This class is the base class of all font classes in libpdfdoc.
-*/
-class BaseFont : public RefCountObj, public Font
-{
-public :
-	BaseFont( ) ;
-
-	virtual std::string BaseName( ) const = 0 ;
-} ;
-
-BaseFont* CreateFont( const Object& obj, IFile *file ) ;
-
-} // end of namespace
-
-#endif
+#endif // PDFOBJ_H_

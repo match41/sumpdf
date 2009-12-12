@@ -64,11 +64,12 @@ bool StandardFont::IsStandardFont( const Name& font_name )
 		"Symbol",
 		"ZapfDingbats",
 	} ;
-	
+
 	static const std::set<Name> s( Begin(std_font_name), End(std_font_name) ) ;
-	return s.find( font_name ) != s.end( ) ; 
+	return s.find( font_name ) != s.end( ) ;
 }
 
+/*
 void StandardFont::Init( Object& link, ElementReader *src )
 {
 	// reading is not supported
@@ -83,7 +84,7 @@ void StandardFont::Write( const Ref& link, IElementDest *dest ) const
 	dict["BaseFont"]	= m_font_name ;
 	dest->WriteObj( dict, link ) ;
 }
-
+*/
 
 // freetype library is optional
 #ifndef HAVE_FREETYPE

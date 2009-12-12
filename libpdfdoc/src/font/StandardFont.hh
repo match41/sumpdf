@@ -34,18 +34,15 @@
 namespace pdf {
 
 /*!	\brief	The standard 14 Type 1 fonts.
-	
+
 	this class represents
 */
 class StandardFont : public BaseFont
 {
 public :
 	StandardFont( const Name& name ) ;
-	
-	std::string BaseName( ) const ;
 
-	void Init( Object& link, ElementReader *src ) ;
-	void Write( const Ref& link, IElementDest *dest ) const ;
+	std::string BaseName( ) const ;
 
 	static bool IsStandardFont( const Name& font_name ) ;
 

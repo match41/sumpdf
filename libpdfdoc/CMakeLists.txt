@@ -97,7 +97,8 @@ set( UTIL_HDRS  	${UTIL_DIR}/Rect.hh
 					${UTIL_DIR}/Util.hh
 					${UTIL_DIR}/Exception.hh
 					${UTIL_DIR}/SymbolInfo.hh
-					${UTIL_DIR}/Backtrace.hh )
+					${UTIL_DIR}/Backtrace.hh
+					${UTIL_DIR}/RefCountObj.hh )
 					
 set( IMG_HDRS  		${IMG_DIR}/Image.hh
 					${IMG_DIR}/PngImage.hh
@@ -109,7 +110,12 @@ set( FONT_HDRS		${FONT_DIR}/TrueTypeFile.hh
 
 					${FONT_DIR}/BaseFont.hh 
 					${FONT_DIR}/SimpleFont.hh
-					${FONT_DIR}/StandardFont.hh )
+					${FONT_DIR}/StandardFont.hh
+					${FONT_DIR}/sfnt/sfnt.h
+					${FONT_DIR}/sfnt/mem.h
+					${FONT_DIR}/sfnt/system.h
+					${FONT_DIR}/sfnt/mfileio.h
+					${FONT_DIR}/sfnt/numbers.h )
 
 set( FT_HDRS		${FT_DIR}/Face.hh
 					${FT_DIR}/Glyph.hh
@@ -172,14 +178,19 @@ set( STRM_SRCS		${STRM_DIR}/Stream.cc
 set( UTIL_SRCS  	${UTIL_DIR}/Rect.cc
 					${UTIL_DIR}/Util.cc
 					${UTIL_DIR}/Exception.cc
-					${UTIL_DIR}/Backtrace.cc )
+					${UTIL_DIR}/Backtrace.cc 
+					${UTIL_DIR}/RefCountObj.cc )
 
 set( IMG_SRCS  		${IMG_DIR}/Image.cc )
 
 set( FONT_SRCS		${FONT_DIR}/TrueTypeFile.cc
 					${FONT_DIR}/TrueTypeTable.cc
 					${FONT_DIR}/BaseFont.cc
-					${FONT_DIR}/StandardFont.cc )
+					${FONT_DIR}/StandardFont.cc
+					${FONT_DIR}/sfnt/sfnt.c
+					${FONT_DIR}/sfnt/mem.c
+					${FONT_DIR}/sfnt/mfileio.c
+					${FONT_DIR}/sfnt/numbers.c )
 
 set( BASE_SRCS		src/Doc.cc
 					src/RealDoc.cc
@@ -319,6 +330,7 @@ target_link_libraries( pdfdoc_static
 add_definitions(-DDLL_EXPORTS)
 add_definitions(-DTEST_DATA_DIR="${libpdfdoc_SOURCE_DIR}/test/testdata/")
 add_definitions(-DSRC_DIR="${libpdfdoc_SOURCE_DIR}/src/")
+add_definitions(-DXETEX )
 
 # MSVC has stupid warnings on STD
 if ( MSVC )
