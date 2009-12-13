@@ -76,6 +76,12 @@ public :
 	bool empty( ) const ;
 	void clear( ) ;
 
+	template <typename InputIt>
+	void insert( iterator it, InputIt first, InputIt last )
+	{
+		m_array.insert( it, first, last ) ;
+	}
+
 	void push_back( const Object& obj ) ;
 
 	bool operator==( const Array& array ) const ;

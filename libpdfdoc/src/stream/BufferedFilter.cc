@@ -27,6 +27,8 @@
 
 #include "BufferedFilter.hh"
 
+#include "core/Object.hh"
+
 #include <algorithm>
 #include <cassert>
 #include <cstring>
@@ -82,7 +84,12 @@ void BufferedFilter::Reset( )
 */
 std::size_t BufferedFilter::Length( ) const
 {
-	return m_buf.size() ;
+	return m_buf.size( ) ;
+}
+
+Object BufferedFilter::GetFilterName( ) const
+{
+	return Object( ) ;
 }
 
 } // end of namespace

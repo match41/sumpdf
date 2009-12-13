@@ -27,6 +27,7 @@
 
 #include "DeflateFilterTest.hh"
 
+#include "core/Object.hh"
 #include "stream/DeflateFilter.hh"
 #include "stream/RawFilter.hh"
 
@@ -82,6 +83,16 @@ void DeflateFilterTest::TestReset( )
 		count = subject.Read( buf, sizeof( buf ) - 1 ) ;
 	}
 
+}
+
+void DeflateFilterTest::TestName( )
+{
+	std::istringstream ss( std::string( m_compressed.begin(),
+	                                    m_compressed.end() ) ) ;
+	pdf::RawFilter *raw = new pdf::RawFilter( ss.rdbuf() ) ;
+	pdf::DeflateFilter subject( raw ) ;
+	CPPUNIT_ASSERT( subject.GetFilterName().As<pdf::Name>()
+		== pdf::Name( "FlateDecode" ) ) ;
 }
 
 void DeflateFilterTest::setUp( )

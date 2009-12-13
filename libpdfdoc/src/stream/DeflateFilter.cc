@@ -27,6 +27,8 @@
 
 #include "DeflateFilter.hh"
 
+#include "core/Array.hh"
+#include "core/Name.hh"
 #include "util/Exception.hh"
 
 #include <boost/format.hpp>
@@ -127,6 +129,24 @@ std::size_t DeflateFilter::Length( ) const
 {
 	// TODO: verify if there is any cached data in DeflateFilter
 	return m_src->Length( ) ;
+}
+
+Object DeflateFilter::GetFilterName( ) const
+{
+	Object name = m_src->GetFilterName( ) ;
+	if ( name.IsType<Array>( ) )
+	{
+		Array arr ;
+		arr.push_back( Name( "FlateDecode" ) ) ;
+		
+		const Array& old = name.As<Array>( ) ;
+		arr.insert( arr.end(), old.begin(), old.end() ) ;
+		return Object( arr ) ;
+	}
+	else if ( name.IsNull() )
+		return Name( "FlateDecode" ) ;
+	else
+		throw Exception( "invalid filter" ) ;
 }
 
 } // end of namespace

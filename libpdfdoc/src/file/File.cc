@@ -217,33 +217,8 @@ void File::WriteObj( const Object& obj, const Ref& link )
 	
 	m_objs[link.ID()] = m_out->tellp( ) ;
 	
-	*m_out << link.ID() << " 0 obj\n" ;
-	
-	if ( !obj.IsType<Stream>() )
-		*m_out << obj << "\nendobj\n" ;
-	
-	// for stream objects, do not use operator<<() to write it to file.
-	// it is because the length of the stream may be known only after
-	// its contents are written to file. therefore, the "Length" field of the
-	// stream dictionary is written as an indirect object. for operator<<()
-	// we cannot pass the link to the length object to be written in the
-	// stream dictionary. that is why we call Stream::WriteData() instead.
-	else
-	{
-		const Stream& s = obj.As<Stream>() ;
-	
-		Ref len_ref = AllocLink( ) ;
-		*m_out << s.MakeDictWithLength( len_ref ) ;
-		
-		*m_out << "\nstream\n" ;
-		std::size_t length = s.WriteData( m_out->rdbuf() ) ;
-		*m_out << "\nendstream\nendobj\n" ;
-
-		// the return value of Stream::WriteData() is the length of the stream,
-		// i.e. the number of bytes written to file. it is only known after
-		// writing the stream.
-		WriteObj( length, len_ref ) ;
-	}
+	*m_out << link.ID() << " 0 obj\n"
+	       << obj << "\nendobj\n" ;
 }
 
 void File::ReadXRef( std::size_t offset, Dictionary& trailer )

@@ -30,11 +30,11 @@
 #include "BufferedFilter.hh"
 #include "DeflateFilter.hh"
 #include "RawFilter.hh"
-#include "StreamFilter.hh"
 #include "StreamBufAdaptor.hh"
 
 #include "core/Array.hh"
 #include "core/Dictionary.hh"
+
 #include "util/Exception.hh"
 
 #include <boost/bind.hpp>
@@ -62,10 +62,15 @@ struct Stream::Impl
 	}
 } ;
 
-Stream::Stream( )
+Stream::Stream( Filter f )
 	: m_impl( new Impl )
 {
-	m_impl->filter.reset( new BufferedFilter ) ;
+	StreamFilter *filter = new BufferedFilter ; 
+
+	if ( f == deflate )
+		filter = new DeflateFilter( filter ) ;
+
+	m_impl->filter.reset( filter ) ;
 	m_impl->sbuf.Set( m_impl->filter.get() ) ;
 }
 
@@ -99,13 +104,25 @@ Stream::Stream( std::streambuf *file, std::streamoff offset,
 
 	ApplyFilter( dict["Filter"] ) ;
 	assert( m_impl->filter->Length() == dict["Length"].As<int>() ) ;
+	assert( dict["Filter"] == m_impl->filter->GetFilterName() ) ;
+	
+	m_impl->self.erase( "Length" ) ;
+	m_impl->self.erase( "Filter" ) ;
 }
 	
+/**	Constructor to initialize with an existing buffer without memory copying.
+	\param	data	memory buffer. It will be swap()'ed to an internal buffer.
+	\param	filter	filter object. It can be an array of PDF names to specify
+					a serious of filters to be applied on the data; or
+					a single PDF name of filter; or null object if no filter.
+*/
 Stream::Stream( std::vector<unsigned char>& data, const Object& filter )
 	: m_impl( new Impl )
 {
 	m_impl->filter.reset( new BufferedFilter( data ) ) ;
 	ApplyFilter( filter ) ;
+	
+	assert( filter == m_impl->filter->GetFilterName() ) ;
 }
 
 /**	empty destructor is required for shared_ptr.
@@ -140,12 +157,27 @@ void Stream::ApplyFilter( const Object& filter )
 	m_impl->sbuf.Set( m_impl->filter.get() ) ;
 }
 
+Dictionary Stream::Self( ) const
+{
+	assert( m_impl.get() != 0 ) ;
+	
+	Dictionary dict = m_impl->self ;
+	dict["Length"]	= Length( ) ;
+	Object filter	= m_impl->filter->GetFilterName( ) ;
+	if ( !filter.IsNull() )
+		dict["Filter"]	= filter ;
+		
+	return dict ;
+}
+
 /**	This function returns the length after applying all filters. It is equal
 	to the number of bytes written to the file. It is not the same as the
 	number of bytes you can read from it.
 */
 std::size_t Stream::Length( ) const
 {
+	assert( m_impl.get() != 0 ) ;
+
 	return m_impl->filter->Length( ) ;
 }
 
@@ -212,6 +244,17 @@ std::size_t Stream::WriteData( std::streambuf *buf ) const
 	}
 
 	return total ;
+}
+
+std::ostream& operator<<( std::ostream& os, const Stream& s )
+{
+	os 	<< s.Self( )
+		<< "\nstream\n" ;
+	
+	std::size_t count = s.WriteData( os.rdbuf() ) ;
+	assert( count == s.Length() ) ;
+	
+	return os << "\nendstream\n" ;
 }
 
 std::istream& Stream::InStream( ) const

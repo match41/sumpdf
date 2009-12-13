@@ -52,6 +52,7 @@ public :
 		CPPUNIT_TEST( TestWrite ) ;
 		CPPUNIT_TEST( TestReset ) ;
 		CPPUNIT_TEST( TestWriteOstream ) ;
+		CPPUNIT_TEST( TestName ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
 public :
@@ -65,6 +66,7 @@ private :
 	void TestReset( ) ;
 	void TestReadDeflate( ) ;
 	void TestWriteOstream( ) ;
+	void TestName( ) ;
 
 private :
 	std::vector<unsigned char> m_original, m_compressed ;

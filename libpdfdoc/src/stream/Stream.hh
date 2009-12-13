@@ -55,7 +55,10 @@ class Object ;
 class Stream
 {
 public :
-	Stream( ) ;
+	enum Filter { none, deflate } ;
+
+public :
+	Stream( Filter f = none ) ;
 	Stream( const std::string& str ) ;
 	Stream( std::vector<unsigned char>& data, const Object& filter ) ;
 	Stream( std::streambuf *file, std::streamoff offset,
@@ -64,6 +67,7 @@ public :
 
 	bool operator==( const Stream& str ) const ;
 
+	Dictionary Self( ) const ;
 	Dictionary MakeDictWithLength( const Ref& length_link ) const ;
     std::size_t WriteData( std::streambuf *buf ) const ;
 
@@ -76,6 +80,8 @@ public :
 
 	Name Type( ) const ;
 	Name Subtype( ) const ;
+
+	friend std::ostream& operator<<( std::ostream& os, const Stream& s ) ;
 
 protected :
 	const Dictionary& Dict( ) const ;

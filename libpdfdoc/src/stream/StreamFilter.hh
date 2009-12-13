@@ -32,6 +32,8 @@
 
 namespace pdf {
 
+class Object ;
+
 /*!	\addtogroup	filter Filter
 	\brief	Filter classes for Stream.
 	
@@ -53,6 +55,7 @@ public :
 	virtual std::size_t Write( const unsigned char *data, std::size_t size )=0;
 	virtual void Reset( ) = 0 ;
 	virtual std::size_t Length( ) const = 0 ;
+	virtual Object GetFilterName( ) const = 0 ;
 } ;
 
 } // end of namespace

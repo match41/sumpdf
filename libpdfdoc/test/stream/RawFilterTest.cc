@@ -27,6 +27,7 @@
 
 #include "RawFilterTest.hh"
 
+#include "core/Object.hh"
 #include "stream/RawFilter.hh"
 
 #include <sstream>
@@ -53,4 +54,12 @@ void RawFilterTest::TestWrite( )
 	unsigned char buf[] = "hello" ;
 	CPPUNIT_ASSERT( t.Write( buf, sizeof(buf)-1 ) == 5 ) ;
 	CPPUNIT_ASSERT( ss.str() == "hello" ) ;
+}
+
+void RawFilterTest::TestName( )
+{
+	std::ostringstream ss ;
+	pdf::RawFilter t( ss.rdbuf(), 0 ) ;
+
+	CPPUNIT_ASSERT( t.GetFilterName().IsNull() ) ;
 }

@@ -274,10 +274,10 @@ struct Op : public boost::static_visitor<>
 		m_os << std::boolalpha << b ;
 	}
 	
-	void operator()( const Stream& b ) const
-	{
-		throw Exception( "cannot write stream directly" ) ;
-	}
+//	void operator()( const Stream& b ) const
+//	{
+//		throw Exception( "cannot write stream directly" ) ;
+//	}
 } ;
 
 } // end of anonymous namespace

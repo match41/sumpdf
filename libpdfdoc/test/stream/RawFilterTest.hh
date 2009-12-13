@@ -41,11 +41,13 @@ public :
 	CPPUNIT_TEST_SUITE( RawFilterTest );
 		CPPUNIT_TEST( TestRead ) ;
 		CPPUNIT_TEST( TestWrite ) ;
+		CPPUNIT_TEST( TestName ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
 private :
 	void TestRead( ) ;
 	void TestWrite( ) ;
+	void TestName( ) ;
 } ;
 
 #endif

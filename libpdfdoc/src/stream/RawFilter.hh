@@ -53,6 +53,7 @@ public :
 
 	void Reset( ) ;
 	std::size_t Length( ) const ;
+	Object GetFilterName( ) const ;
 
 private :
 	std::streambuf			*m_file ;		//!< the file to be read from

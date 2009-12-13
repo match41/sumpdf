@@ -59,6 +59,7 @@ public :
 
 	void Reset( ) ;
 	std::size_t Length( ) const ;
+	Object GetFilterName( ) const ;
 
 	class Error : public Exception
 	{

@@ -45,6 +45,7 @@ public :
 	CPPUNIT_TEST_SUITE( DeflateFilterTest ) ;
 		CPPUNIT_TEST( TestRead ) ;
 		CPPUNIT_TEST( TestReset ) ;
+		CPPUNIT_TEST( TestName ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
 public :
@@ -54,6 +55,7 @@ public :
 private :
 	void TestRead( ) ;
 	void TestReset( ) ;
+	void TestName( ) ;
 
 private :
 	std::vector<unsigned char>	m_original, m_compressed ;

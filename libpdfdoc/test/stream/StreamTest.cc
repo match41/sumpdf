@@ -74,14 +74,11 @@ void StreamTest::TestWrite( )
 	CPPUNIT_ASSERT( subject.Length( ) == str.size() ) ;	
 	
 	std::stringstream ss ;
-	ss << subject.MakeDictWithLength( pdf::Ref( 101, 0 ) ) ;
-	std::size_t count = subject.WriteData( ss.rdbuf() ) ;
-	CPPUNIT_ASSERT( count == str.size() ) ;
-	CPPUNIT_ASSERT( subject.Length( ) == str.size( ) ) ;	
+	CPPUNIT_ASSERT( ss << subject ) ;
 
 	pdf::Dictionary dict ;
 	ss >> dict ;
-	CPPUNIT_ASSERT( dict["Length"] == pdf::Ref( 101, 0 ) ) ;
+	CPPUNIT_ASSERT( dict["Length"] == str.size() ) ;
 }
 
 void StreamTest::TestReset( )
@@ -145,8 +142,11 @@ void StreamTest::tearDown( )
 
 void StreamTest::TestWriteOstream( )
 {
-	pdf::Stream subject( "hello world" ) ;
-	pdf::Object obj( subject ) ;
-	std::ostringstream ss ;
-	CPPUNIT_ASSERT_THROW( ss << obj, pdf::Exception ) ;
+}
+
+void StreamTest::TestName( )
+{
+	pdf::Stream s( pdf::Stream::deflate ) ;
+	CPPUNIT_ASSERT( s.Self()["Filter"].As<pdf::Name>()
+		== pdf::Name("FlateDecode") ) ;
 }

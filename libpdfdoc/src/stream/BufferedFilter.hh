@@ -58,7 +58,8 @@ public :
 	std::size_t Write( const unsigned char *data, std::size_t size ) ;
 	void Reset( ) ;
 	std::size_t Length( ) const ;
-
+	Object GetFilterName( ) const ;
+	
 private :
 	std::vector<unsigned char>	m_buf ;		//!< chunk of data in memory
 	std::size_t					m_offset ;	//!< current read position

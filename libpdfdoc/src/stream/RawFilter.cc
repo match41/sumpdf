@@ -27,6 +27,8 @@
 
 #include "RawFilter.hh"
 
+#include "core/Object.hh"
+
 #include <cassert>
 #include <streambuf>
 
@@ -92,6 +94,11 @@ void RawFilter::Reset( )
 std::size_t RawFilter::Length( ) const
 {
 	return m_length - m_current ;
+}
+
+Object RawFilter::GetFilterName( ) const
+{
+	return Object( ) ;
 }
 
 } // end of namespace
