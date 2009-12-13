@@ -1,5 +1,5 @@
-/***************************************************************************
- *   Copyright (C) 2006 by Nestal Wan                                      *
+/***************************************************************************\
+ *   Copyright (C) 2009 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -16,52 +16,38 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+ \***************************************************************************/
 
-/*!
-	\file	PageNode.cc
-	\brief	implementation the PageNode class
-	\date	Sat Apr 12 2008
+/**
+	\file	CatalogTest.h
+	\brief	definition the CatalogTest class
+	\date	Dec 13, 2009
 	\author	Nestal Wan
 */
 
-#include "PageNode.hh"
-#include "PageTree.hh"
+#ifndef __PDFUT_CATALOGTEST_HEADER_INCLUDED__
+#define __PDFUT_CATALOGTEST_HEADER_INCLUDED__
 
-#include "Resources.hh"
+#include <cppunit/TestFixture.h>
 
-#include "core/Object.hh"
-#include "file/IFile.hh"
+#include <cppunit/extensions/HelperMacros.h>
 
-#include <iostream>
-#include <cassert>
-
-namespace pdf {
-
-PageNode::PageNode( const Dictionary& self, IFile *file )
-	: m_resources( new Resources )
+/*!	\brief	brief description
+	
+	this class represents
+*/
+class CatalogTest : public CppUnit::TestFixture
 {
-}
+public:
+	CatalogTest( ) ;
 
-PageNode::PageNode( )
-	: m_resources( new Resources )
-{
-}
+	// declare suit function
+	CPPUNIT_TEST_SUITE( CatalogTest ) ;
+		CPPUNIT_TEST( TestRead ) ;
+	CPPUNIT_TEST_SUITE_END();
 
-PageNode::~PageNode( )
-{
-}
+private :
+	void TestRead( ) ;
+} ;
 
-Resources* PageNode::GetResource( )
-{
-	assert( m_resources != 0 ) ;
-	return m_resources ;
-}
-
-const Resources* PageNode::GetResource( ) const
-{
-	assert( m_resources != 0 ) ;
-	return m_resources ;
-}
-
-} // end of namespace
+#endif // CATALOGTEST_H_

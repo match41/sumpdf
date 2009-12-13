@@ -1,5 +1,5 @@
-/***************************************************************************
- *   Copyright (C) 2006 by Nestal Wan                                      *
+/***************************************************************************\
+ *   Copyright (C) 2009 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -16,52 +16,28 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+ \***************************************************************************/
 
-/*!
-	\file	PageNode.cc
-	\brief	implementation the PageNode class
-	\date	Sat Apr 12 2008
+/**
+	\file	CatalogTest.cpp
+	\brief	definition the CatalogTest class
+	\date	Dec 13, 2009
 	\author	Nestal Wan
 */
 
-#include "PageNode.hh"
-#include "PageTree.hh"
+#include "CatalogTest.hh"
 
-#include "Resources.hh"
+#include "mock/MockFile.hh"
 
-#include "core/Object.hh"
-#include "file/IFile.hh"
+#include <sstream>
 
-#include <iostream>
-#include <cassert>
-
-namespace pdf {
-
-PageNode::PageNode( const Dictionary& self, IFile *file )
-	: m_resources( new Resources )
+CatalogTest::CatalogTest( )
 {
 }
 
-PageNode::PageNode( )
-	: m_resources( new Resources )
+void CatalogTest::TestRead( )
 {
-}
+	std::ostringstream ss( "<</PageLayout /SinglePage/PageMode /UseNode"
+	                       "/Pages 1 0 R/Type /Catalog/Version /1.4>>" ) ;
 
-PageNode::~PageNode( )
-{
 }
-
-Resources* PageNode::GetResource( )
-{
-	assert( m_resources != 0 ) ;
-	return m_resources ;
-}
-
-const Resources* PageNode::GetResource( ) const
-{
-	assert( m_resources != 0 ) ;
-	return m_resources ;
-}
-
-} // end of namespace

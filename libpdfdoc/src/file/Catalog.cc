@@ -45,14 +45,18 @@
 namespace pdf {
 
 Catalog::Catalog( )
-	: m_tree( 0 ),
-	  m_version		( "1.4" ),
-	  m_page_layout	( "SinglePage" ),
-	  m_page_mode	( "UseNode" )
+: m_tree		( 0 ),
+  m_version		( "1.4" ),
+  m_page_layout	( "SinglePage" ),
+  m_page_mode	( "UseNode" )
 {
 }
 
-void Catalog::Read( const Ref& link, IFile *file )
+Catalog::Catalog( const Ref& link, IFile *file )
+	: m_tree		( 0 ),
+	  m_version		( "1.4" ),
+	  m_page_layout	( "SinglePage" ),
+	  m_page_mode	( "UseNode" )
 {
 	assert( file != 0 ) ;
 	m_self = file->ReadObj( link ).As<Dictionary>() ;
@@ -71,12 +75,17 @@ void Catalog::Read( const Ref& link, IFile *file )
 		
 	m_tree = new PageTree( tree, file ) ;
 	
-	// TODO: no know how to handle it yet
+	// TODO: no know how to handle OpenAction it yet
 	m_self.erase( Name( "OpenAction" ) ) ;
 
 	m_self.Extract( "Version",		m_version ) ;
 	m_self.Extract( "PageLayout",	m_page_layout ) ;
 	m_self.Extract( "PageMode",		m_page_mode ) ;
+}
+
+Catalog::~Catalog( )
+{
+	delete m_tree ;
 }
 
 Ref Catalog::Write( IFile *file ) const

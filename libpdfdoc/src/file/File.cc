@@ -216,7 +216,6 @@ void File::WriteObj( const Object& obj, const Ref& link )
 	assert( m_objs[link.ID()] == 0 ) ;
 	
 	m_objs[link.ID()] = m_out->tellp( ) ;
-	
 	*m_out << link.ID() << " 0 obj\n"
 	       << obj << "\nendobj\n" ;
 }

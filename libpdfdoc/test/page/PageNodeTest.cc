@@ -31,34 +31,47 @@
 #include "page/RealPage.hh"
 
 PageNodeTest::PageNodeTest( )
+	: m_root( 0 )
 {
+}
+
+void PageNodeTest::setUp( )
+{
+	m_root = new pdf::PageTree ;
+}
+
+void PageNodeTest::tearDown( )
+{
+	delete m_root ;
 }
 
 void PageNodeTest::TestCount( )
 {
-	pdf::PageTree root, level1( &root ), level2( &level1 ) ;
-	pdf::RealPage page( &level2 ) ;
+	pdf::PageTree *level1	= new pdf::PageTree( m_root ),
+	              *level2	= new pdf::PageTree( level1 ) ;
+	pdf::RealPage *page		= new pdf::RealPage( level2 ) ;
 	
-	CPPUNIT_ASSERT( root.Count( ) == 1 ) ;
+	CPPUNIT_ASSERT( m_root->Count( ) == 1 ) ;
 
-	pdf::RealPage page2( &level1 ) ;
-	CPPUNIT_ASSERT( root.Count( ) == 2 ) ;
+	pdf::RealPage *page2	= new pdf::RealPage( level1 ) ;
+	CPPUNIT_ASSERT( m_root->Count( ) == 2 ) ;
 }
 
 void PageNodeTest::TestGetLeaf( )
 {
-	pdf::PageTree root, level1( &root ), level2( &level1 ) ;
-	pdf::RealPage page( &level2 ) ;
+	pdf::PageTree *level1	= new pdf::PageTree( m_root ),
+	              *level2	= new pdf::PageTree( level1 ) ;
+	pdf::RealPage *page		= new pdf::RealPage( level2 ) ;
 
-	CPPUNIT_ASSERT( root.GetLeaf( 0 ) == &page ) ;
-	CPPUNIT_ASSERT( root.GetLeaf( root.Count() ) == 0 ) ;
-	CPPUNIT_ASSERT( root.GetLeaf( 100 ) == 0 ) ;
+	CPPUNIT_ASSERT( m_root->GetLeaf( 0 ) == page ) ;
+	CPPUNIT_ASSERT( m_root->GetLeaf( m_root->Count() ) == 0 ) ;
+	CPPUNIT_ASSERT( m_root->GetLeaf( 100 ) == 0 ) ;
 
-	pdf::RealPage page2( &level1 ) ;
-	CPPUNIT_ASSERT( root.GetLeaf( 0 ) == &page ) ;
-	CPPUNIT_ASSERT( root.GetLeaf( 1 ) == &page2 ) ;
-	CPPUNIT_ASSERT( root.GetLeaf( root.Count() ) == 0 ) ;
-	CPPUNIT_ASSERT( root.GetLeaf( 100 ) == 0 ) ;
+	pdf::RealPage *page2	= new pdf::RealPage( level1 ) ;
+	CPPUNIT_ASSERT( m_root->GetLeaf( 0 ) == page ) ;
+	CPPUNIT_ASSERT( m_root->GetLeaf( 1 ) == page2 ) ;
+	CPPUNIT_ASSERT( m_root->GetLeaf( m_root->Count() ) == 0 ) ;
+	CPPUNIT_ASSERT( m_root->GetLeaf( 100 ) == 0 ) ;
 }
 
 void PageNodeTest::TestOrder( )
@@ -70,13 +83,16 @@ void PageNodeTest::TestOrder( )
 	//    |  \- page1
 	//    |- page2
 	//    \- page3
-	pdf::PageTree root, level0( &root ), level1( &level0 ) ;
-	pdf::RealPage page0( &level1 ), page2( &level0 ), page3( &level0 ),
-	              page1( &level1 ) ;
+	pdf::PageTree *level0	= new pdf::PageTree( m_root ),
+	              *level1	= new pdf::PageTree( level0 ) ;
+	pdf::RealPage *page0	= new pdf::RealPage( level1 ),
+	              *page1	= new pdf::RealPage( level1 ),
+                  *page2	= new pdf::RealPage( level0 ),
+                  *page3	= new pdf::RealPage( level0 ) ;
 	
-	CPPUNIT_ASSERT( root.Count( ) == 4 ) ;
-	CPPUNIT_ASSERT( root.GetLeaf( 0 ) == &page0 ) ;
-	CPPUNIT_ASSERT( root.GetLeaf( 1 ) == &page1 ) ;
-	CPPUNIT_ASSERT( root.GetLeaf( 2 ) == &page2 ) ;
-	CPPUNIT_ASSERT( root.GetLeaf( 3 ) == &page3 ) ;
+	CPPUNIT_ASSERT( m_root->Count( ) == 4 ) ;
+	CPPUNIT_ASSERT( m_root->GetLeaf( 0 ) == page0 ) ;
+	CPPUNIT_ASSERT( m_root->GetLeaf( 1 ) == page1 ) ;
+	CPPUNIT_ASSERT( m_root->GetLeaf( 2 ) == page2 ) ;
+	CPPUNIT_ASSERT( m_root->GetLeaf( 3 ) == page3 ) ;
 }

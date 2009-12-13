@@ -43,14 +43,16 @@ class IFile ;
 
 /*!	\brief	brief description
 
-	This class represents the document catalog of a PDF file.
+	This class represents the document catalog of a PDF file. The document
+	catalog stores the main page tree of the document.
 */
 class Catalog
 {
 public :
 	Catalog( ) ;
-
-	void Read( const Ref& link, IFile *file ) ;
+	Catalog( const Ref& link, IFile *file ) ;
+	~Catalog( ) ;
+	
 	Ref Write( IFile *file ) const ;
 
 	RealPage* AddPage( ) ;

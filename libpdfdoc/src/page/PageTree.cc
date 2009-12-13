@@ -39,6 +39,7 @@
 #include "util/Util.hh"
 
 #include <boost/bind.hpp>
+#include <boost/lambda/construct.hpp>
 
 #include <cassert>
 #include <numeric>
@@ -84,20 +85,13 @@ PageTree::PageTree( PageTree *parent )
 	if ( parent )
 		parent->AppendNode( this ) ;
 }
-/*
-template <> PageNode* CreateNewElement( const Object& obj, ElementReader * )
+
+PageTree::~PageTree( )
 {
-	const Dictionary d = obj.As<Dictionary>() ;
-	if ( d["Type"].As<Name>() == Name( "Pages" ) )
-		return new PageTree ;
-	
-	else if ( d["Type"].As<Name>() == Name( "Page" ) )
-		return new RealPage ;
-	
-	else
-		throw ParseError( "invalid page type" ) ;
+	std::for_each( m_kids.begin(), m_kids.end(),
+	               boost::lambda::delete_ptr( ) ) ;
 }
-*/
+
 void PageTree::Write( const Ref& link, IFile *file, const Ref& ) const
 {
 	std::vector<Ref> kids ;

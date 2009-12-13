@@ -49,6 +49,7 @@
 
 #include "page/XObjectTest.hh"
 #include "file/FileTest.hh"
+#include "file/CatalogTest.hh"
 #include "page/PageNodeTest.hh"
 #include "image/PngImageTest.hh"
 #include "image/JpegImageTest.hh"
@@ -71,6 +72,7 @@ int main( int argc, char **argv )
 	runner.addTest( XObjectTest::suite( ) ) ;
 	runner.addTest( StreamTest::suite( ) ) ;
 	runner.addTest( FileTest::suite( ) ) ;
+	runner.addTest( CatalogTest::suite( ) ) ;
 	runner.addTest( PageNodeTest::suite( ) ) ;
 
 // freetype library is optional

@@ -405,6 +405,7 @@ set( UT_SRCS	test/core/TokenTest.cc
 				test/page/XObjectTest.cc
 				
 				test/file/FileTest.cc
+				test/file/CatalogTest.cc
 				
 				test/font/TrueTypeFileTest.cc
 				test/font/TrueTypeTableTest.cc

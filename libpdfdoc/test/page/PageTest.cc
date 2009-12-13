@@ -42,7 +42,18 @@
 #include <sstream>
 
 PageTest::PageTest( )
+	: m_root( 0 )
 {
+}
+
+void PageTest::setUp( )
+{
+	m_root = new pdf::PageTree ;
+}
+
+void PageTest::tearDown( )
+{
+	delete m_root ;
 }
 
 void PageTest::TestNormal( )
@@ -83,7 +94,6 @@ void PageTest::TestNormal( )
 	file.AddObj( pdf::Ref( 697, 0 ), pd ) ;
 	
 	pdf::Object obj( d ) ;
-	pdf::PageTree pt ;
-	pdf::RealPage p( &pt, d, &file ) ;
-	CPPUNIT_ASSERT( p.MediaBox() == pdf::Rect( 0, 0, 297, 419 ) ) ;
+	pdf::RealPage *p  = new pdf::RealPage( m_root, d, &file ) ;
+	CPPUNIT_ASSERT( p->MediaBox() == pdf::Rect( 0, 0, 297, 419 ) ) ;
 }

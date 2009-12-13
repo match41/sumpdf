@@ -32,6 +32,11 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+namespace pdf
+{
+	class PageTree ;
+}
+
 /*!	\brief	brief description
 	
 	this class represents
@@ -46,8 +51,15 @@ public :
 		CPPUNIT_TEST( TestNormal ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
+public :
+	void setUp( ) ;
+	void tearDown( ) ;
+
 private :
 	void TestNormal( ) ;
+
+private :
+	pdf::PageTree	*m_root ;
 } ;
 
 

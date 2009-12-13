@@ -61,10 +61,10 @@ void FileTest::TestSimple( )
 	} ; 
 	
 	Dictionary obj3 ;
-	obj3["Type"] = Name( "Page" ) ;
-	obj3["Parent"] = Ref( 1, 0 ) ;
-	obj3["Resources"] = Ref( 2, 0 ) ;
-	obj3["Contents"] = Ref( 4, 0 ) ;
+	obj3["Type"]		= Name( "Page" ) ;
+	obj3["Parent"]		= Ref( 1, 0 ) ;
+	obj3["Resources"]	= Ref( 2, 0 ) ;
+	obj3["Contents"]	= Ref( 4, 0 ) ;
 	f.WriteObj( obj3, link[3] ) ;
 
 	Stream obj4( "2 J\n0.57 w\nBT /F1 16.00 Tf ET\n"
