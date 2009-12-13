@@ -40,8 +40,6 @@
 
 #include "font/BaseFont.hh"
 
-#include "stream/Stream.hh"
-
 #include "util/Rect.hh"
 #include "util/Util.hh"
 
@@ -88,20 +86,20 @@ Rect RealPage::MediaBox( ) const
 	return m_media_box ;
 }
 
-void RealPage::ReadContent( Object& str_obj, IFile *src )
+void RealPage::ReadContent( const Object& str_obj, IFile *src )
 {
 	// for indirect objects, dereference it
-/*    if ( str_obj.IsType<Ref>( ) )
+	if ( str_obj.IsType<Ref>( ) )
 		ReadContent( src->ReadObj( str_obj ), src ) ;
 
 	// append individual stream objects
-	else*/ if ( str_obj.IsType<Stream>( ) )
+	else if ( str_obj.IsType<Stream>( ) )
 		DecodeContent( str_obj.As<Stream>( ) ) ;
 
 	// catenate individual objects in array
 	else if ( str_obj.IsType<Array>( ) )
 	{
-		Array& a = str_obj.As<Array>( ) ;
+		const Array& a = str_obj.As<Array>( ) ;
 		std::for_each( a.begin( ), a.end( ),
 		               boost::bind( &RealPage::ReadContent, this, _1, src ) ) ;
 	}
@@ -136,6 +134,11 @@ void RealPage::DrawText( double x, double y, Font *f, const std::string& text )
 	BaseFont *font = dynamic_cast<BaseFont*>( f ) ;
 	assert( font != 0 ) ;
 	Name fname = GetResource( )->AddFont( font ) ;
+	
+	if ( m_content.empty() )
+		m_content.push_back( Stream() ) ;
+
+//	m_content.front()
 /*
 	m_content << "BT\n"
               << fname << " 12 Tf " << x << ' ' << y << " Td "
@@ -178,9 +181,9 @@ void RealPage::DecodeContent( const Stream& s )
 			src.ResetState( ) ;
 			if ( src >> cmd )
 			{
-				m_contents.push_back( PaintOp( cmd.Get(),
-				                               args.empty() ? 0 : &args[0],
-				                               args.size() ) ) ;
+//				m_contents.push_back( PaintOp( cmd.Get(),
+//				                               args.empty() ? 0 : &args[0],
+//				                               args.size() ) ) ;
 				args.clear( ) ;
 			}
 			else

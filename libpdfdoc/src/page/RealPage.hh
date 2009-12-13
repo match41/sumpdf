@@ -36,6 +36,7 @@
 
 #include "core/Dictionary.hh"
 #include "core/Token.hh"
+#include "stream/Stream.hh"
 #include "util/Rect.hh"
 
 #include <string>
@@ -72,7 +73,7 @@ public :
 	PageNode* GetLeaf( std::size_t index ) ;
 	
 private :
-	void ReadContent( Object& str_obj, IFile *file ) ;
+	void ReadContent( const Object& str_obj, IFile *file ) ;
 	void DecodeContent( const Stream& s ) ;
 	
 private :
@@ -80,7 +81,8 @@ private :
 	Dictionary	m_self ;
 	Rect		m_media_box ;
 	
-	std::vector<PaintOp>	m_contents ;
+//	std::vector<PaintOp>	m_contents ;
+	std::vector<Stream>		m_content ;
 
 	int	m_rotate ;
 } ;
