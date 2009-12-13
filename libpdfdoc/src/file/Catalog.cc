@@ -27,8 +27,7 @@
 
 #include "Catalog.hh"
 
-#include "ElementReader.hh"
-#include "ElementDest.hh"
+#include "ObjectReader.hh"
 #include "IFile.hh"
 
 #include "core/Array.hh"
@@ -66,10 +65,12 @@ void Catalog::Read( const Ref& link, IFile *file )
 	}
 
 	// page tree is mandatory
-	ElementReader reader( file ) ;
-	m_tree = reader.Read<PageTree>( m_self["Pages"] ) ;
-	m_self.erase( "Pages" ) ;
-
+	Dictionary tree ;
+	if ( !Detach( file, m_self, "Pages", tree ) )
+		throw ParseError( "no page tree in catalog" ) ;
+		
+	m_tree = new PageTree( tree, file ) ;
+	
 	// TODO: no know how to handle it yet
 	m_self.erase( Name( "OpenAction" ) ) ;
 
@@ -82,8 +83,10 @@ Ref Catalog::Write( IFile *file ) const
 {
 	Dictionary self( m_self ) ;
 
-	ElementDest dest( file ) ;
-	self["Pages"] 	    = dest.Write( m_tree ) ;
+	Ref tree = file->AllocLink( ) ;
+	m_tree->Write( tree, file, Ref() ) ; 
+
+	self["Pages"] 	    = tree ;
 	self["Type"]	    = Name( "Catalog" ) ;
 	self["Version"]		= m_version ;
 	self["PageLayout"]	= m_page_layout ;
@@ -92,13 +95,13 @@ Ref Catalog::Write( IFile *file ) const
 	return file->WriteObj( self ) ;
 }
 
-void Catalog::AddPage( RealPage *page )
+RealPage* Catalog::AddPage( )
 {
 	if ( m_tree == 0 )
 		m_tree = new PageTree ;
 
 	// for now the pages are arranged linearly for now
-	m_tree->AppendLeaf( page ) ;
+	return new RealPage( m_tree ) ;
 }
 
 std::size_t Catalog::PageCount( ) const

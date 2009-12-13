@@ -30,11 +30,8 @@
 #include "XObject.hh"
 
 #include "core/Array.hh"
-#include "file/ElementList.hh"
 #include "file/IFile.hh"
 #include "file/ObjectReader.hh"
-#include "file/ElementReader.hh"
-#include "file/ElementDest.hh"
 #include "font/BaseFont.hh"
 #include "util/Util.hh"
 
@@ -64,7 +61,7 @@ void Resources::Read( const Object& self, IFile *file )
 	m_proc_set.assign( proc_set.begin( ), proc_set.end( ) ) ;
 
 	ReadFontDict( file ) ;
-	ReadSubDict( "XObject", file, m_xobjs ) ;
+//	ReadSubDict( "XObject", file, m_xobjs ) ;
 }
 
 Ref Resources::Write( IFile *repo ) const
@@ -72,23 +69,9 @@ Ref Resources::Write( IFile *repo ) const
     Dictionary dict( m_self ) ;
 	dict["ProcSet"]	= Array( m_proc_set.begin( ), m_proc_set.end( ) ) ;
 //  dict["Font"]	= WriteSubDict( m_fonts, repo ) ;
-    dict["XObject"]	= WriteSubDict( m_xobjs, repo ) ;
+//	dict["XObject"]	= WriteSubDict( m_xobjs, repo ) ;
 
     return repo->WriteObj( dict ) ;
-}
-
-template <typename T>
-Dictionary Resources::WriteSubDict( const std::map<Name, T*>& input,
-                                    IFile *file ) const
-{
-	Dictionary dict ;
-
-	ElementDest dest( file ) ;
-	typedef typename std::map<Name, T*>::const_iterator FontIt ;
-	for ( FontIt i = input.begin( ) ; i != input.end( ) ; ++i )
-		dict.insert( std::make_pair( i->first, dest.Write( i->second ) ) ) ;
-
-	return dict ;
 }
 
 void Resources::ReadFontDict( IFile *file )
@@ -104,23 +87,6 @@ void Resources::ReadFontDict( IFile *file )
 			BaseFont *font = CreateFont( i->second, file ) ; 
 			m_fonts.insert( std::make_pair( i->first, font ) ) ;
 		}
-	}
-}
-
-template <typename T>
-void Resources::ReadSubDict( const Name& name, IFile *file,
-					         std::map<Name, T*>& output )
-{
-	assert( file != 0 ) ;
-
-	Dictionary dict ;
-	if ( Detach( file, m_self, name, dict ) )
-	{
-		ElementReader repo( file ) ;
-		for ( Dictionary::const_iterator i  = dict.begin( ) ;
-										 i != dict.end( ) ; ++i )
-			output.insert( std::make_pair(
-				i->first, repo.Read<T>( i->second ) ) ) ;
 	}
 }
 

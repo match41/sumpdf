@@ -28,13 +28,11 @@
 #ifndef __PDF_XOBJECT_HEADER_INCLUDED__
 #define __PDF_XOBJECT_HEADER_INCLUDED__
 
-#include "file/StreamElement.hh"
-
-#include "file/ElementFactory.hh"
+#include "stream/Stream.hh"
 
 namespace pdf {
 
-class Stream ;
+class IFile ;
 
 /*!	\brief	PDF external objects
 	
@@ -42,19 +40,16 @@ class Stream ;
 	XObject) is a graphics object whose contents are defined by a self-contained
 	content stream."
 */
-class XObject : public StreamElement
+class XObject
 {
 public :
 	XObject( ) ;
 
-	void Init( Object& link, ElementReader *repo ) ;
-/*	void Read( Stream& str, IElementSrc *repo ) ;
-	void Write( const Ref& link, IElementDest *repo ) const ;
+	void Init( Object& link, IFile *repo ) ;
 
-	ElementList GetChildren( ) const ;*/
+private :
+	Stream	m_str ;
 } ;
-
-template <> XObject* CreateNewElement( const Object& link, ElementReader * ) ;
 
 } // end of namespace
 

@@ -28,17 +28,15 @@
 #ifndef __PDF_PAGE_NODE_HEADER_INCLUDED__
 #define __PDF_PAGE_NODE_HEADER_INCLUDED__
 
-#include "file/IElement.hh"
-
-#include "file/ElementFactory.hh"
-
 #include <cstddef>
 
 namespace pdf {
 
-class Object ;
+class Dictionary ;
 class PageTree ;
 class Resources ;
+class IFile ;
+class Ref ;
 
 /*!	\brief	brief description
 
@@ -46,35 +44,26 @@ class Resources ;
 	it can be a leaf node (i.e. a page) or a tree node (which contains other
 	nodes)
 */
-class PageNode : public IElement
+class PageNode
 {
 public :
 	PageNode( ) ;
-	explicit PageNode( PageTree *parent ) ;
+	PageNode( const Dictionary& self, IFile *file ) ;
 
-	void Init( Object& link, ElementReader *src ) ;
+	virtual void Write( const Ref& link, IFile *file, const Ref& parent ) 
+		const = 0 ;
 
-	PageTree* Parent( ) ;
-	const PageTree* Parent( ) const ;
+	virtual PageTree* Parent( ) = 0 ;
 
 	Resources* GetResource( ) ;
 	const Resources* GetResource( ) const ;
-
-	void SetParent( PageTree *parent ) ;
-
-	ElementList GetChildren( ) const ;
 
 	virtual std::size_t Count( ) const = 0 ;
 	virtual PageNode* GetLeaf( std::size_t index ) = 0 ;
 
 private :
-	//! parent of this node. if 0, it is the root node.
-	PageTree	*m_parent ;
-
 	Resources	*m_resources ;
 } ;
-
-template <> PageNode* CreateNewElement( const Object&, ElementReader * ) ;
 
 } // end of namespace
 

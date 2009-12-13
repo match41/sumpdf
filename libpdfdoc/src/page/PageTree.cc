@@ -32,9 +32,8 @@
 #include "core/Array.hh"
 #include "core/Dictionary.hh"
 
-#include "file/ElementReader.hh"
-#include "file/IElementDest.hh"
-#include "file/ElementList.hh"
+#include "file/ObjectReader.hh"
+#include "file/IFile.hh"
 
 #include "util/Exception.hh"
 #include "util/Util.hh"
@@ -48,21 +47,44 @@
 
 namespace pdf {
 
-PageTree::PageTree( )
-	: PageNode( ),
+PageTree::PageTree( const Dictionary& dict, IFile *file, PageTree *parent )
+	: PageNode( dict, file ),
+	  m_parent( parent ),
 	  m_count( 0 )
 {
+	if ( parent )
+		parent->AppendNode( this ) ;
+
+	const Array& pages = dict["Kids"].As<Array>() ;
+	for ( Array::const_iterator i = pages.begin() ; i != pages.end() ; ++i )
+	{
+		PageNode *node = 0 ;
+		Dictionary d = DeRef<Dictionary>( file, *i ) ;
+		
+		if ( d["Type"].As<Name>() == Name( "Pages" ) )
+			node = new PageTree( d, file, this ) ;
+		
+		else if ( d["Type"].As<Name>() == Name( "Page" ) )
+			node = new RealPage( this, d, file ) ;
+		
+		else
+			throw ParseError( "invalid page type" ) ;
+		
+		m_kids.push_back( node ) ;
+	}
+
+	// leaf count is required
+	m_count	= dict["Count"].As<int>( ) ;
 }
 
 PageTree::PageTree( PageTree *parent )
-	: PageNode( parent ),
+	: m_parent( parent ),
 	  m_count( 0 )
 {
-	assert( parent != this ) ;
 	if ( parent )
 		parent->AppendNode( this ) ;
 }
-
+/*
 template <> PageNode* CreateNewElement( const Object& obj, ElementReader * )
 {
 	const Dictionary d = obj.As<Dictionary>() ;
@@ -75,33 +97,17 @@ template <> PageNode* CreateNewElement( const Object& obj, ElementReader * )
 	else
 		throw ParseError( "invalid page type" ) ;
 }
-
-void PageTree::Init( Object& obj, ElementReader *src )
+*/
+void PageTree::Write( const Ref& link, IFile *file, const Ref& ) const
 {
-	PageNode::Init( obj, src ) ;
-
-	Dictionary d ;
-	obj.Swap( d ) ;
-	
-	using namespace boost ;
-
-	const Array& pages = d["Kids"].As<Array>() ;
-	std::transform( pages.begin( ), pages.end( ),
-					std::back_inserter( m_kids ),
-					bind( &ElementReader::Read<PageNode>, src, _1 ) ) ;
-
-	// leaf count is required
-	m_count	= d["Count"].As<int>( ) ;
-}
-
-void PageTree::Write( const Ref& link, IElementDest *repo ) const
-{
-	using namespace boost ;
-	
 	std::vector<Ref> kids ;
-	std::transform( m_kids.begin( ), m_kids.end( ),
-	                std::back_inserter( kids ),
-	                bind( &IElementDest::Write, repo, _1 ) ) ;
+	for ( std::vector<PageNode*>::const_iterator i  = m_kids.begin() ;
+	                                             i != m_kids.end() ; ++i )
+	{
+		Ref child = file->AllocLink( ) ;
+		(*i)->Write( child, file, link ) ;
+		kids.push_back( child ) ;
+	}
 
 	// update page count before writing
 	UpdateCount( ) ;
@@ -112,7 +118,7 @@ void PageTree::Write( const Ref& link, IElementDest *repo ) const
 	self["Kids"]		= Array( kids.begin( ), kids.end( ) ) ;
 	self["Count"]		= m_count ;
 	self["MediaBox"]	= Array( Begin( mbox ), End( mbox ) ) ;
-	repo->WriteObj( self, link ) ;
+	file->WriteObj( self, link ) ;
 }
 
 void PageTree::IncChildCount( )
@@ -131,16 +137,15 @@ void PageTree::IncChildCount( )
 void PageTree::AppendLeaf( RealPage *child )
 {
 	assert( child != 0 ) ;
-    IncChildCount( ) ;
+	IncChildCount( ) ;
 	AppendNode( child ) ;
 }
 
 void PageTree::AddLeaf( std::size_t index, RealPage *child )
 {
 	assert( child != 0 ) ;
-    IncChildCount( ) ;
+	IncChildCount( ) ;
 	
-	child->SetParent( this ) ;
 	m_kids.insert( m_kids.begin() + index, child ) ;
 }
 
@@ -148,8 +153,12 @@ void PageTree::AppendNode( PageNode *child )
 {
 	assert( child != 0 ) ;
 	
-	child->SetParent( this ) ;
 	m_kids.push_back( child ) ;
+}
+
+PageTree* PageTree::Parent( )
+{
+	return m_parent ;
 }
 
 std::size_t PageTree::Count( ) const
@@ -163,11 +172,6 @@ void PageTree::UpdateCount( ) const
 	m_count = std::accumulate( m_kids.begin( ), m_kids.end( ), 0,
 	                           bind( std::plus<std::size_t>(), _1,
 	                                 bind( &PageNode::Count, _2 ) ) ) ;
-}
-
-ElementList PageTree::GetChildren( ) const
-{
-	return ElementList( m_kids.begin( ), m_kids.end( ) ) ;
 }
 
 PageNode* PageTree::GetLeaf( std::size_t index )

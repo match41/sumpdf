@@ -35,8 +35,8 @@
 #include "core/Token.hh"
 #include "core/TokenSrc.hh"
 
-#include "file/ElementReader.hh"
-#include "file/IElementDest.hh"
+#include "file/ObjectReader.hh"
+#include "file/IFile.hh"
 
 #include "font/BaseFont.hh"
 
@@ -55,11 +55,32 @@
 namespace pdf {
 
 RealPage::RealPage( PageTree *parent )
-    : PageNode( parent ),
-      m_rotate( 0 )
+	: m_parent( parent ),
+	  m_rotate( 0 )
 {
 	if ( parent )
 		parent->AppendLeaf( this ) ;
+}
+
+RealPage::RealPage( PageTree *parent, const Dictionary& self, IFile *file )
+    : m_parent( parent ),
+      m_self( self ),
+      m_rotate( 0 )
+{
+	assert( file != 0 ) ;
+
+	if ( parent )
+		parent->AppendLeaf( this ) ;
+
+	// read content
+	Object contents ;
+	if ( Detach( file, m_self, "Contents", contents ) )
+	    ReadContent( contents, file ) ;
+
+	// media box
+	Array a ;
+	if ( Detach( file, m_self, "MediaBox", a ) )
+		m_media_box = Rect( a.begin( ), a.end( ) ) ;
 }
 
 Rect RealPage::MediaBox( ) const
@@ -67,32 +88,7 @@ Rect RealPage::MediaBox( ) const
 	return m_media_box ;
 }
 
-/*!	read a page from file. This function will read the page from file. It will
-	also decode the stream content data.
-*/
-void RealPage::Init( Object& self, ElementReader *repo )
-{
-	assert( repo != 0 ) ;
-	PageNode::Init( self, repo ) ;
-
-	m_self.clear( ) ;
-	self.Swap( m_self ) ;
-
-	// read content
-	Object contents ;
-	if ( repo->Detach( m_self, "Contents", contents ) )
-	    ReadContent( contents, repo ) ;
-
-	// media box
-	Array a ;
-	if ( repo->Detach( m_self, "MediaBox", a ) )
-		m_media_box = Rect( a.begin( ), a.end( ) ) ;
-
-	// parent
-	SetParent( repo->Read<PageTree>( m_self["Parent"] ) ) ;
-}
-
-void RealPage::ReadContent( Object& str_obj, ElementReader *src )
+void RealPage::ReadContent( Object& str_obj, IFile *src )
 {
 	// for indirect objects, dereference it
 /*    if ( str_obj.IsType<Ref>( ) )
@@ -114,17 +110,17 @@ void RealPage::ReadContent( Object& str_obj, ElementReader *src )
 		throw std::runtime_error( "invalid page content" ) ;
 }
 
-void RealPage::Write( const Ref& link, IElementDest *file ) const
+void RealPage::Write( const Ref& link, IFile *file, const Ref& parent ) const
 {
-	assert( Parent( ) != 0 ) ;
-	assert( GetResource( ) != 0 ) ;
 	assert( file != 0 ) ;
+	assert( m_parent != 0 ) ;
+	assert( GetResource( ) != 0 ) ;
 
 	Dictionary self( m_self ) ;
 	self["Type"]		= Name( "Page" ) ;
 // 	self["Contents"]    = file->WriteObj( Stream( m_content.str( ) ) ) ;
-	self["Resources"]   = GetResource( )->Write( file->GetFile( ) ) ;
-	self["Parent"]   	= file->Write( Parent( ) ) ;
+	self["Resources"]   = GetResource( )->Write( file ) ;
+	self["Parent"]   	= parent ;
 
     if ( m_media_box != Rect() )
     	self["MediaBox"] = Array( m_media_box.begin( ), m_media_box.end( ) ) ;
@@ -153,6 +149,10 @@ std::size_t RealPage::Count( ) const
 	return 1 ;
 }
 
+PageTree* RealPage::Parent( )
+{
+	return m_parent ;
+}
 
 PageNode* RealPage::GetLeaf( std::size_t index )
 {

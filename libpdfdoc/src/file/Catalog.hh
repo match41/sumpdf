@@ -53,7 +53,7 @@ public :
 	void Read( const Ref& link, IFile *file ) ;
 	Ref Write( IFile *file ) const ;
 
-	void AddPage( RealPage *page ) ;
+	RealPage* AddPage( ) ;
 
 	std::size_t PageCount( ) const ;
 

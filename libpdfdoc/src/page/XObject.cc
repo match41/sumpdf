@@ -27,14 +27,11 @@
 
 #include "XObject.hh"
 
-#include "RealImage.hh"
-
 #include "core/Dictionary.hh"
 #include "core/Object.hh"
 
-#include "file/ElementList.hh"
-#include "file/ElementReader.hh"
-#include "file/IElementDest.hh"
+#include "file/ObjectReader.hh"
+#include "file/IFile.hh"
 
 #include <iostream>
 
@@ -57,24 +54,14 @@ void XObject::Read( Stream& str, IElementSrc *repo )
 	}
 }
 */
-void XObject::Init( Object& obj, ElementReader *src )
+void XObject::Init( Object& obj, IFile *file )
 {
-	StreamElement::Init( obj, src ) ;
+	m_str = DeRef<Stream>( file, obj ) ;
 
-	std::cout << "this is an xobject: " << Dict()["Subtype"] << std::endl ;
+	std::cout << "this is an xobject: "
+	          << m_str.Self()["Subtype"] << std::endl ;
 }
 /*
-void XObject::Write( const Ref& link, IElementDest *repo ) const
-{
-	repo->WriteObj( m_self, link ) ;
-}
-
-ElementList XObject::GetChildren( ) const
-{
-	return ElementList( ) ;
-}
-*/
-
 template <> XObject* CreateNewElement( const Object& obj, ElementReader *src )
 {
 	assert( src != 0 ) ;
@@ -86,5 +73,6 @@ template <> XObject* CreateNewElement( const Object& obj, ElementReader *src )
 	else
 		return new XObject ;
 }
+*/
 
 } // end of namespace

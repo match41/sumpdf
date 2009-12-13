@@ -31,10 +31,6 @@
 #include "core/Ref.hh"
 #include "core/Object.hh"
 
-#include "file/ElementReader.hh"
-#include "file/ElementDest.hh"
-#include "file/ElementList.hh"
-#include "file/ElementTracker.hh"
 #include "file/File.hh"
 
 #include "page/RealPage.hh"
@@ -82,7 +78,6 @@ void RealDoc::Read( const std::string& filename )
 	// read the cross reference of the PDF file
 	File file( &m_readfs ) ;
 
-	ElementReader repo( &file ) ;
 	m_catalog = new Catalog ;
 	m_catalog->Read( file.Root( ), &file ) ;
 }
@@ -101,9 +96,7 @@ RealPage* RealDoc::AppendPage( )
 {
 	assert( m_catalog != 0 ) ;
 
-    RealPage *p = new RealPage ;
-	m_catalog->AddPage( p ) ;
-	return p ;
+	return m_catalog->AddPage( ) ;
 }
 
 std::size_t RealDoc::PageCount( ) const

@@ -32,7 +32,6 @@
 #include "core/Ref.hh"
 #include "core/Dictionary.hh"
 #include "core/Ref.hh"
-#include "file/ElementReader.hh"
 #include "page/Resources.hh"
 #include "util/Rect.hh"
 

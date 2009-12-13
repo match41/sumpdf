@@ -28,7 +28,6 @@
 #include "StandardFont.hh"
 
 #include "core/Dictionary.hh"
-#include "file/IElementDest.hh"
 #include "util/Util.hh"
 
 #include <set>

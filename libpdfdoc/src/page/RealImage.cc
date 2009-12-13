@@ -35,11 +35,11 @@ RealImage::RealImage( const std::string& filename )
 {
 }
 
-void RealImage::Init( Object& obj, ElementReader *src )
-{
-	StreamElement::Init( obj, src ) ;
-	
-	std::cerr << "this is an image" << std::endl ;
-}
+//void RealImage::Init( Object& obj, ElementReader *src )
+//{
+//	StreamElement::Init( obj, src ) ;
+//	
+//	std::cerr << "this is an image" << std::endl ;
+//}
 
 } // end of namespace

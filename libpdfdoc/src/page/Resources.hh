@@ -58,14 +58,6 @@ public :
 	Ref  Write( IFile *file ) const ;
 
 private :
-	template <typename T>
-	void ReadSubDict( const Name& name, IFile *file,
-	                  std::map<Name, T*>& output ) ;
-
-	template <typename T>
-	Dictionary WriteSubDict( const std::map<Name, T*>& input,
-	                         IFile *repo ) const ;
-
 	void ReadFontDict( IFile *file ) ;
 
 	XObject* ReadXObj( const Ref& link ) ;

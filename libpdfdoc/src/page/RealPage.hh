@@ -47,6 +47,7 @@ class Font ;
 class Name ;
 class Stream ;
 class Resources ;
+class IFile ;
 
 /*!	\brief	real implementation of a page
 	
@@ -56,24 +57,26 @@ class Resources ;
 class RealPage : public Page, public PageNode
 {
 public :
-	explicit RealPage( PageTree *parent = 0 ) ;
+	RealPage( PageTree *parent, const Dictionary& link, IFile *file ) ;
+	explicit RealPage( PageTree *parent ) ;
 
-	void Init( Object& link, ElementReader *repo ) ;
-	void Write( const Ref& link, IElementDest *repo ) const ;
+	void Write( const Ref& link, IFile *file, const Ref& parent ) const ;
 	
 	Rect MediaBox( ) const ;
 
 	void DrawText( double x, double y, Font *font, const std::string& text ) ;
 
 	std::size_t Count( ) const ;
+	PageTree* Parent( ) ;
 	
 	PageNode* GetLeaf( std::size_t index ) ;
 	
 private :
-	void ReadContent( Object& str_obj, ElementReader *src ) ;
+	void ReadContent( Object& str_obj, IFile *file ) ;
 	void DecodeContent( const Stream& s ) ;
 	
 private :
+	PageTree	*m_parent ;
 	Dictionary	m_self ;
 	Rect		m_media_box ;
 	

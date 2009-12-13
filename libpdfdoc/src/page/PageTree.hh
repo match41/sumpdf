@@ -35,6 +35,8 @@
 namespace pdf {
 
 class RealPage ;
+class Dictionary ;
+class IFile ;
 
 /*!	\brief	tree nodes in page tree
 	
@@ -43,16 +45,14 @@ class RealPage ;
 class PageTree : public PageNode
 {
 public :
-	PageTree( ) ;
-	explicit PageTree( PageTree *parent ) ;
+	explicit PageTree( PageTree *parent = 0 ) ;
+	PageTree( const Dictionary& dict, IFile *file, PageTree *parent = 0 ) ;
 
-	void Init( Object& link, ElementReader *repo ) ;
-	void Write( const Ref& link, IElementDest *repo ) const ;
+	void Write( const Ref& link, IFile *file, const Ref& parent ) const ;
 
+	PageTree* Parent( ) ;
 	std::size_t Count( ) const ;
 
-	ElementList GetChildren( ) const ;
-	
 	PageNode* GetLeaf( std::size_t index ) ;
 	void AppendLeaf( RealPage *child ) ;
 	void AddLeaf( std::size_t index, RealPage *child ) ;
@@ -64,6 +64,8 @@ private :
 	void UpdateCount( ) const ;
 
 private :
+	PageTree				*m_parent ;
+
 	std::vector<PageNode*>	m_kids ;
 	
 	//! number of leaf node children under this tree

@@ -68,7 +68,6 @@ public :
 	bool operator==( const Stream& str ) const ;
 
 	Dictionary Self( ) const ;
-	Dictionary MakeDictWithLength( const Ref& length_link ) const ;
     std::size_t WriteData( std::streambuf *buf ) const ;
 
 	void Swap( Stream& str ) ;
@@ -82,10 +81,6 @@ public :
 	Name Subtype( ) const ;
 
 	friend std::ostream& operator<<( std::ostream& os, const Stream& s ) ;
-
-protected :
-	const Dictionary& Dict( ) const ;
-	Dictionary& Dict( ) ;
 
 private :
 	void ApplyFilter( const Object& filter ) ;

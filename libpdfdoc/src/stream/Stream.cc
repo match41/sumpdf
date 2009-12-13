@@ -203,26 +203,6 @@ bool Stream::operator==( const Stream& str ) const
 	return m_impl.get() == str.m_impl.get() ;
 }
 
-const Dictionary& Stream::Dict( ) const
-{
-	assert( m_impl.get( ) != 0 ) ;
-	return m_impl->self ;
-}
-
-Dictionary& Stream::Dict( )
-{
-	assert( m_impl.get( ) != 0 ) ;
-	return m_impl->self ;
-}
-
-Dictionary Stream::MakeDictWithLength( const Ref& length_link ) const
-{
-	assert( m_impl.get( ) != 0 ) ;
-	Dictionary self( m_impl->self ) ;
-	self["Length"] = length_link ;
-	return self ;
-}
-
 /*! write stream data to a streambuf. This function will read all data
     from the stream and write them to the streambuf \a buf.
     \param  buf     the streambuf that will get all the stream data.

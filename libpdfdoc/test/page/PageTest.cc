@@ -32,9 +32,8 @@
 #include "core/Ref.hh"
 #include "core/Dictionary.hh"
 
-#include "file/ElementReader.hh"
-
 #include "page/RealPage.hh"
+#include "page/PageTree.hh"
 
 #include "stream/Stream.hh"
 
@@ -83,10 +82,8 @@ void PageTest::TestNormal( )
 	file.AddObj( pdf::Ref( 674, 0 ), fd ) ;
 	file.AddObj( pdf::Ref( 697, 0 ), pd ) ;
 	
-	pdf::ElementReader src( &file ) ;
-	
 	pdf::Object obj( d ) ;
-	pdf::RealPage p ;
-	p.Init( obj, &src ) ;
+	pdf::PageTree pt ;
+	pdf::RealPage p( &pt, d, &file ) ;
 	CPPUNIT_ASSERT( p.MediaBox() == pdf::Rect( 0, 0, 297, 419 ) ) ;
 }

@@ -123,7 +123,7 @@ void File::WriteTrailer( const Ref& catalog, const std::string& producer,
 	}
 	
 	*m_out << "trailer\n" << m_trailer << "\nstartxref\n" << (int)xref_pos
-	         << "\n%%EOF\n" ;
+	       << "\n%%EOF\n" ;
 }
 
 Object File::ReadObj( const Ref& obj )

@@ -31,40 +31,21 @@
 #include "Resources.hh"
 
 #include "core/Object.hh"
-#include "file/ElementReader.hh"
-#include "file/ElementList.hh"
+#include "file/IFile.hh"
 
 #include <iostream>
 #include <cassert>
 
 namespace pdf {
 
+PageNode::PageNode( const Dictionary& self, IFile *file )
+	: m_resources( new Resources )
+{
+}
+
 PageNode::PageNode( )
-	: m_parent( 0 ),
-	  m_resources( new Resources )
+	: m_resources( new Resources )
 {
-}
-
-PageNode::PageNode( PageTree *parent )
-	: m_parent( parent ),
-	  m_resources( new Resources )
-{
-	assert( parent != this ) ;
-}
-
-PageTree* PageNode::Parent( )
-{
-	return m_parent ;
-}
-
-const PageTree* PageNode::Parent( ) const
-{
-	return m_parent ;
-}
-
-void PageNode::SetParent( PageTree *parent )
-{
-	m_parent = parent ;
 }
 
 Resources* PageNode::GetResource( )
@@ -77,30 +58,6 @@ const Resources* PageNode::GetResource( ) const
 {
 	assert( m_resources != 0 ) ;
 	return m_resources ;
-}
-
-void PageNode::Init( Object& self, ElementReader *src )
-{
-	// resources may not always be indirect objects
-//	Resources* res = src->DetachElement<Resources>( self.As<Dictionary>(),
-//	                                                "Resources" ) ;
-	// TODO: we need to share the resources here. some kind of pool is needed
-	Resources* res = new Resources ;
-	res->Read( self, src->m_file ) ;
-
-	if ( res != 0 )
-	{
-		delete m_resources ;
-		m_resources = res ;
-	}
-}
-
-ElementList PageNode::GetChildren( ) const
-{
-	assert( m_resources != 0 ) ;
-	ElementList l ;
-//	l.push_back( m_resources ) ;
-	return l ;
 }
 
 } // end of namespace
