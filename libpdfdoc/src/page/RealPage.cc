@@ -165,6 +165,8 @@ PageNode* RealPage::GetLeaf( std::size_t index )
 
 void RealPage::DecodeContent( const Stream& s )
 {
+	m_content.push_back( s ) ;
+/*
 	TokenSrc src( s.InStream() ) ;
 	std::vector<Object> args ;
 
@@ -181,15 +183,16 @@ void RealPage::DecodeContent( const Stream& s )
 			src.ResetState( ) ;
 			if ( src >> cmd )
 			{
-//				m_contents.push_back( PaintOp( cmd.Get(),
-//				                               args.empty() ? 0 : &args[0],
-//				                               args.size() ) ) ;
+				m_contents.push_back( PaintOp( cmd.Get(),
+				                               args.empty() ? 0 : &args[0],
+				                               args.size() ) ) ;
 				args.clear( ) ;
 			}
 			else
 				break ;
 		}
 	}
+*/
 }
 
 } // end of namespace
