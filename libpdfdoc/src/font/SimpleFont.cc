@@ -31,6 +31,7 @@
 #include "core/Dictionary.hh"
 
 #include "file/IFile.hh"
+#include "file/ObjectReader.hh"
 
 #include "util/Exception.hh"
 #include "util/Util.hh"
@@ -92,7 +93,7 @@ SimpleFont::SimpleFont( freetype::Library *lib, const std::string& filename )
 
 SimpleFont::SimpleFont( const Object& self, IFile *file )
 {
-	Dictionary dict = self.As<Dictionary>( ) ;
+	Dictionary dict = DeRef<Dictionary>( file, self ) ;
 
 	try
 	{
@@ -171,7 +172,7 @@ std::string SimpleFont::BaseName( ) const
 
 BaseFont* CreateFont( const Object& obj, IFile *file )
 {
-	return new SimpleFont ;
+	return new SimpleFont( obj, file ) ;
 }
 
 } // end of namespace

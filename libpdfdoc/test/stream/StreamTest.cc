@@ -71,11 +71,13 @@ void StreamTest::TestWrite( )
 {
 	std::string str = "0 12 TD (string string) Tj" ;
 	pdf::Stream subject( str ) ;
+	CPPUNIT_ASSERT( subject.Length( ) == str.size() ) ;	
 	
 	std::stringstream ss ;
 	ss << subject.MakeDictWithLength( pdf::Ref( 101, 0 ) ) ;
 	std::size_t count = subject.WriteData( ss.rdbuf() ) ;
 	CPPUNIT_ASSERT( count == str.size() ) ;
+	CPPUNIT_ASSERT( subject.Length( ) == str.size( ) ) ;	
 
 	pdf::Dictionary dict ;
 	ss >> dict ;
@@ -84,29 +86,36 @@ void StreamTest::TestWrite( )
 
 void StreamTest::TestReset( )
 {
-	std::string str = "0 12 TD (string string) Tj" ;
+	const std::string str = "0 12 TD (string string) Tj" ;
 	pdf::Stream subject( str ) ;
 	
 	std::ostringstream ss ; 
 	std::size_t count = subject.WriteData( ss.rdbuf() ) ;
 	CPPUNIT_ASSERT( count == str.size() ) ;
-// 	CPPUNIT_ASSERT( ss.str() == str ) ;
+ 	CPPUNIT_ASSERT( ss.str() == str ) ;
+ 	CPPUNIT_ASSERT( subject.Length( ) == str.size( ) ) ;
 	
+	// Reset() should not affect Length()
 	subject.Reset( ) ;
-	std::ostringstream ss2 ; 
+ 	CPPUNIT_ASSERT( subject.Length( ) == str.size( ) ) ;
+
+ 	std::ostringstream ss2 ; 
 	count = subject.WriteData( ss2.rdbuf() ) ;
 	CPPUNIT_ASSERT( count == str.size() ) ;
-// 	CPPUNIT_ASSERT( ss2.str() == str ) ;
+ 	CPPUNIT_ASSERT( ss2.str() == str ) ;
 }
 
 void StreamTest::TestReadDeflate( )
 {
-	std::string str( m_compressed.begin(), m_compressed.end() ) ;
+	const std::string str( m_compressed.begin(), m_compressed.end() ) ;
 	pdf::Stream subject( m_compressed, pdf::Name( "FlateDecode" ) ) ;
+
+	CPPUNIT_ASSERT( subject.Length( ) == str.size( ) ) ;
 	
 	std::ostringstream ss ; 
 	std::size_t count = subject.WriteData( ss.rdbuf() ) ;
 	CPPUNIT_ASSERT( count == m_original.size() ) ;
+	CPPUNIT_ASSERT( subject.Length() == str.size( ) ) ;
 	
 	subject.Reset( ) ;
 	

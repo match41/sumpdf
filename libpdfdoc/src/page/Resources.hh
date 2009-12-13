@@ -46,8 +46,6 @@ class Object ;
 	Resources are PDF objects used for rendering but not saved in the content
 	streams. These objects are referred by names in the content stream. The
 	resources dictionary maps their names to the actual objects.
-
-	這是中文字。
 */
 class Resources
 {
@@ -67,6 +65,8 @@ private :
 	template <typename T>
 	Dictionary WriteSubDict( const std::map<Name, T*>& input,
 	                         IFile *repo ) const ;
+
+	void ReadFontDict( IFile *file ) ;
 
 	XObject* ReadXObj( const Ref& link ) ;
 

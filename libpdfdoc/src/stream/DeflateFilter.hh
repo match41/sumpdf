@@ -58,6 +58,7 @@ public :
 	std::size_t Write( const unsigned char *data, std::size_t size ) ;
 
 	void Reset( ) ;
+	std::size_t Length( ) const ;
 
 	class Error : public Exception
 	{

@@ -112,6 +112,8 @@ set( FONT_HDRS		${FONT_DIR}/TrueTypeFile.hh
 					${FONT_DIR}/SimpleFont.hh
 					${FONT_DIR}/StandardFont.hh
 					${FONT_DIR}/sfnt/sfnt.h
+					${FONT_DIR}/sfnt/pdfobj.h
+					${FONT_DIR}/sfnt/pdfobj.hh
 					${FONT_DIR}/sfnt/mem.h
 					${FONT_DIR}/sfnt/system.h
 					${FONT_DIR}/sfnt/mfileio.h
@@ -188,6 +190,7 @@ set( FONT_SRCS		${FONT_DIR}/TrueTypeFile.cc
 					${FONT_DIR}/BaseFont.cc
 					${FONT_DIR}/StandardFont.cc
 					${FONT_DIR}/sfnt/sfnt.c
+					${FONT_DIR}/sfnt/pdfobj.cc
 					${FONT_DIR}/sfnt/mem.c
 					${FONT_DIR}/sfnt/mfileio.c
 					${FONT_DIR}/sfnt/numbers.c )

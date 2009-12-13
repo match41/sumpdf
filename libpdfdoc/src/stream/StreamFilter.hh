@@ -52,6 +52,7 @@ public :
 	virtual std::size_t Read( unsigned char *data, std::size_t size ) = 0 ;
 	virtual std::size_t Write( const unsigned char *data, std::size_t size )=0;
 	virtual void Reset( ) = 0 ;
+	virtual std::size_t Length( ) const = 0 ;
 } ;
 
 } // end of namespace

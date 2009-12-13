@@ -94,7 +94,7 @@ File::File( std::ostream *os )
 						libpdfdoc) that converted it to PDF.
 	\param	creator		if the document was converted to PDF from another
 						format, the name of the application (for example,
-						Adobe FrameMaker®) that created the original document
+						Adobe FrameMakerï¿½) that created the original document
 						from which it was converted.
 */
 void File::WriteTrailer( const Ref& catalog, const std::string& producer,
@@ -219,7 +219,7 @@ void File::WriteObj( const Object& obj, const Ref& link )
 	
 	*m_out << link.ID() << " 0 obj\n" ;
 	
-	if ( obj.Type() != Object::stream )
+	if ( !obj.IsType<Stream>() )
 		*m_out << obj << "\nendobj\n" ;
 	
 	// for stream objects, do not use operator<<() to write it to file.
@@ -227,7 +227,7 @@ void File::WriteObj( const Object& obj, const Ref& link )
 	// its contents are written to file. therefore, the "Length" field of the
 	// stream dictionary is written as an indirect object. for operator<<()
 	// we cannot pass the link to the length object to be written in the
-	// stream dictionary. that is why we call Stream::Write() instead.
+	// stream dictionary. that is why we call Stream::WriteData() instead.
 	else
 	{
 		const Stream& s = obj.As<Stream>() ;
@@ -239,7 +239,7 @@ void File::WriteObj( const Object& obj, const Ref& link )
 		std::size_t length = s.WriteData( m_out->rdbuf() ) ;
 		*m_out << "\nendstream\nendobj\n" ;
 
-		// the return value of Stream::Write() is the length of the stream,
+		// the return value of Stream::WriteData() is the length of the stream,
 		// i.e. the number of bytes written to file. it is only known after
 		// writing the stream.
 		WriteObj( length, len_ref ) ;

@@ -51,6 +51,8 @@ namespace pdf {
 struct Stream::Impl
 {
 	Dictionary					self ;
+	
+	// for reading
 	std::auto_ptr<StreamFilter>	filter ;
 	StreamBufAdaptor			sbuf ;
 	std::istream				istr ;
@@ -59,6 +61,13 @@ struct Stream::Impl
 	{
 	}
 } ;
+
+Stream::Stream( )
+	: m_impl( new Impl )
+{
+	m_impl->filter.reset( new BufferedFilter ) ;
+	m_impl->sbuf.Set( m_impl->filter.get() ) ;
+}
 
 Stream::Stream( const std::string& str )
 	: m_impl( new Impl )
@@ -89,6 +98,7 @@ Stream::Stream( std::streambuf *file, std::streamoff offset,
 	                                     dict["Length"].As<int>() ) ) ;
 
 	ApplyFilter( dict["Filter"] ) ;
+	assert( m_impl->filter->Length() == dict["Length"].As<int>() ) ;
 }
 	
 Stream::Stream( std::vector<unsigned char>& data, const Object& filter )
@@ -96,6 +106,12 @@ Stream::Stream( std::vector<unsigned char>& data, const Object& filter )
 {
 	m_impl->filter.reset( new BufferedFilter( data ) ) ;
 	ApplyFilter( filter ) ;
+}
+
+/**	empty destructor is required for shared_ptr.
+*/
+Stream::~Stream( )
+{
 }
 
 /*!	create the filters and chain them together. This function will chain up
@@ -124,8 +140,13 @@ void Stream::ApplyFilter( const Object& filter )
 	m_impl->sbuf.Set( m_impl->filter.get() ) ;
 }
 
-Stream::~Stream( )
+/**	This function returns the length after applying all filters. It is equal
+	to the number of bytes written to the file. It is not the same as the
+	number of bytes you can read from it.
+*/
+std::size_t Stream::Length( ) const
 {
+	return m_impl->filter->Length( ) ;
 }
 
 void Stream::Swap( Stream& str )

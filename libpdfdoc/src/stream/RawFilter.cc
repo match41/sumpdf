@@ -89,4 +89,9 @@ void RawFilter::Reset( )
 	m_file->pubseekpos( m_start, std::ios::in ) ;
 }
 
+std::size_t RawFilter::Length( ) const
+{
+	return m_length - m_current ;
+}
+
 } // end of namespace

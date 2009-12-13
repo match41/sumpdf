@@ -104,7 +104,8 @@ std::size_t DeflateFilter::Write( const unsigned char *data, std::size_t size )
 	assert( m_comp.str.avail_in == 0 ) ;
 	m_comp.str.next_in	= const_cast<unsigned char*>( data ) ;
 	m_comp.str.avail_in	= size ;
-	
+
+	// TODO: I believe deflate is not yet working
 	while ( result == Z_OK && m_decomp.str.avail_in > 0 )
 	{
 		break ;
@@ -120,6 +121,12 @@ void DeflateFilter::Reset( )
 
 	if ( ::inflateReset( &m_decomp.str ) != Z_OK )
 		throw ParseError( "inflate init fail" ) ;
+}
+
+std::size_t DeflateFilter::Length( ) const
+{
+	// TODO: verify if there is any cached data in DeflateFilter
+	return m_src->Length( ) ;
 }
 
 } // end of namespace

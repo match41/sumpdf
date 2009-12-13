@@ -43,6 +43,8 @@ namespace pdf {
 class BufferedFilter : public StreamFilter
 {
 public :
+	BufferedFilter( ) ;
+
 	template <typename InputIt>
 	BufferedFilter( InputIt first, InputIt last )
 		: m_buf( first, last ),
@@ -55,6 +57,7 @@ public :
 	std::size_t Read( unsigned char *data, std::size_t size ) ;
 	std::size_t Write( const unsigned char *data, std::size_t size ) ;
 	void Reset( ) ;
+	std::size_t Length( ) const ;
 
 private :
 	std::vector<unsigned char>	m_buf ;		//!< chunk of data in memory

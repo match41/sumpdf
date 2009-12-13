@@ -51,6 +51,17 @@ bool Detach( IFile *file, Dictionary& dict, const Name& name, ObjType& result )
 	return false ;
 }
 
+template <typename ObjType>
+ObjType DeRef( IFile *file, const Object& obj )
+{
+	if ( obj.IsType<Ref>( ) )
+	{
+		return file->ReadObj( obj.As<Ref>() ) ;
+	}
+	else
+		return obj.As<ObjType>( )  ;
+}
+
 } // end of namespace
 
 #endif // OBJECTREADER_HH_

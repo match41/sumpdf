@@ -56,15 +56,14 @@ Resources::Resources( )
 
 void Resources::Read( const Object& self, IFile *file )
 {
-	m_self = self.IsType<Dictionary>() ? self.As<Dictionary>()
-			                           : file->ReadObj( self.As<Ref>() ).As<Dictionary>() ;
+	m_self = DeRef<Dictionary>( file, self ) ;
 
 	Array proc_set ;
 	Detach( file, m_self, "ExtGState",	m_ext_gstate ) ;
 	Detach( file, m_self, "ProcSet",	proc_set ) ;
 	m_proc_set.assign( proc_set.begin( ), proc_set.end( ) ) ;
 
-//	ReadSubDict( "Font",    file, m_fonts ) ;
+	ReadFontDict( file ) ;
 	ReadSubDict( "XObject", file, m_xobjs ) ;
 }
 
@@ -90,6 +89,22 @@ Dictionary Resources::WriteSubDict( const std::map<Name, T*>& input,
 		dict.insert( std::make_pair( i->first, dest.Write( i->second ) ) ) ;
 
 	return dict ;
+}
+
+void Resources::ReadFontDict( IFile *file )
+{
+	assert( file != 0 ) ;
+
+	Dictionary dict ;
+	if ( Detach( file, m_self, "Font", dict ) )
+	{
+		for ( Dictionary::const_iterator i  = dict.begin( ) ;
+										 i != dict.end( ) ; ++i )
+		{
+			BaseFont *font = CreateFont( i->second, file ) ; 
+			m_fonts.insert( std::make_pair( i->first, font ) ) ;
+		}
+	}
 }
 
 template <typename T>

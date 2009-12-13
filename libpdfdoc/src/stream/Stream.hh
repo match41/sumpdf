@@ -55,7 +55,8 @@ class Object ;
 class Stream
 {
 public :
-	explicit Stream( const std::string& str = std::string() ) ;
+	Stream( ) ;
+	Stream( const std::string& str ) ;
 	Stream( std::vector<unsigned char>& data, const Object& filter ) ;
 	Stream( std::streambuf *file, std::streamoff offset,
 	        const Dictionary& dict ) ;
@@ -70,6 +71,8 @@ public :
 	std::istream& InStream( ) const ;
 	
 	void Reset( ) const ;
+
+	std::size_t Length( ) const ;
 
 	Name Type( ) const ;
 	Name Subtype( ) const ;

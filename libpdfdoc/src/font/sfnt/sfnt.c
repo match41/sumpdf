@@ -561,7 +561,7 @@ sfnt_create_FontFile_stream (sfnt *sfont)
 
   ASSERT(sfont && sfont->directory);
 
-//  stream = pdf_new_stream(STREAM_COMPRESS);
+  stream = pdf_new_stream(STREAM_COMPRESS);
 
   td  = sfont->directory;
 
@@ -574,7 +574,7 @@ sfnt_create_FontFile_stream (sfnt *sfont)
   p += sfnt_put_ushort(p, log2floor(td->num_kept_tables));
   p += sfnt_put_ushort(p, td->num_kept_tables * 16 - sr);
 
-//  pdf_add_stream(stream, wbuf, 12);
+  pdf_add_stream(stream, wbuf, 12);
 
   /*
    * Compute start of actual tables (after headers).
@@ -604,7 +604,7 @@ sfnt_create_FontFile_stream (sfnt *sfont)
     if (td->flags[i] & SFNT_TABLE_REQUIRED) {
       if ((offset % 4) != 0) {
 	length  = 4 - (offset % 4);
-//	pdf_add_stream(stream, padbytes, length);
+	pdf_add_stream(stream, padbytes, length);
 	offset += length;
       }
       if (!td->tables[i].data) {
@@ -614,7 +614,7 @@ sfnt_create_FontFile_stream (sfnt *sfont)
 	if (!sfont->stream)
 #endif
 	{
-//	  pdf_release_obj(stream);
+	  pdf_release_obj(stream);
 	  ERROR("Font file not opened or already closed...");
 	  return NULL;
 	}
@@ -624,17 +624,17 @@ sfnt_create_FontFile_stream (sfnt *sfont)
 	while (length > 0) {
 	  nb_read = sfnt_read(wbuf, MIN(length, 1024), sfont);
 	  if (nb_read < 0) {
-//	    pdf_release_obj(stream);
+	    pdf_release_obj(stream);
 	    ERROR("Reading file failed...");
 	    return NULL;
 	  } else if (nb_read > 0) {
-//	    pdf_add_stream(stream, wbuf, nb_read);
+	    pdf_add_stream(stream, wbuf, nb_read);
 	  }
 	  length -= nb_read;
 	}
       } else {
-//	pdf_add_stream(stream,
-//		       td->tables[i].data, td->tables[i].length);
+	pdf_add_stream(stream,
+		       td->tables[i].data, td->tables[i].length);
 	RELEASE(td->tables[i].data);
 	td->tables[i].data = NULL;
       }
@@ -643,10 +643,10 @@ sfnt_create_FontFile_stream (sfnt *sfont)
     }
   }
 
-//  stream_dict = pdf_stream_dict(stream);
-//  pdf_add_dict(stream_dict,
-//	       pdf_new_name("Length1"),
-//	       pdf_new_number(offset));
+  stream_dict = pdf_stream_dict(stream);
+  pdf_add_dict(stream_dict,
+	       pdf_new_name("Length1"),
+	       pdf_new_number(offset));
 
   return stream;
 }

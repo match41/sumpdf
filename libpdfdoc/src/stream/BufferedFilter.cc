@@ -33,6 +33,13 @@
 
 namespace pdf {
 
+/*!	default constructor will construct an empty buffer for writing.
+*/
+BufferedFilter::BufferedFilter( )
+	: m_offset( 0 )
+{
+}
+
 /*!	grand theft constructor. This constructor will steal the data
 	from the argument vector \a buf . After calling this function, \a buf will
 	be empty and the data originally in \a buf will be in the BufferedFilter
@@ -61,12 +68,21 @@ std::size_t BufferedFilter::Read( unsigned char *data, std::size_t size )
 
 std::size_t BufferedFilter::Write( const unsigned char *data, std::size_t size )
 {
-	return 0 ;
+	m_buf.insert( m_buf.end(), data, data + size ) ;
+	return size ;
 }
 
 void BufferedFilter::Reset( )
 {
 	m_offset = 0 ;
+}
+
+/**	This function returns the actual size of the buffer. The bytes already
+	consumed by calling Read() will still be counted.
+*/
+std::size_t BufferedFilter::Length( ) const
+{
+	return m_buf.size() ;
 }
 
 } // end of namespace

@@ -52,6 +52,7 @@ public :
 	std::size_t Write( const unsigned char *data, std::size_t size ) ;
 
 	void Reset( ) ;
+	std::size_t Length( ) const ;
 
 private :
 	std::streambuf			*m_file ;		//!< the file to be read from
