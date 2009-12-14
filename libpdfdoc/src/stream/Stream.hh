@@ -69,12 +69,12 @@ public :
 
 	Dictionary Self( ) const ;
     std::size_t WriteData( std::streambuf *buf ) const ;
+    std::size_t Append( const unsigned char *buf, std::size_t size ) ;
 
 	void Swap( Stream& str ) ;
 	std::istream& InStream( ) const ;
 	
 	void Reset( ) const ;
-
 	std::size_t Length( ) const ;
 
 	Name Type( ) const ;

@@ -36,7 +36,7 @@
 
 namespace pdf {
 
-/*!	\brief		Class to read data from file.
+/*!	\brief		filter class to read data from file.
 	\ingroup	filter
 
 	This class is not actually a filter. It will read data directly from

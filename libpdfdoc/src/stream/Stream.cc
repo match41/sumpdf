@@ -57,7 +57,11 @@ struct Stream::Impl
 	StreamBufAdaptor			sbuf ;
 	std::istream				istr ;
 	
-	Impl( ) : istr( &sbuf )
+	/// indicates the stream's content is different from the data on disk.
+	/// if true, the stream has to be rewritten to disk.
+	bool	dirty ;
+	
+	Impl( ) : istr( &sbuf ), dirty( false )
 	{
 	}
 } ;
@@ -65,6 +69,9 @@ struct Stream::Impl
 Stream::Stream( Filter f )
 	: m_impl( new Impl )
 {
+	// in memory stream
+	m_impl->dirty = true ;
+
 	StreamFilter *filter = new BufferedFilter ; 
 
 	if ( f == deflate )
@@ -77,6 +84,9 @@ Stream::Stream( Filter f )
 Stream::Stream( const std::string& str )
 	: m_impl( new Impl )
 {
+	// in memory stream
+	m_impl->dirty = true ;
+
 	m_impl->filter.reset( new BufferedFilter(str.begin(), str.end() ) ) ;
 	m_impl->sbuf.Set( m_impl->filter.get() ) ;
 }
@@ -119,6 +129,9 @@ Stream::Stream( std::streambuf *file, std::streamoff offset,
 Stream::Stream( std::vector<unsigned char>& data, const Object& filter )
 	: m_impl( new Impl )
 {
+	// in memory stream
+	m_impl->dirty = true ;
+
 	m_impl->filter.reset( new BufferedFilter( data ) ) ;
 	ApplyFilter( filter ) ;
 	
@@ -239,23 +252,32 @@ std::ostream& operator<<( std::ostream& os, const Stream& s )
 
 std::istream& Stream::InStream( ) const
 {
+	assert( m_impl.get() != 0 ) ;
 	return m_impl->istr ;
 }
 
 void Stream::Reset( ) const
 {
+	assert( m_impl.get() != 0 ) ;
 	m_impl->istr.clear( ) ;
 	m_impl->filter->Reset( ) ;
 }
 
 Name Stream::Type( ) const
 {
+	assert( m_impl.get() != 0 ) ;
 	return m_impl->self["Type"] ;
 }
 
 Name Stream::Subtype( ) const
 {
+	assert( m_impl.get() != 0 ) ;
 	return m_impl->self["Subtype"] ;
+}
+
+std::size_t Stream::Append( const unsigned char *buf, std::size_t size )
+{
+	return 0 ;
 }
 
 } // end of namespace
