@@ -59,7 +59,7 @@ PageTree::PageTree( const Dictionary& dict, IFile *file, PageTree *parent )
 	const Array& pages = dict["Kids"].As<Array>() ;
 	for ( Array::const_iterator i = pages.begin() ; i != pages.end() ; ++i )
 	{
-		Dictionary d = DeRef<Dictionary>( file, *i ) ;
+		Dictionary d = DeRefObj<Dictionary>( file, *i ) ;
 		const Name& type = d["Type"].As<Name>() ; 
 		
 		if ( type == Name( "Pages" ) )

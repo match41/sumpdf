@@ -165,7 +165,7 @@ set( STRM_SRCS		${STRM_DIR}/Stream.cc
 set( UTIL_SRCS  	${UTIL_DIR}/Rect.cc
 					${UTIL_DIR}/Util.cc
 					${UTIL_DIR}/Exception.cc
-					${UTIL_DIR}/Backtrace.cc 
+					${UTIL_DIR}/Backtrace.cc
 					${UTIL_DIR}/RefCountObj.cc )
 
 set( IMG_SRCS  		${IMG_DIR}/Image.cc )
