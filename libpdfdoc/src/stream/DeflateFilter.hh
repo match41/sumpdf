@@ -73,7 +73,7 @@ private :
 private :
 	struct ZData
 	{
-		z_stream	str ;
+		z_stream					z ;
 		std::vector<unsigned char>	buf ;
 	} m_comp, m_decomp ;
 
