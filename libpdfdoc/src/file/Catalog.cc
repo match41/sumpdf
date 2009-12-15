@@ -72,7 +72,8 @@ Catalog::Catalog( const Ref& link, IFile *file )
 	Dictionary tree ;
 	if ( !Detach( file, m_self, "Pages", tree ) )
 		throw ParseError( "no page tree in catalog" ) ;
-		
+	
+	// root page tree has no parent
 	m_tree = new PageTree( tree, file ) ;
 	
 	// TODO: no know how to handle OpenAction it yet

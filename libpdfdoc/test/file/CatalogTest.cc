@@ -27,6 +27,9 @@
 
 #include "CatalogTest.hh"
 
+#include "core/Dictionary.hh"
+#include "file/Catalog.hh"
+
 #include "mock/MockFile.hh"
 
 #include <sstream>
@@ -37,7 +40,25 @@ CatalogTest::CatalogTest( )
 
 void CatalogTest::TestRead( )
 {
-	std::ostringstream ss( "<</PageLayout /SinglePage/PageMode /UseNode"
+	std::istringstream ss( "<</PageLayout /SinglePage/PageMode /UseNode"
 	                       "/Pages 1 0 R/Type /Catalog/Version /1.4>>" ) ;
+	pdf::Dictionary cat_dict ;
+	CPPUNIT_ASSERT( ss >> cat_dict ) ;
+	
+	std::istringstream ss2( "<</Count 1/Kids [3 0 R] /Type/Pages>>" ) ;
+	pdf::Dictionary ptree_dict ;
+	CPPUNIT_ASSERT( ss2 >> ptree_dict ) ;
+	
+	std::istringstream ss3( "<</Parent 1 0 R/Type /Page>>" ) ;
+	pdf::Dictionary page_dict ;
+	CPPUNIT_ASSERT( ss3 >> page_dict ) ;
 
+	MockFile file ;
+	file.AddObj( pdf::Ref( 1, 0 ), 	ptree_dict ) ;
+	file.AddObj( pdf::Ref( 2, 0 ),	cat_dict ) ;
+	file.AddObj( pdf::Ref( 3, 0 ),	page_dict ) ;
+	
+	pdf::Catalog c( pdf::Ref( 2, 0 ), &file ) ;
+	CPPUNIT_ASSERT( c.PageCount( ) == 1 ) ;
+	CPPUNIT_ASSERT( c.GetPage( 0 ) != 0 ) ;
 }

@@ -56,8 +56,8 @@ RealPage::RealPage( PageTree *parent )
 	: m_parent( parent ),
 	  m_rotate( 0 )
 {
-	if ( parent )
-		parent->AppendLeaf( this ) ;
+	assert( parent != 0 ) ;
+	parent->AppendLeaf( this ) ;
 }
 
 RealPage::RealPage( PageTree *parent, const Dictionary& self, IFile *file )
@@ -66,9 +66,9 @@ RealPage::RealPage( PageTree *parent, const Dictionary& self, IFile *file )
       m_rotate( 0 )
 {
 	assert( file != 0 ) ;
+	assert( parent != 0 ) ;
 
-	if ( parent )
-		parent->AppendLeaf( this ) ;
+	parent->AppendLeaf( this ) ;
 
 	// read content
 	Object contents ;

@@ -53,25 +53,23 @@ PageTree::PageTree( const Dictionary& dict, IFile *file, PageTree *parent )
 	  m_parent( parent ),
 	  m_count( 0 )
 {
-	if ( parent )
-		parent->AppendNode( this ) ;
+	if ( parent != 0 )
+		parent->AppendNode( this ) ; 
 
 	const Array& pages = dict["Kids"].As<Array>() ;
 	for ( Array::const_iterator i = pages.begin() ; i != pages.end() ; ++i )
 	{
-		PageNode *node = 0 ;
 		Dictionary d = DeRef<Dictionary>( file, *i ) ;
+		const Name& type = d["Type"].As<Name>() ; 
 		
-		if ( d["Type"].As<Name>() == Name( "Pages" ) )
-			node = new PageTree( d, file, this ) ;
+		if ( type == Name( "Pages" ) )
+			new PageTree( d, file, this )  ;
 		
-		else if ( d["Type"].As<Name>() == Name( "Page" ) )
-			node = new RealPage( this, d, file ) ;
+		else if ( type == Name( "Page" ) )
+			new RealPage( this, d, file ) ;
 		
 		else
 			throw ParseError( "invalid page type" ) ;
-		
-		m_kids.push_back( node ) ;
 	}
 
 	// leaf count is required
@@ -94,6 +92,8 @@ PageTree::~PageTree( )
 
 void PageTree::Write( const Ref& link, IFile *file, const Ref& ) const
 {
+	assert( file != 0 ) ;
+
 	std::vector<Ref> kids ;
 	for ( std::vector<PageNode*>::const_iterator i  = m_kids.begin() ;
 	                                             i != m_kids.end() ; ++i )
