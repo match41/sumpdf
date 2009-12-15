@@ -100,8 +100,8 @@ void RealPage::ReadContent( const Object& str_obj, IFile *src )
 	else if ( str_obj.IsType<Array>( ) )
 	{
 		const Array& a = str_obj.As<Array>( ) ;
-		std::for_each( a.begin( ), a.end( ),
-		               boost::bind( &RealPage::ReadContent, this, _1, src ) ) ;
+//		std::for_each( a.begin( ), a.end( ),
+//		               boost::bind( &RealPage::ReadContent, this, _1, src ) ) ;
 	}
 
 	else if ( !str_obj.IsNull( ) )

@@ -56,7 +56,7 @@ void XObject::Read( Stream& str, IElementSrc *repo )
 */
 void XObject::Init( Object& obj, IFile *file )
 {
-	m_str = DeRef<Stream>( file, obj ) ;
+	m_str = DeRefObj<Stream>( file, obj ) ;
 
 	std::cout << "this is an xobject: "
 	          << m_str.Self()["Subtype"] << std::endl ;

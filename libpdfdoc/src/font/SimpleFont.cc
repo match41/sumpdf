@@ -93,7 +93,7 @@ SimpleFont::SimpleFont( freetype::Library *lib, const std::string& filename )
 
 SimpleFont::SimpleFont( const Object& self, IFile *file )
 {
-	Dictionary dict = DeRef<Dictionary>( file, self ) ;
+	Dictionary dict = DeRefObj<Dictionary>( file, self ) ;
 
 	try
 	{

@@ -52,7 +52,7 @@ bool Detach( IFile *file, Dictionary& dict, const Name& name, ObjType& result )
 }
 
 template <typename ObjType>
-ObjType DeRef( IFile *file, const Object& obj )
+ObjType DeRefObj( IFile *file, const Object& obj )
 {
 	if ( obj.IsType<Ref>( ) )
 	{

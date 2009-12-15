@@ -53,7 +53,7 @@ Resources::Resources( )
 
 void Resources::Read( const Object& self, IFile *file )
 {
-	m_self = DeRef<Dictionary>( file, self ) ;
+	m_self = DeRefObj<Dictionary>( file, self ) ;
 
 	Array proc_set ;
 	Detach( file, m_self, "ExtGState",	m_ext_gstate ) ;
