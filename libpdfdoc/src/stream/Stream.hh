@@ -58,8 +58,9 @@ public :
 	enum Filter { none, deflate } ;
 
 public :
-	Stream( Filter f = none ) ;
-	Stream( const std::string& str ) ;
+	explicit Stream( Filter f = none ) ;
+	explicit Stream( const Name& filter ) ;
+	explicit Stream( const std::string& str ) ;
 	Stream( std::vector<unsigned char>& data, const Object& filter ) ;
 	Stream( std::streambuf *file, std::streamoff offset,
 	        const Dictionary& dict ) ;
@@ -79,6 +80,8 @@ public :
 
 	Name Type( ) const ;
 	Name Subtype( ) const ;
+	
+	Stream Clone( ) const ;
 
 	friend std::ostream& operator<<( std::ostream& os, const Stream& s ) ;
 
