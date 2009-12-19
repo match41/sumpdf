@@ -56,6 +56,16 @@ BufferedFilter::BufferedFilter( std::vector<unsigned char>& buf )
 	m_buf.swap( buf ) ;
 }
 
+BufferedFilter::BufferedFilter( const char *str )
+	: m_offset( 0 ), m_buf( str, str + std::strlen( str ) )
+{
+}
+
+StreamFilter* BufferedFilter::Clone( ) const
+{
+	return new BufferedFilter( *this ) ;
+}
+
 std::size_t BufferedFilter::Read( unsigned char *data, std::size_t size )
 {
 	assert( m_offset <= m_buf.size() ) ;

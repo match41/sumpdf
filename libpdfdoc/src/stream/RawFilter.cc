@@ -26,6 +26,7 @@
 */
 
 #include "RawFilter.hh"
+#include "BufferedFilter.hh"
 
 #include "core/Object.hh"
 
@@ -45,6 +46,19 @@ RawFilter::RawFilter( std::streambuf *file, std::streamoff start,
 	: m_file( file ), m_start( start ), m_current( 0 ), m_length( length )
 {
 	assert( m_file != 0 ) ;
+}
+
+StreamFilter* RawFilter::Clone( ) const
+{
+	std::vector<unsigned char> buf( m_length ) ;
+	m_file->pubseekpos( m_start, std::ios::in ) ;
+	std::size_t c = m_file->sgetn( reinterpret_cast<char*>( &buf[0] ),
+	                               m_length ) ;
+	// TODO: throw better things
+	if ( c != m_length )
+		throw -1 ;
+	
+	return new BufferedFilter( buf ) ;
 }
 
 /*!	\brief	reading from file

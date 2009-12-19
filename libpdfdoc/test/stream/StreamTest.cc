@@ -129,6 +129,16 @@ void StreamTest::TestReadDeflate( )
 	CPPUNIT_ASSERT( d["Subtype"].As<pdf::Name>() == "CIDFontType0" ) ;
 }
 
+void StreamTest::TestClone( )
+{
+	const std::string str( m_compressed.begin(), m_compressed.end() ) ;
+	pdf::Stream subject( m_compressed, pdf::Name( "FlateDecode" ) ) ;
+
+	pdf::Stream cloned = subject.Clone( ) ;
+	CPPUNIT_ASSERT( subject != cloned ) ;
+	CPPUNIT_ASSERT( subject.Self() == cloned.Self() ) ;
+}
+
 void StreamTest::setUp( )
 {
 	std::ifstream file( (std::string(TEST_DATA_DIR) + "obj9020").c_str() ) ;

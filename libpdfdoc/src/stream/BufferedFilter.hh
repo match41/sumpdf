@@ -52,13 +52,17 @@ public :
 	{
 	}
 
-	BufferedFilter( std::vector<unsigned char>& buf ) ;
+	explicit BufferedFilter( std::vector<unsigned char>& buf ) ;
+	explicit BufferedFilter( const char *str ) ;
+
+	// compiler generated copy constructor is good enough 
 
 	std::size_t Read( unsigned char *data, std::size_t size ) ;
 	std::size_t Write( const unsigned char *data, std::size_t size ) ;
 	void Reset( ) ;
 	std::size_t Length( ) const ;
 	Object GetFilterName( ) const ;
+	StreamFilter* Clone( ) const ;
 	
 private :
 	std::vector<unsigned char>	m_buf ;		//!< chunk of data in memory

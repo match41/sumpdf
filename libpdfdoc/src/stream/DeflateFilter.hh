@@ -60,7 +60,8 @@ public :
 	void Reset( ) ;
 	std::size_t Length( ) const ;
 	Object GetFilterName( ) const ;
-
+	DeflateFilter* Clone( ) const ;
+	
 	class Error : public Exception
 	{
 	public :

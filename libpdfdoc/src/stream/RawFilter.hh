@@ -55,6 +55,8 @@ public :
 	std::size_t Length( ) const ;
 	Object GetFilterName( ) const ;
 
+	StreamFilter* Clone( ) const ;
+
 private :
 	std::streambuf			*m_file ;		//!< the file to be read from
 	const std::streamoff	m_start ;		//!< starting position

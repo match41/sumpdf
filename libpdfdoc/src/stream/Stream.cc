@@ -55,7 +55,6 @@ struct Stream::Impl
 	// for reading
 	std::auto_ptr<StreamFilter>	filter ;
 	StreamBufAdaptor			sbuf ;
-//	std::istream				istr ;
 	
 	/// indicates the stream's content is different from the data on disk.
 	/// if true, the stream has to be rewritten to disk.
@@ -78,7 +77,6 @@ Stream::Stream( Filter f )
 		filter = new DeflateFilter( filter ) ;
 
 	m_impl->filter.reset( filter ) ;
-//	m_impl->sbuf.Set( m_impl->filter.get() ) ;
 }
 
 Stream::Stream( const std::string& str )
@@ -88,7 +86,6 @@ Stream::Stream( const std::string& str )
 	m_impl->dirty = true ;
 
 	m_impl->filter.reset( new BufferedFilter(str.begin(), str.end() ) ) ;
-//	m_impl->sbuf.Set( m_impl->filter.get() ) ;
 }
 
 Stream::Stream( const Name& filter )
@@ -99,6 +96,15 @@ Stream::Stream( const Name& filter )
 
 	m_impl->filter.reset( new BufferedFilter ) ;
 	CreateFilter( filter ) ;
+}
+
+Stream::Stream( const char *str )
+	: m_impl( new Impl )
+{
+	// in memory stream
+	m_impl->dirty = true ;
+
+	m_impl->filter.reset( new BufferedFilter( str ) ) ;
 }
 
 /*!	constructor for streams from file. This constructor will create a stream
@@ -176,8 +182,6 @@ void Stream::ApplyFilter( const Object& filter )
 	}
 	else if ( filter.Type() == Object::name )
 		CreateFilter( filter ) ;
-
-//	m_impl->sbuf.Set( m_impl->filter.get() ) ;
 }
 
 Dictionary Stream::Self( ) const
@@ -220,7 +224,12 @@ void Stream::CreateFilter( const Name& filter )
 
 Stream Stream::Clone( ) const
 {
-    return *this ;
+	assert( m_impl.get( ) != 0 ) ;
+	assert( m_impl->filter.get() != 0 ) ;
+
+	std::vector<unsigned char> buf( Length() ) ;
+	CopyData( &buf[0], buf.size() ) ;
+	return Stream( buf, m_impl->filter->GetFilterName( ) ) ;
 }
 
 bool Stream::operator==( const Stream& str ) const
@@ -229,6 +238,11 @@ bool Stream::operator==( const Stream& str ) const
 	assert( str.m_impl.get( ) != 0 ) ;
 	
 	return m_impl.get() == str.m_impl.get() ;
+}
+
+bool Stream::operator!=( const Stream& str ) const
+{
+	return !operator==( str ) ;
 }
 
 /*! write stream data to a streambuf. This function will read all data
@@ -257,6 +271,18 @@ std::size_t Stream::CopyData( std::streambuf *buf ) const
 	return total ;
 }
 
+std::size_t Stream::CopyData( unsigned char *buf, std::size_t size ) const
+{
+    assert( buf != 0 ) ;
+	assert( m_impl.get() != 0 ) ;
+	assert( m_impl->filter.get() != 0 ) ;
+
+	// first reset to the start of the stream
+	m_impl->filter->Reset( ) ;
+
+	return m_impl->filter->Read( buf, size ) ;
+}
+
 std::ostream& operator<<( std::ostream& os, const Stream& s )
 {
 	os 	<< s.Self( )
@@ -267,15 +293,7 @@ std::ostream& operator<<( std::ostream& os, const Stream& s )
 	
 	return os << "\nendstream\n" ;
 }
-/*
 
-std::istream& Stream::InStream( ) const
-{
-	assert( m_impl.get() != 0 ) ;
-	return m_impl->istr ;
-}
-
-*/
 StreamBufAdaptor Stream::StreamBuf( )
 {
 	return StreamBufAdaptor( m_impl->filter.get() ) ;
@@ -284,7 +302,6 @@ StreamBufAdaptor Stream::StreamBuf( )
 void Stream::Reset( ) const
 {
 	assert( m_impl.get() != 0 ) ;
-//	m_impl->istr.clear( ) ;
 	m_impl->filter->Reset( ) ;
 }
 

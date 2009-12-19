@@ -144,6 +144,11 @@ std::size_t DeflateFilter::Length( ) const
 	return m_src->Length( ) ;
 }
 
+DeflateFilter* DeflateFilter::Clone( ) const
+{
+	return new DeflateFilter( m_src->Clone() ) ;
+}
+
 Object DeflateFilter::GetFilterName( ) const
 {
 	Object name = m_src->GetFilterName( ) ;

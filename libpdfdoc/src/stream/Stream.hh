@@ -62,19 +62,23 @@ public :
 	explicit Stream( Filter f = none ) ;
 	explicit Stream( const Name& filter ) ;
 	explicit Stream( const std::string& str ) ;
+	explicit Stream( const char *str ) ;
 	Stream( std::vector<unsigned char>& data, const Object& filter ) ;
 	Stream( std::streambuf *file, std::streamoff offset,
 	        const Dictionary& dict ) ;
 	~Stream( ) ;
 
+	// default generated copy constructor and assignment operator are fine
+
 	bool operator==( const Stream& str ) const ;
+	bool operator!=( const Stream& str ) const ;
 
 	Dictionary Self( ) const ;
     std::size_t CopyData( std::streambuf *buf ) const ;
+    std::size_t CopyData( unsigned char *buf, std::size_t size ) const ;
     std::size_t Append( const unsigned char *buf, std::size_t size ) ;
 
 	void Swap( Stream& str ) ;
-//	std::istream& InStream( ) const ;
 	StreamBufAdaptor StreamBuf( ) ;
 	
 	void Reset( ) const ;

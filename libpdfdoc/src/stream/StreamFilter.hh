@@ -56,6 +56,7 @@ public :
 	virtual void Reset( ) = 0 ;
 	virtual std::size_t Length( ) const = 0 ;
 	virtual Object GetFilterName( ) const = 0 ;
+	virtual StreamFilter* Clone( ) const = 0 ;
 } ;
 
 } // end of namespace
