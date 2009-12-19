@@ -91,6 +91,16 @@ Stream::Stream( const std::string& str )
 //	m_impl->sbuf.Set( m_impl->filter.get() ) ;
 }
 
+Stream::Stream( const Name& filter )
+    : m_impl( new Impl )
+{
+	// in memory stream
+	m_impl->dirty = true ;
+
+	m_impl->filter.reset( new BufferedFilter ) ;
+	CreateFilter( filter ) ;
+}
+
 /*!	constructor for streams from file. This constructor will create a stream
 	whose content is about to be read from file. Data will be actually read
 	on-demand. Therefore, this function will actually read nothing but just
@@ -206,6 +216,11 @@ void Stream::CreateFilter( const Name& filter )
 		StreamFilter *sf = m_impl->filter.release( ) ;
 		m_impl->filter.reset( new DeflateFilter( sf ) ) ;
 	}
+}
+
+Stream Stream::Clone( ) const
+{
+    return *this ;
 }
 
 bool Stream::operator==( const Stream& str ) const
