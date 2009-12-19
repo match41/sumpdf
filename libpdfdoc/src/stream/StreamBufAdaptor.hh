@@ -42,8 +42,7 @@ class StreamBufAdaptor : public std::streambuf
 {
 public :
 	explicit StreamBufAdaptor( StreamFilter *str = 0 ) ;
-
-	void Set( StreamFilter *str ) ;
+	StreamBufAdaptor( const StreamBufAdaptor& rhs ) ;
 
 protected :
 	int underflow( ) ;

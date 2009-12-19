@@ -40,6 +40,7 @@ class Dictionary ;
 class Name ;
 class Ref ;
 class Object ;
+class StreamBufAdaptor ;
 
 /*!	\brief	PDF stream object
 	
@@ -68,11 +69,12 @@ public :
 	bool operator==( const Stream& str ) const ;
 
 	Dictionary Self( ) const ;
-    std::size_t WriteData( std::streambuf *buf ) const ;
+    std::size_t CopyData( std::streambuf *buf ) const ;
     std::size_t Append( const unsigned char *buf, std::size_t size ) ;
 
 	void Swap( Stream& str ) ;
-	std::istream& InStream( ) const ;
+//	std::istream& InStream( ) const ;
+	StreamBufAdaptor StreamBuf( ) ;
 	
 	void Reset( ) const ;
 	std::size_t Length( ) const ;

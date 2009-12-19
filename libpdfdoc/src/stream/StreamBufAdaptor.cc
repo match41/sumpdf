@@ -42,12 +42,24 @@ StreamBufAdaptor::StreamBufAdaptor( StreamFilter *str )
 
 }
 
+StreamBufAdaptor::StreamBufAdaptor( const StreamBufAdaptor& rhs )
+	: m_str( rhs.m_str )
+{
+	std::memcpy( m_buf, rhs.m_buf, m_pb_size ) ;
+	
+	setg( m_buf + m_pb_size,
+		  m_buf + m_pb_size,
+		  m_buf + m_pb_size ) ;
+}
+
+/*
 void StreamBufAdaptor::Set( StreamFilter *str )
 {
 	assert( str != 0 ) ;
 	assert( m_str == 0 ) ;
 	m_str = str ;
 }
+*/
 
 int StreamBufAdaptor::underflow( )
 {

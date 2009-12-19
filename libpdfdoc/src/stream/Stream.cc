@@ -55,13 +55,13 @@ struct Stream::Impl
 	// for reading
 	std::auto_ptr<StreamFilter>	filter ;
 	StreamBufAdaptor			sbuf ;
-	std::istream				istr ;
+//	std::istream				istr ;
 	
 	/// indicates the stream's content is different from the data on disk.
 	/// if true, the stream has to be rewritten to disk.
 	bool	dirty ;
 	
-	Impl( ) : istr( &sbuf ), dirty( false )
+	Impl( ) : dirty( false )
 	{
 	}
 } ;
@@ -78,7 +78,7 @@ Stream::Stream( Filter f )
 		filter = new DeflateFilter( filter ) ;
 
 	m_impl->filter.reset( filter ) ;
-	m_impl->sbuf.Set( m_impl->filter.get() ) ;
+//	m_impl->sbuf.Set( m_impl->filter.get() ) ;
 }
 
 Stream::Stream( const std::string& str )
@@ -88,7 +88,7 @@ Stream::Stream( const std::string& str )
 	m_impl->dirty = true ;
 
 	m_impl->filter.reset( new BufferedFilter(str.begin(), str.end() ) ) ;
-	m_impl->sbuf.Set( m_impl->filter.get() ) ;
+//	m_impl->sbuf.Set( m_impl->filter.get() ) ;
 }
 
 /*!	constructor for streams from file. This constructor will create a stream
@@ -167,7 +167,7 @@ void Stream::ApplyFilter( const Object& filter )
 	else if ( filter.Type() == Object::name )
 		CreateFilter( filter ) ;
 
-	m_impl->sbuf.Set( m_impl->filter.get() ) ;
+//	m_impl->sbuf.Set( m_impl->filter.get() ) ;
 }
 
 Dictionary Stream::Self( ) const
@@ -220,11 +220,14 @@ bool Stream::operator==( const Stream& str ) const
     from the stream and write them to the streambuf \a buf.
     \param  buf     the streambuf that will get all the stream data.
 */
-std::size_t Stream::WriteData( std::streambuf *buf ) const
+std::size_t Stream::CopyData( std::streambuf *buf ) const
 {
     assert( buf != 0 ) ;
 	assert( m_impl.get() != 0 ) ;
 	assert( m_impl->filter.get() != 0 ) ;
+
+	// first reset to the start of the stream
+	m_impl->filter->Reset( ) ;
 
 	unsigned char data[80] ;
 	std::size_t count = m_impl->filter->Read( data, sizeof(data) ) ;
@@ -244,11 +247,12 @@ std::ostream& operator<<( std::ostream& os, const Stream& s )
 	os 	<< s.Self( )
 		<< "\nstream\n" ;
 	
-	std::size_t count = s.WriteData( os.rdbuf() ) ;
+	std::size_t count = s.CopyData( os.rdbuf() ) ;
 	assert( count == s.Length() ) ;
 	
 	return os << "\nendstream\n" ;
 }
+/*
 
 std::istream& Stream::InStream( ) const
 {
@@ -256,10 +260,16 @@ std::istream& Stream::InStream( ) const
 	return m_impl->istr ;
 }
 
+*/
+StreamBufAdaptor Stream::StreamBuf( )
+{
+	return StreamBufAdaptor( m_impl->filter.get() ) ;
+}
+
 void Stream::Reset( ) const
 {
 	assert( m_impl.get() != 0 ) ;
-	m_impl->istr.clear( ) ;
+//	m_impl->istr.clear( ) ;
 	m_impl->filter->Reset( ) ;
 }
 

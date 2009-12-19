@@ -32,6 +32,7 @@
 #include "core/TokenSrc.hh"
 
 #include "stream/Stream.hh"
+#include "stream/StreamBufAdaptor.hh"
 
 #include <zlib.h>
 
@@ -63,7 +64,11 @@ void StreamTest::TestRead2( )
 	std::istringstream iss( "hello" ) ;
 	pdf::Stream subject( iss.rdbuf(), 0, d ) ;
 	pdf::Token t ;
-	CPPUNIT_ASSERT( subject.InStream() >> t ) ;
+	
+	pdf::StreamBufAdaptor strbuf = subject.StreamBuf( ) ;
+	std::istream is( &strbuf ) ;
+	
+	CPPUNIT_ASSERT( is >> t ) ;
 	CPPUNIT_ASSERT( t.Get() == "hello" ) ;
 }
 
@@ -87,7 +92,7 @@ void StreamTest::TestReset( )
 	pdf::Stream subject( str ) ;
 	
 	std::ostringstream ss ; 
-	std::size_t count = subject.WriteData( ss.rdbuf() ) ;
+	std::size_t count = subject.CopyData( ss.rdbuf() ) ;
 	CPPUNIT_ASSERT( count == str.size() ) ;
  	CPPUNIT_ASSERT( ss.str() == str ) ;
  	CPPUNIT_ASSERT( subject.Length( ) == str.size( ) ) ;
@@ -97,7 +102,7 @@ void StreamTest::TestReset( )
  	CPPUNIT_ASSERT( subject.Length( ) == str.size( ) ) ;
 
  	std::ostringstream ss2 ; 
-	count = subject.WriteData( ss2.rdbuf() ) ;
+	count = subject.CopyData( ss2.rdbuf() ) ;
 	CPPUNIT_ASSERT( count == str.size() ) ;
  	CPPUNIT_ASSERT( ss2.str() == str ) ;
 }
@@ -110,14 +115,17 @@ void StreamTest::TestReadDeflate( )
 	CPPUNIT_ASSERT( subject.Length( ) == str.size( ) ) ;
 	
 	std::ostringstream ss ; 
-	std::size_t count = subject.WriteData( ss.rdbuf() ) ;
+	std::size_t count = subject.CopyData( ss.rdbuf() ) ;
 	CPPUNIT_ASSERT( count == m_original.size() ) ;
 	CPPUNIT_ASSERT( subject.Length() == str.size( ) ) ;
 	
 	subject.Reset( ) ;
 	
+	pdf::StreamBufAdaptor strbuf = subject.StreamBuf( ) ;
+	std::istream is( &strbuf ) ;
+
 	pdf::Dictionary d ;
-	CPPUNIT_ASSERT( subject.InStream() >> d ) ;
+	CPPUNIT_ASSERT( is >> d ) ;
 	CPPUNIT_ASSERT( d["Subtype"].As<pdf::Name>() == "CIDFontType0" ) ;
 }
 

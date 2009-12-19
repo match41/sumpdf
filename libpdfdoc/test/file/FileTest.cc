@@ -136,7 +136,7 @@ void FileTest::TestReadStream( )
 	CPPUNIT_ASSERT( obj.IsType<pdf::Stream>() ) ;
 
 	std::stringstream output ;
-	std::size_t count = obj.As<pdf::Stream>().WriteData( output.rdbuf() ) ;
+	std::size_t count = obj.As<pdf::Stream>().CopyData( output.rdbuf() ) ;
 	CPPUNIT_ASSERT( count == 70 ) ;
 	CPPUNIT_ASSERT( output.str() == "2 J\n0.57 w\nBT /F1 16.00 Tf ET\n"
 	                        "BT 31.19 794.57 Td (Hello World!) Tj ET\n" ) ;
