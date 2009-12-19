@@ -41,6 +41,7 @@ class Name ;
 class Ref ;
 class Object ;
 class StreamBufAdaptor ;
+class StreamFilter ;
 
 /*!	\brief	PDF stream object
 	
@@ -76,6 +77,7 @@ public :
 	Dictionary Self( ) const ;
     std::size_t CopyData( std::streambuf *buf ) const ;
     std::size_t CopyData( unsigned char *buf, std::size_t size ) const ;
+    std::size_t CopyRawData( std::streambuf *buf ) const ;
     std::size_t Append( const unsigned char *buf, std::size_t size ) ;
 
 	void Swap( Stream& str ) ;
@@ -94,6 +96,8 @@ public :
 private :
 	void ApplyFilter( const Object& filter ) ;
 	void CreateFilter( const Name& filter ) ;
+
+	static std::size_t CopyFromFilter( StreamFilter *f, std::streambuf *buf ) ;
 
 private :
 	struct Impl ;

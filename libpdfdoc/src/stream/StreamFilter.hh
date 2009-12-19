@@ -29,6 +29,7 @@
 #define __PDF_STREAM_FILTER_HEADER_INCLUDED__
 
 #include <cstddef>
+#include <iosfwd>
 
 namespace pdf {
 
@@ -57,6 +58,7 @@ public :
 	virtual std::size_t Length( ) const = 0 ;
 	virtual Object GetFilterName( ) const = 0 ;
 	virtual StreamFilter* Clone( ) const = 0 ;
+	virtual StreamFilter* GetInner( ) = 0 ;
 } ;
 
 } // end of namespace

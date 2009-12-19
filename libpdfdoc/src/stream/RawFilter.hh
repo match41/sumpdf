@@ -56,6 +56,7 @@ public :
 	Object GetFilterName( ) const ;
 
 	StreamFilter* Clone( ) const ;
+	StreamFilter* GetInner( ) ;
 
 private :
 	std::streambuf			*m_file ;		//!< the file to be read from

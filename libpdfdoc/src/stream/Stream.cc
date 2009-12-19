@@ -258,17 +258,7 @@ std::size_t Stream::CopyData( std::streambuf *buf ) const
 	// first reset to the start of the stream
 	m_impl->filter->Reset( ) ;
 
-	unsigned char data[80] ;
-	std::size_t count = m_impl->filter->Read( data, sizeof(data) ) ;
-	std::size_t total = 0 ;
-	
-	while ( count > 0 )
-	{
-		total += buf->sputn( reinterpret_cast<const char*>( data ), count ) ;
-		count = m_impl->filter->Read( data, sizeof(data) ) ;
-	}
-
-	return total ;
+	return CopyFromFilter( m_impl->filter.get(), buf ) ;
 }
 
 std::size_t Stream::CopyData( unsigned char *buf, std::size_t size ) const
@@ -281,6 +271,33 @@ std::size_t Stream::CopyData( unsigned char *buf, std::size_t size ) const
 	m_impl->filter->Reset( ) ;
 
 	return m_impl->filter->Read( buf, size ) ;
+}
+
+std::size_t Stream::CopyRawData( std::streambuf *buf ) const
+{
+    assert( buf != 0 ) ;
+	assert( m_impl.get() != 0 ) ;
+	assert( m_impl->filter.get() != 0 ) ;
+
+	// first reset to the start of the stream
+	m_impl->filter->Reset( ) ;
+
+	return CopyFromFilter( m_impl->filter->GetInner(), buf ) ;
+}
+
+std::size_t Stream::CopyFromFilter( StreamFilter *f, std::streambuf *buf )
+{
+	unsigned char data[80] ;
+	std::size_t count = f->Read( data, sizeof(data) ) ;
+	std::size_t total = 0 ;
+	
+	while ( count > 0 )
+	{
+		total += buf->sputn( reinterpret_cast<const char*>( data ), count ) ;
+		count = f->Read( data, sizeof(data) ) ;
+	}
+
+	return total ;
 }
 
 std::ostream& operator<<( std::ostream& os, const Stream& s )

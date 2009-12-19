@@ -61,6 +61,7 @@ public :
 	std::size_t Length( ) const ;
 	Object GetFilterName( ) const ;
 	DeflateFilter* Clone( ) const ;
+	StreamFilter* GetInner( ) ;
 	
 	class Error : public Exception
 	{

@@ -63,6 +63,7 @@ public :
 	std::size_t Length( ) const ;
 	Object GetFilterName( ) const ;
 	StreamFilter* Clone( ) const ;
+	StreamFilter* GetInner( ) ;
 	
 private :
 	std::vector<unsigned char>	m_buf ;		//!< chunk of data in memory

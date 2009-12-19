@@ -102,4 +102,9 @@ Object BufferedFilter::GetFilterName( ) const
 	return Object( ) ;
 }
 
+StreamFilter* BufferedFilter::GetInner( )
+{
+	return this ;
+}
+
 } // end of namespace

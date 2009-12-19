@@ -115,4 +115,9 @@ Object RawFilter::GetFilterName( ) const
 	return Object( ) ;
 }
 
+StreamFilter* RawFilter::GetInner( )
+{
+	return this ;
+}
+
 } // end of namespace

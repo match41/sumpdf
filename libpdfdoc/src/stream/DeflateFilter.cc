@@ -167,4 +167,9 @@ Object DeflateFilter::GetFilterName( ) const
 		throw Exception( "invalid filter" ) ;
 }
 
+StreamFilter* DeflateFilter::GetInner( )
+{
+	return m_src.get() ;
+}
+
 } // end of namespace
