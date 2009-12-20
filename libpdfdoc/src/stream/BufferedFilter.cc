@@ -84,7 +84,7 @@ std::size_t BufferedFilter::Write( const unsigned char *data, std::size_t size )
 	return size ;
 }
 
-void BufferedFilter::Reset( )
+void BufferedFilter::Rewind( )
 {
 	m_offset = 0 ;
 }

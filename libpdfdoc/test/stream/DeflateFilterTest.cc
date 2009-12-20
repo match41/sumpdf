@@ -74,7 +74,7 @@ void DeflateFilterTest::TestReset( )
 	
 	unsigned char buf[100] ;
 	std::size_t count = subject.Read( buf, sizeof( buf ) ) ;
-	subject.Reset( ) ;	
+	subject.Rewind( ) ;	
 	
 	count = subject.Read( buf, sizeof( buf ) ) ;
 	while ( count != 0 )

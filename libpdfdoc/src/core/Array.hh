@@ -55,6 +55,7 @@ public :
 
 public :
 	Array( ) ;
+	explicit Array( std::size_t count, const Object& obj = Object() ) ;
 
 	template <typename InputIt>
 	Array( InputIt first, InputIt last )

@@ -94,14 +94,14 @@ void RealPage::ReadContent( const Object& str_obj, IFile *src )
 
 	// append individual stream objects
 	else if ( str_obj.IsType<Stream>( ) )
-		DecodeContent( str_obj.As<Stream>( ) ) ;
+		m_content.push_back( str_obj.As<Stream>( ) ) ;
 
 	// catenate individual objects in array
 	else if ( str_obj.IsType<Array>( ) )
 	{
 		const Array& a = str_obj.As<Array>( ) ;
-//		std::for_each( a.begin( ), a.end( ),
-//		               boost::bind( &RealPage::ReadContent, this, _1, src ) ) ;
+		std::for_each( a.begin( ), a.end( ),
+		               boost::bind( &RealPage::ReadContent, this, _1, src ) ) ;
 	}
 
 	else if ( !str_obj.IsNull( ) )
@@ -116,7 +116,7 @@ void RealPage::Write( const Ref& link, IFile *file, const Ref& parent ) const
 
 	Dictionary self( m_self ) ;
 	self["Type"]		= Name( "Page" ) ;
-// 	self["Contents"]    = file->WriteObj( Stream( m_content.str( ) ) ) ;
+ 	self["Contents"]    = WriteContent( file ) ;
 	self["Resources"]   = GetResource( )->Write( file ) ;
 	self["Parent"]   	= parent ;
 
@@ -124,6 +124,22 @@ void RealPage::Write( const Ref& link, IFile *file, const Ref& parent ) const
     	self["MediaBox"] = Array( m_media_box.begin( ), m_media_box.end( ) ) ;
 
 	file->WriteObj( self, link ) ;
+}
+
+Object RealPage::WriteContent( IFile *file ) const
+{
+	assert( file != 0 ) ;
+
+	if ( m_content.size() == 1 )
+		return file->WriteObj( m_content.front() ) ;
+	else
+	{
+		Array strs( m_content.size() ) ;
+		std::transform( m_content.begin(), m_content.end(),
+		                strs.begin(),
+		                boost::bind( &IFile::WriteObj, file, _1 ) ) ;
+		return strs ;
+	}
 }
 
 void RealPage::DrawText( double x, double y, Font *f, const std::string& text )
@@ -135,16 +151,16 @@ void RealPage::DrawText( double x, double y, Font *f, const std::string& text )
 	assert( font != 0 ) ;
 	Name fname = GetResource( )->AddFont( font ) ;
 	
-	if ( m_content.empty() )
-		m_content.push_back( Stream() ) ;
-
-//	m_content.front()
-/*
-	m_content << "BT\n"
-              << fname << " 12 Tf " << x << ' ' << y << " Td "
-	                   << String( text ) << " Tj\n"
-	          << "ET\n" ;
-*/
+	std::ostringstream ss ;
+	ss << "BT\n"
+       << fname << " 12 Tf " << x << ' ' << y << " Td "
+	            << String( text ) << " Tj\n"
+	   << "ET\n" ;
+	
+	Stream s( Stream::deflate ) ;
+	s.Append( ss.str().c_str() ) ;
+	s.Flush( ) ;
+	m_content.push_back( s ) ;
 }
 
 std::size_t RealPage::Count( ) const

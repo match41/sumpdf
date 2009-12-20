@@ -97,7 +97,7 @@ std::size_t RawFilter::Write( const unsigned char *data, std::size_t size )
 	return c ;
 }
 
-void RawFilter::Reset( )
+void RawFilter::Rewind( )
 {
 	assert( m_file != 0 ) ;
 	
@@ -107,7 +107,7 @@ void RawFilter::Reset( )
 
 std::size_t RawFilter::Length( ) const
 {
-	return m_length - m_current ;
+	return m_length ;
 }
 
 Object RawFilter::GetFilterName( ) const

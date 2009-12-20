@@ -75,6 +75,7 @@ public :
 private :
 	void ReadContent( const Object& str_obj, IFile *file ) ;
 	void DecodeContent( const Stream& s ) ;
+	Object WriteContent( IFile *file ) const ; 
 	
 private :
 	PageTree	*m_parent ;

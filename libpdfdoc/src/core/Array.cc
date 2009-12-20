@@ -41,6 +41,11 @@ Array::Array( )
 {
 }
 
+Array::Array( std::size_t count, const Object& obj )
+	: m_array( count, obj )
+{
+}
+
 void Array::swap( Array& array )
 {
 	m_array.swap( array.m_array ) ;

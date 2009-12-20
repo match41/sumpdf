@@ -59,7 +59,7 @@ public :
 
 	std::size_t Read( unsigned char *data, std::size_t size ) ;
 	std::size_t Write( const unsigned char *data, std::size_t size ) ;
-	void Reset( ) ;
+	void Rewind( ) ;
 	std::size_t Length( ) const ;
 	Object GetFilterName( ) const ;
 	StreamFilter* Clone( ) const ;

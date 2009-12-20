@@ -118,7 +118,7 @@ void StreamTest::TestReset( )
  	CPPUNIT_ASSERT( subject.Length( ) == str.size( ) ) ;
 	
 	// Reset() should not affect Length()
-	subject.Reset( ) ;
+	subject.Rewind( ) ;
  	CPPUNIT_ASSERT( subject.Length( ) == str.size( ) ) ;
 
  	std::ostringstream ss2 ; 
@@ -139,7 +139,7 @@ void StreamTest::TestReadDeflate( )
 	CPPUNIT_ASSERT( count == m_original.size() ) ;
 	CPPUNIT_ASSERT( subject.Length() == str.size( ) ) ;
 	
-	subject.Reset( ) ;
+	subject.Rewind( ) ;
 	
 	pdf::StreamBufAdaptor strbuf = subject.StreamBuf( ) ;
 	std::istream is( &strbuf ) ;
@@ -163,9 +163,11 @@ void StreamTest::TestWriteOstream( )
 {
 	const char str[] = "0 12 TD (string string) Tj" ;
 	pdf::Stream subject( str ) ;
+	CPPUNIT_ASSERT( subject.Length() == std::strlen( str ) ) ;
 	
 	std::stringstream ss ;
 	CPPUNIT_ASSERT( ss << subject ) ;
+	CPPUNIT_ASSERT( subject.Length() > 0 ) ;
 
 	pdf::TokenSrc src( ss ) ;
 

@@ -41,6 +41,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <cstring>
 #include <iostream>
 #include <iterator>
 
@@ -129,7 +130,7 @@ Stream::Stream( std::streambuf *file, std::streamoff offset,
 	                                     dict["Length"].As<int>() ) ) ;
 
 	ApplyFilter( dict["Filter"] ) ;
-	assert( m_impl->filter->Length() == dict["Length"].As<int>() ) ;
+	assert( m_impl->filter->GetInner()->Length() == dict["Length"].As<int>() ) ;
 	assert( dict["Filter"] == m_impl->filter->GetFilterName() ) ;
 	
 	m_impl->self.erase( "Length" ) ;
@@ -258,7 +259,7 @@ std::size_t Stream::CopyData( std::streambuf *buf ) const
 	assert( m_impl->filter.get() != 0 ) ;
 
 	// first reset to the start of the stream
-	m_impl->filter->Reset( ) ;
+	m_impl->filter->Rewind( ) ;
 
 	return CopyFromFilter( m_impl->filter.get(), buf ) ;
 }
@@ -270,7 +271,7 @@ std::size_t Stream::CopyData( unsigned char *buf, std::size_t size ) const
 	assert( m_impl->filter.get() != 0 ) ;
 
 	// first reset to the start of the stream
-	m_impl->filter->Reset( ) ;
+	m_impl->filter->Rewind( ) ;
 
 	return m_impl->filter->Read( buf, size ) ;
 }
@@ -287,17 +288,23 @@ std::size_t Stream::CopyRawData( std::streambuf *buf ) const
 	assert( m_impl->filter.get() != 0 ) ;
 
 	// first reset to the start of the stream
-	m_impl->filter->Reset( ) ;
+	m_impl->filter->Rewind( ) ;
 
 	return CopyFromFilter( m_impl->filter->GetInner(), buf ) ;
 }
 
 std::size_t Stream::CopyFromFilter( StreamFilter *f, std::streambuf *buf )
 {
+	assert( f != 0 ) ;
+	assert( buf != 0 ) ;
+	
+	// rewind to the start of the stream
+	f->Rewind( ) ;
+	
 	unsigned char data[80] ;
 	std::size_t count = f->Read( data, sizeof(data) ) ;
 	std::size_t total = 0 ;
-	
+
 	while ( count > 0 )
 	{
 		total += buf->sputn( reinterpret_cast<const char*>( data ), count ) ;
@@ -312,14 +319,13 @@ std::ostream& operator<<( std::ostream& os, const Stream& s )
 	assert( s.m_impl.get() != 0 ) ;
 	assert( s.m_impl->filter.get() != 0 ) ;
 
-	os 	<< s.Self( )
-		<< "\nstream\n" ;
-
 	// first flush all buffered data inside the filters
 	s.m_impl->filter->Flush( ) ;
+	
+	os 	<< s.Self( ) << "\nstream\n" ;
 
-	std::size_t count = s.CopyRawData( os.rdbuf() ) ;
-	assert( count == s.Length() ) ;
+	std::size_t length = s.CopyRawData( os.rdbuf() ) ;
+	assert( length == s.Self( )["Length"].As<int>() ) ;
 	
 	return os << "\nendstream\n" ;
 }
@@ -329,10 +335,10 @@ StreamBufAdaptor Stream::StreamBuf( )
 	return StreamBufAdaptor( m_impl->filter.get() ) ;
 }
 
-void Stream::Reset( ) const
+void Stream::Rewind( ) const
 {
 	assert( m_impl.get() != 0 ) ;
-	m_impl->filter->Reset( ) ;
+	m_impl->filter->Rewind( ) ;
 }
 
 Name Stream::Type( ) const
@@ -352,6 +358,12 @@ std::size_t Stream::Append( const unsigned char *buf, std::size_t size )
 	assert( m_impl.get() != 0 ) ;
 	assert( m_impl->filter.get() != 0 ) ;
 	return m_impl->filter->Write( buf, size ) ;
+}
+
+std::size_t Stream::Append( const char *str )
+{
+	return Append( reinterpret_cast<const unsigned char*>(str),
+	               std::strlen( str ) ) ;
 }
 
 void Stream::Flush( )

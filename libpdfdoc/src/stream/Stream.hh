@@ -79,12 +79,13 @@ public :
     std::size_t CopyData( unsigned char *buf, std::size_t size ) const ;
     
     std::size_t Append( const unsigned char *buf, std::size_t size ) ;
+    std::size_t Append( const char *str ) ;
     void Flush( ) ;
 
 	void Swap( Stream& str ) ;
 	StreamBufAdaptor StreamBuf( ) ;
 	
-	void Reset( ) const ;
+	void Rewind( ) const ;
 	std::size_t Length( ) const ;
 
 	Name Type( ) const ;

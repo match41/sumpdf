@@ -155,10 +155,10 @@ void DeflateFilter::Flush( )
 		m_src->Write( &m_comp.buf[0], m_comp.z.next_out - &m_comp.buf[0] ) ;
 }
 
-void DeflateFilter::Reset( )
+void DeflateFilter::Rewind( )
 {
 	m_decomp.buf.clear( ) ;
-	m_src->Reset( ) ;
+	m_src->Rewind( ) ;
 
 	if ( ::inflateReset( &m_decomp.z ) != Z_OK )
 		throw ParseError( "inflate init fail" ) ;
