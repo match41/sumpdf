@@ -30,10 +30,12 @@
 #include "core/Object.hh"
 #include "stream/DeflateFilter.hh"
 #include "stream/RawFilter.hh"
+#include "stream/BufferedFilter.hh"
 
 #include <vector>
 #include <fstream>
 #include <iterator>
+#include <cstring>
 
 #include <zlib.h>
 
@@ -93,6 +95,29 @@ void DeflateFilterTest::TestName( )
 	pdf::DeflateFilter subject( raw ) ;
 	CPPUNIT_ASSERT( subject.GetFilterName().As<pdf::Name>()
 		== pdf::Name( "FlateDecode" ) ) ;
+}
+
+void DeflateFilterTest::TestWrite( )
+{
+	pdf::BufferedFilter *raw = new pdf::BufferedFilter ;
+	pdf::DeflateFilter subject( raw ) ;
+
+	// compress some data
+	unsigned char text[] = "HelloHello!" ;
+	subject.Write( text, sizeof(text) ) ;
+	subject.Flush( ) ;
+	CPPUNIT_ASSERT( raw->Length() > 0 ) ;
+	
+	// read the compress data back
+	std::vector<unsigned char> out( raw->Length() ) ;
+	CPPUNIT_ASSERT( raw->Read( &out[0], out.size() ) == out.size() ) ;
+
+	// uncompress it and check the result
+	unsigned char rev[sizeof(text)*2] ;
+	unsigned long rsize = sizeof(rev) ;
+	CPPUNIT_ASSERT( ::uncompress( rev, &rsize, &out[0], out.size() ) == Z_OK ) ;
+	CPPUNIT_ASSERT( rsize == sizeof(text) ) ;
+	CPPUNIT_ASSERT( std::memcmp( rev, text, rsize ) == 0 ) ;
 }
 
 void DeflateFilterTest::setUp( )

@@ -77,8 +77,9 @@ public :
 	Dictionary Self( ) const ;
     std::size_t CopyData( std::streambuf *buf ) const ;
     std::size_t CopyData( unsigned char *buf, std::size_t size ) const ;
-    std::size_t CopyRawData( std::streambuf *buf ) const ;
+    
     std::size_t Append( const unsigned char *buf, std::size_t size ) ;
+    void Flush( ) ;
 
 	void Swap( Stream& str ) ;
 	StreamBufAdaptor StreamBuf( ) ;
@@ -96,6 +97,7 @@ public :
 private :
 	void ApplyFilter( const Object& filter ) ;
 	void CreateFilter( const Name& filter ) ;
+    std::size_t CopyRawData( std::streambuf *buf ) const ;
 
 	static std::size_t CopyFromFilter( StreamFilter *f, std::streambuf *buf ) ;
 

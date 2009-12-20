@@ -57,7 +57,7 @@ DeflateFilter::DeflateFilter( StreamFilter *src )
 		throw Error( "deflateInit(): ", m_decomp.z.msg ) ;
 
     m_decomp.buf.reserve( m_buf_size ) ;
-    m_comp.buf.reserve( m_buf_size ) ;
+	m_comp.buf.resize( m_buf_size ) ;
 }
 
 std::size_t DeflateFilter::Read( unsigned char *data, std::size_t size )
@@ -108,25 +108,51 @@ std::size_t DeflateFilter::Write( const unsigned char *data, std::size_t size )
 	m_comp.z.avail_in	= size ;
 
 	// TODO: this loop is not finished yet
-	while ( result == Z_OK && m_decomp.z.avail_in > 0 )
+	while ( result == Z_OK && m_comp.z.avail_in > 0 )
 	{
-		m_comp.buf.resize( m_buf_size ) ;
 		m_comp.z.next_out	= &m_comp.buf[0] ;
 		m_comp.z.avail_out	= m_buf_size ;
 		
 		result = ::deflate( &m_comp.z, Z_NO_FLUSH ) ;
-		if ( result != Z_OK )
-			break ;
-		
-		if ( m_comp.z.avail_out == 0 )
+		if ( result == Z_OK )
 		{
-			m_src->Write( &m_comp.buf[0], m_comp.buf.size() ) ;
-			m_comp.z.next_out	= &m_comp.buf[0] ;
-			m_comp.z.avail_out	= m_buf_size ;
+			// write out the data compressed by deflate()
+			m_src->Write( &m_comp.buf[0], m_comp.z.next_out - &m_comp.buf[0] ) ;
+			
+			// deflate() has used up all its output space. we must consume its
+			// output and call it again
+			if ( m_comp.z.avail_out == 0 )
+			{
+				m_comp.z.next_out	= &m_comp.buf[0] ;
+				m_comp.z.avail_out	= m_buf_size ;
+			}
 		}
+		else
+			break ;
 	}
-
+	
 	return offset ;
+}
+
+void DeflateFilter::Flush( )
+{
+	assert( m_comp.z.avail_in == 0 ) ;
+
+	m_comp.z.next_out	= &m_comp.buf[0] ;
+	m_comp.z.avail_out	= m_buf_size ;
+
+	int r ;
+	while ( (r = ::deflate( &m_comp.z, Z_FINISH )) != Z_STREAM_END )
+	{
+		// write out the data compressed by deflate()
+		m_src->Write( &m_comp.buf[0], m_comp.z.next_out - &m_comp.buf[0] ) ;
+		
+		m_comp.z.next_out	= &m_comp.buf[0] ;
+		m_comp.z.avail_out	= m_buf_size ;
+	}
+	
+	if ( r == Z_STREAM_END )
+		m_src->Write( &m_comp.buf[0], m_comp.z.next_out - &m_comp.buf[0] ) ;
 }
 
 void DeflateFilter::Reset( )

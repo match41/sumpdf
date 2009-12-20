@@ -107,4 +107,8 @@ StreamFilter* BufferedFilter::GetInner( )
 	return this ;
 }
 
+void BufferedFilter::Flush( )
+{
+}
+
 } // end of namespace

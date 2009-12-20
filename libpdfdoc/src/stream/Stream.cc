@@ -245,9 +245,11 @@ bool Stream::operator!=( const Stream& str ) const
 	return !operator==( str ) ;
 }
 
-/*! write stream data to a streambuf. This function will read all data
+/*! write filtered stream data to a streambuf. This function will read all data
     from the stream and write them to the streambuf \a buf.
     \param  buf     the streambuf that will get all the stream data.
+    \return	number of bytes copied to output stream. As this function copies
+			filtered data, the return value may be different from Length().
 */
 std::size_t Stream::CopyData( std::streambuf *buf ) const
 {
@@ -273,6 +275,11 @@ std::size_t Stream::CopyData( unsigned char *buf, std::size_t size ) const
 	return m_impl->filter->Read( buf, size ) ;
 }
 
+/**	copy the unfiltered data to the output streambuf.
+	\param	buf		the output streambuf
+	\return	the number of bytes copied to the output. It should be equal to
+			the return value of Length().
+*/
 std::size_t Stream::CopyRawData( std::streambuf *buf ) const
 {
     assert( buf != 0 ) ;
@@ -302,10 +309,16 @@ std::size_t Stream::CopyFromFilter( StreamFilter *f, std::streambuf *buf )
 
 std::ostream& operator<<( std::ostream& os, const Stream& s )
 {
+	assert( s.m_impl.get() != 0 ) ;
+	assert( s.m_impl->filter.get() != 0 ) ;
+
 	os 	<< s.Self( )
 		<< "\nstream\n" ;
-	
-	std::size_t count = s.CopyData( os.rdbuf() ) ;
+
+	// first flush all buffered data inside the filters
+	s.m_impl->filter->Flush( ) ;
+
+	std::size_t count = s.CopyRawData( os.rdbuf() ) ;
 	assert( count == s.Length() ) ;
 	
 	return os << "\nendstream\n" ;
@@ -336,7 +349,16 @@ Name Stream::Subtype( ) const
 
 std::size_t Stream::Append( const unsigned char *buf, std::size_t size )
 {
-	return 0 ;
+	assert( m_impl.get() != 0 ) ;
+	assert( m_impl->filter.get() != 0 ) ;
+	return m_impl->filter->Write( buf, size ) ;
+}
+
+void Stream::Flush( )
+{
+	assert( m_impl.get() != 0 ) ;
+	assert( m_impl->filter.get() != 0 ) ;
+	m_impl->filter->Flush( ) ;
 }
 
 } // end of namespace

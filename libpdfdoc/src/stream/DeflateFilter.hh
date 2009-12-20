@@ -63,6 +63,8 @@ public :
 	DeflateFilter* Clone( ) const ;
 	StreamFilter* GetInner( ) ;
 	
+	void Flush( ) ;
+	
 	class Error : public Exception
 	{
 	public :

@@ -64,6 +64,7 @@ public :
 	Object GetFilterName( ) const ;
 	StreamFilter* Clone( ) const ;
 	StreamFilter* GetInner( ) ;
+	void Flush( ) ;
 	
 private :
 	std::vector<unsigned char>	m_buf ;		//!< chunk of data in memory

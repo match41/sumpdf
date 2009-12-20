@@ -36,11 +36,31 @@
 
 #include <zlib.h>
 
+#include <cstring>
 #include <sstream>
 #include <iostream>
 
 StreamTest::StreamTest( )
 {
+}
+
+void StreamTest::setUp( )
+{
+	std::ifstream file( (std::string(TEST_DATA_DIR) + "obj9020").c_str() ) ;
+	m_original.assign( (std::istreambuf_iterator<char>( file )),
+	                   (std::istreambuf_iterator<char>( )) ) ;
+
+	std::vector<unsigned char> c( ::compressBound( m_original.size() ) ) ;
+	::uLongf dest_len = c.size( ) ;
+	::compress2( &c[0], &dest_len, &m_original[0], m_original.size(), 9 ) ;
+	c.resize( dest_len ) ;
+	
+	m_compressed.swap( c ) ;
+}
+
+void StreamTest::tearDown( )
+{
+	m_compressed.clear( ) ;
 }
 
 void StreamTest::TestRead( )
@@ -139,27 +159,39 @@ void StreamTest::TestClone( )
 	CPPUNIT_ASSERT( subject.Self() == cloned.Self() ) ;
 }
 
-void StreamTest::setUp( )
-{
-	std::ifstream file( (std::string(TEST_DATA_DIR) + "obj9020").c_str() ) ;
-	m_original.assign( (std::istreambuf_iterator<char>( file )),
-	                   (std::istreambuf_iterator<char>( )) ) ;
-
-	std::vector<unsigned char> c( ::compressBound( m_original.size() ) ) ;
-	::uLongf dest_len = c.size( ) ;
-	::compress2( &c[0], &dest_len, &m_original[0], m_original.size(), 9 ) ;
-	c.resize( dest_len ) ;
-	
-	m_compressed.swap( c ) ;
-}
-
-void StreamTest::tearDown( )
-{
-	m_compressed.clear( ) ;
-}
-
 void StreamTest::TestWriteOstream( )
 {
+	const char str[] = "0 12 TD (string string) Tj" ;
+	pdf::Stream subject( str ) ;
+	
+	std::stringstream ss ;
+	CPPUNIT_ASSERT( ss << subject ) ;
+
+	pdf::TokenSrc src( ss ) ;
+
+	// stream dictionary
+	pdf::Object self ;
+	CPPUNIT_ASSERT( src >> self ) ;
+	CPPUNIT_ASSERT( self == subject.Self() ) ;
+
+	// "stream" keyword after dictionary
+	pdf::Token t ;
+	CPPUNIT_ASSERT( src >> t ) ;
+	CPPUNIT_ASSERT( t.Get() == "stream" ) ;
+
+	// stream content after keyword
+	char ch ;
+	CPPUNIT_ASSERT( ss.get( ch ) ) ;
+	CPPUNIT_ASSERT( ch == '\n' ) ;
+	char out[sizeof(str)] = {} ;
+	CPPUNIT_ASSERT( ss.rdbuf()->sgetn( out, sizeof(out)- 1 ) ==
+		subject.Length() ) ;
+	CPPUNIT_ASSERT( std::memcmp( str, out, subject.Length() ) == 0 ) ;
+	
+	CPPUNIT_ASSERT( ss.get( ch ) ) ;
+	CPPUNIT_ASSERT( ch == '\n' ) ;
+	CPPUNIT_ASSERT( src >> t ) ;
+	CPPUNIT_ASSERT( t.Get() == "endstream" ) ;
 }
 
 void StreamTest::TestName( )
@@ -167,4 +199,29 @@ void StreamTest::TestName( )
 	pdf::Stream s( pdf::Stream::deflate ) ;
 	CPPUNIT_ASSERT( s.Self()["Filter"].As<pdf::Name>()
 		== pdf::Name("FlateDecode") ) ;
+}
+
+void StreamTest::TestWriteDeflate( )
+{
+	pdf::Stream s( pdf::Stream::deflate ) ;
+	
+	// at least 20 bytes of test data
+	unsigned char text[] =
+		"some long long repeatable some long long repeatable some text" ;
+	CPPUNIT_ASSERT( sizeof(text) > 20 ) ;
+	
+	// write the text data to a stream
+	s.Append( text, 20 ) ;
+	s.Append( text + 20, sizeof(text) - 20  ) ;
+	s.Flush() ;
+
+	// data is compressed, so it is smaller now.
+	CPPUNIT_ASSERT( s.Length() < sizeof(text) ) ;
+	
+	// read them back
+	unsigned char out[sizeof(text)*2] ;
+	s.CopyData( out, sizeof(out) ) ;
+	
+	// compare!
+	CPPUNIT_ASSERT( std::memcmp( text, out, sizeof(text) ) == 0 ) ;
 }

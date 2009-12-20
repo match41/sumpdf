@@ -115,9 +115,19 @@ Object RawFilter::GetFilterName( ) const
 	return Object( ) ;
 }
 
+/**	like the BufferedFilter, the RawFilter is the inner-most filter as well.
+	Therefore GetInner() will just return \c this.
+*/
 StreamFilter* RawFilter::GetInner( )
 {
 	return this ;
+}
+
+/**	this function will do nothing. I am afraid the fsync() system call will
+	take too much time on ext3 file system.
+*/
+void RawFilter::Flush( )
+{
 }
 
 } // end of namespace
