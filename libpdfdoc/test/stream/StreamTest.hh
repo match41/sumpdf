@@ -53,6 +53,7 @@ public :
 		CPPUNIT_TEST( TestWrite ) ;
 		CPPUNIT_TEST( TestReset ) ;
 		CPPUNIT_TEST( TestWriteOstream ) ;
+		CPPUNIT_TEST( TestWriteOstreamTwice ) ;
 		CPPUNIT_TEST( TestName ) ;
 		CPPUNIT_TEST( TestClone ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
@@ -68,6 +69,7 @@ private :
 	void TestReset( ) ;
 	void TestReadDeflate( ) ;
 	void TestWriteOstream( ) ;
+	void TestWriteOstreamTwice( ) ;
 	void TestName( ) ;
 	void TestClone( ) ;
 	void TestWriteDeflate( ) ;

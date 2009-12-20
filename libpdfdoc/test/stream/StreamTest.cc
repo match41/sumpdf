@@ -196,6 +196,22 @@ void StreamTest::TestWriteOstream( )
 	CPPUNIT_ASSERT( t.Get() == "endstream" ) ;
 }
 
+void StreamTest::TestWriteOstreamTwice( )
+{
+	const char str[] = "0 12 TD (string string) Tj" ;
+	pdf::Stream subject( str ) ;
+
+	std::ostringstream ss1 ;
+	CPPUNIT_ASSERT( ss1 << subject ) ;
+	CPPUNIT_ASSERT( subject.Length() > 0 ) ;
+	
+	std::ostringstream ss2 ;
+	CPPUNIT_ASSERT( ss2 << subject ) ;
+	CPPUNIT_ASSERT( subject.Length() > 0 ) ;
+	
+	CPPUNIT_ASSERT( ss1.str() == ss2.str() ) ;
+}
+
 void StreamTest::TestName( )
 {
 	pdf::Stream s( pdf::Stream::deflate ) ;
