@@ -85,8 +85,7 @@ void StreamTest::TestRead2( )
 	pdf::Stream subject( iss.rdbuf(), 0, d ) ;
 	pdf::Token t ;
 	
-	pdf::InStreamBufAdaptor strbuf = subject.StreamBuf( ) ;
-	std::istream is( &strbuf ) ;
+	std::istream is( subject.InStreamBuf() ) ;
 	
 	CPPUNIT_ASSERT( is >> t ) ;
 	CPPUNIT_ASSERT( t.Get() == "hello" ) ;
@@ -104,6 +103,20 @@ void StreamTest::TestWrite( )
 	pdf::Dictionary dict ;
 	ss >> dict ;
 	CPPUNIT_ASSERT( dict["Length"] == str.size() ) ;
+}
+
+void StreamTest::TestWrite2( )
+{
+	pdf::Stream subject ;
+	std::ostream os( subject.OutStreamBuf() ) ;
+	
+	char text[] = "libpdfdoc test" ;
+	os << text ;
+	os.flush() ;
+	
+	unsigned char out[80] ;
+	CPPUNIT_ASSERT( subject.CopyData( out, sizeof(out) ) == sizeof(text)-1 ) ;
+	CPPUNIT_ASSERT( std::memcmp( text, out, sizeof(text)-1 ) == 0 ) ;
 }
 
 void StreamTest::TestReset( )
@@ -141,8 +154,7 @@ void StreamTest::TestReadDeflate( )
 	
 	subject.Rewind( ) ;
 	
-	pdf::InStreamBufAdaptor strbuf = subject.StreamBuf( ) ;
-	std::istream is( &strbuf ) ;
+	std::istream is( subject.InStreamBuf() ) ;
 
 	pdf::Dictionary d ;
 	CPPUNIT_ASSERT( is >> d ) ;

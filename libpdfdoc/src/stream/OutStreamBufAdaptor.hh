@@ -37,8 +37,10 @@ class StreamFilter ;
 class OutStreamBufAdaptor : public std::streambuf
 {
 public:
-	explicit OutStreamBufAdaptor( StreamFilter *dest ) ;
+	explicit OutStreamBufAdaptor( StreamFilter *dest = 0 ) ;
 	~OutStreamBufAdaptor( ) ;
+
+	void Set( StreamFilter *dest ) ;
 
 protected :
 	std::streamsize xsputn( const char_type *s, std::streamsize n ) ;

@@ -26,15 +26,22 @@
 */
 
 #include "InStreamBufAdaptor.hh"
+
 #include "StreamFilter.hh"
+#include "MockStreamFilter.hh"
 
 #include <cassert>
 #include <cstring>
 
+namespace
+{
+	pdf::MockStreamFilter	dummy ;
+}
+
 namespace pdf {
 
 InStreamBufAdaptor::InStreamBufAdaptor( StreamFilter *str )
-	: m_str( str )
+	: m_str( str ? str : &dummy )
 {
 	setg( m_buf + m_pb_size,
 		  m_buf + m_pb_size,
@@ -52,14 +59,12 @@ InStreamBufAdaptor::InStreamBufAdaptor( const InStreamBufAdaptor& rhs )
 		  m_buf + m_pb_size ) ;
 }
 
-/*
-void StreamBufAdaptor::Set( StreamFilter *str )
+void InStreamBufAdaptor::Set( StreamFilter *str )
 {
 	assert( str != 0 ) ;
-	assert( m_str == 0 ) ;
+	assert( m_str == &dummy ) ;
 	m_str = str ;
 }
-*/
 
 int InStreamBufAdaptor::underflow( )
 {

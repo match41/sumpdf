@@ -19,89 +19,34 @@
  \***************************************************************************/
 
 /**
- \file	OutStreamBufAdaptor.cc
- \brief	definition the OutStreamBufAdaptor class
- \date	Dec 21, 2009
+ \file	MockStreamFilter.h
+ \brief	definition the MockStreamFilter class
+ \date	Dec 22, 2009
  \author	nestal
  */
 
-#include "OutStreamBufAdaptor.hh"
+#ifndef __PDF_MOCKSTREAMFILTER_H_EADER_INCLUDED__
+#define __PDF_MOCKSTREAMFILTER_H_EADER_INCLUDED__
 
 #include "StreamFilter.hh"
-#include "MockStreamFilter.hh"
-
-#include <cstring>
-#include <cassert>
-
-namespace
-{
-	pdf::MockStreamFilter	dummy ;
-}
 
 namespace pdf {
 
-OutStreamBufAdaptor::OutStreamBufAdaptor( StreamFilter *dest )
-	: m_dest( dest ? dest : &dummy )
+class MockStreamFilter : public StreamFilter
 {
-	setp( m_buf, m_buf + m_buf_size ) ;
-}
+public:
+	MockStreamFilter( ) ;
 
-OutStreamBufAdaptor::~OutStreamBufAdaptor( )
-{
-	sync( ) ;
-}
-
-void OutStreamBufAdaptor::Set( StreamFilter *dest )
-{
-	assert( dest != 0 ) ;
-	assert( m_dest == &dummy ) ;
-	m_dest = dest ;
-}
-
-int OutStreamBufAdaptor::sync( )
-{
-	return BufferOut( ) ;
-}
-
-int OutStreamBufAdaptor::BufferOut( )
-{
-	int cnt = pptr() - pbase() ;
-	int retval = m_dest->Write(reinterpret_cast<unsigned char*>( m_buf ), cnt) ;
-
-	pbump( -cnt ) ;
-	return retval ;
-}
-
-OutStreamBufAdaptor::int_type OutStreamBufAdaptor::overflow( int_type c )
-{
-	if ( BufferOut() < 0 )
-		return traits_type::eof( ) ;
-	else
-	{
-		if ( !traits_type::eq_int_type( c, traits_type::eof() ) )
-			return sputc( c ) ;
-		else
-			return traits_type::not_eof( c ) ;
-	}
-}
-
-std::streamsize OutStreamBufAdaptor::xsputn(
-	const char_type *s, std::streamsize n )
-{
-	if ( n < epptr() - pptr() )
-	{
-		std::memcpy( pptr(), s, n * sizeof(char_type) ) ;
-		pbump( n ) ;
-	}
-	else
-	{
-		for ( std::streamsize i = 0 ; i < n ; i++ )
-		{
-			if ( traits_type::eq_int_type( sputc(s[i]), traits_type::eof() ) )
-				return i ;
-		}
-	}
-	return n ;
-}
+	std::size_t Read( unsigned char *data, std::size_t size ) ;
+	std::size_t Write( const unsigned char *data, std::size_t size ) ;
+	void Flush( ) ;
+	void Rewind( ) ;
+	std::size_t Length( ) const ;
+	Object GetFilterName( ) const ;
+	StreamFilter* Clone( ) const ;
+	StreamFilter* GetInner( ) ;
+} ;
 
 } // end of namespace
+
+#endif // MOCKSTREAMFILTER_H_

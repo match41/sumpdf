@@ -19,89 +19,39 @@
  \***************************************************************************/
 
 /**
- \file	OutStreamBufAdaptor.cc
- \brief	definition the OutStreamBufAdaptor class
- \date	Dec 21, 2009
+ \file	OutStreamBufAdaptorTest.cc
+ \brief	definition the OutStreamBufAdaptorTest class
+ \date	Dec 22, 2009
  \author	nestal
  */
 
-#include "OutStreamBufAdaptor.hh"
+#include "OutStreamBufAdaptorTest.hh"
 
-#include "StreamFilter.hh"
-#include "MockStreamFilter.hh"
+#include "stream/OutStreamBufAdaptor.hh"
+#include "stream/BufferedFilter.hh"
 
+#include <ostream>
 #include <cstring>
-#include <cassert>
 
-namespace
+OutStreamBufAdaptorTest::OutStreamBufAdaptorTest( )
 {
-	pdf::MockStreamFilter	dummy ;
+	// TODO Auto-generated constructor stub
+
 }
 
-namespace pdf {
-
-OutStreamBufAdaptor::OutStreamBufAdaptor( StreamFilter *dest )
-	: m_dest( dest ? dest : &dummy )
+void OutStreamBufAdaptorTest::TestWrite( )
 {
-	setp( m_buf, m_buf + m_buf_size ) ;
+	pdf::BufferedFilter f ;
+	pdf::OutStreamBufAdaptor subject( &f ) ;
+	std::ostream os( &subject ) ;
+	
+	// sizeof(str) == strlen(str) + 1 (null)
+	const char str[] = "Hello world!" ;  
+	os << str << std::endl ;
+	
+	unsigned char buf[80] ;
+	CPPUNIT_ASSERT( f.Read( buf, sizeof(buf) ) == sizeof(str) ) ;
+	CPPUNIT_ASSERT( std::memcmp( buf, str, sizeof(str)-1 ) == 0 ) ;
+	CPPUNIT_ASSERT( buf[sizeof(str)-1] == '\n' ) ; 
 }
 
-OutStreamBufAdaptor::~OutStreamBufAdaptor( )
-{
-	sync( ) ;
-}
-
-void OutStreamBufAdaptor::Set( StreamFilter *dest )
-{
-	assert( dest != 0 ) ;
-	assert( m_dest == &dummy ) ;
-	m_dest = dest ;
-}
-
-int OutStreamBufAdaptor::sync( )
-{
-	return BufferOut( ) ;
-}
-
-int OutStreamBufAdaptor::BufferOut( )
-{
-	int cnt = pptr() - pbase() ;
-	int retval = m_dest->Write(reinterpret_cast<unsigned char*>( m_buf ), cnt) ;
-
-	pbump( -cnt ) ;
-	return retval ;
-}
-
-OutStreamBufAdaptor::int_type OutStreamBufAdaptor::overflow( int_type c )
-{
-	if ( BufferOut() < 0 )
-		return traits_type::eof( ) ;
-	else
-	{
-		if ( !traits_type::eq_int_type( c, traits_type::eof() ) )
-			return sputc( c ) ;
-		else
-			return traits_type::not_eof( c ) ;
-	}
-}
-
-std::streamsize OutStreamBufAdaptor::xsputn(
-	const char_type *s, std::streamsize n )
-{
-	if ( n < epptr() - pptr() )
-	{
-		std::memcpy( pptr(), s, n * sizeof(char_type) ) ;
-		pbump( n ) ;
-	}
-	else
-	{
-		for ( std::streamsize i = 0 ; i < n ; i++ )
-		{
-			if ( traits_type::eq_int_type( sputc(s[i]), traits_type::eof() ) )
-				return i ;
-		}
-	}
-	return n ;
-}
-
-} // end of namespace

@@ -44,6 +44,8 @@ public :
 	explicit InStreamBufAdaptor( StreamFilter *str = 0 ) ;
 	InStreamBufAdaptor( const InStreamBufAdaptor& rhs ) ;
 
+	void Set( StreamFilter *str ) ;
+
 protected :
 	int underflow( ) ;
 

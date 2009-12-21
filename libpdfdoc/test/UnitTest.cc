@@ -38,6 +38,7 @@
 #include "stream/StreamTest.hh"
 #include "stream/DeflateFilterTest.hh"
 #include "stream/InStreamBufAdaptorTest.hh"
+#include "stream/OutStreamBufAdaptorTest.hh"
 #include "stream/RawFilterTest.hh"
 #include "page/ResourcesTest.hh"
 #include "page/PageTest.hh"
@@ -87,6 +88,7 @@ int main( int argc, char **argv )
 #endif
 	runner.addTest( DeflateFilterTest::suite( ) ) ;
 	runner.addTest( InStreamBufAdaptorTest::suite( ) ) ;
+	runner.addTest( OutStreamBufAdaptorTest::suite( ) ) ;
 	runner.addTest( RawFilterTest::suite( ) ) ;
 
 	runner.run();

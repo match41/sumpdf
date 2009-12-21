@@ -40,7 +40,6 @@ class Dictionary ;
 class Name ;
 class Ref ;
 class Object ;
-class InStreamBufAdaptor ;
 class StreamFilter ;
 
 /*!	\brief	PDF stream object
@@ -61,9 +60,7 @@ public :
 
 public :
 	explicit Stream( Filter f = none ) ;
-	explicit Stream( const Name& filter ) ;
 	explicit Stream( const std::string& str ) ;
-	explicit Stream( const char *str ) ;
 	Stream( std::vector<unsigned char>& data, const Object& filter ) ;
 	Stream( std::streambuf *file, std::streamoff offset,
 	        const Dictionary& dict ) ;
@@ -83,7 +80,8 @@ public :
     void Flush( ) ;
 
 	void Swap( Stream& str ) ;
-	InStreamBufAdaptor StreamBuf( ) ;
+	std::streambuf* InStreamBuf( ) ;
+	std::streambuf* OutStreamBuf( ) ;
 	
 	void Rewind( ) const ;
 	std::size_t Length( ) const ;
@@ -99,6 +97,7 @@ private :
 	void ApplyFilter( const Object& filter ) ;
 	void CreateFilter( const Name& filter ) ;
     std::size_t CopyRawData( std::streambuf *buf ) const ;
+    void InitFilter( ) ;
 
 	static std::size_t CopyFromFilter( StreamFilter *f, std::streambuf *buf ) ;
 

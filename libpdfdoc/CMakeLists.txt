@@ -83,6 +83,7 @@ set( STRM_HDRS		${STRM_DIR}/Stream.hh
 					${STRM_DIR}/RawFilter.hh
 					${STRM_DIR}/DeflateFilter.hh
 					${STRM_DIR}/BufferedFilter.hh
+					${STRM_DIR}/MockStreamFilter.hh
 					${STRM_DIR}/InStreamBufAdaptor.hh
 					${STRM_DIR}/OutStreamBufAdaptor.hh )
 
@@ -157,6 +158,7 @@ set( STRM_SRCS		${STRM_DIR}/Stream.cc
 					${STRM_DIR}/RawFilter.cc
 					${STRM_DIR}/DeflateFilter.cc
 					${STRM_DIR}/BufferedFilter.cc
+					${STRM_DIR}/MockStreamFilter.cc
 					${STRM_DIR}/InStreamBufAdaptor.cc
 					${STRM_DIR}/OutStreamBufAdaptor.cc )
 
@@ -394,6 +396,7 @@ set( UT_SRCS	test/core/TokenTest.cc
 				test/stream/RawFilterTest.cc
 				test/stream/DeflateFilterTest.cc
 				test/stream/InStreamBufAdaptorTest.cc
+				test/stream/OutStreamBufAdaptorTest.cc
 				
 				test/page/PageTest.cc
 				test/page/PageNodeTest.cc

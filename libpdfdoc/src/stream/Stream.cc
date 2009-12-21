@@ -31,6 +31,7 @@
 #include "DeflateFilter.hh"
 #include "RawFilter.hh"
 #include "InStreamBufAdaptor.hh"
+#include "OutStreamBufAdaptor.hh"
 
 #include "core/Array.hh"
 #include "core/Dictionary.hh"
@@ -52,10 +53,9 @@ namespace pdf {
 struct Stream::Impl
 {
 	Dictionary					self ;
-	
-	// for reading
 	std::auto_ptr<StreamFilter>	filter ;
-	InStreamBufAdaptor			sbuf ;
+	InStreamBufAdaptor			inbuf ;		///< for reading
+	OutStreamBufAdaptor			outbuf ;	///< for writing
 	
 	/// indicates the stream's content is different from the data on disk.
 	/// if true, the stream has to be rewritten to disk.
@@ -78,6 +78,7 @@ Stream::Stream( Filter f )
 		filter = new DeflateFilter( filter ) ;
 
 	m_impl->filter.reset( filter ) ;
+	InitFilter( ) ;
 }
 
 Stream::Stream( const std::string& str )
@@ -87,25 +88,7 @@ Stream::Stream( const std::string& str )
 	m_impl->dirty = true ;
 
 	m_impl->filter.reset( new BufferedFilter(str.begin(), str.end() ) ) ;
-}
-
-Stream::Stream( const Name& filter )
-    : m_impl( new Impl )
-{
-	// in memory stream
-	m_impl->dirty = true ;
-
-	m_impl->filter.reset( new BufferedFilter ) ;
-	CreateFilter( filter ) ;
-}
-
-Stream::Stream( const char *str )
-	: m_impl( new Impl )
-{
-	// in memory stream
-	m_impl->dirty = true ;
-
-	m_impl->filter.reset( new BufferedFilter( str ) ) ;
+	InitFilter( ) ;
 }
 
 /*!	constructor for streams from file. This constructor will create a stream
@@ -132,6 +115,7 @@ Stream::Stream( std::streambuf *file, std::streamoff offset,
 	ApplyFilter( dict["Filter"] ) ;
 	assert( m_impl->filter->GetInner()->Length() == dict["Length"].As<int>() ) ;
 	assert( dict["Filter"] == m_impl->filter->GetFilterName() ) ;
+	InitFilter( ) ;
 	
 	m_impl->self.erase( "Length" ) ;
 	m_impl->self.erase( "Filter" ) ;
@@ -151,6 +135,7 @@ Stream::Stream( std::vector<unsigned char>& data, const Object& filter )
 
 	m_impl->filter.reset( new BufferedFilter( data ) ) ;
 	ApplyFilter( filter ) ;
+	InitFilter( ) ;
 	
 	assert( filter == m_impl->filter->GetFilterName() ) ;
 }
@@ -159,6 +144,12 @@ Stream::Stream( std::vector<unsigned char>& data, const Object& filter )
 */
 Stream::~Stream( )
 {
+}
+
+void Stream::InitFilter( )
+{
+	m_impl->inbuf.Set( m_impl->filter.get() ) ;
+	m_impl->outbuf.Set( m_impl->filter.get() ) ;
 }
 
 /*!	create the filters and chain them together. This function will chain up
@@ -330,9 +321,16 @@ std::ostream& operator<<( std::ostream& os, const Stream& s )
 	return os << "\nendstream\n" ;
 }
 
-InStreamBufAdaptor Stream::StreamBuf( )
+std::streambuf* Stream::InStreamBuf( )
 {
-	return InStreamBufAdaptor( m_impl->filter.get() ) ;
+	assert( m_impl.get() != 0 ) ;
+	return &m_impl->inbuf ;
+}
+
+std::streambuf* Stream::OutStreamBuf( )
+{
+	assert( m_impl.get() != 0 ) ;
+	return &m_impl->outbuf ;
 }
 
 void Stream::Rewind( ) const
