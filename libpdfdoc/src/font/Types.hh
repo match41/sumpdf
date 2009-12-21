@@ -33,8 +33,6 @@
 
 #include <boost/cstdint.hpp>
 
-#include <iosfwd>
-
 namespace font {
 
 typedef boost::uint8_t	uint8_t ;

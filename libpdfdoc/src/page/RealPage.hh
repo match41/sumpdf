@@ -80,6 +80,8 @@ private :
 private :
 	PageTree	*m_parent ;
 	Dictionary	m_self ;
+	
+	/// in PDF user space. specified by UserUnit or 1/72 inch
 	Rect		m_media_box ;
 	
 //	std::vector<PaintOp>	m_contents ;

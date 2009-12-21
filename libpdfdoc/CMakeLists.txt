@@ -97,12 +97,8 @@ set( IMG_HDRS  		${IMG_DIR}/Image.hh
 					${IMG_DIR}/PngImage.hh
 					${IMG_DIR}/JpegImage.hh )
 
-set( FONT_HDRS		${FONT_DIR}/TrueTypeFile.hh
-					${FONT_DIR}/TrueTypeTable.hh
-					${FONT_DIR}/Types.hh
-
+set( FONT_HDRS		${FONT_DIR}/Types.hh
 					${FONT_DIR}/BaseFont.hh 
-					${FONT_DIR}/SimpleFont.hh
 					${FONT_DIR}/StandardFont.hh
 					${FONT_DIR}/sfnt/sfnt.h
 					${FONT_DIR}/sfnt/pdfobj.h
@@ -170,9 +166,7 @@ set( UTIL_SRCS  	${UTIL_DIR}/Rect.cc
 
 set( IMG_SRCS  		${IMG_DIR}/Image.cc )
 
-set( FONT_SRCS		${FONT_DIR}/TrueTypeFile.cc
-					${FONT_DIR}/TrueTypeTable.cc
-					${FONT_DIR}/BaseFont.cc
+set( FONT_SRCS		${FONT_DIR}/BaseFont.cc
 					${FONT_DIR}/StandardFont.cc
 					${FONT_DIR}/sfnt/sfnt.c
 					${FONT_DIR}/sfnt/pdfobj.cc
