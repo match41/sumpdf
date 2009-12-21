@@ -32,7 +32,7 @@
 #include "core/TokenSrc.hh"
 
 #include "stream/Stream.hh"
-#include "stream/StreamBufAdaptor.hh"
+#include "stream/OutStreamBufAdaptor.hh"
 
 #include <zlib.h>
 
@@ -85,7 +85,7 @@ void StreamTest::TestRead2( )
 	pdf::Stream subject( iss.rdbuf(), 0, d ) ;
 	pdf::Token t ;
 	
-	pdf::StreamBufAdaptor strbuf = subject.StreamBuf( ) ;
+	pdf::OutStreamBufAdaptor strbuf = subject.StreamBuf( ) ;
 	std::istream is( &strbuf ) ;
 	
 	CPPUNIT_ASSERT( is >> t ) ;
@@ -141,7 +141,7 @@ void StreamTest::TestReadDeflate( )
 	
 	subject.Rewind( ) ;
 	
-	pdf::StreamBufAdaptor strbuf = subject.StreamBuf( ) ;
+	pdf::OutStreamBufAdaptor strbuf = subject.StreamBuf( ) ;
 	std::istream is( &strbuf ) ;
 
 	pdf::Dictionary d ;

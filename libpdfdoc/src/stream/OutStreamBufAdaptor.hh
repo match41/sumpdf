@@ -38,11 +38,11 @@ class StreamFilter ;
 	
 	This class transform a StreamFilter to an std::streambuf.
 */
-class StreamBufAdaptor : public std::streambuf
+class OutStreamBufAdaptor : public std::streambuf
 {
 public :
-	explicit StreamBufAdaptor( StreamFilter *str = 0 ) ;
-	StreamBufAdaptor( const StreamBufAdaptor& rhs ) ;
+	explicit OutStreamBufAdaptor( StreamFilter *str = 0 ) ;
+	OutStreamBufAdaptor( const OutStreamBufAdaptor& rhs ) ;
 
 protected :
 	int underflow( ) ;

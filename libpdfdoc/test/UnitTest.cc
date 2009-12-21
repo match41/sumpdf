@@ -53,8 +53,6 @@
 #include "page/PageNodeTest.hh"
 #include "image/PngImageTest.hh"
 #include "image/JpegImageTest.hh"
-#include "font/TrueTypeFileTest.hh"
-#include "font/TrueTypeTableTest.hh"
 
 int main( int argc, char **argv )
 {
@@ -88,10 +86,8 @@ int main( int argc, char **argv )
 	runner.addTest( JpegImageTest::suite( ) ) ;
 #endif
 	runner.addTest( DeflateFilterTest::suite( ) ) ;
-	runner.addTest( StreamBufAdaptorTest::suite( ) ) ;
+	runner.addTest( OutStreamBufAdaptorTest::suite( ) ) ;
 	runner.addTest( RawFilterTest::suite( ) ) ;
-	runner.addTest( TrueTypeFileTest::suite( ) ) ;
-	runner.addTest( TrueTypeTableTest::suite( ) ) ;
 
 	runner.run();
   

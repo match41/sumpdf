@@ -25,7 +25,7 @@
 	\author	Nestal Wan
 */
 
-#include "StreamBufAdaptor.hh"
+#include "OutStreamBufAdaptor.hh"
 #include "StreamFilter.hh"
 
 #include <cassert>
@@ -33,7 +33,7 @@
 
 namespace pdf {
 
-StreamBufAdaptor::StreamBufAdaptor( StreamFilter *str )
+OutStreamBufAdaptor::OutStreamBufAdaptor( StreamFilter *str )
 	: m_str( str )
 {
 	setg( m_buf + m_pb_size,
@@ -42,7 +42,7 @@ StreamBufAdaptor::StreamBufAdaptor( StreamFilter *str )
 
 }
 
-StreamBufAdaptor::StreamBufAdaptor( const StreamBufAdaptor& rhs )
+OutStreamBufAdaptor::OutStreamBufAdaptor( const OutStreamBufAdaptor& rhs )
 	: m_str( rhs.m_str )
 {
 	std::memcpy( m_buf, rhs.m_buf, m_pb_size ) ;
@@ -61,7 +61,7 @@ void StreamBufAdaptor::Set( StreamFilter *str )
 }
 */
 
-int StreamBufAdaptor::underflow( )
+int OutStreamBufAdaptor::underflow( )
 {
 	assert( m_str != 0 ) ;
 
@@ -72,7 +72,7 @@ int StreamBufAdaptor::underflow( )
 	                   : traits_type::eof() ;
 }
 
-bool StreamBufAdaptor::BufferIn( )
+bool OutStreamBufAdaptor::BufferIn( )
 {
 	// cannot directly use m_pb_size in template functions.
 	// it should be a bug in gcc

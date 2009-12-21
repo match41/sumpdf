@@ -30,7 +30,7 @@
 #include "BufferedFilter.hh"
 #include "DeflateFilter.hh"
 #include "RawFilter.hh"
-#include "StreamBufAdaptor.hh"
+#include "OutStreamBufAdaptor.hh"
 
 #include "core/Array.hh"
 #include "core/Dictionary.hh"
@@ -55,7 +55,7 @@ struct Stream::Impl
 	
 	// for reading
 	std::auto_ptr<StreamFilter>	filter ;
-	StreamBufAdaptor			sbuf ;
+	OutStreamBufAdaptor			sbuf ;
 	
 	/// indicates the stream's content is different from the data on disk.
 	/// if true, the stream has to be rewritten to disk.
@@ -330,9 +330,9 @@ std::ostream& operator<<( std::ostream& os, const Stream& s )
 	return os << "\nendstream\n" ;
 }
 
-StreamBufAdaptor Stream::StreamBuf( )
+OutStreamBufAdaptor Stream::StreamBuf( )
 {
-	return StreamBufAdaptor( m_impl->filter.get() ) ;
+	return OutStreamBufAdaptor( m_impl->filter.get() ) ;
 }
 
 void Stream::Rewind( ) const
