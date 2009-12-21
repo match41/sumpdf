@@ -19,13 +19,13 @@
  ***************************************************************************/
 
 /*!
-	\file	StreamBufAdaptor.cc
+	\file	OutStreamBufAdaptor.cc
 	\brief	implementation the StreamBufAdaptor class
 	\date	Wed Mar 4 2009
 	\author	Nestal Wan
 */
 
-#include "OutStreamBufAdaptor.hh"
+#include "InStreamBufAdaptor.hh"
 #include "StreamFilter.hh"
 
 #include <cassert>
@@ -33,7 +33,7 @@
 
 namespace pdf {
 
-OutStreamBufAdaptor::OutStreamBufAdaptor( StreamFilter *str )
+InStreamBufAdaptor::InStreamBufAdaptor( StreamFilter *str )
 	: m_str( str )
 {
 	setg( m_buf + m_pb_size,
@@ -42,7 +42,7 @@ OutStreamBufAdaptor::OutStreamBufAdaptor( StreamFilter *str )
 
 }
 
-OutStreamBufAdaptor::OutStreamBufAdaptor( const OutStreamBufAdaptor& rhs )
+InStreamBufAdaptor::InStreamBufAdaptor( const InStreamBufAdaptor& rhs )
 	: m_str( rhs.m_str )
 {
 	std::memcpy( m_buf, rhs.m_buf, m_pb_size ) ;
@@ -61,7 +61,7 @@ void StreamBufAdaptor::Set( StreamFilter *str )
 }
 */
 
-int OutStreamBufAdaptor::underflow( )
+int InStreamBufAdaptor::underflow( )
 {
 	assert( m_str != 0 ) ;
 
@@ -72,7 +72,7 @@ int OutStreamBufAdaptor::underflow( )
 	                   : traits_type::eof() ;
 }
 
-bool OutStreamBufAdaptor::BufferIn( )
+bool InStreamBufAdaptor::BufferIn( )
 {
 	// cannot directly use m_pb_size in template functions.
 	// it should be a bug in gcc

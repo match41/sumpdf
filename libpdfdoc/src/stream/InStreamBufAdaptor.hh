@@ -19,45 +19,45 @@
  ***************************************************************************/
 
 /*!
-	\file	StreamBufAdaptorTest.cc
-	\brief	implementation the StreamBufAdaptorTest class
+	\file	StreamBufAdaptor.hh
+	\brief	definition the StreamBufAdaptor class
 	\date	Wed Mar 4 2009
 	\author	Nestal Wan
 */
 
-#include "OutStreamBufAdaptorTest.hh"
+#ifndef __PDF_STREAM_BUF_ADAPTOR_HEADER_INCLUDED__
+#define __PDF_STREAM_BUF_ADAPTOR_HEADER_INCLUDED__
 
-#include "stream/OutStreamBufAdaptor.hh"
-#include "stream/DeflateFilter.hh"
-#include "stream/RawFilter.hh"
-#include "core/Dictionary.hh"
-#include "core/Token.hh"
+#include <streambuf>
 
-#include <iostream>
+namespace pdf {
 
-OutStreamBufAdaptorTest::OutStreamBufAdaptorTest( )
-{
-}
+class StreamFilter ;
 
-void OutStreamBufAdaptorTest::TestRead( )
-{
-	std::ifstream file( (std::string(TEST_DATA_DIR) + "obj9020").c_str() ) ;
-	std::vector<unsigned char> src( (std::istreambuf_iterator<char>( file )),
-	                                (std::istreambuf_iterator<char>( )) ) ;
-
-	std::vector<unsigned char> c( ::compressBound( src.size() ) ) ;
-	::uLongf dest_len = c.size( ) ;
-	::compress2( &c[0], &dest_len, &src[0], src.size(), 9 ) ;
-
-	std::istringstream ss( std::string( &c[0], &c[dest_len] ) ) ;
-	pdf::RawFilter *raw = new pdf::RawFilter( ss.rdbuf() ) ;
-	pdf::DeflateFilter def( raw ) ;
-
-	pdf::OutStreamBufAdaptor subject( &def ) ;
-	std::istream is( &subject ) ;
+/*!	\brief	an adaptor from StreamFilter to streambuf
 	
-	pdf::Dictionary d ;
-	CPPUNIT_ASSERT( is >> d ) ;
-	CPPUNIT_ASSERT( d["Subtype"].As<pdf::Name>() == pdf::Name("CIDFontType0"));
-	CPPUNIT_ASSERT( d["Type"].As<pdf::Name>() == pdf::Name("Font"));
-}
+	This class transform a StreamFilter to an std::streambuf.
+*/
+class InStreamBufAdaptor : public std::streambuf
+{
+public :
+	explicit InStreamBufAdaptor( StreamFilter *str = 0 ) ;
+	InStreamBufAdaptor( const InStreamBufAdaptor& rhs ) ;
+
+protected :
+	int underflow( ) ;
+
+private :
+    bool BufferIn( ) ;
+
+private :
+	static const std::streamsize	m_buf_size	= 80 ;
+	static const std::streamsize    m_pb_size	= 4 ;
+
+	char 			m_buf[m_buf_size] ;
+	StreamFilter	*m_str ;
+} ;
+
+} // end of namespace
+
+#endif

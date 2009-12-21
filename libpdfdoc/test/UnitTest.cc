@@ -37,7 +37,7 @@
 #include "core/ArrayTest.hh"
 #include "stream/StreamTest.hh"
 #include "stream/DeflateFilterTest.hh"
-#include "stream/StreamBufAdaptorTest.hh"
+#include "stream/InStreamBufAdaptorTest.hh"
 #include "stream/RawFilterTest.hh"
 #include "page/ResourcesTest.hh"
 #include "page/PageTest.hh"
@@ -86,7 +86,7 @@ int main( int argc, char **argv )
 	runner.addTest( JpegImageTest::suite( ) ) ;
 #endif
 	runner.addTest( DeflateFilterTest::suite( ) ) ;
-	runner.addTest( OutStreamBufAdaptorTest::suite( ) ) ;
+	runner.addTest( InStreamBufAdaptorTest::suite( ) ) ;
 	runner.addTest( RawFilterTest::suite( ) ) ;
 
 	runner.run();

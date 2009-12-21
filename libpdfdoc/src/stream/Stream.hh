@@ -40,7 +40,7 @@ class Dictionary ;
 class Name ;
 class Ref ;
 class Object ;
-class OutStreamBufAdaptor ;
+class InStreamBufAdaptor ;
 class StreamFilter ;
 
 /*!	\brief	PDF stream object
@@ -83,7 +83,7 @@ public :
     void Flush( ) ;
 
 	void Swap( Stream& str ) ;
-	OutStreamBufAdaptor StreamBuf( ) ;
+	InStreamBufAdaptor StreamBuf( ) ;
 	
 	void Rewind( ) const ;
 	std::size_t Length( ) const ;

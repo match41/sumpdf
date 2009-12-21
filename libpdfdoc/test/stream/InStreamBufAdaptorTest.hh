@@ -36,13 +36,13 @@
 	
 	this class represents
 */
-class OutStreamBufAdaptorTest : public CppUnit::TestFixture
+class InStreamBufAdaptorTest : public CppUnit::TestFixture
 {
 public :
-	OutStreamBufAdaptorTest( ) ;
+	InStreamBufAdaptorTest( ) ;
 
 	// declare suit function
-	CPPUNIT_TEST_SUITE( OutStreamBufAdaptorTest );
+	CPPUNIT_TEST_SUITE( InStreamBufAdaptorTest );
 		CPPUNIT_TEST( TestRead ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
