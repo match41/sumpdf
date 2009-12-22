@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2006 by Nestal Wan                                      *
+ *   Copyright (C) 2009 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,56 +18,86 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/*!
-	\file	TrueTypeFile.hh
-	\brief	definition the TrueTypeFile class
-	\date	Fri Mar 6 2009
-	\author	Nestal Wan
+/**
+	\file	ResourcePool.hh
+	\brief	definition the ResourcePool class
+	\date	Dec 23, 2009
+	\author	nestal
 */
 
-#ifndef __FONT_TRUE_TYPE_FILE_HEADER_INCLUDED__
-#define __FONT_TRUE_TYPE_FILE_HEADER_INCLUDED__
 
-#include <boost/cstdint.hpp>
+#ifndef __PDF_RESOURCEPOOL_HH_EADER_INCLUDED__
+#define __PDF_RESOURCEPOOL_HH_EADER_INCLUDED__
 
-#include <fstream>
-#include <string>
+#include "core/Ref.hh"
+
+#include <cassert>
 #include <map>
 
-#include "Types.hh"
+namespace pdf {
 
-namespace font {
-
-class TrueTypeTable ;
-
-/*!	\brief	brief description
-	
-	this class represents
-*/
-class TrueTypeFile
+template <typename T>
+class ResourcePool
 {
 public :
-	TrueTypeFile( const std::string& filename ) ;
-	~TrueTypeFile( ) ;
+	ResourcePool( )
+	{
+	}
 	
-	void AddTable( TrueTypeFile *src, uint32_t tag ) ;
-	
-	
-	
-private :
-	void ReadTableDir( ) ;
-	
-	// read any integer types
-	template <typename T> void Read( T& ) ;
+	T* Find( const Ref& link )
+	{
+		T *t = TryFind( link ) ;
+		return t != 0 ? t : new T ;
+	}
 
-	// skip a number of bytes
-	void Skip( std::size_t count ) ;
+	template <typename P1>
+	T* Find( const Ref& link, P1 p1 )
+	{
+		T *t = TryFind( link ) ;
+		return t != 0 ? t : new T(p1) ;
+	}
+	
+	template <typename P1, typename P2>
+	T* Find( const Ref& link, P1 p1, P2 p2 )
+	{
+		T *t = TryFind( link ) ;
+		return t != 0 ? t : new T(p1, p2) ;
+	}
+	
+	template <typename P1, typename P2, typename P3>
+	T* Find( const Ref& link, P1 p1, P2 p2, P3 p3 )
+	{
+		T *t = TryFind( link ) ;
+		return t != 0 ? t : new T(p1, p2, p3) ;
+	}
+	
+	void Add( const Ref& link, T *res )
+	{
+		assert( m_pool.find(link) == m_pool.end() ) ;
+		m_pool.insert( std::make_pair( link, res ) ) ;
+	}
 
 private :
-	std::ifstream	m_file ;
-	std::map<std::string, TrueTypeTable>	m_tables ;
+	T* TryFind( const Ref& link )
+	{
+		typename MapType::iterator i = m_pool.find( link ) ;
+		if ( i != m_pool.end() )
+		{
+			assert( i->second != 0 ) ;
+		
+			// assume T is a RefCountObj
+			i->second->AddRef( ) ;
+			return i->second ;
+		}
+		else
+			return 0 ;
+	}
+
+private :
+	typedef	std::map<Ref, T*> MapType ; 
+	MapType	m_pool ;
 } ;
 
 } // end of namespace
 
-#endif
+#endif // RESOURCEPOOL_HH_

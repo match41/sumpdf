@@ -34,7 +34,7 @@
 
 #include <sstream>
 
-namespace freetype {
+namespace ft {
 
 Exception::Exception( const std::string& err )
 	: pdf::Exception( err )

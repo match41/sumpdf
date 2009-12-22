@@ -37,7 +37,7 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-namespace freetype {
+namespace ft {
 
 struct Face::Body
 {

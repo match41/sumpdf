@@ -50,7 +50,7 @@ inline TT_PCLT* PcltTable( FT_Face face )
 		FT_Get_Sfnt_Table( face, ft_sfnt_pclt ) ) ;
 
 	if ( table == 0 )
-		throw freetype::Exception( ) ;
+		throw ft::Exception( ) ;
 	else
 		return table ;
 }
@@ -61,14 +61,14 @@ inline TT_Postscript* PostTable( FT_Face face )
 		FT_Get_Sfnt_Table( face, ft_sfnt_post ) ) ;
 
 	if ( table == 0 )
-		throw freetype::Exception( ) ;
+		throw ft::Exception( ) ;
 	else
 		return table ;
 }
 
 }
 
-namespace freetype {
+namespace ft {
 
 /*!	construct a font face.
 	\param	lib		a pointer to the freetype library object. when the

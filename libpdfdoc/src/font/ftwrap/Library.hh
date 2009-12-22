@@ -30,7 +30,7 @@
 // for auto_ptr
 #include <memory>
 
-namespace freetype {
+namespace ft {
 
 /*!	\class	Library
 	\brief	the freetype library object wrapper

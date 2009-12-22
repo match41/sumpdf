@@ -27,11 +27,13 @@
 
 #include "Resources.hh"
 
+
 #include "XObject.hh"
 
 #include "core/Array.hh"
 #include "file/IFile.hh"
 #include "file/ObjectReader.hh"
+#include "file/ResourcePool.hh"
 #include "font/BaseFont.hh"
 #include "util/Util.hh"
 
@@ -51,7 +53,7 @@ Resources::Resources( )
     m_proc_set.push_back( Name( "Text" ) ) ;
 }
 
-void Resources::Read( const Object& self, IFile *file )
+void Resources::Read( const Object& self, IFile *file, FontPool *fonts )
 {
 	m_self = DeRefObj<Dictionary>( file, self ) ;
 

@@ -43,7 +43,7 @@
 	pointer-to-implementation. users of this class are not requried to have
 	access to freetype headers when compiling this class.
 */
-namespace freetype {
+namespace ft {
 
 class Library ;
 
@@ -96,7 +96,7 @@ public :
 	                           unsigned& glyph_idx ) const ;
 
 public :
-	// suppose only for CFtGlyph
+	// suppose only for Glyph
 	Body* Pimpl( ) { return m_pimpl.get( ) ; }
 	const Body* Pimpl( ) const { return m_pimpl.get( ) ; }
 

@@ -27,7 +27,7 @@
 #include <ft2build.h>
 #include FT_TYPES_H
 
-namespace freetype {
+namespace ft {
 
 inline double FtFixed2Double( FT_Fixed fixed )
 {

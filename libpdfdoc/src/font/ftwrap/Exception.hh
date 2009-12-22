@@ -31,7 +31,7 @@
 // standard headers
 #include <string>
 
-namespace freetype {
+namespace ft {
 
 class Exception : public pdf::Exception
 {

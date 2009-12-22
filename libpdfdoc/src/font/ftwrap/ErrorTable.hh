@@ -28,7 +28,7 @@
 #ifndef __FREETYPE_ERROR_TABLE_HEADER_INCLUDED__
 #define __FREETYPE_ERROR_TABLE_HEADER_INCLUDED__
 
-namespace freetype
+namespace ft
 {
 	const char* LookupError( int error ) ;
 

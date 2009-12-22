@@ -29,7 +29,7 @@
 
 #include <memory>
 
-namespace freetype {
+namespace ft {
 
 class Face ;
 

@@ -53,7 +53,7 @@ namespace
 	;
 }
 
-namespace freetype {
+namespace ft {
 
 const char* LookupError( int error )
 {

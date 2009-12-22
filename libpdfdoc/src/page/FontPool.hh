@@ -1,5 +1,5 @@
-/***************************************************************************
- *   Copyright (C) 2006 by Nestal Wan                                      *
+/***************************************************************************\
+ *   Copyright (C) 2009 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -16,34 +16,27 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+\***************************************************************************/
 
-/*!
-	\file	TrueTypeFileTest.hh
-	\brief	definition the TrueTypeFileTest class
-	\date	Fri Mar 6 2009
-	\author	Nestal Wan
+/**
+	\file	FontPool.hh
+	\brief	definition the FontPool class
+	\date	Dec 23, 2009
+	\author	nestal
 */
 
-#ifndef __PDFUT_TRUE_TYPE_FILE_TEST_HEADER_INCLUDED__
-#define __PDFUT_TRUE_TYPE_FILE_TEST_HEADER_INCLUDED__
 
-#include <cppunit/TestFixture.h>
+#ifndef __PDF_FONTPOOL_HH_EADER_INCLUDED__
+#define __PDF_FONTPOOL_HH_EADER_INCLUDED__
 
-#include <cppunit/extensions/HelperMacros.h>
-
-class TrueTypeFileTest : public CppUnit::TestFixture
+namespace pdf
 {
-public :
-	TrueTypeFileTest( ) ;
-	
-	// declare suit function
-	CPPUNIT_TEST_SUITE( TrueTypeFileTest );
-		CPPUNIT_TEST( TestRead );
-	CPPUNIT_TEST_SUITE_END();
+	template <typename T>
+	class ResourcePool ;
 
-private :
-	void TestRead( ) ;
-} ;
+	class BaseFont ;
 
-#endif
+	typedef ResourcePool<BaseFont> FontPool ;
+}
+
+#endif // FONTPOOL_HH_

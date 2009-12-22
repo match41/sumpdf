@@ -63,10 +63,10 @@ SimpleFont::SimpleFont( const Name& base_font, Type type )
 	m_first_char = m_last_char = 0 ;
 }
 
-SimpleFont::SimpleFont( freetype::Library *lib, const std::string& filename )
+SimpleFont::SimpleFont( ft::Library *lib, const std::string& filename )
 	: m_encoding( "WinAnsiEncoding" )
 {
-	freetype::Face face( lib, filename ) ;
+	ft::Face face( lib, filename ) ;
 	m_base_font = Name( face.PSName() ) ;
 	m_type		= truetype ;
 
@@ -85,7 +85,7 @@ SimpleFont::SimpleFont( freetype::Library *lib, const std::string& filename )
 
 	for ( int i = m_first_char ; i <= m_last_char ; i++ )
 	{
-		freetype::Glyph g( &face, face.GetGlyphCode( i ) ) ;
+		ft::Glyph g( &face, face.GetGlyphCode( i ) ) ;
 		m_widths.push_back( static_cast<int>(g.HoriAdvance( )) ) ;
 	}
 	assert( (int)m_widths.size() == m_last_char - m_first_char + 1 ) ;

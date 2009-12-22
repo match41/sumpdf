@@ -1,5 +1,5 @@
-/***************************************************************************
- *   Copyright (C) 2006 by Nestal Wan                                      *
+/***************************************************************************\
+ *   Copyright (C) 2009 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -16,25 +16,38 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+ \***************************************************************************/
 
-/*!
-	\file	TrueTypeFileTest.cc
-	\brief	implementation the TrueTypeFileTest class
-	\date	Fri Mar 6 2009
-	\author	Nestal Wan
-*/
+/**
+ \file	SfntFile.hh
+ \brief	definition the SfntFile class
+ \date	Dec 22, 2009
+ \author	nestal
+ */
 
-#include "TrueTypeFileTest.hh"
+#ifndef __PDF_SFNTFILE_HEADER_INCLUDED__
+#define __PDF_SFNTFILE_HEADER_INCLUDED__
 
-#include "font/TrueTypeFile.hh"
+#include <memory>
 
-TrueTypeFileTest::TrueTypeFileTest( )
+namespace ft
 {
+	class Face ;
 }
 
-void TrueTypeFileTest::TestRead( )
+namespace tex {
+
+class SfntFile
 {
-	font::TrueTypeFile file( std::string(TEST_DATA_DIR) +
-	                         "FreeMonoBoldOblique.ttf" ) ;
-}
+public:
+	SfntFile( const ft::Face& face ) ;
+	~SfntFile( ) ;
+
+private :
+	struct Impl ;
+	Impl	*m_sfnt ;
+} ;
+
+} // end of namespace
+
+#endif // SFNTFILE_HH_

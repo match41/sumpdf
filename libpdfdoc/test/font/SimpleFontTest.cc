@@ -38,7 +38,7 @@ SimpleFontTest::SimpleFontTest( )
 
 void SimpleFontTest::TestSimple( )
 {
-	freetype::Library lib ;
+	ft::Library lib ;
 	pdf::SimpleFont subject( &lib, std::string(TEST_DATA_DIR) +
 	                         "FreeMonoBoldOblique.ttf" ) ;
 	CPPUNIT_ASSERT( subject.BaseName( ) == "FreeMonoBoldOblique" ) ;

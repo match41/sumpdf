@@ -1,5 +1,5 @@
-/***************************************************************************
- *   Copyright (C) 2006 by Nestal Wan                                      *
+/***************************************************************************\
+ *   Copyright (C) 2009 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -16,42 +16,44 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+ \***************************************************************************/
 
-/*!
-	\file	TrueTypeTableTest.hh
-	\brief	definition the TrueTypeTableTest class
-	\date	Sat Mar 7 2009
+/**
+	\file	SfntFile.cc
+	\brief	definition the SfntFile class
+	\date	Dec 22, 2009
 	\author	Nestal Wan
 */
 
-#ifndef __PDFUT_BYTE_STREAM_TEST_HEADER_INCLUDED__
-#define __PDFUT_BYTE_STREAM_TEST_HEADER_INCLUDED__
+#include "SfntFile.hh"
 
-#include <cppunit/TestFixture.h>
+#include "font/ftwrap/Face.hh"
+#include "font/ftwrap/FaceBody.hh"
 
-#include <cppunit/extensions/HelperMacros.h>
-
-/*!	\brief	brief description
-	
-	this class represents
-*/
-class TrueTypeTableTest : public CppUnit::TestFixture
+extern "C"
 {
-public :
-	TrueTypeTableTest( ) ;
-	
-	// declare suit function
-	CPPUNIT_TEST_SUITE( TrueTypeTableTest );
-		CPPUNIT_TEST( TestWrite );
-		CPPUNIT_TEST( TestRead );
-		CPPUNIT_TEST( TestChecksum );
-	CPPUNIT_TEST_SUITE_END();
+	#include "sfnt.h"
+}
 
-private :
-	void TestWrite( ) ;
-	void TestRead( ) ;
-	void TestChecksum( ) ;
-} ;
+namespace tex {
 
-#endif
+namespace
+{
+	inline sfnt* s( void *p )
+	{
+		return static_cast<sfnt*>( p ) ;
+	}
+}
+
+SfntFile::SfntFile( const ft::Face& face )
+	: m_sfnt(reinterpret_cast<Impl*>(
+		::sfnt_open( face.Pimpl()->m_face, 0xffffffff ) ))
+{
+}
+
+SfntFile::~SfntFile( )
+{
+	::sfnt_close( s(m_sfnt) ) ;
+}
+
+} // end of namespace

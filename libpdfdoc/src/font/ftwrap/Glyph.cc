@@ -40,7 +40,7 @@
 // standard headers
 #include <cassert>
 
-namespace freetype {
+namespace ft {
 
 struct Glyph::Body
 {

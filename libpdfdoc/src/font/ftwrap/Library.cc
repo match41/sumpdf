@@ -32,7 +32,7 @@
 // standard headers
 #include <cassert>
 
-namespace freetype {
+namespace ft {
 
 Library::Library( ) : m_pimpl( new Body )
 {

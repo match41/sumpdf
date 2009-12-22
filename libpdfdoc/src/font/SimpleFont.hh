@@ -35,7 +35,7 @@
 
 #include <vector>
 
-namespace freetype
+namespace ft
 {
 	class Library ;
 	class Face ;
@@ -57,7 +57,7 @@ public :
 
 public :
 	SimpleFont( ) ;
-	SimpleFont( freetype::Library *lib, const std::string& filename ) ;
+	SimpleFont( ft::Library *lib, const std::string& filename ) ;
 	SimpleFont( const Object& self, IFile *file ) ;
 
 	std::string BaseName( ) const ;

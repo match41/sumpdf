@@ -74,7 +74,7 @@ private :
 	
 #ifdef HAVE_FREETYPE
 	//! Freetype library for loading the font files.
-	freetype::Library	m_ft_lib ;
+	ft::Library	m_ft_lib ;
 #endif
 } ;
 

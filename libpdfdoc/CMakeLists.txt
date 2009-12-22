@@ -64,7 +64,8 @@ set( PAGE_HDRS		${PAGE_DIR}/RealPage.hh
 set( FILE_HDRS		${FILE_DIR}/File.hh
 					${FILE_DIR}/IFile.hh
 					${FILE_DIR}/Catalog.hh
-					${FILE_DIR}/ObjectReader.hh )
+					${FILE_DIR}/ObjectReader.hh
+					${FILE_DIR}/ResourcePool.hh )
 
 set( CORE_HDRS  	${CORE_DIR}/Object.hh
 					${CORE_DIR}/Ref.hh
@@ -102,6 +103,7 @@ set( IMG_HDRS  		${IMG_DIR}/Image.hh
 set( FONT_HDRS		${FONT_DIR}/Types.hh
 					${FONT_DIR}/BaseFont.hh 
 					${FONT_DIR}/StandardFont.hh
+					${FONT_DIR}/sfnt/SfntFile.hh
 					${FONT_DIR}/sfnt/sfnt.h
 					${FONT_DIR}/sfnt/pdfobj.h
 					${FONT_DIR}/sfnt/pdfobj.hh
@@ -172,6 +174,7 @@ set( IMG_SRCS  		${IMG_DIR}/Image.cc )
 
 set( FONT_SRCS		${FONT_DIR}/BaseFont.cc
 					${FONT_DIR}/StandardFont.cc
+					${FONT_DIR}/sfnt/SfntFile.cc
 					${FONT_DIR}/sfnt/sfnt.c
 					${FONT_DIR}/sfnt/pdfobj.cc
 					${FONT_DIR}/sfnt/mem.c
