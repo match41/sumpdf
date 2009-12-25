@@ -62,7 +62,7 @@ void Resources::Read( const Object& self, IFile *file, FontPool *fonts )
 	Detach( file, m_self, "ProcSet",	proc_set ) ;
 	m_proc_set.assign( proc_set.begin( ), proc_set.end( ) ) ;
 
-	ReadFontDict( file ) ;
+	ReadFontDict( file, fonts ) ;
 //	ReadSubDict( "XObject", file, m_xobjs ) ;
 }
 
@@ -76,7 +76,7 @@ Ref Resources::Write( IFile *repo ) const
     return repo->WriteObj( dict ) ;
 }
 
-void Resources::ReadFontDict( IFile *file )
+void Resources::ReadFontDict( IFile *file, FontPool *font_pool )
 {
 	assert( file != 0 ) ;
 
@@ -86,7 +86,20 @@ void Resources::ReadFontDict( IFile *file )
 		for ( Dictionary::const_iterator i  = dict.begin( ) ;
 										 i != dict.end( ) ; ++i )
 		{
-			BaseFont *font = CreateFont( i->second, file ) ; 
+			BaseFont *font = 0 ;
+			if ( font_pool != 0 && i->second.IsType<Ref>() )
+			{
+				font = font_pool->Find( i->second ) ;
+				if ( font == 0 )
+				{
+					font = CreateFont( i->second, file ) ; 
+					font_pool->Add( i->second, font ) ;
+				}
+				assert( font != 0 ) ;
+			}
+			else
+				font = CreateFont( i->second, file ) ;
+			 
 			m_fonts.insert( std::make_pair( i->first, font ) ) ;
 		}
 	}

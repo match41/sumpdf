@@ -29,7 +29,7 @@
 #define __PDF_BASE_FONT_HEADER_INCLUDED__
 
 #include "Font.hh"
-//#include "util/RefCountObj.hh"
+#include "util/RefCountObj.hh"
 
 namespace pdf {
 
@@ -41,7 +41,7 @@ class Object ;
 
 	This class is the base class of all font classes in libpdfdoc.
 */
-class BaseFont : /*public RefCountObj,*/ public Font
+class BaseFont : public RefCountObj, public Font
 {
 public :
 	BaseFont( ) ;

@@ -44,7 +44,7 @@ public :
 	{
 	}
 	
-	T* Find( const Ref& link )
+/*	T* Find( const Ref& link )
 	{
 		T *t = TryFind( link ) ;
 		return t != 0 ? t : new T ;
@@ -70,15 +70,14 @@ public :
 		T *t = TryFind( link ) ;
 		return t != 0 ? t : new T(p1, p2, p3) ;
 	}
-	
+	*/
 	void Add( const Ref& link, T *res )
 	{
 		assert( m_pool.find(link) == m_pool.end() ) ;
 		m_pool.insert( std::make_pair( link, res ) ) ;
 	}
 
-private :
-	T* TryFind( const Ref& link )
+	T* Find( const Ref& link )
 	{
 		typename MapType::iterator i = m_pool.find( link ) ;
 		if ( i != m_pool.end() )
