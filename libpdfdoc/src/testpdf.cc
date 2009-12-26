@@ -38,7 +38,9 @@ int main( int argc, char **argv )
 	pdf::Page *p = doc->AppendPage( ) ;
 	pdf::Font *f = doc->CreateSimpleFont( "Helvetica" ) ;
 	p->DrawText( 100, 100, f, "Hello world!" ) ;
-
+	p->DrawText( 100, 200, f, "This is the second line!" ) ;
+	p->Finish( ) ;
+	
 	doc->Write( "test.pdf" ) ;
 
 	return 0 ;

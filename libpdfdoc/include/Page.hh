@@ -56,6 +56,7 @@ public :
 	virtual Rect MediaBox( ) const = 0 ;
 	virtual void DrawText( double x, double y, Font *font,
 	                       const std::string& text ) = 0 ;
+	virtual void Finish( ) = 0 ;
 } ;
 
 } // end of namespace

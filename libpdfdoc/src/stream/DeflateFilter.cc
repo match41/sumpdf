@@ -102,7 +102,7 @@ std::size_t DeflateFilter::Write( const unsigned char *data, std::size_t size )
 {
 	int 		result = Z_OK ;
 	std::size_t	offset = 0 ;
-	
+
 	assert( m_comp.z.avail_in == 0 ) ;
 	m_comp.z.next_in	= const_cast<unsigned char*>( data ) ;
 	m_comp.z.avail_in	= size ;
@@ -128,7 +128,8 @@ std::size_t DeflateFilter::Write( const unsigned char *data, std::size_t size )
 			}
 		}
 		else
-			break ;
+			throw ParseError( "deflate() error: "
+				+ std::string( m_comp.z.msg ) ); 
 	}
 	
 	return offset ;
@@ -153,6 +154,8 @@ void DeflateFilter::Flush( )
 	
 	if ( r == Z_STREAM_END )
 		m_src->Write( &m_comp.buf[0], m_comp.z.next_out - &m_comp.buf[0] ) ;
+
+	::deflateReset( &m_comp.z ) ;
 }
 
 void DeflateFilter::Rewind( )
@@ -161,7 +164,8 @@ void DeflateFilter::Rewind( )
 	m_src->Rewind( ) ;
 
 	if ( ::inflateReset( &m_decomp.z ) != Z_OK )
-		throw ParseError( "inflate init fail" ) ;
+		throw ParseError( "inflateReset() error: " +
+			std::string( m_decomp.z.msg ) ); 
 }
 
 std::size_t DeflateFilter::Length( ) const

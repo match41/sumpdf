@@ -49,11 +49,11 @@ void PageNodeTest::TestCount( )
 {
 	pdf::PageTree *level1	= new pdf::PageTree( m_root ),
 	              *level2	= new pdf::PageTree( level1 ) ;
-	pdf::RealPage *page		= new pdf::RealPage( level2 ) ;
+	new pdf::RealPage( level2 ) ;
 	
 	CPPUNIT_ASSERT( m_root->Count( ) == 1 ) ;
 
-	pdf::RealPage *page2	= new pdf::RealPage( level1 ) ;
+	new pdf::RealPage( level1 ) ;
 	CPPUNIT_ASSERT( m_root->Count( ) == 2 ) ;
 }
 

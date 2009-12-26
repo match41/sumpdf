@@ -31,7 +31,7 @@
 
 #include "core/Ref.hh"
 #include "core/Dictionary.hh"
-
+#include "font/StandardFont.hh"
 #include "page/RealPage.hh"
 #include "page/PageTree.hh"
 
@@ -96,5 +96,26 @@ void PageTest::TestNormal( )
 	pdf::Object obj( d ) ;
 	pdf::RealPage *p  = new pdf::RealPage( m_root ) ;
 	p->Read( d, &file ) ;
+
 	CPPUNIT_ASSERT( p->MediaBox() == pdf::Rect( 0, 0, 297, 419 ) ) ;
+}
+
+void PageTest::TestWrite( )
+{
+	pdf::RealPage *p  = new pdf::RealPage( m_root ) ;
+	pdf::StandardFont *f = new pdf::StandardFont( "TimesNewRoman" ) ;
+	p->DrawText( 120, 300, f, "This is a line" ) ;
+	p->DrawText( 120, 400, f, "This is another line" ) ;
+	p->Finish( ) ;
+	
+	MockFile file ;
+	pdf::Ref link = file.AllocLink( ) ;
+	p->Write( link, &file, file.AllocLink( ) ) ;
+	
+	pdf::Object out = file.Find( link ) ;
+	CPPUNIT_ASSERT( out.IsType<pdf::Dictionary>( ) ) ;
+	
+	pdf::RealPage *p2 = new pdf::RealPage( m_root ) ;
+	p2->Read( out.As<pdf::Dictionary>(), &file ) ;
+	CPPUNIT_ASSERT( p->MediaBox() == p2->MediaBox() ) ;
 }

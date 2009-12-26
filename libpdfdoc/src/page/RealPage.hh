@@ -66,6 +66,7 @@ public :
 	Rect MediaBox( ) const ;
 
 	void DrawText( double x, double y, Font *font, const std::string& text ) ;
+	void Finish( ) ;
 
 	std::size_t Count( ) const ;
 	PageTree* Parent( ) ;

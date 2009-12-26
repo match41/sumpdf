@@ -57,7 +57,7 @@ BufferedFilter::BufferedFilter( std::vector<unsigned char>& buf )
 }
 
 BufferedFilter::BufferedFilter( const char *str )
-	: m_offset( 0 ), m_buf( str, str + std::strlen( str ) )
+	: m_buf( str, str + std::strlen( str ) ), m_offset( 0 )
 {
 }
 

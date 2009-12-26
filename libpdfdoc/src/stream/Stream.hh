@@ -67,6 +67,7 @@ public :
 	~Stream( ) ;
 
 	// default generated copy constructor and assignment operator are fine
+	// because of boost::shared_ptr
 
 	bool operator==( const Stream& str ) const ;
 	bool operator!=( const Stream& str ) const ;
@@ -90,6 +91,7 @@ public :
 	Name Subtype( ) const ;
 	
 	Stream Clone( ) const ;
+	bool IsDirty( ) const ;
 
 	friend std::ostream& operator<<( std::ostream& os, const Stream& s ) ;
 

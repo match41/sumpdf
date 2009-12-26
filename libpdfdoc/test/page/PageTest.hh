@@ -49,6 +49,7 @@ public :
 	// declare suit function
 	CPPUNIT_TEST_SUITE( PageTest ) ;
 		CPPUNIT_TEST( TestNormal ) ;
+		CPPUNIT_TEST( TestWrite ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
 public :
@@ -57,6 +58,7 @@ public :
 
 private :
 	void TestNormal( ) ;
+	void TestWrite( ) ;
 
 private :
 	pdf::PageTree	*m_root ;

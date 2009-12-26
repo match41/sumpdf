@@ -150,18 +150,25 @@ void RealPage::DrawText( double x, double y, Font *f, const std::string& text )
 
 	BaseFont *font = dynamic_cast<BaseFont*>( f ) ;
 	assert( font != 0 ) ;
-	Name fname = GetResource( )->AddFont( font ) ;
-	
-	std::ostringstream ss ;
+	Name fname = m_resources.AddFont( font ) ;
+
+	if ( m_content.empty() || !m_content.back().IsDirty() )
+	{
+		Stream s( Stream::deflate ) ;
+		m_content.push_back( s ) ;
+	}
+
+	std::ostream ss( m_content.back().OutStreamBuf( ) ) ;
 	ss << "BT\n"
        << fname << " 12 Tf " << x << ' ' << y << " Td "
 	            << String( text ) << " Tj\n"
-	   << "ET\n" ;
-	
-	Stream s( Stream::deflate ) ;
-	s.Append( ss.str().c_str() ) ;
-	s.Flush( ) ;
-	m_content.push_back( s ) ;
+	   << "ET\n" << std::flush ;
+}
+
+void RealPage::Finish( )
+{
+	if ( !m_content.empty() )
+		m_content.back().Flush( ) ;
 }
 
 std::size_t RealPage::Count( ) const

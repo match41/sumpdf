@@ -45,18 +45,18 @@
 namespace pdf {
 
 Catalog::Catalog( )
-: m_tree		( 0 ),
-  m_version		( "1.4" ),
+: m_version		( "1.4" ),
   m_page_layout	( "SinglePage" ),
-  m_page_mode	( "UseNode" )
+  m_page_mode	( "UseNode" ),
+  m_tree		( 0 )
 {
 }
 
 Catalog::Catalog( const Ref& link, IFile *file )
-	: m_tree		( 0 ),
-	  m_version		( "1.4" ),
+	: m_version		( "1.4" ),
 	  m_page_layout	( "SinglePage" ),
-	  m_page_mode	( "UseNode" )
+	  m_page_mode	( "UseNode" ),
+	  m_tree		( 0 )
 {
 	assert( file != 0 ) ;
 	m_self = file->ReadObj( link ).As<Dictionary>() ;

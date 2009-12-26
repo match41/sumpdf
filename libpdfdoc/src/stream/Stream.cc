@@ -113,7 +113,8 @@ Stream::Stream( std::streambuf *file, std::streamoff offset,
 	                                     dict["Length"].As<int>() ) ) ;
 
 	ApplyFilter( dict["Filter"] ) ;
-	assert( m_impl->filter->GetInner()->Length() == dict["Length"].As<int>() ) ;
+	assert( m_impl->filter->GetInner()->Length() ==
+		static_cast<std::size_t>( dict["Length"].As<int>() ) ) ;
 	assert( dict["Filter"] == m_impl->filter->GetFilterName() ) ;
 	InitFilter( ) ;
 	
@@ -316,7 +317,7 @@ std::ostream& operator<<( std::ostream& os, const Stream& s )
 	os 	<< s.Self( ) << "\nstream\n" ;
 
 	std::size_t length = s.CopyRawData( os.rdbuf() ) ;
-	assert( length == s.Self( )["Length"].As<int>() ) ;
+	assert( length == static_cast<std::size_t>(s.Self( )["Length"].As<int>() ));
 	
 	return os << "\nendstream\n" ;
 }
@@ -330,6 +331,7 @@ std::streambuf* Stream::InStreamBuf( )
 std::streambuf* Stream::OutStreamBuf( )
 {
 	assert( m_impl.get() != 0 ) ;
+	assert( m_impl->dirty ) ;
 	return &m_impl->outbuf ;
 }
 
@@ -355,6 +357,8 @@ std::size_t Stream::Append( const unsigned char *buf, std::size_t size )
 {
 	assert( m_impl.get() != 0 ) ;
 	assert( m_impl->filter.get() != 0 ) ;
+	assert( m_impl->dirty ) ;
+	
 	return m_impl->filter->Write( buf, size ) ;
 }
 
@@ -364,10 +368,18 @@ std::size_t Stream::Append( const char *str )
 	               std::strlen( str ) ) ;
 }
 
+bool Stream::IsDirty( ) const
+{
+	assert( m_impl.get() != 0 ) ;
+	return m_impl->dirty ;
+}
+
 void Stream::Flush( )
 {
 	assert( m_impl.get() != 0 ) ;
 	assert( m_impl->filter.get() != 0 ) ;
+	assert( m_impl->dirty ) ;
+	
 	m_impl->filter->Flush( ) ;
 }
 
