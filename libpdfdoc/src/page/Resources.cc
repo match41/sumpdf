@@ -39,8 +39,6 @@
 #include "util/Util.hh"
 
 #include <boost/bind.hpp>
-#include <boost/lambda/lambda.hpp>
-#include <boost/lambda/bind.hpp>
 
 #include <algorithm>
 #include <cassert>
@@ -52,6 +50,13 @@ Resources::Resources( )
 	: m_proc_set( 1, Name( "PDF" ) )
 {
     m_proc_set.push_back( Name( "Text" ) ) ;
+}
+
+Resources::~Resources( )
+{
+	using namespace boost ;
+	std::for_each( m_fonts.begin(), m_fonts.end(),
+		bind( &BaseFont::Release, bind( &FontMap::value_type::second, _1 ) ) ) ;
 }
 
 void Resources::Read( const Object& self, IFile *file )
@@ -139,8 +144,7 @@ XObject* Resources::ReadXObj( const Ref& link )
 Name Resources::AddFont( BaseFont *font )
 {
 	// first, see if the font is already added
-	using boost::lambda::bind ;
-	using boost::lambda::_1 ;
+	using namespace boost ;
 	FontMap::iterator it = std::find_if( m_fonts.begin( ), m_fonts.end( ),
 		bind( &FontMap::value_type::second, _1 ) == font ) ;
 	if ( it != m_fonts.end( ) )
@@ -157,6 +161,12 @@ Name Resources::AddFont( BaseFont *font )
 
 	m_fonts.insert( std::make_pair( name, font ) ) ;
 	return name ;
+}
+
+BaseFont* Resources::FindFont( const Name& name )
+{
+	FontMap::iterator i = m_fonts.find( name ) ;
+	return i != m_fonts.end() ? i->second : 0 ;
 }
 
 } // end of namespace

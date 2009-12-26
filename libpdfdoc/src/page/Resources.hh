@@ -51,11 +51,14 @@ class Resources
 {
 public :
 	Resources( ) ;
+	~Resources( ) ;
 
 	Name AddFont( BaseFont *font ) ;
 
 	void Read( const Object& self, IFile *file ) ;
 	Ref  Write( IFile *file ) const ;
+
+	BaseFont* FindFont( const Name& name ) ;
 
 private :
 	void ReadFontDict( IFile *file ) ;

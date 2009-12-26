@@ -39,10 +39,15 @@ void RefCountObj::AddRef( )
 	++m_count ;
 }
 
-void RefCountObj::Release( )
+bool RefCountObj::Release( )
 {
 	if ( --m_count == 0 )
+	{
 		delete this ;
+		return true ;
+	}
+	else
+		return false ;
 }
 
 std::size_t RefCountObj::UseCount( ) const

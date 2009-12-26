@@ -44,10 +44,12 @@ public :
 	// declare suit function
 	CPPUNIT_TEST_SUITE( ResourcesTest ) ;
 		CPPUNIT_TEST( TestNormal ) ;
+		CPPUNIT_TEST( TestReadExistFont ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
 private :
 	void TestNormal( ) ;
+	void TestReadExistFont( ) ;
 } ;
 
 #endif

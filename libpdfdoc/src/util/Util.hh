@@ -97,15 +97,6 @@ struct DeRef
 	}
 } ;
 
-struct SelectSecond
-{
-	template <typename K, typename T>
-	const T& operator()( const std::pair<K,T>& p )
-	{
-		return p.second ;
-	}
-} ;
-
 std::string Demangle( const char *name ) ;
 
 } // end of namespace

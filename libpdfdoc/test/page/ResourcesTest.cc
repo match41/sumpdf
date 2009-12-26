@@ -32,6 +32,7 @@
 #include "core/Ref.hh"
 #include "core/Dictionary.hh"
 #include "core/Ref.hh"
+#include "font/StandardFont.hh"
 #include "page/Resources.hh"
 #include "util/Rect.hh"
 
@@ -65,4 +66,25 @@ void ResourcesTest::TestNormal( )
 	pdf::Object obj( rdict ) ;
 	pdf::Resources subject ;
 	subject.Read( rdict, &file ) ;
+}
+
+void ResourcesTest::TestReadExistFont( )
+{
+	std::istringstream iss( "<< /Font << /F0 18 0 R >> /ProcSet [/PDF /Text]\n"
+	                        "/XObject << >> >>" ) ;
+	pdf::Dictionary rdict ;
+	CPPUNIT_ASSERT( iss >> rdict ) ;
+
+	pdf::StandardFont *f = new pdf::StandardFont( "Times-Roman" ) ;
+	CPPUNIT_ASSERT( f->UseCount() == 1 ) ;
+
+	MockFile file ;
+	file.AddObj( pdf::Ref(1,0),  rdict ) ;
+
+	file.Pool()->fonts.Add( pdf::Ref(18, 0 ), f ) ;
+
+	pdf::Object obj( rdict ) ;
+	pdf::Resources subject ;
+	subject.Read( rdict, &file ) ;
+	CPPUNIT_ASSERT( f->UseCount() == 2 ) ;
 }

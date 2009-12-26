@@ -39,7 +39,7 @@ protected :
 
 public :
 	virtual void AddRef( ) ;
-	virtual void Release( ) ;
+	virtual bool Release( ) ;
 	
 	std::size_t UseCount( ) const ;
 
