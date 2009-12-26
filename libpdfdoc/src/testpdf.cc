@@ -42,6 +42,7 @@ int main( int argc, char **argv )
 	p->Finish( ) ;
 	
 	doc->Write( "test.pdf" ) ;
+	delete doc ;
 
 	return 0 ;
 }
