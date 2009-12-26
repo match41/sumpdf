@@ -59,6 +59,7 @@ public :
 
 private :
 	void ReadFontDict( IFile *file ) ;
+	Ref WriteFontDict( IFile *file ) const ;
 
 	XObject* ReadXObj( const Ref& link ) ;
 

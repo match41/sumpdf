@@ -76,6 +76,10 @@ void RealPage::Read( const Dictionary& self, IFile *file )
 	Array a ;
 	if ( Detach( file, m_self, "MediaBox", a ) )
 		m_media_box = Rect( a.begin( ), a.end( ) ) ;
+
+	Dictionary res ;
+	if ( Detach( file, m_self, "Resources", res ) )
+		m_resources.Read( res, file ) ;
 }
 
 Rect RealPage::MediaBox( ) const
@@ -174,6 +178,16 @@ PageNode* RealPage::GetLeaf( std::size_t index )
 {
 	// we are a leaf node. we have no children but ourself.
 	return index == 0 ? this : 0 ;
+}
+
+Resources* RealPage::GetResource( )
+{
+	return &m_resources ;
+}
+
+const Resources* RealPage::GetResource( ) const
+{
+	return &m_resources ;
 }
 
 void RealPage::DecodeContent( const Stream& s )

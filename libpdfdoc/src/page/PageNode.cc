@@ -26,37 +26,11 @@
 */
 
 #include "PageNode.hh"
-#include "PageTree.hh"
-
-#include "Resources.hh"
-
-#include "core/Object.hh"
-#include "file/IFile.hh"
-
-#include <iostream>
-#include <cassert>
 
 namespace pdf {
 
-PageNode::PageNode( )
-	: m_resources( new Resources )
-{
-}
-
 PageNode::~PageNode( )
 {
-}
-
-Resources* PageNode::GetResource( )
-{
-	assert( m_resources != 0 ) ;
-	return m_resources ;
-}
-
-const Resources* PageNode::GetResource( ) const
-{
-	assert( m_resources != 0 ) ;
-	return m_resources ;
 }
 
 } // end of namespace

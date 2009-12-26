@@ -28,6 +28,7 @@
 #include "StandardFont.hh"
 
 #include "core/Dictionary.hh"
+#include "file/IFile.hh"
 #include "util/Util.hh"
 
 #include <set>
@@ -68,22 +69,15 @@ bool StandardFont::IsStandardFont( const Name& font_name )
 	return s.find( font_name ) != s.end( ) ;
 }
 
-/*
-void StandardFont::Init( Object& link, ElementReader *src )
-{
-	// reading is not supported
-}
-
-void StandardFont::Write( const Ref& link, IElementDest *dest ) const
+Ref StandardFont::Write( IFile *file ) const
 {
 	// the standard 14 font dictionary is much simpler
 	Dictionary dict ;
 	dict["Type"]		= Name( "Font" ) ;
 	dict["Subtype"]		= Name( "Type1" ) ;
 	dict["BaseFont"]	= m_font_name ;
-	dest->WriteObj( dict, link ) ;
+	return file->WriteObj( dict ) ;
 }
-*/
 
 // freetype library is optional
 #ifndef HAVE_FREETYPE

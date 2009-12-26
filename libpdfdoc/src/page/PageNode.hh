@@ -47,7 +47,6 @@ class Ref ;
 class PageNode
 {
 public :
-	PageNode( ) ;
 	virtual ~PageNode( ) ;
 
 	virtual void Read( const Dictionary& self, IFile *file ) = 0 ; 
@@ -56,14 +55,11 @@ public :
 
 	virtual PageTree* Parent( ) = 0 ;
 
-	Resources* GetResource( ) ;
-	const Resources* GetResource( ) const ;
+	virtual Resources* GetResource( ) = 0 ;
+	virtual const Resources* GetResource( ) const = 0 ;
 
 	virtual std::size_t Count( ) const = 0 ;
 	virtual PageNode* GetLeaf( std::size_t index ) = 0 ;
-
-private :
-	Resources	*m_resources ;
 } ;
 
 } // end of namespace

@@ -72,6 +72,9 @@ public :
 	
 	PageNode* GetLeaf( std::size_t index ) ;
 	
+	Resources* GetResource( ) ;
+	const Resources* GetResource( ) const ;
+
 private :
 	void ReadContent( const Object& str_obj, IFile *file ) ;
 	void DecodeContent( const Stream& s ) ;
@@ -79,6 +82,7 @@ private :
 	
 private :
 	PageTree	*m_parent ;
+	Resources	m_resources ;
 	Dictionary	m_self ;
 	
 	/// in PDF user space. specified by UserUnit or 1/72 inch

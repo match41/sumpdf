@@ -30,6 +30,8 @@
 
 #include "PageNode.hh"
 
+#include "Resources.hh"
+
 #include <vector>
 
 namespace pdf {
@@ -57,6 +59,8 @@ public :
 	PageNode* GetLeaf( std::size_t index ) ;
 	void AppendLeaf( RealPage *child ) ;
 	void AddLeaf( std::size_t index, RealPage *child ) ;
+	Resources* GetResource( ) ;
+	const Resources* GetResource( ) const ;
 
 private :
 	void AppendNode( PageNode *child ) ;
@@ -66,6 +70,7 @@ private :
 
 private :
 	PageTree				*m_parent ;
+	Resources				m_resources ;
 
 	std::vector<PageNode*>	m_kids ;
 	

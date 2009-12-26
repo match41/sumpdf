@@ -48,6 +48,20 @@
 
 namespace pdf {
 
+PageTree::PageTree( PageTree *parent )
+	: m_parent( parent ),
+	  m_count( 0 )
+{
+	if ( parent )
+		parent->AppendNode( this ) ;
+}
+
+PageTree::~PageTree( )
+{
+	std::for_each( m_kids.begin(), m_kids.end(),
+	               boost::lambda::delete_ptr( ) ) ;
+}
+
 void PageTree::Read( const Dictionary& dict, IFile *file )
 {
 	const Array& pages = dict["Kids"].As<Array>() ;
@@ -73,20 +87,10 @@ void PageTree::Read( const Dictionary& dict, IFile *file )
 
 	// leaf count is required
 	m_count	= dict["Count"].As<int>( ) ;
-}
-
-PageTree::PageTree( PageTree *parent )
-	: m_parent( parent ),
-	  m_count( 0 )
-{
-	if ( parent )
-		parent->AppendNode( this ) ;
-}
-
-PageTree::~PageTree( )
-{
-	std::for_each( m_kids.begin(), m_kids.end(),
-	               boost::lambda::delete_ptr( ) ) ;
+	
+	Dictionary res ;
+	if ( DeRef( file, dict, "Resources", res ) )
+		m_resources.Read( res, file ) ;
 }
 
 void PageTree::Write( const Ref& link, IFile *file, const Ref& ) const
@@ -182,6 +186,16 @@ PageNode* PageTree::GetLeaf( std::size_t index )
 	}
 	
 	return 0 ;
+}
+
+Resources* PageTree::GetResource( )
+{
+	return &m_resources ;
+}
+
+const Resources* PageTree::GetResource( ) const
+{
+	return &m_resources ;
 }
 
 } // end of namespace

@@ -35,6 +35,7 @@ namespace pdf {
 
 class IFile ;
 class Object ;
+class Ref ;
 
 /*!	\brief	base class for all fonts
 	\internal
@@ -47,6 +48,7 @@ public :
 	BaseFont( ) ;
 
 	virtual std::string BaseName( ) const = 0 ;
+	virtual Ref Write( IFile *file ) const = 0 ;
 } ;
 
 BaseFont* CreateFont( const Object& obj, IFile *file ) ;

@@ -67,19 +67,20 @@ void Resources::Read( const Object& self, IFile *file )
 //	ReadSubDict( "XObject", file, m_xobjs ) ;
 }
 
-Ref Resources::Write( IFile *repo ) const
+Ref Resources::Write( IFile *file ) const
 {
     Dictionary dict( m_self ) ;
 	dict["ProcSet"]	= Array( m_proc_set.begin( ), m_proc_set.end( ) ) ;
-//  dict["Font"]	= WriteSubDict( m_fonts, repo ) ;
+	dict["Font"]	= WriteFontDict( file ) ;
 //	dict["XObject"]	= WriteSubDict( m_xobjs, repo ) ;
 
-    return repo->WriteObj( dict ) ;
+    return file->WriteObj( dict ) ;
 }
 
 void Resources::ReadFontDict( IFile *file )
 {
 	assert( file != 0 ) ;
+	assert( file->Pool() != 0 ) ;
 
 	Dictionary dict ;
 	if ( Detach( file, m_self, "Font", dict ) )
@@ -105,6 +106,28 @@ void Resources::ReadFontDict( IFile *file )
 			m_fonts.insert( std::make_pair( i->first, font ) ) ;
 		}
 	}
+}
+
+Ref Resources::WriteFontDict( IFile *file ) const
+{
+	assert( file != 0 ) ;
+	assert( file->Pool() != 0 ) ;
+
+	FontPool *pool = &file->Pool( )->fonts ;
+	Dictionary font_dict ;
+	
+	for ( FontMap::const_iterator i = m_fonts.begin(); i != m_fonts.end() ; ++i)
+	{
+		assert( i->second != 0 ) ;
+	
+		Ref link = pool->Find( i->second ) ;
+		if ( link == Ref() )
+			link = i->second->Write( file ) ;
+		
+		font_dict.insert( std::make_pair( i->first, link ) ) ;
+	}
+	
+	return file->WriteObj( font_dict ) ;
 }
 
 XObject* Resources::ReadXObj( const Ref& link )

@@ -44,6 +44,8 @@ public :
 
 	std::string BaseName( ) const ;
 
+	Ref Write( IFile *file ) const ;
+	
 	static bool IsStandardFont( const Name& font_name ) ;
 
 private :
