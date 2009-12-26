@@ -27,8 +27,10 @@
 
 #include "RefCountObj.hh"
 
+namespace pdf {
+
 RefCountObj::RefCountObj( )
-	: m_count( 0 )
+	: m_count( 1 )
 {
 }
 
@@ -43,3 +45,9 @@ void RefCountObj::Release( )
 		delete this ;
 }
 
+std::size_t RefCountObj::UseCount( ) const
+{
+	return m_count ;
+}
+
+} // end of namespace

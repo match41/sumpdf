@@ -31,8 +31,11 @@
 
 #include "core/Ref.hh"
 
+#include <boost/bimap.hpp>
+#include <boost/bimap/set_of.hpp>
+
+#include <string>
 #include <cassert>
-#include <map>
 
 namespace pdf {
 
@@ -51,14 +54,14 @@ public :
 	
 	void Add( const Ref& link, T *res )
 	{
-		assert( m_pool.find(link) == m_pool.end() ) ;
-		m_pool.insert( std::make_pair( link, res ) ) ;
+		assert( m_pool.left.find(link) == m_pool.left.end() ) ;
+		m_pool.insert( MapEntry( link, res ) ) ;
 	}
 
 	T* Find( const Ref& link )
 	{
-		typename MapType::iterator i = m_pool.find( link ) ;
-		if ( i != m_pool.end() )
+		typename MapType::left_iterator i = m_pool.left.find( link ) ;
+		if ( i != m_pool.left.end() )
 		{
 			assert( i->second != 0 ) ;
 		
@@ -70,13 +73,23 @@ public :
 			return 0 ;
 	}
 
-	Ref Find( const T *ptr ) const
+	Ref Find( T *ptr ) const
 	{
-		return Ref() ;
+		typename MapType::right_const_iterator i = m_pool.right.find( ptr ) ;
+		if ( i != m_pool.right.end() )
+			return i->second ;
+		else
+			return Ref( ) ;
 	}
 
 private :
-	typedef	std::map<Ref, T*> MapType ; 
+	typedef	boost::bimap<
+		boost::bimaps::set_of<Ref>,
+		boost::bimaps::set_of<T*>
+	> MapType ; 
+	
+	typedef typename MapType::value_type MapEntry ;
+	
 	MapType	m_pool ;
 } ;
 

@@ -4,8 +4,7 @@
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
+ *   the Free Software Foundation; either version 2 of the License.        *
  *                                                                         *
  *   This program is distributed in the hope that it will be useful,       *
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
@@ -19,34 +18,31 @@
  \***************************************************************************/
 
 /**
-	\file	RefCountObj.h
-	\brief	definition the RefCountObj class
-	\date	Dec 11, 2009
-	\author	nestal
+	\file	RefObjMapTest.hh
+	\brief	definition the RefObjMapTest class
+	\date	Dec 26, 2009
+	\author	Nestal Wan
 */
 
-#ifndef __PDF_REFCOUNTOBJ_HEADER_INCLUDED__
-#define __PDF_REFCOUNTOBJ_HEADER_INCLUDED__
+#ifndef __PDF_REFOBJMAPTEST_HEADER_INCLUDED__
+#define __PDF_REFOBJMAPTEST_HEADER_INCLUDED__
 
-#include <cstddef>
+#include <cppunit/TestFixture.h>
 
-namespace pdf {
+#include <cppunit/extensions/HelperMacros.h>
 
-class RefCountObj
+class RefObjMapTest : public CppUnit::TestFixture
 {
-protected :
-	RefCountObj( ) ;
-
-public :
-	virtual void AddRef( ) ;
-	virtual void Release( ) ;
+public:
+	RefObjMapTest( ) ;
 	
-	std::size_t UseCount( ) const ;
+	// declare suit function
+	CPPUNIT_TEST_SUITE( RefObjMapTest ) ;
+		CPPUNIT_TEST( TestSimple ) ;
+	CPPUNIT_TEST_SUITE_END();
 
 private :
-	std::size_t	m_count ;
+	void TestSimple( ) ;
 } ;
 
-} // end of namespace
-
-#endif // REFCOUNTOBJ_H_
+#endif // REFOBJMAPTEST_HH_

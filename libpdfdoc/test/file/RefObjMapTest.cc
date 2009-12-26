@@ -4,8 +4,7 @@
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
+ *   the Free Software Foundation; either version 2 of the License.        *
  *                                                                         *
  *   This program is distributed in the hope that it will be useful,       *
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
@@ -19,34 +18,35 @@
  \***************************************************************************/
 
 /**
-	\file	RefCountObj.h
-	\brief	definition the RefCountObj class
-	\date	Dec 11, 2009
-	\author	nestal
-*/
+	\file	RefObjMapTest.cc
+	\brief	definition the RefObjMapTest class
+	\date	Dec 26, 2009
+	\author	Nestal Wan
+ */
 
-#ifndef __PDF_REFCOUNTOBJ_HEADER_INCLUDED__
-#define __PDF_REFCOUNTOBJ_HEADER_INCLUDED__
+#include "RefObjMapTest.hh"
 
-#include <cstddef>
-
-namespace pdf {
-
-class RefCountObj
+#include "file/RefObjMap.hh"
+#include "util/RefCountObj.hh"
+namespace
 {
-protected :
-	RefCountObj( ) ;
+	// RefObjMap should work with reference counted type
+	struct Dummy : public pdf::RefCountObj
+	{
+	} ;
+}
 
-public :
-	virtual void AddRef( ) ;
-	virtual void Release( ) ;
-	
-	std::size_t UseCount( ) const ;
+RefObjMapTest::RefObjMapTest( )
+{
+}
 
-private :
-	std::size_t	m_count ;
-} ;
-
-} // end of namespace
-
-#endif // REFCOUNTOBJ_H_
+void RefObjMapTest::TestSimple( )
+{
+	pdf::RefObjMap<Dummy> map ;
+	Dummy *d = new Dummy ;
+	map.Add( pdf::Ref( 100, 0 ), d ) ;
+	Dummy *out = map.Find( pdf::Ref( 100, 0 ) ) ;
+	CPPUNIT_ASSERT( out == d ) ;
+	CPPUNIT_ASSERT( out->UseCount() == 2 ) ;
+	CPPUNIT_ASSERT( map.Find( out ) == pdf::Ref( 100, 0 ) ) ; 
+}
