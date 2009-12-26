@@ -19,84 +19,29 @@
 \***************************************************************************/
 
 /**
-	\file	ResourcePool.hh
+	\file	ResourcePool.h
 	\brief	definition the ResourcePool class
-	\date	Dec 23, 2009
+	\date	Dec 26, 2009
 	\author	nestal
 */
 
 
-#ifndef __PDF_RESOURCEPOOL_HH_EADER_INCLUDED__
-#define __PDF_RESOURCEPOOL_HH_EADER_INCLUDED__
+#ifndef __PDF_RESOURCEPOOL_HEADER_INCLUDED__
+#define __PDF_RESOURCEPOOL_HEADER_INCLUDED__
 
-#include "core/Ref.hh"
-
-#include <cassert>
-#include <map>
+#include "RefObjMap.hh"
 
 namespace pdf {
 
-template <typename T>
-class ResourcePool
+class BaseFont ;
+
+typedef RefObjMap<BaseFont> FontPool ;
+
+struct ResourcePool
 {
-public :
-	ResourcePool( )
-	{
-	}
-	
-/*	T* Find( const Ref& link )
-	{
-		T *t = TryFind( link ) ;
-		return t != 0 ? t : new T ;
-	}
-
-	template <typename P1>
-	T* Find( const Ref& link, P1 p1 )
-	{
-		T *t = TryFind( link ) ;
-		return t != 0 ? t : new T(p1) ;
-	}
-	
-	template <typename P1, typename P2>
-	T* Find( const Ref& link, P1 p1, P2 p2 )
-	{
-		T *t = TryFind( link ) ;
-		return t != 0 ? t : new T(p1, p2) ;
-	}
-	
-	template <typename P1, typename P2, typename P3>
-	T* Find( const Ref& link, P1 p1, P2 p2, P3 p3 )
-	{
-		T *t = TryFind( link ) ;
-		return t != 0 ? t : new T(p1, p2, p3) ;
-	}
-	*/
-	void Add( const Ref& link, T *res )
-	{
-		assert( m_pool.find(link) == m_pool.end() ) ;
-		m_pool.insert( std::make_pair( link, res ) ) ;
-	}
-
-	T* Find( const Ref& link )
-	{
-		typename MapType::iterator i = m_pool.find( link ) ;
-		if ( i != m_pool.end() )
-		{
-			assert( i->second != 0 ) ;
-		
-			// assume T is a RefCountObj
-			i->second->AddRef( ) ;
-			return i->second ;
-		}
-		else
-			return 0 ;
-	}
-
-private :
-	typedef	std::map<Ref, T*> MapType ; 
-	MapType	m_pool ;
+	FontPool	fonts ;
 } ;
 
 } // end of namespace
 
-#endif // RESOURCEPOOL_HH_
+#endif // RESOURCEPOOL_H_

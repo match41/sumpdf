@@ -66,3 +66,8 @@ const pdf::Object& MockFile::Find( const pdf::Ref& link ) const
 	std::map<pdf::Ref, pdf::Object>::const_iterator i = m_map.find( link ) ;
 	return i != m_map.end( ) ? i->second : m_null ;
 }
+
+pdf::ResourcePool* MockFile::Pool( )
+{
+	return &m_pool ;
+}

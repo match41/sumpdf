@@ -19,24 +19,67 @@
 \***************************************************************************/
 
 /**
-	\file	FontPool.hh
-	\brief	definition the FontPool class
+	\file	ResourcePool.hh
+	\brief	definition the ResourcePool class
 	\date	Dec 23, 2009
-	\author	nestal
+	\author	Nestal Wan
 */
 
 
-#ifndef __PDF_FONTPOOL_HH_EADER_INCLUDED__
-#define __PDF_FONTPOOL_HH_EADER_INCLUDED__
+#ifndef __PDF_REFOBJMAP_HH_EADER_INCLUDED__
+#define __PDF_REFOBJMAP_HH_EADER_INCLUDED__
 
-namespace pdf
+#include "core/Ref.hh"
+
+#include <cassert>
+#include <map>
+
+namespace pdf {
+
+/**	\brief	mapping for Ref and resources
+	when reading a PDF file, the PDF resources may be mapped indirectly using
+	references. Multiple references may refer to the same resource. This is to
+	identifies them and share them. 
+*/
+template <typename T>
+class RefObjMap
 {
-	template <typename T>
-	class ResourcePool ;
+public :
+	RefObjMap( )
+	{
+	}
+	
+	void Add( const Ref& link, T *res )
+	{
+		assert( m_pool.find(link) == m_pool.end() ) ;
+		m_pool.insert( std::make_pair( link, res ) ) ;
+	}
 
-	class BaseFont ;
+	T* Find( const Ref& link )
+	{
+		typename MapType::iterator i = m_pool.find( link ) ;
+		if ( i != m_pool.end() )
+		{
+			assert( i->second != 0 ) ;
+		
+			// assume T is a RefCountObj
+			i->second->AddRef( ) ;
+			return i->second ;
+		}
+		else
+			return 0 ;
+	}
 
-	typedef ResourcePool<BaseFont> FontPool ;
-}
+	Ref Find( const T *ptr ) const
+	{
+		return Ref() ;
+	}
 
-#endif // FONTPOOL_HH_
+private :
+	typedef	std::map<Ref, T*> MapType ; 
+	MapType	m_pool ;
+} ;
+
+} // end of namespace
+
+#endif // RESOURCEPOOL_HH_

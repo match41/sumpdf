@@ -65,6 +65,7 @@ set( FILE_HDRS		${FILE_DIR}/File.hh
 					${FILE_DIR}/IFile.hh
 					${FILE_DIR}/Catalog.hh
 					${FILE_DIR}/ObjectReader.hh
+					${FILE_DIR}/RefObjMap.hh
 					${FILE_DIR}/ResourcePool.hh )
 
 set( CORE_HDRS  	${CORE_DIR}/Object.hh

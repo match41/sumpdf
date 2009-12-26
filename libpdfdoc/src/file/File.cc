@@ -341,4 +341,9 @@ Ref File::Root( ) const
 	return m_trailer["Root"] ;
 }
 
+ResourcePool* File::Pool( )
+{
+	return &m_pool ;
+}
+
 } // end of namespace

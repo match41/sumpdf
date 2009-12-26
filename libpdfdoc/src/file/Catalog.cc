@@ -74,7 +74,8 @@ Catalog::Catalog( const Ref& link, IFile *file )
 		throw ParseError( "no page tree in catalog" ) ;
 	
 	// root page tree has no parent
-	m_tree = new PageTree( tree, file ) ;
+	m_tree = new PageTree ;
+	m_tree->Read( tree, file ) ;
 	
 	// TODO: no know how to handle OpenAction it yet
 	m_self.erase( Name( "OpenAction" ) ) ;

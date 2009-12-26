@@ -33,10 +33,12 @@ namespace pdf {
 class Object ;
 class Ref ;
 class StreamFilter ;
+struct ResourcePool ;
 
-/*!	\brief	brief description
+/*!	\brief	PDF file interface
 
-	this class represents
+	This class represents the interface of PDF file structure. It allows the
+	caller to read PDF core objects base on their reference.
 */
 class IFile
 {
@@ -49,6 +51,8 @@ public :
 
 	virtual Ref AllocLink( ) = 0 ;
 	virtual void WriteObj( const Object& obj, const Ref& link ) = 0 ;
+
+	virtual ResourcePool* Pool( ) = 0 ;
 } ;
 
 } // end of namespace

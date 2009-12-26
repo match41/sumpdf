@@ -46,9 +46,9 @@ class PageTree : public PageNode
 {
 public :
 	explicit PageTree( PageTree *parent = 0 ) ;
-	PageTree( const Dictionary& dict, IFile *file, PageTree *parent = 0 ) ;
 	~PageTree( ) ;
 
+	void Read( const Dictionary& dict, IFile *file ) ;
 	void Write( const Ref& link, IFile *file, const Ref& parent ) const ;
 
 	PageTree* Parent( ) ;

@@ -30,6 +30,8 @@
 
 #include "IFile.hh"
 
+#include "ResourcePool.hh"
+
 #include "core/Dictionary.hh"
 
 #include <iosfwd>
@@ -43,7 +45,7 @@ class Ref ;
 
 /*!	\brief	PDF file class
 	
-	This class encapsulates the PDF file structure. Logicially it is a
+	This class encapsulates the PDF file structure. Logically it is a
 	collection of PDF objects. These objects are stored in the PDF file with
 	cross-links to each others. The offsets of these objects are stored in
 	the end of the PDF file called the trailer. This class is responsible for
@@ -52,8 +54,8 @@ class Ref ;
 class File : public IFile
 {
 public :
-	File( std::istream *is ) ;
-	File( std::ostream *os ) ;
+	explicit File( std::istream *is ) ;
+	explicit File( std::ostream *os ) ;
 	
 	void WriteTrailer( const Ref& catalog,
 	                   const std::string& producer	= std::string(),
@@ -65,7 +67,8 @@ public :
 	Ref WriteObj( const Object& obj ) ;	
 	Ref AllocLink( ) ;
 	void WriteObj( const Object& obj, const Ref& link ) ;
-
+	ResourcePool* Pool( ) ;
+	
 private :
 	void ReadXRef( std::size_t offset, Dictionary& trailer ) ;
 	std::size_t ReadXRefOffset( ) ;
@@ -84,6 +87,7 @@ private :
 	std::ostream	*m_out ;
 		
 	Dictionary		m_trailer ;
+	ResourcePool	m_pool ;
 } ;
 
 } // end of namespace

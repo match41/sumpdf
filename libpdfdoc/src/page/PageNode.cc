@@ -38,11 +38,6 @@
 
 namespace pdf {
 
-PageNode::PageNode( const Dictionary& self, IFile *file )
-	: m_resources( new Resources )
-{
-}
-
 PageNode::PageNode( )
 	: m_resources( new Resources )
 {

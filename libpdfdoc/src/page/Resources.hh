@@ -30,7 +30,6 @@
 
 #include "core/Dictionary.hh"
 #include "core/Name.hh"
-#include "FontPool.hh"
 
 #include <vector>
 
@@ -41,9 +40,6 @@ class BaseFont ;
 class RealImage ;
 class XObject ;
 class Object ;
-
-template <typename T>
-class ResourcePool ;
 
 /*!	\brief	page resources
 
@@ -58,11 +54,11 @@ public :
 
 	Name AddFont( BaseFont *font ) ;
 
-	void Read( const Object& self, IFile *file, FontPool *fonts = 0 ) ;
+	void Read( const Object& self, IFile *file ) ;
 	Ref  Write( IFile *file ) const ;
 
 private :
-	void ReadFontDict( IFile *file, FontPool *fonts ) ;
+	void ReadFontDict( IFile *file ) ;
 
 	XObject* ReadXObj( const Ref& link ) ;
 

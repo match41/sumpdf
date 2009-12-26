@@ -94,6 +94,7 @@ void PageTest::TestNormal( )
 	file.AddObj( pdf::Ref( 697, 0 ), pd ) ;
 	
 	pdf::Object obj( d ) ;
-	pdf::RealPage *p  = new pdf::RealPage( m_root, d, &file ) ;
+	pdf::RealPage *p  = new pdf::RealPage( m_root ) ;
+	p->Read( d, &file ) ;
 	CPPUNIT_ASSERT( p->MediaBox() == pdf::Rect( 0, 0, 297, 419 ) ) ;
 }

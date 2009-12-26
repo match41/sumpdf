@@ -30,6 +30,8 @@
 
 #include "file/IFile.hh"
 
+#include "file/ResourcePool.hh"
+
 #include "core/Object.hh"
 #include "core/Ref.hh"
 
@@ -48,6 +50,8 @@ private :
 	
 	static const pdf::Object m_null ;
 
+	pdf::ResourcePool	m_pool ;
+
 public :
 	MockFile( ) ;
 	
@@ -58,6 +62,7 @@ public :
 	pdf::Ref WriteObj( const pdf::Object& obj ) ;
 	pdf::Ref AllocLink( ) ;
 	void WriteObj( const pdf::Object& obj, const pdf::Ref& link ) ;
+	pdf::ResourcePool* Pool( ) ;
 } ;
 
 #endif

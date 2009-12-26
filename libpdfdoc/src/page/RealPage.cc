@@ -60,15 +60,12 @@ RealPage::RealPage( PageTree *parent )
 	parent->AppendLeaf( this ) ;
 }
 
-RealPage::RealPage( PageTree *parent, const Dictionary& self, IFile *file )
-    : m_parent( parent ),
-      m_self( self ),
-      m_rotate( 0 )
+void RealPage::Read( const Dictionary& self, IFile *file )
 {
 	assert( file != 0 ) ;
-	assert( parent != 0 ) ;
-
-	parent->AppendLeaf( this ) ;
+	
+	// assign self dictionary first
+	m_self = self ;
 
 	// read content
 	Object contents ;

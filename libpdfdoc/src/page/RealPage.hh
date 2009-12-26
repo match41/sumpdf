@@ -58,9 +58,9 @@ class IFile ;
 class RealPage : public Page, public PageNode
 {
 public :
-	RealPage( PageTree *parent, const Dictionary& link, IFile *file ) ;
 	explicit RealPage( PageTree *parent ) ;
 
+	void Read( const Dictionary& link, IFile *file ) ;
 	void Write( const Ref& link, IFile *file, const Ref& parent ) const ;
 	
 	Rect MediaBox( ) const ;
@@ -84,7 +84,6 @@ private :
 	/// in PDF user space. specified by UserUnit or 1/72 inch
 	Rect		m_media_box ;
 	
-//	std::vector<PaintOp>	m_contents ;
 	std::vector<Stream>		m_content ;
 
 	int	m_rotate ;

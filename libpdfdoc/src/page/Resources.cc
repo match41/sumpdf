@@ -33,6 +33,7 @@
 #include "core/Array.hh"
 #include "file/IFile.hh"
 #include "file/ObjectReader.hh"
+#include "file/RefObjMap.hh"
 #include "file/ResourcePool.hh"
 #include "font/BaseFont.hh"
 #include "util/Util.hh"
@@ -53,7 +54,7 @@ Resources::Resources( )
     m_proc_set.push_back( Name( "Text" ) ) ;
 }
 
-void Resources::Read( const Object& self, IFile *file, FontPool *fonts )
+void Resources::Read( const Object& self, IFile *file )
 {
 	m_self = DeRefObj<Dictionary>( file, self ) ;
 
@@ -62,7 +63,7 @@ void Resources::Read( const Object& self, IFile *file, FontPool *fonts )
 	Detach( file, m_self, "ProcSet",	proc_set ) ;
 	m_proc_set.assign( proc_set.begin( ), proc_set.end( ) ) ;
 
-	ReadFontDict( file, fonts ) ;
+	ReadFontDict( file ) ;
 //	ReadSubDict( "XObject", file, m_xobjs ) ;
 }
 
@@ -76,13 +77,14 @@ Ref Resources::Write( IFile *repo ) const
     return repo->WriteObj( dict ) ;
 }
 
-void Resources::ReadFontDict( IFile *file, FontPool *font_pool )
+void Resources::ReadFontDict( IFile *file )
 {
 	assert( file != 0 ) ;
 
 	Dictionary dict ;
 	if ( Detach( file, m_self, "Font", dict ) )
 	{
+		FontPool *font_pool = &file->Pool( )->fonts ;
 		for ( Dictionary::const_iterator i  = dict.begin( ) ;
 										 i != dict.end( ) ; ++i )
 		{
