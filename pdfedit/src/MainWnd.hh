@@ -17,36 +17,25 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-/*!
-	\file	NameTest.hh
-	\brief	definition the NameTest class
-	\date	Sun Mar 9 2008
+/**
+	\file	MainWnd.hh
+	\brief	definition the MainWnd class
+	\date	Dec 27, 2009
 	\author	Nestal Wan
 */
 
-#ifndef __PDFUT_NAME_TEST_HEADER_INCLUDED__
-#define __PDFUT_NAME_TEST_HEADER_INCLUDED__
+#ifndef __PDF_MAINWND_HH_EADER_INCLUDED__
+#define __PDF_MAINWND_HH_EADER_INCLUDED__
 
-#include <cppunit/TestFixture.h>
+namespace pdf {
 
-#include <cppunit/extensions/HelperMacros.h>
-
-class NameTest : public CppUnit::TestFixture
+class MainWnd
 {
-public :
-	NameTest( ) ;
-
-	// declare suit function
-	CPPUNIT_TEST_SUITE( NameTest );
-		CPPUNIT_TEST( TestOneName );
-		CPPUNIT_TEST( TestTwoNames );
-		CPPUNIT_TEST( TestNonName );
-	CPPUNIT_TEST_SUITE_END();
-
-private :
-	void TestOneName( ) ;
-	void TestTwoNames( ) ;
-	void TestNonName( ) ;
+public:
+	MainWnd( ) ;
+	virtual ~MainWnd( ) ;
 } ;
 
-#endif
+} // end of namespace
+
+#endif // MAINWND_HH_

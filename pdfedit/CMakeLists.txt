@@ -30,7 +30,7 @@ find_package( Boost REQUIRED )
 
 include(${QT_USE_FILE})
 
-set( BASE_SRCS		src/main.cc )
+set( BASE_SRCS		src/main.cc src/MainWnd.cc )
 
 ###############################################################################
 # all sources
