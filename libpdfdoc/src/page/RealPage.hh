@@ -36,7 +36,7 @@
 #include "core/Dictionary.hh"
 #include "core/Token.hh"
 #include "stream/Stream.hh"
-#include "util/Rect.hh"
+#include "Rect.hh"
 
 #include <string>
 

@@ -39,16 +39,34 @@ PropertiesDlg::PropertiesDlg( Doc *doc, QWidget *parent )
 	  m_doc( doc )
 {
 	assert( m_doc != 0 ) ;
-
 	setupUi( this ) ;
-	
+
+	connect(
+		m_button_box,
+		SIGNAL(accepted()),
+		this,
+		SLOT(OnOK()) );
+
 	DocInfo* info = m_doc->Info( ) ;
 	assert( info != 0 ) ;
 
-std::cout << info->Producer() << std::endl ;
-
 	m_producer->setText( info->Producer().c_str() ) ;
 	m_creator->setText( info->Creator().c_str() ) ;
+	m_author->setText( info->Author().c_str() ) ;
+	m_subject->setText( info->Subject().c_str() ) ;
+	m_keywords->setText( info->Keywords().c_str() ) ;
+}
+
+void PropertiesDlg::OnOK( )
+{
+	DocInfo* info = m_doc->Info( ) ;
+	assert( info != 0 ) ;
+
+	info->SetCreator( m_creator->text().toStdString() ) ;
+	info->SetProducer( m_producer->text().toStdString() ) ;
+	info->SetAuthor( m_author->text().toStdString() ) ;
+	info->SetSubject( m_subject->text().toStdString() ) ;
+	info->SetKeywords( m_keywords->text().toStdString() ) ;
 }
 
 } // end of namespace

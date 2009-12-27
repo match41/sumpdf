@@ -49,8 +49,15 @@ protected :
 public :
 	virtual const std::string& Creator() const = 0 ;
 	virtual const std::string& Producer() const = 0 ;
+	virtual const std::string& Author() const = 0 ;
+	virtual const std::string& Subject() const = 0 ;
+	virtual const std::string& Keywords() const = 0 ;
 	
 	virtual void SetCreator( const std::string& creator ) = 0 ;
+	virtual void SetProducer( const std::string& creator ) = 0 ;
+	virtual void SetAuthor( const std::string& creator ) = 0 ;
+	virtual void SetSubject( const std::string& creator ) = 0 ;
+	virtual void SetKeywords( const std::string& creator ) = 0 ;
 } ;
 
 } // end of namespace

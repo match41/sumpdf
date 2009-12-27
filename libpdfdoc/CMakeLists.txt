@@ -122,6 +122,7 @@ set( INCLUDE_HDRS	include/Doc.hh
 					include/Font.hh
 					include/libpdfdoc.hh
 					include/Page.hh
+					include/Rect.hh
 					include/DocInfo.hh )
 
 set( BASE_HDRS		src/RealDoc.hh )

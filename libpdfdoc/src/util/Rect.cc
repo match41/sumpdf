@@ -26,6 +26,8 @@
 
 #include "Rect.hh"
 
+#include "util/Util.hh"
+
 #include <algorithm>
 
 namespace pdf {
@@ -62,6 +64,16 @@ Rect::const_iterator Rect::begin( ) const
 Rect::const_iterator Rect::end( ) const
 {
 	return End(m_corner) ;
+}
+
+int Rect::Width( ) const
+{
+	return m_corner[2] - m_corner[0] ;
+}
+
+int Rect::Height( ) const
+{
+	return m_corner[3] - m_corner[1] ;
 }
 
 } // end of namespace

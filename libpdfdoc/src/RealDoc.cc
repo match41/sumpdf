@@ -115,7 +115,7 @@ StandardFont* RealDoc::CreateSimpleFont( const std::string& name )
 
 RealPage* RealDoc::AddPage( std::size_t index )
 {
-    return 0 ;
+	return 0 ;
 }
 
 const DocInfo* RealDoc::Info( ) const
@@ -138,6 +138,21 @@ const std::string& RealDoc::Info_::Producer() const
 	return Field( "Producer" ) ;
 }
 
+const std::string& RealDoc::Info_::Author() const
+{
+	return Field( "Author" ) ;
+}
+
+const std::string& RealDoc::Info_::Subject() const
+{
+	return Field( "Subject" ) ;
+}
+
+const std::string& RealDoc::Info_::Keywords() const
+{
+	return Field( "Keywords" ) ;
+}
+
 const std::string& RealDoc::Info_::Field( const Name& name ) const
 {
 	Dictionary::const_iterator i = m_dict.find( name ) ;
@@ -147,6 +162,26 @@ const std::string& RealDoc::Info_::Field( const Name& name ) const
 void RealDoc::Info_::SetCreator( const std::string& creator )
 {
 	SetField( "Creator", creator ) ;
+}
+
+void RealDoc::Info_::SetProducer( const std::string& creator )
+{
+	SetField( "Producer", creator ) ;
+}
+
+void RealDoc::Info_::SetAuthor( const std::string& creator )
+{
+	SetField( "Author", creator ) ;
+}
+
+void RealDoc::Info_::SetSubject( const std::string& creator )
+{
+	SetField( "Subject", creator ) ;
+}
+
+void RealDoc::Info_::SetKeywords( const std::string& creator )
+{
+	SetField( "Keywords", creator ) ;
 }
 
 void RealDoc::Info_::SetField(const Name& name, const std::string& value)

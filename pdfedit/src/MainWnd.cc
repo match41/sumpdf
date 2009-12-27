@@ -30,20 +30,25 @@
 
 // Qt headers
 #include <QFileDialog>
+#include <QGraphicsView>
 #include <QMessageBox>
 
 // libpdfdoc headers
 #include <libpdfdoc.hh>
 #include <Doc.hh>
+#include <Page.hh>
+#include <Rect.hh>
 
 #include <iostream>
 
 namespace pdf {
 
 MainWnd::MainWnd( QWidget *parent )
-	: QMainWindow( parent )
+	: QMainWindow( parent ),
+	  m_view( new QGraphicsView( &m_scene, this ) )
 {
 	setupUi( this ) ;
+	setCentralWidget( m_view ) ;
 	
 	connect( m_action_about, SIGNAL(triggered()), this, SLOT(OnAbout()));
 	connect(
@@ -66,6 +71,13 @@ void MainWnd::OpenFile( const QString& file )
 {
 	m_doc.reset( CreateDoc( ) ) ;
 	m_doc->Read( file.toStdString() ) ;
+	
+	if ( m_doc->PageCount() > 0 )
+	{
+		Page *p = m_doc->GetPage( 0 ) ;
+		Rect r = p->MediaBox( ) ;
+		m_scene.setSceneRect( 0, 0, r.Width(), r.Height() ) ;
+	}
 }
 
 void MainWnd::OnAbout( )

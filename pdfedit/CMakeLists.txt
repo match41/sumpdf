@@ -41,8 +41,10 @@ set( SRCS	${BASE_SRCS} )
 
 qt4_automoc( ${SRCS} )
 
-set( MOC_SRCS	src/MainWnd.cc )
-set( MOC_HDRS	src/MainWnd.hh )
+set( MOC_SRCS	src/MainWnd.cc
+				src/PropertiesDlg.cc )
+set( MOC_HDRS	src/MainWnd.hh
+				src/PropertiesDlg.hh )
 set( UIS 		ui/MainWnd.ui
 				ui/Properties.ui )
 

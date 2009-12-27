@@ -27,8 +27,6 @@
 #ifndef __PDF_RECT_HEADER_INCLUDED__
 #define __PDF_RECT_HEADER_INCLUDED__
 
-#include "Util.hh"
-
 namespace pdf {
 
 /*!	\brief	brief description
@@ -47,8 +45,8 @@ public :
 	template <typename InputIt>
 	Rect( InputIt first, InputIt last )
 	{
-		for ( int *dest = Begin(m_corner) ;
-		      dest != End(m_corner) && first != last ; ++dest, ++first )
+		for ( int *dest = m_corner;
+		      dest != m_corner + 4 && first != last ; ++dest, ++first )
 			*dest = *first ;
 	}
 	
@@ -58,6 +56,9 @@ public :
 	typedef const int* const_iterator ;
 	const_iterator begin( ) const ;
 	const_iterator end( ) const ;
+	
+	int Width( ) const ;
+	int Height( ) const ;
 } ;
 
 } // end of namespace

@@ -28,6 +28,8 @@
 
 #include "PageTree.hh"
 
+#include "Rect.hh"
+
 #include "core/Array.hh"
 #include "core/Object.hh"
 #include "core/String.hh"
@@ -39,7 +41,6 @@
 
 #include "font/BaseFont.hh"
 
-#include "util/Rect.hh"
 #include "util/Util.hh"
 
 #include <boost/bind.hpp>

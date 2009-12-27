@@ -38,8 +38,13 @@ class Doc ;
 
 class PropertiesDlg : public QDialog, private Ui::ProperitiesUI 
 {
+	Q_OBJECT
+	
 public:
 	explicit PropertiesDlg( Doc *doc, QWidget *parent ) ;
+
+public slots :
+	void OnOK( ) ;
 
 private :
 	Doc *m_doc ;

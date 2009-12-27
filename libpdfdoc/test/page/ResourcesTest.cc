@@ -26,6 +26,8 @@
 
 #include "ResourcesTest.hh"
 
+#include "Rect.hh"
+
 #include "mock/MockFile.hh"
 
 #include "core/Ref.hh"
@@ -33,7 +35,6 @@
 #include "core/Ref.hh"
 #include "font/StandardFont.hh"
 #include "page/Resources.hh"
-#include "util/Rect.hh"
 
 #include <sstream>
 

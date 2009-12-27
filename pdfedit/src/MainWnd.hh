@@ -27,12 +27,16 @@
 #ifndef __PDF_MAINWND_HH_EADER_INCLUDED__
 #define __PDF_MAINWND_HH_EADER_INCLUDED__
 
+#include <QMainWindow>
+
 #include "ui_MainWnd.h"
 
-#include <QMainWindow>
+#include <QGraphicsScene>
 #include <QString>
 
 #include <memory>
+
+class QGraphicsView ;
 
 namespace pdf {
 
@@ -55,6 +59,9 @@ public slots :
 
 private :
 	std::auto_ptr<Doc>	m_doc ;
+	
+	QGraphicsScene	m_scene ;
+	QGraphicsView	*m_view ;
 } ;
 
 } // end of namespace

@@ -87,7 +87,15 @@ private :
 
 		const std::string& Creator() const ;
 		const std::string& Producer() const ;
+		const std::string& Author() const ;
+		const std::string& Subject() const ;
+		const std::string& Keywords() const ;
+		
 		void SetCreator( const std::string& creator ) ;
+		void SetProducer( const std::string& creator ) ;
+		void SetAuthor( const std::string& creator ) ;
+		void SetSubject( const std::string& creator ) ;
+		void SetKeywords( const std::string& creator ) ;
 		
 		const std::string& Field( const Name& name ) const ;
 		void SetField( const Name& name, const std::string& value ) ;
