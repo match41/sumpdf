@@ -99,4 +99,5 @@ INCLUDE_DIRECTORIES( ${QT_INCLUDE_DIR} ${pdfedit_SOURCE_DIR}/src
                                        ${Boost_INCLUDE_DIRS}
                                        ${OPT_INCS} )
 
-target_link_libraries( pdfedit ${PDFDOC_LIBRARY} ${OPT_LIBS} ${QT_LIBRARIES} )
+target_link_libraries( pdfedit	${PDFDOC_LIBRARY} ${OPT_LIBS} ${QT_LIBRARIES}
+								boost_program_options )

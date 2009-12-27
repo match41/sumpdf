@@ -26,16 +26,39 @@
 
 #include "MainWnd.hh"
 
+#include <boost/program_options/options_description.hpp>
+#include <boost/program_options/variables_map.hpp>
+#include <boost/program_options/parsers.hpp>
+
 // Qt headers
 #include <QApplication>
+
+namespace po = boost::program_options ;
 
 int main( int argc, char **argv )
 {
     QApplication app(argc, argv);
 
+    std::string path ;
+
+	// Declare the supported options.
+	po::options_description desc( "Allowed options" ) ;
+	desc.add_options()
+    	( "help",		"produce help message")
+    	( "input,i",	po::value<std::string>(&path),
+    	  "open input file" )
+	;
+
+	po::variables_map vm;
+	po::store(po::parse_command_line( argc, argv, desc ), vm ) ;
+	po::notify(vm);
+
     pdf::MainWnd *w = new pdf::MainWnd ;
     w->resize( 640, 480 ) ;
     w->show( ) ;
+    
+    if ( vm.count( "input" ) )
+    	w->OpenFile( path.c_str() ) ;
 
     return app.exec( ) ;
 }
