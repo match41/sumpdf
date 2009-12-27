@@ -104,7 +104,7 @@ SimpleFont::SimpleFont( const Object& self, IFile *file )
 
 		// width is optional
 		Array widths ;
-		if ( dict.Extract( Name("Widths"), widths ) )
+		if ( Detach( file, dict, "Widths", widths ) )
 			m_widths.assign( widths.begin(), widths.end() ) ;
 
 		m_encoding		= dict["Encoding"] ;
