@@ -1,4 +1,4 @@
-/***************************************************************************
+/***************************************************************************\
  *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
@@ -15,48 +15,40 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+ \***************************************************************************/
 
 /**
-	\file	MainWnd.hh
-	\brief	definition the MainWnd class
+	\file	PropertiesDlg.cc
+	\brief	definition the PropertiesDlg class
 	\date	Dec 27, 2009
 	\author	Nestal Wan
 */
 
-#ifndef __PDF_MAINWND_HH_EADER_INCLUDED__
-#define __PDF_MAINWND_HH_EADER_INCLUDED__
+#include "PropertiesDlg.hh"
 
-#include "ui_MainWnd.h"
+#include <Doc.hh>
+#include <DocInfo.hh>
 
-#include <QMainWindow>
-#include <QString>
-
-#include <memory>
+#include <cassert>
+#include <iostream>
 
 namespace pdf {
 
-class Doc ;
-
-class MainWnd : public QMainWindow, private Ui::MainWndUI
+PropertiesDlg::PropertiesDlg( Doc *doc, QWidget *parent )
+	: QDialog( parent ),
+	  m_doc( doc )
 {
-	Q_OBJECT
+	assert( m_doc != 0 ) ;
 
-public:
-	explicit MainWnd( QWidget *parent = 0 ) ;
-	~MainWnd( ) ;
+	setupUi( this ) ;
 	
-	void OpenFile( const QString& file ) ;
+	DocInfo* info = m_doc->Info( ) ;
+	assert( info != 0 ) ;
 
-public slots :
-	void OnAbout( ) ;
-	void OnOpen( ) ;
-	void OnProperties( ) ;
+std::cout << info->Producer() << std::endl ;
 
-private :
-	std::auto_ptr<Doc>	m_doc ;
-} ;
+	m_producer->setText( info->Producer().c_str() ) ;
+	m_creator->setText( info->Creator().c_str() ) ;
+}
 
 } // end of namespace
-
-#endif // MAINWND_HH_

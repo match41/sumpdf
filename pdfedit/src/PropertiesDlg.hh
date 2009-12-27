@@ -1,4 +1,4 @@
-/***************************************************************************
+/***************************************************************************\
  *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
@@ -15,48 +15,36 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+ \***************************************************************************/
 
 /**
-	\file	MainWnd.hh
-	\brief	definition the MainWnd class
-	\date	Dec 27, 2009
-	\author	Nestal Wan
-*/
+ \file	PropertiesDlg.hh
+ \brief	definition the PropertiesDlg class
+ \date	Dec 27, 2009
+ \author	nestal
+ */
 
-#ifndef __PDF_MAINWND_HH_EADER_INCLUDED__
-#define __PDF_MAINWND_HH_EADER_INCLUDED__
+#ifndef __PDF_PROPERTIESDLG_HH_EADER_INCLUDED__
+#define __PDF_PROPERTIESDLG_HH_EADER_INCLUDED__
 
-#include "ui_MainWnd.h"
+#include <QDialog>
 
-#include <QMainWindow>
-#include <QString>
-
-#include <memory>
+// Qt designer generated files
+#include "ui_Properties.h"
 
 namespace pdf {
 
 class Doc ;
 
-class MainWnd : public QMainWindow, private Ui::MainWndUI
+class PropertiesDlg : public QDialog, private Ui::ProperitiesUI 
 {
-	Q_OBJECT
-
 public:
-	explicit MainWnd( QWidget *parent = 0 ) ;
-	~MainWnd( ) ;
-	
-	void OpenFile( const QString& file ) ;
-
-public slots :
-	void OnAbout( ) ;
-	void OnOpen( ) ;
-	void OnProperties( ) ;
+	explicit PropertiesDlg( Doc *doc, QWidget *parent ) ;
 
 private :
-	std::auto_ptr<Doc>	m_doc ;
+	Doc *m_doc ;
 } ;
 
 } // end of namespace
 
-#endif // MAINWND_HH_
+#endif // PROPERTIESDLG_HH_

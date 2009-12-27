@@ -26,7 +26,10 @@
 
 #include "MainWnd.hh"
 
+#include "PropertiesDlg.hh"
+
 // Qt headers
+#include <QFileDialog>
 #include <QMessageBox>
 
 // libpdfdoc headers
@@ -43,6 +46,16 @@ MainWnd::MainWnd( QWidget *parent )
 	setupUi( this ) ;
 	
 	connect( m_action_about, SIGNAL(triggered()), this, SLOT(OnAbout()));
+	connect(
+		m_action_properties,
+		SIGNAL(triggered()),
+		this,
+		SLOT(OnProperties()) );
+	connect(
+		m_action_open,
+		SIGNAL(triggered()),
+		this,
+		SLOT(OnOpen()) );
 }
 
 MainWnd::~MainWnd( )
@@ -61,8 +74,19 @@ void MainWnd::OnAbout( )
 		"PDF Editor version 0.0.1" ) ;
 }
 
+void MainWnd::OnProperties( )
+{
+	if ( m_doc.get() )
+	{
+		PropertiesDlg dlg( m_doc.get(), this ) ;
+		dlg.exec( ) ;
+	}
+}
+
 void MainWnd::OnOpen( )
 {
+	QString fname = QFileDialog::getOpenFileName( this, "Open", ".", "*.pdf" ) ;
+	OpenFile( fname ) ;
 }
 
 } // end of namespace

@@ -30,7 +30,9 @@ find_package( Boost REQUIRED )
 
 include(${QT_USE_FILE})
 
-set( BASE_SRCS		src/main.cc src/MainWnd.cc )
+set( BASE_SRCS		src/main.cc
+					src/MainWnd.cc
+					src/PropertiesDlg.cc )
 
 ###############################################################################
 # all sources
@@ -41,7 +43,8 @@ qt4_automoc( ${SRCS} )
 
 set( MOC_SRCS	src/MainWnd.cc )
 set( MOC_HDRS	src/MainWnd.hh )
-set( UIS 		ui/MainWnd.ui )
+set( UIS 		ui/MainWnd.ui
+				ui/Properties.ui )
 
 qt4_wrap_ui( UIH ${UIS})
 qt4_wrap_cpp( MOC_SRCS ${MOC_HDRS})

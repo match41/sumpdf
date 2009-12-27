@@ -20,7 +20,9 @@
 #include "Doc.hh"
 #include "Page.hh"
 #include "Font.hh"
+#include "DocInfo.hh"
 #include "libpdfdoc.hh"
+
 #include "util/Exception.hh"
 
 #include <sstream>
@@ -39,6 +41,9 @@ int main( int argc, char **argv )
 	p->DrawText( 100, 100, f, "Hello world!" ) ;
 	p->DrawText( 100, 200, f, "This is the second line!" ) ;
 	p->Finish( ) ;
+	
+	pdf::DocInfo *info = doc->Info() ;
+	info->SetCreator( "Haha" ) ;
 	
 	doc->Write( "test.pdf" ) ;
 	delete doc ;
