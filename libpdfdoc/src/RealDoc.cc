@@ -1,4 +1,4 @@
-/***************************************************************************
+/***************************************************************************\
  *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+\***************************************************************************/
 
 /*!
 	\file	RealDoc.cc
@@ -46,7 +46,7 @@
 
 namespace pdf {
 
-const std::string RealDoc::m_empty ;
+const std::string RealDoc::Info_::m_empty ;
 
 RealDoc::RealDoc( )
 	: m_catalog( new Catalog )		// not exception safe
@@ -72,7 +72,10 @@ void RealDoc::Read( const std::string& filename )
 	File file( &m_readfs ) ;
 
 	m_catalog		= new Catalog( file.Root( ), &file ) ;
-	m_info.m_dict	= file.DocInfo( ) ; 
+	
+	// DocInfo is optional
+	if ( file.DocInfo( ) != Ref() )
+		m_info.m_dict = file.ReadObj( file.DocInfo() ) ;
 }
 
 void RealDoc::Write( const std::string& filename ) const
@@ -82,7 +85,9 @@ void RealDoc::Write( const std::string& filename ) const
 		throw std::runtime_error( "cannot open file " + filename ) ;
 
 	File file( &fs ) ;
-	file.WriteTrailer( m_catalog->Write( &file ) ) ;
+	file.WriteTrailer(
+		m_catalog->Write( &file ),
+		m_info.m_dict.empty() ? Ref() : file.WriteObj( m_info.m_dict ) ) ;
 }
 
 RealPage* RealDoc::AppendPage( )
@@ -125,14 +130,31 @@ DocInfo* RealDoc::Info( )
 
 const std::string& RealDoc::Info_::Creator() const
 {
-	Dictionary::const_iterator i = m_dict.find( "Creator" ) ;
-	return i != m_dict.end() ? i->second.As<Name>().Str( ) : m_empty ;
+	return Field( "Creator" ) ;
 }
 
 const std::string& RealDoc::Info_::Producer() const
 {
-	Dictionary::const_iterator i = m_dict.find( "Producer" ) ;
-	return i != m_dict.end() ? i->second.As<Name>().Str( ) : m_empty ;
+	return Field( "Producer" ) ;
+}
+
+const std::string& RealDoc::Info_::Field( const Name& name ) const
+{
+	Dictionary::const_iterator i = m_dict.find( name ) ;
+	return i != m_dict.end() ? i->second.As<std::string>( ) : m_empty ;
+}
+
+void RealDoc::Info_::SetCreator( const std::string& creator )
+{
+	SetField( "Creator", creator ) ;
+}
+
+void RealDoc::Info_::SetField(const Name& name, const std::string& value)
+{
+	if ( value.empty() )
+		m_dict.erase( name ) ;
+	else
+		m_dict[name] = value ;
 }
 
 } // end of namespace

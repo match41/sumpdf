@@ -105,7 +105,12 @@ void FileTest::TestSimple( )
 	obj7["Pages"] = Ref( 1, 0 ) ;
 	f.WriteObj( obj7, link[7] ) ;
 	
-	f.WriteTrailer( link[7], "nestal", "D:20080410074227" ) ;
+	Dictionary obj8 ;
+	obj8["Producer"] = "nestal" ;
+	obj8["Creator"]	= "D:20080410074227" ;
+	Ref info = f.WriteObj( obj8 ) ;
+
+	f.WriteTrailer( link[7], info ) ;
 	
 	// open expected file to compare and verify
 	std::ifstream exp( (std::string(TEST_DATA_DIR) +

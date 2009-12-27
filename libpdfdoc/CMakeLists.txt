@@ -142,7 +142,8 @@ set( PAGE_SRCS  	${PAGE_DIR}/RealPage.cc
 
 set( FILE_SRCS		${FILE_DIR}/File.cc
 					${FILE_DIR}/IFile.cc
-					${FILE_DIR}/Catalog.cc )
+					${FILE_DIR}/Catalog.cc
+					${FILE_DIR}/DocInfo.cc )
 
 set( CORE_SRCS  	${CORE_DIR}/Object.cc
 					${CORE_DIR}/Ref.cc

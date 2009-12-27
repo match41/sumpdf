@@ -41,5 +41,5 @@ void RealDocTest::TestRead( )
 	pdf::DocInfo *info = doc.Info( ) ;
 	CPPUNIT_ASSERT( info != 0 ) ;
 	CPPUNIT_ASSERT( info->Producer() == "nestal" ) ;
-	CPPUNIT_ASSERT( info->Creator().empty() ) ;
+	CPPUNIT_ASSERT( info->Creator() == "D:20080410074227" ) ;
 }

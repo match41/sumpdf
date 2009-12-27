@@ -56,11 +56,9 @@ public :
 	explicit File( std::istream *is ) ;
 	explicit File( std::ostream *os ) ;
 	
-	void WriteTrailer( const Ref& catalog,
-	                   const std::string& producer	= std::string(),
-	                   const std::string& creator	= std::string() ) ;
+	void WriteTrailer( const Ref& catalog, const Ref& info ) ;
 	Ref Root( ) const ;
-	Dictionary DocInfo( ) ;
+	Ref DocInfo( ) const ;
 
 	// override from IFile
 	Object ReadObj( const Ref& obj ) ;

@@ -80,13 +80,17 @@ private :
 	ft::Library	m_ft_lib ;
 #endif
 
-	static const std::string m_empty ;
 	struct Info_ : public DocInfo
 	{
 		Dictionary	m_dict ;
+		static const std::string m_empty ;
 
 		const std::string& Creator() const ;
 		const std::string& Producer() const ;
+		void SetCreator( const std::string& creator ) ;
+		
+		const std::string& Field( const Name& name ) const ;
+		void SetField( const Name& name, const std::string& value ) ;
 	} m_info ;
 } ;
 

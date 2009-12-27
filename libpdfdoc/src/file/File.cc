@@ -88,24 +88,14 @@ File::File( std::ostream *os )
 	offsets in the file. It allows fast look-up for the PDF objects stored
 	in the file.
 	\param	catalog		reference to the document catalog
-	\param	producer	if the document was converted to PDF from another
-						format, the name of the application (for example,
-						libpdfdoc) that converted it to PDF.
-	\param	creator		if the document was converted to PDF from another
-						format, the name of the application (for example,
-						Adobe FrameMaker) that created the original document
-						from which it was converted.
 */
-void File::WriteTrailer( const Ref& catalog, const std::string& producer,
-	                                         const std::string& creator )
+void File::WriteTrailer( const Ref& catalog, const Ref& info )
 {
 	assert( m_out != 0 ) ;
-	
-	Dictionary info ;
-	info["Producer"]		= producer ;
-	info["Creator"]			= creator ;
 
-	m_trailer["Info"]	= WriteObj( info ) ;
+	if ( info != Ref() )
+		m_trailer["Info"]	= info ;
+	
 	m_trailer["Root"]	= catalog ;
 	m_trailer["Size"]	= m_objs.size( ) ;
 
@@ -341,11 +331,11 @@ Ref File::Root( ) const
 	return m_trailer["Root"] ;
 }
 
-Dictionary File::DocInfo( )
+Ref File::DocInfo( ) const
 {
 	// "Info" is optional, but must be indirect reference
 	const Object& info = m_trailer["Info"] ;
-	return info.IsType<Ref>() ? ReadObj( info ).As<Dictionary>() : Dictionary();
+	return info.IsType<Ref>() ? info.As<Ref>() : Ref() ;
 }
 
 ResourcePool* File::Pool( )
