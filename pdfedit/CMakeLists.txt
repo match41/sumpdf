@@ -39,7 +39,14 @@ set( SRCS	${BASE_SRCS} )
 
 qt4_automoc( ${SRCS} )
 
-add_executable( pdfedit WIN32 ${SRCS} )
+set( MOC_SRCS	src/MainWnd.cc )
+set( MOC_HDRS	src/MainWnd.hh )
+set( UIS 		ui/MainWnd.ui )
+
+qt4_wrap_ui( UIH ${UIS})
+qt4_wrap_cpp( MOC_SRCS ${MOC_HDRS})
+
+add_executable( pdfedit WIN32 ${SRCS} ${UIH} ${MOC_SRCS} )
 
 ###############################################################################
 # unix specific libraries
@@ -85,6 +92,7 @@ endif ( PDFDOC_INCLUDE_DIR AND PDFDOC_LIBRARY )
 
 # in order to include the generated UI header files
 INCLUDE_DIRECTORIES( ${QT_INCLUDE_DIR} ${pdfedit_SOURCE_DIR}/src
+                                       ${pdfedit_SOURCE_DIR}
                                        ${Boost_INCLUDE_DIRS}
                                        ${OPT_INCS} )
 

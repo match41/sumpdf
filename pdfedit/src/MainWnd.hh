@@ -27,14 +27,33 @@
 #ifndef __PDF_MAINWND_HH_EADER_INCLUDED__
 #define __PDF_MAINWND_HH_EADER_INCLUDED__
 
+#include "ui_MainWnd.h"
+
 #include <QMainWindow>
+#include <QString>
+
+#include <memory>
 
 namespace pdf {
 
-class MainWnd : public QMainWindow
+class Doc ;
+
+class MainWnd : public QMainWindow, private Ui::MainWndUI
 {
+	Q_OBJECT
+
 public:
 	explicit MainWnd( QWidget *parent = 0 ) ;
+	~MainWnd( ) ;
+	
+	void OpenFile( const QString& file ) ;
+
+public slots :
+	void OnAbout( ) ;
+	void OnOpen( ) ;
+
+private :
+	std::auto_ptr<Doc>	m_doc ;
 } ;
 
 } // end of namespace

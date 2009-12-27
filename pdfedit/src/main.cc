@@ -26,19 +26,12 @@
 
 #include "MainWnd.hh"
 
-// libpdfdoc headers
-#include <libpdfdoc.hh>
-#include <Doc.hh>
-
 // Qt headers
 #include <QApplication>
 
 int main( int argc, char **argv )
 {
     QApplication app(argc, argv);
-
-	pdf::Doc *doc = pdf::CreateDoc( ) ;
-	delete doc ;
 
     pdf::MainWnd *w = new pdf::MainWnd ;
     w->resize( 640, 480 ) ;
