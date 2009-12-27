@@ -94,7 +94,7 @@ void Resources::ReadFontDict( IFile *file )
 										 i != dict.end( ) ; ++i )
 		{
 			BaseFont *font = 0 ;
-			if ( font_pool != 0 && i->second.IsType<Ref>() )
+			if ( i->second.IsType<Ref>() )
 			{
 				font = font_pool->Find( i->second ) ;
 				if ( font == 0 )
@@ -104,9 +104,11 @@ void Resources::ReadFontDict( IFile *file )
 				}
 				assert( font != 0 ) ;
 			}
+			
+			// the font is not an indirect object, so it can't be shared.
 			else
 				font = CreateFont( i->second, file ) ;
-			 
+
 			m_fonts.insert( std::make_pair( i->first, font ) ) ;
 		}
 	}

@@ -27,13 +27,14 @@
 #ifndef __PDF_MAINWND_HH_EADER_INCLUDED__
 #define __PDF_MAINWND_HH_EADER_INCLUDED__
 
+#include <QMainWindow>
+
 namespace pdf {
 
-class MainWnd
+class MainWnd : public QMainWindow
 {
 public:
-	MainWnd( ) ;
-	virtual ~MainWnd( ) ;
+	explicit MainWnd( QWidget *parent = 0 ) ;
 } ;
 
 } // end of namespace

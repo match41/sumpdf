@@ -1,4 +1,4 @@
-/***************************************************************************
+/***************************************************************************\
  *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
@@ -15,22 +15,31 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+ \***************************************************************************/
 
 /**
-	\file	MainWnd.cc
-	\brief	definition the MainWnd class
+	\file	RealDocTest.cc
+	\brief	definition the RealDocTest class
 	\date	Dec 27, 2009
 	\author	Nestal Wan
 */
 
-#include "MainWnd.hh"
+#include "RealDocTest.hh"
 
-namespace pdf {
+#include "RealDoc.hh"
+#include "DocInfo.hh"
 
-MainWnd::MainWnd( QWidget *parent )
-	: QMainWindow( parent )
+RealDocTest::RealDocTest( )
 {
 }
 
-} // end of namespace
+void RealDocTest::TestRead( )
+{
+	pdf::RealDoc doc ;
+	doc.Read( std::string(TEST_DATA_DIR) + "FileTestSimple.pdf" ) ;
+	
+	pdf::DocInfo *info = doc.Info( ) ;
+	CPPUNIT_ASSERT( info != 0 ) ;
+	CPPUNIT_ASSERT( info->Producer() == "nestal" ) ;
+	CPPUNIT_ASSERT( info->Creator().empty() ) ;
+}

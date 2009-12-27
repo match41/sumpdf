@@ -28,10 +28,11 @@
 #define __PDF_REAL_DOC_HEADER_INCLUDED__
 
 #include "Doc.hh"
+#include "DocInfo.hh"
 
 #include "file/Catalog.hh"
-#include "page/RealPage.hh"
 #include "font/StandardFont.hh"
+#include "page/RealPage.hh"
 
 // freetype library is optional
 #ifdef HAVE_FREETYPE
@@ -63,6 +64,9 @@ public :
 
 	StandardFont* CreateSimpleFont( const std::string& name ) ;
 
+	const DocInfo* Info( ) const ;
+	DocInfo* Info( ) ;
+
 private :
 	//! Catalog of the document
 	Catalog				*m_catalog ;
@@ -75,6 +79,15 @@ private :
 	//! Freetype library for loading the font files.
 	ft::Library	m_ft_lib ;
 #endif
+
+	static const std::string m_empty ;
+	struct Info_ : public DocInfo
+	{
+		Dictionary	m_dict ;
+
+		const std::string& Creator() const ;
+		const std::string& Producer() const ;
+	} m_info ;
 } ;
 
 } // end of namespace

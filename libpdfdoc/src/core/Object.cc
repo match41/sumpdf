@@ -334,6 +334,26 @@ bool operator!=( const Object& obj1, const Object& obj2 )
 	return !operator==( obj1, obj2 ) ;
 }
 
+template <> Object::operator unsigned() const
+{
+	return As<int>( ) ;
+}
+
+template <> Object::operator unsigned short() const
+{
+	return As<int>( ) ;
+}
+
+template <> Object::operator short() const
+{
+	return As<int>( ) ;
+}
+
+template <> Object::operator unsigned long() const
+{
+	return As<int>( ) ;
+}
+
 template <> Object::operator long() const
 {
 	return As<int>( ) ;
@@ -358,6 +378,51 @@ template <> Object& Object::As( )
 template <> const Object& Object::As( ) const
 {
     return *this ;
+}
+
+template <> bool Object::IsType<Ref>( ) const
+{
+	return Type() == ref ;
+}
+
+template <> bool Object::IsType<int>( ) const
+{
+	return Type() == integer ;
+}
+
+template <> bool Object::IsType<double>( ) const
+{
+	return Type() == floating ;
+}
+
+template <> bool Object::IsType<bool>( ) const
+{
+	return Type() == boolean ;
+}
+
+template <> bool Object::IsType<std::string>( ) const
+{
+	return Type() == string ;
+}
+
+template <> bool Object::IsType<Name>( ) const
+{
+	return Type() == name ;
+}
+
+template <> bool Object::IsType<Stream>( ) const
+{
+	return Type() == stream ;
+}
+
+template <> bool Object::IsType<Dictionary>( ) const
+{
+	return Type() == dictionary ;
+}
+
+template <> bool Object::IsType<Array>( ) const
+{
+	return Type() == array ;
 }
 
 } // end of namespace

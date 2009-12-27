@@ -1,5 +1,5 @@
-/***************************************************************************
- *   Copyright (C) 2006 by Nestal Wan                                      *
+/***************************************************************************\
+ *   Copyright (C) 2009 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,22 +15,34 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+\***************************************************************************/
 
-/**
-	\file	MainWnd.cc
-	\brief	definition the MainWnd class
-	\date	Dec 27, 2009
+/*!
+	\file	DocInfo.hh
+	\brief	definition the DocInfo class
+	\date	Fri Apr 3 2009
 	\author	Nestal Wan
 */
 
-#include "MainWnd.hh"
+#ifndef __PDF_DOC_INFO_HEADER_INCLUDED__
+#define __PDF_DOC_INFO_HEADER_INCLUDED__
 
 namespace pdf {
 
-MainWnd::MainWnd( QWidget *parent )
-	: QMainWindow( parent )
+/*!	\brief	brief description
+	
+	this class represents
+*/
+class DocInfo
 {
-}
+protected :
+//	~DocInfo( ) ;
+
+public :
+	virtual const std::string& Creator() const = 0 ;
+	virtual const std::string& Producer() const = 0 ;
+} ;
 
 } // end of namespace
+
+#endif

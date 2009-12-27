@@ -108,12 +108,10 @@ Stream::Stream( std::streambuf *file, std::streamoff offset,
 	assert( dict["Length"].IsType<int>() ) ;
 
 	m_impl->self = dict ;
-	m_impl->filter.reset( new RawFilter( file, offset,
-	                                     dict["Length"].As<int>() ) ) ;
+	m_impl->filter.reset( new RawFilter( file, offset, dict["Length"] ) ) ;
 
 	ApplyFilter( dict["Filter"] ) ;
-	assert( m_impl->filter->GetInner()->Length() ==
-		static_cast<std::size_t>( dict["Length"].As<int>() ) ) ;
+	assert( m_impl->filter->GetInner()->Length() == dict["Length"] ) ;
 	assert( dict["Filter"] == m_impl->filter->GetFilterName() ) ;
 	InitFilter( ) ;
 	

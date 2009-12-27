@@ -245,6 +245,12 @@ public :
 		return As<T>( ) ;
 	}
 	
+	template <typename T>
+	T To( ) const
+	{
+		return operator T() ;
+	}
+	
 	template <typename F>
 	void Visit( F func ) const
 	{
@@ -258,10 +264,7 @@ public :
 	}
 
     template <typename T>
-    bool IsType( ) const
-    {
-        return boost::get<T>( &m_obj ) != 0 ;
-    }
+    bool IsType( ) const ;
 
 	const std::type_info& TypeID( ) const ;
 
@@ -277,7 +280,11 @@ private :
 	Variant	m_obj ;
 } ;
 
+template <> Object::operator unsigned short() const ;
+template <> Object::operator short() const ;
+template <> Object::operator unsigned() const ;
 template <> Object::operator long() const ;
+template <> Object::operator unsigned long() const ;
 template <> Object::operator float() const ;
 template <> Object::operator double() const ;
 template <> Object& Object::As( ) ;

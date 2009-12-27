@@ -46,6 +46,8 @@
 
 namespace pdf {
 
+const std::string RealDoc::m_empty ;
+
 RealDoc::RealDoc( )
 	: m_catalog( new Catalog )		// not exception safe
 {
@@ -69,7 +71,8 @@ void RealDoc::Read( const std::string& filename )
 	// read the cross reference of the PDF file
 	File file( &m_readfs ) ;
 
-	m_catalog = new Catalog( file.Root( ), &file ) ;
+	m_catalog		= new Catalog( file.Root( ), &file ) ;
+	m_info.m_dict	= file.DocInfo( ) ; 
 }
 
 void RealDoc::Write( const std::string& filename ) const
@@ -108,6 +111,28 @@ StandardFont* RealDoc::CreateSimpleFont( const std::string& name )
 RealPage* RealDoc::AddPage( std::size_t index )
 {
     return 0 ;
+}
+
+const DocInfo* RealDoc::Info( ) const
+{
+	return &m_info ;
+}
+
+DocInfo* RealDoc::Info( )
+{
+	return &m_info ;
+}
+
+const std::string& RealDoc::Info_::Creator() const
+{
+	Dictionary::const_iterator i = m_dict.find( "Creator" ) ;
+	return i != m_dict.end() ? i->second.As<Name>().Str( ) : m_empty ;
+}
+
+const std::string& RealDoc::Info_::Producer() const
+{
+	Dictionary::const_iterator i = m_dict.find( "Producer" ) ;
+	return i != m_dict.end() ? i->second.As<Name>().Str( ) : m_empty ;
 }
 
 } // end of namespace

@@ -33,6 +33,7 @@ namespace pdf {
 
 class Page ;
 class Font ;
+class DocInfo ;
 
 /*!	\brief	Base class for documents.
 	
@@ -137,10 +138,14 @@ public :
 		can use.
 		\param	name	the name of the font, e.g. "Arial"
 		\return	A pointer to the newly created font object. The pointer pointed
-				by it will be invalidated after the document is destroyed. 
+				by it will be invalidated after the document is destroyed. The
+				caller does not need to delete it after use. 
 	*/
 	virtual Font* CreateSimpleFont( const std::string& name ) = 0 ;
 	//@}
+	
+	virtual const DocInfo* Info( ) const = 0 ;
+	virtual DocInfo* Info( ) = 0 ;
 } ;
 
 } // end of namespace

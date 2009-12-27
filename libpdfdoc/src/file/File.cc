@@ -93,7 +93,7 @@ File::File( std::ostream *os )
 						libpdfdoc) that converted it to PDF.
 	\param	creator		if the document was converted to PDF from another
 						format, the name of the application (for example,
-						Adobe FrameMaker�) that created the original document
+						Adobe FrameMaker) that created the original document
 						from which it was converted.
 */
 void File::WriteTrailer( const Ref& catalog, const std::string& producer,
@@ -184,7 +184,7 @@ Object File::ReadStream( Dictionary& dict )
 	
 	// Length may be indirect object
 	Object length = dict["Length"] ;
-	if ( length.Type() == Object::ref )
+	if ( length.IsType<Ref>() )
 	{
 		std::streampos pos	= m_in->tellg( ) ;
 		dict["Length"] = ReadObj( length ) ;
@@ -337,7 +337,15 @@ std::istream& File::ReadLine( std::istream& is, std::string& line )
 
 Ref File::Root( ) const
 {
+	// "Root" is required and must be a indirect reference
 	return m_trailer["Root"] ;
+}
+
+Dictionary File::DocInfo( )
+{
+	// "Info" is optional, but must be indirect reference
+	const Object& info = m_trailer["Info"] ;
+	return info.IsType<Ref>() ? ReadObj( info ).As<Dictionary>() : Dictionary();
 }
 
 ResourcePool* File::Pool( )

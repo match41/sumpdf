@@ -234,3 +234,13 @@ void ObjectTest::TestIsNull( )
 	pdf::Object obj ;
 	CPPUNIT_ASSERT( obj.IsNull() ) ;
 }
+
+void ObjectTest::TestConvert( )
+{
+	pdf::Object obj( 100 ) ;
+	unsigned ui = obj ;
+	CPPUNIT_ASSERT( ui == 100U ) ;
+	
+	long li = obj.To<long>() ;
+	CPPUNIT_ASSERT( li == 100 ) ;
+}

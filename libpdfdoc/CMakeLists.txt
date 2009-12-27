@@ -411,6 +411,7 @@ set( UT_SRCS	test/core/TokenTest.cc
 				test/file/RefObjMapTest.cc
 				
 				test/mock/MockFile.cc
+				test/RealDocTest.cc
 )
 
 if ( PNG_FOUND )

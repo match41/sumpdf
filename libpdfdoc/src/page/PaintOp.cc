@@ -134,7 +134,7 @@ public :
 template <typename Op>
 void PaintOp::Decode( const Object *args, std::size_t count )
 {
-	if ( count != boost::tuples::length<Op>::value )
+	if ( count != static_cast<std::size_t>(boost::tuples::length<Op>::value ))
 		throw DecodeError( typeid(Op).name() ) ;
 
 	m_ops = DecodeTuple<Op,

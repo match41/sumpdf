@@ -57,6 +57,7 @@ public :
 		CPPUNIT_TEST( TestConvertToLong ) ;
 		CPPUNIT_TEST( TestConvertToFloat ) ;
 		CPPUNIT_TEST( TestIsNull ) ;
+		CPPUNIT_TEST( TestConvert ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
 private :
@@ -74,6 +75,7 @@ private :
 	void TestConvertToLong( ) ;
 	void TestConvertToFloat( ) ;
 	void TestIsNull( ) ;
+	void TestConvert( ) ;
 } ;
 
 #endif

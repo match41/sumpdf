@@ -198,7 +198,7 @@ void StreamTest::TestWriteOstream( )
 	CPPUNIT_ASSERT( ch == '\n' ) ;
 	char out[sizeof(str)] = {} ;
 	CPPUNIT_ASSERT( ss.rdbuf()->sgetn( out, sizeof(out)- 1 ) ==
-		subject.Length() ) ;
+		static_cast<std::streamsize>(subject.Length() ) ) ;
 	CPPUNIT_ASSERT( std::memcmp( str, out, subject.Length() ) == 0 ) ;
 	
 	CPPUNIT_ASSERT( ss.get( ch ) ) ;

@@ -60,6 +60,7 @@ public :
 	                   const std::string& producer	= std::string(),
 	                   const std::string& creator	= std::string() ) ;
 	Ref Root( ) const ;
+	Dictionary DocInfo( ) ;
 
 	// override from IFile
 	Object ReadObj( const Ref& obj ) ;
