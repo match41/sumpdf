@@ -1,4 +1,4 @@
-/***************************************************************************
+/***************************************************************************\
  *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
@@ -15,56 +15,34 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+ \***************************************************************************/
 
 /**
-	\file	MainWnd.hh
-	\brief	definition the MainWnd class
-	\date	Dec 27, 2009
-	\author	Nestal Wan
-*/
+ \file	PageView.cc
+ \brief	definition the PageView class
+ \date	Dec 28, 2009
+ \author	nestal
+ */
 
-#ifndef __PDF_MAINWND_HH_EADER_INCLUDED__
-#define __PDF_MAINWND_HH_EADER_INCLUDED__
+#include "PageView.hh"
 
-#include <QMainWindow>
-
-#include "ui_MainWnd.h"
-
-#include <QString>
-
-#include <memory>
-
-class QGraphicsScene ;
+#include <QDebug>
+#include <QMouseEvent>
+#include <QGraphicsTextItem>
 
 namespace pdf {
 
-class Doc ;
-class PageView ;
-
-class MainWnd : public QMainWindow, private Ui::MainWndUI
+PageView::PageView( QGraphicsScene *scene, QWidget *parent )
+	: QGraphicsView( scene, parent )
 {
-	Q_OBJECT
+}
 
-public:
-	explicit MainWnd( QWidget *parent = 0 ) ;
-	~MainWnd( ) ;
-	
-	void OpenFile( const QString& file ) ;
-
-public slots :
-	void OnAbout( ) ;
-	void OnOpen( ) ;
-	void OnProperties( ) ;
-	void OnSaveAs( ) ;
-
-private :
-	std::auto_ptr<Doc>	m_doc ;
-	
-	QGraphicsScene	*m_scene ;
-	PageView		*m_view ;
-} ;
+void PageView::mousePressEvent( QMouseEvent *event )
+{
+	qDebug() << "mouse click" ;
+	QPointF pos = mapToScene( event->pos() ) ;
+	QGraphicsTextItem *item = scene()->addText( "haha" ) ;
+	item->setPos( pos ) ;
+}
 
 } // end of namespace
-
-#endif // MAINWND_HH_

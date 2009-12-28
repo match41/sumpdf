@@ -26,12 +26,17 @@
 
 #include "MainWnd.hh"
 
+#include "PageView.hh"
 #include "PropertiesDlg.hh"
 
 // Qt headers
 #include <QFileDialog>
-#include <QGraphicsView>
+#include <QGraphicsItem>
+#include <QGraphicsScene>
+#include <QGraphicsTextItem>
+#include <QList>
 #include <QMessageBox>
+#include <QPointF>
 
 // libpdfdoc headers
 #include <libpdfdoc.hh>
@@ -45,7 +50,8 @@ namespace pdf {
 
 MainWnd::MainWnd( QWidget *parent )
 	: QMainWindow( parent ),
-	  m_view( new QGraphicsView( &m_scene, this ) )
+	  m_scene( new QGraphicsScene( this ) ),
+	  m_view( new PageView( m_scene, this ) )
 {
 	setupUi( this ) ;
 	setCentralWidget( m_view ) ;
@@ -61,6 +67,11 @@ MainWnd::MainWnd( QWidget *parent )
 		SIGNAL(triggered()),
 		this,
 		SLOT(OnOpen()) );
+	connect(
+		m_action_save_as,
+		SIGNAL(triggered()),
+		this,
+		SLOT(OnSaveAs()) );
 }
 
 MainWnd::~MainWnd( )
@@ -76,7 +87,7 @@ void MainWnd::OpenFile( const QString& file )
 	{
 		Page *p = m_doc->GetPage( 0 ) ;
 		Rect r = p->MediaBox( ) ;
-		m_scene.setSceneRect( 0, 0, r.Width(), r.Height() ) ;
+		m_scene->setSceneRect( 0, 0, r.Width(), r.Height() ) ;
 	}
 }
 
@@ -98,7 +109,31 @@ void MainWnd::OnProperties( )
 void MainWnd::OnOpen( )
 {
 	QString fname = QFileDialog::getOpenFileName( this, "Open", ".", "*.pdf" ) ;
-	OpenFile( fname ) ;
+	if ( !fname.isEmpty( ) )
+		OpenFile( fname ) ;
+}
+
+void MainWnd::OnSaveAs( )
+{
+	QString fname = QFileDialog::getSaveFileName( this, "Open", ".", "*.pdf" ) ;
+	if ( !fname.isEmpty( ) )
+	{
+		std::auto_ptr<Doc> doc( CreateDoc( ) ) ;
+		Page *page = doc->AppendPage( ) ;
+		Font *font = doc->CreateSimpleFont( "Arial" ) ;
+		
+		QList<QGraphicsItem *> items = m_scene->items() ;
+		for ( QList<QGraphicsItem*>::iterator i  = items.begin() ;
+		                                      i != items.end() ; ++i )
+		{
+			QGraphicsTextItem *text =
+				qgraphicsitem_cast<QGraphicsTextItem*>( *i ) ;
+			QPointF pos = text->scenePos( ) ;
+			page->DrawText( pos.x(), pos.y(), font, text->toPlainText().toStdString() ) ;
+		}
+		
+		doc->Write( fname.toStdString() ) ;
+	}
 }
 
 } // end of namespace
