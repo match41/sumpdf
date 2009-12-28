@@ -49,6 +49,7 @@ public :
 	CPPUNIT_TEST_SUITE( PageTest ) ;
 		CPPUNIT_TEST( TestNormal ) ;
 		CPPUNIT_TEST( TestWrite ) ;
+		CPPUNIT_TEST( TestDecode ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
 public :
@@ -58,6 +59,7 @@ public :
 private :
 	void TestNormal( ) ;
 	void TestWrite( ) ;
+	void TestDecode( ) ;
 
 private :
 	pdf::PageTree	*m_root ;

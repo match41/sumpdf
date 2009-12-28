@@ -35,10 +35,12 @@
 #include "font/StandardFont.hh"
 #include "page/RealPage.hh"
 #include "page/PageTree.hh"
+#include "page/PaintOp.hh"
 
 #include "stream/Stream.hh"
 
 #include <sstream>
+#include <iostream>
 
 PageTest::PageTest( )
 	: m_root( 0 )
@@ -47,6 +49,9 @@ PageTest::PageTest( )
 
 void PageTest::setUp( )
 {
+	// this is the parent page node of the test pages. as it is deleted in
+	// tearDown() all its child pages will be delete, there is no need to
+	// delete the test pages in each case.
 	m_root = new pdf::PageTree ;
 }
 
@@ -117,4 +122,19 @@ void PageTest::TestWrite( )
 	pdf::RealPage *p2 = new pdf::RealPage( m_root ) ;
 	p2->Read( out.As<pdf::Dictionary>(), &file ) ;
 	CPPUNIT_ASSERT( p->MediaBox() == p2->MediaBox() ) ;
+}
+
+void PageTest::TestDecode( )
+{
+	pdf::RealPage *p  = new pdf::RealPage( m_root ) ;
+	pdf::StandardFont *f = new pdf::StandardFont( "TimesNewRoman" ) ;
+	p->DrawText( 120, 300, f, "This is a line" ) ;
+	p->DrawText( 120, 400, f, "This is another line" ) ;
+	p->Finish( ) ;
+
+	std::vector<pdf::PaintOp> ops ;
+	p->Decode( ops ) ;
+	
+	for ( std::vector<pdf::PaintOp>::iterator i = ops.begin() ; i != ops.end() ; ++i )
+		std::cout << *i << std::endl ;
 }

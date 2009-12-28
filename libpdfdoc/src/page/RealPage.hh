@@ -30,7 +30,6 @@
 #include "Page.hh"
 #include "PageNode.hh"
 
-#include "PaintOp.hh"
 #include "Resources.hh"
 
 #include "core/Dictionary.hh"
@@ -48,6 +47,7 @@ class Name ;
 class Stream ;
 class Resources ;
 class IFile ;
+class PaintOp ;
 
 /*!	\brief	real implementation of a page
 	
@@ -74,6 +74,8 @@ public :
 	
 	Resources* GetResource( ) ;
 	const Resources* GetResource( ) const ;
+
+	void Decode( std::vector<PaintOp>& ops ) ;
 
 private :
 	void ReadContent( const Object& str_obj, IFile *file ) ;

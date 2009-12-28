@@ -55,6 +55,13 @@ public :
 	virtual Rect MediaBox( ) const = 0 ;
 	virtual void DrawText( double x, double y, Font *font,
 	                       const std::string& text ) = 0 ;
+	
+	/**	\brief	finalize rendering on the page
+
+		Call this function after finish drawing things on the page. Since the
+		content of a page may be compressed, this function will flush all
+		pending cache from the compressor.
+	*/
 	virtual void Finish( ) = 0 ;
 } ;
 

@@ -27,9 +27,12 @@
 #include "RealPage.hh"
 
 #include "PageTree.hh"
+#include "PaintOp.hh"
 
+// common headers
 #include "Rect.hh"
 
+// core object headers
 #include "core/Array.hh"
 #include "core/Object.hh"
 #include "core/String.hh"
@@ -201,33 +204,45 @@ const Resources* RealPage::GetResource( ) const
 void RealPage::DecodeContent( const Stream& s )
 {
 	m_content.push_back( s ) ;
-/*
-	TokenSrc src( s.InStream() ) ;
-	std::vector<Object> args ;
+}
 
-	while ( true )
+void RealPage::Decode( std::vector<PaintOp>& ops )
+{
+	for ( std::vector<Stream>::iterator i = m_content.begin( ) ;
+	                                    i != m_content.end( ) ; ++i )
 	{
-		Token  cmd ;
-		Object obj ;
-
-		if ( src >> obj )
-			args.push_back( obj ) ;
-
-		else
+		std::istream s( i->InStreamBuf() ) ;
+		TokenSrc src( s ) ;
+		std::vector<Object> args ;
+	
+		while ( true )
 		{
-			src.ResetState( ) ;
-			if ( src >> cmd )
+			Token  cmd ;
+			Object obj ;
+	
+			if ( src >> obj )
 			{
-				m_contents.push_back( PaintOp( cmd.Get(),
-				                               args.empty() ? 0 : &args[0],
-				                               args.size() ) ) ;
-				args.clear( ) ;
+				// swapping is faster
+				args.push_back( Object() ) ;
+				obj.Swap( args.back() ) ;
 			}
 			else
-				break ;
+			{
+				src.ResetState( ) ;
+				if ( src >> cmd )
+				{
+					ops.push_back(
+						PaintOp(
+							cmd.Get(),
+							args.empty() ? 0 : &args[0],
+							args.size() ) ) ;
+					args.clear( ) ;
+				}
+				else
+					break ;
+			}
 		}
 	}
-*/
 }
 
 } // end of namespace
