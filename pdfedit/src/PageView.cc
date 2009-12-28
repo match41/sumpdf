@@ -18,18 +18,19 @@
  \***************************************************************************/
 
 /**
- \file	PageView.cc
- \brief	definition the PageView class
- \date	Dec 28, 2009
- \author	nestal
- */
+	\file	PageView.cc
+	\brief	definition the PageView class
+	\date	Dec 28, 2009
+	\author	Nestal Wan
+*/
 
 #include "PageView.hh"
+
+#include "TextEdit.hh"
 
 #include <QDebug>
 #include <QMouseEvent>
 #include <QGraphicsProxyWidget>
-#include <QTextEdit>
 
 namespace pdf {
 
@@ -41,10 +42,17 @@ PageView::PageView( QGraphicsScene *scene, QWidget *parent )
 void PageView::mousePressEvent( QMouseEvent *event )
 {
 	QPointF pos = mapToScene( event->pos() ) ;
-	QTextEdit *edit = new QTextEdit ;
-	QGraphicsProxyWidget *item = scene()->addWidget( edit ) ;
-	item->setPos( pos ) ;
-	edit->setFocus( Qt::MouseFocusReason ) ;
+	
+	// add text box if the user clicks empty space
+	if ( scene()->itemAt( pos ) == 0 )
+	{
+		TextEdit *edit = new TextEdit ;
+		QGraphicsProxyWidget *item = scene()->addWidget( edit ) ;
+		item->setPos( pos ) ;
+		edit->setFocus( Qt::MouseFocusReason ) ;
+	}
+
+	QGraphicsView::mousePressEvent( event ) ;
 }
 
 } // end of namespace

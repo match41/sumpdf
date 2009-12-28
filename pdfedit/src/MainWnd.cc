@@ -37,7 +37,7 @@
 #include <QList>
 #include <QMessageBox>
 #include <QPointF>
-#include <QTextEdit>
+#include "TextEdit.hh"
 
 // libpdfdoc headers
 #include <libpdfdoc.hh>
@@ -74,7 +74,8 @@ MainWnd::MainWnd( QWidget *parent )
 		this,
 		SLOT(OnSaveAs()) );
 }
-
+/**	destructor is for the auto_ptr	
+*/
 MainWnd::~MainWnd( )
 {
 }
@@ -143,10 +144,16 @@ void MainWnd::StorePage( QGraphicsScene *scene, Doc *doc, Page *page )
 			qgraphicsitem_cast<QGraphicsProxyWidget*>( *i ) ;
 		
 		QPointF pos = text->scenePos( ) ;
-		QTextEdit *edit = qobject_cast<QTextEdit*>( text->widget() ) ;
-		
-		page->DrawText( pos.x(), scene->height() - pos.y(), font,
-		                edit->toPlainText().toUtf8().data() ) ;
+		TextEdit *edit = qobject_cast<TextEdit*>( text->widget() ) ;
+		assert( edit != 0 ) ;
+
+		// here we do a little transformation on the y coordinate.
+		// the PDF origin is at the lower left corner and the 
+		// y-coordinate increase upward. However, Qt's origin is at the upper
+		// left corner and increase downward.
+		if ( edit != 0 )
+			page->DrawText( pos.x(), scene->height() - pos.y(), font,
+							edit->toPlainText().toUtf8().data() ) ;
 	}
 }
 

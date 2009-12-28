@@ -15,38 +15,22 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- \***************************************************************************/
+\***************************************************************************/
 
 /**
-	\file	PageView.hh
-	\brief	definition the PageView class
-	\date	Dec 28, 2009
-	\author	Nestal Wan
+    \file	TextEdit.cc
+    \brief	implementation of the TextEdit class
+    \date	Dec 28, 2009
+    \author	Nestal Wan
 */
 
-#ifndef __PDF_PAGEVIEW_HEADER_INCLUDED__
-#define __PDF_PAGEVIEW_HEADER_INCLUDED__
-
-#include <QGraphicsView>
+#include "TextEdit.hh"
 
 namespace pdf {
 
-class Page ;
-
-class PageView : public QGraphicsView
+TextEdit::TextEdit( )
 {
-	Q_OBJECT
-
-public:
-	explicit PageView( QGraphicsScene *scene, QWidget *parent ) ;
-
-protected :
-	void mousePressEvent( QMouseEvent *event ) ;
-
-private :
-	class LineEdit ;
-} ;
+	setSizePolicy( QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum) ) ;
+}
 
 } // end of namespace
-
-#endif // PAGEVIEW_HH_

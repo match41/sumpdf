@@ -33,6 +33,7 @@ include(${QT_USE_FILE})
 set( BASE_SRCS		src/main.cc
 					src/MainWnd.cc
 					src/PageView.cc
+					src/TextEdit.cc
 					src/PropertiesDlg.cc )
 
 ###############################################################################
@@ -44,10 +45,12 @@ qt4_automoc( ${SRCS} )
 
 set( MOC_SRCS	src/MainWnd.cc
 				src/PropertiesDlg.cc
-				src/PageView.cc )
+				src/PageView.cc
+				src/TextEdit.cc )
 set( MOC_HDRS	src/MainWnd.hh
 				src/PropertiesDlg.hh
-				src/PageView.hh )
+				src/PageView.hh
+				src/TextEdit.hh )
 set( UIS 		ui/MainWnd.ui
 				ui/Properties.ui )
 
