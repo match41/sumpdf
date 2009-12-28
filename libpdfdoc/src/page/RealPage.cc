@@ -54,6 +54,7 @@ namespace pdf {
 
 RealPage::RealPage( PageTree *parent )
 	: m_parent( parent ),
+	  m_media_box( 0, 0, 595, 842 ),
 	  m_rotate( 0 )
 {
 	assert( parent != 0 ) ;

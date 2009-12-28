@@ -33,10 +33,11 @@
 #include <QFileDialog>
 #include <QGraphicsItem>
 #include <QGraphicsScene>
-#include <QGraphicsTextItem>
+#include <QGraphicsProxyWidget>
 #include <QList>
 #include <QMessageBox>
 #include <QPointF>
+#include <QTextEdit>
 
 // libpdfdoc headers
 #include <libpdfdoc.hh>
@@ -44,13 +45,13 @@
 #include <Page.hh>
 #include <Rect.hh>
 
-#include <iostream>
+#include <cassert>
 
 namespace pdf {
 
 MainWnd::MainWnd( QWidget *parent )
 	: QMainWindow( parent ),
-	  m_scene( new QGraphicsScene( this ) ),
+	  m_scene( new QGraphicsScene( QRectF( 0, 0, 595, 842 ), this ) ),
 	  m_view( new PageView( m_scene, this ) )
 {
 	setupUi( this ) ;
@@ -120,19 +121,32 @@ void MainWnd::OnSaveAs( )
 	{
 		std::auto_ptr<Doc> doc( CreateDoc( ) ) ;
 		Page *page = doc->AppendPage( ) ;
-		Font *font = doc->CreateSimpleFont( "Arial" ) ;
-		
-		QList<QGraphicsItem *> items = m_scene->items() ;
-		for ( QList<QGraphicsItem*>::iterator i  = items.begin() ;
-		                                      i != items.end() ; ++i )
-		{
-			QGraphicsTextItem *text =
-				qgraphicsitem_cast<QGraphicsTextItem*>( *i ) ;
-			QPointF pos = text->scenePos( ) ;
-			page->DrawText( pos.x(), pos.y(), font, text->toPlainText().toStdString() ) ;
-		}
+		StorePage( m_scene, doc.get(), page ) ;
 		
 		doc->Write( fname.toStdString() ) ;
+	}
+}
+
+void MainWnd::StorePage( QGraphicsScene *scene, Doc *doc, Page *page )
+{
+	assert( scene != 0 ) ;
+	assert( doc != 0 ) ;
+	assert( page != 0 ) ;
+	
+	Font *font = doc->CreateSimpleFont( "Arial" ) ;
+	
+	QList<QGraphicsItem *> items = scene->items() ;
+	for ( QList<QGraphicsItem*>::iterator i  = items.begin() ;
+	                                      i != items.end() ; ++i )
+	{
+		QGraphicsProxyWidget *text =
+			qgraphicsitem_cast<QGraphicsProxyWidget*>( *i ) ;
+		
+		QPointF pos = text->scenePos( ) ;
+		QTextEdit *edit = qobject_cast<QTextEdit*>( text->widget() ) ;
+		
+		page->DrawText( pos.x(), scene->height() - pos.y(), font,
+		                edit->toPlainText().toUtf8().data() ) ;
 	}
 }
 

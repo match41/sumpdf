@@ -28,7 +28,8 @@
 
 #include <QDebug>
 #include <QMouseEvent>
-#include <QGraphicsTextItem>
+#include <QGraphicsProxyWidget>
+#include <QTextEdit>
 
 namespace pdf {
 
@@ -39,10 +40,11 @@ PageView::PageView( QGraphicsScene *scene, QWidget *parent )
 
 void PageView::mousePressEvent( QMouseEvent *event )
 {
-	qDebug() << "mouse click" ;
 	QPointF pos = mapToScene( event->pos() ) ;
-	QGraphicsTextItem *item = scene()->addText( "haha" ) ;
+	QTextEdit *edit = new QTextEdit ;
+	QGraphicsProxyWidget *item = scene()->addWidget( edit ) ;
 	item->setPos( pos ) ;
+	edit->setFocus( Qt::MouseFocusReason ) ;
 }
 
 } // end of namespace

@@ -39,8 +39,12 @@ class QGraphicsScene ;
 
 namespace pdf {
 
-class Doc ;
+// widgets
 class PageView ;
+
+// pdfdoc classes
+class Doc ;
+class Page ;
 
 class MainWnd : public QMainWindow, private Ui::MainWndUI
 {
@@ -57,6 +61,9 @@ public slots :
 	void OnOpen( ) ;
 	void OnProperties( ) ;
 	void OnSaveAs( ) ;
+
+private :
+	void StorePage( QGraphicsScene *scene, Doc *doc, Page *page ) ;
 
 private :
 	std::auto_ptr<Doc>	m_doc ;
