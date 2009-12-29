@@ -135,6 +135,9 @@ void PageTest::TestDecode( )
 	std::vector<pdf::PaintOp> ops ;
 	p->Decode( ops ) ;
 	
-	for ( std::vector<pdf::PaintOp>::iterator i = ops.begin() ; i != ops.end() ; ++i )
-		std::cout << *i << std::endl ;
+	CPPUNIT_ASSERT( ops.size() == 10 ) ;
+	CPPUNIT_ASSERT( ops[0].Code() == pdf::PaintOp::begin_text ) ;
+	CPPUNIT_ASSERT( ops[1].As<pdf::TextFont>().font == f ) ;
+	CPPUNIT_ASSERT( ops[2].As<pdf::TextPosition>().offx == 120 ) ;
+	CPPUNIT_ASSERT( ops[2].As<pdf::TextPosition>().offy == 300 ) ;
 }

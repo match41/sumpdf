@@ -79,6 +79,7 @@ PaintOp::PaintOp(
 	std::size_t 		count,
 	Resources 			*r)
 {
+	assert( args != 0 || count == 0 ) ;
 	assert( r != 0 ) ;
 
 std::cout << " got cmd: " << ops << ' ' << count << std::endl ;
@@ -92,71 +93,83 @@ std::ostream& operator<<( std::ostream& os, const PaintOp& op )
     return os ;
 }
 
-namespace
+PaintOp::OpCode PaintOp::Code( ) const
 {
-	template <typename Op, std::size_t N>
-	class DecodeTuple
-	{
-	public :
-		Op operator()( Object *args, Resources *r ) const ;
-	} ;
-	
-	template <typename Op>
-	class DecodeTuple<Op,0>
-	{
-	public :
-		Op operator()( Object *, Resources *r ) const
-		{
-			return Op( ) ;
-		}
-	} ;
-	
-	template <typename Op>
-	class DecodeTuple<Op,1>
-	{
-	public :
-		Op operator()( Object *args, Resources *r ) const
-		{
-			Op op = { args[0] } ;
-			return op ;
-		}
-	} ;
-	
-	template <typename Op>
-	class DecodeTuple<Op,2>
-	{
-	public :
-		Op operator()( Object *args, Resources *r ) const
-		{
-			Op op( args[0], args[1] ) ;
-			return op ;
-		}
-	} ;
-	
-	template <>
-	class DecodeTuple<TextFont,2>
-	{
-	public :
-		TextFont operator()( Object *args, Resources *r ) const
-		{
-			return TextFont( r->FindFont( args[0] ), args[1] ) ;
-		}
-	} ;
-	
-	template <typename Op>
-	class DecodeTuple<Op,6>
-	{
-	public :
-		Op operator()( Object *args, Resources *r ) const
-		{
-			return Op( args[0], args[1], args[2], args[3], args[4], args[5] ) ;
-		}
-	} ;
+	return static_cast<OpCode>( m_ops.which( ) ) ;
 }
+
+template <typename Op, std::size_t N>
+class PaintOp::DecodeTuple
+{
+public :
+	Op operator()( Object *args, Resources *r ) const ;
+} ;
+
+template <typename Op>
+class PaintOp::DecodeTuple<Op,0>
+{
+public :
+	Op operator()( Object *, Resources *r ) const
+	{
+		return Op( ) ;
+	}
+} ;
+
+template <typename Op>
+class PaintOp::DecodeTuple<Op,1>
+{
+public :
+	Op operator()( Object *args, Resources *r ) const
+	{
+		Op op = { args[0] } ;
+		return op ;
+	}
+} ;
+
+template <typename Op>
+class PaintOp::DecodeTuple<Op,2>
+{
+public :
+	Op operator()( Object *args, Resources *r ) const
+	{
+		Op op( args[0], args[1] ) ;
+		return op ;
+	}
+} ;
+
+template <>
+class PaintOp::DecodeTuple<TextFont,2>
+{
+public :
+	TextFont operator()( Object *args, Resources *r ) const
+	{
+		assert( r != 0 ) ;
+		BaseFont *f = r->FindFont( args[0] ) ;
+		if ( f == 0 )
+			throw DecodeError( ("cannot find font: " +
+				args[0].As<Name>().Str()).c_str() ) ;
+		
+		return TextFont( f, args[1] ) ;
+	}
+} ;
+
+template <typename Op>
+class PaintOp::DecodeTuple<Op,6>
+{
+public :
+	Op operator()( Object *args, Resources *r ) const
+	{
+		return Op( args[0], args[1], args[2], args[3], args[4], args[5] ) ;
+	}
+} ;
 
 template <typename Op>
 void PaintOp::Decode( Object *args, std::size_t count, Resources *r )
 {
+	assert( args != 0 || count == 0 ) ;
+	assert( r != 0 ) ;
+	assert( count == static_cast<std::size_t>(ArgCount<Op>::value ) ) ;
+	
 	if ( count != static_cast<std::size_t>(ArgCount<Op>::value ))
 		throw DecodeError( typeid(Op).name() ) ;
 

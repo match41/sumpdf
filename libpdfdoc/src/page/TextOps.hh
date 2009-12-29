@@ -43,14 +43,6 @@ namespace pdf
     	enum { value = 0 } ;
     } ;
 
-	enum OpCode
-	{
-		char_space, word_space, text_scale, text_leading, text_render,
-		text_rise, text_font, text_position, text_string, text_pos_string,
-		
-		end_text, begin_text
-	} ;
-	
 	struct CharSpace
 	{
 		double val ;

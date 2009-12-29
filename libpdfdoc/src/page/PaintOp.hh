@@ -56,6 +56,15 @@ public :
 		DecodeError( const char *type ) ;
 	} ;
 
+	enum OpCode
+	{
+		char_space, word_space, text_scale, text_leading, text_render,
+		text_rise, text_font, text_position, text_string, text_pos_string,
+		
+		end_text, begin_text
+	} ;
+
+public :
 	PaintOp(
 		const std::string&	ops,
 		Object 				*args,
@@ -63,6 +72,14 @@ public :
 		Resources 			*r ) ;
 
     friend std::ostream& operator<<( std::ostream& os, const PaintOp& op ) ;
+
+    template <typename T>
+    const T& As( ) const
+    {
+    	return boost::get<T>( m_ops ) ;
+    }
+
+    OpCode Code( ) const ;
 
 private :
     // function pointer mapping
@@ -75,6 +92,9 @@ private :
 private :
 	template <typename Op>
 	void Decode( Object *args, std::size_t count, Resources *r ) ;
+
+	template <typename Op, std::size_t N>
+	class DecodeTuple ;
 
 private :
 	boost::variant<
