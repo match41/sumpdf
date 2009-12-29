@@ -226,7 +226,7 @@ double Face::ItalicAngle( ) const
 bool Face::IsFixed( ) const
 {
 	assert( IsValid( ) ) ;
-	return FT_IS_FIXED_WIDTH( m_pimpl->m_face ) ;
+	return FT_IS_FIXED_WIDTH( m_pimpl->m_face ) != 0 ;
 }
 
 /*!	set font face size. see FT_Set_Char_Size() for details.

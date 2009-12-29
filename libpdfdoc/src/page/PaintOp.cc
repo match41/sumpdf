@@ -69,7 +69,7 @@ const std::pair<const std::string, PaintOp::FuncPtr> PaintOp::m_table[] =
 const PaintOp::FuncMap PaintOp::m_func_map( Begin( PaintOp::m_table ),
                                             End(   PaintOp::m_table ) ) ;
 
-PaintOp::PaintOp( const std::string& ops, const Object *args,
+PaintOp::PaintOp( const std::string& ops, Object *args,
                                           std::size_t count )
 {
 std::cout << " got cmd: " << ops << ' ' << count << std::endl ;
@@ -87,14 +87,14 @@ template <typename Op, std::size_t N>
 class DecodeTuple
 {
 public :
-	Op operator()( const Object *args, std::size_t count ) const ;
+	Op operator()( Object *args, std::size_t count ) const ;
 } ;
 
 template <typename Op>
 class DecodeTuple<Op,0>
 {
 public :
-	Op operator()( const Object *, std::size_t ) const
+	Op operator()( Object *, std::size_t ) const
 	{
 		return Op( ) ;
 	}
@@ -104,7 +104,7 @@ template <typename Op>
 class DecodeTuple<Op,1>
 {
 public :
-	Op operator()( const Object *args, std::size_t count ) const
+	Op operator()( Object *args, std::size_t count ) const
 	{
 		typename boost::tuples::element<0, Op>::type arg(args[0]) ;
 		return Op( arg ) ;
@@ -115,7 +115,7 @@ template <typename Op>
 class DecodeTuple<Op,2>
 {
 public :
-	Op operator()( const Object *args, std::size_t count ) const
+	Op operator()( Object *args, std::size_t count ) const
 	{
 		return Op( args[0], args[1] ) ;
 	}
@@ -125,14 +125,14 @@ template <typename Op>
 class DecodeTuple<Op,6>
 {
 public :
-	Op operator()( const Object *args, std::size_t count ) const
+	Op operator()( Object *args, std::size_t count ) const
 	{
 		return Op( args[0], args[1], args[2], args[3], args[4], args[5] ) ;
 	}
 } ;
 
 template <typename Op>
-void PaintOp::Decode( const Object *args, std::size_t count )
+void PaintOp::Decode( Object *args, std::size_t count )
 {
 	if ( count != static_cast<std::size_t>(boost::tuples::length<Op>::value ))
 		throw DecodeError( typeid(Op).name() ) ;

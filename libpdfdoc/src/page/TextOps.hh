@@ -38,6 +38,51 @@
 
 namespace pdf {
 
+    class Font ;
+
+    namespace stc
+    {
+        enum OpCode
+        {
+            char_space, word_space, text_scale, text_leading, text_render,
+            text_rise
+        } ;
+
+        struct TextFont
+        {
+            Font    *font ;
+            double  size ;
+        } ;
+        
+        struct TextPosition
+        {
+            double offx ;
+            double offy ;
+        } ;
+        
+        struct TextMatrix
+        {
+            double mat[6] ;
+        } ;
+        
+        struct TextPosStr
+        {
+            
+        } ;
+        
+        struct PaintOp
+        {
+            OpCode  code ;
+            union
+            {
+                double          val ;
+                TextFont        tfont ;
+                TextPosition    tpos ;
+                TextMatrix      tmat ;
+            } op ;
+        } ;
+    }
+    
 #define MAKE_TYPE( name ) \
 	namespace name \
 	{ \

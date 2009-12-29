@@ -27,11 +27,11 @@ cmake_minimum_required(VERSION 2.6)
 set( Boost_USE_MULTITHREAD ON )
 find_package( Boost REQUIRED )
 find_package( ZLIB REQUIRED )
+find_package( Freetype REQUIRED )
 
 ###############################################################################
 # optional packages
 ###############################################################################
-find_package( Freetype )
 find_package( PNG )
 find_package( JPEG )
 

@@ -53,13 +53,19 @@ public :
 		DecodeError( const char *type ) ;
 	} ;
 
-	PaintOp( const std::string& ops, const Object *args, std::size_t count ) ;
+	PaintOp( const std::string& ops, Object *args, std::size_t count ) ;
 
     friend std::ostream& operator<<( std::ostream& os, const PaintOp& op ) ;
 
+    template <typename T>
+    const T& As( ) const
+    {
+		return boost::get<T>( m_ops ) ;
+    }
+
 private :
     // function pointer mapping
-    typedef void (PaintOp::*FuncPtr)( const Object*, std::size_t ) ;
+    typedef void (PaintOp::*FuncPtr)( Object*, std::size_t ) ;
 	static const std::pair<const std::string, FuncPtr> m_table[] ;
 
 	typedef std::map<std::string, FuncPtr> FuncMap ;
@@ -67,7 +73,7 @@ private :
 
 private :
 	template <typename Op>
-	void Decode( const Object *args, std::size_t count ) ;
+	void Decode( Object *args, std::size_t count ) ;
 
 private :
 	boost::variant<
