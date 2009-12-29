@@ -235,7 +235,8 @@ void RealPage::Decode( std::vector<PaintOp>& ops )
 						PaintOp(
 							cmd.Get(),
 							args.empty() ? 0 : &args[0],
-							args.size() ) ) ;
+							args.size(),
+							&m_resources ) ) ;
 					args.clear( ) ;
 				}
 				else

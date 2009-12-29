@@ -27,107 +27,110 @@
 #ifndef __PDF_TEXT_OPS_HEADER_INCLUDED__
 #define __PDF_TEXT_OPS_HEADER_INCLUDED__
 
-#include "core/Name.hh"
-
-#include <boost/variant.hpp>
-#include <boost/tuple/tuple.hpp>
-
 // stdc++ headers
 #include <iosfwd>
 #include <vector>
+#include <string>
 
-namespace pdf {
-
+namespace pdf
+{
     class Font ;
+    class Object ;
 
-    namespace stc
+    template <typename Op>
+    struct ArgCount
     {
-        enum OpCode
-        {
-            char_space, word_space, text_scale, text_leading, text_render,
-            text_rise
-        } ;
+    	enum { value = 0 } ;
+    } ;
 
-        struct TextFont
-        {
-            Font    *font ;
-            double  size ;
-        } ;
-        
-        struct TextPosition
-        {
-            double offx ;
-            double offy ;
-        } ;
-        
-        struct TextMatrix
-        {
-            double mat[6] ;
-        } ;
-        
-        struct TextPosStr
-        {
-            
-        } ;
-        
-        struct PaintOp
-        {
-            OpCode  code ;
-            union
-            {
-                double          val ;
-                TextFont        tfont ;
-                TextPosition    tpos ;
-                TextMatrix      tmat ;
-            } op ;
-        } ;
-    }
-    
-#define MAKE_TYPE( name ) \
-	namespace name \
-	{ \
-		typedef boost::tuple<> _ ; \
-	}
+	enum OpCode
+	{
+		char_space, word_space, text_scale, text_leading, text_render,
+		text_rise, text_font, text_position, text_string, text_pos_string,
+		
+		end_text, begin_text
+	} ;
 	
-#define MAKE_ONE_TYPE( name, type ) \
-	namespace name \
-	{ \
-		typedef boost::tuple<type> _ ; \
-	}
+	struct CharSpace
+	{
+		double val ;
+	} ;
+	template <> struct ArgCount<CharSpace> { enum { value = 1 } ; } ; 
+	
+	struct WordSpace
+	{
+		double val ;
+	} ;
+	template <> struct ArgCount<WordSpace> { enum { value = 1 } ; } ; 
+	
+	struct TextScale
+	{
+		double val ;
+	} ;
+	template <> struct ArgCount<TextScale> { enum { value = 1 } ; } ; 
 
-#define MAKE_TWO_TYPE( name, type1, tag1, type2, tag2 ) \
-	namespace name \
-	{ \
-		enum { tag1, tag2 } ; \
-		typedef boost::tuple<type1, type2> _ ; \
-	}
+	struct TextLeading
+	{
+		double val ;
+	} ;
+	template <> struct ArgCount<TextLeading> { enum { value = 1 } ; } ; 
+	
+	struct TextRise
+	{
+		double val ;
+	} ;
+	template <> struct ArgCount<TextRise> { enum { value = 1 } ; } ; 
+	
+	struct TextFont
+	{
+		Font    *font ;
+		double  size ;
+		TextFont( Font *f, double s ) : font( f ), size( s ) {}
+	} ;
+	template <> struct ArgCount<TextFont> { enum { value = 2 } ; } ; 
+	
+	struct TextRender
+	{
+		int	mode ;
+	} ;
+	template <> struct ArgCount<TextRender> { enum { value = 1 } ; } ; 
+	
+	struct TextPosition
+	{
+		double offx ;
+		double offy ;
+		TextPosition( double x, double y ) : offx(x), offy(y) {}
+	} ;
+	template <> struct ArgCount<TextPosition> { enum { value = 2 } ; } ; 
+	
+	struct TextMatrix
+	{
+		double mat[6] ;
+		TextMatrix( double a, double b, double c,
+		            double d, double e, double f )
+		{
+			mat[0] = a ;
+			mat[1] = b ;
+			mat[2] = c ;
+			mat[3] = d ;
+			mat[4] = e ;
+			mat[5] = f ;
+		}
+	} ;
+	template <> struct ArgCount<TextMatrix> { enum { value = 6 } ; } ; 
+	
+	struct TextString
+	{
+		std::string	str ;
+	} ;
+	template <> struct ArgCount<TextString> { enum { value = 1 } ; } ; 
 
-MAKE_ONE_TYPE( CharSpace,	double ) ;
-MAKE_ONE_TYPE( WordSpace,	double ) ;
-MAKE_ONE_TYPE( TextScale,	double ) ;
-MAKE_ONE_TYPE( TextLeading,	double ) ;
-MAKE_ONE_TYPE( TextRender,	double ) ;
-MAKE_ONE_TYPE( TextRise,	double ) ;
+	struct TextPosString
+	{
+	} ;
 
-MAKE_TWO_TYPE( TextFont, 		Name,	font, double, size ) ;
-MAKE_TWO_TYPE( TextPosition, 	double, offx, double, offy ) ;
-
-namespace TextMatrix
-{
-	enum { a, b, c, d, e, f } ;
-	typedef boost::tuple<double, double, double, double, double, double> _ ;
-}
-
-MAKE_ONE_TYPE( TextString, std::string ) ;
-
-namespace TextPosString
-{
-	typedef boost::variant<std::string, int> Entry ;
-	typedef boost::tuple<std::vector<Entry>	>	_ ;
-}
-
-MAKE_TYPE( BeginText ) ;
-MAKE_TYPE( EndText ) ;
+	struct EndText { } ;
+	struct BeginText { } ;
 
 } // end of namespace
 
