@@ -27,10 +27,7 @@
 #include "RealPage.hh"
 
 #include "PageTree.hh"
-#include "PaintOp.hh"
 
-// common headers
-#include "Rect.hh"
 
 // core object headers
 #include "core/Array.hh"
@@ -39,11 +36,12 @@
 #include "core/Token.hh"
 #include "core/TokenSrc.hh"
 
+// other libpdfdoc headers
 #include "file/ObjectReader.hh"
 #include "file/IFile.hh"
-
 #include "font/BaseFont.hh"
-
+#include "page/PaintOp.hh"
+#include "util/Rect.hh"
 #include "util/Util.hh"
 
 #include <boost/bind.hpp>

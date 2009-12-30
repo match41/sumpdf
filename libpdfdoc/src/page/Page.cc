@@ -24,7 +24,7 @@
 	\author	Nestal Wan
 */
 
-#include "Page.hh"
+#include "page/Page.hh"
 
 namespace pdf {
 

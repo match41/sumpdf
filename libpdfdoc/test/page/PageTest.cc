@@ -26,8 +26,6 @@
 
 #include "PageTest.hh"
 
-#include "Rect.hh"
-
 #include "mock/MockFile.hh"
 
 #include "core/Ref.hh"
@@ -36,8 +34,8 @@
 #include "page/RealPage.hh"
 #include "page/PageTree.hh"
 #include "page/PaintOp.hh"
-
 #include "stream/Stream.hh"
+#include "util/Rect.hh"
 
 #include <sstream>
 #include <iostream>

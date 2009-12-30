@@ -27,15 +27,16 @@
 #ifndef __PDF_REAL_PAGE_HEADER_INCLUDED__
 #define __PDF_REAL_PAGE_HEADER_INCLUDED__
 
-#include "Page.hh"
+// base class headers
+#include "page/Page.hh"
 #include "PageNode.hh"
 
+// other libpdfdoc headers
 #include "Resources.hh"
-
 #include "core/Dictionary.hh"
 #include "core/Token.hh"
 #include "stream/Stream.hh"
-#include "Rect.hh"
+#include "util/Rect.hh"
 
 #include <string>
 

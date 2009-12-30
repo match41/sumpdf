@@ -55,10 +55,7 @@ set( PAGE_HDRS		${PAGE_DIR}/RealPage.hh
 					${PAGE_DIR}/PageNode.hh
 					${PAGE_DIR}/PageTree.hh
 					${PAGE_DIR}/XObject.hh
-					${PAGE_DIR}/RealImage.hh
-					${PAGE_DIR}/PaintOp.hh
-					${PAGE_DIR}/TextOps.hh
-					${PAGE_DIR}/PathSegment.hh )
+					${PAGE_DIR}/RealImage.hh )
 
 set( FILE_HDRS		${FILE_DIR}/File.hh
 					${FILE_DIR}/IFile.hh
@@ -91,7 +88,6 @@ set( STRM_HDRS		${STRM_DIR}/Stream.hh
 set( UTIL_HDRS  	${UTIL_DIR}/Rect.hh
 					${UTIL_DIR}/Export.hh
 					${UTIL_DIR}/Util.hh
-					${UTIL_DIR}/Exception.hh
 					${UTIL_DIR}/SymbolInfo.hh
 					${UTIL_DIR}/Backtrace.hh
 					${UTIL_DIR}/RefCountObj.hh )
@@ -119,11 +115,15 @@ set( FT_HDRS		${FT_DIR}/Face.hh
 					${FT_DIR}/ErrorTable.hh )
 
 set( INCLUDE_HDRS	include/Doc.hh
-					include/Font.hh
 					include/libpdfdoc.hh
-					include/Page.hh
-					include/Rect.hh
-					include/DocInfo.hh )
+					include/DocInfo.hh
+					include/font/Font.hh
+					include/page/Page.hh
+					include/page/PaintOp.hh
+					include/page/TextOp.hh
+					include/page/PathSegment.hh
+					include/util/Exception.hh
+					include/util/Rect.hh )
 
 set( BASE_HDRS		src/RealDoc.hh )
 
@@ -133,13 +133,12 @@ set( BASE_HDRS		src/RealDoc.hh )
 set( PAGE_SRCS  	${PAGE_DIR}/RealPage.cc
 					${PAGE_DIR}/Resources.cc
 					${PAGE_DIR}/Page.cc
-					${PAGE_DIR}/Font.cc
 					${PAGE_DIR}/PageNode.cc
 					${PAGE_DIR}/PageTree.cc
 					${PAGE_DIR}/XObject.cc
 					${PAGE_DIR}/RealImage.cc
 					${PAGE_DIR}/PaintOp.cc
-					${PAGE_DIR}/TextOps.cc
+					${PAGE_DIR}/TextOp.cc
 					${PAGE_DIR}/PathSegment.cc )
 
 set( FILE_SRCS		${FILE_DIR}/File.cc
@@ -175,7 +174,8 @@ set( UTIL_SRCS  	${UTIL_DIR}/Rect.cc
 
 set( IMG_SRCS  		${IMG_DIR}/Image.cc )
 
-set( FONT_SRCS		${FONT_DIR}/BaseFont.cc
+set( FONT_SRCS		${FONT_DIR}/Font.cc
+					${FONT_DIR}/BaseFont.cc
 					${FONT_DIR}/StandardFont.cc
 					${FONT_DIR}/sfnt/SfntFile.cc
 					${FONT_DIR}/sfnt/sfnt.c

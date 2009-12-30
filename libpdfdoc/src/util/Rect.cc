@@ -24,8 +24,7 @@
 	\author	Nestal Wan
 */
 
-#include "Rect.hh"
-
+#include "util/Rect.hh"
 #include "util/Util.hh"
 
 #include <algorithm>

@@ -24,7 +24,7 @@
 	\author	Nestal Wan
 */
 
-#include "PaintOp.hh"
+#include "page/PaintOp.hh"
 
 #include "Resources.hh"
 

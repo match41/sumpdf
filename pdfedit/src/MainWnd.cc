@@ -74,6 +74,7 @@ MainWnd::MainWnd( QWidget *parent )
 		this,
 		SLOT(OnSaveAs()) );
 }
+
 /**	destructor is for the auto_ptr	
 */
 MainWnd::~MainWnd( )

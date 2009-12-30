@@ -27,7 +27,7 @@
 #ifndef __PDF_BASE_FONT_HEADER_INCLUDED__
 #define __PDF_BASE_FONT_HEADER_INCLUDED__
 
-#include "Font.hh"
+#include "font/Font.hh"
 #include "util/RefCountObj.hh"
 
 namespace pdf {

@@ -1,5 +1,5 @@
-/***************************************************************************
- *   Copyright (C) 2006 by Nestal Wan                                      *
+/***************************************************************************\
+ *   Copyright (C) 2009 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,21 +15,30 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+\***************************************************************************/
 
 /*!
-	\file	Font.cc
-	\brief	implementation the Font class
-	\date	Fri Apr 11 2008
+	\file	TextOp.cc
+	\brief	implementation the TextOps class
+	\date	Sun Apr 19 2009
 	\author	Nestal Wan
 */
 
-#include "Font.hh"
+#include "page/TextOp.hh"
 
-namespace pdf {
-
-Font::~Font( )
+namespace pdf { namespace gfx {
+/*
+std::ostream& operator<<( std::ostream& os, const TextState& ts )
 {
+	const char *map[] =
+	{
+		"Tc", "Tw", "Tz", "TL", "Tr", "Ts"
+	} ;
+	
+	assert( ts.type >= TextState::char_space ) ;
+	assert( ts.type <= TextState::text_rise ) ;
+	
+	os << map[ts.type - TextState::char_space] << ' ' << ts.arg << ' ' ;
 }
-
-} // end of namespace
+*/
+} } // end of namespace

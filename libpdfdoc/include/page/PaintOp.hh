@@ -27,7 +27,7 @@
 #ifndef __PDF_PAINT_OP_HEADER_INCLUDED__
 #define __PDF_PAINT_OP_HEADER_INCLUDED__
 
-#include "TextOps.hh"
+#include "TextOp.hh"
 #include "PathSegment.hh"
 
 #include "util/Exception.hh"

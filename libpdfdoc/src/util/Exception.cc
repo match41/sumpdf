@@ -24,7 +24,7 @@
 	\author	Nestal Wan
 */
 
-#include "Exception.hh"
+#include "util/Exception.hh"
 
 #include "Util.hh"
 #include "Backtrace.hh"

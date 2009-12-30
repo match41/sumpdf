@@ -24,7 +24,7 @@
 	\author	Nestal Wan
 */
 
-#include "PathSegment.hh"
+#include "page/PathSegment.hh"
 
 namespace pdf {
 

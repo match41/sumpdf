@@ -18,10 +18,10 @@
 \***************************************************************************/
 
 #include "Doc.hh"
-#include "Page.hh"
-#include "Font.hh"
 #include "DocInfo.hh"
 #include "libpdfdoc.hh"
+#include "font/Font.hh"
+#include "page/Page.hh"
 
 #include "util/Exception.hh"
 
