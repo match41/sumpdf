@@ -133,6 +133,7 @@ set( BASE_HDRS		src/RealDoc.hh )
 set( PAGE_SRCS  	${PAGE_DIR}/RealPage.cc
 					${PAGE_DIR}/Resources.cc
 					${PAGE_DIR}/Page.cc
+					${PAGE_DIR}/PageContent.cc
 					${PAGE_DIR}/PageNode.cc
 					${PAGE_DIR}/PageTree.cc
 					${PAGE_DIR}/XObject.cc

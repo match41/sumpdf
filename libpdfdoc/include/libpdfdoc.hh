@@ -27,8 +27,6 @@
 #ifndef __LIB_PDF_DOC_HEADER_INCLUDED__
 #define __LIB_PDF_DOC_HEADER_INCLUDED__
 
-#include <string>
-
 #define LIBPDFDOC_API 
 
 /*!	\mainpage	libpdfdoc Project Home Page
@@ -44,12 +42,12 @@
 	
 	\section	license		License
 	libpdfdoc is release under
-	<a href="http://www.gnu.org/licenses/lgpl-2.1.html">LGPL</a>.
+	<a href="http://www.gnu.org/licenses/gpl-2.1.html">GPL v2</a>.
 	In short, it is <a href="http://www.gnu.org/philosophy/free-sw.html">Free
 	Software.</a> I am not responsible for any damage it may make. You can
-	change it, sell it,	distribute it. You can even use it in comercial
-	projects. However, every changes you make to libpdfdoc MUST be made
-	public if you distribute it.
+	change it, sell it,	distribute it. As libpdfdoc contains some code borrow
+	from GPL project, the license is GPL v2 as a whole. It is not legal to use
+	it in proprietory projects.
 	
 	\section	get		Getting libpdfdoc
 	libpdfdoc can be downloaded in from
@@ -82,6 +80,8 @@ cmake -G 'Unix Makefiles' /path/to/libpdfdoc/
 \endverbatim
 
 	should be enough to generate the makefiles to build the project.
+	It is also possible to use cmake to generate project files of other build
+	environments, e.g. MS Visual Studio or eclipse, depending on your platform.
 	Afterwards, just type \c make to build. cmake by default will not show the
 	actual command line of the compiler. To see it, type this command:
 

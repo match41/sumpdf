@@ -97,7 +97,7 @@ void RealPage::ReadContent( const Object& str_obj, IFile *src )
 
 	// append individual stream objects
 	else if ( str_obj.IsType<Stream>( ) )
-		m_content.push_back( str_obj.As<Stream>( ) ) ;
+		m_content.strs.push_back( str_obj.As<Stream>( ) ) ;
 
 	// catenate individual objects in array
 	else if ( str_obj.IsType<Array>( ) )
@@ -133,12 +133,12 @@ Object RealPage::WriteContent( IFile *file ) const
 {
 	assert( file != 0 ) ;
 
-	if ( m_content.size() == 1 )
-		return file->WriteObj( m_content.front() ) ;
+	if ( m_content.strs.size() == 1 )
+		return file->WriteObj( m_content.strs.front() ) ;
 	else
 	{
-		Array strs( m_content.size() ) ;
-		std::transform( m_content.begin(), m_content.end(),
+		Array strs( m_content.strs.size() ) ;
+		std::transform( m_content.strs.begin(), m_content.strs.end(),
 		                strs.begin(),
 		                boost::bind( &IFile::WriteObj, file, _1 ) ) ;
 		return strs ;
@@ -154,13 +154,10 @@ void RealPage::DrawText( double x, double y, Font *f, const std::string& text )
 	assert( font != 0 ) ;
 	Name fname = m_resources.AddFont( font ) ;
 
-	if ( m_content.empty() || !m_content.back().IsDirty() )
-	{
-		Stream s( Stream::deflate ) ;
-		m_content.push_back( s ) ;
-	}
+	if ( m_content.strs.empty() || !m_content.strs.back().IsDirty() )
+		m_content.strs.push_back( Stream( Stream::deflate ) ) ;
 
-	std::ostream ss( m_content.back().OutStreamBuf( ) ) ;
+	std::ostream ss( m_content.strs.back().OutStreamBuf( ) ) ;
 	ss << "BT\n"
        << fname << " 12 Tf " << x << ' ' << y << " Td "
 	            << String( text ) << " Tj\n"
@@ -169,8 +166,8 @@ void RealPage::DrawText( double x, double y, Font *f, const std::string& text )
 
 void RealPage::Finish( )
 {
-	if ( !m_content.empty() )
-		m_content.back().Flush( ) ;
+	if ( !m_content.strs.empty() )
+		m_content.strs.back().Flush( ) ;
 }
 
 std::size_t RealPage::Count( ) const
@@ -199,15 +196,20 @@ const Resources* RealPage::GetResource( ) const
 	return &m_resources ;
 }
 
-void RealPage::DecodeContent( const Stream& s )
+PageContent* RealPage::GetContent( )
 {
-	m_content.push_back( s ) ;
+	return &m_content ;
+}
+
+bool RealPage::Content::Decode( PaintOp& op )
+{
+	return false ;
 }
 
 void RealPage::Decode( std::vector<PaintOp>& ops )
 {
-	for ( std::vector<Stream>::iterator i = m_content.begin( ) ;
-	                                    i != m_content.end( ) ; ++i )
+	for ( std::vector<Stream>::iterator i = m_content.strs.begin( ) ;
+	                                    i != m_content.strs.end( ) ; ++i )
 	{
 		std::istream s( i->InStreamBuf() ) ;
 		TokenSrc src( s ) ;

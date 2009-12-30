@@ -35,6 +35,7 @@
 #include "Resources.hh"
 #include "core/Dictionary.hh"
 #include "core/Token.hh"
+#include "page/PageContent.hh"
 #include "stream/Stream.hh"
 #include "util/Rect.hh"
 
@@ -77,10 +78,11 @@ public :
 	const Resources* GetResource( ) const ;
 
 	void Decode( std::vector<PaintOp>& ops ) ;
+	
+	PageContent* GetContent( ) ;
 
 private :
 	void ReadContent( const Object& str_obj, IFile *file ) ;
-	void DecodeContent( const Stream& s ) ;
 	Object WriteContent( IFile *file ) const ; 
 	
 private :
@@ -91,8 +93,14 @@ private :
 	/// in PDF user space. specified by UserUnit or 1/72 inch
 	Rect		m_media_box ;
 	
-	std::vector<Stream>		m_content ;
-
+	struct Content : public PageContent
+	{
+		bool Decode( PaintOp& op ) ;
+		
+		std::vector<Stream>				strs ;
+		std::vector<Stream>::iterator	current ;
+	} m_content ;
+	
 	int	m_rotate ;
 } ;
 
