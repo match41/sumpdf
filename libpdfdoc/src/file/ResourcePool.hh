@@ -33,12 +33,19 @@
 namespace pdf {
 
 class BaseFont ;
+class Object ;
 
-typedef RefObjMap<BaseFont> FontPool ;
+template <typename T>
+class RefCounterWrapper ;
+
+typedef RefObjMap<BaseFont>			FontPool ;
+typedef RefCounterWrapper<Object>	ObjWrapper ;
+typedef RefObjMap<ObjWrapper>		ObjectPool ;
 
 struct ResourcePool
 {
 	FontPool	fonts ;
+	ObjectPool	objs ;
 } ;
 
 } // end of namespace

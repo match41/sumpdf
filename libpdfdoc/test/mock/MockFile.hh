@@ -62,6 +62,7 @@ public :
 	pdf::Ref AllocLink( ) ;
 	void WriteObj( const pdf::Object& obj, const pdf::Ref& link ) ;
 	pdf::ResourcePool* Pool( ) ;
+	void ReadObjectLinks( const pdf::Object& obj ) ;
 } ;
 
 #endif

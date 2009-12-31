@@ -31,17 +31,12 @@
 #include "Dictionary.hh"
 #include "Object.hh"
 
-#include <algorithm>
-#include <boost/bind.hpp>
-
-#include <iostream>
-
 namespace pdf {
 
 template <typename F>
 void ForEachObj( Object& obj, F func )
 {
-	if ( obj.Type( ) == Object::dictionary )
+	if ( obj.IsType<Dictionary>( ) )
 	{
 		Dictionary& dict = obj.As<Dictionary>( ) ;
 		for ( Dictionary::iterator i  = dict.begin( ) ;
@@ -51,7 +46,7 @@ void ForEachObj( Object& obj, F func )
 		}
 	}
 	
-	else if ( obj.Type( ) == Object::array )
+	else if ( obj.IsType<Array>( ) )
 	{
 		Array& array = obj.As<Array>( ) ;
 		for ( Array::iterator i  = array.begin( ) ;

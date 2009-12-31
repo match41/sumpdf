@@ -30,12 +30,16 @@
 #include "core/Object.hh"
 #include "core/Token.hh"
 #include "core/TokenSrc.hh"
+#include "core/TraverseObject.hh"
 
 #include "util/Exception.hh"
+#include "util/RefCounterWrapper.hh"
 #include "util/SymbolInfo.hh"
 #include "util/Util.hh"
 
 #include "stream/Stream.hh"
+
+#include <boost/bind.hpp>
 
 #include <cassert>
 #include <iomanip>
@@ -161,7 +165,7 @@ Object File::ReadObj( const Ref& obj )
 	throw ParseError( ss.str() ) ;
 }
 
-Object File::ReadStream( Dictionary& dict )
+Stream File::ReadStream( Dictionary& dict )
 {
 	assert( m_in != 0 ) ;
 
@@ -341,6 +345,21 @@ Ref File::DocInfo( ) const
 ResourcePool* File::Pool( )
 {
 	return &m_pool ;
+}
+
+void File::CacheObject( const Object& obj )
+{
+	if ( obj.IsType<Ref>() )
+	{
+		const Ref& link = obj.As<Ref>() ;
+		if ( m_pool.objs.IsExist( link ) )
+			m_pool.objs.Add( link, new ObjWrapper(ReadObj( link )) ) ; 
+	}
+}
+
+void File::ReadObjectLinks( const Object& obj )
+{
+	ForEachObj( obj, boost::bind( &File::CacheObject, this, _1 ) ) ;
 }
 
 } // end of namespace

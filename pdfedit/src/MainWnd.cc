@@ -121,11 +121,17 @@ void MainWnd::OnSaveAs( )
 	QString fname = QFileDialog::getSaveFileName( this, "Open", ".", "*.pdf" ) ;
 	if ( !fname.isEmpty( ) )
 	{
+		// we shouldn't do like this. we shouldn't create another doc.
+		// we should re-use m_doc.
 		std::auto_ptr<Doc> doc( CreateDoc( ) ) ;
 		Page *page = doc->AppendPage( ) ;
 		StorePage( m_scene, doc.get(), page ) ;
 		
 		doc->Write( fname.toStdString() ) ;
+		
+		// transfer to m_doc if it doesn't exists
+		if ( m_doc.get() == 0 )
+			m_doc = doc ;
 	}
 }
 

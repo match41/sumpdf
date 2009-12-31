@@ -32,7 +32,7 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-#include <iostream>
+#include <sstream>
 
 SimpleFontTest::SimpleFontTest( )
 {
@@ -53,6 +53,8 @@ void SimpleFontTest::TestSimple( )
 	{
 		pdf::SimpleFont subject( face ) ;
 		CPPUNIT_ASSERT( subject.BaseName( ) == "FreeMonoBoldOblique" ) ;
+		
+		
 	}
 	
 	::FT_Done_Face( face ) ;

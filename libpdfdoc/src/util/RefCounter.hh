@@ -17,41 +17,35 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  \***************************************************************************/
 
-/*!
-	\file	RefCountObj.cpp
+/**
+	\file	RefCounter.hh
 	\brief	definition the RefCountObj class
 	\date	Dec 11, 2009
 	\author	nestal
 */
 
-#include "RefCountObj.hh"
+#ifndef __PDF_REFCOUNTOBJ_HEADER_INCLUDED__
+#define __PDF_REFCOUNTOBJ_HEADER_INCLUDED__
+
+#include <cstddef>
 
 namespace pdf {
 
-RefCountObj::RefCountObj( )
-	: m_count( 1 )
+class RefCounter
 {
-}
+protected :
+	RefCounter( ) ;
 
-void RefCountObj::AddRef( )
-{
-	++m_count ;
-}
+public :
+	virtual void AddRef( ) ;
+	virtual bool Release( ) ;
+	
+	std::size_t UseCount( ) const ;
 
-bool RefCountObj::Release( )
-{
-	if ( --m_count == 0 )
-	{
-		delete this ;
-		return true ;
-	}
-	else
-		return false ;
-}
-
-std::size_t RefCountObj::UseCount( ) const
-{
-	return m_count ;
-}
+private :
+	std::size_t	m_count ;
+} ;
 
 } // end of namespace
+
+#endif // REFCOUNTOBJ_H_

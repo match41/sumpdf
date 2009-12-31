@@ -27,11 +27,11 @@
 #include "RefObjMapTest.hh"
 
 #include "file/RefObjMap.hh"
-#include "util/RefCountObj.hh"
+#include "util/RefCounter.hh"
 namespace
 {
 	// RefObjMap should work with reference counted type
-	struct Dummy : public pdf::RefCountObj
+	struct Dummy : public pdf::RefCounter
 	{
 	} ;
 }

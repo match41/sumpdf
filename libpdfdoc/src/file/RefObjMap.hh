@@ -53,7 +53,7 @@ public :
 	
 	void Add( const Ref& link, T *res )
 	{
-		assert( m_pool.left.find(link) == m_pool.left.end() ) ;
+		assert( !IsExist( link ) ) ;
 		m_pool.insert( MapEntry( link, res ) ) ;
 	}
 
@@ -70,6 +70,11 @@ public :
 		}
 		else
 			return 0 ;
+	}
+
+	bool IsExist( const Ref& link ) const
+	{
+		return m_pool.left.find( link ) != m_pool.left.end( ) ;
 	}
 
 	Ref Find( T *ptr ) const

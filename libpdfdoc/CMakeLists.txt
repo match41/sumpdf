@@ -45,6 +45,7 @@ set( STRM_DIR		src/stream/ )
 set( IMG_DIR		src/image/ )
 set( UTIL_DIR		src/util/ )
 set( FONT_DIR		src/font/ )
+set( INCLUDE_DIR	include/ )
 
 ###############################################################################
 # headers
@@ -89,7 +90,8 @@ set( UTIL_HDRS  	${UTIL_DIR}/Rect.hh
 					${UTIL_DIR}/Util.hh
 					${UTIL_DIR}/SymbolInfo.hh
 					${UTIL_DIR}/Backtrace.hh
-					${UTIL_DIR}/RefCountObj.hh )
+					${UTIL_DIR}/RefCounter.hh
+					${UTIL_DIR}/RefCounterWrapper.hh )
 					
 set( IMG_HDRS  		${IMG_DIR}/Image.hh
 					${IMG_DIR}/PngImage.hh
@@ -107,16 +109,16 @@ set( FONT_HDRS		${FONT_DIR}/Types.hh
 					${FONT_DIR}/sfnt/mfileio.h
 					${FONT_DIR}/sfnt/numbers.h )
 
-set( INCLUDE_HDRS	include/Doc.hh
-					include/libpdfdoc.hh
-					include/DocInfo.hh
-					include/font/Font.hh
-					include/page/Page.hh
-					include/page/PaintOp.hh
-					include/page/TextOp.hh
-					include/page/PathSegment.hh
-					include/util/Exception.hh
-					include/util/Rect.hh )
+set( INCLUDE_HDRS	${INCLUDE_DIR}/Doc.hh
+					${INCLUDE_DIR}/libpdfdoc.hh
+					${INCLUDE_DIR}/DocInfo.hh
+					${INCLUDE_DIR}/font/Font.hh
+					${INCLUDE_DIR}/page/Page.hh
+					${INCLUDE_DIR}/page/PaintOp.hh
+					${INCLUDE_DIR}/page/TextOp.hh
+					${INCLUDE_DIR}/page/PathSegment.hh
+					${INCLUDE_DIR}/util/Exception.hh
+					${INCLUDE_DIR}/util/Rect.hh )
 
 set( BASE_HDRS		src/RealDoc.hh )
 
@@ -164,7 +166,7 @@ set( UTIL_SRCS  	${UTIL_DIR}/Rect.cc
 					${UTIL_DIR}/Util.cc
 					${UTIL_DIR}/Exception.cc
 					${UTIL_DIR}/Backtrace.cc
-					${UTIL_DIR}/RefCountObj.cc )
+					${UTIL_DIR}/RefCounter.cc )
 
 set( IMG_SRCS  		${IMG_DIR}/Image.cc )
 
@@ -270,7 +272,7 @@ SOURCE_GROUP( "file"		FILES ${FILE_SRCS} ${FILE_HDRS} )
 SOURCE_GROUP( "core"		FILES ${CORE_SRCS} ${CORE_HDRS} )
 SOURCE_GROUP( "util"		FILES ${UTIL_SRCS} ${UTIL_HDRS} )
 SOURCE_GROUP( "font"		FILES ${FONT_SRCS} ${FONT_HDRS} )
-SOURCE_GROUP( "image"		FILES ${IMG_SRCS} ${IMG_HDRS} )
+SOURCE_GROUP( "image"		FILES ${IMG_SRCS}  ${IMG_HDRS} )
 SOURCE_GROUP( "stream"		FILES ${STRM_SRCS} ${STRM_HDRS} )
 SOURCE_GROUP( "base"		FILES ${BASE_SRCS} ${BASE_HDRS} )
 SOURCE_GROUP( "include"		FILES ${INCLUDE_HDRS} )

@@ -41,6 +41,7 @@ namespace pdf {
 class Dictionary ;
 class Object ;
 class Ref ;
+class Stream ;
 
 /*!	\brief	PDF file class
 	
@@ -66,6 +67,7 @@ public :
 	Ref AllocLink( ) ;
 	void WriteObj( const Object& obj, const Ref& link ) ;
 	ResourcePool* Pool( ) ;
+	void ReadObjectLinks( const Object& obj ) ;
 	
 private :
 	void ReadXRef( std::size_t offset, Dictionary& trailer ) ;
@@ -74,9 +76,11 @@ private :
 	bool ReadTailer( Dictionary& trailer, std::size_t& offset ) ;
 	static std::istream& ReadLine( std::istream& is, std::string& line ) ;
 	
-	Object ReadStream( Dictionary& dict ) ;
+	Stream ReadStream( Dictionary& dict ) ;
 
-	class ObjectWriter ;
+	class	ObjectWriter ;
+
+	void CacheObject( const Object& obj ) ;
 
 private :
 	std::vector<std::size_t>	m_objs ;
