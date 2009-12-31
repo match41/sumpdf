@@ -29,6 +29,10 @@
 
 #include "BaseFont.hh"
 
+// freetype headers
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 #include "core/Name.hh"
 #include "core/Object.hh"
 
@@ -52,11 +56,11 @@ class Dictionary ;
 class SimpleFont : public BaseFont
 {
 public :
-	enum Type { truetype, type1, mmtype1, type3, type0 } ;
+	enum Type { truetype, type1, mmtype1, type3, type0, unknown } ;
 
 public :
 	SimpleFont( ) ;
-	SimpleFont( ft::Library *lib, const std::string& filename ) ;
+	explicit SimpleFont( FT_Face face ) ;
 	SimpleFont( const Object& self, IFile *file ) ;
 
 	std::string BaseName( ) const ;
@@ -66,11 +70,20 @@ private :
 	SimpleFont( const Name& base_font, Type type ) ;
 
 	static const Name m_font_types[] ;
+	static Type GetFontType( FT_Face face ) ;
 
 	static const Name& SubType( Type t ) ;
 	static Type        SubType( const Name& t ) ;
 
+	static void GetWidth(
+		FT_Face	face,
+		std::vector<int>& width,
+		int&	first_char,
+		int&	last_char ) ;
+
 private :
+	FT_Face	m_face ;
+
 	Name	m_base_font ;
 	Type	m_type ;
 	int		m_first_char, m_last_char ;

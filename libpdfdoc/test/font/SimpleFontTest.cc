@@ -26,8 +26,11 @@
 
 #include "SimpleFontTest.hh"
 
-#include "font/ftwrap/Library.hh"
 #include "font/SimpleFont.hh"
+
+// freetype headers
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 #include <iostream>
 
@@ -37,8 +40,16 @@ SimpleFontTest::SimpleFontTest( )
 
 void SimpleFontTest::TestSimple( )
 {
-	ft::Library lib ;
-	pdf::SimpleFont subject( &lib, std::string(TEST_DATA_DIR) +
-	                         "FreeMonoBoldOblique.ttf" ) ;
+	FT_Library lib ;
+	::FT_Init_FreeType( &lib ) ;
+	
+	FT_Face face ;
+	::FT_New_Face(
+		lib,
+		(std::string(TEST_DATA_DIR) +"FreeMonoBoldOblique.ttf").c_str(),
+		0,
+		&face ) ;
+	
+	pdf::SimpleFont subject( face ) ;
 	CPPUNIT_ASSERT( subject.BaseName( ) == "FreeMonoBoldOblique" ) ;
 }

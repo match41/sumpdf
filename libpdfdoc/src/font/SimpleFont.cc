@@ -35,8 +35,10 @@
 #include "util/Exception.hh"
 #include "util/Util.hh"
 
-#include "ftwrap/Face.hh"
-#include "ftwrap/Glyph.hh"
+//#include "ftwrap/Face.hh"
+//#include "ftwrap/Glyph.hh"
+
+#include FT_XFREE86_H
 
 namespace pdf {
 
@@ -62,31 +64,13 @@ SimpleFont::SimpleFont( const Name& base_font, Type type )
 	m_first_char = m_last_char = 0 ;
 }
 
-SimpleFont::SimpleFont( ft::Library *lib, const std::string& filename )
-	: m_encoding( "WinAnsiEncoding" )
+SimpleFont::SimpleFont( FT_Face face )
+	: m_face( face ),
+	  m_base_font( ::FT_Get_Postscript_Name( face ) ),
+	  m_type( GetFontType( face ) ),
+	  m_encoding( "WinAnsiEncoding" )
 {
-	ft::Face face( lib, filename ) ;
-	m_base_font = Name( face.PSName() ) ;
-	m_type		= truetype ;
-
-	// traverse all characters
-	unsigned		glyph ;
-	unsigned long 	char_code = face.GetFirstChar( glyph ), last_char ;
-	m_first_char = static_cast<int>( char_code ) ;
-
-	while ( glyph != 0 && char_code < 256 )
-	{
-		last_char = char_code ;
-		char_code = face.GetNextChar( char_code, glyph ) ;
-	}
-
-	m_last_char	= static_cast<int>( last_char ) ;
-
-	for ( int i = m_first_char ; i <= m_last_char ; i++ )
-	{
-		ft::Glyph g( &face, face.GetGlyphCode( i ) ) ;
-		m_widths.push_back( static_cast<int>(g.HoriAdvance( )) ) ;
-	}
+	GetWidth( face, m_widths, m_first_char, m_last_char ) ;
 	assert( (int)m_widths.size() == m_last_char - m_first_char + 1 ) ;
 }
 
@@ -120,6 +104,52 @@ SimpleFont::SimpleFont( const Object& self, IFile *file )
 	}
 }
 
+SimpleFont::Type SimpleFont::GetFontType( FT_Face face )
+{
+	const char *format = ::FT_Get_X11_Font_Format( face ) ;
+	if ( format == 0 )
+		return unknown ;
+	else if ( ::strcmp( format, "Truetype" ) == 0 )
+		return truetype ;
+	else if ( ::strcmp( format, "Type 1" ) == 0 )
+		return type1 ;
+	else
+		return unknown ;
+}
+
+void SimpleFont::GetWidth(
+	FT_Face	face,
+	std::vector<int>& width,
+	int&	first_char,
+	int&	last_char )
+{
+	// traverse all characters
+	unsigned		glyph ;
+	unsigned long 	char_code = ::FT_Get_First_Char( face, &glyph ) ;
+	first_char = static_cast<int>( char_code ) ;
+
+	while ( glyph != 0 && char_code < 256 )
+	{
+		last_char = static_cast<int>( char_code ) ;
+		char_code = ::FT_Get_Next_Char( face, char_code, &glyph ) ;
+	}
+
+	for ( int i = first_char ; i <= last_char ; i++ )
+	{
+		// load the glyph to the glyph slot in the face
+		FT_Error error = ::FT_Load_Glyph(
+			face,
+			::FT_Get_Char_Index( face, i ),
+			FT_LOAD_DEFAULT ) ;
+		
+		if ( error != 0 )
+			throw Exception( ) ;
+
+		width.push_back( face->glyph->metrics.horiAdvance ) ;
+	}
+//	assert( (int)m_widths.size() == m_last_char - m_first_char + 1 ) ;
+}
+
 Ref SimpleFont::Write( IFile *file ) const
 {
 	Dictionary dict ;
@@ -133,7 +163,7 @@ Ref SimpleFont::Write( IFile *file ) const
 		dict["Encoding"]		= m_encoding ;
 
 	if ( !m_widths.empty( ) )
-		dict["Widths"]			= Array( m_widths.begin( ), m_widths.end( ) ) ;
+		dict["Widths"]			= Array( m_widths.begin(), m_widths.end() ) ;
 
 	if ( !m_descriptor.IsNull( ) )
 		dict["FontDescriptor"]	= m_descriptor ;
