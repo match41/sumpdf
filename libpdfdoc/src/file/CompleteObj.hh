@@ -1,4 +1,4 @@
-/***************************************************************************
+/***************************************************************************\
  *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
@@ -15,56 +15,54 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+\***************************************************************************/
 
-/*!
-	\file	MockFile.hh
-	\brief	definition the MockFile class
-	\date	Sat Mar 22 2008
-	\author	Nestal Wan
+/**
+    \file	CompleteObj.hh
+    \brief	definition the CompleteObj class
+    \date	Jan 1, 2010
+    \author	Nestal Wan
 */
 
-#ifndef __PDFUT_MOCK_FILE_HEADER_INCLUDED__
-#define __PDFUT_MOCK_FILE_HEADER_INCLUDED__
-
-#include "file/IFile.hh"
-
-#include "file/ResourcePool.hh"
+#ifndef __PDF_COMPLETEOBJ_HH_EADER_INCLUDED__
+#define __PDF_COMPLETEOBJ_HH_EADER_INCLUDED__
 
 #include "core/Object.hh"
-#include "core/Ref.hh"
+#include "core/ObjWrapper.hh"
 
 #include <map>
 
-/*!	\brief	brief description
-	
-	this class represents
+namespace pdf {
+
+class IFile ;
+class Dictionary ;
+class Array ;
+
+/**	\brief	brief description
+
+	The CompleteObj class represent a PDF object, as well as a mapping from
+	the indirect references it contains to the real objects. The real objects
+	referred by the references will stored inside RefCounterWrapper. They are
+	shared between other CompleteObj's.
 */
-class MockFile : public pdf::IFile
+class CompleteObj
 {
-private :
-	std::map<pdf::Ref, pdf::Object>	m_map ;
-
-	std::size_t	m_counter ;
-	
-	static const pdf::Object m_null ;
-
-	pdf::ResourcePool	m_pool ;
-
 public :
-	MockFile( ) ;
+	CompleteObj( ) ;
 	
-	void AddObj( const pdf::Ref& link, const pdf::Object& obj ) ;
-	const pdf::Object& Find( const pdf::Ref& link ) const ;
+	void Read( Dictionary& dict, IFile *file ) ;
+	void Read( Array& array, IFile *file ) ;
+	Ref Write( IFile *file ) const ;
+
+	Object& Get( ) ;
+	const Object& Get( ) const ;
+
+private :
+	Object						m_obj ;
 	
-	pdf::Object ReadObj( const pdf::Ref& obj ) ;
-	pdf::Ref WriteObj( const pdf::Object& obj ) ;
-	pdf::Ref AllocLink( ) ;
-	void WriteObj( const pdf::Object& obj, const pdf::Ref& link ) ;
-	pdf::ResourcePool* Pool( ) ;
-	void ReadObjectLinks(
-		const pdf::Object& obj,
-		std::map<pdf::Ref, pdf::ObjWrapper*>& links ) ;
+	std::map<Ref, ObjWrapper*>	m_refs ;
 } ;
 
-#endif
+} // end of namespace
+
+#endif // COMPLETEOBJ_HH_

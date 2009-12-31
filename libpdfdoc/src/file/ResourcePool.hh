@@ -29,17 +29,14 @@
 #define __PDF_RESOURCEPOOL_HEADER_INCLUDED__
 
 #include "RefObjMap.hh"
+#include "core/ObjWrapper.hh"
 
 namespace pdf {
 
 class BaseFont ;
 class Object ;
 
-template <typename T>
-class RefCounterWrapper ;
-
 typedef RefObjMap<BaseFont>			FontPool ;
-typedef RefCounterWrapper<Object>	ObjWrapper ;
 typedef RefObjMap<ObjWrapper>		ObjectPool ;
 
 struct ResourcePool

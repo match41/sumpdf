@@ -71,6 +71,8 @@ pdf::ResourcePool* MockFile::Pool( )
 	return &m_pool ;
 }
 
-void MockFile::ReadObjectLinks( const pdf::Object& obj )
+void MockFile::ReadObjectLinks(
+	const pdf::Object& obj,
+	std::map<pdf::Ref, pdf::ObjWrapper*>& links )
 {
 }

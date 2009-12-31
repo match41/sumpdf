@@ -62,6 +62,7 @@ set( FILE_HDRS		${FILE_DIR}/File.hh
 					${FILE_DIR}/Catalog.hh
 					${FILE_DIR}/ObjectReader.hh
 					${FILE_DIR}/RefObjMap.hh
+					${FILE_DIR}/CompleteObj.hh
 					${FILE_DIR}/ResourcePool.hh )
 
 set( CORE_HDRS  	${CORE_DIR}/Object.hh
@@ -72,6 +73,7 @@ set( CORE_HDRS  	${CORE_DIR}/Object.hh
 					${CORE_DIR}/TokenSrc.hh
 					${CORE_DIR}/String.hh
 					${CORE_DIR}/Name.hh
+					${CORE_DIR}/ObjWrapper.hh
 					${CORE_DIR}/TraverseObject.hh )
 					
 set( STRM_HDRS		${STRM_DIR}/Stream.hh
@@ -140,6 +142,7 @@ set( PAGE_SRCS  	${PAGE_DIR}/RealPage.cc
 set( FILE_SRCS		${FILE_DIR}/File.cc
 					${FILE_DIR}/IFile.cc
 					${FILE_DIR}/Catalog.cc
+					${FILE_DIR}/CompleteObj.cc
 					${FILE_DIR}/DocInfo.cc )
 
 set( CORE_SRCS  	${CORE_DIR}/Object.cc

@@ -347,19 +347,33 @@ ResourcePool* File::Pool( )
 	return &m_pool ;
 }
 
-void File::CacheObject( const Object& obj )
+void File::CacheObject( const Object& obj, std::map<Ref, ObjWrapper*>& links )
 {
 	if ( obj.IsType<Ref>() )
 	{
 		const Ref& link = obj.As<Ref>() ;
-		if ( m_pool.objs.IsExist( link ) )
-			m_pool.objs.Add( link, new ObjWrapper(ReadObj( link )) ) ; 
+		
+		ObjWrapper *wp = m_pool.objs.Find( link ) ;
+		if ( wp == 0 )
+		{
+			wp = new ObjWrapper( ReadObj( link ) ) ;
+			m_pool.objs.Add( link, wp ) ; 
+		}
+		else
+		{
+			assert( wp->UseCount() > 1 ) ;
+		}
+
+		// the newly added ref count belongs to "links"
+		links.insert( std::make_pair( link, wp ) ) ;
 	}
 }
 
-void File::ReadObjectLinks( const Object& obj )
+void File::ReadObjectLinks(
+	const Object& obj,
+	std::map<Ref, ObjWrapper*>& links )
 {
-	ForEachObj( obj, boost::bind( &File::CacheObject, this, _1 ) ) ;
+	ForEachObj( obj, boost::bind( &File::CacheObject, this, _1, links ) ) ;
 }
 
 } // end of namespace

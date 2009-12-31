@@ -1,4 +1,4 @@
-/***************************************************************************
+/***************************************************************************\
  *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
@@ -15,56 +15,54 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+\***************************************************************************/
 
-/*!
-	\file	MockFile.hh
-	\brief	definition the MockFile class
-	\date	Sat Mar 22 2008
+/**
+	\file	CompleteObj.cc
+	\brief	implementation of the CompleteObj class
+	\date	Jan 1, 2010
 	\author	Nestal Wan
 */
 
-#ifndef __PDFUT_MOCK_FILE_HEADER_INCLUDED__
-#define __PDFUT_MOCK_FILE_HEADER_INCLUDED__
+#include "CompleteObj.hh"
 
-#include "file/IFile.hh"
+#include "IFile.hh"
 
-#include "file/ResourcePool.hh"
+#include "core/Dictionary.hh"
+#include "core/Array.hh"
 
-#include "core/Object.hh"
-#include "core/Ref.hh"
+namespace pdf {
 
-#include <map>
-
-/*!	\brief	brief description
-	
-	this class represents
+/**	constructor
 */
-class MockFile : public pdf::IFile
+CompleteObj::CompleteObj( )
 {
-private :
-	std::map<pdf::Ref, pdf::Object>	m_map ;
+}
 
-	std::size_t	m_counter ;
+void CompleteObj::Read( Dictionary& dict, IFile *file )
+{
+	assert( file != 0 ) ;
+
+	m_obj = Dictionary( ) ;
+	m_obj.Swap( dict ) ;
 	
-	static const pdf::Object m_null ;
+	file->ReadObjectLinks( m_obj, m_refs ) ;
+}
 
-	pdf::ResourcePool	m_pool ;
+void CompleteObj::Read( Array& array, IFile *file )
+{
+	assert( file != 0 ) ;
 
-public :
-	MockFile( ) ;
+	m_obj = Array( ) ;
+	m_obj.Swap( array ) ;
 	
-	void AddObj( const pdf::Ref& link, const pdf::Object& obj ) ;
-	const pdf::Object& Find( const pdf::Ref& link ) const ;
-	
-	pdf::Object ReadObj( const pdf::Ref& obj ) ;
-	pdf::Ref WriteObj( const pdf::Object& obj ) ;
-	pdf::Ref AllocLink( ) ;
-	void WriteObj( const pdf::Object& obj, const pdf::Ref& link ) ;
-	pdf::ResourcePool* Pool( ) ;
-	void ReadObjectLinks(
-		const pdf::Object& obj,
-		std::map<pdf::Ref, pdf::ObjWrapper*>& links ) ;
-} ;
+	file->ReadObjectLinks( m_obj, m_refs ) ;
+}
 
-#endif
+Ref CompleteObj::Write( IFile *file ) const
+{
+	// TODO: implement this
+	return Ref( ) ;
+}
+
+} // end of namespace

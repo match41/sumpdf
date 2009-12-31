@@ -1,4 +1,4 @@
-/***************************************************************************
+/***************************************************************************\
  *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
@@ -15,56 +15,31 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+\***************************************************************************/
 
-/*!
-	\file	MockFile.hh
-	\brief	definition the MockFile class
-	\date	Sat Mar 22 2008
-	\author	Nestal Wan
+/**
+    \file	ObjWrapper.hh
+    \brief	definition the ObjWrapper class
+    \date	Jan 1, 2010
+    \author	Nestal Wan
 */
 
-#ifndef __PDFUT_MOCK_FILE_HEADER_INCLUDED__
-#define __PDFUT_MOCK_FILE_HEADER_INCLUDED__
+#ifndef __PDF_OBJWRAPPER_HH_EADER_INCLUDED__
+#define __PDF_OBJWRAPPER_HH_EADER_INCLUDED__
 
-#include "file/IFile.hh"
+namespace pdf {
 
-#include "file/ResourcePool.hh"
+template <typename T>
+class RefCounterWrapper ;
 
-#include "core/Object.hh"
-#include "core/Ref.hh"
+class Object ;
 
-#include <map>
+/**	\brief	brief description
 
-/*!	\brief	brief description
-	
-	this class represents
+	The ObjWrapper class represent
 */
-class MockFile : public pdf::IFile
-{
-private :
-	std::map<pdf::Ref, pdf::Object>	m_map ;
+typedef RefCounterWrapper<Object>	ObjWrapper ;
 
-	std::size_t	m_counter ;
-	
-	static const pdf::Object m_null ;
+} // end of namespace
 
-	pdf::ResourcePool	m_pool ;
-
-public :
-	MockFile( ) ;
-	
-	void AddObj( const pdf::Ref& link, const pdf::Object& obj ) ;
-	const pdf::Object& Find( const pdf::Ref& link ) const ;
-	
-	pdf::Object ReadObj( const pdf::Ref& obj ) ;
-	pdf::Ref WriteObj( const pdf::Object& obj ) ;
-	pdf::Ref AllocLink( ) ;
-	void WriteObj( const pdf::Object& obj, const pdf::Ref& link ) ;
-	pdf::ResourcePool* Pool( ) ;
-	void ReadObjectLinks(
-		const pdf::Object& obj,
-		std::map<pdf::Ref, pdf::ObjWrapper*>& links ) ;
-} ;
-
-#endif
+#endif // OBJWRAPPER_HH_

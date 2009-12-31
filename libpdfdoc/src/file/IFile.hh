@@ -27,6 +27,10 @@
 #ifndef __PDF_IFILE_HEADER_INCLUDED__
 #define __PDF_IFILE_HEADER_INCLUDED__
 
+#include "core/ObjWrapper.hh"
+
+#include <map>
+
 namespace pdf {
 
 class Object ;
@@ -52,7 +56,9 @@ public :
 	virtual void WriteObj( const Object& obj, const Ref& link ) = 0 ;
 
 	virtual ResourcePool* Pool( ) = 0 ;
-	virtual void ReadObjectLinks( const Object& obj ) = 0 ;
+	virtual void ReadObjectLinks(
+		const Object& obj,
+		std::map<Ref, ObjWrapper*>& links ) = 0 ;
 } ;
 
 } // end of namespace
