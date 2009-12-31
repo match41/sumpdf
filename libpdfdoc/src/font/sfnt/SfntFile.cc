@@ -26,9 +26,6 @@
 
 #include "SfntFile.hh"
 
-#include "font/ftwrap/Face.hh"
-#include "font/ftwrap/FaceBody.hh"
-
 extern "C"
 {
 	#include "sfnt.h"
@@ -44,9 +41,8 @@ namespace
 	}
 }
 
-SfntFile::SfntFile( const ft::Face& face )
-	: m_sfnt(reinterpret_cast<Impl*>(
-		::sfnt_open( face.Pimpl()->m_face, 0xffffffff ) ))
+SfntFile::SfntFile( FT_Face face )
+	: m_sfnt(reinterpret_cast<Impl*>( ::sfnt_open( face, 0xffffffff ) ) )
 {
 }
 

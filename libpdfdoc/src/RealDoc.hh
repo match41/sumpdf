@@ -36,7 +36,9 @@
 
 // freetype library is optional
 #ifdef HAVE_FREETYPE
-#include "font/ftwrap/Library.hh"
+	// freetype headers
+	#include <ft2build.h>
+	#include FT_FREETYPE_H
 #endif
 
 #include <string>
@@ -77,8 +79,9 @@ private :
 	
 #ifdef HAVE_FREETYPE
 	//! Freetype library for loading the font files.
-	ft::Library	m_ft_lib ;
+	FT_Library			m_ft_lib ;
 #endif
+
 
 	struct Info_ : public DocInfo
 	{

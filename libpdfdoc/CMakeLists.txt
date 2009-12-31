@@ -45,7 +45,6 @@ set( STRM_DIR		src/stream/ )
 set( IMG_DIR		src/image/ )
 set( UTIL_DIR		src/util/ )
 set( FONT_DIR		src/font/ )
-set( FT_DIR			${FONT_DIR}/ftwrap )
 
 ###############################################################################
 # headers
@@ -107,12 +106,6 @@ set( FONT_HDRS		${FONT_DIR}/Types.hh
 					${FONT_DIR}/sfnt/system.h
 					${FONT_DIR}/sfnt/mfileio.h
 					${FONT_DIR}/sfnt/numbers.h )
-
-set( FT_HDRS		${FT_DIR}/Face.hh
-					${FT_DIR}/Glyph.hh
-					${FT_DIR}/Library.hh
-					${FT_DIR}/Exception.hh
-					${FT_DIR}/ErrorTable.hh )
 
 set( INCLUDE_HDRS	include/Doc.hh
 					include/libpdfdoc.hh
@@ -215,16 +208,6 @@ if ( FREETYPE_FOUND )
                     ${FONT_DIR}/SimpleFont.cc )
     set( FONT_HDRS  ${FONT_HDRS}
                     ${FONT_DIR}/SimpleFont.hh )
-    set( FT_SRCS	${FT_DIR}/Face.cc
-					${FT_DIR}/Glyph.cc
-					${FT_DIR}/Library.cc
-					${FT_DIR}/Exception.cc
-					${FT_DIR}/ErrorTable.cc )
-    set( FT_HDRS	${FT_DIR}/Face.hh
-					${FT_DIR}/Glyph.hh
-					${FT_DIR}/Library.hh
-					${FT_DIR}/Exception.hh
-					${FT_DIR}/ErrorTable.hh )
     set( OPT_LIBS   ${OPT_LIBS}
                     ${FREETYPE_LIBRARIES} )
     set( OPT_INCS   ${OPT_INCS}
@@ -263,14 +246,14 @@ endif ( JPEG_FOUND )
 ###############################################################################
 set( HDRS	${BASE_HDRS}
 			${PAGE_HDRS} ${FILE_HDRS} ${CORE_HDRS} ${IMG_HDRS}
-			${FONT_HDRS} ${FT_HDRS} ${STRM_HDRS} ${INCLUDE_HDRS} )
+			${FONT_HDRS} ${STRM_HDRS} ${INCLUDE_HDRS} )
 
 ###############################################################################
 # all sources
 ###############################################################################
 set( SRCS	${BASE_SRCS}
 			${PAGE_SRCS} ${FILE_SRCS} ${CORE_SRCS} ${IMG_SRCS} ${UTIL_SRCS}
-			${FONT_SRCS} ${FT_SRCS} ${STRM_SRCS} )
+			${FONT_SRCS} ${STRM_SRCS} )
 
 ###############################################################################
 # libpdfdoc library
@@ -287,7 +270,6 @@ SOURCE_GROUP( "file"		FILES ${FILE_SRCS} ${FILE_HDRS} )
 SOURCE_GROUP( "core"		FILES ${CORE_SRCS} ${CORE_HDRS} )
 SOURCE_GROUP( "util"		FILES ${UTIL_SRCS} ${UTIL_HDRS} )
 SOURCE_GROUP( "font"		FILES ${FONT_SRCS} ${FONT_HDRS} )
-SOURCE_GROUP( "font\\ftwrap"	FILES ${FT_SRCS} ${FT_HDRS} )
 SOURCE_GROUP( "image"		FILES ${IMG_SRCS} ${IMG_HDRS} )
 SOURCE_GROUP( "stream"		FILES ${STRM_SRCS} ${STRM_HDRS} )
 SOURCE_GROUP( "base"		FILES ${BASE_SRCS} ${BASE_HDRS} )

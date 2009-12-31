@@ -50,6 +50,11 @@ void SimpleFontTest::TestSimple( )
 		0,
 		&face ) ;
 	
-	pdf::SimpleFont subject( face ) ;
-	CPPUNIT_ASSERT( subject.BaseName( ) == "FreeMonoBoldOblique" ) ;
+	{
+		pdf::SimpleFont subject( face ) ;
+		CPPUNIT_ASSERT( subject.BaseName( ) == "FreeMonoBoldOblique" ) ;
+	}
+	
+	::FT_Done_Face( face ) ;
+	::FT_Done_FreeType( lib ) ;
 }

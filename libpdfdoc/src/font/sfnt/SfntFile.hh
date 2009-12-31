@@ -29,17 +29,16 @@
 
 #include <memory>
 
-namespace ft
-{
-	class Face ;
-}
+// freetype headers
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 namespace tex {
 
 class SfntFile
 {
 public:
-	SfntFile( const ft::Face& face ) ;
+	SfntFile( FT_Face face ) ;
 	~SfntFile( ) ;
 
 private :

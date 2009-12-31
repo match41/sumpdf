@@ -49,8 +49,9 @@ namespace pdf {
 const std::string RealDoc::Info_::m_empty ;
 
 RealDoc::RealDoc( )
-	: m_catalog( new Catalog )		// not exception safe
+	: m_catalog( new Catalog )	// not exception safe
 {
+	::FT_Init_FreeType( &m_ft_lib ) ;
 }
 
 /*!	The destructor will delete all the elements contained. It traverses the
@@ -58,6 +59,8 @@ RealDoc::RealDoc( )
 */
 RealDoc::~RealDoc( )
 {
+	::FT_Done_FreeType( m_ft_lib ) ;
+
 	// traverse the document to get all elements
 	delete m_catalog ;
 }
