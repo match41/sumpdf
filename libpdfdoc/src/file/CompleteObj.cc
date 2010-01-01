@@ -36,7 +36,7 @@
 #include <boost/bind.hpp>
 
 #include <algorithm>
-//#include <iostream>
+#include <iostream>
 
 namespace pdf {
 
@@ -78,7 +78,10 @@ void CompleteObj::Read( Dictionary& dict, IFile *file )
 	file->ReadObjectLinks( m_self, m_refs ) ;
 }
 
-void CompleteObj::ReplaceReference( Object& obj, IFile *file ) const
+void CompleteObj::ReplaceReference(
+	Object& obj,
+	IFile *file,
+	std::map<ObjWrapper*, Ref>& written ) const
 {
 	assert( file != 0 ) ;
 	
@@ -89,7 +92,20 @@ void CompleteObj::ReplaceReference( Object& obj, IFile *file ) const
 		{
 			assert( i->second != 0 ) ;
 			
-			obj = file->WriteObj( i->second->Get( ) ) ;
+			std::map<ObjWrapper*, Ref>::iterator j = written.find( i->second ) ;
+			if ( j == written.end() )
+			{
+				Ref link = file->AllocLink( ) ;
+				written.insert( std::make_pair( i->second, link ) ) ;
+
+				Object temp = i->second->Get( ) ;
+				ReplaceChildReference( temp, file, written ) ;
+				file->WriteObj( temp, link ) ;
+				
+				obj = link ;
+			}
+			else
+				obj = j->second ;
 		}
 	}
 }
@@ -98,15 +114,24 @@ Ref CompleteObj::Write( IFile *file ) const
 {
 	assert( file != 0 ) ;
 
+	std::map<ObjWrapper*, Ref> written ;
 	Object obj( m_self ) ;
+	ReplaceChildReference( obj, file, written ) ;
+	return file->WriteObj( obj ) ;
+}
+
+void CompleteObj::ReplaceChildReference(
+	Object& obj,
+	IFile *file,
+	std::map<ObjWrapper*, Ref>& written ) const
+{
 	ForEachObj( obj,
 		boost::bind(
 			&CompleteObj::ReplaceReference,
 			this,
 			_1,
-			file ) ) ; 
-	
-	return file->WriteObj( obj ) ;
+			file,
+			written) ) ; 
 }
 
 const Object& CompleteObj::Find( const Ref& link ) const

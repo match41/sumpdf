@@ -42,11 +42,13 @@ public :
 
 	// declare suit function
 	CPPUNIT_TEST_SUITE( SimpleFontTest ) ;
-		CPPUNIT_TEST( TestSimple );
+		CPPUNIT_TEST( TestSimple ) ;
+//		CPPUNIT_TEST( TestRead ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
 private :
 	void TestSimple( ) ;
+//	void TestRead( ) ;
 } ;
 
 #endif

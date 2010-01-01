@@ -24,8 +24,8 @@
     \author	Nestal Wan
 */
 
-#ifndef __PDF_COMPLETEOBJ_HH_EADER_INCLUDED__
-#define __PDF_COMPLETEOBJ_HH_EADER_INCLUDED__
+#ifndef __PDF_COMPLETEOBJ_HEADER_INCLUDED__
+#define __PDF_COMPLETEOBJ_HEADER_INCLUDED__
 
 #include "core/Object.hh"
 #include "core/ObjWrapper.hh"
@@ -62,7 +62,14 @@ public :
 	const Object& Find( const Ref& link ) const ;
 
 private :
-	void ReplaceReference( Object& obj, IFile *file ) const ;
+	void ReplaceChildReference(
+		Object& obj,
+		IFile *file,
+		std::map<ObjWrapper*, Ref>& written ) const ;
+	void ReplaceReference(
+		Object& obj,
+		IFile *file,
+		std::map<ObjWrapper*, Ref>& written ) const ;
 
 private :
 	Dictionary	m_self ;
@@ -73,4 +80,4 @@ private :
 
 } // end of namespace
 
-#endif // COMPLETEOBJ_HH_
+#endif // __PDF_COMPLETEOBJ_HEADER_INCLUDED__

@@ -74,32 +74,33 @@ SimpleFont::SimpleFont( FT_Face face )
 	assert( (int)m_widths.size() == m_last_char - m_first_char + 1 ) ;
 }
 
-SimpleFont::SimpleFont( const Object& self, IFile *file )
+SimpleFont::SimpleFont( Dictionary& self, IFile *file )
 {
-	Dictionary dict = DeRefObj<Dictionary>( file, self ) ;
-
 	try
 	{
-		m_type	= SubType( dict["Subtype"].As<Name>() ) ;
+		Name subtype ;
+		if ( self.Extract( "Subtype",	subtype ) )
+			m_type	= SubType( subtype ) ;
 
-		dict.Extract( Name("BaseFont"),		m_base_font ) ;
-		dict.Extract( Name("FirstChar"),	m_first_char ) ;
-		dict.Extract( Name("LastChar"),		m_last_char ) ;
+		self.Extract( Name("BaseFont"),		m_base_font ) ;
+		self.Extract( Name("FirstChar"),	m_first_char ) ;
+		self.Extract( Name("LastChar"),		m_last_char ) ;
 
 		// width is optional
 		Array widths ;
-		if ( Detach( file, dict, "Widths", widths ) )
+		if ( Detach( file, self, "Widths", widths ) )
 			m_widths.assign( widths.begin(), widths.end() ) ;
 
-		m_encoding		= dict["Encoding"] ;
-		m_descriptor	= dict["FontDescriptor"] ;
-		m_to_unicode	= dict["ToUnicode"] ;
+		self.Extract( "Encoding",	m_encoding ) ;
+		self.Extract( "ToUnicode",	m_to_unicode ) ;
+		
+		m_self.Read( self, file ) ;
 	}
 	catch ( Exception& e )
 	{
 		std::ostringstream msg ;
 		msg << "cannot read font:\n" << e.what( ) << "\n"
-		    << "Font Dictionary: \n" << dict << "\n" ;
+		    << "Font Dictionary: \n" << self << "\n" ;
 		throw Exception( msg.str( ) ) ;
 	}
 }
@@ -152,26 +153,26 @@ void SimpleFont::GetWidth(
 
 Ref SimpleFont::Write( IFile *file ) const
 {
-	Dictionary dict ;
-	dict["Type"]		= Name( "Font" ) ;
-	dict["Subtype"]		= SubType( m_type ) ;
-	dict["BaseFont"]	= m_base_font ;
-	dict["FirstChar"]	= m_first_char ;
-	dict["LastChar"]	= m_last_char ;
+	CompleteObj dict( m_self ) ;
+	dict.Get()["Type"]		= Name( "Font" ) ;
+	dict.Get()["Subtype"]	= SubType( m_type ) ;
+	dict.Get()["BaseFont"]	= m_base_font ;
+	dict.Get()["FirstChar"]	= m_first_char ;
+	dict.Get()["LastChar"]	= m_last_char ;
 
 	if ( !m_encoding.IsNull() )
-		dict["Encoding"]		= m_encoding ;
+		dict.Get()["Encoding"]		= m_encoding ;
 
 	if ( !m_widths.empty( ) )
-		dict["Widths"]			= Array( m_widths.begin(), m_widths.end() ) ;
+		dict.Get()["Widths"]		= Array( m_widths.begin(), m_widths.end() ) ;
 
-	if ( !m_descriptor.IsNull( ) )
-		dict["FontDescriptor"]	= m_descriptor ;
+//	if ( !m_descriptor.IsNull( ) )
+//		dict["FontDescriptor"]	= m_descriptor ;
 
 	if ( !m_to_unicode.IsNull( ) )
-		dict["ToUnitcode"]		= file->WriteObj( m_to_unicode ) ;
+		dict.Get()["ToUnitcode"]	= file->WriteObj( m_to_unicode ) ;
 
-	return file->WriteObj( dict ) ;
+	return dict.Write( file ) ;
 }
 
 const Name& SimpleFont::SubType( Type t )
@@ -199,7 +200,7 @@ std::string SimpleFont::BaseName( ) const
 	return m_base_font.Str( ) ;
 }
 
-BaseFont* CreateFont( const Object& obj, IFile *file )
+BaseFont* CreateFont( Dictionary& obj, IFile *file )
 {
 	return new SimpleFont( obj, file ) ;
 }

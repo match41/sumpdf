@@ -96,24 +96,25 @@ void Resources::ReadFontDict( Dictionary& self, IFile *file )
 	if ( Detach( file, self, "Font", dict ) )
 	{
 		FontPool *font_pool = &file->Pool( )->fonts ;
-		for ( Dictionary::const_iterator i  = dict.begin( ) ;
-										 i != dict.end( ) ; ++i )
+		for ( Dictionary::iterator i  = dict.begin( ) ; i != dict.end( ) ; ++i )
 		{
 			BaseFont *font = 0 ;
 			if ( i->second.IsType<Ref>() )
 			{
-				font = font_pool->Find( i->second ) ;
+				const Ref& link = i->second.As<Ref>() ;
+				font = font_pool->Find( link ) ;
 				if ( font == 0 )
 				{
-					font = CreateFont( i->second, file ) ; 
-					font_pool->Add( i->second, font ) ;
+					Dictionary self = file->ReadObj( link ) ;
+					font = CreateFont( self, file ) ; 
+					font_pool->Add( link, font ) ;
 				}
 				assert( font != 0 ) ;
 			}
 			
 			// the font is not an indirect object, so it can't be shared.
-			else
-				font = CreateFont( i->second, file ) ;
+			else if ( i->second.IsType<Dictionary>() )
+				font = CreateFont( i->second.As<Dictionary>(), file ) ;
 
 			m_fonts.insert( std::make_pair( i->first, font ) ) ;
 		}
