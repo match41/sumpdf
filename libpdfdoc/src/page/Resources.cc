@@ -58,36 +58,42 @@ Resources::~Resources( )
 		bind( &BaseFont::Release, bind( &FontMap::value_type::second, _1 ) ) ) ;
 }
 
-void Resources::Read( const Object& self, IFile *file )
+void Resources::Read( const Dictionary& dict, IFile *file )
 {
-	m_self = DeRefObj<Dictionary>( file, self ) ;
+	Dictionary self = dict ;
 
+	Dictionary ext_gstate ;
 	Array proc_set ;
-	Detach( file, m_self, "ExtGState",	m_ext_gstate ) ;
-	Detach( file, m_self, "ProcSet",	proc_set ) ;
+	Detach( file, self, "ExtGState",	ext_gstate ) ;
+	Detach( file, self, "ProcSet",		proc_set ) ;
 	m_proc_set.assign( proc_set.begin( ), proc_set.end( ) ) ;
 
-	ReadFontDict( file ) ;
+	ReadFontDict( self, file ) ;
 //	ReadSubDict( "XObject", file, m_xobjs ) ;
+
+	m_self.Read( self, file ) ;
+	m_ext_gstate.Read( ext_gstate, file ) ;
 }
 
 Ref Resources::Write( IFile *file ) const
 {
-    Dictionary dict( m_self ) ;
+	CompleteObj copy( m_self ) ;
+	Dictionary& dict = copy.Get() ;
+    
 	dict["ProcSet"]	= Array( m_proc_set.begin( ), m_proc_set.end( ) ) ;
 	dict["Font"]	= WriteFontDict( file ) ;
 //	dict["XObject"]	= WriteSubDict( m_xobjs, repo ) ;
 
-    return file->WriteObj( dict ) ;
+    return copy.Write( file ) ;
 }
 
-void Resources::ReadFontDict( IFile *file )
+void Resources::ReadFontDict( Dictionary& self, IFile *file )
 {
 	assert( file != 0 ) ;
 	assert( file->Pool() != 0 ) ;
 
 	Dictionary dict ;
-	if ( Detach( file, m_self, "Font", dict ) )
+	if ( Detach( file, self, "Font", dict ) )
 	{
 		FontPool *font_pool = &file->Pool( )->fonts ;
 		for ( Dictionary::const_iterator i  = dict.begin( ) ;

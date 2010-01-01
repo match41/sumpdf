@@ -57,7 +57,7 @@ set( PAGE_HDRS		${PAGE_DIR}/RealPage.hh
 					${PAGE_DIR}/XObject.hh
 					${PAGE_DIR}/RealImage.hh )
 
-set( FILE_HDRS		${FILE_DIR}/File.hh
+set( FILE_HDRS		${FILE_DIR}/RealFile.hh
 					${FILE_DIR}/IFile.hh
 					${FILE_DIR}/Catalog.hh
 					${FILE_DIR}/ObjectReader.hh
@@ -139,7 +139,7 @@ set( PAGE_SRCS  	${PAGE_DIR}/RealPage.cc
 					${PAGE_DIR}/TextOp.cc
 					${PAGE_DIR}/PathSegment.cc )
 
-set( FILE_SRCS		${FILE_DIR}/File.cc
+set( FILE_SRCS		${FILE_DIR}/RealFile.cc
 					${FILE_DIR}/IFile.cc
 					${FILE_DIR}/Catalog.cc
 					${FILE_DIR}/CompleteObj.cc
@@ -397,7 +397,7 @@ set( UT_SRCS	test/core/TokenTest.cc
 				test/page/ResourcesTest.cc
 				test/page/XObjectTest.cc
 				
-				test/file/FileTest.cc
+				test/file/RealFileTest.cc
 				test/file/CatalogTest.cc
 				test/file/RefObjMapTest.cc
 				test/file/CompleteObjTest.cc

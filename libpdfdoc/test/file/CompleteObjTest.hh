@@ -42,11 +42,11 @@ public :
 
 	// declare suit function
 	CPPUNIT_TEST_SUITE( CompleteObjTest ) ;
-		CPPUNIT_TEST( TestRead ) ;
+		CPPUNIT_TEST( TestReadWrite ) ;
 	CPPUNIT_TEST_SUITE_END();
 
 private :
-	void TestRead( ) ;
+	void TestReadWrite( ) ;
 } ;
 
 #endif // COMPLETEOBJTEST_HH_

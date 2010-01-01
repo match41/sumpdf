@@ -148,6 +148,12 @@ bool Object::IsNull( ) const
 	return Type() == null ;
 }
 
+const Object& Object::NullObj()
+{
+	static const Object null ;
+	return null ;
+}
+
 template <typename T>
 bool Object::DecodeObject( TokenSrc& src, const Token& tok )
 {

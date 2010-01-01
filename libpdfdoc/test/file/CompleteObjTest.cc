@@ -27,6 +27,9 @@
 #include "CompleteObjTest.hh"
 
 #include "file/CompleteObj.hh"
+#include "file/RealFile.hh"
+
+#include "mock/MockFile.hh"
 
 /**	constructor
 */
@@ -34,6 +37,26 @@ CompleteObjTest::CompleteObjTest( )
 {
 }
 
-void CompleteObjTest::TestRead( )
+void CompleteObjTest::TestReadWrite( )
 {
+	using namespace pdf ;
+
+	// open expected file to compare and verify
+	std::ifstream file( (std::string(TEST_DATA_DIR) +
+	                    "FileTestSimple.pdf").c_str( ),
+	                    std::ios::in | std::ios::binary ) ;
+	RealFile f( &file ) ;
+	Dictionary root = f.ReadObj( f.Root() ) ;
+	
+	CompleteObj obj ;
+	obj.Read( root, &f ) ;
+	
+	MockFile dest ;
+	
+	// bump the link value up by 5
+	for ( int i = 0 ; i < 5 ; ++i )
+		dest.AllocLink( ) ;
+	
+	Ref r = obj.Write( &dest ) ;
+	CPPUNIT_ASSERT( r.ID() > 5 ) ;
 }

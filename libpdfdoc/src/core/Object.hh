@@ -172,6 +172,8 @@ public :
 
 	bool IsNull( ) const ;
 	
+	static const Object& NullObj() ;
+	
 	ObjType Type( ) const ;
 	
 	/*!	\brief	Gets the underlying value in the object variant

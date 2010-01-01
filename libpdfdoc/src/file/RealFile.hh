@@ -51,11 +51,11 @@ class Stream ;
 	the end of the PDF file called the trailer. This class is responsible for
 	decoding the file trailer dictionary and the cross reference table.
 */
-class File : public IFile
+class RealFile : public IFile
 {
 public :
-	explicit File( std::istream *is ) ;
-	explicit File( std::ostream *os ) ;
+	explicit RealFile( std::istream *is ) ;
+	explicit RealFile( std::ostream *os ) ;
 	
 	void WriteTrailer( const Ref& catalog, const Ref& info ) ;
 	Ref Root( ) const ;

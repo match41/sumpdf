@@ -42,13 +42,13 @@ namespace pdf
 	
 	this class represents
 */
-class FileTest : public CppUnit::TestFixture
+class RealFileTest : public CppUnit::TestFixture
 {
 public :
-	FileTest( ) ;
+	RealFileTest( ) ;
 
 	// declare suit function
-	CPPUNIT_TEST_SUITE( FileTest ) ;
+	CPPUNIT_TEST_SUITE( RealFileTest ) ;
 		CPPUNIT_TEST( TestSimple ) ;
 		CPPUNIT_TEST( TestReadStream ) ;
 		CPPUNIT_TEST( TestReadObjectLinks ) ;

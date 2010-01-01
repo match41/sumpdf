@@ -29,6 +29,7 @@
 
 #include "core/Dictionary.hh"
 #include "core/Name.hh"
+#include "file/CompleteObj.hh"
 
 #include <vector>
 
@@ -54,20 +55,20 @@ public :
 
 	Name AddFont( BaseFont *font ) ;
 
-	void Read( const Object& self, IFile *file ) ;
+	void Read( const Dictionary& self_obj, IFile *file ) ;
 	Ref  Write( IFile *file ) const ;
 
 	BaseFont* FindFont( const Name& name ) ;
 
 private :
-	void ReadFontDict( IFile *file ) ;
+	void ReadFontDict( Dictionary& self, IFile *file ) ;
 	Ref WriteFontDict( IFile *file ) const ;
 
 	XObject* ReadXObj( const Ref& link ) ;
 
 private :
-	Dictionary			m_self ;
-	Dictionary			m_ext_gstate ;
+	CompleteObj		m_self ;
+	CompleteObj		m_ext_gstate ;
 
 	typedef std::map<Name, BaseFont*> FontMap ;
 	FontMap				m_fonts ;

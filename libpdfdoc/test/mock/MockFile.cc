@@ -26,8 +26,6 @@
 
 #include "MockFile.hh"
 
-const pdf::Object MockFile::m_null ;
-
 MockFile::MockFile( )
 	: m_counter( 0 )
 {
@@ -63,7 +61,7 @@ void MockFile::WriteObj( const pdf::Object& obj, const pdf::Ref& link )
 const pdf::Object& MockFile::Find( const pdf::Ref& link ) const
 {
 	std::map<pdf::Ref, pdf::Object>::const_iterator i = m_map.find( link ) ;
-	return i != m_map.end( ) ? i->second : m_null ;
+	return i != m_map.end( ) ? i->second : pdf::Object::NullObj() ;
 }
 
 pdf::ResourcePool* MockFile::Pool( )

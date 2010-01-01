@@ -29,6 +29,7 @@
 
 #include "core/Object.hh"
 #include "core/ObjWrapper.hh"
+#include "core/Dictionary.hh"
 
 #include <map>
 
@@ -49,18 +50,22 @@ class CompleteObj
 {
 public :
 	CompleteObj( ) ;
+	CompleteObj( const CompleteObj& other ) ;
+	~CompleteObj( ) ;
 	
-	void Read( Object& dict, IFile *file ) ;
+	void Read( Dictionary& dict, IFile *file ) ;
 	Ref Write( IFile *file ) const ;
 
-	Object& Get( ) ;
-	const Object& Get( ) const ;
+	Dictionary& Get( ) ;
+	const Dictionary& Get( ) const ;
+
+	const Object& Find( const Ref& link ) const ;
 
 private :
 	void ReplaceReference( Object& obj, IFile *file ) const ;
 
 private :
-	Object	m_obj ;
+	Dictionary	m_self ;
 	
 	typedef std::map<Ref, ObjWrapper*> ObjMap ;
 	ObjMap	m_refs ;

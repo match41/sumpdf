@@ -154,8 +154,7 @@ bool Dictionary::operator==( const Dictionary& dict ) const
 
 const Object& Dictionary::Default( )
 {
-	static const Object null_obj ;
-	return null_obj ;
+	return Object::NullObj() ;
 }
 
 /*!	\brief	look-up the dictionary

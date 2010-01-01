@@ -47,8 +47,6 @@ private :
 
 	std::size_t	m_counter ;
 	
-	static const pdf::Object m_null ;
-
 	pdf::ResourcePool	m_pool ;
 
 public :

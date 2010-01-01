@@ -30,9 +30,13 @@
 
 #include "core/TraverseObject.hh"
 #include "core/ObjWrapper.hh"
+#include "util/Exception.hh"
 #include "util/RefCounterWrapper.hh"
 
 #include <boost/bind.hpp>
+
+#include <algorithm>
+//#include <iostream>
 
 namespace pdf {
 
@@ -42,13 +46,36 @@ CompleteObj::CompleteObj( )
 {
 }
 
-void CompleteObj::Read( Object& obj, IFile *file )
+CompleteObj::CompleteObj( const CompleteObj& other )
+	: m_self( other.m_self ),
+	  m_refs( other.m_refs )
+{
+	std::for_each(
+		m_refs.begin(),
+		m_refs.end(),
+		boost::bind( &ObjWrapper::AddRef,
+			boost::bind( &ObjMap::value_type::second,
+				_1 ) ) ) ;
+}
+
+CompleteObj::~CompleteObj( )
+{
+	std::for_each(
+		m_refs.begin(),
+		m_refs.end(),
+		boost::bind( &ObjWrapper::Release,
+			boost::bind( &ObjMap::value_type::second,
+				_1 ) ) ) ;
+}
+
+void CompleteObj::Read( Dictionary& dict, IFile *file )
 {
 	assert( file != 0 ) ;
 
-	m_obj.Swap( obj ) ;
-	
-	file->ReadObjectLinks( m_obj, m_refs ) ;
+	m_self.swap( dict ) ;
+	m_refs.clear( ) ;
+
+	file->ReadObjectLinks( m_self, m_refs ) ;
 }
 
 void CompleteObj::ReplaceReference( Object& obj, IFile *file ) const
@@ -58,10 +85,12 @@ void CompleteObj::ReplaceReference( Object& obj, IFile *file ) const
 	if ( obj.IsType<Ref>() )
 	{
 		ObjMap::const_iterator i = m_refs.find( obj ) ;
-		assert( i != m_refs.end() ) ;
-		assert( i->second != 0 ) ;
-		
-		obj = file->WriteObj( i->second->Get( ) ) ;
+		if ( i != m_refs.end() )
+		{
+			assert( i->second != 0 ) ;
+			
+			obj = file->WriteObj( i->second->Get( ) ) ;
+		}
 	}
 }
 
@@ -69,7 +98,7 @@ Ref CompleteObj::Write( IFile *file ) const
 {
 	assert( file != 0 ) ;
 
-	Object obj( m_obj ) ;
+	Object obj( m_self ) ;
 	ForEachObj( obj,
 		boost::bind(
 			&CompleteObj::ReplaceReference,
@@ -78,6 +107,24 @@ Ref CompleteObj::Write( IFile *file ) const
 			file ) ) ; 
 	
 	return file->WriteObj( obj ) ;
+}
+
+const Object& CompleteObj::Find( const Ref& link ) const
+{
+	ObjMap::const_iterator i = m_refs.find( link ) ;
+	
+	assert( i == m_refs.end() || i->second != 0 ) ; 	
+	return i != m_refs.end() ? i->second->Get() : Object::NullObj() ;
+}
+
+Dictionary& CompleteObj::Get( )
+{
+	return m_self ;
+}
+
+const Dictionary& CompleteObj::Get( ) const
+{
+	return m_self ;
 }
 
 } // end of namespace

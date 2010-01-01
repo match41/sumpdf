@@ -24,7 +24,7 @@
 	\author	Nestal Wan
 */
 
-#include "File.hh"
+#include "RealFile.hh"
 
 #include "core/Array.hh"
 #include "core/Object.hh"
@@ -54,7 +54,7 @@ namespace pdf {
 	\param	is	istream for the PDF file. It must be opened with the
 				std::ios::binary.
 */
-File::File( std::istream *is )
+RealFile::RealFile( std::istream *is )
 	: m_objs( 1, 0 ), m_in( is ), m_out( 0 )
 {
 	ReadXRef( ReadXRefOffset( ), m_trailer ) ;
@@ -75,7 +75,7 @@ File::File( std::istream *is )
 	\param	os	ostream for the PDF file. It must be opened with the
 				std::ios::binary.
 */
-File::File( std::ostream *os )
+RealFile::RealFile( std::ostream *os )
 	: m_objs( 1, 0 ), m_in( 0 ), m_out( os )
 {
 	assert( m_out != 0 ) ;
@@ -93,7 +93,7 @@ File::File( std::ostream *os )
 	in the file.
 	\param	catalog		reference to the document catalog
 */
-void File::WriteTrailer( const Ref& catalog, const Ref& info )
+void RealFile::WriteTrailer( const Ref& catalog, const Ref& info )
 {
 	assert( m_out != 0 ) ;
 
@@ -119,7 +119,7 @@ void File::WriteTrailer( const Ref& catalog, const Ref& info )
 	       << "\n%%EOF\n" ;
 }
 
-Object File::ReadObj( const Ref& obj )
+Object RealFile::ReadObj( const Ref& obj )
 {
 	assert( m_in != 0 ) ;
 
@@ -165,7 +165,7 @@ Object File::ReadObj( const Ref& obj )
 	throw ParseError( ss.str() ) ;
 }
 
-Stream File::ReadStream( Dictionary& dict )
+Stream RealFile::ReadStream( Dictionary& dict )
 {
 	assert( m_in != 0 ) ;
 
@@ -188,21 +188,21 @@ Stream File::ReadStream( Dictionary& dict )
 	return Stream( m_in->rdbuf(), m_in->tellg( ), dict ) ;
 }
 
-Ref File::WriteObj( const Object& obj )
+Ref RealFile::WriteObj( const Object& obj )
 {
 	Ref r = AllocLink( ) ;
 	WriteObj( obj, r ) ;
 	return r ;
 }
 
-Ref File::AllocLink( )
+Ref RealFile::AllocLink( )
 {
 	std::size_t id = m_objs.size( ) ;
 	m_objs.push_back( 0 ) ;
 	return Ref( id, 0 ) ;
 }
 
-void File::WriteObj( const Object& obj, const Ref& link )
+void RealFile::WriteObj( const Object& obj, const Ref& link )
 {
 	assert( m_out != 0 ) ;
 	assert( link.ID( ) < m_objs.size( ) ) ;
@@ -213,7 +213,7 @@ void File::WriteObj( const Object& obj, const Ref& link )
 	       << obj << "\nendobj\n" ;
 }
 
-void File::ReadXRef( std::size_t offset, Dictionary& trailer )
+void RealFile::ReadXRef( std::size_t offset, Dictionary& trailer )
 {
 	assert( m_in != 0 ) ;
 	m_in->rdbuf()->pubseekoff( offset, std::ios::beg ) ;
@@ -258,7 +258,7 @@ void File::ReadXRef( std::size_t offset, Dictionary& trailer )
 		ReadXRef( prev_offset, trailer ) ;
 }
 
-bool File::ReadTailer( Dictionary& trailer, std::size_t& prev_offset )
+bool RealFile::ReadTailer( Dictionary& trailer, std::size_t& prev_offset )
 {	
 	Dictionary t ;
 	if ( !(*m_in >> t ) )
@@ -282,7 +282,7 @@ bool File::ReadTailer( Dictionary& trailer, std::size_t& prev_offset )
 	return found_prev ;
 }
 
-std::size_t File::ReadXRefOffset( )
+std::size_t RealFile::ReadXRefOffset( )
 {
 	// PDF spec said the startxref word will appear at the last 1024 bytes
 	// in the file
@@ -309,7 +309,7 @@ std::size_t File::ReadXRefOffset( )
 	throw ParseError( "can't read xref offset" ) ;
 }
 
-std::istream& File::ReadLine( std::istream& is, std::string& line )
+std::istream& RealFile::ReadLine( std::istream& is, std::string& line )
 {
     std::string str ;
     char ch ;
@@ -329,25 +329,25 @@ std::istream& File::ReadLine( std::istream& is, std::string& line )
     return is ;
 }
 
-Ref File::Root( ) const
+Ref RealFile::Root( ) const
 {
 	// "Root" is required and must be a indirect reference
 	return m_trailer["Root"] ;
 }
 
-Ref File::DocInfo( ) const
+Ref RealFile::DocInfo( ) const
 {
 	// "Info" is optional, but must be indirect reference
 	const Object& info = m_trailer["Info"] ;
 	return info.IsType<Ref>() ? info.As<Ref>() : Ref() ;
 }
 
-ResourcePool* File::Pool( )
+ResourcePool* RealFile::Pool( )
 {
 	return &m_pool ;
 }
 
-void File::CacheObject( const Object& obj, std::map<Ref, ObjWrapper*>& links )
+void RealFile::CacheObject( const Object& obj, std::map<Ref, ObjWrapper*>& links )
 {
 	if ( obj.IsType<Ref>() )
 	{
@@ -371,12 +371,12 @@ void File::CacheObject( const Object& obj, std::map<Ref, ObjWrapper*>& links )
 	}
 }
 
-void File::ReadObjectLinks(
+void RealFile::ReadObjectLinks(
 	const Object& obj,
 	std::map<Ref, ObjWrapper*>& links )
 {
 	using namespace boost ;
-	ForEachObj( obj, bind( &File::CacheObject, this, _1, ref(links) ) ) ;
+	ForEachObj( obj, bind( &RealFile::CacheObject, this, _1, ref(links) ) ) ;
 }
 
 } // end of namespace

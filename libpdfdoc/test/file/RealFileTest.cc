@@ -24,9 +24,9 @@
 	\author	Nestal Wan
 */
 
-#include "FileTest.hh"
+#include "RealFileTest.hh"
 
-#include "file/File.hh"
+#include "file/RealFile.hh"
 
 #include "core/Ref.hh"
 #include "core/Dictionary.hh"
@@ -40,13 +40,13 @@
 
 using namespace pdf ;
 
-FileTest::FileTest( )
+RealFileTest::RealFileTest( )
 {
 	m_catalog = m_doc_info = m_res = m_font = m_page = 0 ;
 	m_content = 0 ;
 }
 
-void FileTest::setUp( )
+void RealFileTest::setUp( )
 {
 	m_page = new Dictionary ;
 	(*m_page)["Type"]		= Name( "Page" ) ;
@@ -92,7 +92,7 @@ void FileTest::setUp( )
 	(*m_catalog)["Pages"] = Ref( 1, 0 ) ;
 }
 
-void FileTest::tearDown( )
+void RealFileTest::tearDown( )
 {
 	delete m_catalog ;
 	delete m_doc_info ;
@@ -105,11 +105,11 @@ void FileTest::tearDown( )
 	m_content = 0 ;
 }
 
-void FileTest::TestSimple( )
+void RealFileTest::TestSimple( )
 {
 	std::ostringstream file ;
 // 	std::ofstream file( "a.pdf", std::ios::out | std::ios::binary ) ;
-	File f( &file ) ;
+	RealFile f( &file ) ;
 	
 	Ref link[] =
 	{
@@ -149,13 +149,13 @@ void FileTest::TestSimple( )
 	}
 }
 
-void FileTest::TestReadStream( )
+void RealFileTest::TestReadStream( )
 {
 	// open expected file to compare and verify
 	std::ifstream file( (std::string(TEST_DATA_DIR) +
 	                    "FileTestSimple.pdf").c_str( ),
 	                    std::ios::in | std::ios::binary ) ;
-	pdf::File f( &file ) ;
+	RealFile f( &file ) ;
 	
 	pdf::Object obj = f.ReadObj( pdf::Ref( 4, 0 ) ) ;
 	CPPUNIT_ASSERT( obj.IsType<pdf::Stream>() ) ;
@@ -170,13 +170,13 @@ void FileTest::TestReadStream( )
 	CPPUNIT_ASSERT( output.str() == exp.str() ) ;
 }
 
-void FileTest::TestReadObjectLinks( )
+void RealFileTest::TestReadObjectLinks( )
 {
 	// open expected file to compare and verify
 	std::ifstream file( (std::string(TEST_DATA_DIR) +
 	                    "FileTestSimple.pdf").c_str( ),
 	                    std::ios::in | std::ios::binary ) ;
-	File f( &file ) ;
+	RealFile f( &file ) ;
 	
 	// this is the catalog
 	Object obj = f.ReadObj( f.Root( ) ) ;
