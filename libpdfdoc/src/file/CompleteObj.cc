@@ -101,7 +101,6 @@ void CompleteObj::ReplaceReference(
 				if ( link == Ref() )
 				{
 					link = file->AllocLink( ) ;
-std::cout << "link = " << link << " " << i->second << std::endl ;
 
 					written.insert( std::make_pair( i->second, link ) ) ;
 					pool->Add( link, i->second ) ;
@@ -117,7 +116,6 @@ std::cout << "link = " << link << " " << i->second << std::endl ;
 			}
 			else
 			{
-std::cout << "link2 = " << j->second << i->second << std::endl ;
 				obj = j->second ;
 			}
 		}

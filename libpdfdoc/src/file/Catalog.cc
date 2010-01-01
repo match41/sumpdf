@@ -80,10 +80,24 @@ Catalog::Catalog( const Ref& link, IFile *file )
 	Detach( file, self, "Version",		m_version ) ;
 	Detach( file, self, "PageLayout",	m_page_layout ) ;
 	Detach( file, self, "PageMode",		m_page_mode ) ;
-	
+
+	// read destintions
+	Dictionary dest ;
+	if ( Detach( file, self, "Dests", dest ) )
+	{
+		for ( Dictionary::iterator i = dest.begin() ; i != dest.end() ; ++i )
+		{
+			Array darray = DeRefObj<Array>( file, i->second ) ; 
+			
+			Destination d ;
+			d.Read( darray, file ) ;
+			
+			m_named_dests.insert( std::make_pair( i->first, d ) ) ;
+		}
+	}
+
 	// we don't know how to handle that now
 	self.erase( "Names" ) ;
-	self.erase( "Dests" ) ;
 	self.erase( "OpenAction" ) ;
 	
 	// forget it
@@ -109,6 +123,17 @@ Ref Catalog::Write( IFile *file ) const
 	self.Get()["Version"]		= m_version ;
 	self.Get()["PageLayout"]	= m_page_layout ;
 	self.Get()["PageMode"]		= m_page_mode ;
+
+	// write destinations
+	Dictionary dest ;
+	for ( std::map<Name, Destination>::const_iterator i = m_named_dests.begin() ;
+		i != m_named_dests.end() ; ++i )
+	{
+		dest.insert( std::make_pair( i->first, i->second.Write( file ) ) ) ;
+	}
+	if ( !dest.empty() )
+		self.Get()["Dests"]		= file->WriteObj(dest) ;
+
 
 	return self.Write( file ) ;
 }

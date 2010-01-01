@@ -1,4 +1,4 @@
-/***************************************************************************
+/***************************************************************************\
  *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
@@ -15,63 +15,50 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+\***************************************************************************/
 
-/*!
-	\file	Catalog.hh
-	\brief	definition the Catalog class
-	\date	Fri Mar 21 2008
+/**
+	\file	Destination.cc
+	\brief	implementation of the Destination class
+	\date	Jan 2, 2010
 	\author	Nestal Wan
 */
 
-#ifndef __PDF_CATALOG_HEADER_INCLUDED__
-#define __PDF_CATALOG_HEADER_INCLUDED__
+#include "Destination.hh"
 
-#include "core/Dictionary.hh"
-#include "core/Name.hh"
-#include "file/CompleteObj.hh"
-#include "file/Destination.hh"
+#include "IFile.hh"
+#include "ResourcePool.hh"
+#include "page/RealPage.hh"
 
-#include <vector>
+#include <iostream>
 
 namespace pdf {
 
-class Ref ;
-class RealPage ;
-class PageTree ;
-class ElementList ;
-class IFile ;
-
-/*!	\brief	brief description
-
-	This class represents the document catalog of a PDF file. The document
-	catalog stores the main page tree of the document.
+/**	constructor
 */
-class Catalog
+Destination::Destination( )
+	: m_page( 0 )
 {
-public :
-	Catalog( ) ;
-	Catalog( const Ref& link, IFile *file ) ;
-	~Catalog( ) ;
-	
-	Ref Write( IFile *file ) const ;
+}
 
-	RealPage* AddPage( ) ;
+void Destination::Read( Array& array, IFile *file )
+{
+	m_options.swap( array ) ;
+	if ( m_options.size() > 1 )
+	{
+		PagePool *pool = &file->Pool()->pages ;
+		Ref page_link = m_options[0].As<Ref>() ;
+		m_page = dynamic_cast<RealPage*>( pool->Find( page_link ) ) ;
+std::cout << "link to page: " << m_page << std::endl ;
+	}
+}
 
-	std::size_t PageCount( ) const ;
-
-	RealPage*	GetPage( std::size_t index ) ;
-
-private :
-	CompleteObj	m_self ;
-	Name		m_version ;
-	Name		m_page_layout ;
-	Name		m_page_mode ;
-
-	PageTree	*m_tree ;
-	std::map<Name, Destination>	m_named_dests ;
-} ;
+Ref Destination::Write( IFile *file ) const
+{
+	Array self( m_options ) ;
+	PagePool *pool = &file->Pool()->pages ;
+	self[0] = pool->Find( m_page ) ;
+	return file->WriteObj( self ) ;
+}
 
 } // end of namespace
-
-#endif
