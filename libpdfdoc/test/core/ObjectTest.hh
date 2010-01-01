@@ -49,9 +49,9 @@ public :
 		CPPUNIT_TEST( TestString ) ;
 		CPPUNIT_TEST( TestInt ) ;
 		CPPUNIT_TEST( TestDouble ) ;
+		CPPUNIT_TEST( TestDoubleRoundTrip ) ;
 		CPPUNIT_TEST( TestIndirect ) ;
 		CPPUNIT_TEST( TestArray ) ;
-		CPPUNIT_TEST( TestVisit ) ;
 		CPPUNIT_TEST( TestObj5 ) ;
 		CPPUNIT_TEST( TestObj9020 ) ;
 		CPPUNIT_TEST( TestConvertToLong ) ;
@@ -67,6 +67,7 @@ private :
 	void TestBoolFalse( ) ;
 	void TestInt( ) ;
 	void TestDouble( ) ;
+	void TestDoubleRoundTrip( ) ;
 	void TestIndirect( ) ;
 	void TestArray( ) ;
 	void TestVisit( ) ;

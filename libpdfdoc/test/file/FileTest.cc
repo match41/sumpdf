@@ -59,7 +59,7 @@ void FileTest::setUp( )
         "BT 31.19 794.57 Td (Hello World!) Tj ET" ) ;
 
 	Ref pages[] = { Ref( 3, 0 ) } ;
-	int mbox[] = { 0, 0, 595, 841 } ;
+	double mbox[] = { 0, 0, 595.28, 841.89 } ;
 	m_page_tree = new Dictionary ;
 	(*m_page_tree)["Type"]		= Name( "Pages" ) ;
 	(*m_page_tree)["Kids"]		= Array( Begin(pages), End(pages) ) ;

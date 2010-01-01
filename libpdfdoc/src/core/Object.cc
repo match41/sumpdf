@@ -38,13 +38,15 @@
 
 #include <boost/variant/apply_visitor.hpp>
 
-#include <map>
-#include <istream>
-
 #include <cassert>
-#include <iostream>
+#include <istream>
+#include <iomanip>
 #include <limits>
+#include <map>
+#include <ostream>
 #include <stdexcept>
+
+#include <iostream>
 
 namespace pdf {
 
@@ -261,6 +263,11 @@ struct Op : public boost::static_visitor<>
 	void operator()( const T& t ) const
 	{
 		m_os << std::dec << t ;
+	}
+	
+	void operator()( double val ) const
+	{
+		m_os << std::setprecision( 2 ) << std::fixed << val ;
 	}
 	
 	void operator()( const std::string& str ) const

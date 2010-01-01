@@ -27,11 +27,15 @@
 
 #include <sstream>
 #include <iostream>
+#include <iomanip>
 #include <cstdlib>
 #include <stdexcept>
 
 int main( int argc, char **argv )
 {
+	double d = 11100.0 ;
+	std::cout << std::setprecision( 2 ) << std::fixed << d << std::endl ;
+
 	pdf::Doc *doc = pdf::CreateDoc( ) ;
 	if ( argc >= 2 )
 		doc->Read( argv[1] ) ;

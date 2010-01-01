@@ -112,6 +112,17 @@ void ObjectTest::TestDouble( )
 	CPPUNIT_ASSERT( b.As<double>( ) == 10.00f ) ;
 }
 
+void ObjectTest::TestDoubleRoundTrip( )
+{
+	std::stringstream ss ;
+	pdf::Object b( 10.0f ) ;
+	CPPUNIT_ASSERT( ss << b ) ;
+	pdf::Object c ;
+	CPPUNIT_ASSERT( ss >> c ) ;
+	CPPUNIT_ASSERT( c.IsType<double>() ) ;
+	CPPUNIT_ASSERT( c == b ) ;
+}
+
 void ObjectTest::TestIndirect( )
 {
 }
@@ -157,25 +168,6 @@ namespace
 			counter++ ;
 		}
 	} ;
-}
-
-void ObjectTest::TestVisit( )
-{
-/*	pdf::Ref refs[] =
-	{
-		pdf::Ref( 1, 0 ),
-		pdf::Ref( 2, 0 ),
-		pdf::Ref( 3, 0 ),
-		pdf::Ref( 4, 0 ),
-	} ;
-	
-	pdf::Object b( pdf::Array( pdf::Begin(refs), pdf::End(refs) ) ) ;
-	
-	Visitor v ;
-	pdf::TraverseObject<Visitor> t(v) ;
-	b.Visit( t ) ;
-	
-	CPPUNIT_ASSERT( v.counter == 4 ) ;*/
 }
 
 void ObjectTest::TestObj5( )
