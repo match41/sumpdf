@@ -142,6 +142,7 @@ set( PAGE_SRCS  	${PAGE_DIR}/RealPage.cc
 set( FILE_SRCS		${FILE_DIR}/RealFile.cc
 					${FILE_DIR}/IFile.cc
 					${FILE_DIR}/Catalog.cc
+					${FILE_DIR}/ResourcePool.cc
 					${FILE_DIR}/CompleteObj.cc
 					${FILE_DIR}/DocInfo.cc )
 

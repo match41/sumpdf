@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2009 by Nestal Wan                                      *
+ *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,38 +18,31 @@
 \***************************************************************************/
 
 /**
-	\file	ResourcePool.hh
-	\brief	definition the ResourcePool class
-	\date	Dec 26, 2009
-	\author	nestal
+	\file	ResourcePool.cc
+	\brief	implementation of the ResourcePool class
+	\date	Jan 2, 2010
+	\author	Nestal Wan
 */
 
-
-#ifndef __PDF_RESOURCEPOOL_HEADER_INCLUDED__
-#define __PDF_RESOURCEPOOL_HEADER_INCLUDED__
-
-#include "RefObjMap.hh"
-#include "core/ObjWrapper.hh"
+#include "ResourcePool.hh"
 
 namespace pdf {
 
-class BaseFont ;
-class Object ;
-class PageNode ;
-
-typedef RefObjMap<BaseFont>			FontPool ;
-typedef RefObjMap<ObjWrapper>		ObjectPool ;
-typedef RefObjMap<PageNode>			PagePool ;
-
-struct ResourcePool
+Ref ResourcePool::Find( void *anything ) const
 {
-	FontPool	fonts ;
-	ObjectPool	objs ;
-	PagePool	pages ;
+	Ref result = fonts.Find( static_cast<BaseFont*>( anything ) ) ;
+	if ( result != Ref() )
+		return result ;
+
+	result = objs.Find( static_cast<ObjWrapper*>( anything ) ) ;
+	if ( result != Ref() )
+		return result ;
+
+	result = pages.Find( static_cast<PageNode*>( anything ) ) ;
+	if ( result != Ref() )
+		return result ;
 	
-	Ref Find( void *anything ) const ;
-} ;
+	return Ref( ) ;
+}
 
 } // end of namespace
-
-#endif // RESOURCEPOOL_H_

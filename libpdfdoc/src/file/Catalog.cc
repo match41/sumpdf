@@ -81,6 +81,14 @@ Catalog::Catalog( const Ref& link, IFile *file )
 	Detach( file, self, "PageLayout",	m_page_layout ) ;
 	Detach( file, self, "PageMode",		m_page_mode ) ;
 	
+	// we don't know how to handle that now
+	self.erase( "Names" ) ;
+	self.erase( "Dests" ) ;
+	self.erase( "OpenAction" ) ;
+	
+	// forget it
+	self.clear( ) ;
+	
 	m_self.Read( self, file ) ;
 }
 

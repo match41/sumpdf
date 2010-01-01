@@ -93,8 +93,8 @@ private :
 	int		m_first_char, m_last_char ;
 
 	std::vector<int>	m_widths ;
-	Object				m_to_unicode ;
-	Object				m_encoding ;	//!< name or dictionary
+//	Object				m_to_unicode ;
+//	Object				m_encoding ;	//!< name or dictionary
 } ;
 
 } // end of namespace

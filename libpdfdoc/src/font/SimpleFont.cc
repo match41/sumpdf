@@ -50,16 +50,14 @@ const Name SimpleFont::m_font_types[] =
 
 SimpleFont::SimpleFont( )
 	: m_base_font( "Helvetica-Bold" ),
-	  m_type( type1 ),
-	  m_encoding( "WinAnsiEncoding" )
+	  m_type( type1 )
 {
 	m_first_char = m_last_char = 0 ;
 }
 
 SimpleFont::SimpleFont( const Name& base_font, Type type )
 	: m_base_font( base_font ),
-	  m_type( type ),
-	  m_encoding( "WinAnsiEncoding" )
+	  m_type( type )
 {
 	m_first_char = m_last_char = 0 ;
 }
@@ -67,8 +65,7 @@ SimpleFont::SimpleFont( const Name& base_font, Type type )
 SimpleFont::SimpleFont( FT_Face face )
 	: m_face( face ),
 	  m_base_font( ::FT_Get_Postscript_Name( face ) ),
-	  m_type( GetFontType( face ) ),
-	  m_encoding( "WinAnsiEncoding" )
+	  m_type( GetFontType( face ) )
 {
 	GetWidth( face, m_widths, m_first_char, m_last_char ) ;
 	assert( (int)m_widths.size() == m_last_char - m_first_char + 1 ) ;
@@ -91,8 +88,8 @@ SimpleFont::SimpleFont( Dictionary& self, IFile *file )
 		if ( Detach( file, self, "Widths", widths ) )
 			m_widths.assign( widths.begin(), widths.end() ) ;
 
-		self.Extract( "Encoding",	m_encoding ) ;
-		self.Extract( "ToUnicode",	m_to_unicode ) ;
+//		self.Extract( "Encoding",	m_encoding ) ;
+//		self.Extract( "ToUnicode",	m_to_unicode ) ;
 		
 		m_self.Read( self, file ) ;
 	}
@@ -160,8 +157,11 @@ Ref SimpleFont::Write( IFile *file ) const
 	dict.Get()["FirstChar"]	= m_first_char ;
 	dict.Get()["LastChar"]	= m_last_char ;
 
-	if ( !m_encoding.IsNull() )
-		dict.Get()["Encoding"]		= m_encoding ;
+	if ( dict.Get().find( "Encoding" ) == dict.Get().end() )
+		dict.Get()["Encoding"]		= Name("WinAnsiEncoding") ;
+
+//	if ( !m_encoding.IsNull() )
+//		dict.Get()["Encoding"]		= m_encoding ;
 
 	if ( !m_widths.empty( ) )
 		dict.Get()["Widths"]		= Array( m_widths.begin(), m_widths.end() ) ;
@@ -169,8 +169,8 @@ Ref SimpleFont::Write( IFile *file ) const
 //	if ( !m_descriptor.IsNull( ) )
 //		dict["FontDescriptor"]	= m_descriptor ;
 
-	if ( !m_to_unicode.IsNull( ) )
-		dict.Get()["ToUnitcode"]	= file->WriteObj( m_to_unicode ) ;
+//	if ( !m_to_unicode.IsNull( ) )
+//		dict.Get()["ToUnitcode"]	= file->WriteObj( m_to_unicode ) ;
 
 	return dict.Write( file ) ;
 }

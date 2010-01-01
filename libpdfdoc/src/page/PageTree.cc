@@ -33,6 +33,7 @@
 
 #include "file/ObjectReader.hh"
 #include "file/IFile.hh"
+#include "file/ResourcePool.hh"
 
 #include "util/Exception.hh"
 #include "util/Util.hh"
@@ -63,28 +64,38 @@ PageTree::~PageTree( )
 
 void PageTree::Read( Dictionary& dict, IFile *file )
 {
+	assert( file != 0 ) ;
+	assert( file->Pool() != 0 ) ;
+
 	Array pages ;
 	if ( !Detach( file, dict, "Kids", pages ) )
 		throw ParseError( "no children in page tree" ) ;
+
+	PagePool *pool = &file->Pool()->pages;  
 		
 	for ( Array::iterator i = pages.begin() ; i != pages.end() ; ++i )
 	{
 		Dictionary d = DeRefObj<Dictionary>( file, *i ) ;
 		const Name& type = d["Type"].As<Name>() ; 
 		
+		PageNode *p = 0 ;
 		if ( type == Name( "Pages" ) )
 		{
-			PageTree *p = new PageTree( this ) ;
+			p = new PageTree( this ) ;
 			p->Read( d, file ) ;
 		}
 		
 		else if ( type == Name( "Page" ) )
 		{
-			RealPage *p = new RealPage( this ) ;
+			p = new RealPage( this ) ;
 			p->Read( d, file ) ;
 		}
 		else
 			throw ParseError( "invalid page type" ) ;
+		assert( p != 0 ) ;
+		
+		if ( i->IsType<Ref>() )
+			pool->Add( *i, p ) ;
 	}
 
 	// leaf count is required
@@ -99,6 +110,8 @@ void PageTree::Read( Dictionary& dict, IFile *file )
 void PageTree::Write( const Ref& link, IFile *file, const Ref& ) const
 {
 	assert( file != 0 ) ;
+	assert( file->Pool() != 0 ) ;
+	PagePool *pool = &file->Pool()->pages;  
 
 	std::vector<Ref> kids ;
 	for ( std::vector<PageNode*>::const_iterator i  = m_kids.begin() ;
@@ -107,6 +120,7 @@ void PageTree::Write( const Ref& link, IFile *file, const Ref& ) const
 		Ref child = file->AllocLink( ) ;
 		(*i)->Write( child, file, link ) ;
 		kids.push_back( child ) ;
+		pool->Add( child, *i ) ;
 	}
 
 	// update page count before writing
