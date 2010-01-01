@@ -48,7 +48,7 @@ class PageNode
 public :
 	virtual ~PageNode( ) ;
 
-	virtual void Read( const Dictionary& self, IFile *file ) = 0 ; 
+	virtual void Read( Dictionary& self, IFile *file ) = 0 ; 
 	virtual void Write( const Ref& link, IFile *file, const Ref& parent ) 
 		const = 0 ;
 

@@ -58,30 +58,30 @@ Catalog::Catalog( const Ref& link, IFile *file )
 	  m_tree		( 0 )
 {
 	assert( file != 0 ) ;
-	m_self = file->ReadObj( link ).As<Dictionary>() ;
+	Dictionary self = file->ReadObj( link ).As<Dictionary>() ;
 
-	if ( m_self["Type"].As<Name>() != "Catalog" )
+	Name type ;
+	if ( !Detach( file, self, "Type", type ) || type != "Catalog" )
 	{
 		std::ostringstream oss ;
-		oss << "invalid catalog type: " << m_self["Type"] ;
+		oss << "invalid catalog type: " << type ;
 		throw ParseError( oss.str( ) ) ;
 	}
 
 	// page tree is mandatory
 	Dictionary tree ;
-	if ( !Detach( file, m_self, "Pages", tree ) )
+	if ( !Detach( file, self, "Pages", tree ) )
 		throw ParseError( "no page tree in catalog" ) ;
 	
 	// root page tree has no parent
 	m_tree = new PageTree ;
 	m_tree->Read( tree, file ) ;
 	
-	// TODO: no know how to handle OpenAction it yet
-	m_self.erase( Name( "OpenAction" ) ) ;
-
-	m_self.Extract( "Version",		m_version ) ;
-	m_self.Extract( "PageLayout",	m_page_layout ) ;
-	m_self.Extract( "PageMode",		m_page_mode ) ;
+	Detach( file, self, "Version",		m_version ) ;
+	Detach( file, self, "PageLayout",	m_page_layout ) ;
+	Detach( file, self, "PageMode",		m_page_mode ) ;
+	
+	m_self.Read( self, file ) ;
 }
 
 Catalog::~Catalog( )
@@ -91,18 +91,18 @@ Catalog::~Catalog( )
 
 Ref Catalog::Write( IFile *file ) const
 {
-	Dictionary self( m_self ) ;
+	CompleteObj self( m_self ) ;
 
 	Ref tree = file->AllocLink( ) ;
 	m_tree->Write( tree, file, Ref() ) ; 
 
-	self["Pages"] 	    = tree ;
-	self["Type"]	    = Name( "Catalog" ) ;
-	self["Version"]		= m_version ;
-	self["PageLayout"]	= m_page_layout ;
-	self["PageMode"]	= m_page_mode ;
+	self.Get()["Pages"] 	    = tree ;
+	self.Get()["Type"]	    	= Name( "Catalog" ) ;
+	self.Get()["Version"]		= m_version ;
+	self.Get()["PageLayout"]	= m_page_layout ;
+	self.Get()["PageMode"]		= m_page_mode ;
 
-	return file->WriteObj( self ) ;
+	return self.Write( file ) ;
 }
 
 RealPage* Catalog::AddPage( )

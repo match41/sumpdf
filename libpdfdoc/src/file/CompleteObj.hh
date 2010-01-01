@@ -55,6 +55,7 @@ public :
 	
 	void Read( Dictionary& dict, IFile *file ) ;
 	Ref Write( IFile *file ) const ;
+	void Write( IFile *file, const Ref& link ) const ;
 
 	Dictionary& Get( ) ;
 	const Dictionary& Get( ) const ;

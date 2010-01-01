@@ -18,7 +18,7 @@
 \***************************************************************************/
 
 /**
-	\file	ResourcePool.h
+	\file	ResourcePool.hh
 	\brief	definition the ResourcePool class
 	\date	Dec 26, 2009
 	\author	nestal

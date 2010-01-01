@@ -62,26 +62,25 @@ RealPage::RealPage( PageTree *parent )
 	parent->AppendLeaf( this ) ;
 }
 
-void RealPage::Read( const Dictionary& self, IFile *file )
+void RealPage::Read( Dictionary& self, IFile *file )
 {
 	assert( file != 0 ) ;
 	
-	// assign self dictionary first
-	m_self = self ;
-
 	// read content
 	Object contents ;
-	if ( Detach( file, m_self, "Contents", contents ) )
+	if ( Detach( file, self, "Contents", contents ) )
 	    ReadContent( contents, file ) ;
 
 	// media box
 	Array a ;
-	if ( Detach( file, m_self, "MediaBox", a ) )
+	if ( Detach( file, self, "MediaBox", a ) )
 		m_media_box = Rect( a.begin( ), a.end( ) ) ;
 
 	Dictionary res ;
-	if ( Detach( file, m_self, "Resources", res ) )
+	if ( Detach( file, self, "Resources", res ) )
 		m_resources.Read( res, file ) ;
+	
+	m_self.Read( self, file ) ;
 }
 
 Rect RealPage::MediaBox( ) const
@@ -117,16 +116,18 @@ void RealPage::Write( const Ref& link, IFile *file, const Ref& parent ) const
 	assert( m_parent != 0 ) ;
 	assert( GetResource( ) != 0 ) ;
 
-	Dictionary self( m_self ) ;
-	self["Type"]		= Name( "Page" ) ;
- 	self["Contents"]    = WriteContent( file ) ;
-	self["Resources"]   = GetResource( )->Write( file ) ;
-	self["Parent"]   	= parent ;
+	CompleteObj self( m_self ) ;
+	self.Get()["Type"]		= Name( "Page" ) ;
+ 	self.Get()["Contents"]	= WriteContent( file ) ;
+	self.Get()["Resources"]	= GetResource( )->Write( file ) ;
+	self.Get()["Parent"]	= parent ;
 
     if ( m_media_box != Rect() )
-    	self["MediaBox"] = Array( m_media_box.begin( ), m_media_box.end( ) ) ;
+    	self.Get()["MediaBox"] = Array(
+    		m_media_box.begin( ),
+    		m_media_box.end( ) ) ;
 
-	file->WriteObj( self, link ) ;
+	self.Write( file, link ) ;
 }
 
 Object RealPage::WriteContent( IFile *file ) const

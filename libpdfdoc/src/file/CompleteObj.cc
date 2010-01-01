@@ -27,6 +27,7 @@
 #include "CompleteObj.hh"
 
 #include "IFile.hh"
+#include "ResourcePool.hh"
 
 #include "core/TraverseObject.hh"
 #include "core/ObjWrapper.hh"
@@ -95,17 +96,30 @@ void CompleteObj::ReplaceReference(
 			std::map<ObjWrapper*, Ref>::iterator j = written.find( i->second ) ;
 			if ( j == written.end() )
 			{
-				Ref link = file->AllocLink( ) ;
-				written.insert( std::make_pair( i->second, link ) ) ;
+				ObjectPool *pool = &file->Pool( )->objs ;
+				Ref link = pool->Find( i->second ) ;
+				if ( link == Ref() )
+				{
+					link = file->AllocLink( ) ;
+std::cout << "link = " << link << " " << i->second << std::endl ;
 
-				Object temp = i->second->Get( ) ;
-				ReplaceChildReference( temp, file, written ) ;
-				file->WriteObj( temp, link ) ;
+					written.insert( std::make_pair( i->second, link ) ) ;
+					pool->Add( link, i->second ) ;
+	
+					Object temp = i->second->Get( ) ;
+					ReplaceChildReference( temp, file, written ) ;
+					file->WriteObj( temp, link ) ;
+				}
+				else
+					written.insert( std::make_pair( i->second, link ) ) ;
 				
 				obj = link ;
 			}
 			else
+			{
+std::cout << "link2 = " << j->second << i->second << std::endl ;
 				obj = j->second ;
+			}
 		}
 	}
 }
@@ -113,11 +127,21 @@ void CompleteObj::ReplaceReference(
 Ref CompleteObj::Write( IFile *file ) const
 {
 	assert( file != 0 ) ;
-
+	
 	std::map<ObjWrapper*, Ref> written ;
 	Object obj( m_self ) ;
 	ReplaceChildReference( obj, file, written ) ;
 	return file->WriteObj( obj ) ;
+}
+
+void CompleteObj::Write( IFile *file, const Ref& link ) const
+{
+	assert( file != 0 ) ;
+	
+	std::map<ObjWrapper*, Ref> written ;
+	Object obj( m_self ) ;
+	ReplaceChildReference( obj, file, written ) ;
+	file->WriteObj( obj, link ) ;
 }
 
 void CompleteObj::ReplaceChildReference(

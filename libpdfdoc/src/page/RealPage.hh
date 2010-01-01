@@ -35,6 +35,7 @@
 #include "Resources.hh"
 #include "core/Dictionary.hh"
 #include "core/Token.hh"
+#include "file/CompleteObj.hh"
 #include "page/PageContent.hh"
 #include "stream/Stream.hh"
 #include "util/Rect.hh"
@@ -61,7 +62,7 @@ class RealPage : public Page, public PageNode
 public :
 	explicit RealPage( PageTree *parent ) ;
 
-	void Read( const Dictionary& link, IFile *file ) ;
+	void Read( Dictionary& dict, IFile *file ) ;
 	void Write( const Ref& link, IFile *file, const Ref& parent ) const ;
 	
 	Rect MediaBox( ) const ;
@@ -88,7 +89,7 @@ private :
 private :
 	PageTree	*m_parent ;
 	Resources	m_resources ;
-	Dictionary	m_self ;
+	CompleteObj	m_self ;
 	
 	/// in PDF user space. specified by UserUnit or 1/72 inch
 	Rect		m_media_box ;

@@ -61,10 +61,13 @@ PageTree::~PageTree( )
 	               boost::lambda::delete_ptr( ) ) ;
 }
 
-void PageTree::Read( const Dictionary& dict, IFile *file )
+void PageTree::Read( Dictionary& dict, IFile *file )
 {
-	const Array& pages = dict["Kids"].As<Array>() ;
-	for ( Array::const_iterator i = pages.begin() ; i != pages.end() ; ++i )
+	Array pages ;
+	if ( !Detach( file, dict, "Kids", pages ) )
+		throw ParseError( "no children in page tree" ) ;
+		
+	for ( Array::iterator i = pages.begin() ; i != pages.end() ; ++i )
 	{
 		Dictionary d = DeRefObj<Dictionary>( file, *i ) ;
 		const Name& type = d["Type"].As<Name>() ; 
@@ -85,10 +88,11 @@ void PageTree::Read( const Dictionary& dict, IFile *file )
 	}
 
 	// leaf count is required
-	m_count	= dict["Count"].As<int>( ) ;
+	if ( !Detach( file, dict, "Count", m_count ) )
+		throw ParseError( "cannot get leaf count in page node" ) ;
 	
 	Dictionary res ;
-	if ( DeRef( file, dict, "Resources", res ) )
+	if ( Detach( file, dict, "Resources", res ) )
 		m_resources.Read( res, file ) ;
 }
 
