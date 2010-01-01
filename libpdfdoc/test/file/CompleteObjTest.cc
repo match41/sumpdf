@@ -18,54 +18,22 @@
 \***************************************************************************/
 
 /**
-    \file	CompleteObj.hh
-    \brief	definition the CompleteObj class
-    \date	Jan 1, 2010
-    \author	Nestal Wan
+	\file	CompleteObjTest.cc
+	\brief	implementation of the CompleteObjTest class
+	\date	Jan 1, 2010
+	\author	Nestal Wan
 */
 
-#ifndef __PDF_COMPLETEOBJ_HH_EADER_INCLUDED__
-#define __PDF_COMPLETEOBJ_HH_EADER_INCLUDED__
+#include "CompleteObjTest.hh"
 
-#include "core/Object.hh"
-#include "core/ObjWrapper.hh"
+#include "file/CompleteObj.hh"
 
-#include <map>
-
-namespace pdf {
-
-class IFile ;
-class Dictionary ;
-class Array ;
-
-/**	\brief	brief description
-
-	The CompleteObj class represent a PDF object, as well as a mapping from
-	the indirect references it contains to the real objects. The real objects
-	referred by the references will stored inside RefCounterWrapper. They are
-	shared between other CompleteObj's.
+/**	constructor
 */
-class CompleteObj
+CompleteObjTest::CompleteObjTest( )
 {
-public :
-	CompleteObj( ) ;
-	
-	void Read( Object& dict, IFile *file ) ;
-	Ref Write( IFile *file ) const ;
+}
 
-	Object& Get( ) ;
-	const Object& Get( ) const ;
-
-private :
-	void ReplaceReference( Object& obj, IFile *file ) const ;
-
-private :
-	Object	m_obj ;
-	
-	typedef std::map<Ref, ObjWrapper*> ObjMap ;
-	ObjMap	m_refs ;
-} ;
-
-} // end of namespace
-
-#endif // COMPLETEOBJ_HH_
+void CompleteObjTest::TestRead( )
+{
+}

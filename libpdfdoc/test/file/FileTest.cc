@@ -31,18 +31,82 @@
 #include "core/Ref.hh"
 #include "core/Dictionary.hh"
 #include "core/Array.hh"
-#include "stream/Stream.hh"
 #include "core/Object.hh"
 #include "core/Token.hh"
+#include "core/ObjWrapper.hh"
+#include "util/RefCounterWrapper.hh"
+#include "util/Util.hh"
+#include "stream/Stream.hh"
+
+using namespace pdf ;
 
 FileTest::FileTest( )
 {
+	m_catalog = m_doc_info = m_res = m_font = m_page = 0 ;
+	m_content = 0 ;
+}
+
+void FileTest::setUp( )
+{
+	m_page = new Dictionary ;
+	(*m_page)["Type"]		= Name( "Page" ) ;
+	(*m_page)["Parent"]		= Ref( 1, 0 ) ;
+	(*m_page)["Resources"]	= Ref( 2, 0 ) ;
+	(*m_page)["Contents"]	= Ref( 4, 0 ) ;
+	
+	m_content = new Stream(
+		"2 J\n0.57 w\nBT /F1 16.00 Tf ET\n"
+        "BT 31.19 794.57 Td (Hello World!) Tj ET" ) ;
+
+	Ref pages[] = { Ref( 3, 0 ) } ;
+	int mbox[] = { 0, 0, 595, 841 } ;
+	m_page_tree = new Dictionary ;
+	(*m_page_tree)["Type"]		= Name( "Pages" ) ;
+	(*m_page_tree)["Kids"]		= Array( Begin(pages), End(pages) ) ;
+	(*m_page_tree)["Count"]		= 1 ;
+	(*m_page_tree)["MediaBox"]	= Array( Begin(mbox), End(mbox) ) ;
+
+	m_font = new Dictionary ;
+	(*m_font)["Type"]		= Name( "Font" ) ;
+	(*m_font)["BaseFont"]	= Name( "Helvetica-Bold" ) ;
+	(*m_font)["Subtype"]	= Name( "Type1" ) ;
+	(*m_font)["Encoding"]	= Name( "WinAnsiEncoding" ) ;
+
+	m_res = new Dictionary ;
+	Name pset[] = { Name("PDF"), Name("Text") } ;
+	
+	// resources
+	(*m_res)["ProcSet"] = Array( pset, pset+2 ) ;
+	Dictionary font ;
+	font["F1"]  = Ref( 5, 0 ) ;
+	(*m_res)["Font"] = font ;
+
+	// document info
+	m_doc_info = new Dictionary ;
+	(*m_doc_info)["Producer"] = "nestal" ;
+	(*m_doc_info)["Creator"] = "D:20080410074227" ;
+	
+	// catalog
+	m_catalog = new Dictionary ;
+	(*m_catalog)["Type"] = Name( "Catalog" ) ;
+	(*m_catalog)["Pages"] = Ref( 1, 0 ) ;
+}
+
+void FileTest::tearDown( )
+{
+	delete m_catalog ;
+	delete m_doc_info ;
+	delete m_res ;
+	delete m_font ;
+	delete m_content ;
+	delete m_page ;
+	
+	m_catalog = m_doc_info = m_res = m_font = m_page = 0 ;
+	m_content = 0 ;
 }
 
 void FileTest::TestSimple( )
 {
-	using namespace pdf ;
-	
 	std::ostringstream file ;
 // 	std::ofstream file( "a.pdf", std::ios::out | std::ios::binary ) ;
 	File f( &file ) ;
@@ -59,58 +123,15 @@ void FileTest::TestSimple( )
 		f.AllocLink( ), 
 	} ; 
 	
-	Dictionary obj3 ;
-	obj3["Type"]		= Name( "Page" ) ;
-	obj3["Parent"]		= Ref( 1, 0 ) ;
-	obj3["Resources"]	= Ref( 2, 0 ) ;
-	obj3["Contents"]	= Ref( 4, 0 ) ;
-	f.WriteObj( obj3, link[3] ) ;
-
-	Stream obj4( "2 J\n0.57 w\nBT /F1 16.00 Tf ET\n"
-	             "BT 31.19 794.57 Td (Hello World!) Tj ET\n" ) ;
-	f.WriteObj( obj4, link[4] ) ;
-
-	Ref pages[] = { Ref( 3, 0 ) } ;
-	double mbox[] = { 0, 0, 595.28, 841.89 } ;
-	Dictionary obj1 ;
-	obj1["Type"]		= Name( "Pages" ) ;
-	obj1["Kids"]		= Array( pages, pages + 1 ) ;
-	obj1["Count"]		= 1 ;
-	obj1["MediaBox"]	= Array( mbox, mbox+4 ) ;
-	f.WriteObj( obj1, link[1] ) ;
+	f.WriteObj( *m_page,		link[3] ) ;
+	f.WriteObj( *m_content,		link[4] ) ;
+	f.WriteObj( *m_page_tree,	link[1] ) ;
+	f.WriteObj( *m_font,		link[5] ) ;
+	f.WriteObj( *m_res,			link[2] ) ;
+	f.WriteObj( *m_doc_info,	link[6] ) ;
+	f.WriteObj( *m_catalog,		link[7] ) ;
 	
-	Dictionary obj5 ;
-	obj5["Type"]		= Name( "Font" ) ;
-	obj5["BaseFont"]	= Name( "Helvetica-Bold" ) ;
-	obj5["Subtype"]		= Name( "Type1" ) ;
-	obj5["Encoding"]	= Name( "WinAnsiEncoding" ) ;
-	f.WriteObj( obj5, link[5] ) ;
-	
-	Name pset[] = { Name("PDF"), Name("Text") } ;
-	
-	Dictionary obj2 ;
-	obj2["ProcSet"] = Array( pset, pset+2 ) ;
-	Dictionary font ;
-	font["F1"]  = Ref( 5, 0 ) ;
-	obj2["Font"] = font ;
-	f.WriteObj( obj2, link[2] ) ;
-	
-	Dictionary obj6 ;
-	obj6["Producer"] = "nestal" ;
-	obj6["CreationDate"] = "D:20080410074227" ;
-	f.WriteObj( obj6, link[6] ) ;
-	
-	Dictionary obj7 ;
-	obj7["Type"] = Name( "Catalog" ) ;
-	obj7["Pages"] = Ref( 1, 0 ) ;
-	f.WriteObj( obj7, link[7] ) ;
-	
-	Dictionary obj8 ;
-	obj8["Producer"] = "nestal" ;
-	obj8["Creator"]	= "D:20080410074227" ;
-	Ref info = f.WriteObj( obj8 ) ;
-
-	f.WriteTrailer( link[7], info ) ;
+	f.WriteTrailer( link[7], link[6] ) ;
 	
 	// open expected file to compare and verify
 	std::ifstream exp( (std::string(TEST_DATA_DIR) +
@@ -141,7 +162,32 @@ void FileTest::TestReadStream( )
 
 	std::stringstream output ;
 	std::size_t count = obj.As<pdf::Stream>().CopyData( output.rdbuf() ) ;
-	CPPUNIT_ASSERT( count == 70 ) ;
-	CPPUNIT_ASSERT( output.str() == "2 J\n0.57 w\nBT /F1 16.00 Tf ET\n"
-	                        "BT 31.19 794.57 Td (Hello World!) Tj ET\n" ) ;
+	
+	std::stringstream exp ;
+	std::size_t exp_size = m_content->CopyData( exp.rdbuf() ) ;
+	
+	CPPUNIT_ASSERT( count == exp_size ) ;
+	CPPUNIT_ASSERT( output.str() == exp.str() ) ;
+}
+
+void FileTest::TestReadObjectLinks( )
+{
+	// open expected file to compare and verify
+	std::ifstream file( (std::string(TEST_DATA_DIR) +
+	                    "FileTestSimple.pdf").c_str( ),
+	                    std::ios::in | std::ios::binary ) ;
+	File f( &file ) ;
+	
+	// this is the catalog
+	Object obj = f.ReadObj( f.Root( ) ) ;
+	std::map<Ref, ObjWrapper*> objmap ;
+	f.ReadObjectLinks( obj, objmap ) ;
+	
+	CPPUNIT_ASSERT( objmap.size() == 5 ) ;
+	CPPUNIT_ASSERT( objmap[Ref( 3, 0 )]->Get() == *m_page ) ; 
+	CPPUNIT_ASSERT( m_content->IsContentEqual( objmap[Ref( 4, 0 )]->Get() ) ) ;
+	CPPUNIT_ASSERT( objmap[Ref( 2, 0 )]->Get() == *m_res ) ;
+	CPPUNIT_ASSERT( objmap[Ref( 5, 0 )]->Get() == *m_font ) ;
+	CPPUNIT_ASSERT( objmap[Ref( 1, 0 )]->Get() == *m_page_tree ) ;
+	
 }

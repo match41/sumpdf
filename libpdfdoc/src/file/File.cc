@@ -357,7 +357,9 @@ void File::CacheObject( const Object& obj, std::map<Ref, ObjWrapper*>& links )
 		if ( wp == 0 )
 		{
 			wp = new ObjWrapper( ReadObj( link ) ) ;
-			m_pool.objs.Add( link, wp ) ; 
+			m_pool.objs.Add( link, wp ) ;
+			
+			ReadObjectLinks( wp->Get(), links ) ;
 		}
 		else
 		{
@@ -373,7 +375,8 @@ void File::ReadObjectLinks(
 	const Object& obj,
 	std::map<Ref, ObjWrapper*>& links )
 {
-	ForEachObj( obj, boost::bind( &File::CacheObject, this, _1, links ) ) ;
+	using namespace boost ;
+	ForEachObj( obj, bind( &File::CacheObject, this, _1, ref(links) ) ) ;
 }
 
 } // end of namespace

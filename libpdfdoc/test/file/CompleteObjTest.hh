@@ -18,54 +18,35 @@
 \***************************************************************************/
 
 /**
-    \file	CompleteObj.hh
-    \brief	definition the CompleteObj class
+    \file	CompleteObjTest.hh
+    \brief	definition the CompleteObjTest class
     \date	Jan 1, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_COMPLETEOBJ_HH_EADER_INCLUDED__
-#define __PDF_COMPLETEOBJ_HH_EADER_INCLUDED__
+#ifndef __PDFUT_COMPLETEOBJTEST_HEADER_INCLUDED__
+#define __PDFUT_COMPLETEOBJTEST_HEADER_INCLUDED__
 
-#include "core/Object.hh"
-#include "core/ObjWrapper.hh"
+#include <cppunit/TestFixture.h>
 
-#include <map>
-
-namespace pdf {
-
-class IFile ;
-class Dictionary ;
-class Array ;
+#include <cppunit/extensions/HelperMacros.h>
 
 /**	\brief	brief description
 
-	The CompleteObj class represent a PDF object, as well as a mapping from
-	the indirect references it contains to the real objects. The real objects
-	referred by the references will stored inside RefCounterWrapper. They are
-	shared between other CompleteObj's.
+	The CompleteObjTest class represent
 */
-class CompleteObj
+class CompleteObjTest : public CppUnit::TestFixture
 {
 public :
-	CompleteObj( ) ;
-	
-	void Read( Object& dict, IFile *file ) ;
-	Ref Write( IFile *file ) const ;
+	CompleteObjTest( ) ;
 
-	Object& Get( ) ;
-	const Object& Get( ) const ;
-
-private :
-	void ReplaceReference( Object& obj, IFile *file ) const ;
+	// declare suit function
+	CPPUNIT_TEST_SUITE( CompleteObjTest ) ;
+		CPPUNIT_TEST( TestRead ) ;
+	CPPUNIT_TEST_SUITE_END();
 
 private :
-	Object	m_obj ;
-	
-	typedef std::map<Ref, ObjWrapper*> ObjMap ;
-	ObjMap	m_refs ;
+	void TestRead( ) ;
 } ;
 
-} // end of namespace
-
-#endif // COMPLETEOBJ_HH_
+#endif // COMPLETEOBJTEST_HH_

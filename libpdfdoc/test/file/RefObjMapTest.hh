@@ -24,8 +24,8 @@
 	\author	Nestal Wan
 */
 
-#ifndef __PDF_REFOBJMAPTEST_HEADER_INCLUDED__
-#define __PDF_REFOBJMAPTEST_HEADER_INCLUDED__
+#ifndef __PDFUT_REFOBJMAPTEST_HEADER_INCLUDED__
+#define __PDFUT_REFOBJMAPTEST_HEADER_INCLUDED__
 
 #include <cppunit/TestFixture.h>
 

@@ -26,11 +26,12 @@
 
 #include "Token.hh"
 
+#include <boost/bind.hpp>
+
+#include <algorithm>
 #include <cstdlib>
 #include <istream>
 #include <cctype>
-
-#include <iostream>
 
 namespace pdf {
 

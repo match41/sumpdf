@@ -324,11 +324,6 @@ std::ostream& operator<<( std::ostream& os, const Bool& b )
 	return os << (b.value ? "true" : "false") ;
 }
 
-bool operator==( const Object& obj1, const Object& obj2 )
-{
-	return obj1.m_obj == obj2.m_obj ;
-}
-
 bool operator!=( const Object& obj1, const Object& obj2 )
 {
 	return !operator==( obj1, obj2 ) ;
@@ -423,6 +418,19 @@ template <> bool Object::IsType<Dictionary>( ) const
 template <> bool Object::IsType<Array>( ) const
 {
 	return Type() == array ;
+}
+
+bool operator==( const Object& obj1, const Object& obj2 )
+{
+	// comparing integers and doubles specially
+/*	if ( obj1.IsType<int>() && obj2.IsType<double>() )
+		return static_cast<double>(obj1.As<int>()) == obj2.As<double>() ;
+	
+	else if ( obj2.IsType<int>() && obj1.IsType<double>() )
+		return static_cast<double>(obj2.As<int>()) == obj1.As<double>() ;
+	
+	else*/
+		return obj1.m_obj == obj2.m_obj ;
 }
 
 } // end of namespace

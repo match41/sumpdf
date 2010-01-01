@@ -400,6 +400,7 @@ set( UT_SRCS	test/core/TokenTest.cc
 				test/file/FileTest.cc
 				test/file/CatalogTest.cc
 				test/file/RefObjMapTest.cc
+				test/file/CompleteObjTest.cc
 				
 				test/mock/MockFile.cc
 				test/RealDocTest.cc

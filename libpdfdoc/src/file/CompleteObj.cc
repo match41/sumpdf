@@ -28,8 +28,11 @@
 
 #include "IFile.hh"
 
-#include "core/Dictionary.hh"
-#include "core/Array.hh"
+#include "core/TraverseObject.hh"
+#include "core/ObjWrapper.hh"
+#include "util/RefCounterWrapper.hh"
+
+#include <boost/bind.hpp>
 
 namespace pdf {
 
@@ -39,30 +42,42 @@ CompleteObj::CompleteObj( )
 {
 }
 
-void CompleteObj::Read( Dictionary& dict, IFile *file )
+void CompleteObj::Read( Object& obj, IFile *file )
 {
 	assert( file != 0 ) ;
 
-	m_obj = Dictionary( ) ;
-	m_obj.Swap( dict ) ;
+	m_obj.Swap( obj ) ;
 	
 	file->ReadObjectLinks( m_obj, m_refs ) ;
 }
 
-void CompleteObj::Read( Array& array, IFile *file )
+void CompleteObj::ReplaceReference( Object& obj, IFile *file ) const
 {
 	assert( file != 0 ) ;
-
-	m_obj = Array( ) ;
-	m_obj.Swap( array ) ;
 	
-	file->ReadObjectLinks( m_obj, m_refs ) ;
+	if ( obj.IsType<Ref>() )
+	{
+		ObjMap::const_iterator i = m_refs.find( obj ) ;
+		assert( i != m_refs.end() ) ;
+		assert( i->second != 0 ) ;
+		
+		obj = file->WriteObj( i->second->Get( ) ) ;
+	}
 }
 
 Ref CompleteObj::Write( IFile *file ) const
 {
-	// TODO: implement this
-	return Ref( ) ;
+	assert( file != 0 ) ;
+
+	Object obj( m_obj ) ;
+	ForEachObj( obj,
+		boost::bind(
+			&CompleteObj::ReplaceReference,
+			this,
+			_1,
+			file ) ) ; 
+	
+	return file->WriteObj( obj ) ;
 }
 
 } // end of namespace

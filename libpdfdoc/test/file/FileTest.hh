@@ -31,6 +31,13 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+namespace pdf
+{
+	class Dictionary ;
+	class Stream ;
+	class File ;
+}
+
 /*!	\brief	brief description
 	
 	this class represents
@@ -44,11 +51,26 @@ public :
 	CPPUNIT_TEST_SUITE( FileTest ) ;
 		CPPUNIT_TEST( TestSimple ) ;
 		CPPUNIT_TEST( TestReadStream ) ;
+		CPPUNIT_TEST( TestReadObjectLinks ) ;
 	CPPUNIT_TEST_SUITE_END();
+
+public :
+	void setUp( ) ;
+	void tearDown( ) ;
 
 private :
 	void TestSimple( ) ;
 	void TestReadStream( ) ;
+	void TestReadObjectLinks( ) ;
+
+private :
+	pdf::Dictionary	*m_page ;
+	pdf::Stream		*m_content ;
+	pdf::Dictionary	*m_page_tree ;
+	pdf::Dictionary	*m_font ;
+	pdf::Dictionary	*m_res ;
+	pdf::Dictionary	*m_doc_info ;
+	pdf::Dictionary	*m_catalog ;
 } ;
 
 #endif
