@@ -96,7 +96,7 @@ void RealPage::ReadContent( const Object& str_obj, IFile *src )
 
 	// append individual stream objects
 	else if ( str_obj.IsType<Stream>( ) )
-		m_content.strs.push_back( str_obj.As<Stream>( ) ) ;
+		m_cstrs.push_back( str_obj.As<Stream>( ) ) ;
 
 	// catenate individual objects in array
 	else if ( str_obj.IsType<Array>( ) )
@@ -134,14 +134,16 @@ Object RealPage::WriteContent( IFile *file ) const
 {
 	assert( file != 0 ) ;
 
-	if ( m_content.strs.size() == 1 )
-		return file->WriteObj( m_content.strs.front() ) ;
+	if ( m_cstrs.size() == 1 )
+		return file->WriteObj( m_cstrs.front() ) ;
 	else
 	{
-		Array strs( m_content.strs.size() ) ;
-		std::transform( m_content.strs.begin(), m_content.strs.end(),
-		                strs.begin(),
-		                boost::bind( &IFile::WriteObj, file, _1 ) ) ;
+		Array strs( m_cstrs.size() ) ;
+		std::transform(
+			m_cstrs.begin(),
+			m_cstrs.end(),
+		    strs.begin(),
+		    boost::bind( &IFile::WriteObj, file, _1 ) ) ;
 		return strs ;
 	}
 }
@@ -155,10 +157,10 @@ void RealPage::DrawText( double x, double y, Font *f, const std::string& text )
 	assert( font != 0 ) ;
 	Name fname = m_resources.AddFont( font ) ;
 
-	if ( m_content.strs.empty() || !m_content.strs.back().IsDirty() )
-		m_content.strs.push_back( Stream( Stream::deflate ) ) ;
+	if ( m_cstrs.empty() || !m_cstrs.back().IsDirty() )
+		m_cstrs.push_back( Stream( Stream::deflate ) ) ;
 
-	std::ostream ss( m_content.strs.back().OutStreamBuf( ) ) ;
+	std::ostream ss( m_cstrs.back().OutStreamBuf( ) ) ;
 	ss << "BT\n"
        << fname << " 12 Tf " << x << ' ' << y << " Td "
 	            << String( text ) << " Tj\n"
@@ -167,8 +169,8 @@ void RealPage::DrawText( double x, double y, Font *f, const std::string& text )
 
 void RealPage::Finish( )
 {
-	if ( !m_content.strs.empty() )
-		m_content.strs.back().Flush( ) ;
+	if ( !m_cstrs.empty() )
+		m_cstrs.back().Flush( ) ;
 }
 
 std::size_t RealPage::Count( ) const
@@ -199,19 +201,25 @@ const Resources* RealPage::GetResource( ) const
 
 PageContent* RealPage::GetContent( )
 {
+	m_content.ops.clear( ) ;
+	Decode( m_content.ops ) ;
 	return &m_content ;
 }
 
-bool RealPage::Content::Decode( PaintOp& op )
+bool RealPage::Content::GetPaintOps( std::vector<PaintOp>& op )
 {
-	return false ;
+	op = ops ;
+	return true ;
 }
 
 void RealPage::Decode( std::vector<PaintOp>& ops )
 {
-	for ( std::vector<Stream>::iterator i = m_content.strs.begin( ) ;
-	                                    i != m_content.strs.end( ) ; ++i )
+	for ( std::vector<Stream>::iterator i = m_cstrs.begin( ) ;
+	                                    i != m_cstrs.end( ) ; ++i )
 	{
+		// rewind to stream start for reading
+		i->Rewind( ) ;
+		
 		std::istream s( i->InStreamBuf() ) ;
 		TokenSrc src( s ) ;
 		std::vector<Object> args ;

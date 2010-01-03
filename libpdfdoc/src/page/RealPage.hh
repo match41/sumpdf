@@ -78,14 +78,14 @@ public :
 	Resources* GetResource( ) ;
 	const Resources* GetResource( ) const ;
 
-	void Decode( std::vector<PaintOp>& ops ) ;
-	
 	PageContent* GetContent( ) ;
 
 private :
 	void ReadContent( const Object& str_obj, IFile *file ) ;
 	Object WriteContent( IFile *file ) const ; 
-	
+
+	void Decode( std::vector<PaintOp>& ops ) ;
+
 private :
 	PageTree	*m_parent ;
 	Resources	m_resources ;
@@ -96,12 +96,13 @@ private :
 	
 	struct Content : public PageContent
 	{
-		bool Decode( PaintOp& op ) ;
+		bool GetPaintOps( std::vector<PaintOp>& op ) ;
 		
-		std::vector<Stream>				strs ;
-		std::vector<Stream>::iterator	current ;
+		std::vector<PaintOp>	ops ;
 	} m_content ;
-	
+
+	std::vector<Stream>	m_cstrs ;
+
 	int	m_rotate ;
 } ;
 
