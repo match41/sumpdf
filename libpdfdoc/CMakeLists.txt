@@ -39,6 +39,7 @@ find_package( JPEG )
 # source subdirectories
 ###############################################################################
 set( PAGE_DIR		src/page/ )
+set( GRAPICS_DIR	src/graphics/ )
 set( FILE_DIR		src/file/ )
 set( CORE_DIR		src/core/ )
 set( STRM_DIR		src/stream/ )
@@ -56,6 +57,12 @@ set( PAGE_HDRS		${PAGE_DIR}/RealPage.hh
 					${PAGE_DIR}/PageTree.hh
 					${PAGE_DIR}/XObject.hh
 					${PAGE_DIR}/RealImage.hh )
+
+set( GRAPICS_HDRS	${GRAPICS_DIR}/Graphics.hh
+                    ${GRAPICS_DIR}/Text.hh
+                    ${GRAPICS_DIR}/TextLine.hh
+                    ${GRAPICS_DIR}/TextBlock.hh
+                    ${GRAPICS_DIR}/TextFormat.hh )
 
 set( FILE_HDRS		${FILE_DIR}/RealFile.hh
 					${FILE_DIR}/IFile.hh
@@ -139,6 +146,12 @@ set( PAGE_SRCS  	${PAGE_DIR}/RealPage.cc
 					${PAGE_DIR}/PaintOp.cc
 					${PAGE_DIR}/TextOp.cc
 					${PAGE_DIR}/PathSegment.cc )
+
+set( GRAPICS_SRCS	${GRAPICS_DIR}/Graphics.cc
+                    ${GRAPICS_DIR}/Text.cc
+                    ${GRAPICS_DIR}/TextLine.cc
+                    ${GRAPICS_DIR}/TextBlock.cc
+                    ${GRAPICS_DIR}/TextFormat.cc )
 
 set( FILE_SRCS		${FILE_DIR}/RealFile.cc
 					${FILE_DIR}/IFile.cc
@@ -254,14 +267,14 @@ endif ( JPEG_FOUND )
 ###############################################################################
 set( HDRS	${BASE_HDRS}
 			${PAGE_HDRS} ${FILE_HDRS} ${CORE_HDRS} ${IMG_HDRS}
-			${FONT_HDRS} ${STRM_HDRS} ${INCLUDE_HDRS} )
+			${FONT_HDRS} ${STRM_HDRS} ${INCLUDE_HDRS} ${GRAPICS_HDRS} )
 
 ###############################################################################
 # all sources
 ###############################################################################
 set( SRCS	${BASE_SRCS}
 			${PAGE_SRCS} ${FILE_SRCS} ${CORE_SRCS} ${IMG_SRCS} ${UTIL_SRCS}
-			${FONT_SRCS} ${STRM_SRCS} )
+			${FONT_SRCS} ${STRM_SRCS} ${GRAPICS_SRCS} )
 
 ###############################################################################
 # libpdfdoc library
