@@ -27,7 +27,13 @@
 #ifndef __PDF_GRAPHICS_HH_EADER_INCLUDED__
 #define __PDF_GRAPHICS_HH_EADER_INCLUDED__
 
+#include <cstddef>
+
 namespace pdf {
+
+class Token ;
+class Object ;
+class Resources ;
 
 /**	\brief	brief description
 
@@ -38,6 +44,12 @@ class Graphics
 {
 public :
 	virtual ~Graphics( ) ;
+	
+	virtual void OnCommand(
+		const Token& 	cmd,
+		const Object 	*args,
+		std::size_t		count,
+		Resources		*res ) = 0 ;
 } ;
 
 } // end of namespace

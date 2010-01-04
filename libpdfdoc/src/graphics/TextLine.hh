@@ -29,9 +29,12 @@
 
 #include "TextBlock.hh"
 
+#include <map>
 #include <vector>
 
 namespace pdf {
+
+class Resources ;
 
 /**	\brief	brief description
 
@@ -44,6 +47,23 @@ class TextLine
 {
 public :
 	TextLine( ) ;
+
+	void OnCommand(
+		const Token& 	cmd,
+		const Object 	*args,
+		std::size_t		count,
+		Resources		*res ) ;
+
+private :
+	void OnTd( const Object* args, std::size_t count ) ;
+	void OnTD( const Object* args, std::size_t count ) ;
+	void OnTm( const Object* args, std::size_t count ) ;
+	void OnTstar( const Object* args, std::size_t count ) ;
+
+	typedef void (TextLine::*Handler)( const Object* args, std::size_t count ) ;
+	typedef std::map<Token, Handler>	HandlerMap ;
+	static const HandlerMap::value_type	m_handler_map_values[] ;
+	static const HandlerMap				m_handler_map ;
 
 private :
 	/// the text matrix

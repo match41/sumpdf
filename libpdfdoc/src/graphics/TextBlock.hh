@@ -32,6 +32,9 @@
 
 namespace pdf {
 
+class Token ;
+class Object ;
+
 /**	\brief	brief description
 
 	The TextBlock class represent a string of characters with the same
@@ -41,6 +44,12 @@ class TextBlock
 {
 public :
 	TextBlock( ) ;
+
+	void OnCommand(
+		const Token& 	cmd,
+		const Object 	*args,
+		std::size_t		count,
+		Resources		*res ) ;
 
 private :
 	std::vector<unsigned short>	m_chars ;

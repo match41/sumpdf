@@ -46,6 +46,12 @@ class Text : public Graphics
 public :
 	Text( ) ;
 
+	void OnCommand(
+		const Token& 	cmd,
+		const Object 	*args,
+		std::size_t		count,
+		Resources		*res ) ;
+
 private :
 	std::vector<TextLine>	m_lines ;
 } ;

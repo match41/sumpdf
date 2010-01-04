@@ -27,7 +27,14 @@
 #ifndef __PDF_TEXTFORMAT_HH_EADER_INCLUDED__
 #define __PDF_TEXTFORMAT_HH_EADER_INCLUDED__
 
+#include <cstddef>
+
 namespace pdf {
+
+class Font ;
+class Token ;
+class Object ;
+class Resources ;
 
 /**	\brief	brief description
 
@@ -37,6 +44,22 @@ class TextFormat
 {
 public :
 	TextFormat( ) ;
+
+	void OnCommand(
+		const Token& 	cmd,
+		const Object 	*args,
+		std::size_t		count,
+		Resources		*res ) ;
+
+private :
+	double	m_char_space ;
+	double	m_word_space ;
+	double	m_hori_scale ;
+	double	m_leading ;
+	double	m_font_size ;
+	Font	*m_font ;
+	int		m_render_mode ;
+	double	m_text_rise ;
 } ;
 
 } // end of namespace
