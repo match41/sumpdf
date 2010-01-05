@@ -47,7 +47,7 @@ Catalog::Catalog( )
 : m_version		( "1.4" ),
   m_page_layout	( "SinglePage" ),
   m_page_mode	( "UseNode" ),
-  m_tree		( 0 )
+  m_tree		( new PageTree )
 {
 }
 
@@ -108,7 +108,15 @@ Catalog::Catalog( const Ref& link, IFile *file )
 
 Catalog::~Catalog( )
 {
-	delete m_tree ;
+	// clear the destination map first. it should free up all links to
+	// the pages.
+	m_named_dests.clear( ) ;
+
+	// there should be no one linking to the root tree node now.
+	assert( m_tree->UseCount() == 1 ) ;
+	
+	m_tree->Release() ;
+	m_tree = 0 ;
 }
 
 Ref Catalog::Write( IFile *file ) const
@@ -140,8 +148,7 @@ Ref Catalog::Write( IFile *file ) const
 
 RealPage* Catalog::AddPage( )
 {
-	if ( m_tree == 0 )
-		m_tree = new PageTree ;
+	assert( m_tree != 0 ) ;
 
 	// for now the pages are arranged linearly for now
 	return new RealPage( m_tree ) ;
@@ -149,12 +156,19 @@ RealPage* Catalog::AddPage( )
 
 std::size_t Catalog::PageCount( ) const
 {
+	assert( m_tree != 0 ) ;
+
 	return m_tree->Count( ) ;
 }
 
 RealPage* Catalog::GetPage( std::size_t index )
 {
+	assert( m_tree != 0 ) ;
+
 	PageNode *p = m_tree->GetLeaf( index ) ;
+	assert( p != 0 ) ;
+	
+	// no need to use dynamic cast as it will not be child class of RealPage
 	assert( typeid(*p) == typeid(RealPage) ) ;
 
 	return static_cast<RealPage*>( p ) ;

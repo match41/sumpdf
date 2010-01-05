@@ -48,13 +48,15 @@ namespace pdf {
 
 const std::string RealDoc::Info_::m_empty ;
 
+/**	It will create an empty document with only one page.
+*/
 RealDoc::RealDoc( )
 	: m_catalog( new Catalog )	// not exception safe
 {
 	::FT_Init_FreeType( &m_ft_lib ) ;
 }
 
-/*!	The destructor will delete all the elements contained. It traverses the
+/**	The destructor will delete all the elements contained. It traverses the
 	whole document to find out all elements and free them up.
 */
 RealDoc::~RealDoc( )

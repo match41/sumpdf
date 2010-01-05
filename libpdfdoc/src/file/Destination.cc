@@ -41,6 +41,12 @@ Destination::Destination( )
 {
 }
 
+Destination::~Destination( )
+{
+	if ( m_page != 0 )
+		m_page->Release( ) ;
+}
+
 void Destination::Read( Array& array, IFile *file )
 {
 	m_options.swap( array ) ;

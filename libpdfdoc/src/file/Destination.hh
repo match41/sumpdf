@@ -44,6 +44,7 @@ class Destination
 {
 public :
 	Destination( ) ;
+	~Destination( ) ;
 	
 	void Read( Array& array, IFile *file ) ;
 	Ref Write( IFile *file ) const ;
