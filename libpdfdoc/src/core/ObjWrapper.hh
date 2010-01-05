@@ -34,9 +34,8 @@ class RefCounterWrapper ;
 
 class Object ;
 
-/**	\brief	brief description
-
-	The ObjWrapper class represent
+/**	\brief	A reference-counted PDF object
+	\internal
 */
 typedef RefCounterWrapper<Object>	ObjWrapper ;
 

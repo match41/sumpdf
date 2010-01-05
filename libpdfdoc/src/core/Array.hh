@@ -38,9 +38,12 @@ namespace pdf {
 
 class Token ;
 
-/*!	\brief	brief description
+/*!	\brief	The PDF array object.
+	\internal
 
-	This class represents the PDF array object.
+	This class represents the PDF array object. An array object contains
+	multiple PDF objects. They may be of different types. This class provides
+	an interface like STL vector to provide access to them.
 */
 class Array
 {

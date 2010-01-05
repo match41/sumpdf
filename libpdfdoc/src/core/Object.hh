@@ -53,8 +53,19 @@ class TokenSrc ;
 	This class represents the objects in PDF file. It is the basic building 
 	block of a PDF file.
 	
-	There are serveral types of PDF objects: null, integer, double, boolean,
-	name, string, stream, reference, array and dictionary. Each type has its
+	There are serveral types of PDF objects:
+	- \link Object::Null Null \endlink
+	- integer
+	- double
+	- boolean
+	- Name
+	- String
+	- Stream
+	- \link Ref Reference \endlink
+	- Array
+	- Dictionary.
+	
+	Each type has its
 	own unique syntax such that the type of an object can be determined when
 	reading them from a file.
 	
@@ -63,10 +74,7 @@ class TokenSrc ;
 	
 	This class is implemented using boost::variant, which is a generic
 	stack-base discriminated union container. It can contain different types
-	of data in a single object, but only one type of data is active. The
-	boost::variant template we use can containthe PDF object types: null,
-	integer, double, boolean, name, string, stream, reference, array and
-	dictionary.
+	of data in a single object, but only one type of data is active.
 	
 	The As() functions provides a type-safe way to obtain the underlying
 	value in an Object. Callers should supply the template parameter \a T
@@ -115,37 +123,9 @@ public :
 	} ;
 
 public :
-	/*!	\brief	default constructor
-		\internal
-	
-		The default constructor will construct a null object.
-		\post	IsNull() returns true.
-	*/
 	Object( ) ;
-	
-	/*!	\brief	destructor
-		\internal
-		
-		The destructor will do nothing. It is present because of the contained
-		incomplete types in the member variables.
-	*/
 	~Object( ) ;
-	
-	/*!	\brief	copy constructor
-		\internal
-		
-		The copy constructor will deep copy the object. For example if \a obj
-		is an array of dictionaries, all the individual dictionaries in the
-		array will be copied. It can be slow for large objects.
-		
-		\param	obj		object to be copied from
-	*/
 	Object( const Object& obj ) ;
-	
-	/*!	\internal This constructor will construct a string object.
-		\post	Type() == string
-		\param	str	the content of the string 
-	*/
 	Object( const char *str ) ;
 	Object( std::size_t value ) ;
 	Object( float value ) ;
@@ -226,8 +206,7 @@ public :
 		}
 	}
 	
-	/*!	\brief	conversion operator to arbitrary types
-		\internal
+	/*!	\brief	Conversion operator to arbitrary types
 		
 		This function is similar to As(), except it returns the result
 		by value, not by reference. The advantage is that automatic conversion
@@ -236,17 +215,30 @@ public :
 		For large objects like Array and Dictionary, there may be performance
 		problems.
 		
+		\param	T		The target type to be converted to.
 		\throw	BadType	The underlying object is not of type \a T. The
 						BadType::what() function will describe the
 						expected and actual type.
-		\sa As()
+		\sa As(), To()
 	*/
 	template <typename T>
 	operator T() const
 	{
 		return As<T>( ) ;
 	}
+
+	/**	\brief	Conversion function to arbitrary types
 	
+		This function calls operator T(). It is useful when automatic type
+		conversion is not triggered due to C++ rules. You can call this
+		function directly.
+		
+		\param	T		The target type to be converted to.
+		\throw	BadType	The underlying object is not of type \a T. The
+						BadType::what() function will describe the
+						expected and actual type.
+		\sa As()
+	*/
 	template <typename T>
 	T To( ) const
 	{
@@ -265,6 +257,15 @@ public :
 		boost::apply_visitor( func, m_obj ) ;
 	}
 
+	/**	\brief	Check the type of the Object.
+    
+		Check if the type of the object is the same as the template argument.
+		This function is preferred over Type() because you don't have to
+		memorize the members of the ObjType enum.
+		\param	T		the type to be check against
+		\return	\c true if the contained object is of type \a T, otherwise
+				\c false.
+    */
     template <typename T>
     bool IsType( ) const ;
 

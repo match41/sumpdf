@@ -35,6 +35,7 @@ class Token ;
 class TokenSrc ;
 
 /*!	\brief	Indirect objects in PDF
+	\internal
 	
 	This class represents indirect objects according to PDF specification.
 */

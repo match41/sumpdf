@@ -43,6 +43,7 @@ class ElementList ;
 class IFile ;
 
 /*!	\brief	brief description
+	\internal
 
 	This class represents the document catalog of a PDF file. The document
 	catalog stores the main page tree of the document.

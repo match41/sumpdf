@@ -33,11 +33,12 @@ namespace pdf {
 
 class IFile ;
 
-/*!	\brief	PDF external objects
+/**	\brief	PDF external objects
+	\internal
 	
-	According to the PDF specification: "An external object (commonly called an
+	According to the PDF specification: An external object (commonly called an
 	XObject) is a graphics object whose contents are defined by a self-contained
-	content stream."
+	content stream.
 */
 class XObject
 {

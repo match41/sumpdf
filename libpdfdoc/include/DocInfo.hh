@@ -32,14 +32,12 @@
 namespace pdf {
 
 /*!	\brief	PDF document info. 
-	
-	\param	producer	if the document was converted to PDF from another
-						format, the name of the application (for example,
-						libpdfdoc) that converted it to PDF.
-	\param	creator		if the document was converted to PDF from another
-						format, the name of the application (for example,
-						Adobe FrameMaker) that created the original document
-						from which it was converted.
+
+	This class provides interface functions to access PDF document meta
+	information. The following information can be access:
+
+	- creator
+	- producer
 */
 class DocInfo
 {
@@ -47,7 +45,21 @@ protected :
 	~DocInfo( ) ;
 
 public :
+	/**	\brief	Get the creator of the PDF document.
+	
+		If the document was converted to PDF from another
+		format, the name of the application (for example,
+		Adobe FrameMaker) that created the original document
+		from which it was converted.
+	*/
 	virtual const std::string& Creator() const = 0 ;
+	
+	/**	\brief	Get the creator of the PDF document.
+	
+		if the document was converted to PDF from another
+		format, the name of the application (for example,
+		libpdfdoc) that converted it to PDF.
+	*/
 	virtual const std::string& Producer() const = 0 ;
 	virtual const std::string& Author() const = 0 ;
 	virtual const std::string& Subject() const = 0 ;
