@@ -18,8 +18,8 @@
  ***************************************************************************/
 
 /*!
-	\file	File.hh
-	\brief	definition the File class
+	\file	RealFile.hh
+	\brief	definition the RealFile class
 	\date	Fri Mar 21 2008
 	\author	Nestal Wan
 */

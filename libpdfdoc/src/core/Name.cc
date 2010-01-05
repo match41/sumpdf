@@ -50,6 +50,11 @@ Name::Name( const Object& obj )
 {
 }
 
+/**	\brief	Swapping two names
+
+	Swapping two Name objects with no-throw exception guarantee.
+	\param	name	another Name object to be swapped
+*/
 void Name::swap( Name& name )
 {
 	m_name.swap( name.m_name ) ;
@@ -104,6 +109,7 @@ bool operator!=( const Name& name1, const char *name2 )
 	return name1 != Name( name2 ) ;
 }
 
+///	Returns the underlying string.
 const std::string& Name::Str() const
 {
 	return m_name ;
