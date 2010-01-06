@@ -39,6 +39,7 @@ find_package( JPEG )
 # source subdirectories
 ###############################################################################
 set( PAGE_DIR		src/page/ )
+set( GRAPICS_DIR	src/graphics/ )
 set( FILE_DIR		src/file/ )
 set( CORE_DIR		src/core/ )
 set( STRM_DIR		src/stream/ )
@@ -57,11 +58,19 @@ set( PAGE_HDRS		${PAGE_DIR}/RealPage.hh
 					${PAGE_DIR}/XObject.hh
 					${PAGE_DIR}/RealImage.hh )
 
-set( FILE_HDRS		${FILE_DIR}/File.hh
+set( GRAPICS_HDRS	${GRAPICS_DIR}/Graphics.hh
+                    ${GRAPICS_DIR}/Text.hh
+                    ${GRAPICS_DIR}/TextLine.hh
+                    ${GRAPICS_DIR}/TextBlock.hh
+                    ${GRAPICS_DIR}/TextFormat.hh )
+
+set( FILE_HDRS		${FILE_DIR}/RealFile.hh
 					${FILE_DIR}/IFile.hh
 					${FILE_DIR}/Catalog.hh
 					${FILE_DIR}/ObjectReader.hh
 					${FILE_DIR}/RefObjMap.hh
+					${FILE_DIR}/CompleteObj.hh
+					${FILE_DIR}/Destination.hh
 					${FILE_DIR}/ResourcePool.hh )
 
 set( CORE_HDRS  	${CORE_DIR}/Object.hh
@@ -72,6 +81,7 @@ set( CORE_HDRS  	${CORE_DIR}/Object.hh
 					${CORE_DIR}/TokenSrc.hh
 					${CORE_DIR}/String.hh
 					${CORE_DIR}/Name.hh
+					${CORE_DIR}/ObjWrapper.hh
 					${CORE_DIR}/TraverseObject.hh )
 					
 set( STRM_HDRS		${STRM_DIR}/Stream.hh
@@ -118,7 +128,8 @@ set( INCLUDE_HDRS	${INCLUDE_DIR}/Doc.hh
 					${INCLUDE_DIR}/page/TextOp.hh
 					${INCLUDE_DIR}/page/PathSegment.hh
 					${INCLUDE_DIR}/util/Exception.hh
-					${INCLUDE_DIR}/util/Rect.hh )
+					${INCLUDE_DIR}/util/Rect.hh
+					${INCLUDE_DIR}/util/Matrix.hh )
 
 set( BASE_HDRS		src/RealDoc.hh )
 
@@ -137,9 +148,18 @@ set( PAGE_SRCS  	${PAGE_DIR}/RealPage.cc
 					${PAGE_DIR}/TextOp.cc
 					${PAGE_DIR}/PathSegment.cc )
 
-set( FILE_SRCS		${FILE_DIR}/File.cc
+set( GRAPICS_SRCS	${GRAPICS_DIR}/Graphics.cc
+                    ${GRAPICS_DIR}/Text.cc
+                    ${GRAPICS_DIR}/TextLine.cc
+                    ${GRAPICS_DIR}/TextBlock.cc
+                    ${GRAPICS_DIR}/TextFormat.cc )
+
+set( FILE_SRCS		${FILE_DIR}/RealFile.cc
 					${FILE_DIR}/IFile.cc
 					${FILE_DIR}/Catalog.cc
+					${FILE_DIR}/ResourcePool.cc
+					${FILE_DIR}/Destination.cc
+					${FILE_DIR}/CompleteObj.cc
 					${FILE_DIR}/DocInfo.cc )
 
 set( CORE_SRCS  	${CORE_DIR}/Object.cc
@@ -166,7 +186,8 @@ set( UTIL_SRCS  	${UTIL_DIR}/Rect.cc
 					${UTIL_DIR}/Util.cc
 					${UTIL_DIR}/Exception.cc
 					${UTIL_DIR}/Backtrace.cc
-					${UTIL_DIR}/RefCounter.cc )
+					${UTIL_DIR}/RefCounter.cc
+					${UTIL_DIR}/Matrix.cc )
 
 set( IMG_SRCS  		${IMG_DIR}/Image.cc )
 
@@ -248,14 +269,14 @@ endif ( JPEG_FOUND )
 ###############################################################################
 set( HDRS	${BASE_HDRS}
 			${PAGE_HDRS} ${FILE_HDRS} ${CORE_HDRS} ${IMG_HDRS}
-			${FONT_HDRS} ${STRM_HDRS} ${INCLUDE_HDRS} )
+			${FONT_HDRS} ${STRM_HDRS} ${INCLUDE_HDRS} ${GRAPICS_HDRS} )
 
 ###############################################################################
 # all sources
 ###############################################################################
 set( SRCS	${BASE_SRCS}
 			${PAGE_SRCS} ${FILE_SRCS} ${CORE_SRCS} ${IMG_SRCS} ${UTIL_SRCS}
-			${FONT_SRCS} ${STRM_SRCS} )
+			${FONT_SRCS} ${STRM_SRCS} ${GRAPICS_SRCS} )
 
 ###############################################################################
 # libpdfdoc library
@@ -267,11 +288,12 @@ add_library( pdfdoc_static STATIC ${SRCS} ${HDRS} )
 # source groups
 ###############################################################################
 
-SOURCE_GROUP( "page"		FILES ${PAGE_SRCS} ${PAGE_HDRS} )
-SOURCE_GROUP( "file"		FILES ${FILE_SRCS} ${FILE_HDRS} )
-SOURCE_GROUP( "core"		FILES ${CORE_SRCS} ${CORE_HDRS} )
+SOURCE_GROUP( "page"		FILES ${PAGE_SRCS}		${PAGE_HDRS} )
+SOURCE_GROUP( "graphics"	FILES ${GRAPICS_SRCS}	${GRAPICS_HDRS} )
+SOURCE_GROUP( "file"		FILES ${FILE_SRCS}		${FILE_HDRS} )
+SOURCE_GROUP( "core"		FILES ${CORE_SRCS}		${CORE_HDRS} )
 SOURCE_GROUP( "util"		FILES ${UTIL_SRCS} ${UTIL_HDRS} )
-SOURCE_GROUP( "font"		FILES ${FONT_SRCS} ${FONT_HDRS} )
+SOURCE_GROUP( "font"		FILES ${FONT_SRCS}		${FONT_HDRS} )
 SOURCE_GROUP( "image"		FILES ${IMG_SRCS}  ${IMG_HDRS} )
 SOURCE_GROUP( "stream"		FILES ${STRM_SRCS} ${STRM_HDRS} )
 SOURCE_GROUP( "base"		FILES ${BASE_SRCS} ${BASE_HDRS} )
@@ -394,9 +416,10 @@ set( UT_SRCS	test/core/TokenTest.cc
 				test/page/ResourcesTest.cc
 				test/page/XObjectTest.cc
 				
-				test/file/FileTest.cc
+				test/file/RealFileTest.cc
 				test/file/CatalogTest.cc
 				test/file/RefObjMapTest.cc
+				test/file/CompleteObjTest.cc
 				
 				test/mock/MockFile.cc
 				test/RealDocTest.cc

@@ -49,7 +49,7 @@ public :
 	explicit PageTree( PageTree *parent = 0 ) ;
 	~PageTree( ) ;
 
-	void Read( const Dictionary& dict, IFile *file ) ;
+	void Read( Dictionary& dict, IFile *file ) ;
 	void Write( const Ref& link, IFile *file, const Ref& parent ) const ;
 
 	PageTree* Parent( ) ;
@@ -74,7 +74,7 @@ private :
 	std::vector<PageNode*>	m_kids ;
 	
 	//! number of leaf node children under this tree
-	mutable std::size_t		m_count ;
+	mutable int		m_count ;
 } ;
 
 } // end of namespace

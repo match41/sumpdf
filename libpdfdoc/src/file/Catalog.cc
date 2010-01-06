@@ -47,7 +47,7 @@ Catalog::Catalog( )
 : m_version		( "1.4" ),
   m_page_layout	( "SinglePage" ),
   m_page_mode	( "UseNode" ),
-  m_tree		( 0 )
+  m_tree		( new PageTree )
 {
 }
 
@@ -58,57 +58,97 @@ Catalog::Catalog( const Ref& link, IFile *file )
 	  m_tree		( 0 )
 {
 	assert( file != 0 ) ;
-	m_self = file->ReadObj( link ).As<Dictionary>() ;
+	Dictionary self = file->ReadObj( link ).As<Dictionary>() ;
 
-	if ( m_self["Type"].As<Name>() != "Catalog" )
+	Name type ;
+	if ( !Detach( file, self, "Type", type ) || type != "Catalog" )
 	{
 		std::ostringstream oss ;
-		oss << "invalid catalog type: " << m_self["Type"] ;
+		oss << "invalid catalog type: " << type ;
 		throw ParseError( oss.str( ) ) ;
 	}
 
 	// page tree is mandatory
 	Dictionary tree ;
-	if ( !Detach( file, m_self, "Pages", tree ) )
+	if ( !Detach( file, self, "Pages", tree ) )
 		throw ParseError( "no page tree in catalog" ) ;
 	
 	// root page tree has no parent
 	m_tree = new PageTree ;
 	m_tree->Read( tree, file ) ;
 	
-	// TODO: no know how to handle OpenAction it yet
-	m_self.erase( Name( "OpenAction" ) ) ;
+	Detach( file, self, "Version",		m_version ) ;
+	Detach( file, self, "PageLayout",	m_page_layout ) ;
+	Detach( file, self, "PageMode",		m_page_mode ) ;
 
-	m_self.Extract( "Version",		m_version ) ;
-	m_self.Extract( "PageLayout",	m_page_layout ) ;
-	m_self.Extract( "PageMode",		m_page_mode ) ;
+	// read destintions
+	Dictionary dest ;
+	if ( Detach( file, self, "Dests", dest ) )
+	{
+		for ( Dictionary::iterator i = dest.begin() ; i != dest.end() ; ++i )
+		{
+			Array darray = DeRefObj<Array>( file, i->second ) ; 
+			
+			Destination d ;
+			d.Read( darray, file ) ;
+			
+			m_named_dests.insert( std::make_pair( i->first, d ) ) ;
+		}
+	}
+
+	// we don't know how to handle that now
+	self.erase( "Names" ) ;
+	self.erase( "OpenAction" ) ;
+	
+	// forget it
+	self.clear( ) ;
+	
+	m_self.Read( self, file ) ;
 }
 
 Catalog::~Catalog( )
 {
-	delete m_tree ;
+	// clear the destination map first. it should free up all links to
+	// the pages.
+	m_named_dests.clear( ) ;
+
+	// there should be no one linking to the root tree node now.
+	assert( m_tree->UseCount() == 1 ) ;
+	
+	m_tree->Release() ;
+	m_tree = 0 ;
 }
 
 Ref Catalog::Write( IFile *file ) const
 {
-	Dictionary self( m_self ) ;
+	CompleteObj self( m_self ) ;
 
 	Ref tree = file->AllocLink( ) ;
 	m_tree->Write( tree, file, Ref() ) ; 
 
-	self["Pages"] 	    = tree ;
-	self["Type"]	    = Name( "Catalog" ) ;
-	self["Version"]		= m_version ;
-	self["PageLayout"]	= m_page_layout ;
-	self["PageMode"]	= m_page_mode ;
+	self.Get()["Pages"] 	    = tree ;
+	self.Get()["Type"]	    	= Name( "Catalog" ) ;
+	self.Get()["Version"]		= m_version ;
+	self.Get()["PageLayout"]	= m_page_layout ;
+	self.Get()["PageMode"]		= m_page_mode ;
 
-	return file->WriteObj( self ) ;
+	// write destinations
+	Dictionary dest ;
+	for ( std::map<Name, Destination>::const_iterator i = m_named_dests.begin() ;
+		i != m_named_dests.end() ; ++i )
+	{
+		dest.insert( std::make_pair( i->first, i->second.Write( file ) ) ) ;
+	}
+	if ( !dest.empty() )
+		self.Get()["Dests"]		= file->WriteObj(dest) ;
+
+
+	return self.Write( file ) ;
 }
 
 RealPage* Catalog::AddPage( )
 {
-	if ( m_tree == 0 )
-		m_tree = new PageTree ;
+	assert( m_tree != 0 ) ;
 
 	// for now the pages are arranged linearly for now
 	return new RealPage( m_tree ) ;
@@ -116,12 +156,19 @@ RealPage* Catalog::AddPage( )
 
 std::size_t Catalog::PageCount( ) const
 {
+	assert( m_tree != 0 ) ;
+
 	return m_tree->Count( ) ;
 }
 
 RealPage* Catalog::GetPage( std::size_t index )
 {
+	assert( m_tree != 0 ) ;
+
 	PageNode *p = m_tree->GetLeaf( index ) ;
+	assert( p != 0 ) ;
+	
+	// no need to use dynamic cast as it will not be child class of RealPage
 	assert( typeid(*p) == typeid(RealPage) ) ;
 
 	return static_cast<RealPage*>( p ) ;

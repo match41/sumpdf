@@ -38,6 +38,8 @@ namespace pdf {
 	A token is a basic unit of the PDF file. The PDF parser will divide the
 	bytes in a PDF file into tokens. Each token is a non-divisable unit of
 	data. The meaning of tokens will be determined base on context.
+	
+	This class is mainly used for parsing PDF file and content streams.
 */
 class Token
 {

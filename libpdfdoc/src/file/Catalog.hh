@@ -1,4 +1,4 @@
-/***************************************************************************
+/***************************************************************************\
  *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+\***************************************************************************/
 
 /*!
 	\file	Catalog.hh
@@ -29,6 +29,8 @@
 
 #include "core/Dictionary.hh"
 #include "core/Name.hh"
+#include "file/CompleteObj.hh"
+#include "file/Destination.hh"
 
 #include <vector>
 
@@ -41,6 +43,7 @@ class ElementList ;
 class IFile ;
 
 /*!	\brief	brief description
+	\internal
 
 	This class represents the document catalog of a PDF file. The document
 	catalog stores the main page tree of the document.
@@ -61,12 +64,13 @@ public :
 	RealPage*	GetPage( std::size_t index ) ;
 
 private :
-	Dictionary	m_self ;
+	CompleteObj	m_self ;
 	Name		m_version ;
 	Name		m_page_layout ;
 	Name		m_page_mode ;
 
 	PageTree	*m_tree ;
+	std::map<Name, Destination>	m_named_dests ;
 } ;
 
 } // end of namespace

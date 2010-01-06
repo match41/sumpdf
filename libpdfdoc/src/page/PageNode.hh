@@ -27,6 +27,8 @@
 #ifndef __PDF_PAGE_NODE_HEADER_INCLUDED__
 #define __PDF_PAGE_NODE_HEADER_INCLUDED__
 
+#include "util/RefCounter.hh"
+
 #include <cstddef>
 
 namespace pdf {
@@ -43,12 +45,12 @@ class Ref ;
 	it can be a leaf node (i.e. a page) or a tree node (which contains other
 	nodes)
 */
-class PageNode
+class PageNode : public RefCounter
 {
 public :
 	virtual ~PageNode( ) ;
 
-	virtual void Read( const Dictionary& self, IFile *file ) = 0 ; 
+	virtual void Read( Dictionary& self, IFile *file ) = 0 ; 
 	virtual void Write( const Ref& link, IFile *file, const Ref& parent ) 
 		const = 0 ;
 

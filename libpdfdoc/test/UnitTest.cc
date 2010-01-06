@@ -49,9 +49,10 @@
 #endif
 
 #include "page/XObjectTest.hh"
-#include "file/FileTest.hh"
+#include "file/RealFileTest.hh"
 #include "file/CatalogTest.hh"
 #include "file/RefObjMapTest.hh"
+#include "file/CompleteObjTest.hh"
 #include "page/PageNodeTest.hh"
 #include "image/PngImageTest.hh"
 #include "image/JpegImageTest.hh"
@@ -72,7 +73,8 @@ int main( int argc, char **argv )
 	runner.addTest( ResourcesTest::suite( ) ) ;
 	runner.addTest( XObjectTest::suite( ) ) ;
 	runner.addTest( StreamTest::suite( ) ) ;
-	runner.addTest( FileTest::suite( ) ) ;
+	runner.addTest( RealFileTest::suite( ) ) ;
+	runner.addTest( CompleteObjTest::suite( ) ) ;
 	runner.addTest( CatalogTest::suite( ) ) ;
 	runner.addTest( RefObjMapTest::suite( ) ) ;
 	runner.addTest( PageNodeTest::suite( ) ) ;

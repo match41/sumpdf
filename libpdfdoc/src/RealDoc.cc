@@ -30,7 +30,7 @@
 #include "core/Ref.hh"
 #include "core/Object.hh"
 
-#include "file/File.hh"
+#include "file/RealFile.hh"
 
 #include "page/RealPage.hh"
 #include "page/PageTree.hh"
@@ -48,13 +48,15 @@ namespace pdf {
 
 const std::string RealDoc::Info_::m_empty ;
 
+/**	It will create an empty document with only one page.
+*/
 RealDoc::RealDoc( )
 	: m_catalog( new Catalog )	// not exception safe
 {
 	::FT_Init_FreeType( &m_ft_lib ) ;
 }
 
-/*!	The destructor will delete all the elements contained. It traverses the
+/**	The destructor will delete all the elements contained. It traverses the
 	whole document to find out all elements and free them up.
 */
 RealDoc::~RealDoc( )
@@ -72,7 +74,7 @@ void RealDoc::Read( const std::string& filename )
 		throw std::runtime_error( "cannot open file " + filename ) ;
 
 	// read the cross reference of the PDF file
-	File file( &m_readfs ) ;
+	RealFile file( &m_readfs ) ;
 
 	m_catalog		= new Catalog( file.Root( ), &file ) ;
 	
@@ -87,7 +89,7 @@ void RealDoc::Write( const std::string& filename ) const
 	if ( !fs )
 		throw std::runtime_error( "cannot open file " + filename ) ;
 
-	File file( &fs ) ;
+	RealFile file( &fs ) ;
 	file.WriteTrailer(
 		m_catalog->Write( &file ),
 		m_info.m_dict.empty() ? Ref() : file.WriteObj( m_info.m_dict ) ) ;

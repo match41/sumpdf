@@ -27,6 +27,8 @@
 #ifndef __PDF_PAGECONTENT_HH_EADER_INCLUDED__
 #define __PDF_PAGECONTENT_HH_EADER_INCLUDED__
 
+#include <vector>
+
 namespace pdf {
 
 class PaintOp ;
@@ -41,7 +43,7 @@ protected :
 	~PageContent( ) ;
 
 public :
-	virtual bool Decode( PaintOp& op ) = 0 ;
+	virtual bool GetPaintOps( std::vector<PaintOp>& op ) = 0 ;
 } ;
 
 } // end of namespace

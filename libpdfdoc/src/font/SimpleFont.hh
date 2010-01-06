@@ -29,12 +29,14 @@
 
 #include "BaseFont.hh"
 
+// libpdfdoc headers
+#include "core/Name.hh"
+#include "core/Object.hh"
+#include "file/CompleteObj.hh"
+
 // freetype headers
 #include <ft2build.h>
 #include FT_FREETYPE_H
-
-#include "core/Name.hh"
-#include "core/Object.hh"
 
 #include <vector>
 
@@ -61,7 +63,7 @@ public :
 public :
 	SimpleFont( ) ;
 	explicit SimpleFont( FT_Face face ) ;
-	SimpleFont( const Object& self, IFile *file ) ;
+	SimpleFont( Dictionary& self, IFile *file ) ;
 
 	std::string BaseName( ) const ;
 	Ref Write( IFile *file ) const ;
@@ -82,6 +84,8 @@ private :
 		int&	last_char ) ;
 
 private :
+	CompleteObj			m_self ;
+
 	FT_Face	m_face ;
 
 	Name	m_base_font ;
@@ -89,9 +93,8 @@ private :
 	int		m_first_char, m_last_char ;
 
 	std::vector<int>	m_widths ;
-	Object				m_descriptor ;
-	Object				m_to_unicode ;
-	Object				m_encoding ;	//!< name or dictionary
+//	Object				m_to_unicode ;
+//	Object				m_encoding ;	//!< name or dictionary
 } ;
 
 } // end of namespace

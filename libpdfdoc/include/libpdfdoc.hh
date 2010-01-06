@@ -46,8 +46,11 @@
 	In short, it is <a href="http://www.gnu.org/philosophy/free-sw.html">Free
 	Software.</a> I am not responsible for any damage it may make. You can
 	change it, sell it,	distribute it. As libpdfdoc contains some code borrow
-	from GPL project, the license is GPL v2 as a whole. It is not legal to use
-	it in proprietory projects.
+	from GPL project, the license is GPL v2 as a whole. As it is NOT LGPL,
+	tt is not legal to use it in proprietory projects.
+	
+	Note that it is not "GPL v2 or later". The GPL v3 does not apply to this
+	library.
 	
 	\section	get		Getting libpdfdoc
 	libpdfdoc can be downloaded in from
@@ -61,7 +64,7 @@
 	libpdfdoc depends on the following libraries:
 	- <a href="http://www.boost.org">The Boost Library</a>
 	- <a href="http://zlib.net">Zlib</a>
-	- <a href="http://www.freetype.org">Freetype</a> (Optional)
+	- <a href="http://www.freetype.org">Freetype</a>
 	- <a href="http://libpng.sourceforge.net/index.html">libpng</a> (Optional)
 	- <a href="http://www.ijg.org/">libjpeg</a> (Optional)
 	- <a href= 

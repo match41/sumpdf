@@ -47,8 +47,6 @@ private :
 
 	std::size_t	m_counter ;
 	
-	static const pdf::Object m_null ;
-
 	pdf::ResourcePool	m_pool ;
 
 public :
@@ -62,7 +60,9 @@ public :
 	pdf::Ref AllocLink( ) ;
 	void WriteObj( const pdf::Object& obj, const pdf::Ref& link ) ;
 	pdf::ResourcePool* Pool( ) ;
-	void ReadObjectLinks( const pdf::Object& obj ) ;
+	void ReadObjectLinks(
+		const pdf::Object& obj,
+		std::map<pdf::Ref, pdf::ObjWrapper*>& links ) ;
 } ;
 
 #endif

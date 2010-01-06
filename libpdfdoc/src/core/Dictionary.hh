@@ -38,6 +38,7 @@ class Token ;
 class TokenSrc ;
 
 /*!	\brief	PDF dictionary object
+	\internal
 	
 	This class represents a PDF dictionary object. According to the PDF
 	specification, a dictionary object is an associative table containing

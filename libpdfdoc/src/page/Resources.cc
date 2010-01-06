@@ -58,56 +58,63 @@ Resources::~Resources( )
 		bind( &BaseFont::Release, bind( &FontMap::value_type::second, _1 ) ) ) ;
 }
 
-void Resources::Read( const Object& self, IFile *file )
+void Resources::Read( const Dictionary& dict, IFile *file )
 {
-	m_self = DeRefObj<Dictionary>( file, self ) ;
+	Dictionary self = dict ;
 
+	Dictionary ext_gstate ;
 	Array proc_set ;
-	Detach( file, m_self, "ExtGState",	m_ext_gstate ) ;
-	Detach( file, m_self, "ProcSet",	proc_set ) ;
+	Detach( file, self, "ExtGState",	ext_gstate ) ;
+	Detach( file, self, "ProcSet",		proc_set ) ;
 	m_proc_set.assign( proc_set.begin( ), proc_set.end( ) ) ;
 
-	ReadFontDict( file ) ;
+	ReadFontDict( self, file ) ;
 //	ReadSubDict( "XObject", file, m_xobjs ) ;
+
+	m_self.Read( self, file ) ;
+	m_ext_gstate.Read( ext_gstate, file ) ;
 }
 
 Ref Resources::Write( IFile *file ) const
 {
-    Dictionary dict( m_self ) ;
+	CompleteObj copy( m_self ) ;
+	Dictionary& dict = copy.Get() ;
+    
 	dict["ProcSet"]	= Array( m_proc_set.begin( ), m_proc_set.end( ) ) ;
 	dict["Font"]	= WriteFontDict( file ) ;
 //	dict["XObject"]	= WriteSubDict( m_xobjs, repo ) ;
 
-    return file->WriteObj( dict ) ;
+    return copy.Write( file ) ;
 }
 
-void Resources::ReadFontDict( IFile *file )
+void Resources::ReadFontDict( Dictionary& self, IFile *file )
 {
 	assert( file != 0 ) ;
 	assert( file->Pool() != 0 ) ;
 
 	Dictionary dict ;
-	if ( Detach( file, m_self, "Font", dict ) )
+	if ( Detach( file, self, "Font", dict ) )
 	{
 		FontPool *font_pool = &file->Pool( )->fonts ;
-		for ( Dictionary::const_iterator i  = dict.begin( ) ;
-										 i != dict.end( ) ; ++i )
+		for ( Dictionary::iterator i  = dict.begin( ) ; i != dict.end( ) ; ++i )
 		{
 			BaseFont *font = 0 ;
 			if ( i->second.Is<Ref>() )
 			{
-				font = font_pool->Find( i->second ) ;
+				const Ref& link = i->second.As<Ref>() ;
+				font = font_pool->Find( link ) ;
 				if ( font == 0 )
 				{
-					font = CreateFont( i->second, file ) ; 
-					font_pool->Add( i->second, font ) ;
+					Dictionary self = file->ReadObj( link ) ;
+					font = CreateFont( self, file ) ; 
+					font_pool->Add( link, font ) ;
 				}
 				assert( font != 0 ) ;
 			}
 			
 			// the font is not an indirect object, so it can't be shared.
-			else
-				font = CreateFont( i->second, file ) ;
+			else if ( i->second.Is<Dictionary>() )
+				font = CreateFont( i->second.As<Dictionary>(), file ) ;
 
 			m_fonts.insert( std::make_pair( i->first, font ) ) ;
 		}

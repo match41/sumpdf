@@ -18,7 +18,7 @@
 \***************************************************************************/
 
 /**
-	\file	ResourcePool.h
+	\file	ResourcePool.hh
 	\brief	definition the ResourcePool class
 	\date	Dec 26, 2009
 	\author	nestal
@@ -29,23 +29,25 @@
 #define __PDF_RESOURCEPOOL_HEADER_INCLUDED__
 
 #include "RefObjMap.hh"
+#include "core/ObjWrapper.hh"
 
 namespace pdf {
 
 class BaseFont ;
 class Object ;
-
-template <typename T>
-class RefCounterWrapper ;
+class PageNode ;
 
 typedef RefObjMap<BaseFont>			FontPool ;
-typedef RefCounterWrapper<Object>	ObjWrapper ;
 typedef RefObjMap<ObjWrapper>		ObjectPool ;
+typedef RefObjMap<PageNode>			PagePool ;
 
 struct ResourcePool
 {
 	FontPool	fonts ;
 	ObjectPool	objs ;
+	PagePool	pages ;
+	
+	Ref Find( void *anything ) const ;
 } ;
 
 } // end of namespace

@@ -316,7 +316,7 @@ std::ostream& operator<<( std::ostream& os, const Stream& s )
 	std::size_t length = s.CopyRawData( os.rdbuf() ) ;
 	assert( length == static_cast<std::size_t>(s.Self( )["Length"].As<int>() ));
 	
-	return os << "\nendstream\n" ;
+	return os << "\nendstream" ;
 }
 
 std::streambuf* Stream::InStreamBuf( )
@@ -378,6 +378,18 @@ void Stream::Flush( )
 	assert( m_impl->dirty ) ;
 	
 	m_impl->filter->Flush( ) ;
+}
+
+bool Stream::IsContentEqual( const Stream& others )
+{
+	std::stringstream my_str ;
+	std::size_t my_count = CopyData( my_str.rdbuf() ) ;
+	
+	std::stringstream str ;
+	std::size_t count = others.CopyData( str.rdbuf() ) ;
+	
+	return my_count == count && my_str.str() == str.str() ;
+
 }
 
 } // end of namespace

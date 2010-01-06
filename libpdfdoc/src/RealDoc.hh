@@ -49,6 +49,11 @@ namespace pdf {
 class IndirectObj ;
 class Font ;
 
+/**	\brief	Implementation of the PDF document class.
+	\internal
+	
+	This class is the real implementation of the PDF document.
+*/
 class RealDoc : public Doc
 {
 public :

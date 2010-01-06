@@ -18,8 +18,8 @@
  ***************************************************************************/
 
 /*!
-	\file	File.hh
-	\brief	definition the File class
+	\file	RealFile.hh
+	\brief	definition the RealFile class
 	\date	Fri Mar 21 2008
 	\author	Nestal Wan
 */
@@ -51,11 +51,11 @@ class Stream ;
 	the end of the PDF file called the trailer. This class is responsible for
 	decoding the file trailer dictionary and the cross reference table.
 */
-class File : public IFile
+class RealFile : public IFile
 {
 public :
-	explicit File( std::istream *is ) ;
-	explicit File( std::ostream *os ) ;
+	explicit RealFile( std::istream *is ) ;
+	explicit RealFile( std::ostream *os ) ;
 	
 	void WriteTrailer( const Ref& catalog, const Ref& info ) ;
 	Ref Root( ) const ;
@@ -67,7 +67,9 @@ public :
 	Ref AllocLink( ) ;
 	void WriteObj( const Object& obj, const Ref& link ) ;
 	ResourcePool* Pool( ) ;
-	void ReadObjectLinks( const Object& obj ) ;
+	void ReadObjectLinks(
+		const Object& obj,
+		std::map<Ref, ObjWrapper*>& links ) ;
 	
 private :
 	void ReadXRef( std::size_t offset, Dictionary& trailer ) ;
@@ -80,7 +82,7 @@ private :
 
 	class	ObjectWriter ;
 
-	void CacheObject( const Object& obj ) ;
+	void CacheObject( const Object& obj, std::map<Ref, ObjWrapper*>& links ) ;
 
 private :
 	std::vector<std::size_t>	m_objs ;

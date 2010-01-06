@@ -36,7 +36,7 @@ Rect::Rect( )
 	std::fill( Begin(m_corner), End(m_corner), 0 ) ;
 }
 
-Rect::Rect( int llx, int lly, int urx, int ury )
+Rect::Rect( double llx, double lly, double urx, double ury )
 {
 	m_corner[0] = llx ;
 	m_corner[1] = lly ;
@@ -65,12 +65,12 @@ Rect::const_iterator Rect::end( ) const
 	return End(m_corner) ;
 }
 
-int Rect::Width( ) const
+double Rect::Width( ) const
 {
 	return m_corner[2] - m_corner[0] ;
 }
 
-int Rect::Height( ) const
+double Rect::Height( ) const
 {
 	return m_corner[3] - m_corner[1] ;
 }

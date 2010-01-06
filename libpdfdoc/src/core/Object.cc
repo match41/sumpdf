@@ -38,13 +38,15 @@
 
 #include <boost/variant/apply_visitor.hpp>
 
-#include <map>
-#include <istream>
-
 #include <cassert>
-#include <iostream>
+#include <istream>
+#include <iomanip>
 #include <limits>
+#include <map>
+#include <ostream>
 #include <stdexcept>
+
+#include <iostream>
 
 namespace pdf {
 
@@ -58,10 +60,24 @@ struct Bool
 	bool operator==( const Bool& b ) const { return value == b.value ; }
 } ;
 
+/**	\brief	default constructor
+
+	The default constructor will construct a null object.
+	\post	IsNull() returns true.
+*/
 Object::Object( )
 {
 }
 
+/*!	\brief	copy constructor
+	\internal
+	
+	The copy constructor will deep copy the object. For example if \a obj
+	is an array of dictionaries, all the individual dictionaries in the
+	array will be copied. It can be slow for large objects.
+	
+	\param	obj		object to be copied from
+*/
 Object::Object( const Object& obj )
 	: m_obj( obj.m_obj )
 {
@@ -72,6 +88,10 @@ Object::Object( const T& v ) : m_obj( v )
 {
 }
 
+/**	This constructor will construct a string object.
+	\post	IsType<std::string>() returns true
+	\param	str	the content of the string 
+*/
 Object::Object( const char *a )
 	: m_obj( std::string( a ) )
 {
@@ -89,6 +109,13 @@ template Object::Object( const Ref& a ) ;
 template Object::Object( const Array& a ) ;
 template Object::Object( const Dictionary& a ) ;
 
+/**	This constructor will construct an integer object.
+	
+	\post	IsType<int>() == true
+	\param	st	The value of the integer object.
+	\throw	out_of_range	if the std::size_t input argument \c st is too
+							larget to be stored in an integer.
+*/
 Object::Object( std::size_t st )
 	: m_obj( static_cast<int>( st ) )
 {
@@ -101,6 +128,12 @@ Object::Object( float value )
 {
 }
 
+/**	\brief	destructor
+	\internal
+	
+	The destructor will do nothing. It is present because of the contained
+	incomplete types in the member variables.
+*/
 Object::~Object( )
 {
 }
@@ -144,6 +177,12 @@ const std::type_info& Object::TypeID( ) const
 bool Object::IsNull( ) const
 {
 	return Type() == null ;
+}
+
+const Object& Object::NullObj()
+{
+	static const Object null ;
+	return null ;
 }
 
 template <typename T>
@@ -198,6 +237,8 @@ std::istream& operator>>( std::istream& is, Object& obj )
 	return (s >> obj).Stream() ;
 }
 
+/**	\brief	Read an object from a TokenSrc.
+*/
 TokenSrc& operator>>( TokenSrc& src, Object& obj )
 {
 	static const std::string numeric = "0123456789.+-" ;
@@ -263,6 +304,11 @@ struct Op : public boost::static_visitor<>
 		m_os << std::dec << t ;
 	}
 	
+	void operator()( double val ) const
+	{
+		m_os << std::setprecision( 2 ) << std::fixed << val ;
+	}
+	
 	void operator()( const std::string& str ) const
 	{
 		m_os << String(str) ;
@@ -322,11 +368,6 @@ TokenSrc& operator>>( TokenSrc& is, Bool& b )
 std::ostream& operator<<( std::ostream& os, const Bool& b )
 {
 	return os << (b.value ? "true" : "false") ;
-}
-
-bool operator==( const Object& obj1, const Object& obj2 )
-{
-	return obj1.m_obj == obj2.m_obj ;
 }
 
 bool operator!=( const Object& obj1, const Object& obj2 )
@@ -423,6 +464,11 @@ template <> bool Object::Is<Dictionary>( ) const
 template <> bool Object::Is<Array>( ) const
 {
 	return Type() == array ;
+}
+
+bool operator==( const Object& obj1, const Object& obj2 )
+{
+	return obj1.m_obj == obj2.m_obj ;
 }
 
 } // end of namespace

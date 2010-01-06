@@ -35,6 +35,7 @@
 #include "Resources.hh"
 #include "core/Dictionary.hh"
 #include "core/Token.hh"
+#include "file/CompleteObj.hh"
 #include "page/PageContent.hh"
 #include "stream/Stream.hh"
 #include "util/Rect.hh"
@@ -50,6 +51,7 @@ class Stream ;
 class Resources ;
 class IFile ;
 class PaintOp ;
+class Graphics ;
 
 /*!	\brief	real implementation of a page
 	
@@ -61,7 +63,7 @@ class RealPage : public Page, public PageNode
 public :
 	explicit RealPage( PageTree *parent ) ;
 
-	void Read( const Dictionary& link, IFile *file ) ;
+	void Read( Dictionary& dict, IFile *file ) ;
 	void Write( const Ref& link, IFile *file, const Ref& parent ) const ;
 	
 	Rect MediaBox( ) const ;
@@ -77,30 +79,33 @@ public :
 	Resources* GetResource( ) ;
 	const Resources* GetResource( ) const ;
 
-	void Decode( std::vector<PaintOp>& ops ) ;
-	
 	PageContent* GetContent( ) ;
+
+    std::vector<Graphics*> DecodeGraphic( ) ;
 
 private :
 	void ReadContent( const Object& str_obj, IFile *file ) ;
 	Object WriteContent( IFile *file ) const ; 
-	
+
+	void Decode( std::vector<PaintOp>& ops ) ;
+
 private :
 	PageTree	*m_parent ;
 	Resources	m_resources ;
-	Dictionary	m_self ;
+	CompleteObj	m_self ;
 	
 	/// in PDF user space. specified by UserUnit or 1/72 inch
 	Rect		m_media_box ;
 	
 	struct Content : public PageContent
 	{
-		bool Decode( PaintOp& op ) ;
+		bool GetPaintOps( std::vector<PaintOp>& op ) ;
 		
-		std::vector<Stream>				strs ;
-		std::vector<Stream>::iterator	current ;
+		std::vector<PaintOp>	ops ;
 	} m_content ;
-	
+
+	std::vector<Stream>	m_cstrs ;
+
 	int	m_rotate ;
 } ;
 

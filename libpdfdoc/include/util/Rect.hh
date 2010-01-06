@@ -36,16 +36,16 @@ namespace pdf {
 class Rect
 {
 private :
-	int m_corner[4] ;
+	double m_corner[4] ;
 
 public :
 	Rect( ) ;
-	Rect( int llx, int lly, int urx, int ury ) ;
+	Rect( double llx, double lly, double urx, double ury ) ;
 
 	template <typename InputIt>
 	Rect( InputIt first, InputIt last )
 	{
-		for ( int *dest = m_corner;
+		for ( double *dest = m_corner;
 		      dest != m_corner + 4 && first != last ; ++dest, ++first )
 			*dest = *first ;
 	}
@@ -53,12 +53,12 @@ public :
 	friend bool operator==( const Rect& r1, const Rect& r2 ) ;
 	friend bool operator!=( const Rect& r1, const Rect& r2 ) ;
 	
-	typedef const int* const_iterator ;
+	typedef const double* const_iterator ;
 	const_iterator begin( ) const ;
 	const_iterator end( ) const ;
 	
-	int Width( ) const ;
-	int Height( ) const ;
+	double Width( ) const ;
+	double Height( ) const ;
 } ;
 
 } // end of namespace

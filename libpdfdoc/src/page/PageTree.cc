@@ -33,6 +33,7 @@
 
 #include "file/ObjectReader.hh"
 #include "file/IFile.hh"
+#include "file/ResourcePool.hh"
 
 #include "util/Exception.hh"
 #include "util/Util.hh"
@@ -61,40 +62,56 @@ PageTree::~PageTree( )
 	               boost::lambda::delete_ptr( ) ) ;
 }
 
-void PageTree::Read( const Dictionary& dict, IFile *file )
+void PageTree::Read( Dictionary& dict, IFile *file )
 {
-	const Array& pages = dict["Kids"].As<Array>() ;
-	for ( Array::const_iterator i = pages.begin() ; i != pages.end() ; ++i )
+	assert( file != 0 ) ;
+	assert( file->Pool() != 0 ) ;
+
+	Array pages ;
+	if ( !Detach( file, dict, "Kids", pages ) )
+		throw ParseError( "no children in page tree" ) ;
+
+	PagePool *pool = &file->Pool()->pages;  
+		
+	for ( Array::iterator i = pages.begin() ; i != pages.end() ; ++i )
 	{
 		Dictionary d = DeRefObj<Dictionary>( file, *i ) ;
 		const Name& type = d["Type"].As<Name>() ; 
 		
+		PageNode *p = 0 ;
 		if ( type == Name( "Pages" ) )
 		{
-			PageTree *p = new PageTree( this ) ;
+			p = new PageTree( this ) ;
 			p->Read( d, file ) ;
 		}
 		
 		else if ( type == Name( "Page" ) )
 		{
-			RealPage *p = new RealPage( this ) ;
+			p = new RealPage( this ) ;
 			p->Read( d, file ) ;
 		}
 		else
 			throw ParseError( "invalid page type" ) ;
+		assert( p != 0 ) ;
+		
+		if ( i->Is<Ref>() )
+			pool->Add( *i, p ) ;
 	}
 
 	// leaf count is required
-	m_count	= dict["Count"].As<int>( ) ;
+	if ( !Detach( file, dict, "Count", m_count ) )
+		throw ParseError( "cannot get leaf count in page node" ) ;
 	
 	Dictionary res ;
-	if ( DeRef( file, dict, "Resources", res ) )
+	if ( Detach( file, dict, "Resources", res ) )
 		m_resources.Read( res, file ) ;
 }
 
 void PageTree::Write( const Ref& link, IFile *file, const Ref& ) const
 {
 	assert( file != 0 ) ;
+	assert( file->Pool() != 0 ) ;
+	PagePool *pool = &file->Pool()->pages;  
 
 	std::vector<Ref> kids ;
 	for ( std::vector<PageNode*>::const_iterator i  = m_kids.begin() ;
@@ -103,6 +120,7 @@ void PageTree::Write( const Ref& link, IFile *file, const Ref& ) const
 		Ref child = file->AllocLink( ) ;
 		(*i)->Write( child, file, link ) ;
 		kids.push_back( child ) ;
+		pool->Add( child, *i ) ;
 	}
 
 	// update page count before writing

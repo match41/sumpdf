@@ -33,7 +33,7 @@
 namespace pdf {
 
 class IFile ;
-class Object ;
+class Dictionary ;
 class Ref ;
 
 /*!	\brief	base class for all fonts
@@ -50,7 +50,7 @@ public :
 	virtual Ref Write( IFile *file ) const = 0 ;
 } ;
 
-BaseFont* CreateFont( const Object& obj, IFile *file ) ;
+BaseFont* CreateFont( Dictionary& obj, IFile *file ) ;
 
 } // end of namespace
 

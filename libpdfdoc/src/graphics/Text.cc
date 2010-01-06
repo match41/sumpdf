@@ -1,4 +1,4 @@
-/***************************************************************************
+/***************************************************************************\
  *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
@@ -15,40 +15,55 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+\***************************************************************************/
 
-/*!
-	\file	FileTest.hh
-	\brief	definition the FileTest class
-	\date	Thu Apr 10 2008
+/**
+	\file	Text.cc
+	\brief	implementation of the Test class
+	\date	Jan 4, 2010
 	\author	Nestal Wan
 */
 
-#ifndef __PDFUT_FILE_TEST_HEADER_INCLUDED__
-#define __PDFUT_FILE_TEST_HEADER_INCLUDED__
+#include "Text.hh"
 
-#include <cppunit/TestFixture.h>
+#include "core/Token.hh"
 
-#include <cppunit/extensions/HelperMacros.h>
+#include "util/Util.hh"
 
-/*!	\brief	brief description
-	
-	this class represents
-*/
-class FileTest : public CppUnit::TestFixture
+#include <set>
+
+namespace pdf {
+
+namespace
 {
-public :
-	FileTest( ) ;
+	typedef	std::set<Token>	TokenSet ;
 
-	// declare suit function
-	CPPUNIT_TEST_SUITE( FileTest ) ;
-		CPPUNIT_TEST( TestSimple ) ;
-		CPPUNIT_TEST( TestReadStream ) ;
-	CPPUNIT_TEST_SUITE_END();
+	const TokenSet::value_type	pos_cmd[] =
+	{
+		// text position
+		Token("Td"), Token("TD"), Token("Tm"), Token("T*"),
+	} ;
+	const TokenSet pos_cmds( Begin( pos_cmd ), End( pos_cmd ) ) ;
+}
 
-private :
-	void TestSimple( ) ;
-	void TestReadStream( ) ;
-} ;
+/**	constructor
+*/
+Text::Text( )
+	: m_lines( 1 )
+{
+}
 
-#endif
+void Text::OnCommand(
+	const Token& 	cmd,
+	const Object 	*args,
+	std::size_t		count,
+	Resources		*res )
+{
+	// text position command. create new line
+	if ( pos_cmds.find( cmd ) != pos_cmds.end() )
+		m_lines.push_back( TextLine() ) ;
+	
+	m_lines.back().OnCommand( cmd, args, count, res ) ;
+}
+
+} // end of namespace

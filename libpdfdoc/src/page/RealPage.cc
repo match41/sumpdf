@@ -62,26 +62,25 @@ RealPage::RealPage( PageTree *parent )
 	parent->AppendLeaf( this ) ;
 }
 
-void RealPage::Read( const Dictionary& self, IFile *file )
+void RealPage::Read( Dictionary& self, IFile *file )
 {
 	assert( file != 0 ) ;
 	
-	// assign self dictionary first
-	m_self = self ;
-
 	// read content
 	Object contents ;
-	if ( Detach( file, m_self, "Contents", contents ) )
+	if ( Detach( file, self, "Contents", contents ) )
 	    ReadContent( contents, file ) ;
 
 	// media box
 	Array a ;
-	if ( Detach( file, m_self, "MediaBox", a ) )
+	if ( Detach( file, self, "MediaBox", a ) )
 		m_media_box = Rect( a.begin( ), a.end( ) ) ;
 
 	Dictionary res ;
-	if ( Detach( file, m_self, "Resources", res ) )
+	if ( Detach( file, self, "Resources", res ) )
 		m_resources.Read( res, file ) ;
+	
+	m_self.Read( self, file ) ;
 }
 
 Rect RealPage::MediaBox( ) const
@@ -97,7 +96,7 @@ void RealPage::ReadContent( const Object& str_obj, IFile *src )
 
 	// append individual stream objects
 	else if ( str_obj.Is<Stream>( ) )
-		m_content.strs.push_back( str_obj.As<Stream>( ) ) ;
+		m_cstrs.push_back( str_obj.As<Stream>( ) ) ;
 
 	// catenate individual objects in array
 	else if ( str_obj.Is<Array>( ) )
@@ -117,30 +116,34 @@ void RealPage::Write( const Ref& link, IFile *file, const Ref& parent ) const
 	assert( m_parent != 0 ) ;
 	assert( GetResource( ) != 0 ) ;
 
-	Dictionary self( m_self ) ;
-	self["Type"]		= Name( "Page" ) ;
- 	self["Contents"]    = WriteContent( file ) ;
-	self["Resources"]   = GetResource( )->Write( file ) ;
-	self["Parent"]   	= parent ;
+	CompleteObj self( m_self ) ;
+	self.Get()["Type"]		= Name( "Page" ) ;
+ 	self.Get()["Contents"]	= WriteContent( file ) ;
+	self.Get()["Resources"]	= GetResource( )->Write( file ) ;
+	self.Get()["Parent"]	= parent ;
 
     if ( m_media_box != Rect() )
-    	self["MediaBox"] = Array( m_media_box.begin( ), m_media_box.end( ) ) ;
+    	self.Get()["MediaBox"] = Array(
+    		m_media_box.begin( ),
+    		m_media_box.end( ) ) ;
 
-	file->WriteObj( self, link ) ;
+	self.Write( file, link ) ;
 }
 
 Object RealPage::WriteContent( IFile *file ) const
 {
 	assert( file != 0 ) ;
 
-	if ( m_content.strs.size() == 1 )
-		return file->WriteObj( m_content.strs.front() ) ;
+	if ( m_cstrs.size() == 1 )
+		return file->WriteObj( m_cstrs.front() ) ;
 	else
 	{
-		Array strs( m_content.strs.size() ) ;
-		std::transform( m_content.strs.begin(), m_content.strs.end(),
-		                strs.begin(),
-		                boost::bind( &IFile::WriteObj, file, _1 ) ) ;
+		Array strs( m_cstrs.size() ) ;
+		std::transform(
+			m_cstrs.begin(),
+			m_cstrs.end(),
+		    strs.begin(),
+		    boost::bind( &IFile::WriteObj, file, _1 ) ) ;
 		return strs ;
 	}
 }
@@ -154,10 +157,10 @@ void RealPage::DrawText( double x, double y, Font *f, const std::string& text )
 	assert( font != 0 ) ;
 	Name fname = m_resources.AddFont( font ) ;
 
-	if ( m_content.strs.empty() || !m_content.strs.back().IsDirty() )
-		m_content.strs.push_back( Stream( Stream::deflate ) ) ;
+	if ( m_cstrs.empty() || !m_cstrs.back().IsDirty() )
+		m_cstrs.push_back( Stream( Stream::deflate ) ) ;
 
-	std::ostream ss( m_content.strs.back().OutStreamBuf( ) ) ;
+	std::ostream ss( m_cstrs.back().OutStreamBuf( ) ) ;
 	ss << "BT\n"
        << fname << " 12 Tf " << x << ' ' << y << " Td "
 	            << String( text ) << " Tj\n"
@@ -166,8 +169,8 @@ void RealPage::DrawText( double x, double y, Font *f, const std::string& text )
 
 void RealPage::Finish( )
 {
-	if ( !m_content.strs.empty() )
-		m_content.strs.back().Flush( ) ;
+	if ( !m_cstrs.empty() )
+		m_cstrs.back().Flush( ) ;
 }
 
 std::size_t RealPage::Count( ) const
@@ -198,19 +201,25 @@ const Resources* RealPage::GetResource( ) const
 
 PageContent* RealPage::GetContent( )
 {
+	m_content.ops.clear( ) ;
+	Decode( m_content.ops ) ;
 	return &m_content ;
 }
 
-bool RealPage::Content::Decode( PaintOp& op )
+bool RealPage::Content::GetPaintOps( std::vector<PaintOp>& op )
 {
-	return false ;
+	op = ops ;
+	return true ;
 }
 
 void RealPage::Decode( std::vector<PaintOp>& ops )
 {
-	for ( std::vector<Stream>::iterator i = m_content.strs.begin( ) ;
-	                                    i != m_content.strs.end( ) ; ++i )
+	for ( std::vector<Stream>::iterator i = m_cstrs.begin( ) ;
+	                                    i != m_cstrs.end( ) ; ++i )
 	{
+		// rewind to stream start for reading
+		i->Rewind( ) ;
+		
 		std::istream s( i->InStreamBuf() ) ;
 		TokenSrc src( s ) ;
 		std::vector<Object> args ;
@@ -244,6 +253,11 @@ void RealPage::Decode( std::vector<PaintOp>& ops )
 			}
 		}
 	}
+}
+
+std::vector<Graphics*> RealPage::DecodeGraphic( )
+{
+    return std::vector<Graphics*>() ;
 }
 
 } // end of namespace
