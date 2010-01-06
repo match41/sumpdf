@@ -94,7 +94,7 @@ void Resources::ReadFontDict( IFile *file )
 										 i != dict.end( ) ; ++i )
 		{
 			BaseFont *font = 0 ;
-			if ( i->second.IsType<Ref>() )
+			if ( i->second.Is<Ref>() )
 			{
 				font = font_pool->Find( i->second ) ;
 				if ( font == 0 )

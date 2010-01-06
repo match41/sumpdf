@@ -36,7 +36,7 @@ namespace pdf {
 template <typename F>
 void ForEachObj( Object& obj, F func )
 {
-	if ( obj.IsType<Dictionary>( ) )
+	if ( obj.Is<Dictionary>( ) )
 	{
 		Dictionary& dict = obj.As<Dictionary>( ) ;
 		for ( Dictionary::iterator i  = dict.begin( ) ;
@@ -46,7 +46,7 @@ void ForEachObj( Object& obj, F func )
 		}
 	}
 	
-	else if ( obj.IsType<Array>( ) )
+	else if ( obj.Is<Array>( ) )
 	{
 		Array& array = obj.As<Array>( ) ;
 		for ( Array::iterator i  = array.begin( ) ;
@@ -60,7 +60,7 @@ void ForEachObj( Object& obj, F func )
 template <typename F>
 void ForEachObj( const Object& obj, F func )
 {
-	if ( obj.Type( ) == Object::dictionary )
+	if ( obj.Is<Dictionary>( ) )
 	{
 		const Dictionary& dict = obj.As<Dictionary>( ) ;
 		for ( Dictionary::const_iterator i  = dict.begin( ) ;
@@ -70,7 +70,7 @@ void ForEachObj( const Object& obj, F func )
 		}
 	}
 	
-	else if ( obj.Type( ) == Object::array )
+	if ( obj.Is<Array>( ) )
 	{
 		const Array& array = obj.As<Array>( ) ;
 		for ( Array::const_iterator i  = array.begin( ) ;

@@ -92,15 +92,15 @@ Rect RealPage::MediaBox( ) const
 void RealPage::ReadContent( const Object& str_obj, IFile *src )
 {
 	// for indirect objects, dereference it
-	if ( str_obj.IsType<Ref>( ) )
+	if ( str_obj.Is<Ref>( ) )
 		ReadContent( src->ReadObj( str_obj ), src ) ;
 
 	// append individual stream objects
-	else if ( str_obj.IsType<Stream>( ) )
+	else if ( str_obj.Is<Stream>( ) )
 		m_content.strs.push_back( str_obj.As<Stream>( ) ) ;
 
 	// catenate individual objects in array
-	else if ( str_obj.IsType<Array>( ) )
+	else if ( str_obj.Is<Array>( ) )
 	{
 		const Array& a = str_obj.As<Array>( ) ;
 		std::for_each( a.begin( ), a.end( ),

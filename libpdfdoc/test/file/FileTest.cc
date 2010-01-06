@@ -137,7 +137,7 @@ void FileTest::TestReadStream( )
 	pdf::File f( &file ) ;
 	
 	pdf::Object obj = f.ReadObj( pdf::Ref( 4, 0 ) ) ;
-	CPPUNIT_ASSERT( obj.IsType<pdf::Stream>() ) ;
+	CPPUNIT_ASSERT( obj.Is<pdf::Stream>() ) ;
 
 	std::stringstream output ;
 	std::size_t count = obj.As<pdf::Stream>().CopyData( output.rdbuf() ) ;

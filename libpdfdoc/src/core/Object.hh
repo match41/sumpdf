@@ -264,7 +264,7 @@ public :
 	}
 
     template <typename T>
-    bool IsType( ) const ;
+    bool Is( ) const ;
 
 	const std::type_info& TypeID( ) const ;
 

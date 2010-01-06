@@ -181,7 +181,7 @@ DeflateFilter* DeflateFilter::Clone( ) const
 Object DeflateFilter::GetFilterName( ) const
 {
 	Object name = m_src->GetFilterName( ) ;
-	if ( name.IsType<Array>( ) )
+	if ( name.Is<Array>( ) )
 	{
 		Array arr ;
 		arr.push_back( Name( "FlateDecode" ) ) ;

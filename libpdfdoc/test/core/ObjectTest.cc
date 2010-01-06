@@ -52,7 +52,7 @@ void ObjectTest::TestName( )
 	pdf::Object name ;
 	CPPUNIT_ASSERT( ss >> name ) ;
 	CPPUNIT_ASSERT( name.Type() == pdf::Object::name ) ;
-	CPPUNIT_ASSERT( name.IsType<pdf::Name>() ) ;
+	CPPUNIT_ASSERT( name.Is<pdf::Name>() ) ;
 	CPPUNIT_ASSERT( name.TypeID() == typeid(pdf::Name) ) ;
 	CPPUNIT_ASSERT( name.As<pdf::Name>( ) == pdf::Name( "Name" ) ) ;
 }
@@ -63,7 +63,7 @@ void ObjectTest::TestBoolTrue( )
 	pdf::Object b ;
 	CPPUNIT_ASSERT( ss >> b ) ;
 	CPPUNIT_ASSERT( b.Type() == pdf::Object::boolean ) ;
-	CPPUNIT_ASSERT( b.IsType<bool>() ) ;
+	CPPUNIT_ASSERT( b.Is<bool>() ) ;
 	CPPUNIT_ASSERT( b.TypeID() == typeid(bool) ) ;
 	CPPUNIT_ASSERT( b.As<bool>( ) ) ;
 }

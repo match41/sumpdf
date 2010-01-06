@@ -105,7 +105,7 @@ Stream::Stream( std::streambuf *file, std::streamoff offset,
 {
 	assert( file != 0 ) ;
 	assert( dict.find( "Length" ) != dict.end() ) ;
-	assert( dict["Length"].IsType<int>() ) ;
+	assert( dict["Length"].Is<int>() ) ;
 
 	m_impl->self = dict ;
 	m_impl->filter.reset( new RawFilter( file, offset, dict["Length"] ) ) ;

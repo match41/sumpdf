@@ -178,7 +178,7 @@ Stream File::ReadStream( Dictionary& dict )
 	
 	// Length may be indirect object
 	Object length = dict["Length"] ;
-	if ( length.IsType<Ref>() )
+	if ( length.Is<Ref>() )
 	{
 		std::streampos pos	= m_in->tellg( ) ;
 		dict["Length"] = ReadObj( length ) ;
@@ -339,7 +339,7 @@ Ref File::DocInfo( ) const
 {
 	// "Info" is optional, but must be indirect reference
 	const Object& info = m_trailer["Info"] ;
-	return info.IsType<Ref>() ? info.As<Ref>() : Ref() ;
+	return info.Is<Ref>() ? info.As<Ref>() : Ref() ;
 }
 
 ResourcePool* File::Pool( )
@@ -349,7 +349,7 @@ ResourcePool* File::Pool( )
 
 void File::CacheObject( const Object& obj )
 {
-	if ( obj.IsType<Ref>() )
+	if ( obj.Is<Ref>() )
 	{
 		const Ref& link = obj.As<Ref>() ;
 		if ( m_pool.objs.IsExist( link ) )

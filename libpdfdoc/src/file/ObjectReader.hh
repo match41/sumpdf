@@ -70,7 +70,7 @@ bool DeRef( IFile *file, const Dictionary& dict, const Name& name,
 template <typename ObjType>
 ObjType DeRefObj( IFile *file, const Object& obj )
 {
-	if ( obj.IsType<Ref>( ) )
+	if ( obj.Is<Ref>( ) )
 	{
 		return file->ReadObj( obj.As<Ref>() ) ;
 	}

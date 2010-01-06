@@ -115,7 +115,7 @@ void PageTest::TestWrite( )
 	p->Write( link, &file, file.AllocLink( ) ) ;
 	
 	pdf::Object out = file.Find( link ) ;
-	CPPUNIT_ASSERT( out.IsType<pdf::Dictionary>( ) ) ;
+	CPPUNIT_ASSERT( out.Is<pdf::Dictionary>( ) ) ;
 	
 	pdf::RealPage *p2 = new pdf::RealPage( m_root ) ;
 	p2->Read( out.As<pdf::Dictionary>(), &file ) ;

@@ -380,47 +380,47 @@ template <> const Object& Object::As( ) const
     return *this ;
 }
 
-template <> bool Object::IsType<Ref>( ) const
+template <> bool Object::Is<Ref>( ) const
 {
 	return Type() == ref ;
 }
 
-template <> bool Object::IsType<int>( ) const
+template <> bool Object::Is<int>( ) const
 {
 	return Type() == integer ;
 }
 
-template <> bool Object::IsType<double>( ) const
+template <> bool Object::Is<double>( ) const
 {
 	return Type() == floating ;
 }
 
-template <> bool Object::IsType<bool>( ) const
+template <> bool Object::Is<bool>( ) const
 {
 	return Type() == boolean ;
 }
 
-template <> bool Object::IsType<std::string>( ) const
+template <> bool Object::Is<std::string>( ) const
 {
 	return Type() == string ;
 }
 
-template <> bool Object::IsType<Name>( ) const
+template <> bool Object::Is<Name>( ) const
 {
 	return Type() == name ;
 }
 
-template <> bool Object::IsType<Stream>( ) const
+template <> bool Object::Is<Stream>( ) const
 {
 	return Type() == stream ;
 }
 
-template <> bool Object::IsType<Dictionary>( ) const
+template <> bool Object::Is<Dictionary>( ) const
 {
 	return Type() == dictionary ;
 }
 
-template <> bool Object::IsType<Array>( ) const
+template <> bool Object::Is<Array>( ) const
 {
 	return Type() == array ;
 }
