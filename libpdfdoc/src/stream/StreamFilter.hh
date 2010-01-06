@@ -36,13 +36,15 @@ class Object ;
 
 /*!	\addtogroup	filter Filter
 	\brief	Filter classes for Stream.
+	\internal
 	
 	The filter classes are used to decode/encode data to/from a PDF stream.
 */
 
 /*!	\brief		Filter interface for PDF Stream.
 	\ingroup	filter
-	
+	\internal
+
 	This is the base class (interface) for all PDF stream filters. It provides
 	virtual functions for basic operations on the data.
 */

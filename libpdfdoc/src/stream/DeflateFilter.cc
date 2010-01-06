@@ -43,7 +43,7 @@ DeflateFilter::Error::Error( const char *func, const char *msg )
 {
 }
 
-DeflateFilter::DeflateFilter( StreamFilter *src )
+DeflateFilter::DeflateFilter( std::auto_ptr<StreamFilter> src )
 	: m_src( src )
 {
 	assert( m_src.get() != 0 ) ;
@@ -175,7 +175,7 @@ std::size_t DeflateFilter::Length( ) const
 
 DeflateFilter* DeflateFilter::Clone( ) const
 {
-	return new DeflateFilter( m_src->Clone() ) ;
+	return new DeflateFilter( std::auto_ptr<StreamFilter>(m_src->Clone()) ) ;
 }
 
 Object DeflateFilter::GetFilterName( ) const

@@ -29,12 +29,18 @@
 
 #include "StreamFilter.hh"
 
+#include "core/Name.hh"
+
+#include <memory>
+
 namespace pdf {
 
 class MockStreamFilter : public StreamFilter
 {
 public:
-	MockStreamFilter( ) ;
+	explicit MockStreamFilter(
+		std::auto_ptr<StreamFilter>	inner	= std::auto_ptr<StreamFilter>(),
+		const Name&					filter	= Name() ) ;
 
 	std::size_t Read( unsigned char *data, std::size_t size ) ;
 	std::size_t Write( const unsigned char *data, std::size_t size ) ;
@@ -44,6 +50,10 @@ public:
 	Object GetFilterName( ) const ;
 	StreamFilter* Clone( ) const ;
 	StreamFilter* GetInner( ) ;
+
+private :
+	const std::auto_ptr<StreamFilter>	m_inner ;
+	const Name							m_filter ;
 } ;
 
 } // end of namespace

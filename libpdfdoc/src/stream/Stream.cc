@@ -28,6 +28,7 @@
 
 #include "BufferedFilter.hh"
 #include "DeflateFilter.hh"
+#include "MockStreamFilter.hh"
 #include "RawFilter.hh"
 #include "InStreamBufAdaptor.hh"
 #include "OutStreamBufAdaptor.hh"
@@ -74,7 +75,7 @@ Stream::Stream( Filter f )
 	StreamFilter *filter = new BufferedFilter ; 
 
 	if ( f == deflate )
-		filter = new DeflateFilter( filter ) ;
+		filter = new DeflateFilter( std::auto_ptr<StreamFilter>(filter) ) ;
 
 	m_impl->filter.reset( filter ) ;
 	InitFilter( ) ;
@@ -206,10 +207,9 @@ void Stream::Swap( Stream& str )
 void Stream::CreateFilter( const Name& filter )
 {
 	if ( filter == Name( "FlateDecode" ) )
-	{
-		StreamFilter *sf = m_impl->filter.release( ) ;
-		m_impl->filter.reset( new DeflateFilter( sf ) ) ;
-	}
+		m_impl->filter.reset( new DeflateFilter( m_impl->filter ) ) ;
+	else
+		m_impl->filter.reset( new MockStreamFilter( m_impl->filter, filter ) ) ;
 }
 
 Stream Stream::Clone( ) const

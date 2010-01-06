@@ -51,7 +51,7 @@ namespace pdf {
 class DeflateFilter : public StreamFilter
 {
 public :
-	DeflateFilter( StreamFilter *src ) ;
+	explicit DeflateFilter( std::auto_ptr<StreamFilter>	src ) ;
 
 	std::size_t Read( unsigned char *data, std::size_t size ) ;
 	std::size_t Write( const unsigned char *data, std::size_t size ) ;
@@ -80,7 +80,7 @@ private :
 		std::vector<unsigned char>	buf ;
 	} m_comp, m_decomp ;
 
-	std::auto_ptr<StreamFilter>	m_src ;
+	const std::auto_ptr<StreamFilter>	m_src ;
 	
 	static const std::size_t	m_buf_size = 80 ;
 } ;

@@ -34,6 +34,8 @@
 
 #include <iostream>
 
+typedef std::auto_ptr<pdf::StreamFilter> StreamFilterPtr ;
+
 InStreamBufAdaptorTest::InStreamBufAdaptorTest( )
 {
 }
@@ -50,7 +52,7 @@ void InStreamBufAdaptorTest::TestRead( )
 
 	std::istringstream ss( std::string( &c[0], &c[dest_len] ) ) ;
 	pdf::RawFilter *raw = new pdf::RawFilter( ss.rdbuf() ) ;
-	pdf::DeflateFilter def( raw ) ;
+	pdf::DeflateFilter def(( StreamFilterPtr(raw) )) ;
 
 	pdf::InStreamBufAdaptor subject( &def ) ;
 	std::istream is( &subject ) ;

@@ -38,6 +38,8 @@
 
 #include <zlib.h>
 
+typedef std::auto_ptr<pdf::StreamFilter> StreamFilterPtr ;
+
 DeflateFilterTest::DeflateFilterTest( )
 {
 }
@@ -47,7 +49,7 @@ void DeflateFilterTest::TestRead( )
 	std::istringstream ss( std::string( m_compressed.begin(),
 	                                    m_compressed.end() ) ) ;
 	pdf::RawFilter *raw = new pdf::RawFilter( ss.rdbuf() ) ;
-	pdf::DeflateFilter subject( raw ) ;
+	pdf::DeflateFilter subject(( StreamFilterPtr(raw) )) ;
 	
 	std::vector<unsigned char> src = m_original ;
 	
@@ -67,7 +69,7 @@ void DeflateFilterTest::TestReset( )
 	std::istringstream ss( std::string( m_compressed.begin(),
 	                                    m_compressed.end() ) ) ;
 	pdf::RawFilter *raw = new pdf::RawFilter( ss.rdbuf() ) ;
-	pdf::DeflateFilter subject( raw ) ;
+	pdf::DeflateFilter subject(( StreamFilterPtr(raw) )) ;
 	
 	std::vector<unsigned char> src = m_original ;
 	
@@ -91,7 +93,7 @@ void DeflateFilterTest::TestName( )
 	std::istringstream ss( std::string( m_compressed.begin(),
 	                                    m_compressed.end() ) ) ;
 	pdf::RawFilter *raw = new pdf::RawFilter( ss.rdbuf() ) ;
-	pdf::DeflateFilter subject( raw ) ;
+	pdf::DeflateFilter subject(( StreamFilterPtr(raw) )) ;
 	CPPUNIT_ASSERT( subject.GetFilterName().As<pdf::Name>()
 		== pdf::Name( "FlateDecode" ) ) ;
 }
@@ -99,7 +101,7 @@ void DeflateFilterTest::TestName( )
 void DeflateFilterTest::TestWrite( )
 {
 	pdf::BufferedFilter *raw = new pdf::BufferedFilter ;
-	pdf::DeflateFilter subject( raw ) ;
+	pdf::DeflateFilter subject(( StreamFilterPtr(raw) )) ;
 
 	// compress some data
 	unsigned char text[] = "HelloHello!" ;

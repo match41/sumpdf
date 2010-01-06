@@ -45,12 +45,11 @@ class StreamFilter ;
 	
 	This class represents a PDF stream object. A stream is a number of bytes
 	stored in a PDF file. It may be encoded by a number of filters.
-	Unlike other PDF object classes, this class does not support operator>>()
-	and operator<<(). It is because although the Stream classes represents one
+	Unlike other PDF object classes, this class does not support operator>>().
+	It is because although the Stream classes represents one
 	of the fundamental data types, it may depend on references to other objects
-	such as its length. It cannot be fully extracted by operator>>() and it
-	can't be written completely by operator<<(). The constructor and the
-	Write() function will perform reading and writing from and to file.
+	such as its length. It cannot be fully extracted by operator>>(). The
+	constructor will perform reading.
 */
 class Stream
 {
@@ -72,6 +71,7 @@ public :
 	bool operator!=( const Stream& str ) const ;
 
 	Dictionary Self( ) const ;
+	
     std::size_t CopyData( std::streambuf *buf ) const ;
     std::size_t CopyData( unsigned char *buf, std::size_t size ) const ;
     

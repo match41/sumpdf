@@ -18,11 +18,11 @@
  \***************************************************************************/
 
 /**
- \file	MockStreamFilter.cpp
- \brief	definition the MockStreamFilter class
- \date	Dec 22, 2009
- \author	nestal
- */
+	\file	MockStreamFilter.cc
+	\brief	definition the MockStreamFilter class
+	\date	Dec 22, 2009
+	\author	Nestal Wan
+*/
 
 #include "MockStreamFilter.hh"
 
@@ -30,48 +30,58 @@
 
 namespace pdf {
 
-MockStreamFilter::MockStreamFilter( )
+MockStreamFilter::MockStreamFilter(
+	std::auto_ptr<StreamFilter>	inner,
+	const Name&					filter )
+	: m_inner( inner ),
+	  m_filter( filter )
 {
 }
 
 std::size_t MockStreamFilter::Read( unsigned char *data, std::size_t size )
 {
-	return 0 ;
+	return m_inner.get() != 0 ? m_inner->Read( data, size ) : 0 ;
 }
 
 std::size_t MockStreamFilter::Write(
 	const unsigned char *data,
 	std::size_t size )
 {
-	return 0 ;
+	return m_inner.get() != 0 ? m_inner->Write( data, size ) : 0 ;
 }
 
 void MockStreamFilter::Flush( )
 {
+	if ( m_inner.get() != 0 )
+		m_inner->Flush( ) ;
 }
 
 void MockStreamFilter::Rewind( )
 {
+	if ( m_inner.get() != 0 )
+		m_inner->Rewind( ) ;
 }
 
 std::size_t MockStreamFilter::Length( ) const
 {
-	return 0 ;
+	return m_inner.get() != 0 ? m_inner->Length() : 0 ;
 }
 
 Object MockStreamFilter::GetFilterName( ) const
 {
-	return Object( ) ;
+	// TODO: need to use array for multiple filter names
+	return m_filter.empty() ? Object( ) : Object( m_filter ) ;
 }
 
 StreamFilter* MockStreamFilter::Clone( ) const
 {
-	return new MockStreamFilter( *this ) ;
+	std::auto_ptr<StreamFilter> f( m_inner->Clone() ) ;
+	return new MockStreamFilter( f, m_filter ) ;
 }
 
 StreamFilter* MockStreamFilter::GetInner( )
 {
-	return this ;
+	return m_inner.get() != 0 ? m_inner.get() : this ;
 }
 
 } // end of namespace
