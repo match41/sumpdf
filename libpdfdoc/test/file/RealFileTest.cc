@@ -140,13 +140,11 @@ void RealFileTest::TestSimple( )
 	CPPUNIT_ASSERT( exp ) ;
 	
 	std::string file_str = file.str() ;
+	std::string exp_str(
+		(std::istreambuf_iterator<char>( exp ) ),
+		(std::istreambuf_iterator<char>( ) ) ) ;
 	
-	if ( !std::equal( file_str.begin( ), file_str.end( ),
-	                            std::istreambuf_iterator<char>( exp ) ) )
-	{
-		std::cerr << file_str << std::endl ;
-		CPPUNIT_ASSERT( false ) ;
-	}
+	CPPUNIT_ASSERT_EQUAL( file_str, exp_str ) ;
 }
 
 void RealFileTest::TestReadStream( )
@@ -166,8 +164,8 @@ void RealFileTest::TestReadStream( )
 	std::stringstream exp ;
 	std::size_t exp_size = m_content->CopyData( exp.rdbuf() ) ;
 	
-	CPPUNIT_ASSERT( count == exp_size ) ;
-	CPPUNIT_ASSERT( output.str() == exp.str() ) ;
+	CPPUNIT_ASSERT_EQUAL( count, exp_size ) ;
+	CPPUNIT_ASSERT_EQUAL( output.str(), exp.str() ) ;
 }
 
 void RealFileTest::TestReadObjectLinks( )
@@ -183,7 +181,7 @@ void RealFileTest::TestReadObjectLinks( )
 	std::map<Ref, ObjWrapper*> objmap ;
 	f.ReadObjectLinks( obj, objmap ) ;
 	
-	CPPUNIT_ASSERT( objmap.size() == 5 ) ;
+	CPPUNIT_ASSERT_EQUAL( objmap.size(), 5UL ) ;
 	CPPUNIT_ASSERT( objmap[Ref( 3, 0 )]->Get() == *m_page ) ; 
 	CPPUNIT_ASSERT( m_content->IsContentEqual( objmap[Ref( 4, 0 )]->Get() ) ) ;
 	CPPUNIT_ASSERT( objmap[Ref( 2, 0 )]->Get() == *m_res ) ;
