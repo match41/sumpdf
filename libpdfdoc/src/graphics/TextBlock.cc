@@ -34,4 +34,14 @@ TextBlock::TextBlock( )
 {
 }
 
+const TextFormat& TextBlock::Format() const
+{
+	return m_format ;
+}
+
+TextFormat& TextBlock::Format()
+{
+	return m_format ;
+}
+
 } // end of namespace

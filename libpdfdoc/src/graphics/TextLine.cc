@@ -26,10 +26,12 @@
 
 #include "TextLine.hh"
 
+#include "core/Object.hh"
 #include "core/Token.hh"
 
 #include "util/Util.hh"
 
+#include <cassert>
 #include <set>
 
 namespace pdf {
@@ -54,9 +56,14 @@ const TextLine::HandlerMap::value_type	TextLine::m_handler_map_values[] =
 	std::make_pair( "T*",	&TextLine::OnTstar ),
 } ;
 
+const TextLine::HandlerMap TextLine::m_handler_map(
+    Begin( TextLine::m_handler_map_values ),
+    End( TextLine::m_handler_map_values ) ) ;
+
 /**	constructor
 */
 TextLine::TextLine( )
+    : m_blks( 1 )
 {
 }
 
@@ -66,26 +73,50 @@ void TextLine::OnCommand(
 	std::size_t		count,
 	Resources		*res )
 {
-	if ( state_cmds.find( cmd ) != state_cmds.end() )
-		m_blks.push_back( TextBlock() ) ;
+	assert( !m_blks.empty() ) ;
 	
-	m_blks.back().OnCommand( cmd, args, count, res ) ;
+	if ( state_cmds.find( cmd ) != state_cmds.end() )
+	{
+		m_blks.push_back( TextBlock() ) ;
+		m_blks.back().OnCommand( cmd, args, count, res ) ;
+	}
+	else
+	{
+	    HandlerMap::const_iterator i = m_handler_map.find( cmd ) ;
+	    if ( i != m_handler_map.end() )
+	        (this->*(i->second))( args, count, res ) ;
+    }
 }
 
-void TextLine::OnTd( const Object* args, std::size_t count )
+void TextLine::OnTd( const Object* args, std::size_t count, Resources* )
 {
+	if ( count >= 2 )
+		m_trans = Matrix( 1, 0, 0, 1, args[0], args[1] ) ;
 }
 
-void TextLine::OnTD( const Object* args, std::size_t count )
+void TextLine::OnTD( const Object* args, std::size_t count, Resources *res )
 {
+	if ( count >= 2 )
+	{
+		double	ty	= args[1] ;
+
+		m_blks.push_back( TextBlock() ) ;
+		m_blks.back().Format().SetLeading( -ty ) ;
+		
+		m_trans = Matrix( 1, 0, 0, 1, args[0], args[1] ) ;
+	}
 }
 
-void TextLine::OnTm( const Object* args, std::size_t count )
+void TextLine::OnTm( const Object* args, std::size_t count, Resources* )
 {
+	if ( count >= 6 )
+		m_trans = Matrix(
+			args[0], args[1], args[2], args[3], args[4], args[5] ) ;
 }
 
-void TextLine::OnTstar( const Object* args, std::size_t count )
+void TextLine::OnTstar( const Object* , std::size_t , Resources *res )
 {
+	m_trans = Matrix( 1, 0, 0, 1, 0, m_blks.back().Format().Leading() ) ;
 }
 
 } // end of namespace

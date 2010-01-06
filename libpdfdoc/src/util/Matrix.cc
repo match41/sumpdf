@@ -18,68 +18,65 @@
 \***************************************************************************/
 
 /**
-    \file	TextLine.hh
-    \brief	definition the TextLine class
-    \date	Jan 4, 2010
+    \file	Matrix.cc
+    \brief	definition the Matrix class
+    \date	Jan 6, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_TEXTLINE_HEADER_INCLUDED__
-#define __PDF_TEXTLINE_HEADER_INCLUDED__
-
-#include "TextBlock.hh"
-
 #include "util/Matrix.hh"
 
-#include <map>
-#include <vector>
+#include "Util.hh"
+
+#include <algorithm>
 
 namespace pdf {
 
-class Resources ;
-
-/**	\brief	brief description
-
-	The TextLine class represent a line of text. Inside the line, the text
-	matrix (e.g. position) will not change. A line of text contains a list
-	of text blocks. Each block will have a string of characters with the same
-	formatting parameters.
-*/
-class TextLine
+Matrix::Matrix( )
 {
-public :
-	TextLine( ) ;
+	m_mat[0] = m_mat[3] = 1 ;
+	m_mat[1] = m_mat[2] = m_mat[4] = m_mat[5] = 0 ;
+}
 
-	void OnCommand(
-		const Token& 	cmd,
-		const Object 	*args,
-		std::size_t		count,
-		Resources		*res ) ;
+Matrix::Matrix( double a, double b, double c, double d, double e, double f )
+{
+	m_mat[0] = a ;
+	m_mat[1] = b ;
+	m_mat[2] = c ;
+	m_mat[3] = d ;
+	m_mat[4] = e ;
+	m_mat[5] = f ;
+}
 
-private :
-	void OnTd( const Object* args, std::size_t count, Resources *res ) ;
-	void OnTD( const Object* args, std::size_t count, Resources *res ) ;
-	void OnTm( const Object* args, std::size_t count, Resources *res ) ;
-	void OnTstar( const Object* args, std::size_t count, Resources *res ) ;
+Matrix::Matrix( const Matrix& m )
+{
+	std::copy( m.begin(), m.end(), begin() ) ;
+}
 
-	typedef void (TextLine::*Handler)(
-		const Object	*args,
-		std::size_t		count,
-		Resources		*res ) ;
-	typedef std::map<Token, Handler>	HandlerMap ;
+Matrix::iterator Matrix::begin()
+{
+	return Begin( m_mat ) ;
+}
 
-	static const HandlerMap::value_type	m_handler_map_values[] ;
-	static const HandlerMap				m_handler_map ;
+Matrix::iterator Matrix::end()
+{
+	return End( m_mat ) ;
+}
 
-	void NewBlock( ) ;
+Matrix::const_iterator Matrix::begin() const
+{
+	return Begin( m_mat ) ;
+}
 
-private :
-	/// the text matrix
-	Matrix	m_trans ;
-	
-	std::vector<TextBlock>	m_blks ;
-} ;
+Matrix::const_iterator Matrix::end() const
+{
+	return End( m_mat ) ;
+}
+
+Matrix& Matrix::operator=( const Matrix& m )
+{
+	std::copy( m.begin(), m.end(), begin() ) ;
+	return *this ;
+}
 
 } // end of namespace
-
-#endif // TEXTLINE_HH_

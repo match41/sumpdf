@@ -128,7 +128,8 @@ set( INCLUDE_HDRS	${INCLUDE_DIR}/Doc.hh
 					${INCLUDE_DIR}/page/TextOp.hh
 					${INCLUDE_DIR}/page/PathSegment.hh
 					${INCLUDE_DIR}/util/Exception.hh
-					${INCLUDE_DIR}/util/Rect.hh )
+					${INCLUDE_DIR}/util/Rect.hh
+					${INCLUDE_DIR}/util/Matrix.hh )
 
 set( BASE_HDRS		src/RealDoc.hh )
 
@@ -185,7 +186,8 @@ set( UTIL_SRCS  	${UTIL_DIR}/Rect.cc
 					${UTIL_DIR}/Util.cc
 					${UTIL_DIR}/Exception.cc
 					${UTIL_DIR}/Backtrace.cc
-					${UTIL_DIR}/RefCounter.cc )
+					${UTIL_DIR}/RefCounter.cc
+					${UTIL_DIR}/Matrix.cc )
 
 set( IMG_SRCS  		${IMG_DIR}/Image.cc )
 
@@ -286,11 +288,12 @@ add_library( pdfdoc_static STATIC ${SRCS} ${HDRS} )
 # source groups
 ###############################################################################
 
-SOURCE_GROUP( "page"		FILES ${PAGE_SRCS} ${PAGE_HDRS} )
-SOURCE_GROUP( "file"		FILES ${FILE_SRCS} ${FILE_HDRS} )
-SOURCE_GROUP( "core"		FILES ${CORE_SRCS} ${CORE_HDRS} )
+SOURCE_GROUP( "page"		FILES ${PAGE_SRCS}		${PAGE_HDRS} )
+SOURCE_GROUP( "graphics"	FILES ${GRAPICS_SRCS}	${GRAPICS_HDRS} )
+SOURCE_GROUP( "file"		FILES ${FILE_SRCS}		${FILE_HDRS} )
+SOURCE_GROUP( "core"		FILES ${CORE_SRCS}		${CORE_HDRS} )
 SOURCE_GROUP( "util"		FILES ${UTIL_SRCS} ${UTIL_HDRS} )
-SOURCE_GROUP( "font"		FILES ${FONT_SRCS} ${FONT_HDRS} )
+SOURCE_GROUP( "font"		FILES ${FONT_SRCS}		${FONT_HDRS} )
 SOURCE_GROUP( "image"		FILES ${IMG_SRCS}  ${IMG_HDRS} )
 SOURCE_GROUP( "stream"		FILES ${STRM_SRCS} ${STRM_HDRS} )
 SOURCE_GROUP( "base"		FILES ${BASE_SRCS} ${BASE_HDRS} )

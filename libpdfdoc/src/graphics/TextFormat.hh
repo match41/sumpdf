@@ -51,6 +51,9 @@ public :
 		std::size_t		count,
 		Resources		*res ) ;
 
+	double Leading( ) const ;
+	void SetLeading( double val ) ;
+
 private :
 	double	m_char_space ;
 	double	m_word_space ;

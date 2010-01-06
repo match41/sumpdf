@@ -255,4 +255,9 @@ void RealPage::Decode( std::vector<PaintOp>& ops )
 	}
 }
 
+std::vector<Graphics*> RealPage::DecodeGraphic( )
+{
+    return std::vector<Graphics*>() ;
+}
+
 } // end of namespace

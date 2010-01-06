@@ -31,7 +31,27 @@ namespace pdf {
 /**	constructor
 */
 TextFormat::TextFormat( )
+	: m_leading( 0 )
 {
+}
+
+/**	\brief	Returns the leading.
+
+	The leading parameter is the vertical distance between the baselines
+	of adjacent lines of text. It always applies to the vertical coordinate
+	in text space, regardless of the writing mode.
+	
+	\return	The leading of current text state.
+	\sa SetLeading()
+*/
+double TextFormat::Leading( ) const
+{
+	return m_leading ;
+}
+
+void TextFormat::SetLeading( double val )
+{
+	m_leading = val ;
 }
 
 } // end of namespace

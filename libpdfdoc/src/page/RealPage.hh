@@ -51,6 +51,7 @@ class Stream ;
 class Resources ;
 class IFile ;
 class PaintOp ;
+class Graphics ;
 
 /*!	\brief	real implementation of a page
 	
@@ -79,6 +80,8 @@ public :
 	const Resources* GetResource( ) const ;
 
 	PageContent* GetContent( ) ;
+
+    std::vector<Graphics*> DecodeGraphic( ) ;
 
 private :
 	void ReadContent( const Object& str_obj, IFile *file ) ;

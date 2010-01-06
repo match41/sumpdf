@@ -51,6 +51,9 @@ public :
 		std::size_t		count,
 		Resources		*res ) ;
 
+	const TextFormat& Format() const ;
+	TextFormat& Format() ;
+
 private :
 	std::vector<unsigned short>	m_chars ;
 	TextFormat	m_format ;

@@ -18,68 +18,50 @@
 \***************************************************************************/
 
 /**
-    \file	TextLine.hh
-    \brief	definition the TextLine class
-    \date	Jan 4, 2010
+    \file	Matrix.hh
+    \brief	definition the Matrix class
+    \date	Jan 6, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_TEXTLINE_HEADER_INCLUDED__
-#define __PDF_TEXTLINE_HEADER_INCLUDED__
-
-#include "TextBlock.hh"
-
-#include "util/Matrix.hh"
-
-#include <map>
-#include <vector>
+#ifndef __PDF_MATRIX_HEADER_INCLUDED__
+#define __PDF_MATRIX_HEADER_INCLUDED__
 
 namespace pdf {
 
-class Resources ;
+/**	\brief  2 dimention matrix.
 
-/**	\brief	brief description
+	This class represents a 2D matrix. It stores six real numbers which
+	are the first and second column of a 3x3 matrix:
+	
+<pre>
+	a b 0
+	c d 0
+	e f 0
+</pre>
 
-	The TextLine class represent a line of text. Inside the line, the text
-	matrix (e.g. position) will not change. A line of text contains a list
-	of text blocks. Each block will have a string of characters with the same
-	formatting parameters.
 */
-class TextLine
+class Matrix
 {
 public :
-	TextLine( ) ;
+	Matrix( ) ;
+	Matrix( double a, double b, double c, double d, double e, double f ) ;
+	Matrix( const Matrix& m ) ;
 
-	void OnCommand(
-		const Token& 	cmd,
-		const Object 	*args,
-		std::size_t		count,
-		Resources		*res ) ;
+	Matrix& operator=( const Matrix& m ) ;
 
-private :
-	void OnTd( const Object* args, std::size_t count, Resources *res ) ;
-	void OnTD( const Object* args, std::size_t count, Resources *res ) ;
-	void OnTm( const Object* args, std::size_t count, Resources *res ) ;
-	void OnTstar( const Object* args, std::size_t count, Resources *res ) ;
-
-	typedef void (TextLine::*Handler)(
-		const Object	*args,
-		std::size_t		count,
-		Resources		*res ) ;
-	typedef std::map<Token, Handler>	HandlerMap ;
-
-	static const HandlerMap::value_type	m_handler_map_values[] ;
-	static const HandlerMap				m_handler_map ;
-
-	void NewBlock( ) ;
-
-private :
-	/// the text matrix
-	Matrix	m_trans ;
+	typedef double*			iterator ;
+	typedef const double*	const_iterator ;
 	
-	std::vector<TextBlock>	m_blks ;
+	iterator begin() ;
+	iterator end() ;
+	const_iterator begin() const ;
+	const_iterator end() const ;
+
+private :
+	double	m_mat[6] ;
 } ;
 
 } // end of namespace
 
-#endif // TEXTLINE_HH_
+#endif
