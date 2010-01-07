@@ -29,6 +29,8 @@
 #include "page/PageTree.hh"
 #include "page/RealPage.hh"
 
+#include "mock/Assert.hh"
+
 PageNodeTest::PageNodeTest( )
 	: m_root( 0 )
 {
@@ -50,10 +52,10 @@ void PageNodeTest::TestCount( )
 	              *level2	= new pdf::PageTree( level1 ) ;
 	new pdf::RealPage( level2 ) ;
 	
-	CPPUNIT_ASSERT( m_root->Count( ) == 1 ) ;
+	PDF_ASSERT_EQUAL( m_root->Count( ), 1u ) ;
 
 	new pdf::RealPage( level1 ) ;
-	CPPUNIT_ASSERT( m_root->Count( ) == 2 ) ;
+	PDF_ASSERT_EQUAL( m_root->Count( ), 2u ) ;
 }
 
 void PageNodeTest::TestGetLeaf( )
@@ -62,15 +64,15 @@ void PageNodeTest::TestGetLeaf( )
 	              *level2	= new pdf::PageTree( level1 ) ;
 	pdf::RealPage *page		= new pdf::RealPage( level2 ) ;
 
-	CPPUNIT_ASSERT( m_root->GetLeaf( 0 ) == page ) ;
-	CPPUNIT_ASSERT( m_root->GetLeaf( m_root->Count() ) == 0 ) ;
-	CPPUNIT_ASSERT( m_root->GetLeaf( 100 ) == 0 ) ;
+	PDF_ASSERT_EQUAL( m_root->GetLeaf( 0 ), page ) ;
+	PDF_ASSERT_NULL( m_root->GetLeaf( m_root->Count() ) ) ;
+	PDF_ASSERT_NULL( m_root->GetLeaf( 100 ) ) ;
 
 	pdf::RealPage *page2	= new pdf::RealPage( level1 ) ;
-	CPPUNIT_ASSERT( m_root->GetLeaf( 0 ) == page ) ;
-	CPPUNIT_ASSERT( m_root->GetLeaf( 1 ) == page2 ) ;
-	CPPUNIT_ASSERT( m_root->GetLeaf( m_root->Count() ) == 0 ) ;
-	CPPUNIT_ASSERT( m_root->GetLeaf( 100 ) == 0 ) ;
+	PDF_ASSERT_EQUAL( m_root->GetLeaf( 0 ), page ) ;
+	PDF_ASSERT_EQUAL( m_root->GetLeaf( 1 ), page2 ) ;
+	PDF_ASSERT_NULL( m_root->GetLeaf( m_root->Count() ) ) ;
+	PDF_ASSERT_NULL( m_root->GetLeaf( 100 ) ) ;
 }
 
 void PageNodeTest::TestOrder( )

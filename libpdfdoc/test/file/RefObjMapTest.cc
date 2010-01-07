@@ -28,6 +28,9 @@
 
 #include "file/RefObjMap.hh"
 #include "util/RefCounter.hh"
+
+#include "mock/Assert.hh"
+
 namespace
 {
 	// RefObjMap should work with reference counted type
@@ -46,7 +49,7 @@ void RefObjMapTest::TestSimple( )
 	Dummy *d = new Dummy ;
 	map.Add( pdf::Ref( 100, 0 ), d ) ;
 	Dummy *out = map.Find( pdf::Ref( 100, 0 ) ) ;
-	CPPUNIT_ASSERT( out == d ) ;
-	CPPUNIT_ASSERT( out->UseCount() == 2 ) ;
-	CPPUNIT_ASSERT( map.Find( out ) == pdf::Ref( 100, 0 ) ) ; 
+	PDF_ASSERT_EQUAL( out, d ) ;
+	PDF_ASSERT_EQUAL( out->UseCount(), 2U ) ;
+	PDF_ASSERT_EQUAL( map.Find( out ), pdf::Ref( 100, 0 ) ) ; 
 }

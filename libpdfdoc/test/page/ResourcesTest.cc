@@ -35,6 +35,8 @@
 #include "page/Resources.hh"
 #include "util/Rect.hh"
 
+#include "mock/Assert.hh"
+
 #include <sstream>
 
 ResourcesTest::ResourcesTest( )
@@ -75,7 +77,7 @@ void ResourcesTest::TestReadExistFont( )
 	CPPUNIT_ASSERT( iss >> rdict ) ;
 
 	pdf::StandardFont *f = new pdf::StandardFont( "Times-Roman" ) ;
-	CPPUNIT_ASSERT( f->UseCount() == 1 ) ;
+	PDF_ASSERT_EQUAL( f->UseCount(), 1u ) ;
 
 	MockFile file ;
 	file.AddObj( pdf::Ref(1,0),  rdict ) ;
@@ -85,5 +87,5 @@ void ResourcesTest::TestReadExistFont( )
 	pdf::Object obj( rdict ) ;
 	pdf::Resources subject ;
 	subject.Read( rdict, &file ) ;
-	CPPUNIT_ASSERT( f->UseCount() == 2 ) ;
+	PDF_ASSERT_EQUAL( f->UseCount(), 2u ) ;
 }

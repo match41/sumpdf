@@ -30,6 +30,8 @@
 #include "core/TokenSrc.hh"
 #include "util/Util.hh"
 
+#include "mock/Assert.hh"
+
 #include <sstream>
 
 RefTest::RefTest( )
@@ -41,8 +43,8 @@ void RefTest::TestNormal( )
 	std::istringstream ss( "1 9 R" ) ;
 	pdf::Ref obj ;
 	CPPUNIT_ASSERT( ss >> obj ) ;
-	CPPUNIT_ASSERT( obj.ID( ) == 1 ) ;
-	CPPUNIT_ASSERT( obj.Gen( ) == 9 ) ;
+	PDF_ASSERT_EQUAL( obj.ID( ), 1U ) ;
+	PDF_ASSERT_EQUAL( obj.Gen( ), 9U ) ;
 }
 
 void RefTest::TestError( )
@@ -50,8 +52,8 @@ void RefTest::TestError( )
 	std::istringstream ss( "1 0 a a R" ) ;
 	pdf::Ref obj ;
 	CPPUNIT_ASSERT( !(ss >> obj) ) ;
-	CPPUNIT_ASSERT( obj.ID( ) == 0 ) ;
-	CPPUNIT_ASSERT( obj.Gen( ) == 0 ) ;
+	PDF_ASSERT_EQUAL( obj.ID( ), 0U ) ;
+	PDF_ASSERT_EQUAL( obj.Gen( ), 0U ) ;
 }
 
 void RefTest::TestNonIntError( )
@@ -61,16 +63,16 @@ void RefTest::TestNonIntError( )
 	
 	pdf::Ref obj ;
 	CPPUNIT_ASSERT( !(src >> obj) ) ;
-	CPPUNIT_ASSERT( obj.ID( ) == 0 ) ;
-	CPPUNIT_ASSERT( obj.Gen( ) == 0 ) ;
+	PDF_ASSERT_EQUAL( obj.ID( ), 0U ) ;
+	PDF_ASSERT_EQUAL( obj.Gen( ), 0U ) ;
 	
 	// the 3 tokens can still be read
 	pdf::Token t[3] ;
 	src.ResetState( ) ;
 	CPPUNIT_ASSERT( src.Peek( t, pdf::Count(t) ) == pdf::End(t) ) ;
-	CPPUNIT_ASSERT( t[0].Get() == "82" ) ;
-	CPPUNIT_ASSERT( t[1].Get() == "/" ) ;
-	CPPUNIT_ASSERT( t[2].Get() == "R" ) ;
+	PDF_ASSERT_EQUAL( t[0].Get(), "82" ) ;
+	PDF_ASSERT_EQUAL( t[1].Get(), "/" ) ;
+	PDF_ASSERT_EQUAL( t[2].Get(), "R" ) ;
 
 }
 
@@ -82,13 +84,13 @@ void RefTest::TestTooFewToken( )
 	
 	pdf::Ref obj ;
 	CPPUNIT_ASSERT( !(src >> obj) ) ;
-	CPPUNIT_ASSERT( obj.ID( ) == 0 ) ;
-	CPPUNIT_ASSERT( obj.Gen( ) == 0 ) ;
+	PDF_ASSERT_EQUAL( obj.ID( ), 0U ) ;
+	PDF_ASSERT_EQUAL( obj.Gen( ), 0U ) ;
 
 	// the 2 tokens can still be read
 	pdf::Token t[2] ;
 	src.ResetState( ) ;
-	CPPUNIT_ASSERT( src.Peek( t, pdf::Count(t) ) == pdf::End(t) ) ;
-	CPPUNIT_ASSERT( t[0].Get() == "2" ) ;
-	CPPUNIT_ASSERT( t[1].Get() == "a" ) ;
+	PDF_ASSERT_EQUAL( src.Peek( t, pdf::Count(t) ), pdf::End(t) ) ;
+	PDF_ASSERT_EQUAL( t[0].Get(), "2" ) ;
+	PDF_ASSERT_EQUAL( t[1].Get(), "a" ) ;
 }

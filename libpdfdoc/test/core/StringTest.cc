@@ -28,8 +28,8 @@
 
 #include "core/String.hh"
 
-#include <algorithm>
-#include <iterator>
+#include "mock/Assert.hh"
+
 #include <sstream>
 #include <vector>
 #include <stdexcept>
@@ -43,7 +43,7 @@ void StringTest::TestLiteral( )
 	std::istringstream ss( "(123456)" ) ;
 	pdf::String str ;
 	CPPUNIT_ASSERT( ss >> str ) ;
-	CPPUNIT_ASSERT( str.Get() == "123456" ) ;
+	PDF_ASSERT_EQUAL( str.Get(), "123456" ) ;
 }
 
 void StringTest::TestLiteralWithBrackets( )
@@ -51,7 +51,7 @@ void StringTest::TestLiteralWithBrackets( )
 	std::istringstream ss( "(123()4(56))" ) ;
 	pdf::String str ;
 	CPPUNIT_ASSERT( ss >> str ) ;
-	CPPUNIT_ASSERT( str.Get() == "123()4(56)" ) ;
+	PDF_ASSERT_EQUAL( str.Get(), "123()4(56)" ) ;
 }
 
 void StringTest::TestLiteralWithEscape( )
@@ -59,7 +59,7 @@ void StringTest::TestLiteralWithEscape( )
 	std::istringstream ss( "(123(\\b\\f)4(56))" ) ;
 	pdf::String str ;
 	CPPUNIT_ASSERT( ss >> str ) ;
-	CPPUNIT_ASSERT( str.Get() == "123(\b\f)4(56)" ) ;
+	PDF_ASSERT_EQUAL( str.Get(), "123(\b\f)4(56)" ) ;
 }
 
 void StringTest::TestErrorLiteral( )
@@ -69,7 +69,7 @@ void StringTest::TestErrorLiteral( )
 	
 	pdf::String str ;
 	CPPUNIT_ASSERT( ss >> str ) ;
-	CPPUNIT_ASSERT( str.Get() == "12[}}CVDe,.3kk\f4(56)" ) ;
+	PDF_ASSERT_EQUAL( str.Get(), "12[}}CVDe,.3kk\f4(56)" ) ;
 }
 
 void StringTest::TestHex( )
@@ -77,7 +77,7 @@ void StringTest::TestHex( )
 	std::istringstream ss( "<6465666768696a6b>" ) ;
 	pdf::String str ;
 	CPPUNIT_ASSERT( ss >> str ) ;
-	CPPUNIT_ASSERT( str.Get() == "defghijk" ) ;
+	PDF_ASSERT_EQUAL( str.Get(), "defghijk" ) ;
 }
 
 void StringTest::TestErrorHex( )

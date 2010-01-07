@@ -38,6 +38,8 @@
 #include "util/Util.hh"
 #include "stream/Stream.hh"
 
+#include "mock/Assert.hh"
+
 using namespace pdf ;
 
 RealFileTest::RealFileTest( )
@@ -144,7 +146,7 @@ void RealFileTest::TestSimple( )
 		(std::istreambuf_iterator<char>( exp ) ),
 		(std::istreambuf_iterator<char>( ) ) ) ;
 	
-	CPPUNIT_ASSERT_EQUAL( file_str, exp_str ) ;
+	PDF_ASSERT_EQUAL( file_str, exp_str ) ;
 }
 
 void RealFileTest::TestReadStream( )
@@ -164,8 +166,8 @@ void RealFileTest::TestReadStream( )
 	std::stringstream exp ;
 	std::size_t exp_size = m_content->CopyData( exp.rdbuf() ) ;
 	
-	CPPUNIT_ASSERT_EQUAL( count, exp_size ) ;
-	CPPUNIT_ASSERT_EQUAL( output.str(), exp.str() ) ;
+	PDF_ASSERT_EQUAL( count, exp_size ) ;
+	PDF_ASSERT_EQUAL( output.str(), exp.str() ) ;
 }
 
 void RealFileTest::TestReadObjectLinks( )
@@ -182,10 +184,10 @@ void RealFileTest::TestReadObjectLinks( )
 	f.ReadObjectLinks( obj, objmap ) ;
 	
 	CPPUNIT_ASSERT_EQUAL( objmap.size(), static_cast<std::size_t>(5UL) ) ;
-	CPPUNIT_ASSERT( objmap[Ref( 3, 0 )]->Get() == *m_page ) ; 
+	PDF_ASSERT_EQUAL( objmap[Ref( 3, 0 )]->Get(), *m_page ) ; 
 	CPPUNIT_ASSERT( m_content->IsContentEqual( objmap[Ref( 4, 0 )]->Get() ) ) ;
-	CPPUNIT_ASSERT( objmap[Ref( 2, 0 )]->Get() == *m_res ) ;
-	CPPUNIT_ASSERT( objmap[Ref( 5, 0 )]->Get() == *m_font ) ;
-	CPPUNIT_ASSERT( objmap[Ref( 1, 0 )]->Get() == *m_page_tree ) ;
+	PDF_ASSERT_EQUAL( objmap[Ref( 2, 0 )]->Get(), *m_res ) ;
+	PDF_ASSERT_EQUAL( objmap[Ref( 5, 0 )]->Get(), *m_font ) ;
+	PDF_ASSERT_EQUAL( objmap[Ref( 1, 0 )]->Get(), *m_page_tree ) ;
 	
 }

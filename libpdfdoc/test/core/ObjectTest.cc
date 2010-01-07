@@ -34,6 +34,8 @@
 
 #include "util/Util.hh"
 
+#include "mock/Assert.hh"
+
 #include <cppunit/TestSuite.h>
 #include <cppunit/TestCaller.h>
 
@@ -41,28 +43,6 @@
 #include <iterator>
 #include <sstream>
 #include <vector>
-
-template <typename T1, typename T2>
-void AssertEquals( const T1& expected,
-                   const T2& actual,
-                   CPPUNIT_NS::SourceLine sourceLine,
-                   const std::string &message )
-{
-	if ( expected != actual )
-	{
-		CPPUNIT_NS::Asserter::failNotEqual(
-			CPPUNIT_NS::assertion_traits<T1>::toString(expected),
-			CPPUNIT_NS::assertion_traits<T2>::toString(actual),
-			sourceLine,
-			message );
-	}
-}
-
-#define PDF_ASSERT_EQUAL(expected,actual)          \
-  ( AssertEquals( (expected),              \
-                  (actual),                \
-                  CPPUNIT_SOURCELINE(),    \
-                  "" ) )
 
 ObjectTest::ObjectTest( )
 {
@@ -254,7 +234,7 @@ void ObjectTest::TestConvert( )
 {
 	pdf::Object obj( 100 ) ;
 	unsigned ui = obj ;
-	PDF_ASSERT_EQUAL( ui, 100 ) ;
+	PDF_ASSERT_EQUAL( ui, 100U ) ;
 	
 	long li = obj ;
 	PDF_ASSERT_EQUAL( li, 100 ) ;

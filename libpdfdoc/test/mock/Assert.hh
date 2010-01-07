@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2009 by Nestal Wan                                      *
+ *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,48 +17,49 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/*!
-	\file	SimpleFontTest.cc
-	\brief	implementation the SimpleFontTest class
-	\date	Sun Mar 8 2009
-	\author	Nestal Wan
+/**
+    \file	Assert.hh
+    \brief	definition the Assert class
+    \date	Jan 7, 2010
+    \author	Nestal Wan
 */
 
-#include "SimpleFontTest.hh"
+#ifndef __PDF_ASSERT_HH_EADER_INCLUDED__
+#define __PDF_ASSERT_HH_EADER_INCLUDED__
 
-#include "font/SimpleFont.hh"
+#include <cppunit/TestAssert.h>
 
-#include "mock/Assert.hh"
+namespace pdf {
 
-// freetype headers
-#include <ft2build.h>
-#include FT_FREETYPE_H
-
-#include <sstream>
-
-SimpleFontTest::SimpleFontTest( )
-{
-}
-
-void SimpleFontTest::TestSimple( )
-{
-	FT_Library lib ;
-	::FT_Init_FreeType( &lib ) ;
-	
-	FT_Face face ;
-	::FT_New_Face(
-		lib,
-		(std::string(TEST_DATA_DIR) +"FreeMonoBoldOblique.ttf").c_str(),
-		0,
-		&face ) ;
-	
+	template <typename T1, typename T2>
+	void AssertEquals(
+		const T1&				expected,
+		const T2& 				actual,
+		CPPUNIT_NS::SourceLine	sourceLine,
+		const std::string&		message )
 	{
-		pdf::SimpleFont subject( face ) ;
-		PDF_ASSERT_EQUAL( subject.BaseName( ), "FreeMonoBoldOblique" ) ;
-		
-		
+		if ( expected != actual )
+		{
+			CPPUNIT_NS::Asserter::failNotEqual(
+				CPPUNIT_NS::assertion_traits<T1>::toString(expected),
+				CPPUNIT_NS::assertion_traits<T2>::toString(actual),
+				sourceLine,
+				message );
+		}
 	}
-	
-	::FT_Done_Face( face ) ;
-	::FT_Done_FreeType( lib ) ;
-}
+
+} // end of namespace
+
+#define PDF_ASSERT_EQUAL(expected,actual)          \
+  ( pdf::AssertEquals( (expected),              \
+                       (actual),                \
+                       CPPUNIT_SOURCELINE(),    \
+                       "" ) )
+
+#define PDF_ASSERT_NULL(expected)          \
+  ( pdf::AssertEquals( (expected),              \
+                       ((void*)0),                \
+                       CPPUNIT_SOURCELINE(),    \
+                       "" ) )
+
+#endif // ASSERT_HH_

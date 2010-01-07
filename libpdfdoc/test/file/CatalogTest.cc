@@ -30,6 +30,7 @@
 #include "file/Catalog.hh"
 
 #include "mock/MockFile.hh"
+#include "mock/Assert.hh"
 
 #include <sstream>
 
@@ -58,6 +59,6 @@ void CatalogTest::TestRead( )
 	file.AddObj( pdf::Ref( 3, 0 ),	page_dict ) ;
 	
 	pdf::Catalog c( pdf::Ref( 2, 0 ), &file ) ;
-	CPPUNIT_ASSERT( c.PageCount( ) == 1 ) ;
+	PDF_ASSERT_EQUAL( c.PageCount( ), 1U ) ;
 	CPPUNIT_ASSERT( c.GetPage( 0 ) != 0 ) ;
 }
