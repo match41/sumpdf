@@ -50,7 +50,6 @@ class Name ;
 class Stream ;
 class Resources ;
 class IFile ;
-class PaintOp ;
 class Graphics ;
 
 /*!	\brief	real implementation of a page
@@ -81,13 +80,11 @@ public :
 
 	PageContent* GetContent( ) ;
 
-    std::vector<Graphics*> DecodeGraphic( ) ;
-
 private :
 	void ReadContent( const Object& str_obj, IFile *file ) ;
 	Object WriteContent( IFile *file ) const ; 
 
-	void Decode( std::vector<PaintOp>& ops ) ;
+	void Decode( std::vector<Graphics*>& gfx ) ;
 
 private :
 	PageTree	*m_parent ;
@@ -99,9 +96,10 @@ private :
 	
 	struct Content : public PageContent
 	{
-		bool GetPaintOps( std::vector<PaintOp>& op ) ;
-		
-		std::vector<PaintOp>	ops ;
+		std::size_t Count( ) const ;
+		const Graphics* Item( std::size_t idx ) const ;
+	 
+		std::vector<Graphics*> m_gfx ;
 	} m_content ;
 
 	std::vector<Stream>	m_cstrs ;

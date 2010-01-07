@@ -18,35 +18,32 @@
 \***************************************************************************/
 
 /**
-    \file	PageContent.hh
-    \brief	definition the PageContent class
-    \date	Dec 31, 2009
+    \file	GraphicsFactory.hh
+    \brief	definition the GraphicsFactory class
+    \date	Jan 8, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_PAGECONTENT_HEADER_INCLUDED__
-#define __PDF_PAGECONTENT_HEADER_INCLUDED__
-
-#include <vector>
+#ifndef __PDF_GRAPHICSFACTORY_HH_EADER_INCLUDED__
+#define __PDF_GRAPHICSFACTORY_HH_EADER_INCLUDED__
 
 namespace pdf {
 
-class Graphics ;
+class Text ;
 
 /**	\brief	brief description
 
-	The PageContent class represent
+	The GraphicsFactory class represent
 */
-class PageContent
+class GraphicsFactory
 {
 protected :
-	~PageContent( ) ;
+	~GraphicsFactory( ) ;
 
 public :
-	virtual std::size_t Count( ) const = 0 ;
-	virtual const Graphics* Item( std::size_t idx ) const = 0 ;
+	virtual Text* CreateText( ) = 0 ;
 } ;
 
 } // end of namespace
 
-#endif // PAGECONTENT_HH_
+#endif // GRAPHICSFACTORY_HH_

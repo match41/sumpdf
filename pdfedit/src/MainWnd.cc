@@ -37,6 +37,10 @@
 #include <QList>
 #include <QMessageBox>
 #include <QPointF>
+#include <QGraphicsSimpleTextItem>
+#include <QTransform>
+#include <QDebug>
+
 #include "TextEdit.hh"
 
 // libpdfdoc headers
@@ -73,6 +77,16 @@ MainWnd::MainWnd( QWidget *parent )
 		SIGNAL(triggered()),
 		this,
 		SLOT(OnSaveAs()) );
+	
+	QGraphicsSimpleTextItem *item = new QGraphicsSimpleTextItem( "Hello" ) ;
+	QTransform mat( 3, 0, 0,
+	                0, 3, 0,
+	                100, 100, 1 ) ;
+//	mat.translate( 100, 100 ) ;
+//	mat.rotate( 45 ) ;
+	item->setTransform( mat ) ;
+	m_scene->addItem( item ) ;
+	qDebug() << "item at " << item->scenePos() ;
 }
 
 /**	destructor is for the auto_ptr	

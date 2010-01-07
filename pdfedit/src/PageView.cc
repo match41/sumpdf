@@ -46,10 +46,16 @@ void PageView::mousePressEvent( QMouseEvent *event )
 	// add text box if the user clicks empty space
 	if ( scene()->itemAt( pos ) == 0 )
 	{
+/*
 		TextEdit *edit = new TextEdit ;
 		QGraphicsProxyWidget *item = scene()->addWidget( edit ) ;
 		item->setPos( pos ) ;
 		edit->setFocus( Qt::MouseFocusReason ) ;
+*/
+	}
+	else
+	{
+		qDebug() << "hello!" ;
 	}
 
 	QGraphicsView::mousePressEvent( event ) ;

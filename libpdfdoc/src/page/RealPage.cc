@@ -28,7 +28,6 @@
 
 #include "PageTree.hh"
 
-
 // core object headers
 #include "core/Array.hh"
 #include "core/Object.hh"
@@ -40,7 +39,7 @@
 #include "file/ObjectReader.hh"
 #include "file/IFile.hh"
 #include "font/BaseFont.hh"
-#include "page/PaintOp.hh"
+#include "graphics/Text.hh"
 #include "util/Rect.hh"
 #include "util/Util.hh"
 
@@ -102,8 +101,9 @@ void RealPage::ReadContent( const Object& str_obj, IFile *src )
 	else if ( str_obj.Is<Array>( ) )
 	{
 		const Array& a = str_obj.As<Array>( ) ;
-		std::for_each( a.begin( ), a.end( ),
-		               boost::bind( &RealPage::ReadContent, this, _1, src ) ) ;
+		std::for_each(
+			a.begin( ), a.end( ),
+		    boost::bind( &RealPage::ReadContent, this, _1, src ) ) ;
 	}
 
 	else if ( !str_obj.IsNull( ) )
@@ -185,7 +185,7 @@ PageTree* RealPage::Parent( )
 
 PageNode* RealPage::GetLeaf( std::size_t index )
 {
-	// we are a leaf node. we have no children but ourself.
+	// we are a leaf node. we have no children but ourselves.
 	return index == 0 ? this : 0 ;
 }
 
@@ -201,18 +201,16 @@ const Resources* RealPage::GetResource( ) const
 
 PageContent* RealPage::GetContent( )
 {
-	m_content.ops.clear( ) ;
-	Decode( m_content.ops ) ;
+	if ( m_content.m_gfx.empty() )
+	{
+		// decode the graphics commands
+		Decode( m_content.m_gfx ) ;
+	}
+	
 	return &m_content ;
 }
 
-bool RealPage::Content::GetPaintOps( std::vector<PaintOp>& op )
-{
-	op = ops ;
-	return true ;
-}
-
-void RealPage::Decode( std::vector<PaintOp>& ops )
+void RealPage::Decode( std::vector<Graphics*>& gfx )
 {
 	for ( std::vector<Stream>::iterator i = m_cstrs.begin( ) ;
 	                                    i != m_cstrs.end( ) ; ++i )
@@ -223,7 +221,9 @@ void RealPage::Decode( std::vector<PaintOp>& ops )
 		std::istream s( i->InStreamBuf() ) ;
 		TokenSrc src( s ) ;
 		std::vector<Object> args ;
-	
+
+		Graphics *current = 0 ;
+
 		while ( true )
 		{
 			Token  cmd ;
@@ -235,17 +235,34 @@ void RealPage::Decode( std::vector<PaintOp>& ops )
 				args.push_back( Object() ) ;
 				obj.Swap( args.back() ) ;
 			}
+			
+			// if it is not an object, then it should be a command operator
 			else
 			{
 				src.ResetState( ) ;
 				if ( src >> cmd )
 				{
-					ops.push_back(
-						PaintOp(
-							cmd.Get(),
+					if ( cmd == Token("BT") && current == 0 )
+					{
+						current = new Text ;
+					}
+					else if ( cmd == Token("ET") && current != 0 )
+					{
+						gfx.push_back( current ) ;
+					}
+					else if ( current != 0 )
+						current->OnCommand(
+							cmd,
 							args.empty() ? 0 : &args[0],
 							args.size(),
-							&m_resources ) ) ;
+							&m_resources ) ;
+
+//					ops.push_back(
+//						PaintOp(
+//							cmd.Get(),
+//							args.empty() ? 0 : &args[0],
+//							args.size(),
+//							&m_resources ) ) ;
 					args.clear( ) ;
 				}
 				else
@@ -255,9 +272,14 @@ void RealPage::Decode( std::vector<PaintOp>& ops )
 	}
 }
 
-std::vector<Graphics*> RealPage::DecodeGraphic( )
+std::size_t RealPage::Content::Count( ) const
 {
-    return std::vector<Graphics*>() ;
+	return m_gfx.size( ) ;
+}
+
+const Graphics* RealPage::Content::Item( std::size_t idx ) const
+{
+	return m_gfx.at( idx ) ;
 }
 
 } // end of namespace

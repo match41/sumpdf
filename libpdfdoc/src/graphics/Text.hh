@@ -44,6 +44,10 @@ namespace pdf {
 class Text : public Graphics
 {
 public :
+	typedef	std::vector<TextLine>::iterator			iterator ;
+	typedef	std::vector<TextLine>::const_iterator	const_iterator ;
+
+public :
 	Text( ) ;
 
 	void OnCommand(
@@ -51,6 +55,12 @@ public :
 		const Object 	*args,
 		std::size_t		count,
 		Resources		*res ) ;
+
+	iterator begin() ;
+	iterator end() ;
+	
+	const_iterator begin() const ;
+	const_iterator end() const ;
 
 private :
 	std::vector<TextLine>	m_lines ;

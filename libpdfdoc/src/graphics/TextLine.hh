@@ -48,6 +48,10 @@ class Resources ;
 class TextLine
 {
 public :
+	typedef std::vector<TextBlock>::iterator		iterator ;
+	typedef std::vector<TextBlock>::const_iterator	const_iterator ;
+
+public :
 	TextLine( ) ;
 
 	void OnCommand(
@@ -55,6 +59,12 @@ public :
 		const Object 	*args,
 		std::size_t		count,
 		Resources		*res ) ;
+
+	iterator begin() ;
+	iterator end() ;
+	
+	const_iterator begin() const ;
+	const_iterator end() const ;
 
 private :
 	void OnTd( const Object* args, std::size_t count, Resources *res ) ;

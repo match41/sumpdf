@@ -44,4 +44,12 @@ TextFormat& TextBlock::Format()
 	return m_format ;
 }
 
+void TextBlock::OnCommand(
+	const Token& 	cmd,
+	const Object 	*args,
+	std::size_t		count,
+	Resources		*res )
+{
+}
+
 } // end of namespace

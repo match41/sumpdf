@@ -67,6 +67,26 @@ TextLine::TextLine( )
 {
 }
 
+TextLine::iterator TextLine::begin()
+{
+	return m_blks.begin( ) ;
+}
+
+TextLine::iterator TextLine::end()
+{
+	return m_blks.end( ) ;
+}
+
+TextLine::const_iterator TextLine::begin() const
+{
+	return m_blks.begin( ) ;
+}
+
+TextLine::const_iterator TextLine::end() const
+{
+	return m_blks.end( ) ;
+}
+
 void TextLine::OnCommand(
 	const Token& 	cmd,
 	const Object 	*args,

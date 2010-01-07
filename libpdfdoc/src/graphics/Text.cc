@@ -53,6 +53,26 @@ Text::Text( )
 {
 }
 
+Text::iterator Text::begin()
+{
+	return m_lines.begin( ) ;
+}
+
+Text::iterator Text::end()
+{
+	return m_lines.end( ) ;
+}
+
+Text::const_iterator Text::begin() const
+{
+	return m_lines.begin( ) ;
+}
+
+Text::const_iterator Text::end() const
+{
+	return m_lines.end( ) ;
+}
+
 void Text::OnCommand(
 	const Token& 	cmd,
 	const Object 	*args,
