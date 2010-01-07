@@ -42,6 +42,28 @@
 #include <sstream>
 #include <vector>
 
+template <typename T1, typename T2>
+void AssertEquals( const T1& expected,
+                   const T2& actual,
+                   CPPUNIT_NS::SourceLine sourceLine,
+                   const std::string &message )
+{
+	if ( expected != actual )
+	{
+		CPPUNIT_NS::Asserter::failNotEqual(
+			CPPUNIT_NS::assertion_traits<T1>::toString(expected),
+			CPPUNIT_NS::assertion_traits<T2>::toString(actual),
+			sourceLine,
+			message );
+	}
+}
+
+#define PDF_ASSERT_EQUAL(expected,actual)          \
+  ( AssertEquals( (expected),              \
+                  (actual),                \
+                  CPPUNIT_SOURCELINE(),    \
+                  "" ) )
+
 ObjectTest::ObjectTest( )
 {
 }
@@ -54,7 +76,7 @@ void ObjectTest::TestName( )
 	CPPUNIT_ASSERT( name.Type() == pdf::Object::name ) ;
 	CPPUNIT_ASSERT( name.Is<pdf::Name>() ) ;
 	CPPUNIT_ASSERT( name.TypeID() == typeid(pdf::Name) ) ;
-	CPPUNIT_ASSERT( name.As<pdf::Name>( ) == pdf::Name( "Name" ) ) ;
+	PDF_ASSERT_EQUAL( name.As<pdf::Name>( ), pdf::Name( "Name" ) ) ;
 }
 
 void ObjectTest::TestBoolTrue( )
@@ -74,7 +96,7 @@ void ObjectTest::TestBoolFalse( )
 	pdf::Object b ;
 	CPPUNIT_ASSERT( ss >> b ) ;
 	CPPUNIT_ASSERT( !b.IsNull( ) ) ;
-	CPPUNIT_ASSERT( b.Type() == pdf::Object::boolean ) ;
+	PDF_ASSERT_EQUAL( b.Type(), pdf::Object::boolean ) ;
 	CPPUNIT_ASSERT( b.TypeID() == typeid(bool) ) ;
 	CPPUNIT_ASSERT( !b.As<bool>( ) ) ;
 }
@@ -85,9 +107,9 @@ void ObjectTest::TestString( )
 	pdf::Object b ;
 	CPPUNIT_ASSERT( ss >> b ) ;
 	CPPUNIT_ASSERT( !b.IsNull( ) ) ;
-	CPPUNIT_ASSERT( b.Type() == pdf::Object::string ) ;
+	PDF_ASSERT_EQUAL( b.Type(), pdf::Object::string ) ;
 	CPPUNIT_ASSERT( b.TypeID() == typeid(std::string) ) ;
-	CPPUNIT_ASSERT( b.As<std::string>( ) == "123 () 456" ) ;
+	PDF_ASSERT_EQUAL( b.As<std::string>( ), "123 () 456" ) ;
 }
 
 void ObjectTest::TestInt( )
@@ -96,9 +118,10 @@ void ObjectTest::TestInt( )
 	pdf::Object b ;
 	CPPUNIT_ASSERT( ss >> b ) ;
 	CPPUNIT_ASSERT( !b.IsNull( ) ) ;
-	CPPUNIT_ASSERT( b.Type() == pdf::Object::integer ) ;
+	PDF_ASSERT_EQUAL( b.Type(), pdf::Object::integer ) ;
 	CPPUNIT_ASSERT( b.TypeID() == typeid(int) ) ;
-	CPPUNIT_ASSERT( b.As<int>( ) == 1000 ) ;
+	CPPUNIT_ASSERT( b.Is<int>() ) ;
+	PDF_ASSERT_EQUAL( b.As<int>( ), 1000 ) ;
 }
 
 void ObjectTest::TestDouble( )
@@ -109,18 +132,18 @@ void ObjectTest::TestDouble( )
 	CPPUNIT_ASSERT( !b.IsNull( ) ) ;
 	CPPUNIT_ASSERT( b.Type() == pdf::Object::floating ) ;
 	CPPUNIT_ASSERT( b.TypeID() == typeid(double) ) ;
-	CPPUNIT_ASSERT( b.As<double>( ) == 10.00f ) ;
+	PDF_ASSERT_EQUAL( b.As<double>( ), 10.0 ) ;
 }
 
 void ObjectTest::TestDoubleRoundTrip( )
 {
 	std::stringstream ss ;
-	pdf::Object b( 10.0f ) ;
+	pdf::Object b( 10.0 ) ;
 	CPPUNIT_ASSERT( ss << b ) ;
 	pdf::Object c ;
 	CPPUNIT_ASSERT( ss >> c ) ;
 	CPPUNIT_ASSERT( c.Is<double>() ) ;
-	CPPUNIT_ASSERT_EQUAL( c, b ) ;
+	PDF_ASSERT_EQUAL( c, b ) ;
 }
 
 void ObjectTest::TestIndirect( )
@@ -146,7 +169,7 @@ void ObjectTest::TestArray( )
 	CPPUNIT_ASSERT( ss >> b2 ) ;
 	
 	CPPUNIT_ASSERT( !b2.IsNull( ) ) ;
-	CPPUNIT_ASSERT( b == b2 ) ;
+	PDF_ASSERT_EQUAL( b, b2 ) ;
 }
 
 namespace
@@ -189,8 +212,8 @@ void ObjectTest::TestObj5( )
 	
 	const pdf::Dictionary& dict = sub.As<pdf::Dictionary>() ;
 	const std::string& a = dict[pdf::Name("CharSet")] ;
-	CPPUNIT_ASSERT( a[a.size()-2] == 'r' ) ;
-	CPPUNIT_ASSERT( a[a.size()-1] == 'e' ) ;
+	PDF_ASSERT_EQUAL( a[a.size()-2], 'r' ) ;
+	PDF_ASSERT_EQUAL( a[a.size()-1], 'e' ) ;
 }
 
 void ObjectTest::TestObj9020( )
@@ -210,7 +233,7 @@ void ObjectTest::TestConvertToLong( )
 	pdf::Object obj( 100 ) ;
 	long l = obj ;
 	CPPUNIT_ASSERT( !obj.IsNull( ) ) ;
-	CPPUNIT_ASSERT( l == 100 ) ;
+	PDF_ASSERT_EQUAL( l, 100 ) ;
 }
 
 void ObjectTest::TestConvertToFloat( )
@@ -218,7 +241,7 @@ void ObjectTest::TestConvertToFloat( )
 	pdf::Object obj( 10.01f ) ;
 	float f = obj ;
 	CPPUNIT_ASSERT( !obj.IsNull( ) ) ;
-	CPPUNIT_ASSERT( f == 10.01f ) ;
+	PDF_ASSERT_EQUAL( f, 10.01f ) ;
 }
 
 void ObjectTest::TestIsNull( )
@@ -231,8 +254,8 @@ void ObjectTest::TestConvert( )
 {
 	pdf::Object obj( 100 ) ;
 	unsigned ui = obj ;
-	CPPUNIT_ASSERT( ui == 100U ) ;
+	PDF_ASSERT_EQUAL( ui, 100 ) ;
 	
 	long li = obj ;
-	CPPUNIT_ASSERT( li == 100 ) ;
+	PDF_ASSERT_EQUAL( li, 100 ) ;
 }
