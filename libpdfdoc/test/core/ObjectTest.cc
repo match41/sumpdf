@@ -233,6 +233,6 @@ void ObjectTest::TestConvert( )
 	unsigned ui = obj ;
 	CPPUNIT_ASSERT( ui == 100U ) ;
 	
-	long li = obj.To<long>() ;
+	long li = obj ;
 	CPPUNIT_ASSERT( li == 100 ) ;
 }

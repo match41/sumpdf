@@ -216,7 +216,8 @@ void RealFile::WriteObj( const Object& obj, const Ref& link )
 void RealFile::ReadXRef( std::size_t offset, Dictionary& trailer )
 {
 	assert( m_in != 0 ) ;
-	m_in->rdbuf()->pubseekoff( offset, std::ios::beg ) ;
+//	m_in->rdbuf()->pubseekoff( offset, std::ios::beg ) ;
+	m_in->seekg( offset, std::ios::beg ) ;
 	
 	// reading xref	
 	std::string line ;

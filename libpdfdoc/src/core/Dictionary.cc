@@ -113,7 +113,8 @@ TokenSrc& operator>>( TokenSrc& src, Dictionary& dict )
 {
 	Token t ;
 	if ( src >> t && t.Get() != "<<" )
-		throw ParseError( "dictionary not start with << " + t.Get( ) ) ;
+		throw ParseError(
+			"dictionary not start with \"<<\" but \"" + t.Get( ) + "\"" ) ;
 	
 	Dictionary temp ;
 	while ( src >> t && t.Get() != ">>" )

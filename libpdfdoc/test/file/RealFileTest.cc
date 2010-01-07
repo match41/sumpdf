@@ -181,7 +181,7 @@ void RealFileTest::TestReadObjectLinks( )
 	std::map<Ref, ObjWrapper*> objmap ;
 	f.ReadObjectLinks( obj, objmap ) ;
 	
-	CPPUNIT_ASSERT_EQUAL( objmap.size(), 5UL ) ;
+	CPPUNIT_ASSERT_EQUAL( objmap.size(), static_cast<std::size_t>(5UL) ) ;
 	CPPUNIT_ASSERT( objmap[Ref( 3, 0 )]->Get() == *m_page ) ; 
 	CPPUNIT_ASSERT( m_content->IsContentEqual( objmap[Ref( 4, 0 )]->Get() ) ) ;
 	CPPUNIT_ASSERT( objmap[Ref( 2, 0 )]->Get() == *m_res ) ;
