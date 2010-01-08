@@ -26,9 +26,10 @@
 
 #include "DeflateFilter.hh"
 
+#include "StreamError.hh"
+
 #include "core/Array.hh"
 #include "core/Name.hh"
-#include "util/Exception.hh"
 
 #include <boost/format.hpp>
 
@@ -92,6 +93,10 @@ std::size_t DeflateFilter::Read( unsigned char *data, std::size_t size )
 			if ( m_decomp.z.avail_out == 0 )
 				break ;
 		}
+		else
+			throw StreamError(
+				"inflate() error: " + std::string( m_comp.z.msg ) ); 
+			
 	} while ( result == Z_OK && m_decomp.z.avail_in == 0 ) ;
 
 	return offset ;
@@ -127,8 +132,8 @@ std::size_t DeflateFilter::Write( const unsigned char *data, std::size_t size )
 			}
 		}
 		else
-			throw ParseError( "deflate() error: "
-				+ std::string( m_comp.z.msg ) ); 
+			throw StreamError(
+				"deflate() error: " + std::string( m_comp.z.msg ) ); 
 	}
 	
 	return offset ;

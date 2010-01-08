@@ -38,7 +38,10 @@ class Object ;
 	\brief	Filter classes for Stream.
 	\internal
 	
-	The filter classes are used to decode/encode data to/from a PDF stream.
+	The filter classes are used to decode/encode data to/from a PDF stream. A
+	PDF document uses stream objects to represent page content, font program and
+	other things. It defines some flexible facilities to store byte streams
+	efficiently.
 */
 
 /*!	\brief		Filter interface for PDF Stream.
@@ -53,6 +56,17 @@ class StreamFilter
 public :
 	virtual ~StreamFilter( ) ;
 	
+	/**	\brief	Read data from stream.
+	
+		This function reads data from a stream.
+		\param	data	pointer to stored the data read from stream. It must
+						be large enough to hold \a size bytes.
+		\param	size	number of bytes the caller wants to read.
+		\return	number of bytes actually read from stream. If it is zero, then
+				it means the end of stream is reached and no more data can
+				be extracted.
+		\throw	StreamError	when an error occurs.
+	*/
 	virtual std::size_t Read( unsigned char *data, std::size_t size ) = 0 ;
 	virtual std::size_t Write( const unsigned char *data, std::size_t size )=0;
 	virtual void Flush( ) = 0 ;

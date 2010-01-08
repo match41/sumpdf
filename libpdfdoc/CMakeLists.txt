@@ -88,6 +88,7 @@ set( STRM_HDRS		${STRM_DIR}/Stream.hh
 					
 					# stream filters
 					${STRM_DIR}/StreamFilter.hh
+					${STRM_DIR}/StreamError.hh
 					${STRM_DIR}/RawFilter.hh
 					${STRM_DIR}/DeflateFilter.hh
 					${STRM_DIR}/BufferedFilter.hh
@@ -175,6 +176,7 @@ set( STRM_SRCS		${STRM_DIR}/Stream.cc
 					
 					# stream filters
 					${STRM_DIR}/StreamFilter.cc
+					${STRM_DIR}/StreamError.cc
 					${STRM_DIR}/RawFilter.cc
 					${STRM_DIR}/DeflateFilter.cc
 					${STRM_DIR}/BufferedFilter.cc
