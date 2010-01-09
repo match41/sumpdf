@@ -18,7 +18,7 @@
  ***************************************************************************/
 
 /*!
-	\file	File.cc
+	\file	RealFile.cc
 	\brief	implementation the File class
 	\date	Fri Mar 21 2008
 	\author	Nestal Wan
@@ -58,7 +58,7 @@ RealFile::RealFile( std::istream *is )
 	: m_objs( 1, 0 ), m_in( is ), m_out( 0 )
 {
 	ReadXRef( ReadXRefOffset( ), m_trailer ) ;
-	
+
 	std::size_t obj_count = int( m_trailer["Size"] ) ;
 	if ( m_objs.size() != obj_count )
 	{

@@ -43,10 +43,11 @@ Backtrace::Backtrace( std::size_t skip )
 /*!	\brief	operator<< for printing backtraces
     \internal
 
-	This function will call SymbolInfo::Backtrace() to print out a backtrace
+	This function will call SymbolInfo::PrintTrace() to print out a backtrace
 	to the stream. It will use the SymbolInfo::Instance() singleton to get
-	the symbol info.
-	\param	os	the output stream
+	the symbol information.
+	\param	os	The output stream.
+	\param	b	The backtrace information.
 	\sa SymbolInfo::Backtrace(), SymbolInfo::Instance()
 */
 std::ostream& operator<<( std::ostream& os, const pdf::Backtrace& b )

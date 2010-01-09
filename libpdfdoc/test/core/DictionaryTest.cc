@@ -193,3 +193,35 @@ void DictionaryTest::TestNull( )
 	PDF_ASSERT_EQUAL( s.size(), 0U ) ;
 	CPPUNIT_ASSERT( s.empty() ) ;
 }
+
+void DictionaryTest::TestErase( )
+{
+	pdf::Dictionary s ;
+	s["???"] = "haha" ;
+	PDF_ASSERT_EQUAL( s.size(), 1U ) ;
+	
+	s["!!!"] = "hehe" ;
+	PDF_ASSERT_EQUAL( s.size(), 2U ) ;
+	
+	s.erase( "???" ) ;
+	PDF_ASSERT_EQUAL( s.size(), 1U ) ;
+	CPPUNIT_ASSERT( s["???"].Is<void>() ) ;
+	CPPUNIT_ASSERT( s.find( "haha" ) == s.end() ) ;
+	PDF_ASSERT_EQUAL( s["!!!"], "hehe" ) ;
+}
+
+void DictionaryTest::TestEraseByAddNull( )
+{
+	pdf::Dictionary s ;
+	s["???"] = "haha" ;
+	PDF_ASSERT_EQUAL( s.size(), 1U ) ;
+	
+	s["!!!"] = "hehe" ;
+	PDF_ASSERT_EQUAL( s.size(), 2U ) ;
+	
+	s.Add( "???", pdf::Object() ) ;
+	PDF_ASSERT_EQUAL( s.size(), 1U ) ;
+	CPPUNIT_ASSERT( s["???"].Is<void>() ) ;
+	CPPUNIT_ASSERT( s.find( "haha" ) == s.end() ) ;
+	PDF_ASSERT_EQUAL( s["!!!"], "hehe" ) ;
+}

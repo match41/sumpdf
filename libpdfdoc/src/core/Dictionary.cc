@@ -43,6 +43,7 @@ Dictionary::Dictionary( )
 {
 }
 
+///	Swaps two dictionaries.
 void Dictionary::swap( Dictionary& dict )
 {
 	m_map.swap( dict.m_map ) ;
@@ -80,15 +81,37 @@ Dictionary::const_iterator Dictionary::find( const Name& name ) const
 	return i != m_map.end() && i->second.Is<void>() ? m_map.end() : i ;
 }
 
+///	Insert an entry to the dictionary.
+/**	This function will add an entry to the dictionary. If the value of the
+	entry is a null Object, the entry will not be added. It will be erase
+	instead if it already exists.
+	\param	v	The new entry to be added. It is an std::pair of <tt>const
+				Name</tt> and \c Object.
+	\return	A pair of iterator and a boolean. The iterator denotes the position
+			of the newly added entry. The boolean is true if the object is
+			newly inserted, i.e. it doesn't exists before. If \a v.second
+			is a null Object, the iterator returned will be \t end().
+	\sa Add()
+*/
 std::pair<Dictionary::iterator, bool> Dictionary::insert( const value_type& v )
 {
-	if ( !v.second.Is<void>() )
-		return m_map.insert( v ) ;
+	std::pair<iterator, bool> r = m_map.insert( v ) ;
+	if ( v.second.Is<void>() )
+	{
+		m_map.erase( r.first ) ;
+		return std::make_pair( m_map.end(), false ) ;
+	}
 	else
-		return std::make_pair( end(), false ) ;
+		return r ;
 }
 
 /// Returns the number of entries in this dictionary.
+/**	Unlike some containers in STL, this function is not constant time. It needs
+	to search the map to exclude any null objects accidentally being added. Use
+	empty() instead whenever possible because empty() is faster then size().
+	\return	The number of entries in the dictionary, excluding null objects.
+	\sa	empty()
+*/
 std::size_t Dictionary::size( ) const
 {
 	return std::count_if(
@@ -98,6 +121,15 @@ std::size_t Dictionary::size( ) const
 			boost::bind( &value_type::second, _1 ) ) ) ;  
 }
 
+/// Returns true if the dictionary is empty.
+/**	Like size(), this function is not constant time either. It will search
+	for any non-null value in the entries and return true immediately when
+	found. Therefore it is a bit faster then size(). It is recommended over
+	size() if you just want to know if it is empty but not the actually
+	number of entries.
+	\return	\c true if the dictionary is empty, otherwise \c false.
+	\sa	size()
+*/
 bool Dictionary::empty( ) const
 {
 	return std::find_if(
@@ -107,15 +139,23 @@ bool Dictionary::empty( ) const
 			boost::bind( &value_type::second, _1 ) ) ) == m_map.end() ;  
 }
 
+///	Erase all entries in the dictionary.
 void Dictionary::clear( )
 {
 	m_map.clear( ) ;
 }
 
+///	Adds an entry to the dictionary.
+/**	It's like insert() but it takes the \a key and \a value separately as
+	two arguments. If \a value is a null Object, it will not be added.
+	\param	key		The key of the new entry.
+	\param	value	The value of the new entry. If it is a null Object, this
+					function will do nothing.
+	\sa insert()
+*/
 void Dictionary::Add( const Name& key, const Object& value )
 {
-	if ( !value.Is<void>() )
-		m_map.insert( std::make_pair( key, value ) ) ;
+	insert( std::make_pair( key, value ) ) ;
 }
 
 std::istream& operator>>( std::istream& is, Dictionary& dict )
@@ -157,9 +197,8 @@ std::ostream& operator<<( std::ostream& os, const Dictionary& dict )
 	                                 i != dict.end( ) ; ++i )
 	{
 		// according to PDF spec, an absent key-pair is considered null
-		assert( !i->second.Is<void>( ) ) ;
-		
-		os << i->first << ' ' << i->second << '\n' ;
+		if ( !i->second.Is<void>( ) )
+			os << i->first << ' ' << i->second << '\n' ;
 	}
 	return os << ">>" ;
 }

@@ -18,11 +18,11 @@
  \***************************************************************************/
 
 /**
- \file	MockStreamFilter.h
- \brief	definition the MockStreamFilter class
- \date	Dec 22, 2009
- \author	nestal
- */
+	\file	MockStreamFilter.hh
+	\brief	definition the MockStreamFilter class
+	\date	Dec 22, 2009
+	\author	Nestal Wan
+*/
 
 #ifndef __PDF_MOCKSTREAMFILTER_H_EADER_INCLUDED__
 #define __PDF_MOCKSTREAMFILTER_H_EADER_INCLUDED__

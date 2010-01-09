@@ -30,9 +30,8 @@
 
 namespace pdf {
 
-/*!	\brief	Exported function to create a document object
-	
-	This function is exported from the libpdfdoc DLL to create a document
+///	Exported function to create a document object
+/**	This function is exported from the libpdfdoc DLL to create a document
 	object. A pointer to the Doc interface is returned. Clients must use
 	interact with the PDF document by using the Doc interface pointer. After
 	using the Doc object, clients must delete it.

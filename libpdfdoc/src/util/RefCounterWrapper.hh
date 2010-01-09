@@ -17,23 +17,25 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**
-    \file	RefCountObjWrapper.hh
-    \brief	definition the RefCountObjWrapper class
+/**	\file	RefCounterWrapper.hh
+    \brief	definition the RefCounterWrapper class
     \date	Jan 1, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_REFCOUNTOBJWRAPPER_HEADER_INCLUDED__
-#define __PDF_REFCOUNTOBJWRAPPER_HEADER_INCLUDED__
+#ifndef __PDF_REFCOUNTERWRAPPER_HEADER_INCLUDED__
+#define __PDF_REFCOUNTERWRAPPER_HEADER_INCLUDED__
 
 #include "RefCounter.hh"
 
 namespace pdf {
 
-/**	\brief	brief description
-
-	The RefCountObjWrapper class represent
+///	A simple template to turn any class to a reference counted one.
+/**	\internal
+	The RefCountObjWrapper class represent a wrapper around any
+	object (i.e. \a	T) to make it supports reference counting.
+	\tparam	T	The class of the object being wrapped. It must be copy-
+				constructible.
 */
 template <typename T>
 class RefCounterWrapper : public RefCounter

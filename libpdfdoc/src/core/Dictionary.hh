@@ -62,6 +62,12 @@ public :
 public :
 	Dictionary( ) ;
 
+	template <typename InputIt>
+	Dictionary( InputIt first, InputIt last )
+	: m_map( first, last ) 
+	{
+	}
+
 	void swap( Dictionary& dict ) ;
 
 	iterator begin( ) ;

@@ -31,8 +31,8 @@
 #include "DocInfo.hh"
 
 #include "file/Catalog.hh"
-#include "font/StandardFont.hh"
-#include "page/RealPage.hh"
+#include "font/StandardFont.hh"	// for co-variant return value
+#include "page/RealPage.hh"		// for co-variant return value 
 
 // freetype library is optional
 #ifdef HAVE_FREETYPE
@@ -86,7 +86,6 @@ private :
 	//! Freetype library for loading the font files.
 	FT_Library			m_ft_lib ;
 #endif
-
 
 	struct Info_ : public DocInfo
 	{

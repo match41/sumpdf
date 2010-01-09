@@ -128,25 +128,8 @@ C:\build\libpdfdoc>cmake -G "Visual Studio 8 2005" \
 	</a>
 */
 
-/*
-#ifdef DLL_EXPORTS
-    #ifdef _MSC_VER
-    	#define LIBPDFDOC_API __declspec( dllexport )
-    #else
-    	#define LIBPDFDOC_API __attribute__ ((visibility("default")))
-    #endif
-#else
-    #ifdef _MSC_VER
-	    #define LIBPDFDOC_API __declspec( dllimport )
-	#else
-		#define LIBPDFDOC_API 
-	#endif
-#endif
-*/
-
-/*!	\brief	main namespace for libpdfdoc
-
-	This namespace contains almost everything in libpdfdoc.
+///	main namespace for libpdfdoc
+/**	This namespace contains almost everything in libpdfdoc.
 */
 namespace pdf {
 
