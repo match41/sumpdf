@@ -24,7 +24,7 @@
 	\author	Nestal Wan
 */
 
-#include "Text.hh"
+#include "graphics/Text.hh"
 
 #include "core/Token.hh"
 

@@ -45,6 +45,8 @@ protected :
 public :
 	virtual std::size_t Count( ) const = 0 ;
 	virtual const Graphics* Item( std::size_t idx ) const = 0 ;
+	
+	virtual void Add( Graphics *item ) = 0 ;
 } ;
 
 } // end of namespace

@@ -98,7 +98,8 @@ private :
 	{
 		std::size_t Count( ) const ;
 		const Graphics* Item( std::size_t idx ) const ;
-	 
+		void Add( Graphics *item ) ;
+		
 		std::vector<Graphics*> m_gfx ;
 	} m_content ;
 

@@ -24,7 +24,7 @@
 	\author	Nestal Wan
 */
 
-#include "TextBlock.hh"
+#include "graphics/TextBlock.hh"
 
 namespace pdf {
 

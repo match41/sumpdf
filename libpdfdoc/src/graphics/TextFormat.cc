@@ -24,7 +24,7 @@
 	\author	Nestal Wan
 */
 
-#include "TextFormat.hh"
+#include "graphics/TextFormat.hh"
 
 namespace pdf {
 

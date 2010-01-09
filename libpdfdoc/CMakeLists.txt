@@ -58,11 +58,11 @@ set( PAGE_HDRS		${PAGE_DIR}/RealPage.hh
 					${PAGE_DIR}/XObject.hh
 					${PAGE_DIR}/RealImage.hh )
 
-set( GRAPICS_HDRS	${GRAPICS_DIR}/Graphics.hh
-                    ${GRAPICS_DIR}/Text.hh
-                    ${GRAPICS_DIR}/TextLine.hh
-                    ${GRAPICS_DIR}/TextBlock.hh
-                    ${GRAPICS_DIR}/TextFormat.hh )
+#set( GRAPICS_HDRS	${GRAPICS_DIR}/Graphics.hh
+#                    ${GRAPICS_DIR}/Text.hh
+#                    ${GRAPICS_DIR}/TextLine.hh
+#                    ${GRAPICS_DIR}/TextBlock.hh
+#                    ${GRAPICS_DIR}/TextFormat.hh )
 
 set( FILE_HDRS		${FILE_DIR}/RealFile.hh
 					${FILE_DIR}/IFile.hh
@@ -125,6 +125,11 @@ set( INCLUDE_HDRS	${INCLUDE_DIR}/Doc.hh
 					${INCLUDE_DIR}/DocInfo.hh
 					${INCLUDE_DIR}/font/Font.hh
 					${INCLUDE_DIR}/page/Page.hh
+					${INCLUDE_DIR}/graphics/Graphics.hh
+					${INCLUDE_DIR}/graphics/Text.hh
+					${INCLUDE_DIR}/graphics/TextBlock.hh
+					${INCLUDE_DIR}/graphics/TextFormat.hh
+					${INCLUDE_DIR}/graphics/TextLine.hh
 					${INCLUDE_DIR}/util/Exception.hh
 					${INCLUDE_DIR}/util/Rect.hh
 					${INCLUDE_DIR}/util/Matrix.hh )

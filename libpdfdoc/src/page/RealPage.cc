@@ -285,4 +285,9 @@ const Graphics* RealPage::Content::Item( std::size_t idx ) const
 	return m_gfx.at( idx ) ;
 }
 
+void RealPage::Content::Add( Graphics *item )
+{
+	m_gfx.push_back( item ) ;
+}
+
 } // end of namespace

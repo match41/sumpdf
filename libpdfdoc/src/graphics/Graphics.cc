@@ -24,7 +24,7 @@
 	\author	Nestal Wan
 */
 
-#include "Graphics.hh"
+#include "graphics/Graphics.hh"
 
 namespace pdf {
 

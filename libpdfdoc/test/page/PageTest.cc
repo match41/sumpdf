@@ -130,7 +130,9 @@ void PageTest::TestDecode( )
 	p->Finish( ) ;
 
 //	std::vector<pdf::PaintOp> ops ;
-//	pdf::PageContent *c = p->GetContent( ) ;
+	pdf::PageContent *c = p->GetContent( ) ;
+	
+	CPPUNIT_ASSERT( c->Count() > 0 ) ;
 	
 //	c->GetPaintOps( ops ) ;
 //	
