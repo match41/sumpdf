@@ -35,12 +35,18 @@ class Object ;
 class Token ;
 class TokenSrc ;
 
-/*!	\brief	PDF name object
-	\internal
-	
+///	PDF name object
+/**	\internal
 	This class represents a PDF name object. A PDF name object is a string
 	starts with the '/' character. It is used as identifiers in the PDF files,
 	e.g. the keys to PDF dictionaries.
+	
+	A name object is an atomic symbol uniquely defined by a sequence of
+	characters. Uniquely defined means that any two name objects made up of
+	the same sequence of characters are identically the same object. Atomic
+	means that a name has no internal structure; although it is defined by a
+	sequence of characters, those characters are not considered elements of the
+	name.	
 */
 class Name
 {

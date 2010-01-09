@@ -38,7 +38,10 @@ class TokenSrc ;
 /*!	\brief	PDF string object
 	\internal
 	
-	This class represents the PDF string object.
+	This class represents the PDF string object. A string object consists of a
+	series of bytes—unsigned integer values in the range 0 to 255. String
+	objects are not integer objects, but are stored in a more compact
+	format.	
 */
 class String
 {

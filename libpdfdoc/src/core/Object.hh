@@ -215,9 +215,8 @@ public :
 		}
 	}
 	
-	/*!	\brief	Conversion operator to arbitrary types
-		
-		This function calls To(). It is useful to automatically converts
+	///	Conversion operator to arbitrary types
+	/**	This function calls To(). It is useful to automatically converts
 		the Object to the underlying types.
 		
 		\tparam	T		The target type to be converted to.
@@ -232,9 +231,8 @@ public :
 		return To<T>( ) ;
 	}
 
-	/**	\brief	Conversion function to arbitrary types
-	
-		This function is similar to As(), except it returns the result
+	///	Conversion function to arbitrary types
+	/**	This function is similar to As(), except it returns the result
 		by value, not by reference. The advantage is that automatic conversion
 		is possible even if \a T is not one of the supported types (e.g. long).
 		The disadvantage is that \a T must be copied by its copy constructor.

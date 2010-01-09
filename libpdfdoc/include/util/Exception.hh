@@ -47,9 +47,8 @@ public :
 	explicit Exception( boost::format fmt, bool backtrace = true ) ;
 } ;
 
-/*!	\brief	Invalid type exception.
-	
-	This exception will be thrown when the Object cannot convert its
+///	Invalid type exception.
+/**	This exception will be thrown when the Object cannot convert its
 	underlying data to a specific type. The what() member function will
 	describe the expected and actual type of the data.
 */
@@ -60,6 +59,10 @@ public :
 	         const std::exception& e ) ;
 } ;
 
+///	Parse error exception.
+/**	This exception will be thrown when there is a parse error when reading
+	a PDF file.
+*/
 class ParseError : public Exception
 {
 public :

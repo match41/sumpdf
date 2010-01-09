@@ -37,20 +37,16 @@
 
 namespace pdf {
 
-/*!	\brief	default constructor
-	\internal
-
-	Initialize ID as 0 and generation as 0.
+///	default constructor
+/**	The default constructor will initialize ID as 0 and generation as 0.
 */
 Ref::Ref( )
 	: m_obj_id( 0 ), m_generation( 0 )
 {
 }
 
-/*!	\brief	constructor
-	\internal
-
-	Initialize ID and generation as \a id and \a gen.
+///	constructor
+/**	Initialize ID and generation as \a id and \a gen.
 */
 Ref::Ref( std::size_t id, std::size_t gen )
 	: m_obj_id( id ), m_generation( gen )
@@ -75,19 +71,17 @@ std::ostream& operator<<( std::ostream& os, const Ref& obj )
 	return os << std::dec << obj.m_obj_id << ' ' << obj.m_generation << " R" ;
 }
 
-/*!	\brief	extraction operator from std::istream
-	\internal
-
-	This function extracts a Ref object \a b from an std::istream \a is . It
+///	extraction operator from std::istream
+/**	This function extracts a Ref object \a b from an std::istream \a is . It
 	will call operator>>( TokenSrc&, Ref& ) internally to do the job.
 	\param	is	std::istream to be extracted from
 	\param	obj	extracted reference object
 	\return	the input std::istream reference, i.e. \a is
 */
-std::istream& operator>>( std::istream& is, Ref& b )
+std::istream& operator>>( std::istream& is, Ref& obj )
 {
 	TokenSrc src( is ) ;
-	return ( src >> b ).Stream( ) ;
+	return ( src >> obj ).Stream( ) ;
 }
 
 /*!	\brief	extraction operator from TokenSrc

@@ -1,4 +1,4 @@
-/***************************************************************************
+/***************************************************************************\
  *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+\***************************************************************************/
 
 /*!
 	\file	Name.cc
@@ -50,9 +50,8 @@ Name::Name( const Object& obj )
 {
 }
 
-/**	\brief	Swapping two names
-
-	Swapping two Name objects with no-throw exception guarantee.
+///	Swapping two names
+/**	Swapping two Name objects with no-throw exception guarantee.
 	\param	name	another Name object to be swapped
 */
 void Name::swap( Name& name )

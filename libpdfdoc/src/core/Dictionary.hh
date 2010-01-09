@@ -116,9 +116,6 @@ public :
 		else
 			return false ;
 	}
-
-private :
-	static const Object& Default( ) ;
 } ;
 
 } // end of namespace

@@ -31,6 +31,8 @@
 #include "TokenSrc.hh"
 #include "util/Exception.hh"
 
+#include <boost/bind.hpp>
+
 #include <istream>
 
 #include <iostream>
@@ -80,17 +82,29 @@ Dictionary::const_iterator Dictionary::find( const Name& name ) const
 
 std::pair<Dictionary::iterator, bool> Dictionary::insert( const value_type& v )
 {
-	return m_map.insert( v ) ;
+	if ( !v.second.Is<void>() )
+		return m_map.insert( v ) ;
+	else
+		return std::make_pair( end(), false ) ;
 }
 
+/// Returns the number of entries in this dictionary.
 std::size_t Dictionary::size( ) const
 {
-	return m_map.size( ) ;
+	return std::count_if(
+		m_map.begin(),
+		m_map.end(),
+		!boost::bind( &Object::Is<void>,
+			boost::bind( &value_type::second, _1 ) ) ) ;  
 }
 
 bool Dictionary::empty( ) const
 {
-	return m_map.empty( ) ;
+	return std::find_if(
+		m_map.begin(),
+		m_map.end(),
+		!boost::bind( &Object::Is<void>,
+			boost::bind( &value_type::second, _1 ) ) ) == m_map.end() ;  
 }
 
 void Dictionary::clear( )
@@ -100,7 +114,8 @@ void Dictionary::clear( )
 
 void Dictionary::Add( const Name& key, const Object& value )
 {
-	m_map.insert( std::make_pair( key, value ) ) ;
+	if ( !value.Is<void>() )
+		m_map.insert( std::make_pair( key, value ) ) ;
 }
 
 std::istream& operator>>( std::istream& is, Dictionary& dict )
@@ -142,8 +157,9 @@ std::ostream& operator<<( std::ostream& os, const Dictionary& dict )
 	                                 i != dict.end( ) ; ++i )
 	{
 		// according to PDF spec, an absent key-pair is considered null
-		if ( !i->second.Is<void>( ) )
-			os << i->first << ' ' << i->second << '\n' ;
+		assert( !i->second.Is<void>( ) ) ;
+		
+		os << i->first << ' ' << i->second << '\n' ;
 	}
 	return os << ">>" ;
 }
@@ -153,24 +169,22 @@ bool Dictionary::operator==( const Dictionary& dict ) const
 	return m_map == dict.m_map ;
 }
 
-const Object& Dictionary::Default( )
-{
-	return Object::NullObj() ;
-}
-
 /*!	\brief	look-up the dictionary
 
 	This operator will search the dictionary and try to find an entry with key
-	\a key .
+	\a key. According to the PDF specification, a dictionary entry whose value
+	is a null Object is equivalent to an absent entry. As a result, if the
+	entry is not found, a null Object will be returned.
+	
 	\param	key	the key of the entry to be found
-	\return		a reference to the value if \a key is found. otherwise
-				a reference to a default null object
-	\sa	Object::Object()
+	\return	a reference to the value if \a key is found. otherwise
+			Object::NullObj() will be returned.
+	\sa	Object::NullObj()
 */
 const Object& Dictionary::operator[]( const Name& key ) const
 {
-	const_iterator i = find( key ) ;
-	return i == end( ) ? Default() : i->second ;
+	const_iterator i = m_map.find( key ) ;
+	return i == m_map.end( ) ? Object::NullObj() : i->second ;
 }
 
 /*!	\brief	look-up the dictionary and create a value if it does not exists
@@ -178,8 +192,9 @@ const Object& Dictionary::operator[]( const Name& key ) const
 	This operator will search the dictionary and try to find an entry with
 	key \a key . If the entry cannot be found, it will be created with a
 	default null object as value.
+
 	\param	key	the key of the entry to be found
-	\return		a reference to the value
+	\return	a reference to the value
 	\sa	Object::Object()
 */
 Object& Dictionary::operator[]( const Name& key )

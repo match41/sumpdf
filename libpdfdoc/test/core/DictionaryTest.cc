@@ -27,6 +27,7 @@
 #include "DictionaryTest.hh"
 
 #include "core/Dictionary.hh"
+#include "mock/Assert.hh"
 
 #include <algorithm>
 #include <iterator>
@@ -83,6 +84,7 @@ void DictionaryTest::TestTrailer( )
 	pdf::Dictionary d ;
 	CPPUNIT_ASSERT( ss >> d ) ;
 	CPPUNIT_ASSERT( d["Prev"] == 4567301 ) ;
+	CPPUNIT_ASSERT( !d.empty() ) ;
 }
 
 void DictionaryTest::TestDoubleEnd( )
@@ -97,6 +99,7 @@ void DictionaryTest::TestDoubleEnd( )
 	pdf::Dictionary d ;
 	CPPUNIT_ASSERT( ss >> d ) ;
 	CPPUNIT_ASSERT( d["Pages"] == pdf::Ref( 677, 0 ) ) ;
+	CPPUNIT_ASSERT( !d.empty() ) ;
 }
 
 void DictionaryTest::TestImage( )
@@ -147,16 +150,23 @@ void DictionaryTest::TestImage( )
 
 	pdf::Dictionary subject ;
 	CPPUNIT_ASSERT( ss >> subject ) ;
+	CPPUNIT_ASSERT( !subject.empty() ) ;
+	PDF_ASSERT_EQUAL( subject["Type"].As<pdf::Name>(), "XObject" ) ;
+	PDF_ASSERT_EQUAL(
+		subject["Length"].As<pdf::Ref>(),
+		pdf::Object(pdf::Ref( 24, 0 )) ) ;
 }
 
 void DictionaryTest::TestExtract( )
 {
 	pdf::Dictionary subject ;
 	subject["AAA"] = pdf::Name( "BBB" ) ;
+	PDF_ASSERT_EQUAL( subject.size(), 1U ) ;
 	
 	pdf::Name out ;
 	subject.Extract( "AAA", out ) ;
-	CPPUNIT_ASSERT( out == pdf::Name( "BBB" ) ) ;
+	PDF_ASSERT_EQUAL( out, pdf::Name( "BBB" ) ) ;
+	PDF_ASSERT_EQUAL( subject.size(), 0U ) ;
 }
 
 void DictionaryTest::TestSwap( )
@@ -175,7 +185,11 @@ void DictionaryTest::TestNull( )
 {
 	pdf::Dictionary s ;
 	CPPUNIT_ASSERT( s["???"].Is<void>() ) ;
+	PDF_ASSERT_EQUAL( s.size(), 0U ) ; 
+	CPPUNIT_ASSERT( s.empty() ) ;
 	
 	s["haha"] = pdf::Object() ;
 	CPPUNIT_ASSERT( s.find( "haha" ) == s.end() ) ;
+	PDF_ASSERT_EQUAL( s.size(), 0U ) ;
+	CPPUNIT_ASSERT( s.empty() ) ;
 }

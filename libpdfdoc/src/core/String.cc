@@ -17,8 +17,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-/*!
-	\file	String.cc
+/*!	\file	String.cc
 	\brief	implementation the String class
 	\date	Sun Mar 9 2008
 	\author	Nestal Wan
@@ -43,21 +42,28 @@
 
 namespace pdf {
 
+/// Construct a string object with an std::string
 String::String( const std::string& str )
 	: m_value( str )
 {
 }
 
+/// Returns the underlying string as std::string
 const std::string& String::Get( ) const
 {
 	return m_value ;
 }
 
+/// Automatic conversion to std::string
 String::operator std::string( ) const
 {
 	return m_value ;
 }
 
+/// Read from std::istream.
+/**	This function will create a TokenSrc for reading. It is recommended to use
+	the extraction operator of TokenSrc instead.
+*/
 std::istream& operator>>( std::istream& is, String& b )
 {
 	TokenSrc src( is ) ;
@@ -167,6 +173,11 @@ namespace
 	{
 		return static_cast<unsigned char>( ch ) ;
 	}
+
+	bool IsPrint( char ch )
+	{
+		return std::isprint( static_cast<unsigned char>( ch ) ) != 0 ;
+	}
 }
 
 std::ostream& operator<<( std::ostream& os, const String& b )
@@ -174,8 +185,10 @@ std::ostream& operator<<( std::ostream& os, const String& b )
 	if ( b.IsHex() )
 	{
 		os << '<' << std::hex << std::setw( 2 ) ;
-		std::transform( b.m_value.begin( ), b.m_value.end( ),
-		                std::ostream_iterator<unsigned short>( os ), ToInt ) ;
+		std::transform(
+			b.m_value.begin( ),
+			b.m_value.end( ),
+		    std::ostream_iterator<unsigned short>( os ), ToInt ) ;
 		os << '>' ;
 	}
 	else
@@ -189,20 +202,12 @@ bool String::operator==( const String& str ) const
 	return m_value == str.m_value ;
 }
 
-namespace
-{
-	bool IsPrint( char ch )
-	{
-		return std::isprint( static_cast<unsigned char>( ch ) ) != 0 ;
-	}
-}
-
 bool String::IsHex( ) const
 {
-	using namespace boost ;
-
-	return std::find_if( m_value.begin( ), m_value.end( ),
-		!bind( IsPrint, _1 ) )	!= m_value.end( ) ;
+	return std::find_if(
+		m_value.begin( ),
+		m_value.end( ),
+		!boost::bind( IsPrint, _1 ) ) != m_value.end( ) ;
 }
 
 } // end of namespace

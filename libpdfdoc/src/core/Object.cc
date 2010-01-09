@@ -88,9 +88,10 @@ Object::Object( const T& v ) : m_obj( v )
 {
 }
 
+///	Construct a PDF string object.
 /**	This constructor will construct a string object.
-	\post	IsType<std::string>() returns true
-	\param	str	the content of the string 
+	\post	Is<std::string>() returns true
+	\param	a	the content of the string 
 */
 Object::Object( const char *a )
 	: m_obj( std::string( a ) )
