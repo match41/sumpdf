@@ -204,13 +204,36 @@ PageContent* RealPage::GetContent( )
 	if ( m_content.m_gfx.empty() )
 	{
 		// decode the graphics commands
-		Decode( m_content.m_gfx ) ;
+		Decode( ) ;
 	}
 	
 	return &m_content ;
 }
 
-void RealPage::Decode( std::vector<Graphics*>& gfx )
+Graphics* RealPage::ProcessCommand(
+	const Token& 	cmd,
+	const Object 	*args,
+	std::size_t 	count,
+	Graphics		*gfx )
+{
+	assert( count > 0 || args == 0 ) ;
+
+	if ( cmd == Token("BT") && gfx == 0 )
+	{
+		gfx = new Text ;
+	}
+	else if ( cmd == Token("ET") && gfx != 0 )
+	{
+		m_content.m_gfx.push_back( gfx ) ;
+		gfx = 0 ;
+	}
+	else if ( gfx != 0 )
+		gfx->OnCommand( cmd, args, count, &m_resources ) ;
+	
+	return gfx ;
+}
+
+void RealPage::Decode( )
 {
 	for ( std::vector<Stream>::iterator i = m_cstrs.begin( ) ;
 	                                    i != m_cstrs.end( ) ; ++i )
@@ -242,30 +265,12 @@ void RealPage::Decode( std::vector<Graphics*>& gfx )
 				src.ResetState( ) ;
 				if ( src >> cmd )
 				{
-					if ( cmd == Token("BT") && current == 0 )
-					{
-						current = new Text ;
-					}
-					else if ( cmd == Token("ET") && current != 0 )
-					{
-						gfx.push_back( current ) ;
-					}
-					else if ( current != 0 )
-						current->OnCommand(
-							cmd,
-							args.empty() ? 0 : &args[0],
-							args.size(),
-							&m_resources ) ;
+					current = ProcessCommand(
+						cmd,
+						args.empty() ? 0 : &args[0],	// don't touch args[0]
+						args.size(),					// if empty.
+						current ) ;
 
-//					ops.push_back(
-//						PaintOp(
-//							cmd.Get(),
-//							args.empty() ? 0 : &args[0],
-//							args.size(),
-//							&m_resources ) ) ;
-					m_content.m_gfx.push_back( current ) ;
-					current = 0 ;
-					
 					args.clear( ) ;
 				}
 				else
@@ -288,6 +293,16 @@ const Graphics* RealPage::Content::Item( std::size_t idx ) const
 void RealPage::Content::Add( Graphics *item )
 {
 	m_gfx.push_back( item ) ;
+}
+
+void RealPage::Content::VisitGraphics( GraphicsVisitor *visitor )
+{
+	assert( std::find( m_gfx.begin(), m_gfx.end(), (void*)0 ) == m_gfx.end() ) ;
+
+	std::for_each(
+		m_gfx.begin(),
+		m_gfx.end(),
+		boost::bind( &Graphics::Visit, _1, visitor ) ) ;
 }
 
 } // end of namespace

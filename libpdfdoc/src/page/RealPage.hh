@@ -84,7 +84,12 @@ private :
 	void ReadContent( const Object& str_obj, IFile *file ) ;
 	Object WriteContent( IFile *file ) const ; 
 
-	void Decode( std::vector<Graphics*>& gfx ) ;
+	void Decode( ) ;
+	Graphics* ProcessCommand(
+		const Token& 	cmd,
+		const Object 	*args,
+		std::size_t		count,
+		Graphics		*gfx ) ;
 
 private :
 	PageTree	*m_parent ;
@@ -99,6 +104,7 @@ private :
 		std::size_t Count( ) const ;
 		const Graphics* Item( std::size_t idx ) const ;
 		void Add( Graphics *item ) ;
+		void VisitGraphics( GraphicsVisitor *visitor ) ;
 		
 		std::vector<Graphics*> m_gfx ;
 	} m_content ;

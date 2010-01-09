@@ -18,60 +18,34 @@
 \***************************************************************************/
 
 /**
-    \file	Text.hh
-    \brief	definition the Text class
-    \date	Jan 4, 2010
+    \file	GraphicsVisitor.hh
+    \brief	definition the GraphicsVisitor class
+    \date	Jan 9, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_TEXT_HH_EADER_INCLUDED__
-#define __PDF_TEXT_HH_EADER_INCLUDED__
-
-#include "Graphics.hh"
-
-#include "TextLine.hh"
-
-#include <vector>
+#ifndef __PDF_GRAPHICSVISITOR_HEADER_INCLUDED__
+#define __PDF_GRAPHICSVISITOR_HEADER_INCLUDED__
 
 namespace pdf {
 
+class Graphics ;
+class Text ;
+
 /**	\brief	brief description
 
-	The Text class represent a PDF text object. It is the stuff enclosed by
-	a BT...ET operators in the content stream of a page. It consists of a number
-	of text lines.
+	The GraphicsVisitor class represent
 */
-class Text : public Graphics
+class GraphicsVisitor
 {
-public :
-	typedef	std::vector<TextLine>::iterator			iterator ;
-	typedef	std::vector<TextLine>::const_iterator	const_iterator ;
+protected :
+	~GraphicsVisitor( ) ;
 
 public :
-	Text( ) ;
-
-	void OnCommand(
-		const Token& 	cmd,
-		const Object 	*args,
-		std::size_t		count,
-		Resources		*res ) ;
-
-	iterator begin() ;
-	iterator end() ;
-	
-	const_iterator begin() const ;
-	const_iterator end() const ;
-	
-	std::size_t Count( ) const ;
-	
-	void AddLine( const TextLine& line ) ;
-
-	void Visit( GraphicsVisitor *visitor ) ;
-	
-private :
-	std::vector<TextLine>	m_lines ;
+	virtual void VisitText( Text *text ) = 0 ;
+	virtual void VisitGraphics( Graphics *text ) = 0 ;
 } ;
 
 } // end of namespace
 
-#endif // TEXT_HH_
+#endif // GRAPHICSVISITOR_HH_

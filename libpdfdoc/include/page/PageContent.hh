@@ -32,6 +32,7 @@
 namespace pdf {
 
 class Graphics ;
+class GraphicsVisitor ;
 
 /**	\brief	brief description
 
@@ -47,6 +48,7 @@ public :
 	virtual const Graphics* Item( std::size_t idx ) const = 0 ;
 	
 	virtual void Add( Graphics *item ) = 0 ;
+	virtual void VisitGraphics( GraphicsVisitor *visitor ) = 0 ;
 } ;
 
 } // end of namespace

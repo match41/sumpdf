@@ -28,6 +28,7 @@
 #define __PDF_TEXTBLOCK_HH_EADER_INCLUDED__
 
 #include "TextFormat.hh"
+#include <string>
 #include <vector>
 
 namespace pdf {
@@ -44,6 +45,9 @@ class TextBlock
 {
 public :
 	TextBlock( ) ;
+	explicit TextBlock(
+		const std::string&	text,
+		const TextFormat&	format = TextFormat() ) ;
 
 	void OnCommand(
 		const Token& 	cmd,

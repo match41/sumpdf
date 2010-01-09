@@ -54,6 +54,8 @@ public :
 public :
 	TextLine( ) ;
 
+	// uses default generated copy constructor
+
 	void OnCommand(
 		const Token& 	cmd,
 		const Object 	*args,
@@ -65,6 +67,8 @@ public :
 	
 	const_iterator begin() const ;
 	const_iterator end() const ;
+
+	void AddBlock( const TextBlock& blk ) ;
 
 private :
 	void OnTd( const Object* args, std::size_t count, Resources *res ) ;

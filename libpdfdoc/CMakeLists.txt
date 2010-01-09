@@ -126,6 +126,7 @@ set( INCLUDE_HDRS	${INCLUDE_DIR}/Doc.hh
 					${INCLUDE_DIR}/font/Font.hh
 					${INCLUDE_DIR}/page/Page.hh
 					${INCLUDE_DIR}/graphics/Graphics.hh
+					${INCLUDE_DIR}/graphics/GraphicsVisitor.hh
 					${INCLUDE_DIR}/graphics/Text.hh
 					${INCLUDE_DIR}/graphics/TextBlock.hh
 					${INCLUDE_DIR}/graphics/TextFormat.hh
@@ -149,6 +150,7 @@ set( PAGE_SRCS  	${PAGE_DIR}/RealPage.cc
 					${PAGE_DIR}/RealImage.cc )
 
 set( GRAPICS_SRCS	${GRAPICS_DIR}/Graphics.cc
+                    ${GRAPICS_DIR}/GraphicsVisitor.cc
                     ${GRAPICS_DIR}/Text.cc
                     ${GRAPICS_DIR}/TextLine.cc
                     ${GRAPICS_DIR}/TextBlock.cc

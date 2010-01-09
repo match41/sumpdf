@@ -25,11 +25,13 @@
 */
 
 #include "graphics/Text.hh"
+#include "graphics/GraphicsVisitor.hh"
 
 #include "core/Token.hh"
 
 #include "util/Util.hh"
 
+#include <cassert>
 #include <set>
 
 namespace pdf {
@@ -84,6 +86,23 @@ void Text::OnCommand(
 		m_lines.push_back( TextLine() ) ;
 	
 	m_lines.back().OnCommand( cmd, args, count, res ) ;
+}
+
+void Text::AddLine( const TextLine& line )
+{
+	m_lines.push_back( line ) ;
+}
+
+void Text::Visit( GraphicsVisitor *visitor )
+{
+	assert( visitor != 0 ) ;
+	
+	visitor->VisitText( this ) ;
+}
+
+std::size_t Text::Count( ) const
+{
+	return m_lines.size( ) ;
 }
 
 } // end of namespace

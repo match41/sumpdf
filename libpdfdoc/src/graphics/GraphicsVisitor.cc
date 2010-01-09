@@ -18,60 +18,20 @@
 \***************************************************************************/
 
 /**
-    \file	Text.hh
-    \brief	definition the Text class
-    \date	Jan 4, 2010
-    \author	Nestal Wan
+	\file	GraphicsVisitor.cc
+	\brief	implementation of the GraphicsVisitor class
+	\date	Jan 9, 2010
+	\author	Nestal Wan
 */
 
-#ifndef __PDF_TEXT_HH_EADER_INCLUDED__
-#define __PDF_TEXT_HH_EADER_INCLUDED__
-
-#include "Graphics.hh"
-
-#include "TextLine.hh"
-
-#include <vector>
+#include "graphics/GraphicsVisitor.hh"
 
 namespace pdf {
 
-/**	\brief	brief description
-
-	The Text class represent a PDF text object. It is the stuff enclosed by
-	a BT...ET operators in the content stream of a page. It consists of a number
-	of text lines.
+/**	constructor
 */
-class Text : public Graphics
+GraphicsVisitor::~GraphicsVisitor( )
 {
-public :
-	typedef	std::vector<TextLine>::iterator			iterator ;
-	typedef	std::vector<TextLine>::const_iterator	const_iterator ;
-
-public :
-	Text( ) ;
-
-	void OnCommand(
-		const Token& 	cmd,
-		const Object 	*args,
-		std::size_t		count,
-		Resources		*res ) ;
-
-	iterator begin() ;
-	iterator end() ;
-	
-	const_iterator begin() const ;
-	const_iterator end() const ;
-	
-	std::size_t Count( ) const ;
-	
-	void AddLine( const TextLine& line ) ;
-
-	void Visit( GraphicsVisitor *visitor ) ;
-	
-private :
-	std::vector<TextLine>	m_lines ;
-} ;
+}
 
 } // end of namespace
-
-#endif // TEXT_HH_

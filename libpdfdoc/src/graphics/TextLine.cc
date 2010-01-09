@@ -67,6 +67,11 @@ TextLine::TextLine( )
 {
 }
 
+void TextLine::AddBlock( const TextBlock& blk )
+{
+	m_blks.push_back( blk ) ;
+}
+
 TextLine::iterator TextLine::begin()
 {
 	return m_blks.begin( ) ;

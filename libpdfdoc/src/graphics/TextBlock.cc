@@ -34,6 +34,12 @@ TextBlock::TextBlock( )
 {
 }
 
+TextBlock::TextBlock( const std::string& text, const TextFormat& format )
+	: m_chars( text.begin(), text.end() ),
+	  m_format( format )
+{
+}
+
 const TextFormat& TextBlock::Format() const
 {
 	return m_format ;

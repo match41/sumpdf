@@ -27,10 +27,13 @@
 #include "PageTest.hh"
 
 #include "mock/MockFile.hh"
+#include "mock/Assert.hh"
 
 #include "core/Ref.hh"
 #include "core/Dictionary.hh"
 #include "font/StandardFont.hh"
+#include "graphics/GraphicsVisitor.hh"
+#include "graphics/Text.hh"
 #include "page/RealPage.hh"
 #include "page/PageTree.hh"
 #include "stream/Stream.hh"
@@ -132,7 +135,22 @@ void PageTest::TestDecode( )
 //	std::vector<pdf::PaintOp> ops ;
 	pdf::PageContent *c = p->GetContent( ) ;
 	
-	CPPUNIT_ASSERT( c->Count() > 0 ) ;
+//	PDF_ASSERT_EQUAL( c->Count(), 0U ) ;
+	
+	// visitor
+	struct V : public pdf::GraphicsVisitor
+	{
+		void VisitText( pdf::Text *t )
+		{
+			CPPUNIT_ASSERT( t != 0 ) ;
+//			PDF_ASSERT_EQUAL( t->Count(), 2U ) ;
+		}
+		void VisitGraphics( pdf::Graphics * )
+		{
+		}
+	} v ;
+	
+	c->VisitGraphics( &v ) ;
 	
 //	c->GetPaintOps( ops ) ;
 //	

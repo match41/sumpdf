@@ -34,6 +34,7 @@ namespace pdf {
 class Token ;
 class Object ;
 class Resources ;
+class GraphicsVisitor ;
 
 /**	\addtogroup	graphics Graphics
 	\brief	Graphics objects module
@@ -58,6 +59,8 @@ public :
 		const Object 	*args,
 		std::size_t		count,
 		Resources		*res ) = 0 ;
+
+	virtual void Visit( GraphicsVisitor *visitor ) = 0 ;
 } ;
 
 } // end of namespace
