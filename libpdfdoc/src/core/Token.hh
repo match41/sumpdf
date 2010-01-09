@@ -36,7 +36,7 @@ namespace pdf {
 	\internal
 	
 	A token is a basic unit of the PDF file. The PDF parser will divide the
-	bytes in a PDF file into tokens. Each token is a non-divisable unit of
+	bytes in a PDF file into tokens. Each token is a non-divisible unit of
 	data. The meaning of tokens will be determined base on context.
 	
 	This class is mainly used for parsing PDF file and content streams.
@@ -64,7 +64,7 @@ public :
 
 private :
 	static bool IsCharInToken( char ch, const std::string& text ) ;
-	static bool IsDelimitor( char ch ) ;
+	static bool IsDelimiter( char ch ) ;
 
 private :
 	std::string	m_token ;

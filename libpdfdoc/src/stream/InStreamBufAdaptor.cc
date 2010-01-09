@@ -18,8 +18,8 @@
  ***************************************************************************/
 
 /*!
-	\file	OutStreamBufAdaptor.cc
-	\brief	implementation the StreamBufAdaptor class
+	\file	InStreamBufAdaptor.cc
+	\brief	implementation the InStreamBufAdaptor class
 	\date	Wed Mar 4 2009
 	\author	Nestal Wan
 */

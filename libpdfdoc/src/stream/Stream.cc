@@ -160,37 +160,52 @@ void Stream::InitFilter( )
 	-	Array objects:	each of the members in the array is treated to be
 		a name of a filter, or another array. the filters will be applied
 		in the same sequence as the array.
+
+	Object types other than Name and Array will be ignored.
 */
 void Stream::ApplyFilter( const Object& filter )
 {
 	assert( m_impl->filter.get() != 0 ) ;
 
-	if ( filter.Type() == Object::array )
+	if ( filter.Is<Array>() )
 	{
 		const Array& filters = filter.As<Array>() ;
 		std::for_each( filters.begin( ), filters.end( ),
 		               boost::bind( &Stream::CreateFilter, this, _1 ) ) ;
 	}
-	else if ( filter.Type() == Object::name )
+	else if ( filter.Is<Name>() )
 		CreateFilter( filter ) ;
 }
 
+/**	\brief	Get the stream dictionary.
+
+	This function returns the stream dictionary. The "Length" and "Filter"
+	fields will be updated according to the data contained by the stream.
+	In other words, Self() will return a different dictionary when it is called
+	after modifying the stream.
+	\return	The stream dictionary.
+*/
 Dictionary Stream::Self( ) const
 {
 	assert( m_impl.get() != 0 ) ;
+	assert( m_impl->self.find( "Length" ) == m_impl->self.end() ) ;
+	assert( m_impl->self.find( "Filter" ) == m_impl->self.end() ) ;
 	
 	Dictionary dict = m_impl->self ;
 	dict["Length"]	= Length( ) ;
 	Object filter	= m_impl->filter->GetFilterName( ) ;
-	if ( !filter.IsNull() )
+	if ( !filter.Is<void>() )
 		dict["Filter"]	= filter ;
 		
 	return dict ;
 }
 
-/**	This function returns the length after applying all filters. It is equal
+/**	\brief	get raw length of the stream.
+	
+	This function returns the length after applying all filters. It is equal
 	to the number of bytes written to the file. It is not the same as the
 	number of bytes you can read from it.
+	\return	raw length of the stream, after applying all filters.
 */
 std::size_t Stream::Length( ) const
 {
@@ -199,6 +214,11 @@ std::size_t Stream::Length( ) const
 	return m_impl->filter->Length( ) ;
 }
 
+/**	\brief	swap two streams	
+
+	Swap the pointer to data for two streams. This function will not throw and
+	will never fail.
+*/
 void Stream::Swap( Stream& str )
 {
 	std::swap( m_impl, str.m_impl ) ;
@@ -303,6 +323,11 @@ std::size_t Stream::CopyFromFilter( StreamFilter *f, std::streambuf *buf )
 	return total ;
 }
 
+/**	\brief	Write the stream to output stream.
+
+	The stream will be written according to the PDF specification. Note that
+	the "Length" field will never be indirect reference.
+*/
 std::ostream& operator<<( std::ostream& os, const Stream& s )
 {
 	assert( s.m_impl.get() != 0 ) ;
@@ -381,14 +406,31 @@ void Stream::Flush( )
 
 bool Stream::IsContentEqual( const Stream& others )
 {
-	std::stringstream my_str ;
-	std::size_t my_count = CopyData( my_str.rdbuf() ) ;
-	
-	std::stringstream str ;
-	std::size_t count = others.CopyData( str.rdbuf() ) ;
-	
-	return my_count == count && my_str.str() == str.str() ;
+	// no use to compare Length(). if the filters are different, Length()
+	// will be different but the data may be the same.
 
+	StreamFilter *f		= m_impl->filter.get() ;
+	StreamFilter *f2	= others.m_impl->filter.get() ;
+	
+	// rewind to the start of the stream
+	f->Rewind( ) ;
+	f2->Rewind( ) ;
+	
+	unsigned char data[80], data2[80] ;
+	std::size_t count	= 0 ;
+	std::size_t count2	= 0 ;
+
+	do
+	{
+		count	= f->Read( data, sizeof(data) ) ;
+		count2	= f2->Read( data2, sizeof(data2) ) ;
+		
+		if ( count != count2 || std::memcmp( data, data2, count ) != 0 )
+			return false ;
+			
+	} while ( count > 0 ) ;
+	
+	return true ;
 }
 
 } // end of namespace

@@ -254,3 +254,12 @@ void StreamTest::TestWriteDeflate( )
 	// compare!
 	CPPUNIT_ASSERT( std::memcmp( text, out, sizeof(text) ) == 0 ) ;
 }
+
+void StreamTest::TestEqual( )
+{
+	pdf::Stream
+		comp( m_compressed, pdf::Name( "FlateDecode" ) ),
+		original( m_original, pdf::Object() ) ;
+
+	CPPUNIT_ASSERT( comp.IsContentEqual( original ) ) ;
+}

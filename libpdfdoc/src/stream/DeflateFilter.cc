@@ -208,7 +208,7 @@ Object DeflateFilter::GetFilterName( ) const
 		arr.insert( arr.end(), old.begin(), old.end() ) ;
 		return Object( arr ) ;
 	}
-	else if ( name.IsNull() )
+	else if ( name.Is<void>() )
 		return Name( "FlateDecode" ) ;
 	else
 		throw Exception( "invalid filter" ) ;

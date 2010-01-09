@@ -174,7 +174,7 @@ void DictionaryTest::TestSwap( )
 void DictionaryTest::TestNull( )
 {
 	pdf::Dictionary s ;
-	CPPUNIT_ASSERT( s["???"].IsNull() ) ;
+	CPPUNIT_ASSERT( s["???"].Is<void>() ) ;
 	
 	s["haha"] = pdf::Object() ;
 	CPPUNIT_ASSERT( s.find( "haha" ) == s.end() ) ;

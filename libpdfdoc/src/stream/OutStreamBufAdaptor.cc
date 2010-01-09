@@ -18,11 +18,11 @@
  \***************************************************************************/
 
 /**
- \file	OutStreamBufAdaptor.cc
- \brief	definition the OutStreamBufAdaptor class
- \date	Dec 21, 2009
- \author	nestal
- */
+	\file	OutStreamBufAdaptor.cc
+	\brief	definition the OutStreamBufAdaptor class
+	\date	Dec 21, 2009
+	\author	Nestal Wan
+*/
 
 #include "OutStreamBufAdaptor.hh"
 

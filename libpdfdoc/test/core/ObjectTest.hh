@@ -56,7 +56,7 @@ public :
 		CPPUNIT_TEST( TestObj9020 ) ;
 		CPPUNIT_TEST( TestConvertToLong ) ;
 		CPPUNIT_TEST( TestConvertToFloat ) ;
-		CPPUNIT_TEST( TestIsNull ) ;
+		CPPUNIT_TEST( TestIsVoid ) ;
 		CPPUNIT_TEST( TestConvert ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
@@ -75,7 +75,7 @@ private :
 	void TestObj9020( ) ;
 	void TestConvertToLong( ) ;
 	void TestConvertToFloat( ) ;
-	void TestIsNull( ) ;
+	void TestIsVoid( ) ;
 	void TestConvert( ) ;
 } ;
 

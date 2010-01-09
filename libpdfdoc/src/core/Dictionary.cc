@@ -69,13 +69,13 @@ Dictionary::const_iterator Dictionary::end( ) const
 Dictionary::iterator Dictionary::find( const Name& name )
 {
 	iterator i = m_map.find( name ) ;
-	return i != m_map.end() && i->second.IsNull() ? m_map.end() : i ;
+	return i != m_map.end() && i->second.Is<void>() ? m_map.end() : i ;
 }
 
 Dictionary::const_iterator Dictionary::find( const Name& name ) const
 {
 	const_iterator i = m_map.find( name ) ;
-	return i != m_map.end() && i->second.IsNull() ? m_map.end() : i ;
+	return i != m_map.end() && i->second.Is<void>() ? m_map.end() : i ;
 }
 
 std::pair<Dictionary::iterator, bool> Dictionary::insert( const value_type& v )
@@ -125,7 +125,7 @@ TokenSrc& operator>>( TokenSrc& src, Dictionary& dict )
 		Object	value ;
 		
 		// null value means absent entry
-		if ( src >> key >> value && !value.IsNull( ) )
+		if ( src >> key >> value && !value.Is<void>( ) )
 			temp.m_map.insert( std::make_pair( key, value ) ) ;
 	}
 	
@@ -142,7 +142,7 @@ std::ostream& operator<<( std::ostream& os, const Dictionary& dict )
 	                                 i != dict.end( ) ; ++i )
 	{
 		// according to PDF spec, an absent key-pair is considered null
-		if ( !i->second.IsNull( ) )
+		if ( !i->second.Is<void>( ) )
 			os << i->first << ' ' << i->second << '\n' ;
 	}
 	return os << ">>" ;

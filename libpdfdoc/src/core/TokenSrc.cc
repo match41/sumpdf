@@ -93,17 +93,33 @@ void TokenSrc::SetState( std::ios::iostate state )
 	m_file.setstate( state ) ;
 }
 
+/**	\brief	Reset the state of the TokenSrc.
+
+	After calling this function the state will be reset. Call this function
+	after failing to read a token before resume from reading.
+*/
 void TokenSrc::ResetState( )
 {
 	m_file.clear( ) ;
 	assert( m_file ) ;
 }
 
+/**	\brief	Check if the TokenSrc has cached tokens.
+
+	\return	true if there are cached tokens, otherwise false.
+*/
 bool TokenSrc::HasCache( ) const
 {
 	return !m_cache.empty( ) ;
 }
 
+/**	\brief	Read one character from the TokenSrc.
+
+	If there are cached tokens, one character will be stripped from it.
+	Otherwise one character will be read from the underlying stream.
+	\param	ch	reference to the newly read character.
+	\return	*this 
+*/
 TokenSrc& TokenSrc::GetChar( char& ch )
 {
 	if ( m_cache.empty() )
@@ -113,6 +129,9 @@ TokenSrc& TokenSrc::GetChar( char& ch )
 		const std::string& s = m_cache.back().Get() ;
 		assert( m_pos < s.size( ) ) ;
 		ch = s[m_pos] ;
+		
+		// read the last character of the token. now the whole token
+		// is extracted and we should remove it from our cache.
 		if ( ++m_pos == s.size( ) )
 		{
 			m_cache.pop_back( ) ;	// remember, s is now invalid

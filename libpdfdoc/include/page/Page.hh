@@ -33,6 +33,7 @@ namespace pdf {
 
 class Rect ;
 class Font ;
+class PageContent ;
 
 /*!	\brief	A page in a PDF document.
 	
@@ -63,6 +64,8 @@ public :
 		pending cache from the compressor.
 	*/
 	virtual void Finish( ) = 0 ;
+	
+	virtual PageContent* GetContent( ) = 0 ;
 } ;
 
 } // end of namespace

@@ -18,7 +18,7 @@
  ***************************************************************************/
 
 /*!
-	\file	StreamBufAdaptor.hh
+	\file	InStreamBufAdaptor.hh
 	\brief	definition the StreamBufAdaptor class
 	\date	Wed Mar 4 2009
 	\author	Nestal Wan

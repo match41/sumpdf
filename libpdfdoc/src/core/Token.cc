@@ -83,15 +83,26 @@ std::istream& operator>>( std::istream& is, Token& token )
 	return is ;
 }
 
-bool Token::IsDelimitor( char ch )
+/**	\brief	Check if a character is a PDF delimiter.
+	\return	whether the character is a delimiter.
+*/
+bool Token::IsDelimiter( char ch )
 {
 	static const std::string delimiters = "\t\r\n\f ()<>[]{}/%" ;
 	return delimiters.find( ch ) != delimiters.npos ;
 }
 
+/**	\brief	Check if a new coming character belongs to the same token.
+
+	It checks if the character should be added to the current token, or start
+	a new token.
+	\param	ch		The new character.
+	\param	token	The current token.
+	\return	whether the character belong to the token.
+*/
 bool Token::IsCharInToken( char ch, const std::string& token )
 {
-	// current token. must put the char in
+	// new token. must put the char in
 	if ( token.empty() )
 		return true ;
 	
@@ -100,14 +111,17 @@ bool Token::IsCharInToken( char ch, const std::string& token )
 		return ch == token[0] && token.size() <= 1 ;
 	
 	// for delimitor, start a new token
-	else if ( IsDelimitor( ch ) )
+	else if ( IsDelimiter( ch ) )
 		return false ;
 	
 	// only keep delimitors in one token
 	else
-		return !IsDelimitor( token[0] ) ;
+		return !IsDelimiter( token[0] ) ;
 }
 
+/**	\brief	Get the string of the token.
+	\return	the string.
+*/
 const std::string& Token::Get( ) const
 {
 	return m_token ;

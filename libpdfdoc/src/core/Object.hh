@@ -136,6 +136,16 @@ public :
 	void Swap( Object& obj ) ;
 	Object& operator=( const Object& obj ) ;
 
+	/**	\brief	Swapping the underlying value.
+	
+		This function will swap the underlying value with the argument.
+		\tparam	T	The type of the expecting underlying value. If the
+					underlying value of the Object is not of type \a T,
+					a BadType exception will be thrown.
+		\param	t	The value to be swapped.
+		\throw	BadType	Throw if \a T is not the type of the underlying
+						value.
+	*/
 	template <typename T>
 	void Swap( T& t )
 	{
@@ -150,8 +160,6 @@ public :
 	
 	friend TokenSrc& operator>>( TokenSrc& src, Object& obj ) ;
 
-	bool IsNull( ) const ;
-	
 	static const Object& NullObj() ;
 	
 	ObjType Type( ) const ;
@@ -171,6 +179,7 @@ public :
 		\warning	The object referred by the returned reference will be
 					destroyed when the type of the Object changes.
 		
+		\tparam	T	the target type of the value.
 		\return	A constant reference to the underlying object of type \a T.
 		\throw	BadType	The underlying object is not of type \a T. The
 						BadType::what() function will describe the
@@ -208,14 +217,10 @@ public :
 	
 	/*!	\brief	Conversion operator to arbitrary types
 		
-		This function is similar to As(), except it returns the result
-		by value, not by reference. The advantage is that automatic conversion
-		is possible even if \a T is not one of the supported types (e.g. long).
-		The disadvantage is that \a T must be copied by its copy constructor.
-		For large objects like Array and Dictionary, there may be performance
-		problems.
+		This function calls To(). It is useful to automatically converts
+		the Object to the underlying types.
 		
-		\param	T		The target type to be converted to.
+		\tparam	T		The target type to be converted to.
 		\throw	BadType	The underlying object is not of type \a T. The
 						BadType::what() function will describe the
 						expected and actual type.
@@ -224,16 +229,19 @@ public :
 	template <typename T>
 	operator T() const
 	{
-		return As<T>( ) ;
+		return To<T>( ) ;
 	}
 
 	/**	\brief	Conversion function to arbitrary types
 	
-		This function calls operator T(). It is useful when automatic type
-		conversion is not triggered due to C++ rules. You can call this
-		function directly.
+		This function is similar to As(), except it returns the result
+		by value, not by reference. The advantage is that automatic conversion
+		is possible even if \a T is not one of the supported types (e.g. long).
+		The disadvantage is that \a T must be copied by its copy constructor.
+		For large objects like Array and Dictionary, there may be performance
+		problems.
 		
-		\param	T		The target type to be converted to.
+		\tparam	T		The target type to be converted to.
 		\throw	BadType	The underlying object is not of type \a T. The
 						BadType::what() function will describe the
 						expected and actual type.
@@ -242,7 +250,7 @@ public :
 	template <typename T>
 	T To( ) const
 	{
-		return operator T() ;
+		return As<T>() ;
 	}
 	
 	template <typename F>
@@ -262,9 +270,10 @@ public :
 		Check if the type of the object is the same as the template argument.
 		This function is preferred over Type() because you don't have to
 		memorize the members of the ObjType enum.
-		\param	T		the type to be check against
+		\tparam	T		the type to be check against
 		\return	\c true if the contained object is of type \a T, otherwise
 				\c false.
+		\sa	Type(), As(), To()
     */
     template <typename T>
     bool Is( ) const ;
@@ -283,13 +292,13 @@ private :
 	Variant	m_obj ;
 } ;
 
-template <> Object::operator unsigned short() const ;
-template <> Object::operator short() const ;
-template <> Object::operator unsigned() const ;
-template <> Object::operator long() const ;
-template <> Object::operator unsigned long() const ;
-template <> Object::operator float() const ;
-template <> Object::operator double() const ;
+template <> unsigned short	Object::To( ) const ;
+template <> short			Object::To( ) const ;
+template <> unsigned		Object::To( ) const ;
+template <> long			Object::To( ) const ;
+template <> unsigned long	Object::To( ) const ;
+template <> float			Object::To( ) const ;
+template <> double			Object::To( ) const ;
 template <> Object& Object::As( ) ;
 template <> const Object& Object::As( ) const ;
 

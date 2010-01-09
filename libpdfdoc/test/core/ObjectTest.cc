@@ -75,7 +75,7 @@ void ObjectTest::TestBoolFalse( )
 	std::istringstream ss( "false" ) ;
 	pdf::Object b ;
 	CPPUNIT_ASSERT( ss >> b ) ;
-	CPPUNIT_ASSERT( !b.IsNull( ) ) ;
+	CPPUNIT_ASSERT( !b.Is<void>( ) ) ;
 	PDF_ASSERT_EQUAL( b.Type(), pdf::Object::boolean ) ;
 	CPPUNIT_ASSERT( b.TypeID() == typeid(bool) ) ;
 	CPPUNIT_ASSERT( !b.As<bool>( ) ) ;
@@ -86,7 +86,7 @@ void ObjectTest::TestString( )
 	std::istringstream ss( "(123 () 456)" ) ;
 	pdf::Object b ;
 	CPPUNIT_ASSERT( ss >> b ) ;
-	CPPUNIT_ASSERT( !b.IsNull( ) ) ;
+	CPPUNIT_ASSERT( !b.Is<void>( ) ) ;
 	PDF_ASSERT_EQUAL( b.Type(), pdf::Object::string ) ;
 	CPPUNIT_ASSERT( b.TypeID() == typeid(std::string) ) ;
 	PDF_ASSERT_EQUAL( b.As<std::string>( ), "123 () 456" ) ;
@@ -97,7 +97,7 @@ void ObjectTest::TestInt( )
 	std::istringstream ss( "1000" ) ;
 	pdf::Object b ;
 	CPPUNIT_ASSERT( ss >> b ) ;
-	CPPUNIT_ASSERT( !b.IsNull( ) ) ;
+	CPPUNIT_ASSERT( !b.Is<void>( ) ) ;
 	PDF_ASSERT_EQUAL( b.Type(), pdf::Object::integer ) ;
 	CPPUNIT_ASSERT( b.TypeID() == typeid(int) ) ;
 	CPPUNIT_ASSERT( b.Is<int>() ) ;
@@ -109,7 +109,7 @@ void ObjectTest::TestDouble( )
 	std::istringstream ss( "10.00" ) ;
 	pdf::Object b ;
 	CPPUNIT_ASSERT( ss >> b ) ;
-	CPPUNIT_ASSERT( !b.IsNull( ) ) ;
+	CPPUNIT_ASSERT( !b.Is<void>( ) ) ;
 	CPPUNIT_ASSERT( b.Type() == pdf::Object::floating ) ;
 	CPPUNIT_ASSERT( b.TypeID() == typeid(double) ) ;
 	PDF_ASSERT_EQUAL( b.As<double>( ), 10.0 ) ;
@@ -140,15 +140,15 @@ void ObjectTest::TestArray( )
 		pdf::Ref( 4, 0 ),
 	} ;
 	pdf::Object b( pdf::Array( pdf::Begin(refs), pdf::End(refs) ) ), b2 ;
-	CPPUNIT_ASSERT( !b.IsNull( ) ) ;
+	CPPUNIT_ASSERT( !b.Is<void>( ) ) ;
 	CPPUNIT_ASSERT( b.TypeID() == typeid(pdf::Array) ) ;
-	CPPUNIT_ASSERT( b2.IsNull() ) ;
+	CPPUNIT_ASSERT( b2.Is<void>() ) ;
 
 	std::stringstream ss ;
 	CPPUNIT_ASSERT( ss << b ) ;
 	CPPUNIT_ASSERT( ss >> b2 ) ;
 	
-	CPPUNIT_ASSERT( !b2.IsNull( ) ) ;
+	CPPUNIT_ASSERT( !b2.Is<void>( ) ) ;
 	PDF_ASSERT_EQUAL( b, b2 ) ;
 }
 
@@ -188,7 +188,7 @@ void ObjectTest::TestObj5( )
 	std::istringstream is( file ) ;
 	pdf::Object sub ;
 	CPPUNIT_ASSERT( is >> sub ) ;
-	CPPUNIT_ASSERT( !sub.IsNull( ) ) ;
+	CPPUNIT_ASSERT( !sub.Is<void>( ) ) ;
 	
 	const pdf::Dictionary& dict = sub.As<pdf::Dictionary>() ;
 	const std::string& a = dict[pdf::Name("CharSet")] ;
@@ -205,14 +205,14 @@ void ObjectTest::TestObj9020( )
 	
 	pdf::Object obj ;
 	CPPUNIT_ASSERT( testdata >> obj ) ;
-	CPPUNIT_ASSERT( !obj.IsNull( ) ) ;
+	CPPUNIT_ASSERT( !obj.Is<void>( ) ) ;
 }
 
 void ObjectTest::TestConvertToLong( )
 {
 	pdf::Object obj( 100 ) ;
 	long l = obj ;
-	CPPUNIT_ASSERT( !obj.IsNull( ) ) ;
+	CPPUNIT_ASSERT( !obj.Is<void>( ) ) ;
 	PDF_ASSERT_EQUAL( l, 100 ) ;
 }
 
@@ -220,14 +220,14 @@ void ObjectTest::TestConvertToFloat( )
 {
 	pdf::Object obj( 10.01f ) ;
 	float f = obj ;
-	CPPUNIT_ASSERT( !obj.IsNull( ) ) ;
+	CPPUNIT_ASSERT( !obj.Is<void>( ) ) ;
 	PDF_ASSERT_EQUAL( f, 10.01f ) ;
 }
 
-void ObjectTest::TestIsNull( )
+void ObjectTest::TestIsVoid( )
 {
 	pdf::Object obj ;
-	CPPUNIT_ASSERT( obj.IsNull() ) ;
+	CPPUNIT_ASSERT( obj.Is<void>() ) ;
 }
 
 void ObjectTest::TestConvert( )

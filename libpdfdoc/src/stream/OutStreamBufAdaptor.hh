@@ -17,12 +17,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  \***************************************************************************/
 
-/**
- \file	OutStreamBufAdaptor.hh
- \brief	definition the OutStreamBufAdaptor class
- \date	Dec 21, 2009
- \author	nestal
- */
+/**	\file	OutStreamBufAdaptor.hh
+	\brief	definition the OutStreamBufAdaptor class
+	\date	Dec 21, 2009
+	\author	Nestal Wan
+*/
 
 #ifndef __PDF_OUTSTREAMBUFADAPTOR_HEADER_INCLUDED__
 #define __PDF_OUTSTREAMBUFADAPTOR_HEADER_INCLUDED__
@@ -33,6 +32,11 @@ namespace pdf {
 
 class StreamFilter ;
 
+/**	\brief	adapt from StreamFilter to std::streambuf
+
+	With this class, it is possible to create a std::streambuf (for
+	std::ostream maybe) with a StreamFilter. 
+*/
 class OutStreamBufAdaptor : public std::streambuf
 {
 public:

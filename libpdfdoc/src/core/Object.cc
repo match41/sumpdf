@@ -138,6 +138,107 @@ Object::~Object( )
 {
 }
 
+template <> Object& Object::As( )
+{
+    return *this ;
+}
+
+template <> const Object& Object::As( ) const
+{
+    return *this ;
+}
+
+template <> bool Object::Is<Ref>( ) const
+{
+	return Type() == ref ;
+}
+
+template <> bool Object::Is<int>( ) const
+{
+	return Type() == integer ;
+}
+
+template <> bool Object::Is<double>( ) const
+{
+	return Type() == floating ;
+}
+
+template <> bool Object::Is<bool>( ) const
+{
+	return Type() == boolean ;
+}
+
+template <> bool Object::Is<std::string>( ) const
+{
+	return Type() == string ;
+}
+
+template <> bool Object::Is<Name>( ) const
+{
+	return Type() == name ;
+}
+
+template <> bool Object::Is<Stream>( ) const
+{
+	return Type() == stream ;
+}
+
+template <> bool Object::Is<Dictionary>( ) const
+{
+	return Type() == dictionary ;
+}
+
+template <> bool Object::Is<Array>( ) const
+{
+	return Type() == array ;
+}
+
+template <> bool Object::Is<void>( ) const
+{
+	return Type() == null ;
+}
+
+template <> unsigned Object::To() const
+{
+	return As<int>( ) ;
+}
+
+template <> unsigned short Object::To() const
+{
+	return As<int>( ) ;
+}
+
+template <> short Object::To() const
+{
+	return As<int>( ) ;
+}
+
+template <> unsigned long Object::To() const
+{
+	return As<int>( ) ;
+}
+
+template <> long Object::To() const
+{
+	return As<int>( ) ;
+}
+
+template <> float Object::To() const
+{
+	return static_cast<float>( To<double>() ) ;
+}
+
+template <> double Object::To() const
+{
+	// the PDF specification said integers can be converted to doubles
+	return Is<int>() ? As<int>() : As<double>() ;
+}
+
+bool operator==( const Object& obj1, const Object& obj2 )
+{
+	return obj1.m_obj == obj2.m_obj ;
+}
+
 /*!	\brief	swapping two Object
 	\internal
 	
@@ -174,11 +275,14 @@ const std::type_info& Object::TypeID( ) const
 	return m_obj.type() ;
 }
 
-bool Object::IsNull( ) const
-{
-	return Type() == null ;
-}
+/**	\brief	Returns an persistent null object.
 
+	This function will return a static constant Object that is default
+	constructed, i.e. a null object. It is used for the return values for other
+	functions such as Dictionary::find().
+	
+	\sa	Is<void>(), Object( )
+*/
 const Object& Object::NullObj()
 {
 	static const Object null ;
@@ -373,102 +477,6 @@ std::ostream& operator<<( std::ostream& os, const Bool& b )
 bool operator!=( const Object& obj1, const Object& obj2 )
 {
 	return !operator==( obj1, obj2 ) ;
-}
-
-template <> Object::operator unsigned() const
-{
-	return As<int>( ) ;
-}
-
-template <> Object::operator unsigned short() const
-{
-	return As<int>( ) ;
-}
-
-template <> Object::operator short() const
-{
-	return As<int>( ) ;
-}
-
-template <> Object::operator unsigned long() const
-{
-	return As<int>( ) ;
-}
-
-template <> Object::operator long() const
-{
-	return As<int>( ) ;
-}
-
-template <> Object::operator float() const
-{
-	return static_cast<float>( double(*this) ) ;
-}
-
-template <> Object::operator double() const
-{
-	// the PDF specification said integers can be converted to doubles
-	return Type() == integer ? As<int>() : As<double>() ;
-}
-
-template <> Object& Object::As( )
-{
-    return *this ;
-}
-
-template <> const Object& Object::As( ) const
-{
-    return *this ;
-}
-
-template <> bool Object::Is<Ref>( ) const
-{
-	return Type() == ref ;
-}
-
-template <> bool Object::Is<int>( ) const
-{
-	return Type() == integer ;
-}
-
-template <> bool Object::Is<double>( ) const
-{
-	return Type() == floating ;
-}
-
-template <> bool Object::Is<bool>( ) const
-{
-	return Type() == boolean ;
-}
-
-template <> bool Object::Is<std::string>( ) const
-{
-	return Type() == string ;
-}
-
-template <> bool Object::Is<Name>( ) const
-{
-	return Type() == name ;
-}
-
-template <> bool Object::Is<Stream>( ) const
-{
-	return Type() == stream ;
-}
-
-template <> bool Object::Is<Dictionary>( ) const
-{
-	return Type() == dictionary ;
-}
-
-template <> bool Object::Is<Array>( ) const
-{
-	return Type() == array ;
-}
-
-bool operator==( const Object& obj1, const Object& obj2 )
-{
-	return obj1.m_obj == obj2.m_obj ;
 }
 
 } // end of namespace

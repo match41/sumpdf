@@ -106,7 +106,7 @@ void RealPage::ReadContent( const Object& str_obj, IFile *src )
 		    boost::bind( &RealPage::ReadContent, this, _1, src ) ) ;
 	}
 
-	else if ( !str_obj.IsNull( ) )
+	else if ( !str_obj.Is<void>( ) )
 		throw std::runtime_error( "invalid page content" ) ;
 }
 
@@ -233,6 +233,12 @@ Graphics* RealPage::ProcessCommand(
 	return gfx ;
 }
 
+/**	\brief	Decode the page contents.
+
+	This function will decode the content stream of the page and create
+	Graphics objects. The newly created Graphics will be stored in the
+	vector in the Content object.
+*/
 void RealPage::Decode( )
 {
 	for ( std::vector<Stream>::iterator i = m_cstrs.begin( ) ;

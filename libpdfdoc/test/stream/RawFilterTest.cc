@@ -60,5 +60,5 @@ void RawFilterTest::TestName( )
 	std::ostringstream ss ;
 	pdf::RawFilter t( ss.rdbuf(), 0 ) ;
 
-	CPPUNIT_ASSERT( t.GetFilterName().IsNull() ) ;
+	CPPUNIT_ASSERT( t.GetFilterName().Is<void>() ) ;
 }

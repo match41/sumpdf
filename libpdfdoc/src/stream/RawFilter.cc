@@ -26,6 +26,7 @@
 
 #include "RawFilter.hh"
 #include "BufferedFilter.hh"
+#include "StreamError.hh"
 
 #include "core/Object.hh"
 
@@ -34,11 +35,12 @@
 
 namespace pdf {
 
-/*!	\brief	constructor
+/*!	\brief	Constructor.
 
 	The only constructor to initialize the object.
 	\param	file	a streambuf to be read from
 	\param	start	the starting offset of the file to be read
+	\param	length	maximum number of bytes that can be read
 */
 RawFilter::RawFilter( std::streambuf *file, std::streamoff start, 
                       std::size_t length )
@@ -47,15 +49,23 @@ RawFilter::RawFilter( std::streambuf *file, std::streamoff start,
 	assert( m_file != 0 ) ;
 }
 
+/**	\brief	Create a copy of the filter.
+	
+	This function will create another filter such that the same data can be
+	read from the filter. It will not create a RawFilter, but a BufferedFilter
+	instead. It will read all the data from file and store them in the
+	newly created BufferedFilter.
+	\return	a BufferedFilter with data read from the file.
+	\throw	StreamError	when data cannot be read from file. 
+*/
 StreamFilter* RawFilter::Clone( ) const
 {
 	std::vector<unsigned char> buf( m_length ) ;
 	m_file->pubseekpos( m_start, std::ios::in ) ;
 	std::size_t c = m_file->sgetn( reinterpret_cast<char*>( &buf[0] ),
 	                               m_length ) ;
-	// TODO: throw better things
 	if ( c != m_length )
-		throw -1 ;
+		throw StreamError( "cannot read from file" ) ;
 	
 	return new BufferedFilter( buf ) ;
 }
