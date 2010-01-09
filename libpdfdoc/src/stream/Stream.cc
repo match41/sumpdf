@@ -310,11 +310,10 @@ std::ostream& operator<<( std::ostream& os, const Stream& s )
 
 	// first flush all buffered data inside the filters
 	s.m_impl->filter->Flush( ) ;
-	
 	os 	<< s.Self( ) << "\nstream\n" ;
 
 	std::size_t length = s.CopyRawData( os.rdbuf() ) ;
-	assert( length == static_cast<std::size_t>(s.Self( )["Length"].As<int>() ));
+	assert( length == s.Self( )["Length"].To<std::size_t>() );
 	
 	return os << "\nendstream" ;
 }

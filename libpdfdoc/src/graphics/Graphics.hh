@@ -35,6 +35,14 @@ class Token ;
 class Object ;
 class Resources ;
 
+/**	\addtogroup	graphics Graphics
+	\brief	Graphics objects module
+	\internal
+	
+	The graphics objects represent visual elements that appears in the page.
+	These classes provide access to their content.
+*/
+
 /**	\brief	brief description
 
 	The Graphics class represent base class for anything that appears in the

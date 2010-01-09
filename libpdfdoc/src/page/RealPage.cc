@@ -263,6 +263,9 @@ void RealPage::Decode( std::vector<Graphics*>& gfx )
 //							args.empty() ? 0 : &args[0],
 //							args.size(),
 //							&m_resources ) ) ;
+					m_content.m_gfx.push_back( current ) ;
+					current = 0 ;
+					
 					args.clear( ) ;
 				}
 				else

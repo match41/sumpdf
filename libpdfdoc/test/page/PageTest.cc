@@ -33,7 +33,6 @@
 #include "font/StandardFont.hh"
 #include "page/RealPage.hh"
 #include "page/PageTree.hh"
-#include "page/PaintOp.hh"
 #include "stream/Stream.hh"
 #include "util/Rect.hh"
 
@@ -130,8 +129,8 @@ void PageTest::TestDecode( )
 	p->DrawText( 120, 400, f, "This is another line" ) ;
 	p->Finish( ) ;
 
-	std::vector<pdf::PaintOp> ops ;
-	pdf::PageContent *c = p->GetContent( ) ;
+//	std::vector<pdf::PaintOp> ops ;
+//	pdf::PageContent *c = p->GetContent( ) ;
 	
 //	c->GetPaintOps( ops ) ;
 //	

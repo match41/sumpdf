@@ -62,6 +62,10 @@ DeflateFilter::DeflateFilter( std::auto_ptr<StreamFilter> src )
 
 std::size_t DeflateFilter::Read( unsigned char *data, std::size_t size )
 {
+	assert( data != 0 ) ;
+	assert( size > 0 ) ;
+	assert( m_decomp.z.avail_in <= m_decomp.buf.size() ) ;
+	
 	int result = Z_OK ;
 	std::size_t offset = 0 ;
 	
@@ -71,7 +75,7 @@ std::size_t DeflateFilter::Read( unsigned char *data, std::size_t size )
 	    {
 			m_decomp.buf.resize( m_buf_size ) ;
 			m_decomp.buf.resize( m_src->Read( &m_decomp.buf[0], m_buf_size ) ) ;
-		    
+
 		    // no more input to be read. return number of byte read so far
 		    if ( m_decomp.buf.empty( ) )
 			    break ;
@@ -79,6 +83,9 @@ std::size_t DeflateFilter::Read( unsigned char *data, std::size_t size )
 		    m_decomp.z.next_in	= &m_decomp.buf[0] ;
 		    m_decomp.z.avail_in	= m_decomp.buf.size( ) ;
 		}
+
+		assert( m_decomp.z.avail_in <= m_decomp.buf.size() ) ;
+		assert( m_decomp.z.next_in  != 0 ) ;
 		
 		m_decomp.z.next_out		= data + offset ;
 		m_decomp.z.avail_out	= size - offset ;
@@ -90,13 +97,15 @@ std::size_t DeflateFilter::Read( unsigned char *data, std::size_t size )
 			// update offset
 			offset = size - m_decomp.z.avail_out ;
 		
-			if ( m_decomp.z.avail_out == 0 )
+			if ( m_decomp.z.avail_out == 0 || result == Z_STREAM_END )
 				break ;
 		}
 		else
+		{
 			throw StreamError(
-				"inflate() error: " + std::string( m_comp.z.msg ) ); 
-			
+				"inflate() error: " +
+				( m_comp.z.msg != 0  ? std::string( m_comp.z.msg ) : "" ) ); 
+		}
 	} while ( result == Z_OK && m_decomp.z.avail_in == 0 ) ;
 
 	return offset ;
@@ -166,6 +175,10 @@ void DeflateFilter::Rewind( )
 {
 	m_decomp.buf.clear( ) ;
 	m_src->Rewind( ) ;
+
+	// inflateReset() will clear this for us
+	m_decomp.z.avail_in	= 0 ;
+	m_decomp.z.next_in	= 0 ;
 
 	if ( ::inflateReset( &m_decomp.z ) != Z_OK )
 		throw ParseError( "inflateReset() error: " +

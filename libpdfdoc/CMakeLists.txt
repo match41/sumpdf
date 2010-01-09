@@ -125,9 +125,6 @@ set( INCLUDE_HDRS	${INCLUDE_DIR}/Doc.hh
 					${INCLUDE_DIR}/DocInfo.hh
 					${INCLUDE_DIR}/font/Font.hh
 					${INCLUDE_DIR}/page/Page.hh
-					${INCLUDE_DIR}/page/PaintOp.hh
-					${INCLUDE_DIR}/page/TextOp.hh
-					${INCLUDE_DIR}/page/PathSegment.hh
 					${INCLUDE_DIR}/util/Exception.hh
 					${INCLUDE_DIR}/util/Rect.hh
 					${INCLUDE_DIR}/util/Matrix.hh )
@@ -144,10 +141,7 @@ set( PAGE_SRCS  	${PAGE_DIR}/RealPage.cc
 					${PAGE_DIR}/PageNode.cc
 					${PAGE_DIR}/PageTree.cc
 					${PAGE_DIR}/XObject.cc
-					${PAGE_DIR}/RealImage.cc
-					${PAGE_DIR}/PaintOp.cc
-					${PAGE_DIR}/TextOp.cc
-					${PAGE_DIR}/PathSegment.cc )
+					${PAGE_DIR}/RealImage.cc )
 
 set( GRAPICS_SRCS	${GRAPICS_DIR}/Graphics.cc
                     ${GRAPICS_DIR}/Text.cc
