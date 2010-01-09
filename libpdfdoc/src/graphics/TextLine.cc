@@ -34,6 +34,8 @@
 #include <cassert>
 #include <set>
 
+#include <iostream>
+
 namespace pdf {
 
 namespace
@@ -102,7 +104,14 @@ void TextLine::OnCommand(
 	
 	if ( state_cmds.find( cmd ) != state_cmds.end() )
 	{
-		m_blks.push_back( TextBlock() ) ;
+		// don't create new block if the current block is empty.
+		// directly apply to it in this case.
+		if ( !m_blks.back().IsEmpty() )
+		{
+std::cout << "new block" << std::endl ;
+
+			m_blks.push_back( TextBlock() ) ;
+		}
 		m_blks.back().OnCommand( cmd, args, count, res ) ;
 	}
 	else
@@ -142,6 +151,16 @@ void TextLine::OnTm( const Object* args, std::size_t count, Resources* )
 void TextLine::OnTstar( const Object* , std::size_t , Resources *res )
 {
 	m_trans = Matrix( 1, 0, 0, 1, 0, m_blks.back().Format().Leading() ) ;
+}
+
+const Matrix& TextLine::Transform() const
+{
+	return m_trans ;
+}
+
+bool TextLine::IsEmpty( ) const
+{
+	return m_blks.size() == 1 && m_blks.front().IsEmpty() ;
 }
 
 } // end of namespace

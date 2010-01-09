@@ -31,6 +31,7 @@
 
 #include "util/Util.hh"
 
+#include <iostream>
 #include <cassert>
 #include <set>
 
@@ -81,9 +82,14 @@ void Text::OnCommand(
 	std::size_t		count,
 	Resources		*res )
 {
+	assert( !m_lines.empty() ) ;
+
 	// text position command. create new line
-	if ( pos_cmds.find( cmd ) != pos_cmds.end() )
+	if ( pos_cmds.find( cmd ) != pos_cmds.end() && !m_lines.back().IsEmpty() )
+	{
+std::cout << "create new line" << std::endl ;
 		m_lines.push_back( TextLine() ) ;
+	}
 	
 	m_lines.back().OnCommand( cmd, args, count, res ) ;
 }

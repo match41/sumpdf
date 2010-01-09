@@ -58,4 +58,9 @@ void TextBlock::OnCommand(
 {
 }
 
+bool TextBlock::IsEmpty() const
+{
+	return m_chars.empty() ;
+}
+
 } // end of namespace

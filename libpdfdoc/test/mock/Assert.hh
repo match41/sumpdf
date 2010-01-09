@@ -54,12 +54,12 @@ namespace pdf {
   ( pdf::AssertEquals( (expected),              \
                        (actual),                \
                        CPPUNIT_SOURCELINE(),    \
-                       #expected"=="#actual ) )
+                       #actual" == "#expected) )
 
 #define PDF_ASSERT_NULL(actual)          \
   ( pdf::AssertEquals( ((void*)0),              \
                        (actual),                \
                        CPPUNIT_SOURCELINE(),    \
-                       #actual"!=0" ) )
+                       #actual" != 0" ) )
 
 #endif // ASSERT_HH_

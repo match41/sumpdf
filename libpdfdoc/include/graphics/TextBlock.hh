@@ -58,6 +58,8 @@ public :
 	const TextFormat& Format() const ;
 	TextFormat& Format() ;
 
+	bool IsEmpty() const ;
+
 private :
 	std::vector<unsigned short>	m_chars ;
 	TextFormat	m_format ;

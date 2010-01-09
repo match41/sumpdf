@@ -217,6 +217,10 @@ Graphics* RealPage::ProcessCommand(
 	Graphics		*gfx )
 {
 	assert( count > 0 || args == 0 ) ;
+std::cout << cmd.Get() << " " ;
+for ( std::size_t i = 0 ; i < count ; i++ )
+	std::cout << args[i] << " " ;
+std::cout << std::endl ;
 
 	if ( cmd == Token("BT") && gfx == 0 )
 	{

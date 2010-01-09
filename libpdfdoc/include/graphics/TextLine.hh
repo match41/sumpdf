@@ -70,6 +70,9 @@ public :
 
 	void AddBlock( const TextBlock& blk ) ;
 
+	const Matrix& Transform() const ;
+	bool IsEmpty( ) const ;
+
 private :
 	void OnTd( const Object* args, std::size_t count, Resources *res ) ;
 	void OnTD( const Object* args, std::size_t count, Resources *res ) ;

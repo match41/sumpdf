@@ -38,6 +38,7 @@
 #include "page/PageTree.hh"
 #include "stream/Stream.hh"
 #include "util/Rect.hh"
+#include "util/Matrix.hh"
 
 #include <sstream>
 #include <iostream>
@@ -140,10 +141,29 @@ void PageTest::TestDecode( )
 	// visitor
 	struct V : public pdf::GraphicsVisitor
 	{
+		std::size_t m_count ;
+		V( ) : m_count( 0 ) { }
+		
 		void VisitText( pdf::Text *t )
 		{
 			CPPUNIT_ASSERT( t != 0 ) ;
-//			PDF_ASSERT_EQUAL( t->Count(), 2U ) ;
+			PDF_ASSERT_EQUAL( t->Count(), 1U ) ;
+			
+			const pdf::Matrix& m = t->begin()->Transform() ;
+			double mat[6] ;
+			std::copy( m.begin(), m.end(), mat ) ;
+			if ( m_count == 0 )
+			{
+				PDF_ASSERT_EQUAL( mat[4], 120 ) ;
+				PDF_ASSERT_EQUAL( mat[5], 300 ) ;
+				m_count++ ;
+			}
+			else if ( m_count == 1 )
+			{
+				PDF_ASSERT_EQUAL( mat[4], 120 ) ;
+				PDF_ASSERT_EQUAL( mat[5], 400 ) ;
+			}
+			
 		}
 		void VisitGraphics( pdf::Graphics * )
 		{
@@ -151,12 +171,4 @@ void PageTest::TestDecode( )
 	} v ;
 	
 	c->VisitGraphics( &v ) ;
-	
-//	c->GetPaintOps( ops ) ;
-//	
-//	CPPUNIT_ASSERT( ops.size() == 10 ) ;
-//	CPPUNIT_ASSERT( ops[0].Code() == pdf::PaintOp::begin_text ) ;
-//	CPPUNIT_ASSERT( ops[1].As<pdf::TextFont>().font == f ) ;
-//	CPPUNIT_ASSERT( ops[2].As<pdf::TextPosition>().offx == 120 ) ;
-//	CPPUNIT_ASSERT( ops[2].As<pdf::TextPosition>().offy == 300 ) ;
 }

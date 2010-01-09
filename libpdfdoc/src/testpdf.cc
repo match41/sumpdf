@@ -43,6 +43,8 @@ int main( int argc, char **argv )
 	p->DrawText( 100, 200, f, "This is the second line!" ) ;
 	p->Finish( ) ;
 	
+	p->GetContent( ) ;
+	
 	pdf::DocInfo *info = doc->Info() ;
 	info->SetCreator( "Haha" ) ;
 	
