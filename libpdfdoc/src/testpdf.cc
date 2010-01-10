@@ -21,7 +21,11 @@
 #include "DocInfo.hh"
 #include "libpdfdoc.hh"
 #include "font/Font.hh"
+#include "graphics/Text.hh"
+#include "graphics/TextLine.hh"
+#include "graphics/TextBlock.hh"
 #include "page/Page.hh"
+#include "page/PageContent.hh"
 
 #include "util/Exception.hh"
 
@@ -43,7 +47,10 @@ int main( int argc, char **argv )
 	p->DrawText( 100, 200, f, "This is the second line!" ) ;
 	p->Finish( ) ;
 	
-	p->GetContent( ) ;
+	pdf::PageContent *c = p->GetContent( ) ;
+	pdf::Text *t = new pdf::Text ;
+	pdf::TextBlock& b = *t->begin()->begin() ;
+	b.SetText( L"wahaha" ) ;
 	
 	pdf::DocInfo *info = doc->Info() ;
 	info->SetCreator( "Haha" ) ;

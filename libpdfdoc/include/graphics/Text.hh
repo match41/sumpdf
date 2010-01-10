@@ -52,7 +52,7 @@ public :
 
 	void OnCommand(
 		const Token& 	cmd,
-		const Object 	*args,
+		Object 			*args,
 		std::size_t		count,
 		Resources		*res ) ;
 

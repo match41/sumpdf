@@ -58,7 +58,7 @@ public :
 
 	void OnCommand(
 		const Token& 	cmd,
-		const Object 	*args,
+		Object 			*args,
 		std::size_t		count,
 		Resources		*res ) ;
 
@@ -74,13 +74,13 @@ public :
 	bool IsEmpty( ) const ;
 
 private :
-	void OnTd( const Object* args, std::size_t count, Resources *res ) ;
-	void OnTD( const Object* args, std::size_t count, Resources *res ) ;
-	void OnTm( const Object* args, std::size_t count, Resources *res ) ;
-	void OnTstar( const Object* args, std::size_t count, Resources *res ) ;
+	void OnTd( Object* args, std::size_t count, Resources *res ) ;
+	void OnTD( Object* args, std::size_t count, Resources *res ) ;
+	void OnTm( Object* args, std::size_t count, Resources *res ) ;
+	void OnTstar( Object* args, std::size_t count, Resources *res ) ;
 
 	typedef void (TextLine::*Handler)(
-		const Object	*args,
+		Object			*args,
 		std::size_t		count,
 		Resources		*res ) ;
 	typedef std::map<Token, Handler>	HandlerMap ;

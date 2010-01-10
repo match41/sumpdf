@@ -52,6 +52,7 @@
 #include <page/PageContent.hh>
 #include <graphics/Text.hh>
 #include <graphics/TextLine.hh>
+#include <graphics/TextBlock.hh>
 
 #include <cassert>
 
@@ -81,26 +82,12 @@ MainWnd::MainWnd( QWidget *parent )
 		SIGNAL(triggered()),
 		this,
 		SLOT(OnSaveAs()) );
-	
-	QGraphicsSimpleTextItem *item = new QGraphicsSimpleTextItem( "Hello" ) ;
-	QTransform mat( 1, 0, 0,
-	                0, 1, 0,
-	                100, 100, 1 ) ;
-	item->setTransform( ReverseAxis(mat) ) ;
-	m_scene->addItem( item ) ;
-	qDebug() << "item at " << item->scenePos() ;
 }
 
 /**	destructor is for the auto_ptr	
 */
 MainWnd::~MainWnd( )
 {
-}
-
-QTransform MainWnd::ReverseAxis( const QTransform& mat )
-{
-	return QTransform( mat.m11(), mat.m12(), mat.m21(), mat.m22(), mat.dx(),
-		m_scene->height() - mat.dy() ) ;
 }
 
 void MainWnd::OpenFile( const QString& file )
@@ -120,9 +107,13 @@ void MainWnd::OpenFile( const QString& file )
 			const Text *t = dynamic_cast<const Text*>( c->Item( i ) ) ;
 			if ( t != 0 )
 			{
-				const TextLine& l = *t->begin() ;
+				const TextLine&		l = *t->begin() ;
+				const TextBlock&	b = *l.begin() ;
 
-				QGraphicsSimpleTextItem *item = new QGraphicsSimpleTextItem( "Hello" ) ;
+				QGraphicsSimpleTextItem *item =
+					new QGraphicsSimpleTextItem(
+						QString::fromStdWString( b.Text() ) ) ;
+
 				item->setTransform( ToQtMatrix(l.Transform()) ) ;
 				m_scene->addItem( item ) ;
 			}
@@ -202,7 +193,12 @@ void MainWnd::StorePage( QGraphicsScene *scene, Doc *doc, Page *page )
 
 QTransform MainWnd::ToQtMatrix( const Matrix& m )
 {
-	return QTransform( m.M11(), m.M12(), m.M21(), m.M22(), m.Dx(),
+	// here we do a little transformation on the y coordinate.
+	// the PDF origin is at the lower left corner and the 
+	// y-coordinate increase upward. However, Qt's origin is at the upper
+	// left corner and increase downward.
+	return QTransform(
+		m.M11(), m.M12(), m.M21(), m.M22(), m.Dx(),
 		m_scene->height() - m.Dy() ) ;
 }
 

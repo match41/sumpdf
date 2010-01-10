@@ -87,7 +87,7 @@ private :
 	void Decode( ) ;
 	Graphics* ProcessCommand(
 		const Token& 	cmd,
-		const Object 	*args,
+		Object 			*args,
 		std::size_t		count,
 		Graphics		*gfx ) ;
 

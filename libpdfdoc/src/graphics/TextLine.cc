@@ -96,7 +96,7 @@ TextLine::const_iterator TextLine::end() const
 
 void TextLine::OnCommand(
 	const Token& 	cmd,
-	const Object 	*args,
+	Object 			*args,
 	std::size_t		count,
 	Resources		*res )
 {
@@ -109,7 +109,6 @@ void TextLine::OnCommand(
 		if ( !m_blks.back().IsEmpty() )
 		{
 std::cout << "new block" << std::endl ;
-
 			m_blks.push_back( TextBlock() ) ;
 		}
 		m_blks.back().OnCommand( cmd, args, count, res ) ;
@@ -119,16 +118,18 @@ std::cout << "new block" << std::endl ;
 	    HandlerMap::const_iterator i = m_handler_map.find( cmd ) ;
 	    if ( i != m_handler_map.end() )
 	        (this->*(i->second))( args, count, res ) ;
+	    else
+	    	m_blks.back().OnCommand( cmd, args, count, res ) ;
     }
 }
 
-void TextLine::OnTd( const Object* args, std::size_t count, Resources* )
+void TextLine::OnTd( Object* args, std::size_t count, Resources* )
 {
 	if ( count >= 2 )
 		m_trans = Matrix( 1, 0, 0, 1, args[0], args[1] ) ;
 }
 
-void TextLine::OnTD( const Object* args, std::size_t count, Resources *res )
+void TextLine::OnTD( Object* args, std::size_t count, Resources *res )
 {
 	if ( count >= 2 )
 	{
@@ -141,14 +142,14 @@ void TextLine::OnTD( const Object* args, std::size_t count, Resources *res )
 	}
 }
 
-void TextLine::OnTm( const Object* args, std::size_t count, Resources* )
+void TextLine::OnTm( Object* args, std::size_t count, Resources* )
 {
 	if ( count >= 6 )
 		m_trans = Matrix(
 			args[0], args[1], args[2], args[3], args[4], args[5] ) ;
 }
 
-void TextLine::OnTstar( const Object* , std::size_t , Resources *res )
+void TextLine::OnTstar( Object* , std::size_t , Resources *res )
 {
 	m_trans = Matrix( 1, 0, 0, 1, 0, m_blks.back().Format().Leading() ) ;
 }

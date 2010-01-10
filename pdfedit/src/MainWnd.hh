@@ -67,7 +67,6 @@ public slots :
 private :
 	void StorePage( QGraphicsScene *scene, Doc *doc, Page *page ) ;
 	
-	QTransform ReverseAxis( const QTransform& mat ) ;
 	QTransform ToQtMatrix( const Matrix& m ) ;
 
 private :

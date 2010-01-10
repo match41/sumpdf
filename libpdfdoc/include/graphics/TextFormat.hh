@@ -28,6 +28,7 @@
 #define __PDF_TEXTFORMAT_HH_EADER_INCLUDED__
 
 #include <cstddef>
+#include <map>
 
 namespace pdf {
 
@@ -47,12 +48,21 @@ public :
 
 	void OnCommand(
 		const Token& 	cmd,
-		const Object 	*args,
+		Object 			*args,
 		std::size_t		count,
 		Resources		*res ) ;
 
 	double Leading( ) const ;
 	void SetLeading( double val ) ;
+	
+	void SetFont( double size, Font *font ) ;
+
+private :
+	typedef void (TextFormat::*Handler)(
+		Object			*args,
+		std::size_t		count,
+		Resources		*res ) ;
+	typedef std::map<Token, Handler>	HandlerMap ;
 
 private :
 	double	m_char_space ;

@@ -26,6 +26,9 @@
 
 #include "graphics/TextFormat.hh"
 
+// TODO: resolve cyclic dependency
+#include "page/Resources.hh"
+
 namespace pdf {
 
 /**	constructor
@@ -52,6 +55,21 @@ double TextFormat::Leading( ) const
 void TextFormat::SetLeading( double val )
 {
 	m_leading = val ;
+}
+
+void TextFormat::OnCommand(
+	const Token& 	cmd,
+	Object 			*args,
+	std::size_t		count,
+	Resources		*res )
+{
+	
+}
+
+void TextFormat::SetFont( double size, Font *font )
+{
+	m_font_size	= size ;
+	m_font		= font ;
 }
 
 } // end of namespace

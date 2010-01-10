@@ -51,18 +51,22 @@ public :
 
 	void OnCommand(
 		const Token& 	cmd,
-		const Object 	*args,
+		Object 			*args,
 		std::size_t		count,
 		Resources		*res ) ;
+
+	void SetText( const std::wstring& text ) ;
 
 	const TextFormat& Format() const ;
 	TextFormat& Format() ;
 
+	const std::wstring& Text() const ; 
+
 	bool IsEmpty() const ;
 
 private :
-	std::vector<unsigned short>	m_chars ;
-	TextFormat	m_format ;
+	std::wstring	m_chars ;
+	TextFormat		m_format ;
 } ;
 
 } // end of namespace
