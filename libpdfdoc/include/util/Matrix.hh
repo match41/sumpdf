@@ -50,6 +50,13 @@ public :
 
 	Matrix& operator=( const Matrix& m ) ;
 
+	double M11() const ;
+	double M12() const ;
+	double M21() const ;
+	double M22() const ;
+	double Dx() const ;
+	double Dy() const ;
+
 	typedef double*			iterator ;
 	typedef const double*	const_iterator ;
 	

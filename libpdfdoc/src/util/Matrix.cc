@@ -79,4 +79,34 @@ Matrix& Matrix::operator=( const Matrix& m )
 	return *this ;
 }
 
+double Matrix::M11() const
+{
+	return m_mat[0] ;
+}
+
+double Matrix::M12() const
+{
+	return m_mat[1] ;
+}
+
+double Matrix::M21() const
+{
+	return m_mat[2] ;
+}
+
+double Matrix::M22() const
+{
+	return m_mat[3] ;
+}
+
+double Matrix::Dx() const
+{
+	return m_mat[4] ;
+}
+
+double Matrix::Dy() const
+{
+	return m_mat[5] ;
+}
+
 } // end of namespace

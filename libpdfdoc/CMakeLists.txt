@@ -120,22 +120,30 @@ set( FONT_HDRS		${FONT_DIR}/Types.hh
 					${FONT_DIR}/sfnt/mfileio.h
 					${FONT_DIR}/sfnt/numbers.h )
 
+set( BASE_HDRS		src/RealDoc.hh )
+
+###############################################################################
+# exported header files
+###############################################################################
+
 set( INCLUDE_HDRS	${INCLUDE_DIR}/Doc.hh
 					${INCLUDE_DIR}/libpdfdoc.hh
-					${INCLUDE_DIR}/DocInfo.hh
-					${INCLUDE_DIR}/font/Font.hh
-					${INCLUDE_DIR}/page/Page.hh
-					${INCLUDE_DIR}/graphics/Graphics.hh
+					${INCLUDE_DIR}/DocInfo.hh )
+
+set( FONT_INC_HDRS	${INCLUDE_DIR}/font/Font.hh )
+
+set( PAGE_INC_HDRS	${INCLUDE_DIR}/page/Page.hh
+                    ${INCLUDE_DIR}/page/PageContent.hh )
+
+set( GFX_INC_HDRS	${INCLUDE_DIR}/graphics/Graphics.hh
 					${INCLUDE_DIR}/graphics/GraphicsVisitor.hh
 					${INCLUDE_DIR}/graphics/Text.hh
 					${INCLUDE_DIR}/graphics/TextBlock.hh
 					${INCLUDE_DIR}/graphics/TextFormat.hh
-					${INCLUDE_DIR}/graphics/TextLine.hh
-					${INCLUDE_DIR}/util/Exception.hh
+					${INCLUDE_DIR}/graphics/TextLine.hh )
+set( UTIL_INC_HDRS	${INCLUDE_DIR}/util/Exception.hh
 					${INCLUDE_DIR}/util/Rect.hh
 					${INCLUDE_DIR}/util/Matrix.hh )
-
-set( BASE_HDRS		src/RealDoc.hh )
 
 ###############################################################################
 # source in subdirs
@@ -388,6 +396,10 @@ INSTALL( TARGETS pdfdoc_static
          ARCHIVE DESTINATION lib )
 
 INSTALL( FILES ${INCLUDE_HDRS} DESTINATION include )
+INSTALL( FILES ${FONT_INC_HDRS} DESTINATION include/font )
+INSTALL( FILES ${PAGE_INC_HDRS} DESTINATION include/page )
+INSTALL( FILES ${GFX_INC_HDRS}  DESTINATION include/graphics )
+INSTALL( FILES ${UTIL_INC_HDRS} DESTINATION include/util )
 
 ###############################################################################
 # test driver

@@ -46,8 +46,12 @@
 // libpdfdoc headers
 #include <libpdfdoc.hh>
 #include <Doc.hh>
-#include <Page.hh>
-#include <Rect.hh>
+#include <page/Page.hh>
+#include <util/Rect.hh>
+#include <util/Matrix.hh>
+#include <page/PageContent.hh>
+#include <graphics/Text.hh>
+#include <graphics/TextLine.hh>
 
 #include <cassert>
 
@@ -79,12 +83,10 @@ MainWnd::MainWnd( QWidget *parent )
 		SLOT(OnSaveAs()) );
 	
 	QGraphicsSimpleTextItem *item = new QGraphicsSimpleTextItem( "Hello" ) ;
-	QTransform mat( 3, 0, 0,
-	                0, 3, 0,
+	QTransform mat( 1, 0, 0,
+	                0, 1, 0,
 	                100, 100, 1 ) ;
-//	mat.translate( 100, 100 ) ;
-//	mat.rotate( 45 ) ;
-	item->setTransform( mat ) ;
+	item->setTransform( ReverseAxis(mat) ) ;
 	m_scene->addItem( item ) ;
 	qDebug() << "item at " << item->scenePos() ;
 }
@@ -93,6 +95,12 @@ MainWnd::MainWnd( QWidget *parent )
 */
 MainWnd::~MainWnd( )
 {
+}
+
+QTransform MainWnd::ReverseAxis( const QTransform& mat )
+{
+	return QTransform( mat.m11(), mat.m12(), mat.m21(), mat.m22(), mat.dx(),
+		m_scene->height() - mat.dy() ) ;
 }
 
 void MainWnd::OpenFile( const QString& file )
@@ -105,6 +113,20 @@ void MainWnd::OpenFile( const QString& file )
 		Page *p = m_doc->GetPage( 0 ) ;
 		Rect r = p->MediaBox( ) ;
 		m_scene->setSceneRect( 0, 0, r.Width(), r.Height() ) ;
+		
+		PageContent *c = p->GetContent( ) ;
+		for ( std::size_t i = 0 ; i < c->Count() ; i++ )
+		{
+			const Text *t = dynamic_cast<const Text*>( c->Item( i ) ) ;
+			if ( t != 0 )
+			{
+				const TextLine& l = *t->begin() ;
+
+				QGraphicsSimpleTextItem *item = new QGraphicsSimpleTextItem( "Hello" ) ;
+				item->setTransform( ToQtMatrix(l.Transform()) ) ;
+				m_scene->addItem( item ) ;
+			}
+		}
 	}
 }
 
@@ -176,6 +198,12 @@ void MainWnd::StorePage( QGraphicsScene *scene, Doc *doc, Page *page )
 			page->DrawText( pos.x(), scene->height() - pos.y(), font,
 							edit->toPlainText().toUtf8().data() ) ;
 	}
+}
+
+QTransform MainWnd::ToQtMatrix( const Matrix& m )
+{
+	return QTransform( m.M11(), m.M12(), m.M21(), m.M22(), m.Dx(),
+		m_scene->height() - m.Dy() ) ;
 }
 
 } // end of namespace

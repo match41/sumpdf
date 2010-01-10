@@ -36,6 +36,7 @@
 #include <memory>
 
 class QGraphicsScene ;
+class QTransform ;
 
 namespace pdf {
 
@@ -45,6 +46,7 @@ class PageView ;
 // pdfdoc classes
 class Doc ;
 class Page ;
+class Matrix ;
 
 class MainWnd : public QMainWindow, private Ui::MainWndUI
 {
@@ -64,6 +66,9 @@ public slots :
 
 private :
 	void StorePage( QGraphicsScene *scene, Doc *doc, Page *page ) ;
+	
+	QTransform ReverseAxis( const QTransform& mat ) ;
+	QTransform ToQtMatrix( const Matrix& m ) ;
 
 private :
 	std::auto_ptr<Doc>	m_doc ;
