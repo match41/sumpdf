@@ -31,6 +31,8 @@
 
 #include "util/Util.hh"
 
+#include <algorithm>
+#include <iterator>
 #include <iostream>
 #include <cassert>
 #include <set>
@@ -109,6 +111,17 @@ void Text::Visit( GraphicsVisitor *visitor )
 std::size_t Text::Count( ) const
 {
 	return m_lines.size( ) ;
+}
+
+void Text::Output( std::ostream& os ) const
+{
+	os << "BT\n" ;
+	std::copy(
+		m_lines.begin(),
+		m_lines.end(),
+		std::ostream_iterator<TextLine>( os ) ) ;
+		
+	os << "ET\n" ;
 }
 
 } // end of namespace

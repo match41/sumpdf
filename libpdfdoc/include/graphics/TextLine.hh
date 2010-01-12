@@ -31,6 +31,7 @@
 
 #include "util/Matrix.hh"
 
+#include <iosfwd>
 #include <map>
 #include <vector>
 
@@ -72,6 +73,8 @@ public :
 
 	const Matrix& Transform() const ;
 	bool IsEmpty( ) const ;
+
+	friend std::ostream& operator<<( std::ostream& os, const TextLine& line ) ;
 
 private :
 	void OnTd( Object* args, std::size_t count, Resources *res ) ;

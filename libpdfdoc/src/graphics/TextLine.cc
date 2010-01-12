@@ -101,6 +101,9 @@ void TextLine::OnCommand(
 	Resources		*res )
 {
 	assert( !m_blks.empty() ) ;
+
+std::cout << "command = " << cmd.Get() << " " ;
+std::copy( args, args + count, std::ostream_iterator<Object>( std::cout, " " ) ) ;
 	
 	if ( state_cmds.find( cmd ) != state_cmds.end() )
 	{
@@ -117,7 +120,9 @@ std::cout << "new block" << std::endl ;
 	{
 	    HandlerMap::const_iterator i = m_handler_map.find( cmd ) ;
 	    if ( i != m_handler_map.end() )
+	    {
 	        (this->*(i->second))( args, count, res ) ;
+	    }
 	    else
 	    	m_blks.back().OnCommand( cmd, args, count, res ) ;
     }
@@ -162,6 +167,18 @@ const Matrix& TextLine::Transform() const
 bool TextLine::IsEmpty( ) const
 {
 	return m_blks.size() == 1 && m_blks.front().IsEmpty() ;
+}
+
+std::ostream& operator<<( std::ostream& os, const TextLine& line )
+{
+	const Matrix& t = line.m_trans ;
+	if ( t.M11() == 1 && t.M12() == 0 &&
+		 t.M21() == 0 && t.M22() == 1 )
+		os << "Td " << t.Dx() << ' ' << t.Dy() << '\n' ;
+	else
+		os << "Tm " << t.M11() << ' ' << t.M12() << ' ' << t.M21() << ' '
+		            << t.M22() << ' ' << t.Dx()  << ' ' << t.Dy( ) << '\n' ; 
+	return os ;
 }
 
 } // end of namespace

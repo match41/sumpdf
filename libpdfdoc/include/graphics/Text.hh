@@ -55,7 +55,9 @@ public :
 		Object 			*args,
 		std::size_t		count,
 		Resources		*res ) ;
-
+	
+	void Output( std::ostream& os ) const ;
+	
 	iterator begin() ;
 	iterator end() ;
 	

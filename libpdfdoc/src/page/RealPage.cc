@@ -303,6 +303,7 @@ void RealPage::Content::Add( Graphics *item )
 
 void RealPage::Content::VisitGraphics( GraphicsVisitor *visitor )
 {
+	// all pointers are not null
 	assert( std::find( m_gfx.begin(), m_gfx.end(), (void*)0 ) == m_gfx.end() ) ;
 
 	std::for_each(

@@ -79,7 +79,7 @@ void TextBlock::OnCommand(
 			}
 		}
 	}
-std::wcout << m_chars << std::endl ;
+std::wcout << L"\"" << m_chars << L"\""<< std::endl ;
 }
 
 bool TextBlock::IsEmpty() const

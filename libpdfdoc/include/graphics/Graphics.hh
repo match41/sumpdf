@@ -28,6 +28,7 @@
 #define __PDF_GRAPHICS_HH_EADER_INCLUDED__
 
 #include <cstddef>
+#include <iosfwd>
 
 namespace pdf {
 
@@ -59,6 +60,8 @@ public :
 		Object 			*args,
 		std::size_t		count,
 		Resources		*res ) = 0 ;
+
+	virtual void Output( std::ostream& os ) const = 0 ;
 
 	virtual void Visit( GraphicsVisitor *visitor ) = 0 ;
 } ;
