@@ -50,7 +50,19 @@ namespace
 	const TokenSet state_cmds( Begin( state_cmd ), End( state_cmd ) ) ;
 }
 
-const TextLine::HandlerMap::value_type	TextLine::m_handler_map_values[] =
+struct TextLine::Map
+{
+	typedef void (TextLine::*Handler)(
+		Object			*args,
+		std::size_t		count,
+		Resources		*res ) ;
+	typedef std::map<Token, Handler>	HandlerMap ;
+
+	static const HandlerMap::value_type	m_handler_map_values[] ;
+	static const HandlerMap				m_handler_map ;
+} ;
+
+const TextLine::Map::HandlerMap::value_type	TextLine::Map::m_handler_map_values[] =
 {
 	std::make_pair( "Td",	&TextLine::OnTd ),
 	std::make_pair( "TD",	&TextLine::OnTD ),
@@ -58,12 +70,11 @@ const TextLine::HandlerMap::value_type	TextLine::m_handler_map_values[] =
 	std::make_pair( "T*",	&TextLine::OnTstar ),
 } ;
 
-const TextLine::HandlerMap TextLine::m_handler_map(
-    Begin( TextLine::m_handler_map_values ),
-    End( TextLine::m_handler_map_values ) ) ;
+const TextLine::Map::HandlerMap TextLine::Map::m_handler_map(
+    Begin( TextLine::Map::m_handler_map_values ),
+    End( TextLine::Map::m_handler_map_values ) ) ;
 
-/**	constructor
-*/
+///	constructor
 TextLine::TextLine( )
     : m_blks( 1 )
 {
@@ -119,11 +130,9 @@ std::cout << "new block" << std::endl ;
 	}
 	else
 	{
-	    HandlerMap::const_iterator i = m_handler_map.find( cmd ) ;
-	    if ( i != m_handler_map.end() )
-	    {
+	    Map::HandlerMap::const_iterator i = Map::m_handler_map.find( cmd ) ;
+	    if ( i != Map::m_handler_map.end() )
 	        (this->*(i->second))( args, count, res ) ;
-	    }
 	    else
 	    	m_blks.back().OnCommand( cmd, args, count, res ) ;
     }
