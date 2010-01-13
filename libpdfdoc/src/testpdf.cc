@@ -48,7 +48,7 @@ int main( int argc, char **argv )
 	p->Finish( ) ;
 	
 	pdf::PageContent *c = p->GetContent( ) ;
-	pdf::Text *t = new pdf::Text ;
+	pdf::Text *t = c->AddText( ) ;
 	pdf::TextBlock& b = *t->begin()->begin() ;
 	b.SetText( L"wahaha" ) ;
 	

@@ -17,43 +17,53 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**
-    \file	PageContent.hh
-    \brief	definition the PageContent class
-    \date	Dec 31, 2009
+/**	\file	RealText.hh
+    \brief	definition the RealText class
+    \date	Jan 13, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_PAGECONTENT_HEADER_INCLUDED__
-#define __PDF_PAGECONTENT_HEADER_INCLUDED__
+#ifndef __PDF_REALTEXT_HH_EADER_INCLUDED__
+#define __PDF_REALTEXT_HH_EADER_INCLUDED__
 
-#include <vector>
+#include "graphics/Text.hh"
+
+#include "graphics/TextLine.hh"
 
 namespace pdf {
 
-class Text ;
-class Graphics ;
-class GraphicsVisitor ;
-
-/**	\brief	brief description
-
-	The PageContent class represent
+///	brief description
+/**	The RealText class represents
 */
-class PageContent
+class RealText : public Text
 {
-protected :
-	~PageContent( ) ;
-
 public :
-	virtual std::size_t Count( ) const = 0 ;
-	virtual const Graphics* Item( std::size_t idx ) const = 0 ;
+	RealText( ) ;
+
+	void OnCommand(
+		const Token& 	cmd,
+		Object 			*args,
+		std::size_t		count,
+		Resources		*res ) ;
+
+	void Output( std::ostream& os ) const ;
+
+	iterator begin() ;
+	iterator end() ;
 	
-//	virtual void Add( Graphics *item ) = 0 ;
-	virtual Text* AddText( ) = 0 ;
+	const_iterator begin() const ;
+	const_iterator end() const ;
 	
-	virtual void VisitGraphics( GraphicsVisitor *visitor ) = 0 ;
+	std::size_t Count( ) const ;
+	
+	void AddLine( const TextLine& line ) ;
+
+	void Visit( GraphicsVisitor *visitor ) ;
+
+private :
+	std::vector<TextLine>	m_lines ;
 } ;
 
 } // end of namespace
 
-#endif // PAGECONTENT_HH_
+#endif // REALTEXT_HH_

@@ -36,6 +36,7 @@
 #include "core/Dictionary.hh"
 #include "core/Token.hh"
 #include "file/CompleteObj.hh"
+#include "graphics/RealText.hh"
 #include "page/PageContent.hh"
 #include "stream/Stream.hh"
 #include "util/Rect.hh"
@@ -103,7 +104,8 @@ private :
 	{
 		std::size_t Count( ) const ;
 		const Graphics* Item( std::size_t idx ) const ;
-		void Add( Graphics *item ) ;
+//		void Add( Graphics *item ) ;
+		RealText* AddText( ) ;
 		void VisitGraphics( GraphicsVisitor *visitor ) ;
 		
 		std::vector<Graphics*> m_gfx ;

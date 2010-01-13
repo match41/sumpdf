@@ -29,11 +29,12 @@
 
 #include "Graphics.hh"
 
-#include "TextLine.hh"
-
 #include <vector>
 
 namespace pdf {
+
+class TextLine ;
+class GraphicsVisitor ;
 
 /**	\brief	brief description
 
@@ -47,31 +48,22 @@ public :
 	typedef	std::vector<TextLine>::iterator			iterator ;
 	typedef	std::vector<TextLine>::const_iterator	const_iterator ;
 
+protected :
+	~Text( ) ;
+
 public :
-	Text( ) ;
+	virtual iterator begin() = 0 ;
+	virtual iterator end() = 0 ;
+	
+	virtual const_iterator begin() const = 0 ;
+	virtual const_iterator end() const = 0 ;
+	
+	virtual std::size_t Count( ) const = 0 ;
+	
+	virtual void AddLine( const TextLine& line ) = 0 ;
 
-	void OnCommand(
-		const Token& 	cmd,
-		Object 			*args,
-		std::size_t		count,
-		Resources		*res ) ;
-	
-	void Output( std::ostream& os ) const ;
-	
-	iterator begin() ;
-	iterator end() ;
-	
-	const_iterator begin() const ;
-	const_iterator end() const ;
-	
-	std::size_t Count( ) const ;
-	
-	void AddLine( const TextLine& line ) ;
+	virtual void Visit( GraphicsVisitor *visitor ) = 0 ;
 
-	void Visit( GraphicsVisitor *visitor ) ;
-	
-private :
-	std::vector<TextLine>	m_lines ;
 } ;
 
 } // end of namespace

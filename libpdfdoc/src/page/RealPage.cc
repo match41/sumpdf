@@ -39,7 +39,7 @@
 #include "file/ObjectReader.hh"
 #include "file/IFile.hh"
 #include "font/BaseFont.hh"
-#include "graphics/Text.hh"
+#include "graphics/RealText.hh"
 #include "util/Rect.hh"
 #include "util/Util.hh"
 
@@ -220,7 +220,7 @@ Graphics* RealPage::ProcessCommand(
 
 	if ( cmd == Token("BT") && gfx == 0 )
 	{
-		gfx = new Text ;
+		gfx = new RealText ;
 	}
 	else if ( cmd == Token("ET") && gfx != 0 )
 	{
@@ -296,9 +296,18 @@ const Graphics* RealPage::Content::Item( std::size_t idx ) const
 	return m_gfx.at( idx ) ;
 }
 
+/*
 void RealPage::Content::Add( Graphics *item )
 {
 	m_gfx.push_back( item ) ;
+}
+*/
+
+RealText* RealPage::Content::AddText( )
+{
+	RealText *t = new RealText ;
+	m_gfx.push_back( t ) ;
+	return t ;
 }
 
 void RealPage::Content::VisitGraphics( GraphicsVisitor *visitor )

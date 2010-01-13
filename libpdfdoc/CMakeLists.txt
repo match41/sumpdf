@@ -58,7 +58,7 @@ set( PAGE_HDRS		${PAGE_DIR}/RealPage.hh
 					${PAGE_DIR}/XObject.hh
 					${PAGE_DIR}/RealImage.hh )
 
-#set( GRAPICS_HDRS	${GRAPICS_DIR}/Graphics.hh
+set( GRAPICS_HDRS	${GRAPICS_DIR}/RealText.hh )
 #                    ${GRAPICS_DIR}/Text.hh
 #                    ${GRAPICS_DIR}/TextLine.hh
 #                    ${GRAPICS_DIR}/TextBlock.hh
@@ -160,6 +160,7 @@ set( PAGE_SRCS  	${PAGE_DIR}/RealPage.cc
 set( GRAPICS_SRCS	${GRAPICS_DIR}/Graphics.cc
                     ${GRAPICS_DIR}/GraphicsVisitor.cc
                     ${GRAPICS_DIR}/Text.cc
+                    ${GRAPICS_DIR}/RealText.cc
                     ${GRAPICS_DIR}/TextLine.cc
                     ${GRAPICS_DIR}/TextBlock.cc
                     ${GRAPICS_DIR}/TextFormat.cc )
