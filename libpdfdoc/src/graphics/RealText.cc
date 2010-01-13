@@ -27,8 +27,9 @@
 
 #include "graphics/GraphicsVisitor.hh"
 
-#include "core/Token.hh"
+#include "core/Array.hh"
 #include "core/Object.hh"
+#include "core/Token.hh"
 #include "page/Resources.hh"
 #include "util/Util.hh"
 
@@ -42,10 +43,17 @@ namespace pdf {
 
 const RealText::HandlerMap::value_type	RealText::m_handler_map_values[] =
 {
+	// text positioning commands
 	std::make_pair( "Td",	&RealText::OnTd ),
 	std::make_pair( "TD",	&RealText::OnTD ),
 	std::make_pair( "Tm",	&RealText::OnTm ),
 	std::make_pair( "T*",	&RealText::OnTstar ),
+	
+	// text showing commands
+	std::make_pair( "Tj",	&RealText::OnTd ),
+	std::make_pair( "TJ",	&RealText::OnTD ),
+	std::make_pair( "\'",	&RealText::OnSingleQuote ),
+	std::make_pair( "\"",	&RealText::OnDoubleQuote ),
 } ;
 
 const RealText::HandlerMap RealText::m_handler_map(
@@ -122,6 +130,8 @@ void RealText::Output( std::ostream& os ) const
 
 void RealText::OnTd( Object* args, std::size_t count, Resources* )
 {
+std::cout << "Td: " << std::endl ;
+
 	if ( count >= 2 )
 	{
 		m_line_mat = m_line_mat * Matrix( 1, 0, 0, 1, args[0], args[1] ) ;
@@ -131,6 +141,8 @@ void RealText::OnTd( Object* args, std::size_t count, Resources* )
 
 void RealText::OnTD( Object* args, std::size_t count, Resources *res )
 {
+std::cout << "TD: " << std::endl ;
+	
 	if ( count >= 2 )
 	{
 		double	ty	= args[1] ;
@@ -143,8 +155,12 @@ void RealText::OnTD( Object* args, std::size_t count, Resources *res )
 
 void RealText::OnTm( Object* args, std::size_t count, Resources* )
 {
+std::cout << "Tm: " << std::endl ;
+
 	if ( count >= 6 )
 	{
+		// unlike Td and TD, the Tm command will replace the current
+		// matrix.
 		m_line_mat = Matrix(
 			args[0], args[1], args[2], args[3], args[4], args[5] ) ;
 		
@@ -166,8 +182,42 @@ void RealText::AddNewLine( )
 	// remove empty lines first
 	if ( m_lines.back().IsEmpty() )
 		m_lines.pop_back() ;
-	
+std::cout << "new line: " << std::endl ;
 	m_lines.push_back( TextLine( m_line_mat, m_state ) ) ;
+}
+
+void RealText::OnTj( Object* args, std::size_t count, Resources *res )
+{
+	assert( !m_lines.empty() ) ;
+	
+	if ( count >= 1 )
+	{
+		const std::string& s = args[0].As<std::string>() ;
+		m_lines.back().AppendText( std::wstring( s.begin(), s.end() ) ) ;
+	}
+}
+
+void RealText::OnTJ( Object* args, std::size_t count, Resources *res )
+{
+	assert( !m_lines.empty() ) ;
+
+	Array& a = args[0].As<Array>() ;
+	for ( Array::iterator i = a.begin() ; i != a.end() ; ++i )
+	{
+		if ( i->Is<std::string>() )
+		{
+			std::string& s = i->As<std::string>() ;
+			m_lines.back().AppendText( std::wstring( s.begin(), s.end() ) ) ;
+		}
+	}
+}
+
+void RealText::OnSingleQuote( Object* args, std::size_t count, Resources *res )
+{
+}
+
+void RealText::OnDoubleQuote( Object* args, std::size_t count, Resources *res )
+{
 }
 
 } // end of namespace

@@ -33,6 +33,7 @@
 
 #include <iosfwd>
 #include <map>
+#include <string>
 #include <vector>
 
 namespace pdf {
@@ -70,6 +71,8 @@ public :
 	const Matrix& Transform() const ;
 	void SetTransform( const Matrix& t ) ;
 	bool IsEmpty( ) const ;
+
+	void AppendText( const std::wstring& text ) ;
 
 	friend std::ostream& operator<<( std::ostream& os, const TextLine& line ) ;
 

@@ -36,9 +36,8 @@ namespace pdf {
 class Token ;
 class Object ;
 
-/**	\brief	brief description
-
-	The TextBlock class represent a string of characters with the same
+///	brief description
+/**	The TextBlock class represent a string of characters with the same
 	format.
 */
 class TextBlock
@@ -50,6 +49,7 @@ public :
 		const TextState&	format	= TextState() ) ;
 
 	void SetText( const std::wstring& text ) ;
+	void AppendText( const std::wstring& text ) ;
 
 	const TextState& Format() const ;
 	void SetFormat( const TextState& fmt ) ;

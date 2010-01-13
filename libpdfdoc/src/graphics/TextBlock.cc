@@ -34,8 +34,7 @@
 
 namespace pdf {
 
-/**	constructor
-*/
+///	constructor
 TextBlock::TextBlock( )
 {
 }
@@ -55,33 +54,7 @@ void TextBlock::SetFormat( const TextState& fmt )
 {
 	m_format = fmt ;
 }
-/*
-void TextBlock::OnCommand(
-	const Token& 	cmd,
-	Object 			*args,
-	std::size_t		count,
-	Resources		*res )
-{
-	if ( cmd.Get() == "Tj" && count >= 1 )
-	{
-		const std::string& s = args[0].As<std::string>() ;
-		m_chars.assign( s.begin(), s.end() ) ;
-	}
-	else if ( cmd.Get() == "TJ" && count >= 1 )
-	{
-		Array& a = args[0].As<Array>() ;
-		for ( Array::iterator i = a.begin() ; i != a.end() ; ++i )
-		{
-			if ( i->Is<std::string>() )
-			{
-				std::string& s = i->As<std::string>() ;
-				m_chars.insert( m_chars.end(), s.begin(), s.end() ) ;
-			}
-		}
-	}
-std::wcout << L"\"" << m_chars << L"\""<< std::endl ;
-}
-*/
+
 bool TextBlock::IsEmpty() const
 {
 	return m_chars.empty() ;
@@ -95,6 +68,11 @@ const std::wstring& TextBlock::Text() const
 void TextBlock::SetText( const std::wstring& text )
 {
 	m_chars = text ;
+}
+
+void TextBlock::AppendText( const std::wstring& text )
+{
+	m_chars.insert( m_chars.end(), text.begin(), text.end() ) ;
 }
 
 } // end of namespace

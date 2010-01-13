@@ -150,18 +150,16 @@ void PageTest::TestDecode( )
 			PDF_ASSERT_EQUAL( t->Count(), 1U ) ;
 			
 			const pdf::Matrix& m = t->begin()->Transform() ;
-			double mat[6] ;
-			std::copy( m.begin(), m.end(), mat ) ;
 			if ( m_count == 0 )
 			{
-				PDF_ASSERT_EQUAL( mat[4], 120 ) ;
-				PDF_ASSERT_EQUAL( mat[5], 300 ) ;
+				PDF_ASSERT_EQUAL( m.Dx(), 120 ) ;
+				PDF_ASSERT_EQUAL( m.Dy(), 300 ) ;
 				m_count++ ;
 			}
 			else if ( m_count == 1 )
 			{
-				PDF_ASSERT_EQUAL( mat[4], 120 ) ;
-				PDF_ASSERT_EQUAL( mat[5], 400 ) ;
+				PDF_ASSERT_EQUAL( m.Dx(), 120 ) ;
+				PDF_ASSERT_EQUAL( m.Dy(), 400 ) ;
 			}
 			
 		}

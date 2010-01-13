@@ -81,6 +81,11 @@ private :
 	void OnTD( Object* args, std::size_t count, Resources *res ) ;
 	void OnTm( Object* args, std::size_t count, Resources *res ) ;
 	void OnTstar( Object* args, std::size_t count, Resources *res ) ;
+	
+	void OnTj( Object* args, std::size_t count, Resources *res ) ;
+	void OnTJ( Object* args, std::size_t count, Resources *res ) ;
+	void OnSingleQuote( Object* args, std::size_t count, Resources *res ) ;
+	void OnDoubleQuote( Object* args, std::size_t count, Resources *res ) ;
 
 	void AddNewLine( ) ;
 

@@ -82,8 +82,12 @@ void TextLine::SetTransform( const Matrix& t )
 
 bool TextLine::IsEmpty( ) const
 {
-	return m_blks.size() == 1 && m_blks.front().IsEmpty() &&
-		m_trans.IsIdentity() ;
+	return m_blks.size() == 1 && m_blks.front().IsEmpty() ;
+}
+
+void TextLine::AppendText( const std::wstring& text )
+{
+	m_blks.back().AppendText( text ) ;
 }
 
 std::ostream& operator<<( std::ostream& os, const TextLine& line )
