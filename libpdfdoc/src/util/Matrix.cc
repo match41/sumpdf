@@ -32,20 +32,23 @@
 
 namespace pdf {
 
+///	Constructs an identify matrix.
 Matrix::Matrix( )
 {
 	m_mat[0] = m_mat[3] = 1 ;
 	m_mat[1] = m_mat[2] = m_mat[4] = m_mat[5] = 0 ;
 }
 
-Matrix::Matrix( double a, double b, double c, double d, double e, double f )
+///	Constructs a matrix with values.
+Matrix::Matrix( double m11, double m12, double m21, double m22,
+	double dx, double dy )
 {
-	m_mat[0] = a ;
-	m_mat[1] = b ;
-	m_mat[2] = c ;
-	m_mat[3] = d ;
-	m_mat[4] = e ;
-	m_mat[5] = f ;
+	m_mat[0] = m11 ;
+	m_mat[1] = m12 ;
+	m_mat[2] = m21 ;
+	m_mat[3] = m22 ;
+	m_mat[4] = dx ;
+	m_mat[5] = dy ;
 }
 
 Matrix::Matrix( const Matrix& m )
@@ -107,6 +110,17 @@ double Matrix::Dx() const
 double Matrix::Dy() const
 {
 	return m_mat[5] ;
+}
+
+Matrix operator*( const Matrix& a, const Matrix& b )
+{
+	return Matrix(
+		a.M11() * b.M11() + a.M12() * b.M21(),				// m11
+		a.M11() * b.M12() + a.M12() * b.M22(),				// m12
+		a.M21() * b.M11() + a.M22() * b.M21(),				// m11
+		a.M21() * b.M12() + a.M22() * b.M22(),				// m12
+		a.Dx()  * b.M11() + a.Dy()  * b.M21() + b.Dx(),		// dx
+		a.Dx()  * b.M12() + a.Dy()  * b.M22() + b.Dy() ) ;	// dy
 }
 
 } // end of namespace

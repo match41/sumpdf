@@ -45,7 +45,8 @@ class Matrix
 {
 public :
 	Matrix( ) ;
-	Matrix( double a, double b, double c, double d, double e, double f ) ;
+	Matrix( double m11, double m12, double m21, double m22,
+		double dx, double dy ) ;
 	Matrix( const Matrix& m ) ;
 
 	Matrix& operator=( const Matrix& m ) ;
@@ -68,6 +69,8 @@ public :
 private :
 	double	m_mat[6] ;
 } ;
+
+Matrix operator*( const Matrix& a, const Matrix& b ) ;
 
 } // end of namespace
 

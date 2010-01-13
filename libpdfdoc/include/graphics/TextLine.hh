@@ -79,14 +79,9 @@ private :
 	void OnTm( Object* args, std::size_t count, Resources *res ) ;
 	void OnTstar( Object* args, std::size_t count, Resources *res ) ;
 
-	typedef void (TextLine::*Handler)(
-		Object			*args,
-		std::size_t		count,
-		Resources		*res ) ;
-	typedef std::map<Token, Handler>	HandlerMap ;
-
-	static const HandlerMap::value_type	m_handler_map_values[] ;
-	static const HandlerMap				m_handler_map ;
+	///	Encapsulate the command handler mapping.
+	struct Map ;
+	friend struct Map ;
 
 	void NewBlock( ) ;
 
