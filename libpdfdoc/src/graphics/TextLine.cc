@@ -104,7 +104,8 @@ void TextLine::OnCommand(
 
 std::cout << "command = " << cmd.Get() << " " ;
 std::copy( args, args + count, std::ostream_iterator<Object>( std::cout, " " ) ) ;
-	
+std::cout << std::endl ;
+
 	if ( state_cmds.find( cmd ) != state_cmds.end() )
 	{
 		// don't create new block if the current block is empty.
