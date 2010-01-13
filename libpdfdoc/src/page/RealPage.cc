@@ -228,7 +228,10 @@ Graphics* RealPage::ProcessCommand(
 		gfx = 0 ;
 	}
 	else if ( gfx != 0 )
-		gfx->OnCommand( cmd, args, count, &m_resources ) ;
+	{
+		RealText *text = dynamic_cast<RealText*>( gfx ) ;
+		text->OnCommand( cmd, args, count, &m_resources ) ;
+	}
 	
 	return gfx ;
 }

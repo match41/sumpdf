@@ -50,6 +50,9 @@ public :
 	Matrix( const Matrix& m ) ;
 
 	Matrix& operator=( const Matrix& m ) ;
+	bool operator==( const Matrix& m ) const ;
+
+	bool IsIdentity( ) const ;
 
 	double M11() const ;
 	double M12() const ;

@@ -40,22 +40,22 @@ TextBlock::TextBlock( )
 {
 }
 
-TextBlock::TextBlock( const std::string& text, const TextFormat& format )
+TextBlock::TextBlock( const std::string& text, const TextState& format )
 	: m_chars( text.begin(), text.end() ),
 	  m_format( format )
 {
 }
 
-const TextFormat& TextBlock::Format() const
+const TextState& TextBlock::Format() const
 {
 	return m_format ;
 }
 
-TextFormat& TextBlock::Format()
+void TextBlock::SetFormat( const TextState& fmt )
 {
-	return m_format ;
+	m_format = fmt ;
 }
-
+/*
 void TextBlock::OnCommand(
 	const Token& 	cmd,
 	Object 			*args,
@@ -81,7 +81,7 @@ void TextBlock::OnCommand(
 	}
 std::wcout << L"\"" << m_chars << L"\""<< std::endl ;
 }
-
+*/
 bool TextBlock::IsEmpty() const
 {
 	return m_chars.empty() ;

@@ -28,7 +28,8 @@
 #include "graphics/GraphicsVisitor.hh"
 
 #include "core/Token.hh"
-
+#include "core/Object.hh"
+#include "page/Resources.hh"
 #include "util/Util.hh"
 
 #include <algorithm>
@@ -39,17 +40,17 @@
 
 namespace pdf {
 
-namespace
+const RealText::HandlerMap::value_type	RealText::m_handler_map_values[] =
 {
-	typedef	std::set<Token>	TokenSet ;
+	std::make_pair( "Td",	&RealText::OnTd ),
+	std::make_pair( "TD",	&RealText::OnTD ),
+	std::make_pair( "Tm",	&RealText::OnTm ),
+	std::make_pair( "T*",	&RealText::OnTstar ),
+} ;
 
-	const TokenSet::value_type	pos_cmd[] =
-	{
-		// RealText position
-		Token("Td"), Token("TD"), Token("Tm"), Token("T*"),
-	} ;
-	const TokenSet pos_cmds( Begin( pos_cmd ), End( pos_cmd ) ) ;
-}
+const RealText::HandlerMap RealText::m_handler_map(
+    Begin( RealText::m_handler_map_values ),
+    End( RealText::m_handler_map_values ) ) ;
 
 /**	constructor
 */
@@ -86,14 +87,9 @@ void RealText::OnCommand(
 {
 	assert( !m_lines.empty() ) ;
 
-	// RealText position command. create new line
-	if ( pos_cmds.find( cmd ) != pos_cmds.end() && !m_lines.back().IsEmpty() )
-	{
-std::cout << "create new line" << std::endl ;
-		m_lines.push_back( TextLine() ) ;
-	}
-	
-	m_lines.back().OnCommand( cmd, args, count, res ) ;
+    HandlerMap::const_iterator i = m_handler_map.find( cmd ) ;
+    if ( i != m_handler_map.end() )
+        (this->*(i->second))( args, count, res ) ;
 }
 
 void RealText::AddLine( const TextLine& line )
@@ -122,6 +118,56 @@ void RealText::Output( std::ostream& os ) const
 		std::ostream_iterator<TextLine>( os ) ) ;
 		
 	os << "ET\n" ;
+}
+
+void RealText::OnTd( Object* args, std::size_t count, Resources* )
+{
+	if ( count >= 2 )
+	{
+		m_line_mat = m_line_mat * Matrix( 1, 0, 0, 1, args[0], args[1] ) ;
+		AddNewLine( ) ;
+	}
+}
+
+void RealText::OnTD( Object* args, std::size_t count, Resources *res )
+{
+	if ( count >= 2 )
+	{
+		double	ty	= args[1] ;
+		m_state.SetLeading( -ty ) ;
+		
+		m_line_mat = m_line_mat * Matrix( 1, 0, 0, 1, args[0], args[1] ) ;
+		AddNewLine( ) ;
+	}
+}
+
+void RealText::OnTm( Object* args, std::size_t count, Resources* )
+{
+	if ( count >= 6 )
+	{
+		m_line_mat = Matrix(
+			args[0], args[1], args[2], args[3], args[4], args[5] ) ;
+		
+		AddNewLine( ) ;
+	}
+}
+
+void RealText::OnTstar( Object* , std::size_t , Resources * )
+{
+	m_line_mat = m_line_mat *
+		Matrix( 1, 0, 0, 1, 0, m_state.Leading() ) ;
+	AddNewLine( ) ;
+}
+
+void RealText::AddNewLine( )
+{
+	assert( !m_lines.empty() ) ;
+
+	// remove empty lines first
+	if ( m_lines.back().IsEmpty() )
+		m_lines.pop_back() ;
+	
+	m_lines.push_back( TextLine( m_line_mat, m_state ) ) ;
 }
 
 } // end of namespace

@@ -18,55 +18,45 @@
 \***************************************************************************/
 
 /**
-	\file	TextFormat.cc
+	\file	TextState.cc
 	\brief	implementation of the TextFormat class
 	\date	Jan 4, 2010
 	\author	Nestal Wan
 */
 
-#include "graphics/TextFormat.hh"
+#include "graphics/TextState.hh"
 
 // TODO: resolve cyclic dependency
 #include "page/Resources.hh"
 
 namespace pdf {
 
-/**	constructor
+/**	Constructor.
 */
-TextFormat::TextFormat( )
+TextState::TextState( )
 	: m_leading( 0 )
 {
 }
 
-/**	\brief	Returns the leading.
-
-	The leading parameter is the vertical distance between the baselines
+///	Returns the leading.
+/**	The leading parameter is the vertical distance between the baselines
 	of adjacent lines of text. It always applies to the vertical coordinate
 	in text space, regardless of the writing mode.
 	
 	\return	The leading of current text state.
 	\sa SetLeading()
 */
-double TextFormat::Leading( ) const
+double TextState::Leading( ) const
 {
 	return m_leading ;
 }
 
-void TextFormat::SetLeading( double val )
+void TextState::SetLeading( double val )
 {
 	m_leading = val ;
 }
 
-void TextFormat::OnCommand(
-	const Token& 	cmd,
-	Object 			*args,
-	std::size_t		count,
-	Resources		*res )
-{
-	
-}
-
-void TextFormat::SetFont( double size, Font *font )
+void TextState::SetFont( double size, Font *font )
 {
 	m_font_size	= size ;
 	m_font		= font ;

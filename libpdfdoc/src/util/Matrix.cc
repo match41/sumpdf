@@ -123,4 +123,15 @@ Matrix operator*( const Matrix& a, const Matrix& b )
 		a.Dx()  * b.M12() + a.Dy()  * b.M22() + b.Dy() ) ;	// dy
 }
 
+bool Matrix::IsIdentity( ) const
+{
+	static const Matrix identity ;
+	return *this == identity ;
+}
+
+bool Matrix::operator==( const Matrix& m ) const
+{
+	return std::equal( begin(), end(), m.begin() ) ;
+}
+
 } // end of namespace

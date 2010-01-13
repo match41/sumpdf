@@ -18,7 +18,7 @@
 \***************************************************************************/
 
 /**
-    \file	TextFormat.hh
+    \file	TextState.hh
     \brief	definition the TextFormat class
     \date	Jan 4, 2010
     \author	Nestal Wan
@@ -28,41 +28,27 @@
 #define __PDF_TEXTFORMAT_HH_EADER_INCLUDED__
 
 #include <cstddef>
-#include <map>
 
 namespace pdf {
 
 class Font ;
-class Token ;
-class Object ;
 class Resources ;
 
 /**	\brief	brief description
 
 	The TextFormat class represent
 */
-class TextFormat
+class TextState
 {
 public :
-	TextFormat( ) ;
+	TextState( ) ;
 
-	void OnCommand(
-		const Token& 	cmd,
-		Object 			*args,
-		std::size_t		count,
-		Resources		*res ) ;
+	// compiler generated copy constructor and assignment operator are fine.
 
 	double Leading( ) const ;
 	void SetLeading( double val ) ;
 	
 	void SetFont( double size, Font *font ) ;
-
-private :
-	typedef void (TextFormat::*Handler)(
-		Object			*args,
-		std::size_t		count,
-		Resources		*res ) ;
-	typedef std::map<Token, Handler>	HandlerMap ;
 
 private :
 	double	m_char_space ;

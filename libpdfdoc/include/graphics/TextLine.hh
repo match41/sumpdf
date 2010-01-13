@@ -28,7 +28,7 @@
 #define __PDF_TEXTLINE_HEADER_INCLUDED__
 
 #include "TextBlock.hh"
-
+#include "TextState.hh"
 #include "util/Matrix.hh"
 
 #include <iosfwd>
@@ -53,15 +53,11 @@ public :
 	typedef std::vector<TextBlock>::const_iterator	const_iterator ;
 
 public :
-	TextLine( ) ;
+	explicit TextLine(
+		const Matrix&		transform	= Matrix(),
+		const TextState& 	state		= TextState() ) ;
 
 	// uses default generated copy constructor
-
-	void OnCommand(
-		const Token& 	cmd,
-		Object 			*args,
-		std::size_t		count,
-		Resources		*res ) ;
 
 	iterator begin() ;
 	iterator end() ;
@@ -72,21 +68,10 @@ public :
 	void AddBlock( const TextBlock& blk ) ;
 
 	const Matrix& Transform() const ;
+	void SetTransform( const Matrix& t ) ;
 	bool IsEmpty( ) const ;
 
 	friend std::ostream& operator<<( std::ostream& os, const TextLine& line ) ;
-
-private :
-	void OnTd( Object* args, std::size_t count, Resources *res ) ;
-	void OnTD( Object* args, std::size_t count, Resources *res ) ;
-	void OnTm( Object* args, std::size_t count, Resources *res ) ;
-	void OnTstar( Object* args, std::size_t count, Resources *res ) ;
-
-	///	Encapsulate the command handler mapping.
-	struct Map ;
-	friend struct Map ;
-
-	void NewBlock( ) ;
 
 private :
 	/// the text matrix

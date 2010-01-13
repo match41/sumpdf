@@ -33,7 +33,6 @@
 namespace pdf {
 
 class Token ;
-class Object ;
 class Resources ;
 class GraphicsVisitor ;
 
@@ -55,12 +54,6 @@ class Graphics
 public :
 	virtual ~Graphics( ) ;
 	
-	virtual void OnCommand(
-		const Token& 	cmd,
-		Object 			*args,
-		std::size_t		count,
-		Resources		*res ) = 0 ;
-
 	virtual void Output( std::ostream& os ) const = 0 ;
 
 	virtual void Visit( GraphicsVisitor *visitor ) = 0 ;

@@ -27,7 +27,7 @@
 #ifndef __PDF_TEXTBLOCK_HH_EADER_INCLUDED__
 #define __PDF_TEXTBLOCK_HH_EADER_INCLUDED__
 
-#include "TextFormat.hh"
+#include "TextState.hh"
 #include <string>
 #include <vector>
 
@@ -46,19 +46,13 @@ class TextBlock
 public :
 	TextBlock( ) ;
 	explicit TextBlock(
-		const std::string&	text,
-		const TextFormat&	format = TextFormat() ) ;
-
-	void OnCommand(
-		const Token& 	cmd,
-		Object 			*args,
-		std::size_t		count,
-		Resources		*res ) ;
+		const std::string&	text	= std::string(),
+		const TextState&	format	= TextState() ) ;
 
 	void SetText( const std::wstring& text ) ;
 
-	const TextFormat& Format() const ;
-	TextFormat& Format() ;
+	const TextState& Format() const ;
+	void SetFormat( const TextState& fmt ) ;
 
 	const std::wstring& Text() const ; 
 
@@ -66,7 +60,7 @@ public :
 
 private :
 	std::wstring	m_chars ;
-	TextFormat		m_format ;
+	TextState		m_format ;
 } ;
 
 } // end of namespace

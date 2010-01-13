@@ -28,9 +28,16 @@
 
 #include "graphics/Text.hh"
 
+#include "core/Token.hh"
+#include "graphics/TextState.hh"
 #include "graphics/TextLine.hh"
 
+#include <map>
+
 namespace pdf {
+
+class Object ;
+class Resources ;
 
 ///	brief description
 /**	The RealText class represents
@@ -61,7 +68,30 @@ public :
 	void Visit( GraphicsVisitor *visitor ) ;
 
 private :
+	typedef void (RealText::*Handler)(
+		Object			*args,
+		std::size_t		count,
+		Resources		*res ) ;
+	typedef std::map<Token, Handler>	HandlerMap ;
+
+	static const HandlerMap::value_type	m_handler_map_values[] ;
+	static const HandlerMap				m_handler_map ;
+
+	void OnTd( Object* args, std::size_t count, Resources *res ) ;
+	void OnTD( Object* args, std::size_t count, Resources *res ) ;
+	void OnTm( Object* args, std::size_t count, Resources *res ) ;
+	void OnTstar( Object* args, std::size_t count, Resources *res ) ;
+
+	void AddNewLine( ) ;
+
+private :
 	std::vector<TextLine>	m_lines ;
+	
+	///	Current text line matrix. 
+	Matrix		m_line_mat ;
+	
+	///	Current text state
+	TextState	m_state ;
 } ;
 
 } // end of namespace

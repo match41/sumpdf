@@ -139,7 +139,7 @@ set( GFX_INC_HDRS	${INCLUDE_DIR}/graphics/Graphics.hh
 					${INCLUDE_DIR}/graphics/GraphicsVisitor.hh
 					${INCLUDE_DIR}/graphics/Text.hh
 					${INCLUDE_DIR}/graphics/TextBlock.hh
-					${INCLUDE_DIR}/graphics/TextFormat.hh
+					${INCLUDE_DIR}/graphics/TextState.hh
 					${INCLUDE_DIR}/graphics/TextLine.hh )
 set( UTIL_INC_HDRS	${INCLUDE_DIR}/util/Exception.hh
 					${INCLUDE_DIR}/util/Rect.hh
@@ -163,7 +163,7 @@ set( GRAPICS_SRCS	${GRAPICS_DIR}/Graphics.cc
                     ${GRAPICS_DIR}/RealText.cc
                     ${GRAPICS_DIR}/TextLine.cc
                     ${GRAPICS_DIR}/TextBlock.cc
-                    ${GRAPICS_DIR}/TextFormat.cc )
+                    ${GRAPICS_DIR}/TextState.cc )
 
 set( FILE_SRCS		${FILE_DIR}/RealFile.cc
 					${FILE_DIR}/IFile.cc

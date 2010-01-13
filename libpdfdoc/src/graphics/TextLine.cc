@@ -38,45 +38,10 @@
 
 namespace pdf {
 
-namespace
-{
-	typedef	std::set<Token>	TokenSet ;
-	const TokenSet::value_type	state_cmd[] =
-	{
-		// text state
-		Token("Tc"), Token("Tw"), Token("Tz"), Token("TL"), Token("Tf"),
-		Token("Tr"), Token("Ts"),
-	} ;
-	const TokenSet state_cmds( Begin( state_cmd ), End( state_cmd ) ) ;
-}
-
-struct TextLine::Map
-{
-	typedef void (TextLine::*Handler)(
-		Object			*args,
-		std::size_t		count,
-		Resources		*res ) ;
-	typedef std::map<Token, Handler>	HandlerMap ;
-
-	static const HandlerMap::value_type	m_handler_map_values[] ;
-	static const HandlerMap				m_handler_map ;
-} ;
-
-const TextLine::Map::HandlerMap::value_type	TextLine::Map::m_handler_map_values[] =
-{
-	std::make_pair( "Td",	&TextLine::OnTd ),
-	std::make_pair( "TD",	&TextLine::OnTD ),
-	std::make_pair( "Tm",	&TextLine::OnTm ),
-	std::make_pair( "T*",	&TextLine::OnTstar ),
-} ;
-
-const TextLine::Map::HandlerMap TextLine::Map::m_handler_map(
-    Begin( TextLine::Map::m_handler_map_values ),
-    End( TextLine::Map::m_handler_map_values ) ) ;
-
 ///	constructor
-TextLine::TextLine( )
-    : m_blks( 1 )
+TextLine::TextLine( const Matrix& transform, const TextState& state )
+    : m_trans( transform ),
+      m_blks( 1, TextBlock( std::string(), state ) )
 {
 }
 
@@ -105,78 +70,20 @@ TextLine::const_iterator TextLine::end() const
 	return m_blks.end( ) ;
 }
 
-void TextLine::OnCommand(
-	const Token& 	cmd,
-	Object 			*args,
-	std::size_t		count,
-	Resources		*res )
-{
-	assert( !m_blks.empty() ) ;
-
-std::cout << "command = " << cmd.Get() << " " ;
-std::copy( args, args + count, std::ostream_iterator<Object>( std::cout, " " ) ) ;
-std::cout << std::endl ;
-
-	if ( state_cmds.find( cmd ) != state_cmds.end() )
-	{
-		// don't create new block if the current block is empty.
-		// directly apply to it in this case.
-		if ( !m_blks.back().IsEmpty() )
-		{
-std::cout << "new block" << std::endl ;
-			m_blks.push_back( TextBlock() ) ;
-		}
-		m_blks.back().OnCommand( cmd, args, count, res ) ;
-	}
-	else
-	{
-	    Map::HandlerMap::const_iterator i = Map::m_handler_map.find( cmd ) ;
-	    if ( i != Map::m_handler_map.end() )
-	        (this->*(i->second))( args, count, res ) ;
-	    else
-	    	m_blks.back().OnCommand( cmd, args, count, res ) ;
-    }
-}
-
-void TextLine::OnTd( Object* args, std::size_t count, Resources* )
-{
-	if ( count >= 2 )
-		m_trans = Matrix( 1, 0, 0, 1, args[0], args[1] ) ;
-}
-
-void TextLine::OnTD( Object* args, std::size_t count, Resources *res )
-{
-	if ( count >= 2 )
-	{
-		double	ty	= args[1] ;
-
-		m_blks.push_back( TextBlock() ) ;
-		m_blks.back().Format().SetLeading( -ty ) ;
-		
-		m_trans = Matrix( 1, 0, 0, 1, args[0], args[1] ) ;
-	}
-}
-
-void TextLine::OnTm( Object* args, std::size_t count, Resources* )
-{
-	if ( count >= 6 )
-		m_trans = Matrix(
-			args[0], args[1], args[2], args[3], args[4], args[5] ) ;
-}
-
-void TextLine::OnTstar( Object* , std::size_t , Resources *res )
-{
-	m_trans = Matrix( 1, 0, 0, 1, 0, m_blks.back().Format().Leading() ) ;
-}
-
 const Matrix& TextLine::Transform() const
 {
 	return m_trans ;
 }
 
+void TextLine::SetTransform( const Matrix& t )
+{
+	m_trans = t ;
+}
+
 bool TextLine::IsEmpty( ) const
 {
-	return m_blks.size() == 1 && m_blks.front().IsEmpty() ;
+	return m_blks.size() == 1 && m_blks.front().IsEmpty() &&
+		m_trans.IsIdentity() ;
 }
 
 std::ostream& operator<<( std::ostream& os, const TextLine& line )
