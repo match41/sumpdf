@@ -274,6 +274,9 @@ void RealPage::Decode( )
 				src.ResetState( ) ;
 				if ( src >> cmd )
 				{
+std::cout << cmd.Get() << " " ;
+std::copy( args.begin(), args.end(), std::ostream_iterator<Object>( std::cout, " " ) ) ;
+std::cout << std::endl ;
 					current = ProcessCommand(
 						cmd,
 						args.empty() ? 0 : &args[0],	// don't touch args[0]
@@ -298,13 +301,6 @@ const Graphics* RealPage::Content::Item( std::size_t idx ) const
 {
 	return m_gfx.at( idx ) ;
 }
-
-/*
-void RealPage::Content::Add( Graphics *item )
-{
-	m_gfx.push_back( item ) ;
-}
-*/
 
 RealText* RealPage::Content::AddText( )
 {

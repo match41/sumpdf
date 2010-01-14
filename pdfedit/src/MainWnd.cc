@@ -55,6 +55,7 @@
 #include <graphics/TextBlock.hh>
 
 #include <cassert>
+#include <iostream>
 
 namespace pdf {
 
@@ -108,6 +109,7 @@ void MainWnd::OpenFile( const QString& file )
 			if ( t != 0 )
 			{
 				const TextLine&		l = *t->begin() ;
+std::cout << "text line = " << l ;
 				const TextBlock&	b = *l.begin() ;
 
 				QGraphicsSimpleTextItem *item =

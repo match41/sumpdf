@@ -50,8 +50,8 @@ const RealText::HandlerMap::value_type	RealText::m_handler_map_values[] =
 	std::make_pair( "T*",	&RealText::OnTstar ),
 	
 	// text showing commands
-	std::make_pair( "Tj",	&RealText::OnTd ),
-	std::make_pair( "TJ",	&RealText::OnTD ),
+	std::make_pair( "Tj",	&RealText::OnTj ),
+	std::make_pair( "TJ",	&RealText::OnTJ ),
 	std::make_pair( "\'",	&RealText::OnSingleQuote ),
 	std::make_pair( "\"",	&RealText::OnDoubleQuote ),
 } ;
@@ -130,7 +130,7 @@ void RealText::Output( std::ostream& os ) const
 
 void RealText::OnTd( Object* args, std::size_t count, Resources* )
 {
-std::cout << "Td: " << std::endl ;
+std::cout << "Td: " << args[0] << " " << args[1] << std::endl ;
 
 	if ( count >= 2 )
 	{
@@ -181,8 +181,11 @@ void RealText::AddNewLine( )
 
 	// remove empty lines first
 	if ( m_lines.back().IsEmpty() )
+	{
+std::cout << "pop" << std::endl ;
 		m_lines.pop_back() ;
-std::cout << "new line: " << std::endl ;
+	}
+std::cout << "new line: " << TextLine( m_line_mat, m_state ) << std::endl ;
 	m_lines.push_back( TextLine( m_line_mat, m_state ) ) ;
 }
 
