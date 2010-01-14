@@ -112,6 +112,33 @@ double Matrix::Dy() const
 	return m_mat[5] ;
 }
 
+void Matrix::M11( double val )
+{
+	m_mat[0] = val ;
+}
+
+void Matrix::M12( double val )
+{
+	m_mat[1] = val ;
+}
+
+void Matrix::M21( double val )
+{
+	m_mat[2] = val ;
+}
+void Matrix::M22( double val )
+{
+	m_mat[3] = val ;
+}
+void Matrix::Dx( double val )
+{
+	m_mat[4] = val ;
+}
+void Matrix::Dy( double val )
+{
+	m_mat[5] = val ;
+}
+
 Matrix operator*( const Matrix& a, const Matrix& b )
 {
 	return Matrix(

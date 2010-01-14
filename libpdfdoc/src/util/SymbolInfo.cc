@@ -170,13 +170,15 @@ void SymbolInfo::PrintTrace( void *addr, std::ostream& os, std::size_t idx )
 #endif
 		os << "#"  << idx << " " << addr << " "
 			<< filename << ":" << btinfo.m_lineno 
-			<< " " << Demangle(btinfo.m_func_name)
+			<< " "
+			<< (btinfo.m_func_name != 0 ? Demangle(btinfo.m_func_name) : "" )
 			<< std::endl ;
 	}
 	else if ( dladdr( addr, &sym ) )
 		os << "#"  << idx << " " << addr << " "
 			<< sym.dli_fname
-			<< " " << Demangle( sym.dli_sname )
+			<< " "
+			<< (sym.dli_sname != 0 ? Demangle( sym.dli_sname ) : "" )
 			<< std::endl ;
 }
 

@@ -87,7 +87,10 @@ private :
 	void OnSingleQuote( Object* args, std::size_t count, Resources *res ) ;
 	void OnDoubleQuote( Object* args, std::size_t count, Resources *res ) ;
 
+	void OnTf( Object* args, std::size_t count, Resources *res ) ;
+
 	void AddNewLine( ) ;
+	void AddNewLine( const Matrix& mat ) ;
 
 private :
 	std::vector<TextLine>	m_lines ;

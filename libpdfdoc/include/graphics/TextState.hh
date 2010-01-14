@@ -45,10 +45,22 @@ public :
 
 	// compiler generated copy constructor and assignment operator are fine.
 
-	double Leading( ) const ;
+	void SetCharSpace( double val ) ;
+	void SetWordSpace( double val ) ;
+	void SetHScale( double val ) ;
 	void SetLeading( double val ) ;
-	
 	void SetFont( double size, Font *font ) ;
+	void SetRenderMode( int val ) ;
+	void SetTextRise( double val ) ;
+
+	double CharSpace( ) const ;
+	double WordSpace( ) const ;
+	double HScale( ) const ;
+	double Leading( ) const ;
+	double FontSize( ) const ;
+	Font* GetFont( ) const ;
+	int RenderMode( ) const ;
+	double TextRise( ) const ;
 
 private :
 	double	m_char_space ;

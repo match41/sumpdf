@@ -30,6 +30,7 @@
 #include "core/Array.hh"
 #include "core/Object.hh"
 #include "core/Token.hh"
+#include "font/BaseFont.hh"
 #include "page/Resources.hh"
 #include "util/Util.hh"
 
@@ -54,6 +55,9 @@ const RealText::HandlerMap::value_type	RealText::m_handler_map_values[] =
 	std::make_pair( "TJ",	&RealText::OnTJ ),
 	std::make_pair( "\'",	&RealText::OnSingleQuote ),
 	std::make_pair( "\"",	&RealText::OnDoubleQuote ),
+
+	// text state commands
+	std::make_pair( "Tf",	&RealText::OnTf ),
 } ;
 
 const RealText::HandlerMap RealText::m_handler_map(
@@ -177,6 +181,11 @@ void RealText::OnTstar( Object* , std::size_t , Resources * )
 
 void RealText::AddNewLine( )
 {
+	AddNewLine( m_line_mat ) ;
+}
+
+void RealText::AddNewLine( const Matrix& mat )
+{
 	assert( !m_lines.empty() ) ;
 
 	// remove empty lines first
@@ -186,7 +195,7 @@ std::cout << "pop" << std::endl ;
 		m_lines.pop_back() ;
 	}
 std::cout << "new line: " << std::endl ;
-	m_lines.push_back( TextLine( m_line_mat, m_state ) ) ;
+	m_lines.push_back( TextLine( mat, m_state ) ) ;
 }
 
 void RealText::OnTj( Object* args, std::size_t count, Resources *res )
@@ -204,6 +213,8 @@ void RealText::OnTJ( Object* args, std::size_t count, Resources *res )
 {
 	assert( !m_lines.empty() ) ;
 
+	Matrix tm = m_line_mat ;
+
 	Array& a = args[0].As<Array>() ;
 	for ( Array::iterator i = a.begin() ; i != a.end() ; ++i )
 	{
@@ -211,6 +222,17 @@ void RealText::OnTJ( Object* args, std::size_t count, Resources *res )
 		{
 			std::string& s = i->As<std::string>() ;
 			m_lines.back().AppendText( std::wstring( s.begin(), s.end() ) ) ;
+		}
+		else if ( i->Is<double>() || i->Is<int>() )
+		{
+			double disp = i->To<double>() ;
+			
+			// TODO: depend on writing mode, advance horizonal or vertical
+			// assume vertical here.
+			Matrix m ;
+			m.Dx( -disp ) ;
+			tm = tm * m ;
+//			AddNewLine( tm ) ;
 		}
 	}
 }
@@ -221,6 +243,23 @@ void RealText::OnSingleQuote( Object* args, std::size_t count, Resources *res )
 
 void RealText::OnDoubleQuote( Object* args, std::size_t count, Resources *res )
 {
+}
+
+void RealText::OnTf( Object* args, std::size_t count, Resources *res )
+{
+	assert( res != 0 ) ;
+
+	if ( count >= 2 )
+	{
+		BaseFont *f = res->FindFont( args[0].As<Name>() ) ;
+		if ( f == 0 )
+			std::cout << "unknown font: " << args[1] << std::endl ;
+		else
+		{
+			m_state.SetFont( args[1], f ) ;
+			m_lines.back().ChangeState( m_state ) ;
+		}
+	}
 }
 
 } // end of namespace

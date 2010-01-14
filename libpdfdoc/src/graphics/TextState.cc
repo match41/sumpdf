@@ -29,13 +29,18 @@
 // TODO: resolve cyclic dependency
 #include "page/Resources.hh"
 
+#include <cassert>
+
 namespace pdf {
 
 /**	Constructor.
 */
 TextState::TextState( )
-	: m_leading( 0 )
+	: m_font( 0 )
 {
+	m_char_space = m_word_space = m_hori_scale = m_leading = m_font_size =
+	m_text_rise  = 0 ;
+	m_render_mode = 0 ;
 }
 
 ///	Returns the leading.
@@ -58,8 +63,70 @@ void TextState::SetLeading( double val )
 
 void TextState::SetFont( double size, Font *font )
 {
+	assert( font != 0 ) ;
+
 	m_font_size	= size ;
 	m_font		= font ;
+}
+
+void TextState::SetCharSpace( double val )
+{
+	m_char_space = val ;
+}
+
+void TextState::SetWordSpace( double val )
+{
+	m_word_space = val ;
+}
+
+void TextState::SetHScale( double val )
+{
+	m_hori_scale = val ;
+}
+
+void TextState::SetRenderMode( int val )
+{
+	m_render_mode = val ;
+}
+
+void TextState::SetTextRise( double val )
+{
+	m_text_rise = val ;
+}
+
+double TextState::CharSpace( ) const
+{
+	return m_char_space ;
+}
+
+double TextState::WordSpace( ) const
+{
+	return m_word_space ;
+}
+
+double TextState::HScale( ) const
+{
+	return m_hori_scale ;
+}
+
+double TextState::FontSize( ) const
+{
+	return m_font_size ;
+}
+
+Font* TextState::GetFont( ) const
+{
+	return m_font ;
+}
+
+int TextState::RenderMode( ) const
+{
+	return m_render_mode ;
+}
+
+double TextState::TextRise( ) const
+{
+	return m_text_rise ;
 }
 
 } // end of namespace

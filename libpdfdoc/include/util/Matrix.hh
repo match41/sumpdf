@@ -61,6 +61,13 @@ public :
 	double Dx() const ;
 	double Dy() const ;
 
+	void M11( double val ) ;
+	void M12( double val ) ;
+	void M21( double val ) ;
+	void M22( double val ) ;
+	void Dx( double val ) ;
+	void Dy( double val ) ;
+
 	typedef double*			iterator ;
 	typedef const double*	const_iterator ;
 	
