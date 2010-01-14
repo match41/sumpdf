@@ -30,7 +30,6 @@
 #include "Doc.hh"
 #include "DocInfo.hh"
 
-#include "file/Catalog.hh"
 #include "font/StandardFont.hh"	// for co-variant return value
 #include "page/RealPage.hh"		// for co-variant return value 
 
@@ -48,6 +47,7 @@ namespace pdf {
 
 class IndirectObj ;
 class Font ;
+class Catalog ;
 
 /**	\brief	Implementation of the PDF document class.
 	\internal

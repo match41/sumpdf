@@ -68,6 +68,8 @@ public :
 	std::string BaseName( ) const ;
 	Ref Write( IFile *file ) const ;
 
+	double Width( const std::wstring& text ) const ;
+	
 private :
 	SimpleFont( const Name& base_font, Type type ) ;
 
@@ -77,11 +79,13 @@ private :
 	static const Name& SubType( Type t ) ;
 	static Type        SubType( const Name& t ) ;
 
+	template <typename OutIt>
 	static void GetWidth(
-		FT_Face	face,
-		std::vector<int>& width,
-		int&	first_char,
-		int&	last_char ) ;
+		FT_Face		face,
+		OutIt		out,
+		std::size_t	space,
+		int&		first_char,
+		int&		last_char ) ;
 
 private :
 	CompleteObj			m_self ;

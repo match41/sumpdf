@@ -67,8 +67,15 @@ SimpleFont::SimpleFont( FT_Face face )
 	  m_base_font( ::FT_Get_Postscript_Name( face ) ),
 	  m_type( GetFontType( face ) )
 {
-	GetWidth( face, m_widths, m_first_char, m_last_char ) ;
-	assert( (int)m_widths.size() == m_last_char - m_first_char + 1 ) ;
+	GetWidth(
+		face,
+		std::back_inserter(m_widths),
+		m_widths.max_size(),
+		m_first_char,
+		m_last_char ) ;
+	
+	assert( m_widths.size() ==
+		static_cast<std::size_t>(m_last_char - m_first_char + 1) ) ;
 }
 
 SimpleFont::SimpleFont( Dictionary& self, IFile *file )
@@ -115,11 +122,13 @@ SimpleFont::Type SimpleFont::GetFontType( FT_Face face )
 		return unknown ;
 }
 
+template <typename OutIt>
 void SimpleFont::GetWidth(
-	FT_Face	face,
-	std::vector<int>& width,
-	int&	first_char,
-	int&	last_char )
+	FT_Face		face,
+	OutIt		out,
+	std::size_t	space,
+	int&		first_char,
+	int&		last_char )
 {
 	// traverse all characters
 	unsigned		glyph ;
@@ -132,7 +141,7 @@ void SimpleFont::GetWidth(
 		char_code = ::FT_Get_Next_Char( face, char_code, &glyph ) ;
 	}
 
-	for ( int i = first_char ; i <= last_char ; i++ )
+	for ( int i = first_char ; i <= last_char && space-- > 0 ; i++ )
 	{
 		// load the glyph to the glyph slot in the face
 		FT_Error error = ::FT_Load_Glyph(
@@ -143,9 +152,24 @@ void SimpleFont::GetWidth(
 		if ( error != 0 )
 			throw Exception( ) ;
 
-		width.push_back( face->glyph->metrics.horiAdvance ) ;
+		*out++ = face->glyph->metrics.horiAdvance ;
 	}
-//	assert( (int)m_widths.size() == m_last_char - m_first_char + 1 ) ;
+}
+
+double SimpleFont::Width( const std::wstring& text ) const
+{
+	assert( m_widths.size() ==
+		static_cast<std::size_t>(m_last_char - m_first_char + 1) ) ;
+	
+	double width = 0.0 ;
+	for ( std::wstring::const_iterator
+		i = text.begin() ; i < text.end() ; ++i )
+	{
+		if ( *i >= m_first_char && *i <= m_last_char )
+			width += m_widths[*i-m_first_char] ;
+	}
+	
+	return width ;
 }
 
 Ref SimpleFont::Write( IFile *file ) const

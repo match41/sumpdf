@@ -46,6 +46,8 @@ public :
 	Ref Write( IFile *file ) const ;
 	
 	static bool IsStandardFont( const Name& font_name ) ;
+	
+	double Width( const std::wstring& text ) const ;
 
 private :
 	Name	m_font_name ;

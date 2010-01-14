@@ -221,7 +221,16 @@ void RealText::OnTJ( Object* args, std::size_t count, Resources *res )
 		if ( i->Is<std::string>() )
 		{
 			std::string& s = i->As<std::string>() ;
-			m_lines.back().AppendText( std::wstring( s.begin(), s.end() ) ) ;
+			std::wstring ws( s.begin(), s.end() ) ;
+
+double width = m_state.GetFont()->Width( ws ) ;
+std::cout << "\"" << s << "\" " ;
+std::cout << "width = " << width << std::endl ;
+Matrix m ;
+m.Dx( -width / 1000.0 ) ;
+tm = tm * m ;
+			
+			m_lines.back().AppendText( ws ) ;
 		}
 		else if ( i->Is<double>() || i->Is<int>() )
 		{
@@ -230,9 +239,9 @@ void RealText::OnTJ( Object* args, std::size_t count, Resources *res )
 			// TODO: depend on writing mode, advance horizonal or vertical
 			// assume vertical here.
 			Matrix m ;
-			m.Dx( -disp ) ;
+			m.Dx( -disp / 1000.0 ) ;
 			tm = tm * m ;
-//			AddNewLine( tm ) ;
+			AddNewLine( tm ) ;
 		}
 	}
 }

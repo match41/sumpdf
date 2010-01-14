@@ -86,4 +86,9 @@ template <> BaseFont* CreateNewElement( const Object& , IElementSrc * )
 }
 #endif
 
+double StandardFont::Width( const std::wstring& text ) const
+{
+	return 0.0 ;
+}
+
 } // end of namespace

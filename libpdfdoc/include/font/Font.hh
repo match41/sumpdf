@@ -41,6 +41,8 @@ public :
 	virtual ~Font( ) ;
 	
 	virtual std::string BaseName( ) const = 0 ;
+	
+	virtual double Width( const std::wstring& text ) const = 0 ;
 } ;
 
 } // end of namespace

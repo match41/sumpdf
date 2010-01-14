@@ -30,6 +30,7 @@
 #include "core/Ref.hh"
 #include "core/Object.hh"
 
+#include "file/Catalog.hh"
 #include "file/RealFile.hh"
 
 #include "page/RealPage.hh"
