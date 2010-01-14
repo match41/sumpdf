@@ -185,7 +185,7 @@ void RealText::AddNewLine( )
 std::cout << "pop" << std::endl ;
 		m_lines.pop_back() ;
 	}
-std::cout << "new line: " << TextLine( m_line_mat, m_state ) << std::endl ;
+std::cout << "new line: " << std::endl ;
 	m_lines.push_back( TextLine( m_line_mat, m_state ) ) ;
 }
 

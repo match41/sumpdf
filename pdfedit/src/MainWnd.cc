@@ -54,6 +54,9 @@
 #include <graphics/TextLine.hh>
 #include <graphics/TextBlock.hh>
 
+#include <boost/bind.hpp>
+
+#include <algorithm>
 #include <cassert>
 #include <iostream>
 
@@ -103,24 +106,30 @@ void MainWnd::OpenFile( const QString& file )
 		m_scene->setSceneRect( 0, 0, r.Width(), r.Height() ) ;
 		
 		PageContent *c = p->GetContent( ) ;
-		for ( std::size_t i = 0 ; i < c->Count() ; i++ )
-		{
-			const Text *t = dynamic_cast<const Text*>( c->Item( i ) ) ;
-			if ( t != 0 )
-			{
-				const TextLine&		l = *t->begin() ;
-std::cout << "text line = " << l ;
-				const TextBlock&	b = *l.begin() ;
-
-				QGraphicsSimpleTextItem *item =
-					new QGraphicsSimpleTextItem(
-						QString::fromStdWString( b.Text() ) ) ;
-
-				item->setTransform( ToQtMatrix(l.Transform()) ) ;
-				m_scene->addItem( item ) ;
-			}
-		}
+		c->VisitGraphics( this ) ;
 	}
+}
+
+void MainWnd::VisitText( Text *text )
+{
+	std::for_each( text->begin(), text->end(),
+		boost::bind( &MainWnd::LoadTextLine, this, _1 ) ) ;
+}
+
+void MainWnd::LoadTextLine( const TextLine& line )
+{
+	const TextBlock& b = *line.begin() ;
+
+	QGraphicsSimpleTextItem *item =
+		new QGraphicsSimpleTextItem(
+			QString::fromStdWString( b.Text() ) ) ;
+
+	item->setTransform( ToQtMatrix( line.Transform()) ) ;
+	m_scene->addItem( item ) ;
+}
+
+void MainWnd::VisitGraphics( Graphics *gfx )
+{
 }
 
 void MainWnd::OnAbout( )

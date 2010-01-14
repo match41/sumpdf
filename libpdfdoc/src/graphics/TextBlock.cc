@@ -26,9 +26,7 @@
 
 #include "graphics/TextBlock.hh"
 
-#include "core/Array.hh"
-#include "core/Object.hh"
-#include "core/Token.hh"
+#include "core/String.hh"
 
 #include <iostream>
 
@@ -73,6 +71,12 @@ void TextBlock::SetText( const std::wstring& text )
 void TextBlock::AppendText( const std::wstring& text )
 {
 	m_chars.insert( m_chars.end(), text.begin(), text.end() ) ;
+}
+
+std::ostream& operator<<( std::ostream& os, const TextBlock& b )
+{
+	std::string s( b.m_chars.begin(), b.m_chars.end() ) ;
+	return os << "Tj " << String( s ) << ' ' ;
 }
 
 } // end of namespace

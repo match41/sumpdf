@@ -28,8 +28,8 @@
 #define __PDF_MAINWND_HH_EADER_INCLUDED__
 
 #include <QMainWindow>
-
 #include "ui_MainWnd.h"
+#include <graphics/GraphicsVisitor.hh>
 
 #include <QString>
 
@@ -47,8 +47,12 @@ class PageView ;
 class Doc ;
 class Page ;
 class Matrix ;
+class TextLine ;
 
-class MainWnd : public QMainWindow, private Ui::MainWndUI
+class MainWnd :
+	public QMainWindow,
+	private Ui::MainWndUI,
+	private GraphicsVisitor
 {
 	Q_OBJECT
 
@@ -66,7 +70,10 @@ public slots :
 
 private :
 	void StorePage( QGraphicsScene *scene, Doc *doc, Page *page ) ;
-	
+	void VisitText( Text *text ) ;
+	void VisitGraphics( Graphics *gfx ) ;
+	void LoadTextLine( const TextLine& line ) ;
+
 	QTransform ToQtMatrix( const Matrix& m ) ;
 
 private :

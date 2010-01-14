@@ -99,6 +99,12 @@ std::ostream& operator<<( std::ostream& os, const TextLine& line )
 	else
 		os << "Tm " << t.M11() << ' ' << t.M12() << ' ' << t.M21() << ' '
 		            << t.M22() << ' ' << t.Dx()  << ' ' << t.Dy( ) << '\n' ; 
+	
+	std::copy(
+		line.m_blks.begin(),
+		line.m_blks.end(),
+		std::ostream_iterator<TextBlock>( os ) ) ;
+	
 	return os ;
 }
 

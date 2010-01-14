@@ -28,13 +28,11 @@
 #define __PDF_TEXTBLOCK_HH_EADER_INCLUDED__
 
 #include "TextState.hh"
+
+#include <iosfwd>
 #include <string>
-#include <vector>
 
 namespace pdf {
-
-class Token ;
-class Object ;
 
 ///	brief description
 /**	The TextBlock class represent a string of characters with the same
@@ -57,6 +55,8 @@ public :
 	const std::wstring& Text() const ; 
 
 	bool IsEmpty() const ;
+
+	friend std::ostream& operator<<( std::ostream& os, const TextBlock& b ) ;
 
 private :
 	std::wstring	m_chars ;
