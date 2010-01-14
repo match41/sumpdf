@@ -52,6 +52,7 @@ set( INCLUDE_DIR	include/ )
 # headers
 ###############################################################################
 set( PAGE_HDRS		${PAGE_DIR}/RealPage.hh
+					${PAGE_DIR}/RealContent.hh
 					${PAGE_DIR}/Resources.hh
 					${PAGE_DIR}/PageNode.hh
 					${PAGE_DIR}/PageTree.hh
@@ -152,6 +153,7 @@ set( PAGE_SRCS  	${PAGE_DIR}/RealPage.cc
 					${PAGE_DIR}/Resources.cc
 					${PAGE_DIR}/Page.cc
 					${PAGE_DIR}/PageContent.cc
+					${PAGE_DIR}/RealContent.cc
 					${PAGE_DIR}/PageNode.cc
 					${PAGE_DIR}/PageTree.cc
 					${PAGE_DIR}/XObject.cc

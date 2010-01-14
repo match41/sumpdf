@@ -32,8 +32,6 @@
 #include "core/Array.hh"
 #include "core/Object.hh"
 #include "core/String.hh"
-#include "core/Token.hh"
-#include "core/TokenSrc.hh"
 
 // other libpdfdoc headers
 #include "file/ObjectReader.hh"
@@ -199,131 +197,20 @@ const Resources* RealPage::GetResource( ) const
 	return &m_resources ;
 }
 
-PageContent* RealPage::GetContent( )
+///	Get the contents of a page
+/**	This function will decode the page content when called. Decoding page
+	content takes some time, so unless the user calls this function, the
+	content won't be decode when creating the page object.
+*/
+RealContent* RealPage::GetContent( )
 {
-	if ( m_content.m_gfx.empty() )
+	if ( m_content.IsEmpty() )
 	{
 		// decode the graphics commands
-		Decode( ) ;
+		m_content.Load( m_cstrs.begin(), m_cstrs.end(), &m_resources ) ;
 	}
 	
 	return &m_content ;
-}
-
-Graphics* RealPage::ProcessCommand(
-	const Token& 	cmd,
-	Object 			*args,
-	std::size_t 	count,
-	Graphics		*gfx )
-{
-	assert( count > 0 || args == 0 ) ;
-
-	if ( cmd == Token("BT") && gfx == 0 )
-	{
-std::cout << "begin text" << std::endl ;
-		gfx = new RealText ;
-	}
-	else if ( cmd == Token("ET") && gfx != 0 )
-	{
-		RealText *text = dynamic_cast<RealText*>( gfx ) ;
-
-std::cout << "end text" << std::endl ;
-text->Output( std::cout ) ;
-
-		m_content.m_gfx.push_back( gfx ) ;
-		gfx = 0 ;
-	}
-	else if ( gfx != 0 )
-	{
-		RealText *text = dynamic_cast<RealText*>( gfx ) ;
-		text->OnCommand( cmd, args, count, &m_resources ) ;
-	}
-	
-	return gfx ;
-}
-
-/**	\brief	Decode the page contents.
-
-	This function will decode the content stream of the page and create
-	Graphics objects. The newly created Graphics will be stored in the
-	vector in the Content object.
-*/
-void RealPage::Decode( )
-{
-	for ( std::vector<Stream>::iterator i = m_cstrs.begin( ) ;
-	                                    i != m_cstrs.end( ) ; ++i )
-	{
-		// rewind to stream start for reading
-		i->Rewind( ) ;
-		
-		std::istream s( i->InStreamBuf() ) ;
-		TokenSrc src( s ) ;
-		std::vector<Object> args ;
-
-		Graphics *current = 0 ;
-
-		while ( true )
-		{
-			Token  cmd ;
-			Object obj ;
-	
-			if ( src >> obj )
-			{
-				// swapping is faster
-				args.push_back( Object() ) ;
-				obj.Swap( args.back() ) ;
-			}
-			
-			// if it is not an object, then it should be a command operator
-			else
-			{
-				src.ResetState( ) ;
-				if ( src >> cmd )
-				{
-std::cout << cmd.Get() << " " ;
-std::copy( args.begin(), args.end(), std::ostream_iterator<Object>( std::cout, " " ) ) ;
-std::cout << std::endl ;
-					current = ProcessCommand(
-						cmd,
-						args.empty() ? 0 : &args[0],	// don't touch args[0]
-						args.size(),					// if empty.
-						current ) ;
-
-					args.clear( ) ;
-				}
-				else
-					break ;
-			}
-		}
-	}
-}
-
-std::size_t RealPage::Content::Count( ) const
-{
-	return m_gfx.size( ) ;
-}
-
-const Graphics* RealPage::Content::Item( std::size_t idx ) const
-{
-	return m_gfx.at( idx ) ;
-}
-
-RealText* RealPage::Content::AddText( )
-{
-	RealText *t = new RealText ;
-	m_gfx.push_back( t ) ;
-	return t ;
-}
-
-void RealPage::Content::VisitGraphics( GraphicsVisitor *visitor )
-{
-	// all pointers are not null
-	assert( std::find( m_gfx.begin(), m_gfx.end(), (void*)0 ) == m_gfx.end() ) ;
-
-	std::for_each(
-		m_gfx.begin(),
-		m_gfx.end(),
-		boost::bind( &Graphics::Visit, _1, visitor ) ) ;
 }
 
 } // end of namespace

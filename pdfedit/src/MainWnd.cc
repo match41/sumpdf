@@ -112,6 +112,8 @@ void MainWnd::OpenFile( const QString& file )
 
 void MainWnd::VisitText( Text *text )
 {
+	assert( text != 0 ) ;
+
 	std::for_each( text->begin(), text->end(),
 		boost::bind( &MainWnd::LoadTextLine, this, _1 ) ) ;
 }
