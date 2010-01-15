@@ -30,7 +30,7 @@
 
 #include <QDebug>
 #include <QMouseEvent>
-#include <QGraphicsProxyWidget>
+//#include <QGraphicsProxyWidget>
 
 namespace pdf {
 
