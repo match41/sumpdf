@@ -47,7 +47,7 @@ public :
 	
 	static bool IsStandardFont( const Name& font_name ) ;
 	
-	double Width( const std::wstring& text ) const ;
+	double Width( const std::wstring& text, double size ) const ;
 
 private :
 	Name	m_font_name ;

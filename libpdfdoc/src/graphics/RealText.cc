@@ -134,7 +134,7 @@ void RealText::Output( std::ostream& os ) const
 
 void RealText::OnTd( Object* args, std::size_t count, Resources* )
 {
-std::cout << "Td: " << args[0] << " " << args[1] << std::endl ;
+//std::cout << "Td: " << args[0] << " " << args[1] << std::endl ;
 
 	if ( count >= 2 )
 	{
@@ -145,7 +145,7 @@ std::cout << "Td: " << args[0] << " " << args[1] << std::endl ;
 
 void RealText::OnTD( Object* args, std::size_t count, Resources *res )
 {
-std::cout << "TD: " << std::endl ;
+//std::cout << "TD: " << std::endl ;
 	
 	if ( count >= 2 )
 	{
@@ -159,7 +159,7 @@ std::cout << "TD: " << std::endl ;
 
 void RealText::OnTm( Object* args, std::size_t count, Resources* )
 {
-std::cout << "Tm: " << std::endl ;
+//std::cout << "Tm: " << std::endl ;
 
 	if ( count >= 6 )
 	{
@@ -191,10 +191,10 @@ void RealText::AddNewLine( const Matrix& mat )
 	// remove empty lines first
 	if ( m_lines.back().IsEmpty() )
 	{
-std::cout << "pop" << std::endl ;
+//std::cout << "pop" << std::endl ;
 		m_lines.pop_back() ;
 	}
-std::cout << "new line: " << std::endl ;
+//std::cout << "new line: " << std::endl ;
 	m_lines.push_back( TextLine( mat, m_state ) ) ;
 }
 
@@ -223,24 +223,26 @@ void RealText::OnTJ( Object* args, std::size_t count, Resources *res )
 			std::string& s = i->As<std::string>() ;
 			std::wstring ws( s.begin(), s.end() ) ;
 
-double width = m_state.GetFont()->Width( ws ) ;
+double width = m_state.GetFont()->Width( ws, m_state.FontSize() ) ;
 std::cout << "\"" << s << "\" " ;
-std::cout << "width = " << width << std::endl ;
+std::cout << "width = " << width / 1000.0 << std::endl ;
 Matrix m ;
-m.Dx( -width / 1000.0 ) ;
+m.Dx( width / 1000.0 ) ;
 tm = tm * m ;
-			
+std::cout << "tm = " << tm.Dx() << " " << tm.Dy() << std::endl ;
 			m_lines.back().AppendText( ws ) ;
 		}
 		else if ( i->Is<double>() || i->Is<int>() )
 		{
 			double disp = i->To<double>() ;
+std::cout << "disp = " << disp << std::endl ;
 			
 			// TODO: depend on writing mode, advance horizonal or vertical
 			// assume vertical here.
 			Matrix m ;
-			m.Dx( -disp / 1000.0 ) ;
+			m.Dx( -disp / 1000.0 * m_state.FontSize() ) ;
 			tm = tm * m ;
+std::cout << "tm = " << tm.Dx() << " " << tm.Dy() << std::endl ;
 			AddNewLine( tm ) ;
 		}
 	}

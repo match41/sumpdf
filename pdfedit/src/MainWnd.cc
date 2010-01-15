@@ -33,7 +33,7 @@
 #include <QFileDialog>
 #include <QGraphicsItem>
 #include <QGraphicsScene>
-#include <QGraphicsProxyWidget>
+#include <QFont>
 #include <QList>
 #include <QMessageBox>
 #include <QPointF>
@@ -47,6 +47,7 @@
 #include <libpdfdoc.hh>
 #include <Doc.hh>
 #include <page/Page.hh>
+#include <font/Font.hh>
 #include <util/Rect.hh>
 #include <util/Matrix.hh>
 #include <page/PageContent.hh>
@@ -127,6 +128,25 @@ void MainWnd::LoadTextLine( const TextLine& line )
 			QString::fromStdWString( b.Text() ) ) ;
 
 	item->setTransform( ToQtMatrix( line.Transform()) ) ;
+	
+	QString fname = QString::fromStdString(b.Format().GetFont()->BaseName()) ;
+qDebug() << "font is: " << fname ;
+QFont::Weight w = QFont::Normal ;
+
+if ( fname == "PLYBKC+NimbusRomNo9L-Regu" )
+	fname = "Nimbus Roman No9 L" ;
+else if ( fname == "NRCBZS+NimbusRomNo9L-Medi" )
+{
+	fname = "Nimbus Roman No9 L" ;
+	w = QFont::Bold ;
+}
+else
+	fname = "Nimbus Sans L" ;
+	
+	QFont font( fname, b.Format().FontSize() * 0.8, w ) ;
+	item->setFont( font ) ;
+qDebug() << "\"" << item->text() << "\" = " << item->boundingRect() ;
+
 	m_scene->addItem( item ) ;
 }
 
@@ -181,13 +201,13 @@ void MainWnd::StorePage( QGraphicsScene *scene, Doc *doc, Page *page )
 	assert( doc != 0 ) ;
 	assert( page != 0 ) ;
 	
-	Font *font = doc->CreateSimpleFont( "Arial" ) ;
+//	Font *font = doc->CreateSimpleFont( "Arial" ) ;
 	
 	QList<QGraphicsItem *> items = scene->items() ;
 	for ( QList<QGraphicsItem*>::iterator i  = items.begin() ;
 	                                      i != items.end() ; ++i )
 	{
-		QGraphicsProxyWidget *text =
+/*		QGraphicsProxyWidget *text =
 			qgraphicsitem_cast<QGraphicsProxyWidget*>( *i ) ;
 		
 		QPointF pos = text->scenePos( ) ;
@@ -200,7 +220,7 @@ void MainWnd::StorePage( QGraphicsScene *scene, Doc *doc, Page *page )
 		// left corner and increase downward.
 		if ( edit != 0 )
 			page->DrawText( pos.x(), scene->height() - pos.y(), font,
-							edit->toPlainText().toUtf8().data() ) ;
+							edit->toPlainText().toUtf8().data() ) ;*/
 	}
 }
 

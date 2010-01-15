@@ -156,7 +156,7 @@ void SimpleFont::GetWidth(
 	}
 }
 
-double SimpleFont::Width( const std::wstring& text ) const
+double SimpleFont::Width( const std::wstring& text, double size ) const
 {
 	assert( m_widths.size() ==
 		static_cast<std::size_t>(m_last_char - m_first_char + 1) ) ;
@@ -166,10 +166,15 @@ double SimpleFont::Width( const std::wstring& text ) const
 		i = text.begin() ; i < text.end() ; ++i )
 	{
 		if ( *i >= m_first_char && *i <= m_last_char )
-			width += m_widths[*i-m_first_char] ;
+			width += (m_widths[*i-m_first_char] * size );
 	}
-	
 	return width ;
+/*
+	if ( ch >= m_first_char && ch <= m_last_char )
+		return m_widths[ch-m_first_char] ;
+	else
+		return 0.0 ;
+*/
 }
 
 Ref SimpleFont::Write( IFile *file ) const

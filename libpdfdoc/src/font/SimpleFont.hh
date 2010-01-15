@@ -68,7 +68,7 @@ public :
 	std::string BaseName( ) const ;
 	Ref Write( IFile *file ) const ;
 
-	double Width( const std::wstring& text ) const ;
+	double Width( const std::wstring& text, double size ) const ;
 	
 private :
 	SimpleFont( const Name& base_font, Type type ) ;
