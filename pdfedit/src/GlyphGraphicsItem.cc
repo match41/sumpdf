@@ -72,8 +72,6 @@ void GlyphGraphicsItem::paint(
 {
 	assert( m_glyph->format == FT_GLYPH_FORMAT_OUTLINE ) ;
 
-//	painter->drawRect( boundingRect() ) ;
-
 	FT_Outline_Funcs f =
 	{
 		&GlyphGraphicsItem::MoveTo,
@@ -89,9 +87,17 @@ void GlyphGraphicsItem::paint(
 	FT_OutlineGlyph og = reinterpret_cast<FT_OutlineGlyph>( m_glyph ) ; 
 	FT_Outline_Decompose( &og->outline, &f, &r ) ;
 	
+	painter->setRenderHint( QPainter::Antialiasing ) ;
 	painter->setBrush(QColor(0, 0, 0));
 	painter->setPen( QPen( Qt::NoPen ) ) ;
 	painter->drawPath( path ) ;
+	
+	// debug lines
+	painter->setBrush( QBrush( Qt::NoBrush ) );
+	painter->setPen( QPen( ) ) ;
+	painter->drawRect( boundingRect() ) ;
+//	painter->drawLine( 0, 0, m_metrics.width / 64.0, 0 ) ;
+//	painter->drawLine( 0, 0, 0, -m_metrics.height / 64.0 ) ;
 }
 
 double GlyphGraphicsItem::Left( ) const
