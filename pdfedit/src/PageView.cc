@@ -37,6 +37,7 @@ namespace pdf {
 PageView::PageView( QGraphicsScene *scene, QWidget *parent )
 	: QGraphicsView( scene, parent )
 {
+	scale( 1.5, 1.5 ) ;
 }
 
 void PageView::mousePressEvent( QMouseEvent *event )

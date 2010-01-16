@@ -163,7 +163,11 @@ qDebug() << "pitch = " << face->glyph->bitmap.pitch ;
 	QGraphicsPixmapItem *item =
 		new QGraphicsPixmapItem( QPixmap::fromImage( img ) ) ;
 
-	item->setTransform( ToQtMatrix( tm ) ) ;
+	Matrix gm = tm ;
+	gm.Dx( gm.Dx() + face->glyph->bitmap_left ) ;
+	gm.Dy( gm.Dy() + face->glyph->bitmap_top ) ;
+
+	item->setTransform( ToQtMatrix( gm ) ) ;
 	tm.Dx( tm.Dx() + (face->glyph->advance.x >> 6) ) ;
 	
 /*	QString fname = QString::fromStdString(b.Format().GetFont()->BaseName()) ;
