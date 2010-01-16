@@ -111,7 +111,10 @@ Stream::Stream( std::streambuf *file, std::streamoff offset,
 	m_impl->self = dict ;
 	m_impl->filter.reset( new RawFilter( file, offset, dict["Length"] ) ) ;
 
+std::cout << "filer1 = " << dict["Filter"] << std::endl ;
+
 	ApplyFilter( dict["Filter"] ) ;
+std::cout << "filer2 = " << m_impl->filter->GetFilterName() << std::endl ;
 	assert( m_impl->filter->GetInner()->Length() == dict["Length"] ) ;
 	assert( dict["Filter"] == m_impl->filter->GetFilterName() ) ;
 	InitFilter( ) ;
@@ -170,8 +173,10 @@ void Stream::ApplyFilter( const Object& filter )
 	if ( filter.Is<Array>() )
 	{
 		const Array& filters = filter.As<Array>() ;
-		std::for_each( filters.begin( ), filters.end( ),
-		               boost::bind( &Stream::CreateFilter, this, _1 ) ) ;
+		std::for_each(
+			filters.begin( ),
+			filters.end( ),
+		    boost::bind( &Stream::CreateFilter, this, _1 ) ) ;
 	}
 	else if ( filter.Is<Name>() )
 		CreateFilter( filter ) ;
@@ -226,6 +231,7 @@ void Stream::Swap( Stream& str )
 
 void Stream::CreateFilter( const Name& filter )
 {
+std::cout << "filer = " << filter << std::endl ;
 	if ( filter == Name( "FlateDecode" ) )
 		m_impl->filter.reset( new DeflateFilter( m_impl->filter ) ) ;
 	else

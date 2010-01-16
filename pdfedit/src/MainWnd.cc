@@ -147,49 +147,10 @@ void MainWnd::LoadTextLine( const TextLine& line )
 	
 		error = FT_Load_Glyph( face, glyph_index, FT_LOAD_DEFAULT ) ;
 
-/*
-		FT_Glyph glyph ;
-		error = FT_Get_Glyph( face->glyph, &glyph ) ;
-		
-		if ( glyph->format != FT_GLYPH_FORMAT_BITMAP )
-		{
-			error = FT_Glyph_To_Bitmap(
-				&glyph,
-				FT_RENDER_MODE_NORMAL,  
-			    0, 1 ) ;   
-		}
-		
-		FT_BitmapGlyph bmp_glyph = reinterpret_cast<FT_BitmapGlyph>( glyph ) ;
-
-		QImage img(
-			bmp_glyph->bitmap.buffer,
-			bmp_glyph->bitmap.width,
-			bmp_glyph->bitmap.rows,
-			bmp_glyph->bitmap.pitch,
-			QImage::Format_Indexed8 ) ;
-		
-		QVector<QRgb> color_map( 256 ) ;
-		for ( int i = 0 ; i < 256 ; i++ )
-			color_map[255-i] = qRgb( i, i, i ) ;
-		
-		img.setColorTable( color_map ) ;
-		
-		QGraphicsPixmapItem *item =
-			new QGraphicsPixmapItem( QPixmap::fromImage( img ) ) ;
-
-*/
 		GlyphGraphicsItem *item = new GlyphGraphicsItem( face->glyph ) ;
 
-		Matrix gm = tm ;
-//		gm.Dx( gm.Dx() + item->Left() ) ;
-//		gm.Dy( gm.Dy() + item->Top() ) ;
-//		gm.Dx( gm.Dx() + bmp_glyph->left ) ;
-//		gm.Dy( gm.Dy() + bmp_glyph->top ) ;
-//		gm.M11( 72.0/300 ) ;
-//		gm.M22( 72.0/300 ) ;
-	
-		item->setTransform( ToQtMatrix( gm ) ) ;
-		tm.Dx( tm.Dx() + (face->glyph->advance.x >> 6) ) ;
+		item->setTransform( ToQtMatrix( tm ) ) ;
+		tm.Dx( tm.Dx() + (face->glyph->advance.x / 64.0) ) ;
 		
 		m_scene->addItem( item ) ;
 	}
@@ -277,7 +238,7 @@ QTransform MainWnd::ToQtMatrix( const Matrix& m )
 	// left corner and increase downward.
 	return QTransform(
 		m.M11(), m.M12(), m.M21(), m.M22(), m.Dx(),
-		m_scene->height() - m.Dy() ) ;
+		/*m_scene->height() - */m.Dy() ) ;
 }
 
 } // end of namespace

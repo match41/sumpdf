@@ -42,8 +42,6 @@ struct GlyphGraphicsItem::Render
 {
 	GlyphGraphicsItem				*pthis ;
 	QPainterPath					*painter ;
-	const QStyleOptionGraphicsItem	*option ;
-	QWidget							*widget ;
 } ;
 
 /**	constructor
@@ -54,22 +52,7 @@ GlyphGraphicsItem::GlyphGraphicsItem( FT_GlyphSlot glyph )
 	FT_Error error = FT_Get_Glyph( glyph, &m_glyph ) ;
 	if ( error != 0 )
 		throw -1 ;
-}
-
-QRectF GlyphGraphicsItem::boundingRect() const
-{
-	return QRectF(
-		m_metrics.horiBearingX / 64.0,
-		-m_metrics.horiBearingY / 64.0,
-		m_metrics.width / 64.0,
-		m_metrics.height / 64.0 ) ;
-}
-
-void GlyphGraphicsItem::paint(
-	QPainter 						*painter,
-	const QStyleOptionGraphicsItem	*option,
-	QWidget							*widget )
-{
+	
 	assert( m_glyph->format == FT_GLYPH_FORMAT_OUTLINE ) ;
 
 	FT_Outline_Funcs f =
@@ -82,20 +65,27 @@ void GlyphGraphicsItem::paint(
 	} ;
 	
 	QPainterPath path ;
-	Render r = { this, &path, option, widget } ;
+	Render r = { this, &path } ;
 	
 	FT_OutlineGlyph og = reinterpret_cast<FT_OutlineGlyph>( m_glyph ) ; 
 	FT_Outline_Decompose( &og->outline, &f, &r ) ;
 	
-	painter->setRenderHint( QPainter::Antialiasing ) ;
-	painter->setBrush(QColor(0, 0, 0));
-	painter->setPen( QPen( Qt::NoPen ) ) ;
-	painter->drawPath( path ) ;
+	setBrush( QColor(0, 0, 0) );
+	setPen( QPen( Qt::SolidLine ) ) ;
+	setPath( path ) ;
 	
-	// debug lines
-	painter->setBrush( QBrush( Qt::NoBrush ) );
-	painter->setPen( QPen( ) ) ;
-	painter->drawRect( boundingRect() ) ;
+//	painter->setBrush( QBrush( Qt::NoBrush ) );
+//	QPen bboxpen( Qt::SolidLine ) ;
+//	bboxpen.setColor( QColor(128,128,0) ) ;
+//	painter->setPen( bboxpen ) ;
+//	painter->drawRect( boundingRect() ) ;
+//
+//	// debug lines
+//	QPen oripen( Qt::SolidLine ) ;
+//	oripen.setColor( QColor(255,0,0) ) ;
+//	painter->setPen( oripen ) ;
+//	painter->drawPoint( 0, 0 ) ;
+//
 //	painter->drawLine( 0, 0, m_metrics.width / 64.0, 0 ) ;
 //	painter->drawLine( 0, 0, 0, -m_metrics.height / 64.0 ) ;
 }
@@ -182,8 +172,8 @@ int GlyphGraphicsItem::CubicTo(
 QPointF GlyphGraphicsItem::Transform( const FT_Vector *p ) const
 {
 	return QPointF(
-		(m_metrics.horiBearingX + p->x ) / 64.0,
-		(-m_metrics.horiBearingY + m_metrics.height - p->y) / 64.0 ) ;
+		(p->x ) / 64.0,
+		(p->y) / 64.0 ) ;
 }
 
 } // end of namespace

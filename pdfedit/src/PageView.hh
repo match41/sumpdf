@@ -29,6 +29,8 @@
 
 #include <QGraphicsView>
 
+class QPainter ;
+
 namespace pdf {
 
 class Page ;
@@ -42,6 +44,7 @@ public:
 
 protected :
 	void mousePressEvent( QMouseEvent *event ) ;
+	void drawForeground ( QPainter * painter, const QRectF & rect ) ;
 
 private :
 	class LineEdit ;

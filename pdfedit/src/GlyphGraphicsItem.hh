@@ -41,18 +41,10 @@ namespace pdf {
 ///	brief description
 /**	The GlyphGraphicsItem class represents
 */
-class GlyphGraphicsItem : public QGraphicsItem
+class GlyphGraphicsItem : public QGraphicsPathItem
 {
 public :
 	GlyphGraphicsItem( FT_GlyphSlot glyph ) ;
-
-	// implementation of pure virtual functions
-	QRectF boundingRect() const ;
-	
-	void paint(
-		QPainter 						*painter,
-		const QStyleOptionGraphicsItem	*option,
-		QWidget							*widget ) ;
 
 	double Left( ) const ;
 	double Top( ) const ;
