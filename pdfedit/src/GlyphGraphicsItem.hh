@@ -33,6 +33,9 @@
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
 
+class QPainterPath ;
+class QPointF ;
+
 namespace pdf {
 
 ///	brief description
@@ -41,7 +44,7 @@ namespace pdf {
 class GlyphGraphicsItem : public QGraphicsItem
 {
 public :
-	GlyphGraphicsItem( FT_GlyphSlot glyph, double size ) ;
+	GlyphGraphicsItem( FT_GlyphSlot glyph ) ;
 
 	// implementation of pure virtual functions
 	QRectF boundingRect() const ;
@@ -51,10 +54,40 @@ public :
 		const QStyleOptionGraphicsItem	*option,
 		QWidget							*widget ) ;
 
+	double Left( ) const ;
+	double Top( ) const ;
+
+private :
+	static int MoveTo( const FT_Vector* to, void *user ) ;
+	int MoveTo( const FT_Vector* to, QPainterPath *p ) ;
+	static int LineTo( const FT_Vector* to, void *user ) ;
+	int LineTo( const FT_Vector* to, QPainterPath *p ) ;
+	static int QuadTo(
+		const FT_Vector	*control,
+		const FT_Vector	*to,
+		void 			*user ) ;
+	int QuadTo(
+		const FT_Vector* control,
+		const FT_Vector* to,
+		QPainterPath	 *p ) ;
+	static int CubicTo(
+		const FT_Vector	*control1,
+		const FT_Vector	*control2,
+		const FT_Vector	*to,
+		void 			*user ) ;
+	int CubicTo(
+		const FT_Vector	*control1,
+		const FT_Vector	*control2,
+		const FT_Vector	*to,
+		QPainterPath	*p ) ;
+
+	struct Render ;
+
+	QPointF Transform( const FT_Vector *p ) const ;
+
 private :
 	FT_Glyph			m_glyph ;
 	FT_Glyph_Metrics	m_metrics ;
-	double				m_size ;
 } ;
 
 } // end of namespace

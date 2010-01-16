@@ -130,7 +130,7 @@ void MainWnd::LoadTextLine( const TextLine& line )
 	const TextBlock& b = *line.begin() ;
 
 	FT_Face face = b.Format().GetFont()->Face( ) ;
-	
+
 	FT_Error error = FT_Set_Char_Size(
 		face,
 		0,
@@ -146,7 +146,8 @@ void MainWnd::LoadTextLine( const TextLine& line )
 		int glyph_index = FT_Get_Char_Index( face, text[i] ) ; 
 	
 		error = FT_Load_Glyph( face, glyph_index, FT_LOAD_DEFAULT ) ;
-		
+
+/*
 		FT_Glyph glyph ;
 		error = FT_Get_Glyph( face->glyph, &glyph ) ;
 		
@@ -159,10 +160,6 @@ void MainWnd::LoadTextLine( const TextLine& line )
 		}
 		
 		FT_BitmapGlyph bmp_glyph = reinterpret_cast<FT_BitmapGlyph>( glyph ) ;
-		
-//		error = FT_Render_Glyph( face->glyph, FT_RENDER_MODE_NORMAL ) ; 
-
-qDebug() << "pitch = " << face->glyph->bitmap.pitch ;
 
 		QImage img(
 			bmp_glyph->bitmap.buffer,
@@ -179,10 +176,17 @@ qDebug() << "pitch = " << face->glyph->bitmap.pitch ;
 		
 		QGraphicsPixmapItem *item =
 			new QGraphicsPixmapItem( QPixmap::fromImage( img ) ) ;
-	
+
+*/
+		GlyphGraphicsItem *item = new GlyphGraphicsItem( face->glyph ) ;
+
 		Matrix gm = tm ;
-		gm.Dx( gm.Dx() + bmp_glyph->left ) ;
-		gm.Dy( gm.Dy() + bmp_glyph->top ) ;
+//		gm.Dx( gm.Dx() + item->Left() ) ;
+//		gm.Dy( gm.Dy() + item->Top() ) ;
+//		gm.Dx( gm.Dx() + bmp_glyph->left ) ;
+//		gm.Dy( gm.Dy() + bmp_glyph->top ) ;
+//		gm.M11( 72.0/300 ) ;
+//		gm.M22( 72.0/300 ) ;
 	
 		item->setTransform( ToQtMatrix( gm ) ) ;
 		tm.Dx( tm.Dx() + (face->glyph->advance.x >> 6) ) ;
