@@ -15,51 +15,48 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- \***************************************************************************/
+\***************************************************************************/
 
-/**
-	\file	PageView.cc
-	\brief	definition the PageView class
-	\date	Dec 28, 2009
-	\author	Nestal Wan
+/**	\file	GlyphGraphicsItem.hh
+    \brief	definition the GlyphGraphicsItem class
+    \date	Jan 16, 2010
+    \author	Nestal Wan
 */
 
-#include "PageView.hh"
+#ifndef __PDF_GLYPHGRAPHICSITEM_HH_EADER_INCLUDED__
+#define __PDF_GLYPHGRAPHICSITEM_HH_EADER_INCLUDED__
 
-#include "TextEdit.hh"
+#include <QGraphicsItem>
 
-#include <QDebug>
-#include <QMouseEvent>
-//#include <QGraphicsProxyWidget>
+// freetype headers
+#include <ft2build.h>
+#include FT_FREETYPE_H
+#include FT_GLYPH_H
 
 namespace pdf {
 
-PageView::PageView( QGraphicsScene *scene, QWidget *parent )
-	: QGraphicsView( scene, parent )
-{
-//	scale( 1.5, 1.5 ) ;
-}
-
-void PageView::mousePressEvent( QMouseEvent *event )
-{
-	QPointF pos = mapToScene( event->pos() ) ;
-	
-	// add text box if the user clicks empty space
-	if ( scene()->itemAt( pos ) == 0 )
-	{
-/*
-		TextEdit *edit = new TextEdit ;
-		QGraphicsProxyWidget *item = scene()->addWidget( edit ) ;
-		item->setPos( pos ) ;
-		edit->setFocus( Qt::MouseFocusReason ) ;
+///	brief description
+/**	The GlyphGraphicsItem class represents
 */
-	}
-	else
-	{
-		qDebug() << "hello!" ;
-	}
+class GlyphGraphicsItem : public QGraphicsItem
+{
+public :
+	GlyphGraphicsItem( FT_GlyphSlot glyph, double size ) ;
 
-	QGraphicsView::mousePressEvent( event ) ;
-}
+	// implementation of pure virtual functions
+	QRectF boundingRect() const ;
+	
+	void paint(
+		QPainter 						*painter,
+		const QStyleOptionGraphicsItem	*option,
+		QWidget							*widget ) ;
+
+private :
+	FT_Glyph			m_glyph ;
+	FT_Glyph_Metrics	m_metrics ;
+	double				m_size ;
+} ;
 
 } // end of namespace
+
+#endif // GLYPHGRAPHICSITEM_HH_

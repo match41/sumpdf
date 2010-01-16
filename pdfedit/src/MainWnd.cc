@@ -27,6 +27,7 @@
 #include "MainWnd.hh"
 
 #include "PageView.hh"
+#include "GlyphGraphicsItem.hh"
 #include "PropertiesDlg.hh"
 
 // Qt headers
@@ -57,6 +58,8 @@
 #include <graphics/Text.hh>
 #include <graphics/TextLine.hh>
 #include <graphics/TextBlock.hh>
+
+#include FT_GLYPH_H
 
 #include <boost/bind.hpp>
 
@@ -140,56 +143,51 @@ void MainWnd::LoadTextLine( const TextLine& line )
 	const std::wstring& text = b.Text() ;
 	for ( std::size_t i = 0 ; i < text.size() ; i++ )
 	{
-	int glyph_index = FT_Get_Char_Index( face, text[i] ) ; 
-
-	error = FT_Load_Glyph( face, glyph_index, FT_LOAD_DEFAULT ) ; 
-	error = FT_Render_Glyph( face->glyph, FT_RENDER_MODE_NORMAL ) ; 
+		int glyph_index = FT_Get_Char_Index( face, text[i] ) ; 
+	
+		error = FT_Load_Glyph( face, glyph_index, FT_LOAD_DEFAULT ) ;
+		
+		FT_Glyph glyph ;
+		error = FT_Get_Glyph( face->glyph, &glyph ) ;
+		
+		if ( glyph->format != FT_GLYPH_FORMAT_BITMAP )
+		{
+			error = FT_Glyph_To_Bitmap(
+				&glyph,
+				FT_RENDER_MODE_NORMAL,  
+			    0, 1 ) ;   
+		}
+		
+		FT_BitmapGlyph bmp_glyph = reinterpret_cast<FT_BitmapGlyph>( glyph ) ;
+		
+//		error = FT_Render_Glyph( face->glyph, FT_RENDER_MODE_NORMAL ) ; 
 
 qDebug() << "pitch = " << face->glyph->bitmap.pitch ;
 
-	QImage img(
-		face->glyph->bitmap.buffer,
-		face->glyph->bitmap.width,
-		face->glyph->bitmap.rows,
-		face->glyph->bitmap.pitch,
-		QImage::Format_Indexed8 ) ;
+		QImage img(
+			bmp_glyph->bitmap.buffer,
+			bmp_glyph->bitmap.width,
+			bmp_glyph->bitmap.rows,
+			bmp_glyph->bitmap.pitch,
+			QImage::Format_Indexed8 ) ;
+		
+		QVector<QRgb> color_map( 256 ) ;
+		for ( int i = 0 ; i < 256 ; i++ )
+			color_map[255-i] = qRgb( i, i, i ) ;
+		
+		img.setColorTable( color_map ) ;
+		
+		QGraphicsPixmapItem *item =
+			new QGraphicsPixmapItem( QPixmap::fromImage( img ) ) ;
 	
-	QVector<QRgb> color_map( 256 ) ;
-	for ( int i = 0 ; i < 256 ; i++ )
-		color_map[255-i] = qRgb( i, i, i ) ;
+		Matrix gm = tm ;
+		gm.Dx( gm.Dx() + bmp_glyph->left ) ;
+		gm.Dy( gm.Dy() + bmp_glyph->top ) ;
 	
-	img.setColorTable( color_map ) ;
-	
-	QGraphicsPixmapItem *item =
-		new QGraphicsPixmapItem( QPixmap::fromImage( img ) ) ;
-
-	Matrix gm = tm ;
-	gm.Dx( gm.Dx() + face->glyph->bitmap_left ) ;
-	gm.Dy( gm.Dy() + face->glyph->bitmap_top ) ;
-
-	item->setTransform( ToQtMatrix( gm ) ) ;
-	tm.Dx( tm.Dx() + (face->glyph->advance.x >> 6) ) ;
-	
-/*	QString fname = QString::fromStdString(b.Format().GetFont()->BaseName()) ;
-qDebug() << "font is: " << fname ;
-QFont::Weight w = QFont::Normal ;
-
-if ( fname == "PLYBKC+NimbusRomNo9L-Regu" )
-	fname = "Nimbus Roman No9 L" ;
-else if ( fname == "NRCBZS+NimbusRomNo9L-Medi" )
-{
-	fname = "Nimbus Roman No9 L" ;
-	w = QFont::Bold ;
-}
-else
-	fname = "Nimbus Sans L" ;
-	
-	QFont font( fname, b.Format().FontSize() * 0.8, w ) ;
-	item->setFont( font ) ;
-qDebug() << "\"" << item->text() << "\" = " << item->boundingRect() ;
-*/
-
-	m_scene->addItem( item ) ;
+		item->setTransform( ToQtMatrix( gm ) ) ;
+		tm.Dx( tm.Dx() + (face->glyph->advance.x >> 6) ) ;
+		
+		m_scene->addItem( item ) ;
 	}
 }
 

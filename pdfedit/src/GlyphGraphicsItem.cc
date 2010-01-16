@@ -15,51 +15,38 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- \***************************************************************************/
+\***************************************************************************/
 
-/**
-	\file	PageView.cc
-	\brief	definition the PageView class
-	\date	Dec 28, 2009
+/**	\file	GlyphGraphicsItem.cc
+	\brief	implementation of the GlyphGraphicsItem class
+	\date	Jan 16, 2010
 	\author	Nestal Wan
 */
 
-#include "PageView.hh"
-
-#include "TextEdit.hh"
-
-#include <QDebug>
-#include <QMouseEvent>
-//#include <QGraphicsProxyWidget>
+#include "GlyphGraphicsItem.hh"
 
 namespace pdf {
 
-PageView::PageView( QGraphicsScene *scene, QWidget *parent )
-	: QGraphicsView( scene, parent )
+/**	constructor
+*/
+GlyphGraphicsItem::GlyphGraphicsItem( FT_GlyphSlot glyph, double size )
+	: m_metrics( glyph->metrics ),
+	  m_size( size )
 {
-//	scale( 1.5, 1.5 ) ;
+	FT_Get_Glyph( glyph, &m_glyph ) ;
 }
 
-void PageView::mousePressEvent( QMouseEvent *event )
+QRectF GlyphGraphicsItem::boundingRect() const
 {
-	QPointF pos = mapToScene( event->pos() ) ;
-	
-	// add text box if the user clicks empty space
-	if ( scene()->itemAt( pos ) == 0 )
-	{
-/*
-		TextEdit *edit = new TextEdit ;
-		QGraphicsProxyWidget *item = scene()->addWidget( edit ) ;
-		item->setPos( pos ) ;
-		edit->setFocus( Qt::MouseFocusReason ) ;
-*/
-	}
-	else
-	{
-		qDebug() << "hello!" ;
-	}
 
-	QGraphicsView::mousePressEvent( event ) ;
+	return QRectF( m_metrics.horiBearingX, m_metrics.horiBearingY, m_metrics.width, m_metrics.height ) ;
+}
+
+void GlyphGraphicsItem::paint(
+	QPainter 						*painter,
+	const QStyleOptionGraphicsItem	*option,
+	QWidget							*widget )
+{
 }
 
 } // end of namespace
