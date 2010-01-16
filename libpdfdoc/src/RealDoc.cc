@@ -32,6 +32,7 @@
 
 #include "file/Catalog.hh"
 #include "file/RealFile.hh"
+#include "font/StandardFont.hh"
 
 #include "page/RealPage.hh"
 #include "page/PageTree.hh"
@@ -97,7 +98,7 @@ void RealDoc::Write( const std::string& filename ) const
 		m_info.m_dict.empty() ? Ref() : file.WriteObj( m_info.m_dict ) ) ;
 }
 
-RealPage* RealDoc::AppendPage( )
+Page* RealDoc::AppendPage( )
 {
 	assert( m_catalog != 0 ) ;
 
@@ -110,17 +111,17 @@ std::size_t RealDoc::PageCount( ) const
 	return m_catalog->PageCount( ) ;
 }
 
-RealPage* RealDoc::GetPage( std::size_t index )
+Page* RealDoc::GetPage( std::size_t index )
 {
 	return m_catalog->GetPage( index ) ;
 }
 
-StandardFont* RealDoc::CreateSimpleFont( const std::string& name )
+Font* RealDoc::CreateSimpleFont( const std::string& name )
 {
 	return new StandardFont( Name(name) ) ;
 }
 
-RealPage* RealDoc::AddPage( std::size_t index )
+Page* RealDoc::AddPage( std::size_t index )
 {
 	return 0 ;
 }

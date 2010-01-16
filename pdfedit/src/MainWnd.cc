@@ -37,7 +37,10 @@
 #include <QList>
 #include <QMessageBox>
 #include <QPointF>
-#include <QGraphicsSimpleTextItem>
+#include <QGraphicsPixmapItem>
+#include <QPixmap>
+#include <QRgb>
+#include <QImage>
 #include <QTransform>
 #include <QDebug>
 
@@ -123,13 +126,47 @@ void MainWnd::LoadTextLine( const TextLine& line )
 {
 	const TextBlock& b = *line.begin() ;
 
-	QGraphicsSimpleTextItem *item =
-		new QGraphicsSimpleTextItem(
-			QString::fromStdWString( b.Text() ) ) ;
-
-	item->setTransform( ToQtMatrix( line.Transform()) ) ;
+	FT_Face face = b.Format().GetFont()->Face( ) ;
 	
-	QString fname = QString::fromStdString(b.Format().GetFont()->BaseName()) ;
+	FT_Error error = FT_Set_Char_Size(
+		face,
+		0,
+		static_cast<int>(b.Format().FontSize() * 64),
+		72,
+		72 ); 
+	
+	Matrix tm = line.Transform() ;
+	
+	const std::wstring& text = b.Text() ;
+	for ( std::size_t i = 0 ; i < text.size() ; i++ )
+	{
+	int glyph_index = FT_Get_Char_Index( face, text[i] ) ; 
+
+	error = FT_Load_Glyph( face, glyph_index, FT_LOAD_DEFAULT ) ; 
+	error = FT_Render_Glyph( face->glyph, FT_RENDER_MODE_NORMAL ) ; 
+
+qDebug() << "pitch = " << face->glyph->bitmap.pitch ;
+
+	QImage img(
+		face->glyph->bitmap.buffer,
+		face->glyph->bitmap.width,
+		face->glyph->bitmap.rows,
+		face->glyph->bitmap.pitch,
+		QImage::Format_Indexed8 ) ;
+	
+	QVector<QRgb> color_map( 256 ) ;
+	for ( int i = 0 ; i < 256 ; i++ )
+		color_map[255-i] = qRgb( i, i, i ) ;
+	
+	img.setColorTable( color_map ) ;
+	
+	QGraphicsPixmapItem *item =
+		new QGraphicsPixmapItem( QPixmap::fromImage( img ) ) ;
+
+	item->setTransform( ToQtMatrix( tm ) ) ;
+	tm.Dx( tm.Dx() + (face->glyph->advance.x >> 6) ) ;
+	
+/*	QString fname = QString::fromStdString(b.Format().GetFont()->BaseName()) ;
 qDebug() << "font is: " << fname ;
 QFont::Weight w = QFont::Normal ;
 
@@ -146,8 +183,10 @@ else
 	QFont font( fname, b.Format().FontSize() * 0.8, w ) ;
 	item->setFont( font ) ;
 qDebug() << "\"" << item->text() << "\" = " << item->boundingRect() ;
+*/
 
 	m_scene->addItem( item ) ;
+	}
 }
 
 void MainWnd::VisitGraphics( Graphics *gfx )

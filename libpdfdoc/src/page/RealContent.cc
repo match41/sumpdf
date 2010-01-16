@@ -83,9 +83,9 @@ void RealContent::Load( Stream& str, Resources *res )
 			src.ResetState( ) ;
 			if ( src >> cmd )
 			{
-std::cout << cmd.Get() << " " ;
-std::copy( args.begin(), args.end(), std::ostream_iterator<Object>( std::cout, " " ) ) ;
-std::cout << std::endl ;
+//std::cout << cmd.Get() << " " ;
+//std::copy( args.begin(), args.end(), std::ostream_iterator<Object>( std::cout, " " ) ) ;
+//std::cout << std::endl ;
 				current = ProcessCommand(
 					cmd,
 					args.empty() ? 0 : &args[0],	// don't touch args[0]
@@ -117,7 +117,7 @@ Graphics* RealContent::ProcessCommand(
 	}
 	else if ( cmd == Token("ET") && gfx != 0 )
 	{
-		RealText *text = dynamic_cast<RealText*>( gfx ) ;
+//		RealText *text = dynamic_cast<RealText*>( gfx ) ;
 
 //std::cout << "end text" << std::endl ;
 //text->Output( std::cout ) ;

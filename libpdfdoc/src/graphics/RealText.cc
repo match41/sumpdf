@@ -223,26 +223,26 @@ void RealText::OnTJ( Object* args, std::size_t count, Resources *res )
 			std::string& s = i->As<std::string>() ;
 			std::wstring ws( s.begin(), s.end() ) ;
 
-double width = m_state.GetFont()->Width( ws, m_state.FontSize() ) ;
-std::cout << "\"" << s << "\" " ;
-std::cout << "width = " << width / 1000.0 << std::endl ;
+			double width = m_state.GetFont()->Width( ws, m_state.FontSize() ) ;
+//std::cout << "\"" << s << "\" " ;
+//std::cout << "width = " << width / 1000.0 << std::endl ;
 Matrix m ;
-m.Dx( width / 1000.0 ) ;
-tm = tm * m ;
-std::cout << "tm = " << tm.Dx() << " " << tm.Dy() << std::endl ;
+			m.Dx( width / 1000.0 ) ;
+			tm = tm * m ;
+//std::cout << "tm = " << tm.Dx() << " " << tm.Dy() << std::endl ;
 			m_lines.back().AppendText( ws ) ;
 		}
 		else if ( i->Is<double>() || i->Is<int>() )
 		{
 			double disp = i->To<double>() ;
-std::cout << "disp = " << disp << std::endl ;
+//std::cout << "disp = " << disp << std::endl ;
 			
 			// TODO: depend on writing mode, advance horizonal or vertical
 			// assume vertical here.
 			Matrix m ;
 			m.Dx( -disp / 1000.0 * m_state.FontSize() ) ;
 			tm = tm * m ;
-std::cout << "tm = " << tm.Dx() << " " << tm.Dy() << std::endl ;
+//std::cout << "tm = " << tm.Dx() << " " << tm.Dy() << std::endl ;
 			AddNewLine( tm ) ;
 		}
 	}
