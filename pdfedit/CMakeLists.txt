@@ -27,6 +27,7 @@ cmake_minimum_required(VERSION 2.6)
 set( Boost_USE_MULTITHREAD ON )
 find_package( Qt4 REQUIRED )
 find_package( Boost REQUIRED )
+find_package( Freetype REQUIRED )
 
 include(${QT_USE_FILE})
 
@@ -102,10 +103,12 @@ if ( PDFDOC_INCLUDE_DIR AND PDFDOC_LIBRARY )
 endif ( PDFDOC_INCLUDE_DIR AND PDFDOC_LIBRARY )
 
 # in order to include the generated UI header files
-INCLUDE_DIRECTORIES( ${QT_INCLUDE_DIR} ${pdfedit_SOURCE_DIR}/src
+include_directories( ${QT_INCLUDE_DIR} ${pdfedit_SOURCE_DIR}/src
                                        ${pdfedit_SOURCE_DIR}
                                        ${Boost_INCLUDE_DIRS}
+                                       ${FREETYPE_INCLUDE_DIRS}
                                        ${OPT_INCS} )
 
 target_link_libraries( pdfedit	${PDFDOC_LIBRARY} ${OPT_LIBS} ${QT_LIBRARIES}
+								${FREETYPE_LIBRARIES}
 								boost_program_options )

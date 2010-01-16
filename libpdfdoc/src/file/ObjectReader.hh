@@ -40,7 +40,7 @@ bool Detach( IFile *file, Dictionary& dict, const Name& name, ObjType& result )
 	if ( i != dict.end( ) )
 	{
 		if ( i->second.Type( ) == Object::ref )
-			result = file->ReadObj( i->second ) ;
+			result = file->ReadObj( i->second ).As<ObjType>() ;
 		else
 			std::swap( i->second.As<ObjType>(), result ) ;
 

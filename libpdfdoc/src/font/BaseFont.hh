@@ -50,7 +50,7 @@ public :
 	virtual Ref Write( IFile *file ) const = 0 ;
 } ;
 
-BaseFont* CreateFont( Dictionary& obj, IFile *file ) ;
+BaseFont* CreateFont( Dictionary& obj, IFile *file, FT_Library ft_lib ) ;
 
 } // end of namespace
 

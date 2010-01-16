@@ -285,6 +285,28 @@ std::size_t Stream::CopyData( unsigned char *buf, std::size_t size ) const
 	return m_impl->filter->Read( buf, size ) ;
 }
 
+void Stream::CopyData( std::vector<unsigned char>& buf ) const
+{
+	StreamFilter *f = m_impl->filter.get() ;
+	assert( f != 0 ) ;
+	
+	// rewind to the start of the stream
+	f->Rewind( ) ;
+	
+//	unsigned char data[80] ;
+	const std::size_t buf_size = 80 ;
+	std::size_t idx = 0 ;
+	std::size_t count = 0 ;
+	
+	do
+	{
+		buf.resize( idx + buf_size ) ;
+		count = f->Read( &buf[idx], buf_size ) ;
+		idx += count ;
+		buf.resize( idx ) ;
+	} while ( count > 0 ) ;
+}
+
 /**	copy the unfiltered data to the output streambuf.
 	\param	buf		the output streambuf
 	\return	the number of bytes copied to the output. It should be equal to

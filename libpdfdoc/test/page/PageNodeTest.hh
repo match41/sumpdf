@@ -31,6 +31,10 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+// freetype headers
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 namespace pdf
 {
 	class PageTree ;
@@ -62,6 +66,7 @@ private :
 	void TestOrder( ) ;
 
 private :
+	FT_Library		m_ft_lib ;
 	pdf::PageTree	*m_root ;
 } ;
 

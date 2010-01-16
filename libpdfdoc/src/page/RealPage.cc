@@ -52,6 +52,7 @@ namespace pdf {
 
 RealPage::RealPage( PageTree *parent )
 	: m_parent( parent ),
+	  m_resources( parent->GetResource() ),
 	  m_media_box( 0, 0, 595, 842 ),
 	  m_rotate( 0 )
 {

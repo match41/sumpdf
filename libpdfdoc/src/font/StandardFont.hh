@@ -49,6 +49,8 @@ public :
 	
 	double Width( const std::wstring& text, double size ) const ;
 
+	FT_Face Face( ) const ;
+
 private :
 	Name	m_font_name ;
 } ;

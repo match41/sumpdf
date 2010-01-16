@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2009 by Nestal Wan                                      *
+ *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,49 +15,63 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- \***************************************************************************/
+\***************************************************************************/
 
-/**
-	\file	CatalogTest.h
-	\brief	definition the CatalogTest class
-	\date	Dec 13, 2009
-	\author	Nestal Wan
+/**	\file	FontDescriptor.hh
+    \brief	definition the FontDescriptor class
+    \date	Jan 16, 2010
+    \author	Nestal Wan
 */
 
-#ifndef __PDFUT_CATALOGTEST_HEADER_INCLUDED__
-#define __PDFUT_CATALOGTEST_HEADER_INCLUDED__
+#ifndef __PDF_FONTDESCRIPTOR_HH_EADER_INCLUDED__
+#define __PDF_FONTDESCRIPTOR_HH_EADER_INCLUDED__
 
-#include <cppunit/TestFixture.h>
+#include <string>
 
-#include <cppunit/extensions/HelperMacros.h>
+#include "util/Rect.hh"
+#include "stream/Stream.hh"
 
-// freetype headers
-#include <ft2build.h>
-#include FT_FREETYPE_H
+namespace pdf {
 
-/*!	\brief	brief description
-	
-	this class represents
+class Dictionary ;
+class IFile ;
+
+///	brief description
+/**	The FontDescriptor class represents
 */
-class CatalogTest : public CppUnit::TestFixture
+class FontDescriptor
 {
-public:
-	CatalogTest( ) ;
-
-	// declare suit function
-	CPPUNIT_TEST_SUITE( CatalogTest ) ;
-		CPPUNIT_TEST( TestRead ) ;
-	CPPUNIT_TEST_SUITE_END();
+public :
+	enum Stretch
+	{
+		ultra_condensed, extra_condensed, condensed, semi_condensed,
+		normal,
+		semi_expanded, expanded, extra_expanded, ultra_expanded
+	} ;
 
 public :
-	void setUp( ) ;
-	void tearDown( ) ;
+	FontDescriptor( ) ;
+	
+	void Read( Dictionary& self, IFile *file ) ;
+	
+	std::string Family( ) const ;
+
+	Stretch GetStretch( ) const ;
+
+	double	ItalicAngle( ) const ;
+
+	Stream	FontFile( ) const ;
 
 private :
-	void TestRead( ) ;
-
-private :
-	FT_Library	m_ft_lib ;
+	std::string	m_family ;
+	Stretch		m_stretch ;
+	int			m_flags ;
+	Rect		m_bbox ;
+	double		m_italic_angle ;
+	double		m_ascent, m_descent, m_leading ;
+	Stream		m_font_file ;
 } ;
 
-#endif // CATALOGTEST_H_
+} // end of namespace
+
+#endif // FONTDESCRIPTOR_HH_

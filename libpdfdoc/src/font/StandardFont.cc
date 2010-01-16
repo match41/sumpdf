@@ -91,4 +91,9 @@ double StandardFont::Width( const std::wstring& text, double size ) const
 	return 0.0 ;
 }
 
+FT_Face StandardFont::Face( ) const
+{
+	return 0 ;
+}
+
 } // end of namespace

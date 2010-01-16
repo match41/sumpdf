@@ -45,9 +45,24 @@
 
 namespace pdf {
 
-Resources::Resources( )
-	: m_proc_set( 1, Name( "PDF" ) )
+Resources::Resources( const Resources *parent )
+	: m_parent( parent ),
+	  m_ft_lib( parent == 0 ? 0 : parent->m_ft_lib ),
+	  m_proc_set( 1, Name( "PDF" ) )
 {
+	assert( parent != 0 ) ;
+	assert( m_ft_lib != 0 ) ;
+	
+    m_proc_set.push_back( Name( "Text" ) ) ;
+}
+
+Resources::Resources( FT_Library ft_lib )
+	: m_parent( 0 ),
+	  m_ft_lib( ft_lib ),
+	  m_proc_set( 1, Name( "PDF" ) )
+{
+	assert( m_ft_lib != 0 ) ;
+	
     m_proc_set.push_back( Name( "Text" ) ) ;
 }
 
@@ -91,6 +106,7 @@ void Resources::ReadFontDict( Dictionary& self, IFile *file )
 {
 	assert( file != 0 ) ;
 	assert( file->Pool() != 0 ) ;
+	assert( m_ft_lib != 0 ) ;
 
 	Dictionary dict ;
 	if ( Detach( file, self, "Font", dict ) )
@@ -106,7 +122,7 @@ void Resources::ReadFontDict( Dictionary& self, IFile *file )
 				if ( font == 0 )
 				{
 					Dictionary self = file->ReadObj( link ) ;
-					font = CreateFont( self, file ) ; 
+					font = CreateFont( self, file, m_ft_lib ) ; 
 					font_pool->Add( link, font ) ;
 				}
 				assert( font != 0 ) ;
@@ -114,7 +130,7 @@ void Resources::ReadFontDict( Dictionary& self, IFile *file )
 			
 			// the font is not an indirect object, so it can't be shared.
 			else if ( i->second.Is<Dictionary>() )
-				font = CreateFont( i->second.As<Dictionary>(), file ) ;
+				font = CreateFont( i->second.As<Dictionary>(), file, m_ft_lib ) ;
 
 			m_fonts.insert( std::make_pair( i->first, font ) ) ;
 		}

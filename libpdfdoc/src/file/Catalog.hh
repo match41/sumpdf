@@ -32,6 +32,10 @@
 #include "file/CompleteObj.hh"
 #include "file/Destination.hh"
 
+// freetype headers
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 #include <vector>
 
 namespace pdf {
@@ -51,8 +55,8 @@ class IFile ;
 class Catalog
 {
 public :
-	Catalog( ) ;
-	Catalog( const Ref& link, IFile *file ) ;
+	explicit Catalog( FT_Library ft_lib ) ;
+	Catalog( const Ref& link, IFile *file, FT_Library ft_lib ) ;
 	~Catalog( ) ;
 	
 	Ref Write( IFile *file ) const ;

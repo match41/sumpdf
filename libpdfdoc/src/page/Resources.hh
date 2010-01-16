@@ -31,6 +31,10 @@
 #include "core/Name.hh"
 #include "file/CompleteObj.hh"
 
+// freetype headers
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 #include <vector>
 
 namespace pdf {
@@ -50,7 +54,8 @@ class Object ;
 class Resources
 {
 public :
-	Resources( ) ;
+	explicit Resources( const Resources *parent ) ;
+	explicit Resources( FT_Library ft_lib ) ;
 	~Resources( ) ;
 
 	Name AddFont( BaseFont *font ) ;
@@ -67,6 +72,9 @@ private :
 	XObject* ReadXObj( const Ref& link ) ;
 
 private :
+	const Resources	*m_parent ;
+	FT_Library		m_ft_lib ;
+
 	CompleteObj		m_self ;
 	CompleteObj		m_ext_gstate ;
 

@@ -50,15 +50,18 @@ PageTest::PageTest( )
 
 void PageTest::setUp( )
 {
+	::FT_Init_FreeType( &m_ft_lib ) ;
+
 	// this is the parent page node of the test pages. as it is deleted in
 	// tearDown() all its child pages will be delete, there is no need to
 	// delete the test pages in each case.
-	m_root = new pdf::PageTree ;
+	m_root = new pdf::PageTree( m_ft_lib ) ;
 }
 
 void PageTest::tearDown( )
 {
 	delete m_root ;
+	::FT_Done_FreeType( m_ft_lib ) ;
 }
 
 void PageTest::TestNormal( )

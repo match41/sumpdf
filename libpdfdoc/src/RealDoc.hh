@@ -33,12 +33,9 @@
 #include "font/StandardFont.hh"	// for co-variant return value
 #include "page/RealPage.hh"		// for co-variant return value 
 
-// freetype library is optional
-#ifdef HAVE_FREETYPE
-	// freetype headers
-	#include <ft2build.h>
-	#include FT_FREETYPE_H
-#endif
+// freetype headers
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 #include <string>
 #include <fstream>
@@ -82,10 +79,8 @@ private :
 	//! Some objects from the document will only be read on-demand.
 	std::ifstream		m_readfs ;
 	
-#ifdef HAVE_FREETYPE
 	//! Freetype library for loading the font files.
 	FT_Library			m_ft_lib ;
-#endif
 
 	struct Info_ : public DocInfo
 	{

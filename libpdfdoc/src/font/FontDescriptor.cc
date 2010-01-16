@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2009 by Nestal Wan                                      *
+ *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,49 +15,47 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- \***************************************************************************/
+\***************************************************************************/
 
-/**
-	\file	CatalogTest.h
-	\brief	definition the CatalogTest class
-	\date	Dec 13, 2009
+/**	\file	FontDescriptor.cc
+	\brief	implementation of the FontDescriptor class
+	\date	Jan 16, 2010
 	\author	Nestal Wan
 */
 
-#ifndef __PDFUT_CATALOGTEST_HEADER_INCLUDED__
-#define __PDFUT_CATALOGTEST_HEADER_INCLUDED__
+#include "FontDescriptor.hh"
 
-#include <cppunit/TestFixture.h>
+#include "core/Dictionary.hh"
+#include "file/IFile.hh"
+#include "file/ObjectReader.hh"
 
-#include <cppunit/extensions/HelperMacros.h>
+namespace pdf {
 
-// freetype headers
-#include <ft2build.h>
-#include FT_FREETYPE_H
-
-/*!	\brief	brief description
-	
-	this class represents
+/**	constructor
 */
-class CatalogTest : public CppUnit::TestFixture
+FontDescriptor::FontDescriptor( )
+	: m_flags( 0 )
 {
-public:
-	CatalogTest( ) ;
+	m_italic_angle = m_ascent = m_descent = m_leading = 0.0 ;
+}
 
-	// declare suit function
-	CPPUNIT_TEST_SUITE( CatalogTest ) ;
-		CPPUNIT_TEST( TestRead ) ;
-	CPPUNIT_TEST_SUITE_END();
+void FontDescriptor::Read( Dictionary& self, IFile *file )
+{
+	if ( !Detach( file, self, "FontFile", 	m_font_file ) )
+		if ( !Detach( file, self, "FontFile2", 	m_font_file ) )
+			Detach( file, self, "FontFile3", 	m_font_file ) ;
+	
+	Detach( file, self, "FontFamily",	m_family ) ;
+}
 
-public :
-	void setUp( ) ;
-	void tearDown( ) ;
+Stream FontDescriptor::FontFile( ) const
+{
+	return m_font_file ;
+}
 
-private :
-	void TestRead( ) ;
+std::string FontDescriptor::Family( ) const
+{
+	return m_family ;
+}
 
-private :
-	FT_Library	m_ft_lib ;
-} ;
-
-#endif // CATALOGTEST_H_
+} // end of namespace

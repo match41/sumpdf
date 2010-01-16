@@ -43,15 +43,15 @@
 
 namespace pdf {
 
-Catalog::Catalog( )
+Catalog::Catalog( FT_Library ft_lib )
 : m_version		( "1.4" ),
   m_page_layout	( "SinglePage" ),
   m_page_mode	( "UseNode" ),
-  m_tree		( new PageTree )
+  m_tree		( new PageTree( ft_lib ) )
 {
 }
 
-Catalog::Catalog( const Ref& link, IFile *file )
+Catalog::Catalog( const Ref& link, IFile *file, FT_Library ft_lib )
 	: m_version		( "1.4" ),
 	  m_page_layout	( "SinglePage" ),
 	  m_page_mode	( "UseNode" ),
@@ -74,7 +74,7 @@ Catalog::Catalog( const Ref& link, IFile *file )
 		throw ParseError( "no page tree in catalog" ) ;
 	
 	// root page tree has no parent
-	m_tree = new PageTree ;
+	m_tree = new PageTree( ft_lib ) ;
 	m_tree->Read( tree, file ) ;
 	
 	Detach( file, self, "Version",		m_version ) ;

@@ -35,8 +35,7 @@
 #include "util/Exception.hh"
 #include "util/Util.hh"
 
-//#include "ftwrap/Face.hh"
-//#include "ftwrap/Glyph.hh"
+#include <iostream>
 
 #include FT_XFREE86_H
 
@@ -78,7 +77,7 @@ SimpleFont::SimpleFont( FT_Face face )
 		static_cast<std::size_t>(m_last_char - m_first_char + 1) ) ;
 }
 
-SimpleFont::SimpleFont( Dictionary& self, IFile *file )
+SimpleFont::SimpleFont( Dictionary& self, IFile *file, FT_Library ft_lib )
 {
 	try
 	{
@@ -97,6 +96,26 @@ SimpleFont::SimpleFont( Dictionary& self, IFile *file )
 
 //		self.Extract( "Encoding",	m_encoding ) ;
 //		self.Extract( "ToUnicode",	m_to_unicode ) ;
+		
+		Dictionary fd ;
+		if ( Detach( file, self, "FontDescriptor", fd ) )
+		{
+std::cout << "descriptor = " << fd << std::endl ;
+
+			m_descriptor.Read( fd, file ) ;
+			std::vector<unsigned char> font_file ;
+			m_descriptor.FontFile().CopyData( font_file ) ;
+std::cout << "font file " << m_descriptor.Family() << " has " << font_file.size() << std::endl ;
+
+			FT_Error e = FT_New_Memory_Face(
+				ft_lib,
+				&font_file[0],
+				font_file.size(),
+				0,
+				&m_face ) ;
+			if ( e != 0 )
+				throw -1 ;
+		}
 		
 		m_self.Read( self, file ) ;
 	}
@@ -229,9 +248,14 @@ std::string SimpleFont::BaseName( ) const
 	return m_base_font.Str( ) ;
 }
 
-BaseFont* CreateFont( Dictionary& obj, IFile *file )
+FT_Face SimpleFont::Face( ) const
 {
-	return new SimpleFont( obj, file ) ;
+	return m_face ;
+}
+
+BaseFont* CreateFont( Dictionary& obj, IFile *file, FT_Library ft_lib )
+{
+	return new SimpleFont( obj, file, ft_lib ) ;
 }
 
 } // end of namespace
