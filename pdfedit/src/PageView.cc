@@ -37,7 +37,8 @@ namespace pdf {
 PageView::PageView( QGraphicsScene *scene, QWidget *parent )
 	: QGraphicsView( scene, parent )
 {
-	scale( 3, -3 ) ;
+//	scale( 1.0/64.0 * 4, -1.0/64.0 * 4 ) ;
+	scale( 5, -5 ) ;
 	setRenderHint( QPainter::Antialiasing ) ;
 }
 

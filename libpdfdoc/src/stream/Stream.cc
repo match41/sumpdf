@@ -111,12 +111,11 @@ Stream::Stream( std::streambuf *file, std::streamoff offset,
 	m_impl->self = dict ;
 	m_impl->filter.reset( new RawFilter( file, offset, dict["Length"] ) ) ;
 
-std::cout << "filer1 = " << dict["Filter"] << std::endl ;
-
 	ApplyFilter( dict["Filter"] ) ;
-std::cout << "filer2 = " << m_impl->filter->GetFilterName() << std::endl ;
+
 	assert( m_impl->filter->GetInner()->Length() == dict["Length"] ) ;
-	assert( dict["Filter"] == m_impl->filter->GetFilterName() ) ;
+	assert( dict["Filter"].Is<Array>() ||
+		dict["Filter"] == m_impl->filter->GetFilterName() ) ;
 	InitFilter( ) ;
 	
 	m_impl->self.erase( "Length" ) ;
@@ -231,7 +230,6 @@ void Stream::Swap( Stream& str )
 
 void Stream::CreateFilter( const Name& filter )
 {
-std::cout << "filer = " << filter << std::endl ;
 	if ( filter == Name( "FlateDecode" ) )
 		m_impl->filter.reset( new DeflateFilter( m_impl->filter ) ) ;
 	else
@@ -299,7 +297,6 @@ void Stream::CopyData( std::vector<unsigned char>& buf ) const
 	// rewind to the start of the stream
 	f->Rewind( ) ;
 	
-//	unsigned char data[80] ;
 	const std::size_t buf_size = 80 ;
 	std::size_t idx = 0 ;
 	std::size_t count = 0 ;

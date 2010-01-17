@@ -36,6 +36,9 @@
 #include "util/Util.hh"
 
 #include <iostream>
+#include <algorithm>
+#include <iterator>
+#include <fstream>
 
 #include FT_XFREE86_H
 
@@ -100,13 +103,13 @@ SimpleFont::SimpleFont( Dictionary& self, IFile *file, FT_Library ft_lib )
 		Dictionary fd ;
 		if ( Detach( file, self, "FontDescriptor", fd ) )
 		{
-std::cout << "descriptor = " << fd << std::endl ;
-
 			m_descriptor.Read( fd, file ) ;
 			std::vector<unsigned char> font_file ;
 			m_descriptor.FontFile().CopyData( font_file ) ;
-std::cout << "font file " << m_descriptor.Family() << " has " << font_file.size() << std::endl ;
-
+std::ofstream f( (m_base_font.Str()+".ttf").c_str() ) ;
+std::copy( font_file.begin(), font_file.end(),
+std::ostreambuf_iterator<char>( f ) ) ;
+f.close() ;
 			FT_Error e = FT_New_Memory_Face(
 				ft_lib,
 				&font_file[0],

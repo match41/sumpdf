@@ -33,6 +33,7 @@
 #include <QPainterPath>
 #include <QDebug>
 #include <QPen>
+#include <QApplication>
 
 #include <cassert>
 
@@ -64,14 +65,14 @@ GlyphGraphicsItem::GlyphGraphicsItem( FT_GlyphSlot glyph )
 		0, 0
 	} ;
 	
-	QPainterPath path ;
+	QPainterPath path( QPointF ( 0.0,0.0 ) ) ;
 	Render r = { this, &path } ;
 	
 	FT_OutlineGlyph og = reinterpret_cast<FT_OutlineGlyph>( m_glyph ) ; 
 	FT_Outline_Decompose( &og->outline, &f, &r ) ;
 	
 	setBrush( QColor(0, 0, 0) );
-	setPen( QPen( Qt::SolidLine ) ) ;
+	setPen( QPen( Qt::NoPen ) ) ;
 	setPath( path ) ;
 	
 //	painter->setBrush( QBrush( Qt::NoBrush ) );
@@ -171,9 +172,7 @@ int GlyphGraphicsItem::CubicTo(
 
 QPointF GlyphGraphicsItem::Transform( const FT_Vector *p ) const
 {
-	return QPointF(
-		(p->x ) / 64.0,
-		(p->y) / 64.0 ) ;
+	return QPointF( p->x, p->y ) ;
 }
 
 } // end of namespace

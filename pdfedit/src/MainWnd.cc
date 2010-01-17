@@ -44,6 +44,8 @@
 #include <QImage>
 #include <QTransform>
 #include <QDebug>
+#include <QApplication>
+#include <QDesktopWidget>
 
 #include "TextEdit.hh"
 
@@ -111,9 +113,11 @@ void MainWnd::OpenFile( const QString& file )
 		Page *p = m_doc->GetPage( 0 ) ;
 		Rect r = p->MediaBox( ) ;
 		m_scene->setSceneRect( 0, 0, r.Width(), r.Height() ) ;
+//		m_scene->setSceneRect( 0, 0, 5000, 5000 ) ;
 		
 		PageContent *c = p->GetContent( ) ;
 		c->VisitGraphics( this ) ;
+//		VisitText( (Text*)c->Item(0) ) ;
 	}
 }
 
@@ -123,6 +127,7 @@ void MainWnd::VisitText( Text *text )
 
 	std::for_each( text->begin(), text->end(),
 		boost::bind( &MainWnd::LoadTextLine, this, _1 ) ) ;
+//	LoadTextLine( *(text->begin()+5) ) ;
 }
 
 void MainWnd::LoadTextLine( const TextLine& line )
@@ -130,28 +135,26 @@ void MainWnd::LoadTextLine( const TextLine& line )
 	const TextBlock& b = *line.begin() ;
 
 	FT_Face face = b.Format().GetFont()->Face( ) ;
-
-	FT_Error error = FT_Set_Char_Size(
-		face,
-		0,
-		static_cast<int>(b.Format().FontSize() * 64),
-		72,
-		72 ); 
 	
 	Matrix tm = line.Transform() ;
-	
 	const std::wstring& text = b.Text() ;
 	for ( std::size_t i = 0 ; i < text.size() ; i++ )
 	{
 		int glyph_index = FT_Get_Char_Index( face, text[i] ) ; 
 	
-		error = FT_Load_Glyph( face, glyph_index, FT_LOAD_DEFAULT ) ;
+		FT_Error error = FT_Load_Glyph( face, glyph_index, FT_LOAD_NO_SCALE ) ;
 
 		GlyphGraphicsItem *item = new GlyphGraphicsItem( face->glyph ) ;
 
+		double scalefactor = b.Format().FontSize() / face->units_per_EM ;
 		item->setTransform( ToQtMatrix( tm ) ) ;
-		tm.Dx( tm.Dx() + (face->glyph->advance.x / 64.0) ) ;
-		
+		item->scale( scalefactor, scalefactor ) ;
+		tm.Dx( tm.Dx() + face->glyph->advance.x * scalefactor) ;
+
+//		item->setPos( x, 1000 ) ;
+//		x += face->glyph->advance.x * scalefactor;
+qDebug() << item->boundingRect() << " adv " << face->glyph->advance.x << "\"" << (char)text[i]<< "\"" ;
+
 		m_scene->addItem( item ) ;
 	}
 }
