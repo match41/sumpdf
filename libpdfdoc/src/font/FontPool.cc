@@ -25,7 +25,8 @@
 
 #include "FontPool.hh"
 
-#include <cassert>
+#include "util/Debug.hh"
+#include "util/Exception.hh"
 
 namespace pdf {
 
@@ -34,12 +35,30 @@ namespace pdf {
 FontPool::FontPool( FT_Library lib )
 	: m_ft( lib )
 {
+	PDF_ASSERT( m_ft != 0 ) ;
+
+	FT_Error e = FTC_Manager_New(
+		m_ft, 0, 0, 0, &FontPool::RequestFace, 0, &m_mgr ) ;
+	if ( e != 0 )
+		throw Exception( "cannot create FTC manager" ) ;
+}
+
+FontPool::~FontPool( )
+{
+	FTC_Manager_Done( m_mgr ) ;
 }
 
 FT_Face FontPool::GetFace( BaseFont *font )
 {
+	PDF_ASSERT( font != 0 ) ;
+
 	FT_Face face ;
-//	FTC_Manager_LookupFace
+	FT_Error e = FTC_Manager_LookupFace(
+		m_mgr,
+		reinterpret_cast<FTC_FaceID>( font ),
+		&face ) ;
+	if ( e != 0 )
+		throw Exception( "create load font face" ) ;
 	return 0 ;
 }
 
@@ -55,7 +74,7 @@ FT_Error FontPool::RequestFace(
 	FT_Face		*aface )
 {
 	BaseFont *font = reinterpret_cast<BaseFont*>( face_id ) ;
-	assert( font != 0 ) ;
+	PDF_ASSERT( font != 0 ) ;
 	return font != 0 ? 0 : -1 ;
 }
 

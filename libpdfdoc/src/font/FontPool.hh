@@ -40,6 +40,7 @@ class FontPool
 {
 public :
 	explicit FontPool( FT_Library lib ) ;
+	~FontPool( ) ;
 
 	FT_Face GetFace( BaseFont *font ) ;
 	
