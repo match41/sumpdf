@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2009 by Nestal Wan                                      *
+ *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,46 +17,28 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/*!
-	\file	StandardFont.hh
-	\brief	definition the StandardFont class
-	\date	Sun Mar 8 2009
+/**	\file	Debug.cc
+	\brief	implementation of the Debug class
+	\date	Jan 17, 2010
 	\author	Nestal Wan
 */
 
-#ifndef __PDF_STANDARD_FONT_HEADER_INCLUDED__
-#define __PDF_STANDARD_FONT_HEADER_INCLUDED__
+#include "Debug.hh"
 
-#include "BaseFont.hh"
-#include "core/Name.hh"
+#include "Backtrace.hh"
+
+#include <iostream>
+#include <cstdlib>
 
 namespace pdf {
 
-/*!	\brief	The standard 14 Type 1 fonts.
-
-	this class represents
-*/
-class StandardFont : public BaseFont
+void AssertFail( const char *text, const char *file, unsigned line )
 {
-public :
-	StandardFont( const Name& name ) ;
-
-	std::string BaseName( ) const ;
-
-	Ref Write( IFile *file ) const ;
-	
-	static bool IsStandardFont( const Name& font_name ) ;
-	
-	double Width( const std::wstring& text, double size ) const ;
-
-	FT_Face Face( ) const ;
-
-	FontDescriptor* Descriptor( ) ;
-
-private :
-	Name	m_font_name ;
-} ;
+	std::cerr
+		<< file << ":" << line << ": Assertion \"" << text << "\" failed.\n"
+		<< "Call stack:\n"
+		<< Backtrace(3) << std::endl ;
+	std::abort( ) ;
+}
 
 } // end of namespace
-
-#endif

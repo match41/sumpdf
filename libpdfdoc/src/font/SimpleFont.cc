@@ -34,7 +34,9 @@
 
 #include "util/Exception.hh"
 #include "util/Util.hh"
+#include "util/Debug.hh"
 
+#include <cassert>
 #include <iostream>
 #include <algorithm>
 #include <iterator>
@@ -82,6 +84,7 @@ SimpleFont::SimpleFont( FT_Face face )
 
 SimpleFont::SimpleFont( Dictionary& self, IFile *file, FT_Library ft_lib )
 {
+	PDF_ASSERT( file != 0 ) ;
 	try
 	{
 		Name subtype ;
@@ -201,6 +204,8 @@ double SimpleFont::Width( const std::wstring& text, double size ) const
 
 Ref SimpleFont::Write( IFile *file ) const
 {
+	PDF_ASSERT( file != 0 ) ;
+
 	CompleteObj dict( m_self ) ;
 	dict.Get()["Type"]		= Name( "Font" ) ;
 	dict.Get()["Subtype"]	= SubType( m_type ) ;
@@ -254,6 +259,11 @@ std::string SimpleFont::BaseName( ) const
 FT_Face SimpleFont::Face( ) const
 {
 	return m_face ;
+}
+
+FontDescriptor* SimpleFont::Descriptor( )
+{
+	return &m_descriptor ;
 }
 
 BaseFont* CreateFont( Dictionary& obj, IFile *file, FT_Library ft_lib )

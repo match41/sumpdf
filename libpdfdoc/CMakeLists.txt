@@ -102,6 +102,7 @@ set( UTIL_HDRS  	${UTIL_DIR}/Rect.hh
 					${UTIL_DIR}/Util.hh
 					${UTIL_DIR}/SymbolInfo.hh
 					${UTIL_DIR}/Backtrace.hh
+					${UTIL_DIR}/Debug.hh
 					${UTIL_DIR}/RefCounter.hh
 					${UTIL_DIR}/RefCounterWrapper.hh )
 					
@@ -203,6 +204,7 @@ set( UTIL_SRCS  	${UTIL_DIR}/Rect.cc
 					${UTIL_DIR}/Exception.cc
 					${UTIL_DIR}/Backtrace.cc
 					${UTIL_DIR}/RefCounter.cc
+					${UTIL_DIR}/Debug.cc
 					${UTIL_DIR}/Matrix.cc )
 
 set( IMG_SRCS  		${IMG_DIR}/Image.cc )

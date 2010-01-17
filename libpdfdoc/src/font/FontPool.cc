@@ -25,6 +25,8 @@
 
 #include "FontPool.hh"
 
+#include <cassert>
+
 namespace pdf {
 
 /**	constructor
@@ -53,6 +55,7 @@ FT_Error FontPool::RequestFace(
 	FT_Face		*aface )
 {
 	BaseFont *font = reinterpret_cast<BaseFont*>( face_id ) ;
+	assert( font != 0 ) ;
 	return font != 0 ? 0 : -1 ;
 }
 

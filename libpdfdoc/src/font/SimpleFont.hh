@@ -51,7 +51,8 @@ class Dictionary ;
 /*!	\brief	general font for PDF files
 	\internal
 
-	This class represent a simple Type 1 or TrueType font.
+	This class represent a simple Type 1 or TrueType font. According to the
+	PDF specification, a simple font has less than 256 characters.
 */
 class SimpleFont : public BaseFont
 {
@@ -69,6 +70,8 @@ public :
 	double Width( const std::wstring& text, double size ) const ;
 	
 	FT_Face Face( ) const ;
+	
+	FontDescriptor* Descriptor( ) ;
 	
 private :
 	SimpleFont( const Name& base_font, Type type ) ;

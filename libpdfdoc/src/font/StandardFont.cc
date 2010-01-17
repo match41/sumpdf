@@ -96,4 +96,9 @@ FT_Face StandardFont::Face( ) const
 	return 0 ;
 }
 
+FontDescriptor* StandardFont::Descriptor( )
+{
+	return 0 ;
+}
+
 } // end of namespace
