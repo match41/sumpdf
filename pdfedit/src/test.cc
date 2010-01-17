@@ -62,32 +62,17 @@ std::cout << "index = " << FTC_CMapCache_Lookup(cmap, 0, 0, 'e') << std::endl ;
 		
 		FTC_ImageCache img ;
 		FTC_ImageCache_New( m_cache, &img ) ;
-		
-	
+			
 std::cout << "error = " << e << " " << m_face << std::endl ;
-//		FT_New_Face(
-//			m_ft,
-//			"PLYBKC+NimbusRomNo9L-Regu.ttf",
-//			0,
-//			&m_face ) ; 
-		
-//		FT_Set_Char_Size( m_face, 0, 16*64, 90, 90 ) ;
 		FTC_ImageTypeRec imgr = {0, 0, 0, FT_LOAD_NO_SCALE} ;
 
 		FT_Glyph g ;
 		e = FTC_ImageCache_Lookup( img, &imgr, idx, &g, 0 ) ; 
 
-//		e = FT_Load_Glyph( m_face, FT_Get_Char_Index(m_face, ch), FT_LOAD_NO_SCALE );
-std::cout << "error = " << std::hex << e << std::endl;
-		
 		m_scene->setSceneRect( 0, 0,
 			m_face->glyph->metrics.horiBearingX+m_face->glyph->metrics.width,
 			m_face->glyph->metrics.height ) ; 
-//	}
-//
-//	void paintEvent( QPaintEvent *e )
-//	{
-//		QPainter p( this ) ;
+		
 		QPainterPath path( QPointF(0, 0) ) ;
 
 		FT_Outline_Funcs f =
@@ -105,14 +90,7 @@ std::cout << "error = " << std::hex << e << std::endl;
 		
 		FT_Outline_Decompose( &og->outline, &f, &r ) ;
 		m_glyph->setPath( path ) ;
-//qDebug() << m_face->units_per_EM ;
-//		double scalefactor = 16.0 / m_face->units_per_EM ;
-//		m_glyph->scale ( scalefactor, -scalefactor );
-//		m_glyph->scale ( 1, -1 );
-//		
-//		m_glyph->translate( 0, -100 ) ;
 		m_scene->addItem( m_glyph ) ;
-//		m_view->scale( 2, 2 ) ;
 		m_view->setRenderHint( QPainter::Antialiasing ) ;
 	}
 	

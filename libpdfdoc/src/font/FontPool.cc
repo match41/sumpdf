@@ -17,68 +17,43 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	GlyphGraphicsItem.hh
-    \brief	definition the GlyphGraphicsItem class
-    \date	Jan 16, 2010
-    \author	Nestal Wan
+/**	\file	FontPool.cc
+	\brief	implementation of the FontPool class
+	\date	Jan 17, 2010
+	\author	Nestal Wan
 */
 
-#ifndef __PDF_GLYPHGRAPHICSITEM_HH_EADER_INCLUDED__
-#define __PDF_GLYPHGRAPHICSITEM_HH_EADER_INCLUDED__
-
-#include <QGraphicsItem>
-
-// freetype headers
-#include <ft2build.h>
-#include FT_FREETYPE_H
-#include FT_GLYPH_H
-
-class QPainterPath ;
-class QPointF ;
+#include "FontPool.hh"
 
 namespace pdf {
 
-///	brief description
-/**	The GlyphGraphicsItem class represents
+/**	constructor
 */
-class GlyphGraphicsItem : public QGraphicsPathItem
+FontPool::FontPool( FT_Library lib )
+	: m_ft( lib )
 {
-public :
-	explicit GlyphGraphicsItem( FT_GlyphSlot glyph ) ;
+}
 
-private :
-	static int MoveTo( const FT_Vector* to, void *user ) ;
-	int MoveTo( const FT_Vector* to, QPainterPath *p ) ;
-	static int LineTo( const FT_Vector* to, void *user ) ;
-	int LineTo( const FT_Vector* to, QPainterPath *p ) ;
-	static int QuadTo(
-		const FT_Vector	*control,
-		const FT_Vector	*to,
-		void 			*user ) ;
-	int QuadTo(
-		const FT_Vector* control,
-		const FT_Vector* to,
-		QPainterPath	 *p ) ;
-	static int CubicTo(
-		const FT_Vector	*control1,
-		const FT_Vector	*control2,
-		const FT_Vector	*to,
-		void 			*user ) ;
-	int CubicTo(
-		const FT_Vector	*control1,
-		const FT_Vector	*control2,
-		const FT_Vector	*to,
-		QPainterPath	*p ) ;
+FT_Face FontPool::GetFace( BaseFont *font )
+{
+	FT_Face face ;
+//	FTC_Manager_LookupFace
+	return 0 ;
+}
 
-	struct Render ;
+FT_Glyph FontPool::GetGlyph( FT_Face face, wchar_t ch )
+{
+	return 0 ;
+}
 
-	QPointF Transform( const FT_Vector *p ) const ;
-
-private :
-//	FT_Glyph			m_glyph ;
-	FT_Glyph_Metrics	m_metrics ;
-} ;
+FT_Error FontPool::RequestFace(
+	FTC_FaceID	face_id,
+	FT_Library	library,
+	FT_Pointer	request_data,
+	FT_Face		*aface )
+{
+	BaseFont *font = reinterpret_cast<BaseFont*>( face_id ) ;
+	return font != 0 ? 0 : -1 ;
+}
 
 } // end of namespace
-
-#endif // GLYPHGRAPHICSITEM_HH_

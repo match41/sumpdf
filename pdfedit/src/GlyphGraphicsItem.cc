@@ -47,14 +47,15 @@ struct GlyphGraphicsItem::Render
 
 /**	constructor
 */
-GlyphGraphicsItem::GlyphGraphicsItem( FT_GlyphSlot glyph )
-	: m_metrics( glyph->metrics )
+GlyphGraphicsItem::GlyphGraphicsItem( FT_GlyphSlot glyph_slot )
+	: m_metrics( glyph_slot->metrics )
 {
-	FT_Error error = FT_Get_Glyph( glyph, &m_glyph ) ;
+	FT_Glyph glyph ;
+	FT_Error error = FT_Get_Glyph( glyph_slot, &glyph ) ;
 	if ( error != 0 )
 		throw -1 ;
 	
-	assert( m_glyph->format == FT_GLYPH_FORMAT_OUTLINE ) ;
+	assert( glyph->format == FT_GLYPH_FORMAT_OUTLINE ) ;
 
 	FT_Outline_Funcs f =
 	{
@@ -68,24 +69,14 @@ GlyphGraphicsItem::GlyphGraphicsItem( FT_GlyphSlot glyph )
 	QPainterPath path( QPointF ( 0.0,0.0 ) ) ;
 	Render r = { this, &path } ;
 	
-	FT_OutlineGlyph og = reinterpret_cast<FT_OutlineGlyph>( m_glyph ) ; 
+	FT_OutlineGlyph og = reinterpret_cast<FT_OutlineGlyph>( glyph ) ; 
 	FT_Outline_Decompose( &og->outline, &f, &r ) ;
 	
 	setBrush( QColor(0, 0, 0) );
 	setPen( QPen( Qt::NoPen ) ) ;
 	setPath( path ) ;
-}
-
-double GlyphGraphicsItem::Left( ) const
-{
-	FT_BitmapGlyph bmp_glyph = reinterpret_cast<FT_BitmapGlyph>( m_glyph ) ;
-	return bmp_glyph->left ;
-}
-
-double GlyphGraphicsItem::Top( ) const
-{
-	FT_BitmapGlyph bmp_glyph = reinterpret_cast<FT_BitmapGlyph>( m_glyph ) ;
-	return bmp_glyph->top ;
+	
+	FT_Done_Glyph( glyph ) ;
 }
 
 int GlyphGraphicsItem::MoveTo( const FT_Vector* to, void *user )

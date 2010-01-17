@@ -17,68 +17,48 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	GlyphGraphicsItem.hh
-    \brief	definition the GlyphGraphicsItem class
-    \date	Jan 16, 2010
+/**	\file	FontPool.hh
+    \brief	definition the FontPool class
+    \date	Jan 17, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_GLYPHGRAPHICSITEM_HH_EADER_INCLUDED__
-#define __PDF_GLYPHGRAPHICSITEM_HH_EADER_INCLUDED__
+#ifndef __PDF_FONTPOOL_HH_EADER_INCLUDED__
+#define __PDF_FONTPOOL_HH_EADER_INCLUDED__
 
-#include <QGraphicsItem>
-
-// freetype headers
 #include <ft2build.h>
-#include FT_FREETYPE_H
-#include FT_GLYPH_H
-
-class QPainterPath ;
-class QPointF ;
+#include FT_CACHE_H
 
 namespace pdf {
 
+class BaseFont ;
+
 ///	brief description
-/**	The GlyphGraphicsItem class represents
+/**	The FontPool class represents
 */
-class GlyphGraphicsItem : public QGraphicsPathItem
+class FontPool
 {
 public :
-	explicit GlyphGraphicsItem( FT_GlyphSlot glyph ) ;
+	explicit FontPool( FT_Library lib ) ;
+
+	FT_Face GetFace( BaseFont *font ) ;
+	
+	FT_Glyph GetGlyph( FT_Face face, wchar_t ch ) ;
 
 private :
-	static int MoveTo( const FT_Vector* to, void *user ) ;
-	int MoveTo( const FT_Vector* to, QPainterPath *p ) ;
-	static int LineTo( const FT_Vector* to, void *user ) ;
-	int LineTo( const FT_Vector* to, QPainterPath *p ) ;
-	static int QuadTo(
-		const FT_Vector	*control,
-		const FT_Vector	*to,
-		void 			*user ) ;
-	int QuadTo(
-		const FT_Vector* control,
-		const FT_Vector* to,
-		QPainterPath	 *p ) ;
-	static int CubicTo(
-		const FT_Vector	*control1,
-		const FT_Vector	*control2,
-		const FT_Vector	*to,
-		void 			*user ) ;
-	int CubicTo(
-		const FT_Vector	*control1,
-		const FT_Vector	*control2,
-		const FT_Vector	*to,
-		QPainterPath	*p ) ;
-
-	struct Render ;
-
-	QPointF Transform( const FT_Vector *p ) const ;
+	static FT_Error RequestFace(
+		FTC_FaceID	face_id,
+		FT_Library	library,
+		FT_Pointer	request_data,
+		FT_Face		*aface ) ;
 
 private :
-//	FT_Glyph			m_glyph ;
-	FT_Glyph_Metrics	m_metrics ;
+	FT_Library		m_ft ;
+	FTC_Manager		m_mgr ;
+	FTC_ImageCache	m_img ;
+	FTC_CMapCache	m_cmap ;
 } ;
 
 } // end of namespace
 
-#endif // GLYPHGRAPHICSITEM_HH_
+#endif // FONTPOOL_HH_

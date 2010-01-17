@@ -106,10 +106,10 @@ SimpleFont::SimpleFont( Dictionary& self, IFile *file, FT_Library ft_lib )
 			m_descriptor.Read( fd, file ) ;
 			std::vector<unsigned char> font_file ;
 			m_descriptor.FontFile().CopyData( font_file ) ;
-std::ofstream f( (m_base_font.Str()+".ttf").c_str() ) ;
-std::copy( font_file.begin(), font_file.end(),
-std::ostreambuf_iterator<char>( f ) ) ;
-f.close() ;
+//std::ofstream f( (m_base_font.Str()+".ttf").c_str() ) ;
+//std::copy( font_file.begin(), font_file.end(),
+//std::ostreambuf_iterator<char>( f ) ) ;
+//f.close() ;
 			FT_Error e = FT_New_Memory_Face(
 				ft_lib,
 				&font_file[0],
