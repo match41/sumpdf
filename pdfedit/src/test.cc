@@ -32,10 +32,13 @@
 #include <QGraphicsView>
 #include <QGraphicsPathItem>
 #include <QDebug>
+#include <iostream>
 
 #include <ft2build.h>
 #include FT_IMAGE_H
 #include FT_OUTLINE_H
+#include FT_CACHE_H
+#include FT_ERRORS_H
 
 class GlyphWidget : public QMainWindow
 {
@@ -48,14 +51,34 @@ public :
 		setCentralWidget( m_view ) ;
 		
 		FT_Init_FreeType( &m_ft ) ;
-		FT_New_Face(
-			m_ft,
-			"PLYBKC+NimbusRomNo9L-Regu.ttf",
-			0,
-			&m_face ) ; 
+		char file[] = "PLYBKC+NimbusRomNo9L-Regu.ttf" ;
+		FTC_Manager_New( m_ft, 0, 0, 0, &GlyphWidget::LoadFace, file, &m_cache ) ;
+		FT_Error e = FTC_Manager_LookupFace( m_cache, 0, &m_face ) ;
+std::cout << "em = " << m_face->units_per_EM << std::endl ;
+		FTC_CMapCache cmap ;
+		FTC_CMapCache_New( m_cache, &cmap);
+		int idx = FTC_CMapCache_Lookup(cmap, 0, 0, 'e') ;
+std::cout << "index = " << FTC_CMapCache_Lookup(cmap, 0, 0, 'e') << std::endl ;
 		
-		FT_Set_Char_Size( m_face, 0, 16*64, 90, 90 ) ;
-		FT_Load_Glyph( m_face, FT_Get_Char_Index(m_face, ch), FT_LOAD_DEFAULT );
+		FTC_ImageCache img ;
+		FTC_ImageCache_New( m_cache, &img ) ;
+		
+	
+std::cout << "error = " << e << " " << m_face << std::endl ;
+//		FT_New_Face(
+//			m_ft,
+//			"PLYBKC+NimbusRomNo9L-Regu.ttf",
+//			0,
+//			&m_face ) ; 
+		
+//		FT_Set_Char_Size( m_face, 0, 16*64, 90, 90 ) ;
+		FTC_ImageTypeRec imgr = {0, 0, 0, FT_LOAD_NO_SCALE} ;
+
+		FT_Glyph g ;
+		e = FTC_ImageCache_Lookup( img, &imgr, idx, &g, 0 ) ; 
+
+//		e = FT_Load_Glyph( m_face, FT_Get_Char_Index(m_face, ch), FT_LOAD_NO_SCALE );
+std::cout << "error = " << std::hex << e << std::endl;
 		
 		m_scene->setSceneRect( 0, 0,
 			m_face->glyph->metrics.horiBearingX+m_face->glyph->metrics.width,
@@ -78,21 +101,35 @@ public :
 		
 		Render r = { this, &path } ;
 		
-		FT_Outline_Decompose( &m_face->glyph->outline, &f, &r ) ;
-//		p.drawPath( path ) ;
+		FT_OutlineGlyph og = (FT_OutlineGlyph)g ;
+		
+		FT_Outline_Decompose( &og->outline, &f, &r ) ;
 		m_glyph->setPath( path ) ;
 //qDebug() << m_face->units_per_EM ;
-		double scalefactor = 1 / 64.0 ;
-		m_glyph->scale ( scalefactor, -scalefactor );
+//		double scalefactor = 16.0 / m_face->units_per_EM ;
+//		m_glyph->scale ( scalefactor, -scalefactor );
 //		m_glyph->scale ( 1, -1 );
 //		
-		m_glyph->translate( 0, -m_face->glyph->metrics.height ) ;
+//		m_glyph->translate( 0, -100 ) ;
 		m_scene->addItem( m_glyph ) ;
-		m_view->scale( 2, 2 ) ;
+//		m_view->scale( 2, 2 ) ;
 		m_view->setRenderHint( QPainter::Antialiasing ) ;
 	}
 	
 private :
+	static FT_Error LoadFace(
+		FTC_FaceID  face_id,
+	    FT_Library  library,
+	    FT_Pointer  request_data,
+	    FT_Face*    aface )
+	{
+		return FT_New_Face(
+			library,
+			(char*)request_data,
+			0,
+			aface ) ; 
+	}
+
 	struct Render
 	{
 		GlyphWidget		*pthis ;
@@ -173,6 +210,7 @@ private :
 
 private :
 	FT_Library	m_ft ;
+	FTC_Manager	m_cache ;
 	FT_Face		m_face ;
 	
 	QGraphicsScene	*m_scene ;
