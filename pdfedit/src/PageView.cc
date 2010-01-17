@@ -37,9 +37,16 @@ namespace pdf {
 PageView::PageView( QGraphicsScene *scene, QWidget *parent )
 	: QGraphicsView( scene, parent )
 {
-//	scale( 1.0/64.0 * 4, -1.0/64.0 * 4 ) ;
-	scale( 5, -5 ) ;
+	// default zoom is 100%
+	Zoom( 1.0 ) ;
 	setRenderHint( QPainter::Antialiasing ) ;
+}
+
+void PageView::Zoom( double factor )
+{
+	QMatrix m ;
+	m.scale( factor, -factor ) ;
+	setMatrix( m ) ;
 }
 
 void PageView::mousePressEvent( QMouseEvent *event )
@@ -53,11 +60,6 @@ void PageView::mousePressEvent( QMouseEvent *event )
 	}
 
 	QGraphicsView::mousePressEvent( event ) ;
-}
-
-void PageView::drawForeground( QPainter * painter, const QRectF & rect )
-{
-	QGraphicsView::drawForeground( painter, rect ) ;
 }
 
 } // end of namespace

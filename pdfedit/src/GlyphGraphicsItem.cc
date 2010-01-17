@@ -74,21 +74,6 @@ GlyphGraphicsItem::GlyphGraphicsItem( FT_GlyphSlot glyph )
 	setBrush( QColor(0, 0, 0) );
 	setPen( QPen( Qt::NoPen ) ) ;
 	setPath( path ) ;
-	
-//	painter->setBrush( QBrush( Qt::NoBrush ) );
-//	QPen bboxpen( Qt::SolidLine ) ;
-//	bboxpen.setColor( QColor(128,128,0) ) ;
-//	painter->setPen( bboxpen ) ;
-//	painter->drawRect( boundingRect() ) ;
-//
-//	// debug lines
-//	QPen oripen( Qt::SolidLine ) ;
-//	oripen.setColor( QColor(255,0,0) ) ;
-//	painter->setPen( oripen ) ;
-//	painter->drawPoint( 0, 0 ) ;
-//
-//	painter->drawLine( 0, 0, m_metrics.width / 64.0, 0 ) ;
-//	painter->drawLine( 0, 0, 0, -m_metrics.height / 64.0 ) ;
 }
 
 double GlyphGraphicsItem::Left( ) const

@@ -42,9 +42,10 @@ class PageView : public QGraphicsView
 public:
 	explicit PageView( QGraphicsScene *scene, QWidget *parent ) ;
 
+	void Zoom( double factor ) ;
+
 protected :
 	void mousePressEvent( QMouseEvent *event ) ;
-	void drawForeground ( QPainter * painter, const QRectF & rect ) ;
 
 private :
 	class LineEdit ;

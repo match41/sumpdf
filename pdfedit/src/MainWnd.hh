@@ -37,6 +37,8 @@
 
 class QGraphicsScene ;
 class QTransform ;
+class QToolBar ;
+class QComboBox ;
 
 namespace pdf {
 
@@ -67,7 +69,8 @@ public slots :
 	void OnOpen( ) ;
 	void OnProperties( ) ;
 	void OnSaveAs( ) ;
-
+	void OnToolZoom( int choice ) ;
+	
 private :
 	void StorePage( QGraphicsScene *scene, Doc *doc, Page *page ) ;
 	void VisitText( Text *text ) ;
@@ -81,6 +84,8 @@ private :
 	
 	QGraphicsScene	*m_scene ;
 	PageView		*m_view ;
+	QToolBar		*m_tool_bar ;
+	QComboBox 		*m_zoom_box ; 
 } ;
 
 } // end of namespace
