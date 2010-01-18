@@ -17,69 +17,44 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	FontDescriptor.hh
-    \brief	definition the FontDescriptor class
-    \date	Jan 16, 2010
-    \author	Nestal Wan
+/**	\file	MockFont.cc
+	\brief	implementation of the MockFont class
+	\date	Jan 18, 2010
+	\author	Nestal Wan
 */
 
-#ifndef __PDF_FONTDESCRIPTOR_HH_EADER_INCLUDED__
-#define __PDF_FONTDESCRIPTOR_HH_EADER_INCLUDED__
+#include "MockFont.hh"
 
-#include <string>
+#include "core/Ref.hh"
 
-#include "util/Rect.hh"
-#include "stream/Stream.hh"
-
-namespace pdf {
-
-class Dictionary ;
-class IFile ;
-
-///	A font descriptor
-/**	The FontDescriptor class represents a font descriptor in a PDF file. It
-	contains information about a font face. It is used to guess the appearance
-	of a font without knowing its font program.
+/**	constructor
 */
-class FontDescriptor
+MockFont::MockFont( )
 {
-public :
-	enum Stretch
-	{
-		ultra_condensed, extra_condensed, condensed, semi_condensed,
-		normal,
-		semi_expanded, expanded, extra_expanded, ultra_expanded,
-		unknown
-	} ;
+}
 
-public :
-	FontDescriptor( ) ;
-	
-	void Read( Dictionary& self, IFile *file ) ;
-	
-	std::string Family( ) const ;
+std::string MockFont::BaseName( ) const
+{
+	return "" ;
+}
 
-	Stretch GetStretch( ) const ;
+pdf::Ref MockFont::Write( pdf::IFile *file ) const
+{
+	return pdf::Ref( ) ;
+}
 
-	double	ItalicAngle( ) const ;
+pdf::FontDescriptor* MockFont::Descriptor( )
+{
+	return 0 ;
+}
 
-	Stream	FontFile( ) const ;
+double MockFont::Width( const std::wstring& text, double size ) const
+{
+	return 0.0 ;
+}
 
-private :
-	static const Name m_stretch_names[] ; 
+FT_Face MockFont::Face( ) const
+{
+	return 0 ;
+}
 
-private :
-	std::string	m_family ;
-	Stretch		m_stretch ;
-	int			m_weight ;
-	int			m_flags ;
-	Rect		m_bbox ;
-	double		m_italic_angle ;
-	double		m_ascent, m_descent, m_leading, m_cap_height, m_x_height,
-				m_stemv, m_stemh, m_avg_width, m_max_width, m_miss_width ;
-	Stream		m_font_file ;
-} ;
-
-} // end of namespace
-
-#endif // FONTDESCRIPTOR_HH_

@@ -25,11 +25,28 @@
 
 #include "FontDescriptor.hh"
 
+#include "core/Array.hh"
 #include "core/Dictionary.hh"
 #include "file/IFile.hh"
 #include "file/ObjectReader.hh"
 
+#include "util/Util.hh"
+#include "util/Debug.hh"
+
 namespace pdf {
+
+const Name FontDescriptor::m_stretch_names[] =
+{
+	"UltraCondensed",
+	"ExtraCondensed",
+	"Condensed",
+	"SemiCondensed",
+	"Normal",
+	"SemiExpanded",
+	"Expanded",
+	"ExtraExpanded",
+	"UltraExpanded"
+} ;
 
 /**	constructor
 */
@@ -41,11 +58,42 @@ FontDescriptor::FontDescriptor( )
 
 void FontDescriptor::Read( Dictionary& self, IFile *file )
 {
-	if ( !Detach( file, self, "FontFile", 	m_font_file ) )
-		if ( !Detach( file, self, "FontFile2", 	m_font_file ) )
-			Detach( file, self, "FontFile3", 	m_font_file ) ;
+	// font file can be in FontFile, FontFile2 or 3, depending on font type
+	Stream prog ;
+	bool r =
+		Detach( file, self, "FontFile", 	prog ) ||
+		Detach( file, self, "FontFile2", 	prog ) ||
+		Detach( file, self, "FontFile3", 	prog ) ;
+	if ( r )
 	
+	// optional font family name. normally empty for embedded font
 	Detach( file, self, "FontFamily",	m_family ) ;
+	
+	Name stretch ;
+	if ( Detach( file, self, "FontStretch", stretch ) )
+		m_stretch = static_cast<Stretch>(std::find(
+			Begin(m_stretch_names),
+			End(m_stretch_names),
+			stretch ) - Begin(m_stretch_names) ) ;
+
+	Detach( file, self, "FontWeight",	m_weight ) ;
+	Detach( file, self, "Flags",		m_flags ) ;
+	
+	Array bbox ;
+	if ( Detach( file, self, "FontBBox", bbox ) )
+		m_bbox = Rect( bbox.begin(), bbox.end() ) ;
+
+	Detach( file, self, "ItalicAngle",	m_italic_angle ) ;
+	Detach( file, self, "Ascent",		m_ascent ) ;
+	Detach( file, self, "Descent",		m_descent ) ;
+	Detach( file, self, "Leading",		m_leading ) ;
+	Detach( file, self, "CapHeight",	m_cap_height ) ;
+	Detach( file, self, "XHeight",		m_x_height ) ;
+	Detach( file, self, "StemV",		m_stemv ) ;
+	Detach( file, self, "StemH",		m_stemh ) ;
+	Detach( file, self, "AvgWidth",		m_avg_width ) ;
+	Detach( file, self, "MaxWidth",		m_max_width ) ;
+	Detach( file, self, "MissingWidth",	m_miss_width ) ;
 }
 
 Stream FontDescriptor::FontFile( ) const

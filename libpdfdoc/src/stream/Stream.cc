@@ -43,6 +43,7 @@
 #include <algorithm>
 #include <cassert>
 #include <cstring>
+#include <cstdlib>
 #include <iostream>
 #include <iterator>
 
@@ -347,7 +348,21 @@ std::size_t Stream::CopyFromFilter( StreamFilter *f, std::streambuf *buf )
 
 	return total ;
 }
+/*
 
+// TODO: implement this
+std::pair<unsigned char*, std::size_t> Stream::CopyData() const
+{
+	StreamFilter *f = m_impl->filter.get() ;
+	assert( f != 0 ) ;
+	
+	// rewind to the start of the stream
+	f->Rewind( ) ;
+	
+	return std::make_pair( 0, 0 ) ;
+}
+
+*/
 /**	\brief	Write the stream to output stream.
 
 	The stream will be written according to the PDF specification. Note that

@@ -29,9 +29,13 @@
 #include <ft2build.h>
 #include FT_CACHE_H
 
+#include <map>
+#include <vector>
+
 namespace pdf {
 
-class BaseFont ;
+class IFile ;
+class Ref ;
 
 ///	brief description
 /**	The FontPool class represents
@@ -42,7 +46,7 @@ public :
 	explicit FontPool( FT_Library lib ) ;
 	~FontPool( ) ;
 
-	FT_Face GetFace( BaseFont *font ) ;
+	FT_Face GetFace( const Ref& ref, IFile *file ) ;
 	
 	FT_Glyph GetGlyph( FT_Face face, wchar_t ch ) ;
 
@@ -51,13 +55,21 @@ private :
 		FTC_FaceID	face_id,
 		FT_Library	library,
 		FT_Pointer	request_data,
-		FT_Face		*aface ) ;
+		FT_Face		*face ) ;
 
 private :
 	FT_Library		m_ft ;
 	FTC_Manager		m_mgr ;
 	FTC_ImageCache	m_img ;
 	FTC_CMapCache	m_cmap ;
+
+	struct FaceID
+	{
+		std::vector<unsigned char>	data ;
+	} ;
+
+	typedef std::map<Ref,	FaceID*> FaceMap ;
+	FaceMap	m_face_map ; 
 } ;
 
 } // end of namespace

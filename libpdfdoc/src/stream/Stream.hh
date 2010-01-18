@@ -75,6 +75,7 @@ public :
     std::size_t CopyData( std::streambuf *buf ) const ;
     void CopyData( std::vector<unsigned char>& buf ) const ;
     std::size_t CopyData( unsigned char *buf, std::size_t size ) const ;
+    std::pair<unsigned char*, std::size_t> CopyData() const ;
     
     std::size_t Append( const unsigned char *buf, std::size_t size ) ;
     std::size_t Append( const char *str ) ;

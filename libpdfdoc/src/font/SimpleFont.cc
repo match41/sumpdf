@@ -85,6 +85,8 @@ SimpleFont::SimpleFont( FT_Face face )
 SimpleFont::SimpleFont( Dictionary& self, IFile *file, FT_Library ft_lib )
 {
 	PDF_ASSERT( file != 0 ) ;
+	PDF_ASSERT( ft_lib != 0 ) ;
+	
 	try
 	{
 		Name subtype ;

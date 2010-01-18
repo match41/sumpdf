@@ -429,6 +429,8 @@ set( UT_SRCS	test/core/TokenTest.cc
 				test/core/StringTest.cc
 				test/core/DictionaryTest.cc
 				test/core/ArrayTest.cc
+				test/font/SimpleFontTest.cc
+				test/font/FontPoolTest.cc
 				test/stream/StreamTest.cc
 				test/stream/RawFilterTest.cc
 				test/stream/DeflateFilterTest.cc
@@ -446,6 +448,7 @@ set( UT_SRCS	test/core/TokenTest.cc
 				test/file/CompleteObjTest.cc
 				
 				test/mock/MockFile.cc
+				test/mock/MockFont.cc
 				test/RealDocTest.cc
 )
 
