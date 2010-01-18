@@ -53,6 +53,10 @@ FontPool::FontPool( FT_Library lib )
 FontPool::~FontPool( )
 {
 	FTC_Manager_Done( m_mgr ) ;
+	
+	// TODO: free the FaceID's
+//	std::for_each( m_face_map.begin(), m_face_map.end(),
+//		
 }
 
 FT_Face FontPool::GetFace( const Ref& ref, IFile *file )
@@ -79,7 +83,8 @@ FT_Face FontPool::GetFace( const Ref& ref, IFile *file )
 		&face ) ;
 	if ( e != 0 )
 		throw Exception( "create load font face" ) ;
-	return 0 ;
+	
+	return face ;
 }
 
 FT_Glyph FontPool::GetGlyph( FT_Face face, wchar_t ch )
