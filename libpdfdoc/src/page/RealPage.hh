@@ -32,12 +32,11 @@
 #include "PageNode.hh"
 
 // other libpdfdoc headers
+#include "RealContent.hh"
 #include "Resources.hh"
 #include "core/Dictionary.hh"
 #include "core/Token.hh"
 #include "file/CompleteObj.hh"
-#include "graphics/RealText.hh"
-#include "page/PageContent.hh"
 #include "stream/Stream.hh"
 #include "util/Rect.hh"
 
@@ -79,7 +78,7 @@ public :
 	Resources* GetResource( ) ;
 	const Resources* GetResource( ) const ;
 
-	PageContent* GetContent( ) ;
+	RealContent* GetContent( ) ;
 
 private :
 	void ReadContent( const Object& str_obj, IFile *file ) ;
@@ -100,16 +99,7 @@ private :
 	/// in PDF user space. specified by UserUnit or 1/72 inch
 	Rect		m_media_box ;
 	
-	struct Content : public PageContent
-	{
-		std::size_t Count( ) const ;
-		const Graphics* Item( std::size_t idx ) const ;
-//		void Add( Graphics *item ) ;
-		RealText* AddText( ) ;
-		void VisitGraphics( GraphicsVisitor *visitor ) ;
-		
-		std::vector<Graphics*> m_gfx ;
-	} m_content ;
+	RealContent	m_content ;
 
 	std::vector<Stream>	m_cstrs ;
 

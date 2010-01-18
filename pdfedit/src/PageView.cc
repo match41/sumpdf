@@ -28,15 +28,25 @@
 
 #include "TextEdit.hh"
 
+#include <QGraphicsItem>
 #include <QDebug>
 #include <QMouseEvent>
-#include <QGraphicsProxyWidget>
 
 namespace pdf {
 
 PageView::PageView( QGraphicsScene *scene, QWidget *parent )
 	: QGraphicsView( scene, parent )
 {
+	// default zoom is 100%
+	Zoom( 1.0 ) ;
+	setRenderHint( QPainter::Antialiasing ) ;
+}
+
+void PageView::Zoom( double factor )
+{
+	QMatrix m ;
+	m.scale( factor, -factor ) ;
+	setMatrix( m ) ;
 }
 
 void PageView::mousePressEvent( QMouseEvent *event )
@@ -44,18 +54,9 @@ void PageView::mousePressEvent( QMouseEvent *event )
 	QPointF pos = mapToScene( event->pos() ) ;
 	
 	// add text box if the user clicks empty space
-	if ( scene()->itemAt( pos ) == 0 )
+	if ( QGraphicsItem *item = scene()->itemAt( pos ) )
 	{
-/*
-		TextEdit *edit = new TextEdit ;
-		QGraphicsProxyWidget *item = scene()->addWidget( edit ) ;
-		item->setPos( pos ) ;
-		edit->setFocus( Qt::MouseFocusReason ) ;
-*/
-	}
-	else
-	{
-		qDebug() << "hello!" ;
+		qDebug() << item->mapFromParent( pos ) ;
 	}
 
 	QGraphicsView::mousePressEvent( event ) ;

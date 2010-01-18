@@ -31,6 +31,10 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+// freetype headers
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 /*!	\brief	brief description
 	
 	this class represents
@@ -46,9 +50,16 @@ public :
 		CPPUNIT_TEST( TestReadExistFont ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
+public :
+	void setUp( ) ;
+	void tearDown( ) ;
+
 private :
 	void TestNormal( ) ;
 	void TestReadExistFont( ) ;
+
+private :
+	FT_Library		m_ft_lib ;
 } ;
 
 #endif

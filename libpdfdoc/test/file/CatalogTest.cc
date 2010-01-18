@@ -38,6 +38,16 @@ CatalogTest::CatalogTest( )
 {
 }
 
+void CatalogTest::setUp( )
+{
+	::FT_Init_FreeType( &m_ft_lib ) ;
+}
+
+void CatalogTest::tearDown( )
+{
+	::FT_Done_FreeType( m_ft_lib ) ;
+}
+
 void CatalogTest::TestRead( )
 {
 	std::istringstream ss( "<</PageLayout /SinglePage/PageMode /UseNode"
@@ -58,7 +68,7 @@ void CatalogTest::TestRead( )
 	file.AddObj( pdf::Ref( 2, 0 ),	cat_dict ) ;
 	file.AddObj( pdf::Ref( 3, 0 ),	page_dict ) ;
 	
-	pdf::Catalog c( pdf::Ref( 2, 0 ), &file ) ;
+	pdf::Catalog c( pdf::Ref( 2, 0 ), &file, m_ft_lib ) ;
 	PDF_ASSERT_EQUAL( c.PageCount( ), 1U ) ;
 	CPPUNIT_ASSERT( c.GetPage( 0 ) != 0 ) ;
 }

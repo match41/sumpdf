@@ -112,8 +112,10 @@ Stream::Stream( std::streambuf *file, std::streamoff offset,
 	m_impl->filter.reset( new RawFilter( file, offset, dict["Length"] ) ) ;
 
 	ApplyFilter( dict["Filter"] ) ;
+
 	assert( m_impl->filter->GetInner()->Length() == dict["Length"] ) ;
-	assert( dict["Filter"] == m_impl->filter->GetFilterName() ) ;
+	assert( dict["Filter"].Is<Array>() ||
+		dict["Filter"] == m_impl->filter->GetFilterName() ) ;
 	InitFilter( ) ;
 	
 	m_impl->self.erase( "Length" ) ;
@@ -170,8 +172,10 @@ void Stream::ApplyFilter( const Object& filter )
 	if ( filter.Is<Array>() )
 	{
 		const Array& filters = filter.As<Array>() ;
-		std::for_each( filters.begin( ), filters.end( ),
-		               boost::bind( &Stream::CreateFilter, this, _1 ) ) ;
+		std::for_each(
+			filters.begin( ),
+			filters.end( ),
+		    boost::bind( &Stream::CreateFilter, this, _1 ) ) ;
 	}
 	else if ( filter.Is<Name>() )
 		CreateFilter( filter ) ;
@@ -283,6 +287,27 @@ std::size_t Stream::CopyData( unsigned char *buf, std::size_t size ) const
 	m_impl->filter->Rewind( ) ;
 
 	return m_impl->filter->Read( buf, size ) ;
+}
+
+void Stream::CopyData( std::vector<unsigned char>& buf ) const
+{
+	StreamFilter *f = m_impl->filter.get() ;
+	assert( f != 0 ) ;
+	
+	// rewind to the start of the stream
+	f->Rewind( ) ;
+	
+	const std::size_t buf_size = 80 ;
+	std::size_t idx = 0 ;
+	std::size_t count = 0 ;
+	
+	do
+	{
+		buf.resize( idx + buf_size ) ;
+		count = f->Read( &buf[idx], buf_size ) ;
+		idx += count ;
+		buf.resize( idx ) ;
+	} while ( count > 0 ) ;
 }
 
 /**	copy the unfiltered data to the output streambuf.

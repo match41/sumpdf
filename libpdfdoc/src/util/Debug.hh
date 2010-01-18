@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2009 by Nestal Wan                                      *
+ *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,49 +15,36 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- \***************************************************************************/
+\***************************************************************************/
 
-/**
-	\file	CatalogTest.h
-	\brief	definition the CatalogTest class
-	\date	Dec 13, 2009
-	\author	Nestal Wan
+/**	\file	Debug.hh
+    \brief	definition the Debug class
+    \date	Jan 17, 2010
+    \author	Nestal Wan
 */
 
-#ifndef __PDFUT_CATALOGTEST_HEADER_INCLUDED__
-#define __PDFUT_CATALOGTEST_HEADER_INCLUDED__
+#ifndef __PDF_DEBUG_HH_EADER_INCLUDED__
+#define __PDF_DEBUG_HH_EADER_INCLUDED__
 
-#include <cppunit/TestFixture.h>
+// debug mode only
+#ifndef NDEBUG
 
-#include <cppunit/extensions/HelperMacros.h>
-
-// freetype headers
-#include <ft2build.h>
-#include FT_FREETYPE_H
-
-/*!	\brief	brief description
-	
-	this class represents
-*/
-class CatalogTest : public CppUnit::TestFixture
+namespace pdf
 {
-public:
-	CatalogTest( ) ;
+	/// Called when assertion failure. 
+	/**	This function will be called when assertion failure. It will try to
+		print out the call stack and abort the program.
+	*/
+	void AssertFail( const char *text, const char *file, unsigned line ) ;
+}
 
-	// declare suit function
-	CPPUNIT_TEST_SUITE( CatalogTest ) ;
-		CPPUNIT_TEST( TestRead ) ;
-	CPPUNIT_TEST_SUITE_END();
+#define PDF_ASSERT( expr )				\
+  ((expr)								\
+   ? static_cast<void>(0)				\
+   : pdf::AssertFail( #expr, __FILE__, __LINE__ ) )
 
-public :
-	void setUp( ) ;
-	void tearDown( ) ;
+#else
+#define PDF_ASSERT( expr )	(static_cast<void>(0))
+#endif
 
-private :
-	void TestRead( ) ;
-
-private :
-	FT_Library	m_ft_lib ;
-} ;
-
-#endif // CATALOGTEST_H_
+#endif // DEBUG_HH_

@@ -17,51 +17,68 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**
-    \file	TextBlock.hh
-    \brief	definition the TextBlock class
-    \date	Jan 4, 2010
+/**	\file	GlyphGraphicsItem.hh
+    \brief	definition the GlyphGraphicsItem class
+    \date	Jan 16, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_TEXTBLOCK_HH_EADER_INCLUDED__
-#define __PDF_TEXTBLOCK_HH_EADER_INCLUDED__
+#ifndef __PDF_GLYPHGRAPHICSITEM_HH_EADER_INCLUDED__
+#define __PDF_GLYPHGRAPHICSITEM_HH_EADER_INCLUDED__
 
-#include "TextState.hh"
+#include <QGraphicsItem>
 
-#include <iosfwd>
-#include <string>
+// freetype headers
+#include <ft2build.h>
+#include FT_FREETYPE_H
+#include FT_GLYPH_H
+
+class QPainterPath ;
+class QPointF ;
 
 namespace pdf {
 
 ///	brief description
-/**	The TextBlock class represent a string of characters with the same
-	format.
+/**	The GlyphGraphicsItem class represents
 */
-class TextBlock
+class GlyphGraphicsItem : public QGraphicsPathItem
 {
 public :
-	explicit TextBlock(
-		const std::string&	text	= std::string(),
-		const TextState&	format	= TextState() ) ;
-
-	void SetText( const std::wstring& text ) ;
-	void AppendText( const std::wstring& text ) ;
-
-	const TextState& Format() const ;
-	void SetFormat( const TextState& fmt ) ;
-
-	const std::wstring& Text() const ; 
-
-	bool IsEmpty() const ;
-
-	friend std::ostream& operator<<( std::ostream& os, const TextBlock& b ) ;
+	explicit GlyphGraphicsItem( FT_GlyphSlot glyph ) ;
 
 private :
-	std::wstring	m_chars ;
-	TextState		m_format ;
+	static int MoveTo( const FT_Vector* to, void *user ) ;
+	int MoveTo( const FT_Vector* to, QPainterPath *p ) ;
+	static int LineTo( const FT_Vector* to, void *user ) ;
+	int LineTo( const FT_Vector* to, QPainterPath *p ) ;
+	static int QuadTo(
+		const FT_Vector	*control,
+		const FT_Vector	*to,
+		void 			*user ) ;
+	int QuadTo(
+		const FT_Vector* control,
+		const FT_Vector* to,
+		QPainterPath	 *p ) ;
+	static int CubicTo(
+		const FT_Vector	*control1,
+		const FT_Vector	*control2,
+		const FT_Vector	*to,
+		void 			*user ) ;
+	int CubicTo(
+		const FT_Vector	*control1,
+		const FT_Vector	*control2,
+		const FT_Vector	*to,
+		QPainterPath	*p ) ;
+
+	struct Render ;
+
+	QPointF Transform( const FT_Vector *p ) const ;
+
+private :
+//	FT_Glyph			m_glyph ;
+	FT_Glyph_Metrics	m_metrics ;
 } ;
 
 } // end of namespace
 
-#endif // TEXTBLOCK_HH_
+#endif // GLYPHGRAPHICSITEM_HH_

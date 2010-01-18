@@ -73,6 +73,7 @@ public :
 	bool IsEmpty( ) const ;
 
 	void AppendText( const std::wstring& text ) ;
+	void ChangeState( const TextState& s ) ;
 
 	friend std::ostream& operator<<( std::ostream& os, const TextLine& line ) ;
 

@@ -46,7 +46,8 @@ class IFile ;
 class PageTree : public PageNode
 {
 public :
-	explicit PageTree( PageTree *parent = 0 ) ;
+	explicit PageTree( PageTree *parent ) ;
+	explicit PageTree( FT_Library ft_lib ) ;
 	~PageTree( ) ;
 
 	void Read( Dictionary& dict, IFile *file ) ;

@@ -30,16 +30,12 @@
 #include "Doc.hh"
 #include "DocInfo.hh"
 
-#include "file/Catalog.hh"
-#include "font/StandardFont.hh"	// for co-variant return value
-#include "page/RealPage.hh"		// for co-variant return value 
+#include "core/Dictionary.hh"
+#include "core/Name.hh"
 
-// freetype library is optional
-#ifdef HAVE_FREETYPE
-	// freetype headers
-	#include <ft2build.h>
-	#include FT_FREETYPE_H
-#endif
+// freetype headers
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 #include <string>
 #include <fstream>
@@ -48,6 +44,8 @@ namespace pdf {
 
 class IndirectObj ;
 class Font ;
+class Page ;
+class Catalog ;
 
 /**	\brief	Implementation of the PDF document class.
 	\internal
@@ -63,13 +61,13 @@ public :
 	void Read( const std::string& filename ) ;
 	void Write( const std::string& filename ) const ;
 
-	RealPage* AppendPage( ) ;
-	RealPage* AddPage( std::size_t index ) ;
+	Page* AppendPage( ) ;
+	Page* AddPage( std::size_t index ) ;
 
 	std::size_t PageCount( ) const ;
-	RealPage* GetPage( std::size_t index ) ;
+	Page* GetPage( std::size_t index ) ;
 
-	StandardFont* CreateSimpleFont( const std::string& name ) ;
+	Font* CreateSimpleFont( const std::string& name ) ;
 
 	const DocInfo* Info( ) const ;
 	DocInfo* Info( ) ;
@@ -82,10 +80,8 @@ private :
 	//! Some objects from the document will only be read on-demand.
 	std::ifstream		m_readfs ;
 	
-#ifdef HAVE_FREETYPE
 	//! Freetype library for loading the font files.
 	FT_Library			m_ft_lib ;
-#endif
 
 	struct Info_ : public DocInfo
 	{

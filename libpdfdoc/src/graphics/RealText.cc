@@ -30,6 +30,7 @@
 #include "core/Array.hh"
 #include "core/Object.hh"
 #include "core/Token.hh"
+#include "font/BaseFont.hh"
 #include "page/Resources.hh"
 #include "util/Util.hh"
 
@@ -50,10 +51,13 @@ const RealText::HandlerMap::value_type	RealText::m_handler_map_values[] =
 	std::make_pair( "T*",	&RealText::OnTstar ),
 	
 	// text showing commands
-	std::make_pair( "Tj",	&RealText::OnTd ),
-	std::make_pair( "TJ",	&RealText::OnTD ),
+	std::make_pair( "Tj",	&RealText::OnTj ),
+	std::make_pair( "TJ",	&RealText::OnTJ ),
 	std::make_pair( "\'",	&RealText::OnSingleQuote ),
 	std::make_pair( "\"",	&RealText::OnDoubleQuote ),
+
+	// text state commands
+	std::make_pair( "Tf",	&RealText::OnTf ),
 } ;
 
 const RealText::HandlerMap RealText::m_handler_map(
@@ -130,7 +134,7 @@ void RealText::Output( std::ostream& os ) const
 
 void RealText::OnTd( Object* args, std::size_t count, Resources* )
 {
-std::cout << "Td: " << std::endl ;
+//std::cout << "Td: " << args[0] << " " << args[1] << std::endl ;
 
 	if ( count >= 2 )
 	{
@@ -141,7 +145,7 @@ std::cout << "Td: " << std::endl ;
 
 void RealText::OnTD( Object* args, std::size_t count, Resources *res )
 {
-std::cout << "TD: " << std::endl ;
+//std::cout << "TD: " << std::endl ;
 	
 	if ( count >= 2 )
 	{
@@ -155,7 +159,7 @@ std::cout << "TD: " << std::endl ;
 
 void RealText::OnTm( Object* args, std::size_t count, Resources* )
 {
-std::cout << "Tm: " << std::endl ;
+//std::cout << "Tm: " << std::endl ;
 
 	if ( count >= 6 )
 	{
@@ -177,13 +181,21 @@ void RealText::OnTstar( Object* , std::size_t , Resources * )
 
 void RealText::AddNewLine( )
 {
+	AddNewLine( m_line_mat ) ;
+}
+
+void RealText::AddNewLine( const Matrix& mat )
+{
 	assert( !m_lines.empty() ) ;
 
 	// remove empty lines first
 	if ( m_lines.back().IsEmpty() )
+	{
+//std::cout << "pop" << std::endl ;
 		m_lines.pop_back() ;
-std::cout << "new line: " << std::endl ;
-	m_lines.push_back( TextLine( m_line_mat, m_state ) ) ;
+	}
+//std::cout << "new line: " << std::endl ;
+	m_lines.push_back( TextLine( mat, m_state ) ) ;
 }
 
 void RealText::OnTj( Object* args, std::size_t count, Resources *res )
@@ -201,13 +213,37 @@ void RealText::OnTJ( Object* args, std::size_t count, Resources *res )
 {
 	assert( !m_lines.empty() ) ;
 
+	Matrix tm = m_line_mat ;
+
 	Array& a = args[0].As<Array>() ;
 	for ( Array::iterator i = a.begin() ; i != a.end() ; ++i )
 	{
 		if ( i->Is<std::string>() )
 		{
 			std::string& s = i->As<std::string>() ;
-			m_lines.back().AppendText( std::wstring( s.begin(), s.end() ) ) ;
+			std::wstring ws( s.begin(), s.end() ) ;
+
+			double width = m_state.GetFont()->Width( ws, m_state.FontSize() ) ;
+//std::cout << "\"" << s << "\" " ;
+//std::cout << "width = " << width / 1000.0 << std::endl ;
+Matrix m ;
+			m.Dx( width / 1000.0 ) ;
+			tm = tm * m ;
+//std::cout << "tm = " << tm.Dx() << " " << tm.Dy() << std::endl ;
+			m_lines.back().AppendText( ws ) ;
+		}
+		else if ( i->Is<double>() || i->Is<int>() )
+		{
+			double disp = i->To<double>() ;
+//std::cout << "disp = " << disp << std::endl ;
+			
+			// TODO: depend on writing mode, advance horizonal or vertical
+			// assume vertical here.
+			Matrix m ;
+			m.Dx( -disp / 1000.0 * m_state.FontSize() ) ;
+			tm = tm * m ;
+//std::cout << "tm = " << tm.Dx() << " " << tm.Dy() << std::endl ;
+			AddNewLine( tm ) ;
 		}
 	}
 }
@@ -218,6 +254,23 @@ void RealText::OnSingleQuote( Object* args, std::size_t count, Resources *res )
 
 void RealText::OnDoubleQuote( Object* args, std::size_t count, Resources *res )
 {
+}
+
+void RealText::OnTf( Object* args, std::size_t count, Resources *res )
+{
+	assert( res != 0 ) ;
+
+	if ( count >= 2 )
+	{
+		BaseFont *f = res->FindFont( args[0].As<Name>() ) ;
+		if ( f == 0 )
+			std::cout << "unknown font: " << args[1] << std::endl ;
+		else
+		{
+			m_state.SetFont( args[1], f ) ;
+			m_lines.back().ChangeState( m_state ) ;
+		}
+	}
 }
 
 } // end of namespace

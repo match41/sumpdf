@@ -35,6 +35,7 @@ namespace pdf {
 class IFile ;
 class Dictionary ;
 class Ref ;
+class FontDescriptor ;
 
 /*!	\brief	base class for all fonts
 	\internal
@@ -48,9 +49,10 @@ public :
 
 	virtual std::string BaseName( ) const = 0 ;
 	virtual Ref Write( IFile *file ) const = 0 ;
+	virtual FontDescriptor* Descriptor( ) = 0 ;
 } ;
 
-BaseFont* CreateFont( Dictionary& obj, IFile *file ) ;
+BaseFont* CreateFont( Dictionary& obj, IFile *file, FT_Library ft_lib ) ;
 
 } // end of namespace
 

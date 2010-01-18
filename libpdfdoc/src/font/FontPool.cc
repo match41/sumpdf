@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2009 by Nestal Wan                                      *
+ *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,49 +15,67 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- \***************************************************************************/
+\***************************************************************************/
 
-/**
-	\file	CatalogTest.h
-	\brief	definition the CatalogTest class
-	\date	Dec 13, 2009
+/**	\file	FontPool.cc
+	\brief	implementation of the FontPool class
+	\date	Jan 17, 2010
 	\author	Nestal Wan
 */
 
-#ifndef __PDFUT_CATALOGTEST_HEADER_INCLUDED__
-#define __PDFUT_CATALOGTEST_HEADER_INCLUDED__
+#include "FontPool.hh"
 
-#include <cppunit/TestFixture.h>
+#include "util/Debug.hh"
+#include "util/Exception.hh"
 
-#include <cppunit/extensions/HelperMacros.h>
+namespace pdf {
 
-// freetype headers
-#include <ft2build.h>
-#include FT_FREETYPE_H
-
-/*!	\brief	brief description
-	
-	this class represents
+/**	constructor
 */
-class CatalogTest : public CppUnit::TestFixture
+FontPool::FontPool( FT_Library lib )
+	: m_ft( lib )
 {
-public:
-	CatalogTest( ) ;
+	PDF_ASSERT( m_ft != 0 ) ;
 
-	// declare suit function
-	CPPUNIT_TEST_SUITE( CatalogTest ) ;
-		CPPUNIT_TEST( TestRead ) ;
-	CPPUNIT_TEST_SUITE_END();
+	FT_Error e = FTC_Manager_New(
+		m_ft, 0, 0, 0, &FontPool::RequestFace, 0, &m_mgr ) ;
+	if ( e != 0 )
+		throw Exception( "cannot create FTC manager" ) ;
+}
 
-public :
-	void setUp( ) ;
-	void tearDown( ) ;
+FontPool::~FontPool( )
+{
+	FTC_Manager_Done( m_mgr ) ;
+}
 
-private :
-	void TestRead( ) ;
+FT_Face FontPool::GetFace( BaseFont *font )
+{
+	PDF_ASSERT( font != 0 ) ;
 
-private :
-	FT_Library	m_ft_lib ;
-} ;
+	FT_Face face ;
+	FT_Error e = FTC_Manager_LookupFace(
+		m_mgr,
+		reinterpret_cast<FTC_FaceID>( font ),
+		&face ) ;
+	if ( e != 0 )
+		throw Exception( "create load font face" ) ;
+	return 0 ;
+}
 
-#endif // CATALOGTEST_H_
+FT_Glyph FontPool::GetGlyph( FT_Face face, wchar_t ch )
+{
+	return 0 ;
+}
+
+FT_Error FontPool::RequestFace(
+	FTC_FaceID	face_id,
+	FT_Library	library,
+	FT_Pointer	request_data,
+	FT_Face		*aface )
+{
+	BaseFont *font = reinterpret_cast<BaseFont*>( face_id ) ;
+	PDF_ASSERT( font != 0 ) ;
+	return font != 0 ? 0 : -1 ;
+}
+
+} // end of namespace

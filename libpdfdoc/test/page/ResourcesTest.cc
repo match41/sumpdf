@@ -43,6 +43,16 @@ ResourcesTest::ResourcesTest( )
 {
 }
 
+void ResourcesTest::setUp( )
+{
+	::FT_Init_FreeType( &m_ft_lib ) ;
+}
+
+void ResourcesTest::tearDown( )
+{
+	::FT_Done_FreeType( m_ft_lib ) ;
+}
+
 void ResourcesTest::TestNormal( )
 {
 	std::istringstream iss( "<< /Font << /F0 18 0 R >> /ProcSet [/PDF /Text]\n"
@@ -65,7 +75,7 @@ void ResourcesTest::TestNormal( )
 	file.AddObj( pdf::Ref(18,0), fd ) ;
 
 	pdf::Object obj( rdict ) ;
-	pdf::Resources subject ;
+	pdf::Resources subject( m_ft_lib ) ;
 	subject.Read( rdict, &file ) ;
 }
 
@@ -85,7 +95,7 @@ void ResourcesTest::TestReadExistFont( )
 	file.Pool()->fonts.Add( pdf::Ref(18, 0 ), f ) ;
 
 	pdf::Object obj( rdict ) ;
-	pdf::Resources subject ;
+	pdf::Resources subject( m_ft_lib ) ;
 	subject.Read( rdict, &file ) ;
 	PDF_ASSERT_EQUAL( f->UseCount(), 2u ) ;
 }

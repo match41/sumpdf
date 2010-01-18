@@ -28,8 +28,8 @@
 #define __PDF_MAINWND_HH_EADER_INCLUDED__
 
 #include <QMainWindow>
-
 #include "ui_MainWnd.h"
+#include <graphics/GraphicsVisitor.hh>
 
 #include <QString>
 
@@ -37,6 +37,8 @@
 
 class QGraphicsScene ;
 class QTransform ;
+class QToolBar ;
+class QComboBox ;
 
 namespace pdf {
 
@@ -47,8 +49,12 @@ class PageView ;
 class Doc ;
 class Page ;
 class Matrix ;
+class TextLine ;
 
-class MainWnd : public QMainWindow, private Ui::MainWndUI
+class MainWnd :
+	public QMainWindow,
+	private Ui::MainWndUI,
+	private GraphicsVisitor
 {
 	Q_OBJECT
 
@@ -63,10 +69,14 @@ public slots :
 	void OnOpen( ) ;
 	void OnProperties( ) ;
 	void OnSaveAs( ) ;
-
+	void OnToolZoom( int choice ) ;
+	
 private :
 	void StorePage( QGraphicsScene *scene, Doc *doc, Page *page ) ;
-	
+	void VisitText( Text *text ) ;
+	void VisitGraphics( Graphics *gfx ) ;
+	void LoadTextLine( const TextLine& line ) ;
+
 	QTransform ToQtMatrix( const Matrix& m ) ;
 
 private :
@@ -74,6 +84,8 @@ private :
 	
 	QGraphicsScene	*m_scene ;
 	PageView		*m_view ;
+	QToolBar		*m_tool_bar ;
+	QComboBox 		*m_zoom_box ; 
 } ;
 
 } // end of namespace

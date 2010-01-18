@@ -15,42 +15,70 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- \***************************************************************************/
+\***************************************************************************/
 
-/**
-	\file	PageView.hh
-	\brief	definition the PageView class
-	\date	Dec 28, 2009
-	\author	Nestal Wan
+/**	\file	RealContent.hh
+    \brief	definition the RealContent class
+    \date	Jan 14, 2010
+    \author	Nestal Wan
 */
 
-#ifndef __PDF_PAGEVIEW_HEADER_INCLUDED__
-#define __PDF_PAGEVIEW_HEADER_INCLUDED__
+#ifndef __PDF_REALCONTENT_HH_EADER_INCLUDED__
+#define __PDF_REALCONTENT_HH_EADER_INCLUDED__
 
-#include <QGraphicsView>
+#include "page/PageContent.hh"
 
-class QPainter ;
+#include "graphics/RealText.hh"
+
+#include <vector>
 
 namespace pdf {
 
-class Page ;
+class Stream ;
+class Token ;
+class Object ;
+class Graphics ;
+class Resources ;
 
-class PageView : public QGraphicsView
+///	brief description
+/**	The RealContent class represents
+*/
+class RealContent : public PageContent 
 {
-	Q_OBJECT
+public :
+	RealContent( ) ;
 
-public:
-	explicit PageView( QGraphicsScene *scene, QWidget *parent ) ;
+	// operations
+	std::size_t Count( ) const ;
+	const Graphics* Item( std::size_t idx ) const ;
+	RealText* AddText( ) ;
+	void VisitGraphics( GraphicsVisitor *visitor ) ;
 
-	void Zoom( double factor ) ;
+	void Add( Graphics *gfx ) ;
+	bool IsEmpty( ) const ;
 
-protected :
-	void mousePressEvent( QMouseEvent *event ) ;
+	template <typename InputIt>
+	void Load( InputIt first, InputIt last, Resources *res )
+	{
+		while ( first != last )
+			Load( *first++, res ) ;
+	}
 
 private :
-	class LineEdit ;
+	void Load( Stream& str, Resources *res ) ;
+
+private :
+	Graphics* ProcessCommand(
+		const Token& 	cmd,
+		Object 			*args,
+		std::size_t 	count,
+		Graphics		*gfx,
+		Resources 		*res  ) ;
+
+private :
+	std::vector<Graphics*> m_gfx ;
 } ;
 
 } // end of namespace
 
-#endif // PAGEVIEW_HH_
+#endif // REALCONTENT_HH_

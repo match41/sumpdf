@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2009 by Nestal Wan                                      *
+ *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,49 +15,51 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- \***************************************************************************/
+\***************************************************************************/
 
-/**
-	\file	CatalogTest.h
-	\brief	definition the CatalogTest class
-	\date	Dec 13, 2009
-	\author	Nestal Wan
+/**	\file	FontPool.hh
+    \brief	definition the FontPool class
+    \date	Jan 17, 2010
+    \author	Nestal Wan
 */
 
-#ifndef __PDFUT_CATALOGTEST_HEADER_INCLUDED__
-#define __PDFUT_CATALOGTEST_HEADER_INCLUDED__
+#ifndef __PDF_FONTPOOL_HH_EADER_INCLUDED__
+#define __PDF_FONTPOOL_HH_EADER_INCLUDED__
 
-#include <cppunit/TestFixture.h>
-
-#include <cppunit/extensions/HelperMacros.h>
-
-// freetype headers
 #include <ft2build.h>
-#include FT_FREETYPE_H
+#include FT_CACHE_H
 
-/*!	\brief	brief description
-	
-	this class represents
+namespace pdf {
+
+class BaseFont ;
+
+///	brief description
+/**	The FontPool class represents
 */
-class CatalogTest : public CppUnit::TestFixture
+class FontPool
 {
-public:
-	CatalogTest( ) ;
-
-	// declare suit function
-	CPPUNIT_TEST_SUITE( CatalogTest ) ;
-		CPPUNIT_TEST( TestRead ) ;
-	CPPUNIT_TEST_SUITE_END();
-
 public :
-	void setUp( ) ;
-	void tearDown( ) ;
+	explicit FontPool( FT_Library lib ) ;
+	~FontPool( ) ;
+
+	FT_Face GetFace( BaseFont *font ) ;
+	
+	FT_Glyph GetGlyph( FT_Face face, wchar_t ch ) ;
 
 private :
-	void TestRead( ) ;
+	static FT_Error RequestFace(
+		FTC_FaceID	face_id,
+		FT_Library	library,
+		FT_Pointer	request_data,
+		FT_Face		*aface ) ;
 
 private :
-	FT_Library	m_ft_lib ;
+	FT_Library		m_ft ;
+	FTC_Manager		m_mgr ;
+	FTC_ImageCache	m_img ;
+	FTC_CMapCache	m_cmap ;
 } ;
 
-#endif // CATALOGTEST_H_
+} // end of namespace
+
+#endif // FONTPOOL_HH_

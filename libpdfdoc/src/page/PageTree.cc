@@ -50,10 +50,19 @@ namespace pdf {
 
 PageTree::PageTree( PageTree *parent )
 	: m_parent( parent ),
+	  m_resources( parent == 0 ? 0 : parent->GetResource() ),
 	  m_count( 0 )
 {
+	assert( parent != 0 ) ;
 	if ( parent )
 		parent->AppendNode( this ) ;
+}
+
+PageTree::PageTree( FT_Library ft_lib )
+	: m_parent( 0 ),
+	  m_resources( ft_lib ),
+	  m_count( 0 )
+{
 }
 
 PageTree::~PageTree( )

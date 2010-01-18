@@ -30,7 +30,9 @@
 #include "core/Ref.hh"
 #include "core/Object.hh"
 
+#include "file/Catalog.hh"
 #include "file/RealFile.hh"
+#include "font/StandardFont.hh"
 
 #include "page/RealPage.hh"
 #include "page/PageTree.hh"
@@ -51,7 +53,7 @@ const std::string RealDoc::Info_::m_empty ;
 /**	It will create an empty document with only one page.
 */
 RealDoc::RealDoc( )
-	: m_catalog( new Catalog )	// not exception safe
+	: m_catalog( 0 )	// not exception safe
 {
 	::FT_Init_FreeType( &m_ft_lib ) ;
 }
@@ -61,10 +63,11 @@ RealDoc::RealDoc( )
 */
 RealDoc::~RealDoc( )
 {
-	::FT_Done_FreeType( m_ft_lib ) ;
-
 	// traverse the document to get all elements
 	delete m_catalog ;
+
+	// catalog depends on freetype
+	::FT_Done_FreeType( m_ft_lib ) ;
 }
 
 void RealDoc::Read( const std::string& filename )
@@ -76,7 +79,7 @@ void RealDoc::Read( const std::string& filename )
 	// read the cross reference of the PDF file
 	RealFile file( &m_readfs ) ;
 
-	m_catalog		= new Catalog( file.Root( ), &file ) ;
+	m_catalog		= new Catalog( file.Root( ), &file, m_ft_lib ) ;
 	
 	// DocInfo is optional
 	if ( file.DocInfo( ) != Ref() )
@@ -95,7 +98,7 @@ void RealDoc::Write( const std::string& filename ) const
 		m_info.m_dict.empty() ? Ref() : file.WriteObj( m_info.m_dict ) ) ;
 }
 
-RealPage* RealDoc::AppendPage( )
+Page* RealDoc::AppendPage( )
 {
 	assert( m_catalog != 0 ) ;
 
@@ -108,17 +111,17 @@ std::size_t RealDoc::PageCount( ) const
 	return m_catalog->PageCount( ) ;
 }
 
-RealPage* RealDoc::GetPage( std::size_t index )
+Page* RealDoc::GetPage( std::size_t index )
 {
 	return m_catalog->GetPage( index ) ;
 }
 
-StandardFont* RealDoc::CreateSimpleFont( const std::string& name )
+Font* RealDoc::CreateSimpleFont( const std::string& name )
 {
 	return new StandardFont( Name(name) ) ;
 }
 
-RealPage* RealDoc::AddPage( std::size_t index )
+Page* RealDoc::AddPage( std::size_t index )
 {
 	return 0 ;
 }

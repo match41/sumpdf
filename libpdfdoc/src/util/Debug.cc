@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2009 by Nestal Wan                                      *
+ *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,49 +15,30 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- \***************************************************************************/
+\***************************************************************************/
 
-/**
-	\file	CatalogTest.h
-	\brief	definition the CatalogTest class
-	\date	Dec 13, 2009
+/**	\file	Debug.cc
+	\brief	implementation of the Debug class
+	\date	Jan 17, 2010
 	\author	Nestal Wan
 */
 
-#ifndef __PDFUT_CATALOGTEST_HEADER_INCLUDED__
-#define __PDFUT_CATALOGTEST_HEADER_INCLUDED__
+#include "Debug.hh"
 
-#include <cppunit/TestFixture.h>
+#include "Backtrace.hh"
 
-#include <cppunit/extensions/HelperMacros.h>
+#include <iostream>
+#include <cstdlib>
 
-// freetype headers
-#include <ft2build.h>
-#include FT_FREETYPE_H
+namespace pdf {
 
-/*!	\brief	brief description
-	
-	this class represents
-*/
-class CatalogTest : public CppUnit::TestFixture
+void AssertFail( const char *text, const char *file, unsigned line )
 {
-public:
-	CatalogTest( ) ;
+	std::cerr
+		<< file << ":" << line << ": Assertion \"" << text << "\" failed.\n"
+		<< "Call stack:\n"
+		<< Backtrace(3) << std::endl ;
+	std::abort( ) ;
+}
 
-	// declare suit function
-	CPPUNIT_TEST_SUITE( CatalogTest ) ;
-		CPPUNIT_TEST( TestRead ) ;
-	CPPUNIT_TEST_SUITE_END();
-
-public :
-	void setUp( ) ;
-	void tearDown( ) ;
-
-private :
-	void TestRead( ) ;
-
-private :
-	FT_Library	m_ft_lib ;
-} ;
-
-#endif // CATALOGTEST_H_
+} // end of namespace

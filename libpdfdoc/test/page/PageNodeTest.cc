@@ -38,12 +38,15 @@ PageNodeTest::PageNodeTest( )
 
 void PageNodeTest::setUp( )
 {
-	m_root = new pdf::PageTree ;
+	::FT_Init_FreeType( &m_ft_lib ) ;
+
+	m_root = new pdf::PageTree( m_ft_lib ) ;
 }
 
 void PageNodeTest::tearDown( )
 {
 	delete m_root ;
+	::FT_Done_FreeType( m_ft_lib ) ;
 }
 
 void PageNodeTest::TestCount( )

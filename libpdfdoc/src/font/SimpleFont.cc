@@ -34,9 +34,13 @@
 
 #include "util/Exception.hh"
 #include "util/Util.hh"
+#include "util/Debug.hh"
 
-//#include "ftwrap/Face.hh"
-//#include "ftwrap/Glyph.hh"
+#include <cassert>
+#include <iostream>
+#include <algorithm>
+#include <iterator>
+#include <fstream>
 
 #include FT_XFREE86_H
 
@@ -67,12 +71,20 @@ SimpleFont::SimpleFont( FT_Face face )
 	  m_base_font( ::FT_Get_Postscript_Name( face ) ),
 	  m_type( GetFontType( face ) )
 {
-	GetWidth( face, m_widths, m_first_char, m_last_char ) ;
-	assert( (int)m_widths.size() == m_last_char - m_first_char + 1 ) ;
+	GetWidth(
+		face,
+		std::back_inserter(m_widths),
+		m_widths.max_size(),
+		m_first_char,
+		m_last_char ) ;
+	
+	assert( m_widths.size() ==
+		static_cast<std::size_t>(m_last_char - m_first_char + 1) ) ;
 }
 
-SimpleFont::SimpleFont( Dictionary& self, IFile *file )
+SimpleFont::SimpleFont( Dictionary& self, IFile *file, FT_Library ft_lib )
 {
+	PDF_ASSERT( file != 0 ) ;
 	try
 	{
 		Name subtype ;
@@ -90,6 +102,26 @@ SimpleFont::SimpleFont( Dictionary& self, IFile *file )
 
 //		self.Extract( "Encoding",	m_encoding ) ;
 //		self.Extract( "ToUnicode",	m_to_unicode ) ;
+		
+		Dictionary fd ;
+		if ( Detach( file, self, "FontDescriptor", fd ) )
+		{
+			m_descriptor.Read( fd, file ) ;
+			std::vector<unsigned char> font_file ;
+			m_descriptor.FontFile().CopyData( font_file ) ;
+//std::ofstream f( (m_base_font.Str()+".ttf").c_str() ) ;
+//std::copy( font_file.begin(), font_file.end(),
+//std::ostreambuf_iterator<char>( f ) ) ;
+//f.close() ;
+			FT_Error e = FT_New_Memory_Face(
+				ft_lib,
+				&font_file[0],
+				font_file.size(),
+				0,
+				&m_face ) ;
+			if ( e != 0 )
+				throw -1 ;
+		}
 		
 		m_self.Read( self, file ) ;
 	}
@@ -115,11 +147,13 @@ SimpleFont::Type SimpleFont::GetFontType( FT_Face face )
 		return unknown ;
 }
 
+template <typename OutIt>
 void SimpleFont::GetWidth(
-	FT_Face	face,
-	std::vector<int>& width,
-	int&	first_char,
-	int&	last_char )
+	FT_Face		face,
+	OutIt		out,
+	std::size_t	space,
+	int&		first_char,
+	int&		last_char )
 {
 	// traverse all characters
 	unsigned		glyph ;
@@ -132,7 +166,7 @@ void SimpleFont::GetWidth(
 		char_code = ::FT_Get_Next_Char( face, char_code, &glyph ) ;
 	}
 
-	for ( int i = first_char ; i <= last_char ; i++ )
+	for ( int i = first_char ; i <= last_char && space-- > 0 ; i++ )
 	{
 		// load the glyph to the glyph slot in the face
 		FT_Error error = ::FT_Load_Glyph(
@@ -143,13 +177,35 @@ void SimpleFont::GetWidth(
 		if ( error != 0 )
 			throw Exception( ) ;
 
-		width.push_back( face->glyph->metrics.horiAdvance ) ;
+		*out++ = face->glyph->metrics.horiAdvance ;
 	}
-//	assert( (int)m_widths.size() == m_last_char - m_first_char + 1 ) ;
+}
+
+double SimpleFont::Width( const std::wstring& text, double size ) const
+{
+	assert( m_widths.size() ==
+		static_cast<std::size_t>(m_last_char - m_first_char + 1) ) ;
+	
+	double width = 0.0 ;
+	for ( std::wstring::const_iterator
+		i = text.begin() ; i < text.end() ; ++i )
+	{
+		if ( *i >= m_first_char && *i <= m_last_char )
+			width += (m_widths[*i-m_first_char] * size );
+	}
+	return width ;
+/*
+	if ( ch >= m_first_char && ch <= m_last_char )
+		return m_widths[ch-m_first_char] ;
+	else
+		return 0.0 ;
+*/
 }
 
 Ref SimpleFont::Write( IFile *file ) const
 {
+	PDF_ASSERT( file != 0 ) ;
+
 	CompleteObj dict( m_self ) ;
 	dict.Get()["Type"]		= Name( "Font" ) ;
 	dict.Get()["Subtype"]	= SubType( m_type ) ;
@@ -200,9 +256,19 @@ std::string SimpleFont::BaseName( ) const
 	return m_base_font.Str( ) ;
 }
 
-BaseFont* CreateFont( Dictionary& obj, IFile *file )
+FT_Face SimpleFont::Face( ) const
 {
-	return new SimpleFont( obj, file ) ;
+	return m_face ;
+}
+
+FontDescriptor* SimpleFont::Descriptor( )
+{
+	return &m_descriptor ;
+}
+
+BaseFont* CreateFont( Dictionary& obj, IFile *file, FT_Library ft_lib )
+{
+	return new SimpleFont( obj, file, ft_lib ) ;
 }
 
 } // end of namespace

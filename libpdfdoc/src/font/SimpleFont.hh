@@ -29,14 +29,12 @@
 
 #include "BaseFont.hh"
 
+#include "FontDescriptor.hh"
+
 // libpdfdoc headers
 #include "core/Name.hh"
 #include "core/Object.hh"
 #include "file/CompleteObj.hh"
-
-// freetype headers
-#include <ft2build.h>
-#include FT_FREETYPE_H
 
 #include <vector>
 
@@ -53,7 +51,8 @@ class Dictionary ;
 /*!	\brief	general font for PDF files
 	\internal
 
-	This class represent a simple Type 1 or TrueType font.
+	This class represent a simple Type 1 or TrueType font. According to the
+	PDF specification, a simple font has less than 256 characters.
 */
 class SimpleFont : public BaseFont
 {
@@ -63,11 +62,17 @@ public :
 public :
 	SimpleFont( ) ;
 	explicit SimpleFont( FT_Face face ) ;
-	SimpleFont( Dictionary& self, IFile *file ) ;
+	SimpleFont( Dictionary& self, IFile *file, FT_Library ft_lib ) ;
 
 	std::string BaseName( ) const ;
 	Ref Write( IFile *file ) const ;
 
+	double Width( const std::wstring& text, double size ) const ;
+	
+	FT_Face Face( ) const ;
+	
+	FontDescriptor* Descriptor( ) ;
+	
 private :
 	SimpleFont( const Name& base_font, Type type ) ;
 
@@ -77,11 +82,13 @@ private :
 	static const Name& SubType( Type t ) ;
 	static Type        SubType( const Name& t ) ;
 
+	template <typename OutIt>
 	static void GetWidth(
-		FT_Face	face,
-		std::vector<int>& width,
-		int&	first_char,
-		int&	last_char ) ;
+		FT_Face		face,
+		OutIt		out,
+		std::size_t	space,
+		int&		first_char,
+		int&		last_char ) ;
 
 private :
 	CompleteObj			m_self ;
@@ -93,6 +100,7 @@ private :
 	int		m_first_char, m_last_char ;
 
 	std::vector<int>	m_widths ;
+	FontDescriptor		m_descriptor ;
 //	Object				m_to_unicode ;
 //	Object				m_encoding ;	//!< name or dictionary
 } ;

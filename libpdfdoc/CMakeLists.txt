@@ -52,6 +52,7 @@ set( INCLUDE_DIR	include/ )
 # headers
 ###############################################################################
 set( PAGE_HDRS		${PAGE_DIR}/RealPage.hh
+					${PAGE_DIR}/RealContent.hh
 					${PAGE_DIR}/Resources.hh
 					${PAGE_DIR}/PageNode.hh
 					${PAGE_DIR}/PageTree.hh
@@ -101,6 +102,7 @@ set( UTIL_HDRS  	${UTIL_DIR}/Rect.hh
 					${UTIL_DIR}/Util.hh
 					${UTIL_DIR}/SymbolInfo.hh
 					${UTIL_DIR}/Backtrace.hh
+					${UTIL_DIR}/Debug.hh
 					${UTIL_DIR}/RefCounter.hh
 					${UTIL_DIR}/RefCounterWrapper.hh )
 					
@@ -110,7 +112,9 @@ set( IMG_HDRS  		${IMG_DIR}/Image.hh
 
 set( FONT_HDRS		${FONT_DIR}/Types.hh
 					${FONT_DIR}/BaseFont.hh 
+					${FONT_DIR}/FontDescriptor.hh
 					${FONT_DIR}/StandardFont.hh
+					${FONT_DIR}/FontPool.hh
 					${FONT_DIR}/sfnt/SfntFile.hh
 					${FONT_DIR}/sfnt/sfnt.h
 					${FONT_DIR}/sfnt/pdfobj.h
@@ -152,6 +156,7 @@ set( PAGE_SRCS  	${PAGE_DIR}/RealPage.cc
 					${PAGE_DIR}/Resources.cc
 					${PAGE_DIR}/Page.cc
 					${PAGE_DIR}/PageContent.cc
+					${PAGE_DIR}/RealContent.cc
 					${PAGE_DIR}/PageNode.cc
 					${PAGE_DIR}/PageTree.cc
 					${PAGE_DIR}/XObject.cc
@@ -199,6 +204,7 @@ set( UTIL_SRCS  	${UTIL_DIR}/Rect.cc
 					${UTIL_DIR}/Exception.cc
 					${UTIL_DIR}/Backtrace.cc
 					${UTIL_DIR}/RefCounter.cc
+					${UTIL_DIR}/Debug.cc
 					${UTIL_DIR}/Matrix.cc )
 
 set( IMG_SRCS  		${IMG_DIR}/Image.cc )
@@ -206,6 +212,8 @@ set( IMG_SRCS  		${IMG_DIR}/Image.cc )
 set( FONT_SRCS		${FONT_DIR}/Font.cc
 					${FONT_DIR}/BaseFont.cc
 					${FONT_DIR}/StandardFont.cc
+					${FONT_DIR}/FontDescriptor.cc
+					${FONT_DIR}/FontPool.cc
 					${FONT_DIR}/sfnt/SfntFile.cc
 					${FONT_DIR}/sfnt/sfnt.c
 					${FONT_DIR}/sfnt/pdfobj.cc
