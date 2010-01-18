@@ -34,11 +34,7 @@
 
 namespace pdf {
 
-///	constructor
-TextBlock::TextBlock( )
-{
-}
-
+///	default constructor
 TextBlock::TextBlock( const std::string& text, const TextState& format )
 	: m_chars( text.begin(), text.end() ),
 	  m_format( format )

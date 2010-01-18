@@ -68,6 +68,7 @@ public :
 	void Visit( GraphicsVisitor *visitor ) ;
 
 private :
+    /// command handler
 	typedef void (RealText::*Handler)(
 		Object			*args,
 		std::size_t		count,
@@ -77,11 +78,13 @@ private :
 	static const HandlerMap::value_type	m_handler_map_values[] ;
 	static const HandlerMap				m_handler_map ;
 
+    // position command handlers
 	void OnTd( Object* args, std::size_t count, Resources *res ) ;
 	void OnTD( Object* args, std::size_t count, Resources *res ) ;
 	void OnTm( Object* args, std::size_t count, Resources *res ) ;
 	void OnTstar( Object* args, std::size_t count, Resources *res ) ;
 	
+	// text show command handlers
 	void OnTj( Object* args, std::size_t count, Resources *res ) ;
 	void OnTJ( Object* args, std::size_t count, Resources *res ) ;
 	void OnSingleQuote( Object* args, std::size_t count, Resources *res ) ;
