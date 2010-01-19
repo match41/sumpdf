@@ -132,6 +132,8 @@ FT_Face FontPool::GetFace(
 
 FT_Glyph FontPool::GetGlyph( FT_Face face, wchar_t ch )
 {
+	int idx = FTC_CMapCache_Lookup( m_cmap, 0, 0, ch ) ;
+	
 	return 0 ;
 }
 
