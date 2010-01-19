@@ -36,6 +36,7 @@
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 #include <QFont>
+#include <QFontDialog>
 #include <QList>
 #include <QMessageBox>
 #include <QPointF>
@@ -94,6 +95,11 @@ MainWnd::MainWnd( QWidget *parent )
 		SIGNAL(triggered()),
 		this,
 		SLOT(OnSaveAs()) );
+	connect(
+		m_action_font,
+		SIGNAL(triggered()),
+		this,
+		SLOT(OnEditFont()) );
 
 	// initialize tool bar
 	m_tool_bar->addAction( m_action_open ) ;
@@ -113,6 +119,19 @@ MainWnd::MainWnd( QWidget *parent )
 */
 MainWnd::~MainWnd( )
 {
+}
+
+void MainWnd::OnEditFont( )
+{
+	bool ok = true ;
+	QFont f = QFontDialog::getFont( &ok, this ) ;
+	if ( ok )
+	{
+		FT_Face face = f.freetypeFace() ;
+		FT_Stream s = face->stream ;
+qDebug() << "font = " << s->base << " " << s->size ;
+
+	}
 }
 
 void MainWnd::OnToolZoom( int choice )

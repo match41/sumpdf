@@ -70,6 +70,7 @@ public slots :
 	void OnProperties( ) ;
 	void OnSaveAs( ) ;
 	void OnToolZoom( int choice ) ;
+	void OnEditFont( ) ;
 	
 private :
 	void StorePage( QGraphicsScene *scene, Doc *doc, Page *page ) ;

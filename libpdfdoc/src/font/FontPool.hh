@@ -49,7 +49,10 @@ public :
 
 	FT_Face GetFace( const Ref& ref, IFile *file ) ;
 	
-	FT_Face GetFace( const std::string& filename ) ;
+	FT_Face GetFace(
+		const std::string& font_name,
+		const unsigned char *data,
+		std::size_t size ) ;
 	
 	FT_Glyph GetGlyph( FT_Face face, wchar_t ch ) ;
 
@@ -60,22 +63,24 @@ private :
 		FT_Pointer	request_data,
 		FT_Face		*face ) ;
 
+	struct FaceID
+	{
+		std::vector<unsigned char>	data ;
+	} ;
+
+	FT_Face LookUpFace( FaceID *face_id ) ;
+
 private :
 	FT_Library		m_ft ;
 	FTC_Manager		m_mgr ;
 	FTC_ImageCache	m_img ;
 	FTC_CMapCache	m_cmap ;
 
-	struct FaceID
-	{
-		std::vector<unsigned char>	data ;
-	} ;
-
 	typedef std::map<Ref,	FaceID*> RefFaceMap ;
 	RefFaceMap	m_ref_map ; 
 
-	typedef std::map<std::string,	FaceID*> FileFaceMap ;
-	FileFaceMap	m_file_map ; 
+	typedef std::map<std::string,	FaceID*> NameFaceMap ;
+	NameFaceMap	m_name_map ; 
 } ;
 
 } // end of namespace

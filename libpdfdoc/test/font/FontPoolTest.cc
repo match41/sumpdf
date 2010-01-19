@@ -25,6 +25,8 @@
 
 #include "FontPoolTest.hh"
 
+#include "font/FontPool.hh"
+
 /**	constructor
 */
 FontPoolTest::FontPoolTest( )

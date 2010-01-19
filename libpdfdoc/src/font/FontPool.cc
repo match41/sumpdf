@@ -64,10 +64,10 @@ FontPool::~FontPool( )
             boost::bind( &RefFaceMap::value_type::second, _1 ) ) ) ;
 
     std::for_each(
-        m_file_map.begin(),
-        m_file_map.end(),
+        m_name_map.begin(),
+        m_name_map.end(),
         boost::bind( DeletePtr(),
-            boost::bind( &FileFaceMap::value_type::second, _1 ) ) ) ;
+            boost::bind( &NameFaceMap::value_type::second, _1 ) ) ) ;
 }
 
 FT_Face FontPool::GetFace( const Ref& ref, IFile *file )
@@ -86,11 +86,19 @@ FT_Face FontPool::GetFace( const Ref& ref, IFile *file )
 	}
 
 	PDF_ASSERT( i != m_ref_map.end() ) ;
+	PDF_ASSERT( i->second != 0 ) ;
+	
+	return LookUpFace( i->second ) ;
+}
+
+FT_Face FontPool::LookUpFace( FaceID *face_id )
+{
+	PDF_ASSERT( face_id != 0 ) ;
 
 	FT_Face face ;
 	FT_Error e = FTC_Manager_LookupFace(
 		m_mgr,
-		reinterpret_cast<FTC_FaceID>( &i->second ),
+		reinterpret_cast<FTC_FaceID>( face_id ),
 		&face ) ;
 	if ( e != 0 )
 		throw Exception( "create load font face" ) ;
@@ -98,8 +106,28 @@ FT_Face FontPool::GetFace( const Ref& ref, IFile *file )
 	return face ;
 }
 
-FT_Face FontPool::GetFace( const std::string& filename )
+FT_Face FontPool::GetFace(
+	const std::string& font_name,
+	const unsigned char *data,
+	std::size_t size )
 {
+	PDF_ASSERT( !font_name.empty() ) ;
+	PDF_ASSERT( size == 0 || data != 0 ) ;
+
+	NameFaceMap::iterator i = m_name_map.find( font_name ) ;
+	if ( i == m_name_map.end() )
+	{
+		// first create new entry in the map
+		FaceID *fid = new FaceID ;
+		fid->data.assign( data, data + size ) ;
+
+		i = m_name_map.insert( std::make_pair( font_name, fid ) ).first ; 
+	}
+
+	PDF_ASSERT( i != m_name_map.end() ) ;
+	PDF_ASSERT( i->second != 0 ) ;
+	
+	return LookUpFace( i->second ) ;
 }
 
 FT_Glyph FontPool::GetGlyph( FT_Face face, wchar_t ch )
