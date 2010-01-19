@@ -41,7 +41,6 @@ namespace pdf {
 class TextBlock
 {
 public :
-	TextBlock( ) ;
 	explicit TextBlock(
 		const std::string&	text	= std::string(),
 		const TextState&	format	= TextState() ) ;
