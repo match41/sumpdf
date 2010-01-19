@@ -25,6 +25,9 @@
 
 #include "FontPool.hh"
 
+#include "BaseFont.hh"
+#include "FontDescriptor.hh"
+
 #include "util/Debug.hh"
 #include "util/Exception.hh"
 
@@ -38,7 +41,7 @@ FontPool::FontPool( FT_Library lib )
 	PDF_ASSERT( m_ft != 0 ) ;
 
 	FT_Error e = FTC_Manager_New(
-		m_ft, 0, 0, 0, &FontPool::RequestFace, 0, &m_mgr ) ;
+		m_ft, 0, 0, 0, &FontPool::RequestFace, this, &m_mgr ) ;
 	if ( e != 0 )
 		throw Exception( "cannot create FTC manager" ) ;
 }
@@ -59,6 +62,7 @@ FT_Face FontPool::GetFace( BaseFont *font )
 		&face ) ;
 	if ( e != 0 )
 		throw Exception( "create load font face" ) ;
+	
 	return 0 ;
 }
 
@@ -71,11 +75,25 @@ FT_Error FontPool::RequestFace(
 	FTC_FaceID	face_id,
 	FT_Library	library,
 	FT_Pointer	request_data,
-	FT_Face		*aface )
+	FT_Face		*face )
 {
 	BaseFont *font = reinterpret_cast<BaseFont*>( face_id ) ;
 	PDF_ASSERT( font != 0 ) ;
-	return font != 0 ? 0 : -1 ;
+	
+	FontDescriptor *d = font->Descriptor( ) ;
+	PDF_ASSERT( d != 0 ) ;
+	
+	Stream prog = d->FontFile( ) ;
+	std::vector<unsigned char> font_file ;
+	prog.CopyData( font_file ) ;
+
+	return FT_New_Memory_Face(
+				library,
+				&font_file[0],
+				font_file.size(),
+				0,
+				face ) ;
+
 }
 
 } // end of namespace
