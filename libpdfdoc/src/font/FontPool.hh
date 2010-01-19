@@ -30,6 +30,7 @@
 #include FT_CACHE_H
 
 #include <map>
+#include <string>
 #include <vector>
 
 namespace pdf {
@@ -47,6 +48,8 @@ public :
 	~FontPool( ) ;
 
 	FT_Face GetFace( const Ref& ref, IFile *file ) ;
+	
+	FT_Face GetFace( const std::string& filename ) ;
 	
 	FT_Glyph GetGlyph( FT_Face face, wchar_t ch ) ;
 
@@ -68,8 +71,11 @@ private :
 		std::vector<unsigned char>	data ;
 	} ;
 
-	typedef std::map<Ref,	FaceID*> FaceMap ;
-	FaceMap	m_face_map ; 
+	typedef std::map<Ref,	FaceID*> RefFaceMap ;
+	RefFaceMap	m_ref_map ; 
+
+	typedef std::map<std::string,	FaceID*> FileFaceMap ;
+	FileFaceMap	m_file_map ; 
 } ;
 
 } // end of namespace

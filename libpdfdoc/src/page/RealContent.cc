@@ -112,16 +112,10 @@ Graphics* RealContent::ProcessCommand(
 
 	if ( cmd == Token("BT") && gfx == 0 )
 	{
-//std::cout << "begin text" << std::endl ;
 		gfx = new RealText ;
 	}
 	else if ( cmd == Token("ET") && gfx != 0 )
 	{
-//		RealText *text = dynamic_cast<RealText*>( gfx ) ;
-
-//std::cout << "end text" << std::endl ;
-//text->Output( std::cout ) ;
-
 		m_gfx.push_back( gfx ) ;
 		gfx = 0 ;
 	}

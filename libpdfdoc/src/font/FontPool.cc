@@ -58,28 +58,34 @@ FontPool::~FontPool( )
 	FTC_Manager_Done( m_mgr ) ;
 	
     std::for_each(
-        m_face_map.begin(),
-        m_face_map.end(),
+        m_ref_map.begin(),
+        m_ref_map.end(),
         boost::bind( DeletePtr(),
-            boost::bind( &FaceMap::value_type::second, _1 ) ) ) ;
+            boost::bind( &RefFaceMap::value_type::second, _1 ) ) ) ;
+
+    std::for_each(
+        m_file_map.begin(),
+        m_file_map.end(),
+        boost::bind( DeletePtr(),
+            boost::bind( &FileFaceMap::value_type::second, _1 ) ) ) ;
 }
 
 FT_Face FontPool::GetFace( const Ref& ref, IFile *file )
 {
 	PDF_ASSERT( file != 0 ) ;
 
-	FaceMap::iterator i = m_face_map.find( ref ) ;
-	if ( i == m_face_map.end() )
+	RefFaceMap::iterator i = m_ref_map.find( ref ) ;
+	if ( i == m_ref_map.end() )
 	{
 		// first create new entry in the map
 		FaceID *fid = new FaceID ;
 		Stream s = file->ReadObj( ref ).As<Stream>() ;
 		s.CopyData( fid->data ) ;
 
-		i = m_face_map.insert( std::make_pair( ref, fid ) ).first ; 
+		i = m_ref_map.insert( std::make_pair( ref, fid ) ).first ; 
 	}
 
-	PDF_ASSERT( i != m_face_map.end() ) ;
+	PDF_ASSERT( i != m_ref_map.end() ) ;
 
 	FT_Face face ;
 	FT_Error e = FTC_Manager_LookupFace(
@@ -90,6 +96,10 @@ FT_Face FontPool::GetFace( const Ref& ref, IFile *file )
 		throw Exception( "create load font face" ) ;
 	
 	return face ;
+}
+
+FT_Face FontPool::GetFace( const std::string& filename )
+{
 }
 
 FT_Glyph FontPool::GetGlyph( FT_Face face, wchar_t ch )
