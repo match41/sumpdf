@@ -23,8 +23,8 @@
     \author	Nestal Wan
 */
 
-#ifndef __PDF_REALTEXT_HH_EADER_INCLUDED__
-#define __PDF_REALTEXT_HH_EADER_INCLUDED__
+#ifndef __PDF_REALTEXT_HEADER_INCLUDED__
+#define __PDF_REALTEXT_HEADER_INCLUDED__
 
 #include "graphics/Text.hh"
 

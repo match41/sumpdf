@@ -29,6 +29,7 @@
 #include "font/FacePool.hh"
 #include "stream/Stream.hh"
 #include "mock/MockFile.hh"
+#include "mock/Assert.hh"
 
 #include <fstream>
 #include <iterator>
@@ -58,10 +59,13 @@ void FacePoolTest::TestSimple( )
 	std::vector<unsigned char> prog(
 		(std::istreambuf_iterator<char>(progif)),
 		(std::istreambuf_iterator<char>()) ) ;
+	std::size_t size = prog.size() ;
 	pdf::Stream s( prog, pdf::Object() ) ;
 	MockFile file ;
 	file.AddObj( pdf::Ref(1,0), s ) ;
 
 	pdf::FacePool subject( m_lib ) ;
 	FT_Face f = subject.GetFace( pdf::Ref(1,0), &file ) ;
+	CPPUNIT_ASSERT( f != 0 ) ;
+	PDF_ASSERT_EQUAL( size, f->stream->size ) ;
 }

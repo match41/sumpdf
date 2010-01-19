@@ -149,6 +149,11 @@ template <> const Object& Object::As( ) const
     return *this ;
 }
 
+bool Object::IsNumber( ) const
+{
+	return Type() == integer || Type() == floating ;
+}
+
 template <> bool Object::Is<Ref>( ) const
 {
 	return Type() == ref ;

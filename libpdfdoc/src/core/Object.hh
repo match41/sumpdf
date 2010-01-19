@@ -163,6 +163,7 @@ public :
 	static const Object& NullObj() ;
 	
 	ObjType Type( ) const ;
+	bool IsNumber( ) const ;
 	
 	/*!	\brief	Gets the underlying value in the object variant
 		\internal

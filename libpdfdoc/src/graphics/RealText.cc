@@ -134,8 +134,6 @@ void RealText::Output( std::ostream& os ) const
 
 void RealText::OnTd( Object* args, std::size_t count, Resources* )
 {
-//std::cout << "Td: " << args[0] << " " << args[1] << std::endl ;
-
 	if ( count >= 2 )
 	{
 		m_line_mat = m_line_mat * Matrix( 1, 0, 0, 1, args[0], args[1] ) ;
@@ -145,7 +143,6 @@ void RealText::OnTd( Object* args, std::size_t count, Resources* )
 
 void RealText::OnTD( Object* args, std::size_t count, Resources *res )
 {
-//std::cout << "TD: " << std::endl ;
 	
 	if ( count >= 2 )
 	{
@@ -190,11 +187,8 @@ void RealText::AddNewLine( const Matrix& mat )
 
 	// remove empty lines first
 	if ( m_lines.back().IsEmpty() )
-	{
-//std::cout << "pop" << std::endl ;
 		m_lines.pop_back() ;
-	}
-//std::cout << "new line: " << std::endl ;
+	
 	m_lines.push_back( TextLine( mat, m_state ) ) ;
 }
 
@@ -213,6 +207,7 @@ void RealText::OnTJ( Object* args, std::size_t count, Resources *res )
 {
 	assert( !m_lines.empty() ) ;
 
+	// text matrix
 	Matrix tm = m_line_mat ;
 
 	Array& a = args[0].As<Array>() ;
@@ -224,25 +219,23 @@ void RealText::OnTJ( Object* args, std::size_t count, Resources *res )
 			std::wstring ws( s.begin(), s.end() ) ;
 
 			double width = m_state.GetFont()->Width( ws, m_state.FontSize() ) ;
-//std::cout << "\"" << s << "\" " ;
-//std::cout << "width = " << width / 1000.0 << std::endl ;
-Matrix m ;
+
+			Matrix m ;
 			m.Dx( width / 1000.0 ) ;
 			tm = tm * m ;
-//std::cout << "tm = " << tm.Dx() << " " << tm.Dy() << std::endl ;
+
 			m_lines.back().AppendText( ws ) ;
 		}
-		else if ( i->Is<double>() || i->Is<int>() )
+		else if ( i->IsNumber() )
 		{
 			double disp = i->To<double>() ;
-//std::cout << "disp = " << disp << std::endl ;
 			
 			// TODO: depend on writing mode, advance horizonal or vertical
 			// assume vertical here.
 			Matrix m ;
 			m.Dx( -disp / 1000.0 * m_state.FontSize() ) ;
 			tm = tm * m ;
-//std::cout << "tm = " << tm.Dx() << " " << tm.Dy() << std::endl ;
+			
 			AddNewLine( tm ) ;
 		}
 	}
@@ -260,7 +253,7 @@ void RealText::OnTf( Object* args, std::size_t count, Resources *res )
 {
 	assert( res != 0 ) ;
 
-	if ( count >= 2 )
+	if ( count >= 2 && args[0].Is<Name>() && args[1].IsNumber() )
 	{
 		BaseFont *f = res->FindFont( args[0].As<Name>() ) ;
 		if ( f == 0 )

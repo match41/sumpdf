@@ -121,6 +121,7 @@ Graphics* RealContent::ProcessCommand(
 	}
 	else if ( gfx != 0 )
 	{
+		// TODO: remove dynamic_cast
 		RealText *text = dynamic_cast<RealText*>( gfx ) ;
 		text->OnCommand( cmd, args, count, res ) ;
 	}
