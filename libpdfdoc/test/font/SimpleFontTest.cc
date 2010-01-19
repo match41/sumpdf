@@ -55,8 +55,6 @@ void SimpleFontTest::TestSimple( )
 	{
 		pdf::SimpleFont subject( face ) ;
 		PDF_ASSERT_EQUAL( subject.BaseName( ), "FreeMonoBoldOblique" ) ;
-		
-		
 	}
 	
 	::FT_Done_Face( face ) ;

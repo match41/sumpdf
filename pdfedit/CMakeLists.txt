@@ -74,6 +74,8 @@ endif ( UNIX )
 ###############################################################################
 # pdfdoc library
 ###############################################################################
+set( PDFDOC_PREFIX    ../libpdfdoc )
+
 find_path( PDFDOC_INCLUDE_DIR Doc.hh /usr/include
                                      /usr/local/include
                                      ${PDFDOC_PREFIX}/include )

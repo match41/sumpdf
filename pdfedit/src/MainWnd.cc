@@ -59,6 +59,7 @@
 #include <graphics/TextLine.hh>
 #include <graphics/TextBlock.hh>
 
+#include <ft2build.h>
 #include FT_ERRORS_H
 
 #include <boost/bind.hpp>

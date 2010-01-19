@@ -17,37 +17,51 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	FontPoolTest.hh
-    \brief	definition the FontPoolTest class
-    \date	Jan 18, 2010
-    \author	Nestal Wan
+/**	\file	FontPoolTest.cc
+	\brief	implementation of the FontPoolTest class
+	\date	Jan 18, 2010
+	\author	Nestal Wan
 */
 
-#ifndef __PDF_FONTPOOLTEST_HH_EADER_INCLUDED__
-#define __PDF_FONTPOOLTEST_HH_EADER_INCLUDED__
+#include "FacePoolTest.hh"
 
-#include <cppunit/TestFixture.h>
+#include "core/Object.hh"
+#include "font/FacePool.hh"
+#include "stream/Stream.hh"
+#include "mock/MockFile.hh"
 
-#include <cppunit/extensions/HelperMacros.h>
+#include <fstream>
+#include <iterator>
+#include <vector>
 
-/*!	\brief	brief description
-	
-	this class represents
+/**	constructor
 */
-class FontPoolTest : public CppUnit::TestFixture
+FacePoolTest::FacePoolTest( )
 {
-public :
-	FontPoolTest( ) ;
+}
 
-	CPPUNIT_TEST_SUITE( FontPoolTest ) ;
-		CPPUNIT_TEST( TestSimple ) ;
-	CPPUNIT_TEST_SUITE_END( ) ;
+void FacePoolTest::setUp( )
+{
+	::FT_Init_FreeType( &m_lib ) ;
+}
 
-private :
-	
+void FacePoolTest::tearDown( )
+{
+	::FT_Done_FreeType( m_lib ) ;
+}
 
-private :
-	void TestSimple( ) ;
-} ;
+void FacePoolTest::TestSimple( )
+{
+	std::ifstream progif(
+		(std::string(TEST_DATA_DIR) +"FreeMonoBoldOblique.ttf").c_str() ) ;
 
-#endif // FONTPOOLTEST_HH_
+	std::vector<unsigned char> prog(
+		(std::istreambuf_iterator<char>(progif)),
+		(std::istreambuf_iterator<char>()) ) ;
+	pdf::Stream s( prog, pdf::Object() ) ;
+	MockFile file ;
+	file.AddObj( pdf::Ref(1,0), s ) ;
+
+	pdf::FacePool subject( m_lib ) ;
+	FT_Face f = subject.GetFace( pdf::Ref(1,0), &file ) ;
+}

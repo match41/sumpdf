@@ -23,7 +23,7 @@
 	\author	Nestal Wan
 */
 
-#include "FontPool.hh"
+#include "FacePool.hh"
 
 #include "core/Ref.hh"
 #include "core/Object.hh"
@@ -42,18 +42,18 @@ namespace pdf {
 
 /**	constructor
 */
-FontPool::FontPool( FT_Library lib )
+FacePool::FacePool( FT_Library lib )
 	: m_ft( lib )
 {
 	PDF_ASSERT( m_ft != 0 ) ;
 
 	FT_Error e = FTC_Manager_New(
-		m_ft, 0, 0, 0, &FontPool::RequestFace, this, &m_mgr ) ;
+		m_ft, 0, 0, 0, &FacePool::RequestFace, this, &m_mgr ) ;
 	if ( e != 0 )
 		throw Exception( "cannot create FTC manager" ) ;
 }
 
-FontPool::~FontPool( )
+FacePool::~FacePool( )
 {
 	FTC_Manager_Done( m_mgr ) ;
 	
@@ -70,7 +70,7 @@ FontPool::~FontPool( )
             boost::bind( &NameFaceMap::value_type::second, _1 ) ) ) ;
 }
 
-FT_Face FontPool::GetFace( const Ref& ref, IFile *file )
+FT_Face FacePool::GetFace( const Ref& ref, IFile *file )
 {
 	PDF_ASSERT( file != 0 ) ;
 
@@ -91,7 +91,7 @@ FT_Face FontPool::GetFace( const Ref& ref, IFile *file )
 	return LookUpFace( i->second ) ;
 }
 
-FT_Face FontPool::LookUpFace( FaceID *face_id )
+FT_Face FacePool::LookUpFace( FaceID *face_id )
 {
 	PDF_ASSERT( face_id != 0 ) ;
 
@@ -106,7 +106,7 @@ FT_Face FontPool::LookUpFace( FaceID *face_id )
 	return face ;
 }
 
-FT_Face FontPool::GetFace(
+FT_Face FacePool::GetFace(
 	const std::string& font_name,
 	const unsigned char *data,
 	std::size_t size )
@@ -130,14 +130,14 @@ FT_Face FontPool::GetFace(
 	return LookUpFace( i->second ) ;
 }
 
-FT_Glyph FontPool::GetGlyph( FT_Face face, wchar_t ch )
+FT_Glyph FacePool::GetGlyph( FT_Face face, wchar_t ch )
 {
 	int idx = FTC_CMapCache_Lookup( m_cmap, 0, 0, ch ) ;
 	
 	return 0 ;
 }
 
-FT_Error FontPool::RequestFace(
+FT_Error FacePool::RequestFace(
 	FTC_FaceID	id,
 	FT_Library	library,
 	FT_Pointer	request_data,
