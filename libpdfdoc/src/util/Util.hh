@@ -98,6 +98,17 @@ struct DeRef
 
 std::string Demangle( const char *name ) ;
 
+struct DeletePtr
+{
+	typedef void result_type ;
+	
+	template <typename T>
+	void operator()( T *t )
+	{
+		delete t ;
+	}
+} ;
+
 } // end of namespace
 
 #endif

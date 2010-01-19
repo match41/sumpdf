@@ -53,6 +53,8 @@
 #include "file/CatalogTest.hh"
 #include "file/RefObjMapTest.hh"
 #include "file/CompleteObjTest.hh"
+#include "font/SimpleFontTest.hh"
+#include "font/FontPoolTest.hh"
 #include "page/PageNodeTest.hh"
 #include "image/PngImageTest.hh"
 #include "image/JpegImageTest.hh"
@@ -78,7 +80,9 @@ int main( int argc, char **argv )
 	runner.addTest( CatalogTest::suite( ) ) ;
 	runner.addTest( RefObjMapTest::suite( ) ) ;
 	runner.addTest( PageNodeTest::suite( ) ) ;
-
+	runner.addTest( SimpleFontTest::suite( ) ) ;
+	runner.addTest( FontPoolTest::suite( ) ) ;
+	
 // freetype library is optional
 #ifdef HAVE_FREETYPE
 	runner.addTest( SimpleFontTest::suite( ) ) ;

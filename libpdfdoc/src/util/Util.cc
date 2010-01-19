@@ -24,7 +24,7 @@
 	\author	Nestal Wan
 */
 
-#include "Util.hh"
+#include "util/Util.hh"
 
 #include <cassert>
 

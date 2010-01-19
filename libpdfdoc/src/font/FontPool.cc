@@ -25,11 +25,18 @@
 
 #include "FontPool.hh"
 
-#include "BaseFont.hh"
-#include "FontDescriptor.hh"
+#include "core/Ref.hh"
+#include "core/Object.hh"
+#include "stream/Stream.hh"
+#include "file/IFile.hh"
 
+#include "util/Util.hh"
 #include "util/Debug.hh"
 #include "util/Exception.hh"
+
+#include <boost/bind.hpp>
+
+#include <algorithm>
 
 namespace pdf {
 
@@ -49,21 +56,40 @@ FontPool::FontPool( FT_Library lib )
 FontPool::~FontPool( )
 {
 	FTC_Manager_Done( m_mgr ) ;
+	
+    std::for_each(
+        m_face_map.begin(),
+        m_face_map.end(),
+        boost::bind( DeletePtr(),
+            boost::bind( &FaceMap::value_type::second, _1 ) ) ) ;
 }
 
-FT_Face FontPool::GetFace( BaseFont *font )
+FT_Face FontPool::GetFace( const Ref& ref, IFile *file )
 {
-	PDF_ASSERT( font != 0 ) ;
+	PDF_ASSERT( file != 0 ) ;
+
+	FaceMap::iterator i = m_face_map.find( ref ) ;
+	if ( i == m_face_map.end() )
+	{
+		// first create new entry in the map
+		FaceID *fid = new FaceID ;
+		Stream s = file->ReadObj( ref ).As<Stream>() ;
+		s.CopyData( fid->data ) ;
+
+		i = m_face_map.insert( std::make_pair( ref, fid ) ).first ; 
+	}
+
+	PDF_ASSERT( i != m_face_map.end() ) ;
 
 	FT_Face face ;
 	FT_Error e = FTC_Manager_LookupFace(
 		m_mgr,
-		reinterpret_cast<FTC_FaceID>( font ),
+		reinterpret_cast<FTC_FaceID>( &i->second ),
 		&face ) ;
 	if ( e != 0 )
 		throw Exception( "create load font face" ) ;
 	
-	return 0 ;
+	return face ;
 }
 
 FT_Glyph FontPool::GetGlyph( FT_Face face, wchar_t ch )
@@ -72,28 +98,22 @@ FT_Glyph FontPool::GetGlyph( FT_Face face, wchar_t ch )
 }
 
 FT_Error FontPool::RequestFace(
-	FTC_FaceID	face_id,
+	FTC_FaceID	id,
 	FT_Library	library,
 	FT_Pointer	request_data,
 	FT_Face		*face )
 {
-	BaseFont *font = reinterpret_cast<BaseFont*>( face_id ) ;
-	PDF_ASSERT( font != 0 ) ;
+	FaceID *face_id = reinterpret_cast<FaceID*>( id ) ;
+	PDF_ASSERT( face_id != 0 ) ;
 	
-	FontDescriptor *d = font->Descriptor( ) ;
-	PDF_ASSERT( d != 0 ) ;
-	
-	Stream prog = d->FontFile( ) ;
-	std::vector<unsigned char> font_file ;
-	prog.CopyData( font_file ) ;
+	const std::vector<unsigned char>& font_file = face_id->data ;
 
 	return FT_New_Memory_Face(
-				library,
-				&font_file[0],
-				font_file.size(),
-				0,
-				face ) ;
-
+		library,
+		&font_file[0],
+		font_file.size(),
+		0,
+		face ) ;
 }
 
 } // end of namespace

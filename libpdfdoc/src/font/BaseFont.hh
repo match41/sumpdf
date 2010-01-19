@@ -47,7 +47,6 @@ class BaseFont : public RefCounter, public Font
 public :
 	BaseFont( ) ;
 
-	virtual std::string BaseName( ) const = 0 ;
 	virtual Ref Write( IFile *file ) const = 0 ;
 	virtual FontDescriptor* Descriptor( ) = 0 ;
 } ;
