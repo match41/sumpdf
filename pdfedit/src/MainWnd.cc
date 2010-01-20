@@ -68,6 +68,9 @@
 #include <cassert>
 #include <iostream>
 
+#include <fontconfig/fontconfig.h>
+#include <fontconfig/fcfreetype.h>
+
 namespace pdf {
 
 MainWnd::MainWnd( QWidget *parent )
@@ -131,6 +134,27 @@ void MainWnd::OnEditFont( )
 		FT_Face face = f.freetypeFace() ;
 		FT_Stream s = face->stream ;
 qDebug() << "font = " << s->base << " " << s->size ;
+
+		FcChar8 abc[] = "abc", *f2 ;
+
+		FcBlanks *b = FcBlanksCreate() ;
+		FcPattern *p = FcFreeTypeQueryFace( face, abc, 0, b ) ;
+		if (FcPatternGetString( p, FC_FILE, 0, &f2) == FcResultMatch)
+			std::cout << "oops: " << f2 << std::endl ;
+
+qDebug() << "here " << p ;
+		FcChar8 *filename2 ;
+		FcResult result ;
+		FcPattern *matched = FcFontMatch( 0, p, &result);
+qDebug() << "here1.5" ;
+		if (FcPatternGetString (matched, FC_FILE, 0, &filename2) != FcResultMatch)
+			std::cout << "oops" << std::endl ;
+qDebug() << "here2" ;
+		int id ;
+		if (FcPatternGetInteger (matched, FC_INDEX, 0, &id) != FcResultMatch)
+			std::cout << "oops2" << std::endl ;
+		  
+		std::cout << "file is " << filename2 << " " << id << std::endl ; 
 
 	}
 }

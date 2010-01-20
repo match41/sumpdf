@@ -29,6 +29,8 @@
 
 #include "util/Exception.hh"
 
+#include <fontconfig/fontconfig.h>
+
 #include <sstream>
 #include <iostream>
 #include <iomanip>
@@ -37,6 +39,25 @@
 
 int main( int argc, char **argv )
 {
+	FcPattern *sans = FcPatternBuild( NULL,
+		FC_FAMILY,	FcTypeString, "Helvetica Lt Std",
+//	    FC_SIZE,	FcTypeDouble, 12.0,
+	    NULL ) ;
+
+	FcResult result ;
+	FcPattern *matched = FcFontMatch( 0, sans, &result);
+
+	FcChar8 *filename2 ;
+	if (FcPatternGetString (matched, FC_FILE, 0, &filename2) != FcResultMatch)
+		std::cout << "oops" << std::endl ;
+
+	int id ;
+	if (FcPatternGetInteger (matched, FC_INDEX, 0, &id) != FcResultMatch)
+		std::cout << "oops2" << std::endl ;
+	  
+	std::cout << "file is " << filename2 << " " << id << std::endl ; 
+
+	return 0 ;
 	pdf::Doc *doc = pdf::CreateDoc( ) ;
 	if ( argc >= 2 )
 		doc->Read( argv[1] ) ;

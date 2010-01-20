@@ -40,6 +40,11 @@
 #include <boost/bind.hpp>
 #include <boost/lambda/construct.hpp>
 
+// font config
+#ifdef HAVE_FONTCONFIG
+	#include <fontconfig/fontconfig.h>
+#endif
+
 #include <algorithm>
 #include <sstream>
 #include <stdexcept>
@@ -120,6 +125,29 @@ Font* RealDoc::CreateSimpleFont( const std::string& name )
 {
 	return new StandardFont( Name(name) ) ;
 }
+
+#ifdef HAVE_FONTCONFIG
+Font* RealDoc::CreateSimpleFontByName( const std::string& name )
+{
+	FcPattern *sans = FcPatternBuild( NULL,
+		FC_FAMILY,	FcTypeString, name.c_str(),
+	    NULL ) ;
+
+	FcResult result ;
+	FcPattern *matched = FcFontMatch( 0, sans, &result);
+
+	FcChar8 *filename2 ;
+	if (FcPatternGetString (matched, FC_FILE, 0, &filename2) != FcResultMatch)
+		throw -1 ;
+
+	int id ;
+	if (FcPatternGetInteger (matched, FC_INDEX, 0, &id) != FcResultMatch)
+		throw -1 ;
+	  
+//	std::cout << "file is " << filename2 << " " << id << std::endl ;
+	return 0 ;
+}
+#endif
 
 Page* RealDoc::AddPage( std::size_t index )
 {
