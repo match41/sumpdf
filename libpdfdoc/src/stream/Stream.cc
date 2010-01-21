@@ -242,9 +242,9 @@ Stream Stream::Clone( ) const
 	assert( m_impl.get( ) != 0 ) ;
 	assert( m_impl->filter.get() != 0 ) ;
 
-	std::vector<unsigned char> buf( Length() ) ;
-	CopyData( &buf[0], buf.size() ) ;
-	return Stream( buf, m_impl->filter->GetFilterName( ) ) ;
+	std::vector<unsigned char> buf ;
+	CopyData( buf ) ;
+	return Stream( buf, Object::NullObj() ) ;
 }
 
 bool Stream::operator==( const Stream& str ) const

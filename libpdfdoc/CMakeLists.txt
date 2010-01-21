@@ -114,7 +114,6 @@ set( FONT_HDRS		${FONT_DIR}/Types.hh
 					${FONT_DIR}/BaseFont.hh 
 					${FONT_DIR}/FontDescriptor.hh
 					${FONT_DIR}/StandardFont.hh
-					${FONT_DIR}/FacePool.hh
 					${FONT_DIR}/sfnt/SfntFile.hh
 					${FONT_DIR}/sfnt/sfnt.h
 					${FONT_DIR}/sfnt/pdfobj.h
@@ -213,7 +212,6 @@ set( FONT_SRCS		${FONT_DIR}/Font.cc
 					${FONT_DIR}/BaseFont.cc
 					${FONT_DIR}/StandardFont.cc
 					${FONT_DIR}/FontDescriptor.cc
-					${FONT_DIR}/FacePool.cc
 					${FONT_DIR}/sfnt/SfntFile.cc
 					${FONT_DIR}/sfnt/sfnt.c
 					${FONT_DIR}/sfnt/pdfobj.cc
@@ -468,7 +466,6 @@ set( UT_SRCS	test/core/TokenTest.cc
 				test/core/StringTest.cc
 				test/core/DictionaryTest.cc
 				test/core/ArrayTest.cc
-				test/font/FacePoolTest.cc
 				test/stream/StreamTest.cc
 				test/stream/RawFilterTest.cc
 				test/stream/DeflateFilterTest.cc

@@ -167,7 +167,8 @@ void StreamTest::TestClone( )
 
 	pdf::Stream cloned = subject.Clone( ) ;
 	CPPUNIT_ASSERT( subject != cloned ) ;
-	CPPUNIT_ASSERT( subject.Self() == cloned.Self() ) ;
+	CPPUNIT_ASSERT( subject.IsContentEqual( cloned ) ) ;
+	CPPUNIT_ASSERT( cloned.Self()["Filter"] == pdf::Object::NullObj() ) ;
 }
 
 void StreamTest::TestWriteOstream( )
