@@ -40,7 +40,6 @@
 #include <fontconfig/fontconfig.h>
 #endif
 
-#include <cassert>
 #include <iostream>
 #include <algorithm>
 #include <iterator>
@@ -76,7 +75,8 @@ SimpleFont::SimpleFont(
 	FT_Library 			ft_lib )
 	: m_face( LoadFace( font_file, idx, ft_lib ) ),
 	  m_base_font( ::FT_Get_Postscript_Name( m_face ) ),
-	  m_type( GetFontType( m_face ) )
+	  m_type( GetFontType( m_face ) ),
+	  m_descriptor( m_face )
 {
 	Init( ) ;
 }
@@ -85,7 +85,8 @@ SimpleFont::SimpleFont(
 SimpleFont::SimpleFont( const std::string& name, FT_Library ft_lib )
 	: m_face( FindFont( name, ft_lib ) ),
 	  m_base_font( ::FT_Get_Postscript_Name( m_face ) ),
-	  m_type( GetFontType( m_face ) )
+	  m_type( GetFontType( m_face ) ),
+	  m_descriptor( m_face )
 {
 	Init( ) ;
 }
@@ -112,6 +113,7 @@ FT_Face SimpleFont::FindFont( const std::string& font, FT_Library ft_lib )
 	if ( FcPatternGetInteger( matched, FC_INDEX, 0, &idx ) != FcResultMatch )
 		throw Exception( "cannot find font " + font ) ;
 
+std::cout << "loading font from " << file << std::endl ;
 	FT_Face face ;
 	if ( FT_New_Face( ft_lib, file, idx, &face ) != 0 )
 		throw Exception( "cannot load font file " + std::string(file) ) ;
@@ -173,7 +175,7 @@ void SimpleFont::Init( )
 		m_first_char,
 		m_last_char ) ;
 	
-	assert( m_widths.size() ==
+	PDF_ASSERT( m_widths.size() ==
 		static_cast<std::size_t>(m_last_char - m_first_char + 1) ) ;
 }
 
@@ -215,14 +217,15 @@ void SimpleFont::ReadDescriptor( Dictionary& fd, FT_Library ft_lib, IFile *file 
 SimpleFont::Type SimpleFont::GetFontType( FT_Face face )
 {
 	const char *format = ::FT_Get_X11_Font_Format( face ) ;
+
 	if ( format == 0 )
 		return unknown ;
-	else if ( ::strcmp( format, "Truetype" ) == 0 )
+	else if ( ::strcasecmp( format, "Truetype" ) == 0 )
 		return truetype ;
-	else if ( ::strcmp( format, "Type 1" ) == 0 )
+	else if ( ::strcasecmp( format, "Type 1" ) == 0 )
 		return type1 ;
 	else
-		return unknown ;
+		throw Exception( "unknown font type: " + std::string(format) ) ;
 }
 
 template <typename OutIt>
@@ -250,18 +253,18 @@ void SimpleFont::GetWidth(
 		FT_Error error = ::FT_Load_Glyph(
 			face,
 			::FT_Get_Char_Index( face, i ),
-			FT_LOAD_DEFAULT ) ;
+			FT_LOAD_NO_SCALE ) ;
 		
 		if ( error != 0 )
 			throw Exception( ) ;
 
-		*out++ = face->glyph->metrics.horiAdvance ;
+		*out++ = ( face->glyph->metrics.horiAdvance * 1000.0 / face->units_per_EM ) ;
 	}
 }
 
 double SimpleFont::Width( const std::wstring& text, double size ) const
 {
-	assert( m_widths.size() ==
+	PDF_ASSERT( m_widths.size() ==
 		static_cast<std::size_t>(m_last_char - m_first_char + 1) ) ;
 	
 	double width = 0.0 ;
@@ -272,12 +275,6 @@ double SimpleFont::Width( const std::wstring& text, double size ) const
 			width += (m_widths[*i-m_first_char] * size );
 	}
 	return width ;
-/*
-	if ( ch >= m_first_char && ch <= m_last_char )
-		return m_widths[ch-m_first_char] ;
-	else
-		return 0.0 ;
-*/
 }
 
 Ref SimpleFont::Write( IFile *file ) const
@@ -290,6 +287,9 @@ Ref SimpleFont::Write( IFile *file ) const
 	dict.Get()["BaseFont"]	= m_base_font ;
 	dict.Get()["FirstChar"]	= m_first_char ;
 	dict.Get()["LastChar"]	= m_last_char ;
+	
+//	double mat[] = { 0.001, 0, 0, 0.001, 0, 0 } ;
+//	dict.Get()["FontMatrix"]	= Array( Begin(mat), End(mat) ) ;
 
 	if ( dict.Get().find( "Encoding" ) == dict.Get().end() )
 		dict.Get()["Encoding"]		= Name("WinAnsiEncoding") ;
@@ -300,8 +300,7 @@ Ref SimpleFont::Write( IFile *file ) const
 	if ( !m_widths.empty( ) )
 		dict.Get()["Widths"]		= Array( m_widths.begin(), m_widths.end() ) ;
 
-//	if ( !m_descriptor.IsNull( ) )
-//		dict["FontDescriptor"]	= m_descriptor ;
+	dict.Get()["FontDescriptor"]	= m_descriptor.Write( file ) ;
 
 //	if ( !m_to_unicode.IsNull( ) )
 //		dict.Get()["ToUnitcode"]	= file->WriteObj( m_to_unicode ) ;
@@ -311,7 +310,7 @@ Ref SimpleFont::Write( IFile *file ) const
 
 const Name& SimpleFont::SubType( Type t )
 {
-	assert( t >= truetype && t <= type0 ) ;
+	PDF_ASSERT( t >= truetype && t <= type0 ) ;
 	return m_font_types[t] ;
 }
 

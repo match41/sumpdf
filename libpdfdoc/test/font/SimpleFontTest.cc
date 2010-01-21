@@ -27,10 +27,13 @@
 #include "SimpleFontTest.hh"
 
 #include "font/SimpleFont.hh"
+#include "font/FontDescriptor.hh"
 
 #include "mock/Assert.hh"
+#include "mock/MockFile.hh"
 
 #include <sstream>
+#include <iostream>
 
 SimpleFontTest::SimpleFontTest( )
 {
@@ -60,5 +63,11 @@ void SimpleFontTest::TestLoadByName( )
 {
 	pdf::SimpleFont subject( "Arial", m_ft ) ;
 	PDF_ASSERT_EQUAL( subject.BaseName( ), "ArialMT" ) ;
+	
+	pdf::FontDescriptor *fd = subject.Descriptor( ) ;
+	
+	MockFile file ;
+	pdf::Ref r = subject.Write( &file ) ;
+	std::cout << "descriptor = " << file.Find( r ) << std::endl ;
 }
 #endif

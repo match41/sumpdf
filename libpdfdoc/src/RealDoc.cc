@@ -33,17 +33,13 @@
 #include "file/Catalog.hh"
 #include "file/RealFile.hh"
 #include "font/StandardFont.hh"
+#include "font/SimpleFont.hh"
 
 #include "page/RealPage.hh"
 #include "page/PageTree.hh"
 
 #include <boost/bind.hpp>
 #include <boost/lambda/construct.hpp>
-
-// font config
-#ifdef HAVE_FONTCONFIG
-	#include <fontconfig/fontconfig.h>
-#endif
 
 #include <algorithm>
 #include <sstream>
@@ -61,6 +57,7 @@ RealDoc::RealDoc( )
 	: m_catalog( 0 )	// not exception safe
 {
 	::FT_Init_FreeType( &m_ft_lib ) ;
+	m_catalog = new Catalog( m_ft_lib ) ;
 }
 
 /**	The destructor will delete all the elements contained. It traverses the
@@ -123,29 +120,18 @@ Page* RealDoc::GetPage( std::size_t index )
 
 Font* RealDoc::CreateSimpleFont( const std::string& name )
 {
+#ifdef HAVE_FONTCONFIG
+//	return new StandardFont( Name(name) ) ;
+	return new SimpleFont( name, m_ft_lib ) ;
+#else
 	return new StandardFont( Name(name) ) ;
+#endif
 }
 
 #ifdef HAVE_FONTCONFIG
 Font* RealDoc::CreateSimpleFontByName( const std::string& name )
 {
-	FcPattern *sans = FcPatternBuild( NULL,
-		FC_FAMILY,	FcTypeString, name.c_str(),
-	    NULL ) ;
-
-	FcResult result ;
-	FcPattern *matched = FcFontMatch( 0, sans, &result);
-
-	FcChar8 *filename2 ;
-	if (FcPatternGetString (matched, FC_FILE, 0, &filename2) != FcResultMatch)
-		throw -1 ;
-
-	int id ;
-	if (FcPatternGetInteger (matched, FC_INDEX, 0, &id) != FcResultMatch)
-		throw -1 ;
-	  
-//	std::cout << "file is " << filename2 << " " << id << std::endl ;
-	return 0 ;
+	return new SimpleFont( name, m_ft_lib ) ;
 }
 #endif
 

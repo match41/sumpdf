@@ -205,6 +205,11 @@ Dictionary Stream::Self( ) const
 	return dict ;
 }
 
+void Stream::AddDictionaryEntry( const Name& key, const Object& val )
+{
+	m_impl->self[key] = val ;
+}
+
 /**	\brief	get raw length of the stream.
 	
 	This function returns the length after applying all filters. It is equal
