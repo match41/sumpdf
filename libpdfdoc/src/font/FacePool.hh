@@ -37,6 +37,7 @@ namespace pdf {
 
 class IFile ;
 class Ref ;
+class BaseFont ;
 
 ///	brief description
 /**	The FontPool class represents
@@ -44,10 +45,15 @@ class Ref ;
 class FacePool
 {
 public :
+	struct FaceID ;
+
+public :
 	explicit FacePool( FT_Library lib ) ;
 	~FacePool( ) ;
 
 	FT_Face GetFace( const Ref& ref, IFile *file ) ;
+	
+	FT_Face GetFace( const BaseFont *font, const unsigned char *data, std::size_t size ) ;
 	
 	FT_Face GetFace(
 		const std::string& font_name,
@@ -62,11 +68,6 @@ private :
 		FT_Library	library,
 		FT_Pointer	request_data,
 		FT_Face		*face ) ;
-
-	struct FaceID
-	{
-		std::vector<unsigned char>	data ;
-	} ;
 
 	FT_Face LookUpFace( FaceID *face_id ) ;
 

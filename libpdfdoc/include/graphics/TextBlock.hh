@@ -55,6 +55,8 @@ public :
 
 	bool IsEmpty() const ;
 
+	double Width( ) const ;
+
 	friend std::ostream& operator<<( std::ostream& os, const TextBlock& b ) ;
 
 private :

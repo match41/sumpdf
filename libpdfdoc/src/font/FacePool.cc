@@ -40,6 +40,12 @@
 
 namespace pdf {
 
+struct FacePool::FaceID
+{
+	FT_Face						face ;
+	std::vector<unsigned char>	data ;
+} ;
+
 /**	constructor
 */
 FacePool::FacePool( FT_Library lib )
@@ -68,6 +74,21 @@ FacePool::~FacePool( )
         m_name_map.end(),
         boost::bind( DeletePtr(),
             boost::bind( &NameFaceMap::value_type::second, _1 ) ) ) ;
+}
+
+FT_Face FacePool::GetFace( const BaseFont *font, const unsigned char *data, std::size_t size )
+{
+	PDF_ASSERT( font != 0 ) ;
+
+	FT_Face face ;
+	FT_Error e = FTC_Manager_LookupFace(
+		m_mgr,
+		reinterpret_cast<FTC_FaceID>( const_cast<void*>(font) ),
+		&face ) ;
+	if ( e != 0 )
+		throw Exception( "create load font face" ) ;
+	
+	return face ;
 }
 
 FT_Face FacePool::GetFace( const Ref& ref, IFile *file )

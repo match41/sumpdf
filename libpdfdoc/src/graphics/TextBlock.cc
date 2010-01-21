@@ -75,4 +75,9 @@ std::ostream& operator<<( std::ostream& os, const TextBlock& b )
 	return os << "Tj " << String( s ) << ' ' ;
 }
 
+double TextBlock::Width( ) const
+{
+	return 0.0 ;
+}
+
 } // end of namespace
