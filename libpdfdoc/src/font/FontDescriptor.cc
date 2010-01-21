@@ -45,15 +45,15 @@ namespace pdf {
 
 const Name FontDescriptor::m_stretch_names[] =
 {
-	"UltraCondensed",
-	"ExtraCondensed",
-	"Condensed",
-	"SemiCondensed",
-	"Normal",
-	"SemiExpanded",
-	"Expanded",
-	"ExtraExpanded",
-	"UltraExpanded"
+	"UltraCondensed",	///< usWidthClass: 1
+	"ExtraCondensed",	///< usWidthClass: 2
+	"Condensed",		///< usWidthClass: 3
+	"SemiCondensed",	///< usWidthClass: 4
+	"Normal",			///< usWidthClass: 5
+	"SemiExpanded",		///< usWidthClass: 6
+	"Expanded",			///< usWidthClass: 7
+	"ExtraExpanded",	///< usWidthClass: 8
+	"UltraExpanded",	///< usWidthClass: 9
 } ;
 
 /**	constructor
@@ -72,36 +72,50 @@ FontDescriptor::FontDescriptor( FT_Face face )
 	TT_OS2	*os2 = reinterpret_cast<TT_OS2*>(
 		FT_Get_Sfnt_Table( face, ft_sfnt_os2 ) ) ;
 	
+	TT_Postscript	*post = reinterpret_cast<TT_Postscript*>(
+		FT_Get_Sfnt_Table( face, ft_sfnt_post ) ) ;
+	
 	m_psname		= FT_Get_Postscript_Name( face ) ;
-std::cout << "name = " << m_psname << std::endl ;
 
-	m_ascent 		= face->ascender	* 1000 / face->units_per_EM ;
-	m_descent		= face->descender	* 1000 / face->units_per_EM ;
+	m_ascent 		= FontUnit(face->ascender,	face) ;
+	m_descent		= FontUnit(face->descender,	face) ;
 	m_leading		= 0 ;					// TODO: see other implementation
 	
 	if ( os2 != 0 )
 	{
-std::cout << "decender " << os2->sTypoDescender << std::endl ;
-
-		m_ascent 		= os2->sTypoAscender	* 1000 / face->units_per_EM ;
-		m_descent		= os2->sTypoDescender	* 1000 / face->units_per_EM ;
-std::cout << "m_decender " << m_descent << std::endl ;
-		m_cap_height	= (	os2->version == 0x0002
-			? os2->sCapHeight
-			: os2->sTypoAscender ) ;	// arbitrary 
+		// prefer to use OS/2 table if present
+		m_ascent 		= FontUnit(os2->sTypoAscender,	face) ;
+		m_descent		= FontUnit(os2->sTypoDescender,	face) ;
+		
+		m_cap_height	= FontUnit(	os2->version == 0x0002
+				? os2->sCapHeight
+				: os2->sTypoAscender,
+			face ) ;	// arbitrary 
 		
 		// optional
-		m_x_height	= (	os2->version == 0x0002	? os2->sxHeight			: 0.0 );
-		m_avg_width	= ( os2->xAvgCharWidth != 0	? os2->xAvgCharWidth	: 0.0 );
+		m_x_height	= FontUnit(os2->version == 0x0002
+				? os2->sxHeight
+				: 0.0,
+			face ) ;
+		m_avg_width	= FontUnit(os2->xAvgCharWidth != 0
+				? os2->xAvgCharWidth
+				: 0.0,
+			face ) ;
+		
+		// I don't know how to get this one
 		m_stemv		= (os2->usWeightClass/65.0) * (os2->usWeightClass/65.0)+ 50;
+		
+		// we define the Stretch enum to suit the usWidthClass field
+		m_stretch	= static_cast<Stretch>( os2->usWidthClass ) ;
 	}
 	
-	m_x_min	= face->bbox.xMin * 1000.0 / face->units_per_EM ;
-	m_x_max = face->bbox.xMax * 1000.0 / face->units_per_EM ;
-	m_y_min = face->bbox.yMin * 1000.0 / face->units_per_EM ;
-	m_y_max = face->bbox.yMax * 1000.0 / face->units_per_EM ;
+	m_x_min	= FontUnit( face->bbox.xMin, face ) ;
+	m_x_max = FontUnit( face->bbox.xMax, face ) ;
+	m_y_min = FontUnit( face->bbox.yMin, face ) ;
+	m_y_max = FontUnit( face->bbox.yMax, face ) ;
 
-	m_italic_angle = m_leading = 0.0 ;
+	m_italic_angle	= (post != 0 ? FontUnit(post->italicAngle, face) : 0.0) ;
+	m_leading = 0.0 ;
 	
 	FT_ULong length = 0 ;
 	FT_Load_Sfnt_Table( face, 0, 0, 0, &length ) ;
@@ -167,13 +181,22 @@ Ref FontDescriptor::Write( IFile *file ) const
 	self["Type"]		= Name("FontDescriptor") ;
 	self["ItalicAngle"]	= 0 ;
 	
+	if ( m_x_height != 0.0 )
+		self["XHeight"]		= m_x_height ;
+	
 	Rect bbox( m_x_min, m_y_min, m_x_max, m_y_max ) ;
 	self["FontBBox"]	= Array( bbox.begin(), bbox.end() ) ;
 	
 	std::vector<unsigned char> prog = m_font_file ;
+	
+	// embedded font program also needs Length1 for the size of the stream
 	Stream s( prog, Object::NullObj() ) ;
 	s.AddDictionaryEntry( "Length1", m_font_file.size() ) ;
+	
+	// streams must be indirect objects
 	self["FontFile2"]	= file->WriteObj(s) ;
+	
+	self["Stretch"]		= static_cast<int>( m_stretch ) ;
 
 	return file->WriteObj( self ) ;
 }
@@ -186,6 +209,11 @@ const std::vector<unsigned char>& FontDescriptor::FontFile( ) const
 std::string FontDescriptor::Family( ) const
 {
 	return m_family ;
+}
+
+double FontDescriptor::FontUnit( double val, FT_Face face )
+{
+	return val * 1000.0 / face->units_per_EM ; 
 }
 
 } // end of namespace

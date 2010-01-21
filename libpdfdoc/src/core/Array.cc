@@ -31,6 +31,7 @@
 #include "TokenSrc.hh"
 
 #include "util/Exception.hh"
+#include "util/Debug.hh"
 
 #include <iostream>
 
@@ -52,14 +53,13 @@ void Array::swap( Array& array )
 
 void Array::push_back( const Object& obj )
 {
+	PDF_ASSERT( !obj.Is<Stream>() ) ;
 	m_array.push_back( obj ) ;
 }
 
 
 std::istream& operator>>( std::istream& is, Array& array )
 {
-/*	Token first ;
-	return is >> first ? array.Decode( is, first ) : is ;*/
 	TokenSrc s( is ) ;
 	return (s >> array).Stream() ;
 }
@@ -77,7 +77,12 @@ TokenSrc& operator>>( TokenSrc& src, Array& array )
 		
 		Object obj ;
 		if ( src >> obj )
+		{
+			if ( obj.Is<Stream>() )
+				throw ParseError( "streams must be indirect objects" ) ;
+				
 			temp.m_array.push_back( obj ) ;
+		}
 	}
 	
 	// commit
@@ -92,6 +97,8 @@ std::ostream& operator<<( std::ostream& os, const Array& array )
 	os << '[' ;
 	for ( Array::const_iterator i = array.begin( ) ; i != array.end( ) ; ++i )
 	{
+		PDF_ASSERT( !i->Is<Stream>() ) ;
+	
 		os << *i ;
 		if ( i + 1 != array.end( ) )
 			os << ' ' ;
@@ -142,21 +149,25 @@ bool Array::operator==( const Array& array ) const
 
 Object& Array::operator[]( std::size_t index )
 {
+	PDF_ASSERT( !m_array.at(index).Is<Stream>() ) ;
 	return m_array.at(index) ;
 }
 
 const Object& Array::operator[]( std::size_t index ) const
 {
+	PDF_ASSERT( !m_array.at(index).Is<Stream>() ) ;
 	return m_array.at(index) ;
 }
 
 Object& Array::at( std::size_t i )
 {
+	PDF_ASSERT( !m_array.at(i).Is<Stream>() ) ;
 	return m_array.at( i ) ;
 }
 
 const Object& Array::at( std::size_t i ) const
 {
+	PDF_ASSERT( !m_array.at(i).Is<Stream>() ) ;
 	return m_array.at( i ) ;
 }
 

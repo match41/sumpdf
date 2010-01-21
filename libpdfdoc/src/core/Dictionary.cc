@@ -30,6 +30,7 @@
 #include "Token.hh"
 #include "TokenSrc.hh"
 #include "util/Exception.hh"
+#include "util/Debug.hh"
 
 #include <boost/bind.hpp>
 
@@ -155,6 +156,8 @@ void Dictionary::clear( )
 */
 void Dictionary::Add( const Name& key, const Object& value )
 {
+	PDF_ASSERT( !value.Is<Stream>() ) ;
+
 	insert( std::make_pair( key, value ) ) ;
 }
 
@@ -196,6 +199,8 @@ std::ostream& operator<<( std::ostream& os, const Dictionary& dict )
 	for ( Dictionary::const_iterator i  = dict.begin( ) ;
 	                                 i != dict.end( ) ; ++i )
 	{
+		PDF_ASSERT( !i->second.Is<Stream>() ) ;
+		
 		// according to PDF spec, an absent key-pair is considered null
 		if ( !i->second.Is<void>( ) )
 			os << i->first << ' ' << i->second << '\n' ;

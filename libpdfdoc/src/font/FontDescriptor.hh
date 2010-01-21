@@ -52,6 +52,8 @@ class FontDescriptor
 public :
 	enum Stretch
 	{
+		padding,	///< to match the OS/2 table in true type font enum
+		
 		ultra_condensed, extra_condensed, condensed, semi_condensed,
 		normal,
 		semi_expanded, expanded, extra_expanded, ultra_expanded,
@@ -75,6 +77,8 @@ public :
 
 private :
 	static const Name m_stretch_names[] ; 
+
+	double FontUnit( double val, FT_Face face ) ;
 
 private :
 	std::string	m_family ;
