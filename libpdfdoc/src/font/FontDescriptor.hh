@@ -63,7 +63,7 @@ public :
 
 	double	ItalicAngle( ) const ;
 
-	Stream	FontFile( ) const ;
+	const std::vector<unsigned char>&	FontFile( ) const ;
 
 private :
 	static const Name m_stretch_names[] ; 
@@ -77,7 +77,8 @@ private :
 	double		m_italic_angle ;
 	double		m_ascent, m_descent, m_leading, m_cap_height, m_x_height,
 				m_stemv, m_stemh, m_avg_width, m_max_width, m_miss_width ;
-	Stream		m_font_file ;
+	
+	std::vector<unsigned char>		m_font_file ;
 } ;
 
 } // end of namespace

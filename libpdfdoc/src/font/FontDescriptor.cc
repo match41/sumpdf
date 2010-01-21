@@ -65,6 +65,7 @@ void FontDescriptor::Read( Dictionary& self, IFile *file )
 		Detach( file, self, "FontFile2", 	prog ) ||
 		Detach( file, self, "FontFile3", 	prog ) ;
 	if ( r )
+		prog.CopyData( m_font_file ) ;
 	
 	// optional font family name. normally empty for embedded font
 	Detach( file, self, "FontFamily",	m_family ) ;
@@ -96,7 +97,7 @@ void FontDescriptor::Read( Dictionary& self, IFile *file )
 	Detach( file, self, "MissingWidth",	m_miss_width ) ;
 }
 
-Stream FontDescriptor::FontFile( ) const
+const std::vector<unsigned char>& FontDescriptor::FontFile( ) const
 {
 	return m_font_file ;
 }

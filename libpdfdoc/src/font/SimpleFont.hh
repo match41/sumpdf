@@ -38,12 +38,6 @@
 
 #include <vector>
 
-namespace ft
-{
-	class Library ;
-	class Face ;
-}
-
 namespace pdf {
 
 class Dictionary ;
@@ -61,8 +55,13 @@ public :
 
 public :
 	SimpleFont( ) ;
-	explicit SimpleFont( FT_Face face ) ;
 	SimpleFont( Dictionary& self, IFile *file, FT_Library ft_lib ) ;
+	SimpleFont( const std::string& font_file, unsigned idx, FT_Library ft_lib );
+	~SimpleFont( ) ;
+
+#ifdef HAVE_FONTCONFIG
+	SimpleFont( const std::string& name, FT_Library ft_lib ) ;
+#endif
 
 	std::string BaseName( ) const ;
 	Ref Write( IFile *file ) const ;
@@ -75,6 +74,8 @@ public :
 	
 private :
 	SimpleFont( const Name& base_font, Type type ) ;
+
+	void Init( ) ;
 
 	static const Name m_font_types[] ;
 	static Type GetFontType( FT_Face face ) ;
@@ -89,6 +90,17 @@ private :
 		std::size_t	space,
 		int&		first_char,
 		int&		last_char ) ;
+
+	void ReadDescriptor( Dictionary& fd, FT_Library ft_lib, IFile *file ) ;
+
+	static FT_Face LoadFace(
+		const std::string& 	file,
+		unsigned 			idx,
+		FT_Library 			ft_lib );
+
+#ifdef HAVE_FONTCONFIG
+	static FT_Face FindFont( const std::string& font, FT_Library ft_lib ) ;
+#endif
 
 private :
 	CompleteObj			m_self ;

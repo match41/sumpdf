@@ -36,6 +36,10 @@
 #include "util/Util.hh"
 #include "util/Debug.hh"
 
+#ifdef HAVE_FONTCONFIG
+#include <fontconfig/fontconfig.h>
+#endif
+
 #include <cassert>
 #include <iostream>
 #include <algorithm>
@@ -66,21 +70,55 @@ SimpleFont::SimpleFont( const Name& base_font, Type type )
 	m_first_char = m_last_char = 0 ;
 }
 
-SimpleFont::SimpleFont( FT_Face face )
-	: m_face( face ),
-	  m_base_font( ::FT_Get_Postscript_Name( face ) ),
-	  m_type( GetFontType( face ) )
+SimpleFont::SimpleFont(
+	const std::string& 	font_file,
+	unsigned 			idx,
+	FT_Library 			ft_lib )
+	: m_face( LoadFace( font_file, idx, ft_lib ) ),
+	  m_base_font( ::FT_Get_Postscript_Name( m_face ) ),
+	  m_type( GetFontType( m_face ) )
 {
-	GetWidth(
-		face,
-		std::back_inserter(m_widths),
-		m_widths.max_size(),
-		m_first_char,
-		m_last_char ) ;
-	
-	assert( m_widths.size() ==
-		static_cast<std::size_t>(m_last_char - m_first_char + 1) ) ;
+	Init( ) ;
 }
+
+#ifdef HAVE_FONTCONFIG
+SimpleFont::SimpleFont( const std::string& name, FT_Library ft_lib )
+	: m_face( FindFont( name, ft_lib ) ),
+	  m_base_font( ::FT_Get_Postscript_Name( m_face ) ),
+	  m_type( GetFontType( m_face ) )
+{
+	Init( ) ;
+}
+
+FT_Face SimpleFont::FindFont( const std::string& font, FT_Library ft_lib )
+{
+	FcPattern *sans = FcPatternBuild( NULL,
+		FC_FAMILY,	FcTypeString, 	font.c_str(),
+		FC_WEIGHT,	FcTypeInteger, 	FC_WEIGHT_MEDIUM,
+	    NULL ) ;
+	if ( sans == 0 )
+		throw Exception( "cannot create font pattern" ) ;
+
+	FcResult result ;
+	FcPattern *matched = FcFontMatch( 0, sans, &result ) ;
+
+	FcChar8 *filename ;
+	if ( FcPatternGetString(matched, FC_FILE, 0, &filename ) != FcResultMatch )
+		throw Exception( "cannot find font " + font ) ;
+
+	const char *file = reinterpret_cast<const char*>( filename ) ;
+
+	int idx ;
+	if ( FcPatternGetInteger( matched, FC_INDEX, 0, &idx ) != FcResultMatch )
+		throw Exception( "cannot find font " + font ) ;
+
+	FT_Face face ;
+	if ( FT_New_Face( ft_lib, file, idx, &face ) != 0 )
+		throw Exception( "cannot load font file " + std::string(file) ) ;
+
+	return LoadFace( file, idx, ft_lib ) ;
+}
+#endif
 
 SimpleFont::SimpleFont( Dictionary& self, IFile *file, FT_Library ft_lib )
 {
@@ -107,23 +145,7 @@ SimpleFont::SimpleFont( Dictionary& self, IFile *file, FT_Library ft_lib )
 		
 		Dictionary fd ;
 		if ( Detach( file, self, "FontDescriptor", fd ) )
-		{
-			m_descriptor.Read( fd, file ) ;
-			std::vector<unsigned char> font_file ;
-			m_descriptor.FontFile().CopyData( font_file ) ;
-//std::ofstream f( (m_base_font.Str()+".ttf").c_str() ) ;
-//std::copy( font_file.begin(), font_file.end(),
-//std::ostreambuf_iterator<char>( f ) ) ;
-//f.close() ;
-			FT_Error e = FT_New_Memory_Face(
-				ft_lib,
-				&font_file[0],
-				font_file.size(),
-				0,
-				&m_face ) ;
-			if ( e != 0 )
-				throw -1 ;
-		}
+			ReadDescriptor( fd, ft_lib, file ) ;
 		
 		m_self.Read( self, file ) ;
 	}
@@ -134,6 +156,60 @@ SimpleFont::SimpleFont( Dictionary& self, IFile *file, FT_Library ft_lib )
 		    << "Font Dictionary: \n" << self << "\n" ;
 		throw Exception( msg.str( ) ) ;
 	}
+}
+
+SimpleFont::~SimpleFont( )
+{
+	FT_Done_Face( m_face ) ;
+}
+
+///	Common initialization procedure for constructor that comes with an FT_Face.
+void SimpleFont::Init( )
+{
+	GetWidth(
+		m_face,
+		std::back_inserter(m_widths),
+		m_widths.max_size(),
+		m_first_char,
+		m_last_char ) ;
+	
+	assert( m_widths.size() ==
+		static_cast<std::size_t>(m_last_char - m_first_char + 1) ) ;
+}
+
+///	Loads an FT_Face from a disk file.
+FT_Face SimpleFont::LoadFace(
+	const std::string& 	file,
+	unsigned 			idx,
+	FT_Library 			ft_lib )
+{
+	FT_Face face ;
+	if ( FT_New_Face( ft_lib, file.c_str(), idx, &face ) != 0 )
+		throw Exception( "cannot load font file " + file ) ;
+	
+	return face ;
+}
+
+void SimpleFont::ReadDescriptor( Dictionary& fd, FT_Library ft_lib, IFile *file )
+{
+	m_descriptor.Read( fd, file ) ;
+
+	const std::vector<unsigned char>& font_file = m_descriptor.FontFile( ) ;
+
+//std::ofstream f( (m_base_font.Str()+".ttf").c_str() ) ;
+//std::copy( font_file.begin(), font_file.end(),
+//std::ostreambuf_iterator<char>( f ) ) ;
+//f.close() ;
+	
+	FT_Error e = FT_New_Memory_Face(
+		ft_lib,
+		&font_file[0],
+		font_file.size(),
+		0,
+		&m_face ) ;
+	
+	if ( e != 0 )
+		throw Exception( "cannot create font face" ) ;
 }
 
 SimpleFont::Type SimpleFont::GetFontType( FT_Face face )

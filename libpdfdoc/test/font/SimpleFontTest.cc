@@ -30,10 +30,6 @@
 
 #include "mock/Assert.hh"
 
-// freetype headers
-#include <ft2build.h>
-#include FT_FREETYPE_H
-
 #include <sstream>
 
 SimpleFontTest::SimpleFontTest( )
@@ -42,21 +38,27 @@ SimpleFontTest::SimpleFontTest( )
 
 void SimpleFontTest::TestSimple( )
 {
-	FT_Library lib ;
-	::FT_Init_FreeType( &lib ) ;
-	
-	FT_Face face ;
-	::FT_New_Face(
-		lib,
-		(std::string(TEST_DATA_DIR) +"FreeMonoBoldOblique.ttf").c_str(),
+	pdf::SimpleFont subject(
+		std::string(TEST_DATA_DIR) +"FreeMonoBoldOblique.ttf",
 		0,
-		&face ) ;
-	
-	{
-		pdf::SimpleFont subject( face ) ;
-		PDF_ASSERT_EQUAL( subject.BaseName( ), "FreeMonoBoldOblique" ) ;
-	}
-	
-	::FT_Done_Face( face ) ;
-	::FT_Done_FreeType( lib ) ;
+		m_ft ) ;
+	PDF_ASSERT_EQUAL( subject.BaseName( ), "FreeMonoBoldOblique" ) ;
 }
+
+void SimpleFontTest::setUp( )
+{
+	::FT_Init_FreeType( &m_ft ) ;
+}
+
+void SimpleFontTest::tearDown( )
+{
+	::FT_Done_FreeType( m_ft ) ;
+}
+
+#ifdef HAVE_FONTCONFIG
+void SimpleFontTest::TestLoadByName( )
+{
+	pdf::SimpleFont subject( "Arial", m_ft ) ;
+	PDF_ASSERT_EQUAL( subject.BaseName( ), "ArialMT" ) ;
+}
+#endif

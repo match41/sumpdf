@@ -79,7 +79,6 @@ int main( int argc, char **argv )
 	runner.addTest( CatalogTest::suite( ) ) ;
 	runner.addTest( RefObjMapTest::suite( ) ) ;
 	runner.addTest( PageNodeTest::suite( ) ) ;
-	runner.addTest( SimpleFontTest::suite( ) ) ;
 	
 // freetype library is optional
 #ifdef HAVE_FREETYPE
