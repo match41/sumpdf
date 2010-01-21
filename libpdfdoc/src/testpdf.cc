@@ -42,7 +42,7 @@ int main( int argc, char **argv )
 		doc->Read( argv[1] ) ;
 	
 	pdf::Page *p = doc->AppendPage( ) ;
-	pdf::Font *f = doc->CreateSimpleFont( "Liberation Sans" ) ;
+	pdf::Font *f = doc->CreateSimpleFont( "Palatino Linotype" ) ;
 	p->DrawText( 100, 100, f, "Hello world!" ) ;
 	p->DrawText( 100, 200, f, "This is the second line!" ) ;
 	p->Finish( ) ;

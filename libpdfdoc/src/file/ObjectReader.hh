@@ -51,6 +51,23 @@ bool Detach( IFile *file, Dictionary& dict, const Name& name, ObjType& result )
 }
 
 template <typename ObjType>
+bool DetachConv( IFile *file, Dictionary& dict, const Name& name, ObjType& result )
+{
+	Dictionary::iterator i = dict.find( name ) ;
+	if ( i != dict.end( ) )
+	{
+		if ( i->second.Type( ) == Object::ref )
+			result = file->ReadObj( i->second ).To<ObjType>() ;
+		else
+			result = i->second.To<ObjType>() ;
+
+		dict.erase( i ) ;
+		return true ;
+	}
+	return false ;
+}
+
+template <typename ObjType>
 bool DeRef( IFile *file, const Dictionary& dict, const Name& name,
             ObjType& result )
 {

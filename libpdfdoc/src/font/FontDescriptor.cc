@@ -106,9 +106,9 @@ std::cout << "m_decender " << m_descent << std::endl ;
 	FT_ULong length = 0 ;
 	FT_Load_Sfnt_Table( face, 0, 0, 0, &length ) ;
 std::cout << "file length is: " << length << std::endl ;
-	std::ifstream f( "/usr/share/fonts/liberation/LiberationSans-Italic.ttf" ) ;
-	m_font_file.assign( (std::istreambuf_iterator<char>(f)),
-	(std::istreambuf_iterator<char>()) ) ;
+
+	m_font_file.resize( length ) ;
+	FT_Load_Sfnt_Table( face, 0, 0, &m_font_file[0], &length ) ;
 std::cout << "file length is: " << m_font_file.size() << std::endl ;
 
 //	FT_Load_Sfnt_Table( face, 0, 0, &m_font_file[0], &length ) ;
@@ -129,30 +129,30 @@ void FontDescriptor::Read( Dictionary& self, IFile *file )
 	Detach( file, self, "FontFamily",	m_family ) ;
 	
 	Name stretch ;
-	if ( Detach( file, self, "FontStretch", stretch ) )
+	if ( DetachConv( file, self, "FontStretch", stretch ) )
 		m_stretch = static_cast<Stretch>(std::find(
 			Begin(m_stretch_names),
 			End(m_stretch_names),
 			stretch ) - Begin(m_stretch_names) ) ;
 
-	Detach( file, self, "FontWeight",	m_weight ) ;
-	Detach( file, self, "Flags",		m_flags ) ;
+	DetachConv( file, self, "FontWeight",	m_weight ) ;
+	DetachConv( file, self, "Flags",		m_flags ) ;
 	
 	Array bbox ;
 	if ( Detach( file, self, "FontBBox", bbox ) )
 		m_bbox = Rect( bbox.begin(), bbox.end() ) ;
 
-	Detach( file, self, "ItalicAngle",	m_italic_angle ) ;
-	Detach( file, self, "Ascent",		m_ascent ) ;
-	Detach( file, self, "Descent",		m_descent ) ;
-	Detach( file, self, "Leading",		m_leading ) ;
-	Detach( file, self, "CapHeight",	m_cap_height ) ;
-	Detach( file, self, "XHeight",		m_x_height ) ;
-	Detach( file, self, "StemV",		m_stemv ) ;
-	Detach( file, self, "StemH",		m_stemh ) ;
-	Detach( file, self, "AvgWidth",		m_avg_width ) ;
-	Detach( file, self, "MaxWidth",		m_max_width ) ;
-	Detach( file, self, "MissingWidth",	m_miss_width ) ;
+	DetachConv( file, self, "ItalicAngle",	m_italic_angle ) ;
+	DetachConv( file, self, "Ascent",		m_ascent ) ;
+	DetachConv( file, self, "Descent",		m_descent ) ;
+	DetachConv( file, self, "Leading",		m_leading ) ;
+	DetachConv( file, self, "CapHeight",	m_cap_height ) ;
+	DetachConv( file, self, "XHeight",		m_x_height ) ;
+	DetachConv( file, self, "StemV",		m_stemv ) ;
+	DetachConv( file, self, "StemH",		m_stemh ) ;
+	DetachConv( file, self, "AvgWidth",		m_avg_width ) ;
+	DetachConv( file, self, "MaxWidth",		m_max_width ) ;
+	DetachConv( file, self, "MissingWidth",	m_miss_width ) ;
 }
 
 Ref FontDescriptor::Write( IFile *file ) const
