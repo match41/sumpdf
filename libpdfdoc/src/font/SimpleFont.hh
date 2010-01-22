@@ -36,14 +36,19 @@
 #include "core/Object.hh"
 #include "file/CompleteObj.hh"
 
+// boost library
+#include <boost/tr1/unordered_map.hpp>
+
+#include FT_GLYPH_H
+
 #include <vector>
 
 namespace pdf {
 
 class Dictionary ;
 
-/*!	\brief	general font for PDF files
-	\internal
+///	general font for PDF files
+/**	\internal
 
 	This class represent a simple Type 1 or TrueType font. According to the
 	PDF specification, a simple font has less than 256 characters.
@@ -66,11 +71,12 @@ public :
 	std::string BaseName( ) const ;
 	Ref Write( IFile *file ) const ;
 
-	double Width( const std::wstring& text, double size ) const ;
-	
 	FT_Face Face( ) const ;
 	
 	FontDescriptor* Descriptor( ) ;
+
+	double Width( const std::wstring& text, double size ) const ;
+	double Width( wchar_t ch ) const ;
 	
 private :
 	SimpleFont( const Name& base_font, Type type ) ;
@@ -83,13 +89,7 @@ private :
 	static const Name& SubType( Type t ) ;
 	static Type        SubType( const Name& t ) ;
 
-	template <typename OutIt>
-	static void GetWidth(
-		FT_Face		face,
-		OutIt		out,
-		std::size_t	space,
-		int&		first_char,
-		int&		last_char ) ;
+	void GetWidth( ) ;
 
 	void ReadDescriptor( Dictionary& fd, FT_Library ft_lib, IFile *file ) ;
 
@@ -111,10 +111,17 @@ private :
 	Type	m_type ;
 	int		m_first_char, m_last_char ;
 
-	std::vector<int>	m_widths ;
 	FontDescriptor		m_descriptor ;
 //	Object				m_to_unicode ;
 //	Object				m_encoding ;	//!< name or dictionary
+	
+	struct GlyphData
+	{
+		FT_OutlineGlyph		glyph ;
+		FT_Glyph_Metrics	metrics ;
+	} ;
+	typedef std::tr1::unordered_map<wchar_t, GlyphData> GlyphMap ;
+	GlyphMap	m_glyphs ;
 } ;
 
 } // end of namespace

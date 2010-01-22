@@ -138,9 +138,9 @@ SimpleFont::SimpleFont( Dictionary& self, IFile *file, FT_Library ft_lib )
 		self.Extract( Name("LastChar"),		m_last_char ) ;
 
 		// width is optional
-		Array widths ;
-		if ( Detach( file, self, "Widths", widths ) )
-			m_widths.assign( widths.begin(), widths.end() ) ;
+//		Array widths ;
+//		if ( Detach( file, self, "Widths", widths ) )
+//			m_widths.assign( widths.begin(), widths.end() ) ;
 
 //		self.Extract( "Encoding",	m_encoding ) ;
 //		self.Extract( "ToUnicode",	m_to_unicode ) ;
@@ -168,15 +168,10 @@ SimpleFont::~SimpleFont( )
 ///	Common initialization procedure for constructor that comes with an FT_Face.
 void SimpleFont::Init( )
 {
-	GetWidth(
-		m_face,
-		std::back_inserter(m_widths),
-		m_widths.max_size(),
-		m_first_char,
-		m_last_char ) ;
+	GetWidth( ) ;
 	
-	PDF_ASSERT( m_widths.size() ==
-		static_cast<std::size_t>(m_last_char - m_first_char + 1) ) ;
+//	PDF_ASSERT( m_widths.size() ==
+//		static_cast<std::size_t>(m_last_char - m_first_char + 1) ) ;
 }
 
 ///	Loads an FT_Face from a disk file.
@@ -214,6 +209,25 @@ void SimpleFont::ReadDescriptor( Dictionary& fd, FT_Library ft_lib, IFile *file 
 		throw Exception( "cannot create font face" ) ;
 }
 
+double SimpleFont::Width( wchar_t ch ) const
+{
+	GlyphMap::const_iterator it = m_glyphs.find( ch ) ;
+	return it != m_glyphs.end()
+		? it->second.metrics.horiAdvance * 1000.0 / m_face->units_per_EM
+		: 0.0 ;
+}
+
+double SimpleFont::Width( const std::wstring& text, double size ) const
+{
+	double width = 0.0 ;
+	for ( std::wstring::const_iterator i = text.begin() ; i < text.end() ; ++i )
+	{
+		if ( *i >= m_first_char && *i <= m_last_char )
+			width += (Width(*i) * size ) ;
+	}
+	return width ;
+}
+
 SimpleFont::Type SimpleFont::GetFontType( FT_Face face )
 {
 	const char *format = ::FT_Get_X11_Font_Format( face ) ;
@@ -228,53 +242,38 @@ SimpleFont::Type SimpleFont::GetFontType( FT_Face face )
 		throw Exception( "unknown font type: " + std::string(format) ) ;
 }
 
-template <typename OutIt>
-void SimpleFont::GetWidth(
-	FT_Face		face,
-	OutIt		out,
-	std::size_t	space,
-	int&		first_char,
-	int&		last_char )
+void SimpleFont::GetWidth( )
 {
 	// traverse all characters
-	unsigned		glyph ;
-	unsigned long 	char_code = ::FT_Get_First_Char( face, &glyph ) ;
-	first_char = static_cast<int>( char_code ) ;
+	unsigned		gindex ;
+	unsigned long 	char_code = FT_Get_First_Char( m_face, &gindex ) ;
+	m_first_char = static_cast<int>( char_code ) ;
 
-	while ( glyph != 0 && char_code < 256 )
-	{
-		last_char = static_cast<int>( char_code ) ;
-		char_code = ::FT_Get_Next_Char( face, char_code, &glyph ) ;
-	}
-
-	for ( int i = first_char ; i <= last_char && space-- > 0 ; i++ )
+	while ( gindex != 0 && char_code < 256 )
 	{
 		// load the glyph to the glyph slot in the face
-		FT_Error error = ::FT_Load_Glyph(
-			face,
-			::FT_Get_Char_Index( face, i ),
-			FT_LOAD_NO_SCALE ) ;
-		
+		FT_Error error = FT_Load_Glyph( m_face, gindex, FT_LOAD_NO_SCALE ) ;
 		if ( error != 0 )
 			throw Exception( ) ;
 
-		*out++ = ( face->glyph->metrics.horiAdvance * 1000.0 / face->units_per_EM ) ;
+		FT_Glyph glyph ;
+		error = FT_Get_Glyph( m_face->glyph, &glyph ) ;
+		if ( error != 0 )
+			throw Exception( ) ;
+		
+		if ( m_face->glyph->format == FT_GLYPH_FORMAT_OUTLINE )
+		{
+			GlyphData g =
+			{
+				reinterpret_cast<FT_OutlineGlyph>( glyph ),
+				m_face->glyph->metrics,
+			} ;
+			m_glyphs[char_code] = g ;
+		}         
+		
+		m_first_char = static_cast<int>( char_code ) ;
+		char_code = ::FT_Get_Next_Char( m_face, char_code, &gindex ) ;
 	}
-}
-
-double SimpleFont::Width( const std::wstring& text, double size ) const
-{
-	PDF_ASSERT( m_widths.size() ==
-		static_cast<std::size_t>(m_last_char - m_first_char + 1) ) ;
-	
-	double width = 0.0 ;
-	for ( std::wstring::const_iterator
-		i = text.begin() ; i < text.end() ; ++i )
-	{
-		if ( *i >= m_first_char && *i <= m_last_char )
-			width += (m_widths[*i-m_first_char] * size );
-	}
-	return width ;
 }
 
 Ref SimpleFont::Write( IFile *file ) const
@@ -297,8 +296,11 @@ Ref SimpleFont::Write( IFile *file ) const
 //	if ( !m_encoding.IsNull() )
 //		dict.Get()["Encoding"]		= m_encoding ;
 
-	if ( !m_widths.empty( ) )
-		dict.Get()["Widths"]		= Array( m_widths.begin(), m_widths.end() ) ;
+	Array widths ;
+	for ( int i = m_first_char ; i <= m_last_char ; ++i )
+		widths.push_back( Width(i) ) ;
+	
+	dict.Get()["Widths"]			= widths ;
 
 	dict.Get()["FontDescriptor"]	= m_descriptor.Write( file ) ;
 
