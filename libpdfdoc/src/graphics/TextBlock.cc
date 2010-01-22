@@ -77,7 +77,7 @@ std::ostream& operator<<( std::ostream& os, const TextBlock& b )
 
 double TextBlock::Width( ) const
 {
-	return 0.0 ;
+	return 0.0f ;
 }
 
 } // end of namespace
