@@ -101,4 +101,9 @@ FontDescriptor* StandardFont::Descriptor( )
 	return 0 ;
 }
 
+FT_Glyph StandardFont::Glyph( wchar_t ch ) const
+{
+	return 0 ;
+}
+
 } // end of namespace

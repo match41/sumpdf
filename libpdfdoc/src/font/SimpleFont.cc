@@ -36,6 +36,8 @@
 #include "util/Util.hh"
 #include "util/Debug.hh"
 
+#include <boost/bind.hpp>
+
 #ifdef HAVE_FONTCONFIG
 #include <fontconfig/fontconfig.h>
 #endif
@@ -162,6 +164,14 @@ SimpleFont::SimpleFont( Dictionary& self, IFile *file, FT_Library ft_lib )
 
 SimpleFont::~SimpleFont( )
 {
+	std::for_each(
+		m_glyphs.begin(),
+		m_glyphs.end(),
+		boost::bind(
+			&FT_Done_Glyph,
+			boost::bind( &GlyphData::glyph,
+				boost::bind( &GlyphMap::value_type::second, _1 ) ) ) ) ;
+
 	FT_Done_Face( m_face ) ;
 }
 
@@ -265,13 +275,13 @@ void SimpleFont::GetWidth( )
 		{
 			GlyphData g =
 			{
-				reinterpret_cast<FT_OutlineGlyph>( glyph ),
+				glyph,
 				m_face->glyph->metrics,
 			} ;
 			m_glyphs[char_code] = g ;
 		}         
 		
-		m_first_char = static_cast<int>( char_code ) ;
+		m_last_char = static_cast<int>( char_code ) ;
 		char_code = ::FT_Get_Next_Char( m_face, char_code, &gindex ) ;
 	}
 }
@@ -338,6 +348,12 @@ std::string SimpleFont::BaseName( ) const
 FT_Face SimpleFont::Face( ) const
 {
 	return m_face ;
+}
+
+FT_Glyph SimpleFont::Glyph( wchar_t ch ) const
+{
+	GlyphMap::const_iterator it = m_glyphs.find( ch ) ;
+	return it != m_glyphs.end() ? it->second.glyph : 0 ;
 }
 
 FontDescriptor* SimpleFont::Descriptor( )

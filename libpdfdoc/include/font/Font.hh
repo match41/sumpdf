@@ -32,6 +32,7 @@
 // freetype headers
 #include <ft2build.h>
 #include FT_FREETYPE_H
+#include FT_GLYPH_H
 
 namespace pdf {
 
@@ -46,7 +47,8 @@ public :
 	
 	virtual std::string BaseName( ) const = 0 ;
 	
-	virtual FT_Face Face( ) const = 0 ;
+	virtual FT_Face		Face( ) const = 0 ;
+	virtual FT_Glyph	Glyph( wchar_t ch ) const = 0 ;
 	
 	virtual double Width( const std::wstring& text, double size ) const = 0 ;
 } ;

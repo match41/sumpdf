@@ -50,6 +50,7 @@ public :
 	double Width( const std::wstring& text, double size ) const ;
 
 	FT_Face Face( ) const ;
+	FT_Glyph Glyph( wchar_t ch ) const ;
 
 	FontDescriptor* Descriptor( ) ;
 

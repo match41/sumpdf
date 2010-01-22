@@ -71,7 +71,8 @@ public :
 	std::string BaseName( ) const ;
 	Ref Write( IFile *file ) const ;
 
-	FT_Face Face( ) const ;
+	FT_Face 	Face( ) const ;
+	FT_Glyph	Glyph( wchar_t ch ) const ;
 	
 	FontDescriptor* Descriptor( ) ;
 
@@ -117,7 +118,7 @@ private :
 	
 	struct GlyphData
 	{
-		FT_OutlineGlyph		glyph ;
+		FT_Glyph			glyph ;
 		FT_Glyph_Metrics	metrics ;
 	} ;
 	typedef std::tr1::unordered_map<wchar_t, GlyphData> GlyphMap ;
