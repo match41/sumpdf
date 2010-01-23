@@ -72,7 +72,7 @@ public :
 	Ref Write( IFile *file ) const ;
 
 	FT_Face 	Face( ) const ;
-	FT_Glyph	Glyph( wchar_t ch ) const ;
+	FT_Glyph	Glyph( wchar_t ch, FT_Glyph_Metrics *met ) const ;
 	
 	FontDescriptor* Descriptor( ) ;
 

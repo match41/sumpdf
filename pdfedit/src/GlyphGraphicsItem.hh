@@ -44,7 +44,7 @@ namespace pdf {
 class GlyphGraphicsItem : public QGraphicsPathItem
 {
 public :
-	explicit GlyphGraphicsItem( FT_GlyphSlot glyph ) ;
+	explicit GlyphGraphicsItem( FT_Glyph glyph, FT_Glyph_Metrics met ) ;
 
 private :
 	static int MoveTo( const FT_Vector* to, void *user ) ;
@@ -75,7 +75,6 @@ private :
 	QPointF Transform( const FT_Vector *p ) const ;
 
 private :
-//	FT_Glyph			m_glyph ;
 	FT_Glyph_Metrics	m_metrics ;
 } ;
 

@@ -54,6 +54,7 @@
 #include <font/Font.hh>
 #include <util/Rect.hh>
 #include <util/Matrix.hh>
+#include <util/Debug.hh>
 #include <page/PageContent.hh>
 #include <graphics/Text.hh>
 #include <graphics/TextLine.hh>
@@ -62,14 +63,14 @@
 #include <ft2build.h>
 #include FT_ERRORS_H
 
+#include <fontconfig/fontconfig.h>
+#include <fontconfig/fcfreetype.h>
+
 #include <boost/bind.hpp>
 
 #include <algorithm>
 #include <cassert>
 #include <iostream>
-
-#include <fontconfig/fontconfig.h>
-#include <fontconfig/fcfreetype.h>
 
 namespace pdf {
 
@@ -193,28 +194,32 @@ void MainWnd::LoadTextLine( const TextLine& line )
 {
 	const TextBlock& b = *line.begin() ;
 
-	FT_Face face = b.Format().GetFont()->Face( ) ;
+	Font	*font	= b.Format().GetFont() ; 
+	FT_Face face	= font->Face( ) ;
 	
 	Matrix tm = line.Transform() ;
 	const std::wstring& text = b.Text() ;
 	for ( std::size_t i = 0 ; i < text.size() ; i++ )
 	{
-		int glyph_index = FT_Get_Char_Index( face, text[i] ) ; 
-
-		// we want to do the scaling in double instead of inside freetype
-		// in small font we don't have hinting
-		FT_Error error = FT_Load_Glyph( face, glyph_index, FT_LOAD_NO_SCALE ) ;
-		if ( error == FT_Err_Ok )
+		FT_Glyph_Metrics met ;
+		FT_Glyph g = font->Glyph( text[i], &met ) ;
+		PDF_ASSERT( g != 0 ) ;
+		
+		if ( g->format == FT_GLYPH_FORMAT_OUTLINE )
 		{
-			GlyphGraphicsItem *item = new GlyphGraphicsItem( face->glyph ) ;
+			GlyphGraphicsItem *item = new GlyphGraphicsItem( g, met ) ;
 
 			// scale font by their font size
 			double scalefactor = b.Format().FontSize() / face->units_per_EM ;
 			item->setTransform( ToQtMatrix( tm ) ) ;
 			item->scale( scalefactor, scalefactor ) ;
-			tm.Dx( tm.Dx() + face->glyph->advance.x * scalefactor) ;
+			tm.Dx( tm.Dx() + met.horiAdvance * scalefactor) ;
 
 			m_scene->addItem( item ) ;
+		}
+		else
+		{
+			// TODO: handle non-scalable font here
 		}
 	}
 }

@@ -102,7 +102,6 @@ set( UTIL_HDRS  	${UTIL_DIR}/Rect.hh
 					${UTIL_DIR}/Util.hh
 					${UTIL_DIR}/SymbolInfo.hh
 					${UTIL_DIR}/Backtrace.hh
-					${UTIL_DIR}/Debug.hh
 					${UTIL_DIR}/RefCounter.hh
 					${UTIL_DIR}/RefCounterWrapper.hh )
 					
@@ -145,6 +144,7 @@ set( GFX_INC_HDRS	${INCLUDE_DIR}/graphics/Graphics.hh
 					${INCLUDE_DIR}/graphics/TextState.hh
 					${INCLUDE_DIR}/graphics/TextLine.hh )
 set( UTIL_INC_HDRS	${INCLUDE_DIR}/util/Exception.hh
+					${INCLUDE_DIR}/util/Debug.hh
 					${INCLUDE_DIR}/util/Rect.hh
 					${INCLUDE_DIR}/util/Matrix.hh )
 
@@ -310,11 +310,11 @@ SOURCE_GROUP( "page"		FILES ${PAGE_SRCS}		${PAGE_HDRS} )
 SOURCE_GROUP( "graphics"	FILES ${GRAPICS_SRCS}	${GRAPICS_HDRS} )
 SOURCE_GROUP( "file"		FILES ${FILE_SRCS}		${FILE_HDRS} )
 SOURCE_GROUP( "core"		FILES ${CORE_SRCS}		${CORE_HDRS} )
-SOURCE_GROUP( "util"		FILES ${UTIL_SRCS} ${UTIL_HDRS} )
+SOURCE_GROUP( "util"		FILES ${UTIL_SRCS}		${UTIL_HDRS} )
 SOURCE_GROUP( "font"		FILES ${FONT_SRCS}		${FONT_HDRS} )
-SOURCE_GROUP( "image"		FILES ${IMG_SRCS}  ${IMG_HDRS} )
-SOURCE_GROUP( "stream"		FILES ${STRM_SRCS} ${STRM_HDRS} )
-SOURCE_GROUP( "base"		FILES ${BASE_SRCS} ${BASE_HDRS} )
+SOURCE_GROUP( "image"		FILES ${IMG_SRCS}  		${IMG_HDRS} )
+SOURCE_GROUP( "stream"		FILES ${STRM_SRCS}		${STRM_HDRS} )
+SOURCE_GROUP( "base"		FILES ${BASE_SRCS}		${BASE_HDRS} )
 SOURCE_GROUP( "include"		FILES ${INCLUDE_HDRS} )
 
 ###############################################################################
@@ -441,7 +441,7 @@ INSTALL( TARGETS pdfdoc_static
          LIBRARY DESTINATION lib
          ARCHIVE DESTINATION lib )
 
-INSTALL( FILES ${INCLUDE_HDRS} DESTINATION include )
+INSTALL( FILES ${INCLUDE_HDRS}	DESTINATION include )
 INSTALL( FILES ${FONT_INC_HDRS} DESTINATION include/font )
 INSTALL( FILES ${PAGE_INC_HDRS} DESTINATION include/page )
 INSTALL( FILES ${GFX_INC_HDRS}  DESTINATION include/graphics )

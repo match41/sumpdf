@@ -101,7 +101,7 @@ FontDescriptor* StandardFont::Descriptor( )
 	return 0 ;
 }
 
-FT_Glyph StandardFont::Glyph( wchar_t ch ) const
+FT_Glyph StandardFont::Glyph( wchar_t ch, FT_Glyph_Metrics *met ) const
 {
 	return 0 ;
 }

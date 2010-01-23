@@ -152,6 +152,7 @@ SimpleFont::SimpleFont( Dictionary& self, IFile *file, FT_Library ft_lib )
 			ReadDescriptor( fd, ft_lib, file ) ;
 		
 		m_self.Read( self, file ) ;
+		Init( ) ;
 	}
 	catch ( Exception& e )
 	{
@@ -262,6 +263,8 @@ void SimpleFont::GetWidth( )
 	while ( gindex != 0 && char_code < 256 )
 	{
 		// load the glyph to the glyph slot in the face
+		// we want to do the scaling in double instead of inside freetype
+		// in small font we don't have hinting
 		FT_Error error = FT_Load_Glyph( m_face, gindex, FT_LOAD_NO_SCALE ) ;
 		if ( error != 0 )
 			throw Exception( ) ;
@@ -270,8 +273,8 @@ void SimpleFont::GetWidth( )
 		error = FT_Get_Glyph( m_face->glyph, &glyph ) ;
 		if ( error != 0 )
 			throw Exception( ) ;
-		
-		if ( m_face->glyph->format == FT_GLYPH_FORMAT_OUTLINE )
+
+		if ( glyph->format == FT_GLYPH_FORMAT_OUTLINE )
 		{
 			GlyphData g =
 			{
@@ -279,7 +282,7 @@ void SimpleFont::GetWidth( )
 				m_face->glyph->metrics,
 			} ;
 			m_glyphs[char_code] = g ;
-		}         
+		}
 		
 		m_last_char = static_cast<int>( char_code ) ;
 		char_code = ::FT_Get_Next_Char( m_face, char_code, &gindex ) ;
@@ -350,10 +353,19 @@ FT_Face SimpleFont::Face( ) const
 	return m_face ;
 }
 
-FT_Glyph SimpleFont::Glyph( wchar_t ch ) const
+FT_Glyph SimpleFont::Glyph( wchar_t ch, FT_Glyph_Metrics *met ) const
 {
 	GlyphMap::const_iterator it = m_glyphs.find( ch ) ;
-	return it != m_glyphs.end() ? it->second.glyph : 0 ;
+	if ( it != m_glyphs.end() )
+	{
+		if ( met != 0 )
+			*met = it->second.metrics ;
+		
+		PDF_ASSERT( it->second.glyph != 0 ) ;
+		return it->second.glyph ;
+	}
+	else
+		return 0 ;
 }
 
 FontDescriptor* SimpleFont::Descriptor( )

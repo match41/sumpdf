@@ -35,7 +35,7 @@
 #include <QPen>
 #include <QApplication>
 
-#include <cassert>
+#include <util/Debug.hh>
 
 namespace pdf {
 
@@ -47,15 +47,11 @@ struct GlyphGraphicsItem::Render
 
 /**	constructor
 */
-GlyphGraphicsItem::GlyphGraphicsItem( FT_GlyphSlot glyph_slot )
-	: m_metrics( glyph_slot->metrics )
+GlyphGraphicsItem::GlyphGraphicsItem( FT_Glyph glyph, FT_Glyph_Metrics met )
+	: m_metrics( met )
 {
-	FT_Glyph glyph ;
-	FT_Error error = FT_Get_Glyph( glyph_slot, &glyph ) ;
-	if ( error != 0 )
-		throw -1 ;
-	
-	assert( glyph->format == FT_GLYPH_FORMAT_OUTLINE ) ;
+	PDF_ASSERT( glyph != 0 ) ;
+	PDF_ASSERT( glyph->format == FT_GLYPH_FORMAT_OUTLINE ) ;
 
 	FT_Outline_Funcs f =
 	{
@@ -75,8 +71,6 @@ GlyphGraphicsItem::GlyphGraphicsItem( FT_GlyphSlot glyph_slot )
 	setBrush( QColor(0, 0, 0) );
 	setPen( QPen( Qt::NoPen ) ) ;
 	setPath( path ) ;
-	
-	FT_Done_Glyph( glyph ) ;
 }
 
 int GlyphGraphicsItem::MoveTo( const FT_Vector* to, void *user )

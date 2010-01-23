@@ -23,7 +23,7 @@
 	\author	Nestal Wan
 */
 
-#include "Debug.hh"
+#include "util/Debug.hh"
 
 #include "Backtrace.hh"
 
