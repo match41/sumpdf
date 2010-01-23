@@ -47,10 +47,7 @@ public :
 	// declare suit function
 	CPPUNIT_TEST_SUITE( SimpleFontTest ) ;
 		CPPUNIT_TEST( TestSimple ) ;
-
-#ifdef HAVE_FONTCONFIG
 		CPPUNIT_TEST( TestLoadByName ) ;
-#endif
 	CPPUNIT_TEST_SUITE_END( ) ;
 
 public :
@@ -59,9 +56,7 @@ public :
 
 private :
 	void TestSimple( ) ;
-#ifdef HAVE_FONTCONFIG
 	void TestLoadByName( ) ;
-#endif
 
 private :
 	FT_Library	m_ft ;

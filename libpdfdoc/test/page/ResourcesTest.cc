@@ -31,7 +31,7 @@
 #include "core/Ref.hh"
 #include "core/Dictionary.hh"
 #include "core/Ref.hh"
-#include "font/StandardFont.hh"
+#include "font/SimpleFont.hh"
 #include "page/Resources.hh"
 #include "util/Rect.hh"
 
@@ -86,7 +86,7 @@ void ResourcesTest::TestReadExistFont( )
 	pdf::Dictionary rdict ;
 	CPPUNIT_ASSERT( iss >> rdict ) ;
 
-	pdf::StandardFont *f = new pdf::StandardFont( "Times-Roman" ) ;
+	pdf::SimpleFont *f = new pdf::SimpleFont( "Times-Roman", m_ft_lib ) ;
 	PDF_ASSERT_EQUAL( f->UseCount(), 1u ) ;
 
 	MockFile file ;

@@ -33,6 +33,8 @@
 #include "stream/Stream.hh"
 #include "stream/InStreamBufAdaptor.hh"
 
+#include "mock/Assert.hh"
+
 #include <zlib.h>
 
 #include <cstring>
@@ -263,4 +265,16 @@ void StreamTest::TestEqual( )
 		original( m_original, pdf::Object() ) ;
 
 	CPPUNIT_ASSERT( comp.IsContentEqual( original ) ) ;
+}
+
+void StreamTest::TestFlush( )
+{
+	pdf::Stream s( pdf::Stream::deflate ) ;
+	unsigned char text[] = "abc" ;
+	s.Append( text, sizeof(text) ) ;
+	s.Flush() ;
+	
+	std::size_t len = s.Length() ;
+	s.Flush() ;
+	PDF_ASSERT_EQUAL( len, s.Length() ) ;
 }

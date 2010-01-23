@@ -31,7 +31,7 @@
 
 #include "core/Ref.hh"
 #include "core/Dictionary.hh"
-#include "font/StandardFont.hh"
+#include "font/SimpleFont.hh"
 #include "graphics/GraphicsVisitor.hh"
 #include "graphics/Text.hh"
 #include "page/RealPage.hh"
@@ -111,7 +111,7 @@ void PageTest::TestNormal( )
 void PageTest::TestWrite( )
 {
 	pdf::RealPage *p  = new pdf::RealPage( m_root ) ;
-	pdf::StandardFont *f = new pdf::StandardFont( "TimesNewRoman" ) ;
+	pdf::SimpleFont *f = new pdf::SimpleFont( "TimesNewRoman", m_ft_lib ) ;
 	p->DrawText( 120, 300, f, "This is a line" ) ;
 	p->DrawText( 120, 400, f, "This is another line" ) ;
 	p->Finish( ) ;
@@ -131,7 +131,7 @@ void PageTest::TestWrite( )
 void PageTest::TestDecode( )
 {
 	pdf::RealPage *p  = new pdf::RealPage( m_root ) ;
-	pdf::StandardFont *f = new pdf::StandardFont( "TimesNewRoman" ) ;
+	pdf::SimpleFont *f = new pdf::SimpleFont( "TimesNewRoman", m_ft_lib ) ;
 	p->DrawText( 120, 300, f, "This is a line" ) ;
 	p->DrawText( 120, 400, f, "This is another line" ) ;
 	p->Finish( ) ;

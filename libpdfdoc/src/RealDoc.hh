@@ -69,10 +69,6 @@ public :
 
 	Font* CreateSimpleFont( const std::string& name ) ;
 
-#ifdef HAVE_FONTCONFIG
-	Font* CreateSimpleFontByName( const std::string& name ) ;
-#endif
-
 	const DocInfo* Info( ) const ;
 	DocInfo* Info( ) ;
 

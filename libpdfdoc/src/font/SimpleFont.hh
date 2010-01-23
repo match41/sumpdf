@@ -58,7 +58,6 @@ public :
 	enum Type { truetype, type1, mmtype1, type3, type0, unknown } ;
 
 public :
-//	SimpleFont( ) ;
 	SimpleFont( Dictionary& self, IFile *file, FT_Library ft_lib ) ;
 	SimpleFont( const std::string& font_file, unsigned idx, FT_Library ft_lib );
 	~SimpleFont( ) ;
@@ -79,8 +78,6 @@ public :
 	double Width( wchar_t ch ) const ;
 	
 private :
-//	SimpleFont( const Name& base_font, Type type ) ;
-
 	void LoadGlyphs( ) ;
 
 	static const Name m_font_types[] ;
@@ -89,17 +86,19 @@ private :
 	static const Name& SubType( Type t ) ;
 	static Type        SubType( const Name& t ) ;
 
-	bool ReadDescriptor( Dictionary& fd, FT_Library ft_lib, IFile *file ) ;
-
-//	static FT_Face LoadFace(
-//		const std::string& 	file,
-//		unsigned 			idx,
-//		FT_Library 			ft_lib );
+	static FT_Face LoadFace(
+		const unsigned char	*data,
+		std::size_t 		size,
+		FT_Library 			ft_lib );
 
 	void Init( std::vector<unsigned char>& prog, FT_Library ft_lib ) ; 
 
-	static std::string FindFont( const std::string& font_name ) ;
+	static std::string FindFont(
+		const std::string& font_name,
+		const std::string& style = "normal" ) ;
 	static std::vector<unsigned char> LoadFile( const std::string& filename ) ;
+
+	static std::string FindStdFont( const std::string& name ) ;
 
 private :
 	CompleteObj			m_self ;

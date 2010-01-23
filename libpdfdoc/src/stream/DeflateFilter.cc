@@ -60,6 +60,12 @@ DeflateFilter::DeflateFilter( std::auto_ptr<StreamFilter> src )
 	m_comp.buf.resize( m_buf_size ) ;
 }
 
+DeflateFilter::~DeflateFilter( )
+{
+	deflateEnd( &m_comp.z ) ;
+	inflateEnd( &m_decomp.z ) ;
+}
+
 std::size_t DeflateFilter::Read( unsigned char *data, std::size_t size )
 {
 	assert( data != 0 ) ;
@@ -116,6 +122,8 @@ std::size_t DeflateFilter::Write( const unsigned char *data, std::size_t size )
 	int 		result = Z_OK ;
 	std::size_t	offset = 0 ;
 
+	m_is_need_flush	= true ;
+
 	assert( m_comp.z.avail_in == 0 ) ;
 	m_comp.z.next_in	= const_cast<unsigned char*>( data ) ;
 	m_comp.z.avail_in	= size ;
@@ -142,7 +150,7 @@ std::size_t DeflateFilter::Write( const unsigned char *data, std::size_t size )
 		}
 		else
 			throw StreamError(
-				"deflate() error: " + std::string( m_comp.z.msg ) ); 
+				boost::format( "deflate() error: %1%" ) % m_comp.z.msg ); 
 	}
 	
 	return offset ;
@@ -152,22 +160,26 @@ void DeflateFilter::Flush( )
 {
 	assert( m_comp.z.avail_in == 0 ) ;
 
-	m_comp.z.next_out	= &m_comp.buf[0] ;
-	m_comp.z.avail_out	= m_buf_size ;
-
-	int r ;
-	while ( (r = ::deflate( &m_comp.z, Z_FINISH )) != Z_STREAM_END )
+	if ( m_is_need_flush )
 	{
-		// write out the data compressed by deflate()
-		m_src->Write( &m_comp.buf[0], m_comp.z.next_out - &m_comp.buf[0] ) ;
-		
 		m_comp.z.next_out	= &m_comp.buf[0] ;
 		m_comp.z.avail_out	= m_buf_size ;
-	}
 	
-	if ( r == Z_STREAM_END )
-		m_src->Write( &m_comp.buf[0], m_comp.z.next_out - &m_comp.buf[0] ) ;
-
+		int r ;
+		while ( (r = ::deflate( &m_comp.z, Z_FINISH )) != Z_STREAM_END )
+		{
+			// write out the data compressed by deflate()
+			m_src->Write( &m_comp.buf[0], m_comp.z.next_out - &m_comp.buf[0] ) ;
+			
+			m_comp.z.next_out	= &m_comp.buf[0] ;
+			m_comp.z.avail_out	= m_buf_size ;
+		}
+		
+		if ( r == Z_STREAM_END )
+			m_src->Write( &m_comp.buf[0], m_comp.z.next_out - &m_comp.buf[0] ) ;
+	
+		m_is_need_flush = false ;
+	}
 	::deflateReset( &m_comp.z ) ;
 }
 
@@ -180,9 +192,9 @@ void DeflateFilter::Rewind( )
 	m_decomp.z.avail_in	= 0 ;
 	m_decomp.z.next_in	= 0 ;
 
+	using boost::format ;
 	if ( ::inflateReset( &m_decomp.z ) != Z_OK )
-		throw ParseError( "inflateReset() error: " +
-			std::string( m_decomp.z.msg ) ); 
+		throw ParseError( format("inflateReset() error: %1%") % m_decomp.z.msg); 
 }
 
 std::size_t DeflateFilter::Length( ) const

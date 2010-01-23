@@ -76,6 +76,7 @@ FontDescriptor::FontDescriptor( FT_Face face, std::vector<unsigned char>& prog )
 		FT_Get_Sfnt_Table( face, ft_sfnt_post ) ) ;
 	
 	m_psname		= FT_Get_Postscript_Name( face ) ;
+PDF_ASSERT( !m_psname.empty() ) ;
 
 	m_ascent 		= FontUnit(face->ascender,	face) ;
 	m_descent		= FontUnit(face->descender,	face) ;
@@ -116,17 +117,9 @@ FontDescriptor::FontDescriptor( FT_Face face, std::vector<unsigned char>& prog )
 
 	m_italic_angle	= (post != 0 ? FontUnit(post->italicAngle, face) : 0.0) ;
 	m_leading = 0.0 ;
-/*
-	FT_ULong length = 0 ;
-	FT_Load_Sfnt_Table( face, 0, 0, 0, &length ) ;
-std::cout << "file length is: " << length << std::endl ;
-
-	m_font_file.resize( length ) ;
-	FT_Load_Sfnt_Table( face, 0, 0, &m_font_file[0], &length ) ;
-std::cout << "file length is: " << m_font_file.size() << std::endl ;
-
-//	FT_Load_Sfnt_Table( face, 0, 0, &m_font_file[0], &length ) ;
-*/
+	
+	// steal the buffer. if we don't steal it, then it will be destroyed later.
+	// then the FT_Face will become invalid.
 	m_font_file.swap( prog ) ;
 }
 
@@ -169,12 +162,22 @@ void FontDescriptor::Read( Dictionary& self, IFile *file )
 	DetachConv( file, self, "AvgWidth",		m_avg_width ) ;
 	DetachConv( file, self, "MaxWidth",		m_max_width ) ;
 	DetachConv( file, self, "MissingWidth",	m_miss_width ) ;
+	
+	Name	psname ;
+	if ( DetachConv( file, self, "FontName",	psname) )
+		m_psname = psname.Str() ;
+	
+	Name	type ;
 }
 
 Ref FontDescriptor::Write( IFile *file ) const
 {
+	PDF_ASSERT( !m_psname.empty() ) ;
+
 	Dictionary self ;
-	self["FontName"]	= Name(m_psname) ;
+	if ( !m_psname.empty() )
+		self["FontName"]	= Name(m_psname) ;
+	
 	self["Ascent"]		= m_ascent ;
 	self["Descent"]		= m_descent ;
 	self["CapHeight"]	= m_cap_height ;
@@ -189,14 +192,18 @@ Ref FontDescriptor::Write( IFile *file ) const
 	Rect bbox( m_x_min, m_y_min, m_x_max, m_y_max ) ;
 	self["FontBBox"]	= Array( bbox.begin(), bbox.end() ) ;
 	
-	std::vector<unsigned char> prog = m_font_file ;
-	
 	// embedded font program also needs Length1 for the size of the stream
-	Stream s( prog, Object::NullObj() ) ;
-	s.AddDictionaryEntry( "Length1", m_font_file.size() ) ;
-	
-	// streams must be indirect objects
-	self["FontFile2"]	= file->WriteObj(s) ;
+	if ( !m_font_file.empty() )
+	{
+		Stream s( Stream::deflate ) ;
+		s.Append( &m_font_file[0], m_font_file.size() ) ;
+		s.Flush( ) ;
+		
+		s.AddDictionaryEntry( "Length1", s.Length() ) ;
+
+		// streams must be indirect objects
+		self["FontFile2"]	= file->WriteObj(s) ;
+	}
 	
 	self["Stretch"]		= static_cast<int>( m_stretch ) ;
 

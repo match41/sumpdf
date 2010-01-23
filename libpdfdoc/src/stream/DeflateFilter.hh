@@ -52,6 +52,7 @@ class DeflateFilter : public StreamFilter
 {
 public :
 	explicit DeflateFilter( std::auto_ptr<StreamFilter>	src ) ;
+	~DeflateFilter( ) ;
 
 	std::size_t Read( unsigned char *data, std::size_t size ) ;
 	std::size_t Write( const unsigned char *data, std::size_t size ) ;
@@ -79,6 +80,8 @@ private :
 		z_stream					z ;
 		std::vector<unsigned char>	buf ;
 	} m_comp, m_decomp ;
+
+	bool	m_is_need_flush ;
 
 	const std::auto_ptr<StreamFilter>	m_src ;
 	

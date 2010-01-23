@@ -37,11 +37,11 @@
 #include "core/Dictionary.hh"
 
 #include "util/Exception.hh"
+#include "util/Debug.hh"
 
 #include <boost/bind.hpp>
 
 #include <algorithm>
-#include <cassert>
 #include <cstring>
 #include <cstdlib>
 #include <iostream>
@@ -105,17 +105,17 @@ Stream::Stream( std::streambuf *file, std::streamoff offset,
 	            const Dictionary& dict )
 	: m_impl( new Impl )
 {
-	assert( file != 0 ) ;
-	assert( dict.find( "Length" ) != dict.end() ) ;
-	assert( dict["Length"].Is<int>() ) ;
+	PDF_ASSERT( file != 0 ) ;
+	PDF_ASSERT( dict.find( "Length" ) != dict.end() ) ;
+	PDF_ASSERT( dict["Length"].Is<int>() ) ;
 
 	m_impl->self = dict ;
 	m_impl->filter.reset( new RawFilter( file, offset, dict["Length"] ) ) ;
 
 	ApplyFilter( dict["Filter"] ) ;
 
-	assert( m_impl->filter->GetInner()->Length() == dict["Length"] ) ;
-	assert( dict["Filter"].Is<Array>() ||
+	PDF_ASSERT( m_impl->filter->GetInner()->Length() == dict["Length"] ) ;
+	PDF_ASSERT( dict["Filter"].Is<Array>() ||
 		dict["Filter"] == m_impl->filter->GetFilterName() ) ;
 	InitFilter( ) ;
 	
@@ -139,7 +139,7 @@ Stream::Stream( std::vector<unsigned char>& data, const Object& filter )
 	ApplyFilter( filter ) ;
 	InitFilter( ) ;
 	
-	assert( filter == m_impl->filter->GetFilterName() ) ;
+	PDF_ASSERT( filter == m_impl->filter->GetFilterName() ) ;
 }
 
 /**	empty destructor is required for shared_ptr.
@@ -168,7 +168,7 @@ void Stream::InitFilter( )
 */
 void Stream::ApplyFilter( const Object& filter )
 {
-	assert( m_impl->filter.get() != 0 ) ;
+	PDF_ASSERT( m_impl->filter.get() != 0 ) ;
 
 	if ( filter.Is<Array>() )
 	{
@@ -192,9 +192,9 @@ void Stream::ApplyFilter( const Object& filter )
 */
 Dictionary Stream::Self( ) const
 {
-	assert( m_impl.get() != 0 ) ;
-	assert( m_impl->self.find( "Length" ) == m_impl->self.end() ) ;
-	assert( m_impl->self.find( "Filter" ) == m_impl->self.end() ) ;
+	PDF_ASSERT( m_impl.get() != 0 ) ;
+	PDF_ASSERT( m_impl->self.find( "Length" ) == m_impl->self.end() ) ;
+	PDF_ASSERT( m_impl->self.find( "Filter" ) == m_impl->self.end() ) ;
 	
 	Dictionary dict = m_impl->self ;
 	dict["Length"]	= Length( ) ;
@@ -219,7 +219,7 @@ void Stream::AddDictionaryEntry( const Name& key, const Object& val )
 */
 std::size_t Stream::Length( ) const
 {
-	assert( m_impl.get() != 0 ) ;
+	PDF_ASSERT( m_impl.get() != 0 ) ;
 
 	return m_impl->filter->Length( ) ;
 }
@@ -244,8 +244,8 @@ void Stream::CreateFilter( const Name& filter )
 
 Stream Stream::Clone( ) const
 {
-	assert( m_impl.get( ) != 0 ) ;
-	assert( m_impl->filter.get() != 0 ) ;
+	PDF_ASSERT( m_impl.get( ) != 0 ) ;
+	PDF_ASSERT( m_impl->filter.get() != 0 ) ;
 
 	std::vector<unsigned char> buf ;
 	CopyData( buf ) ;
@@ -254,8 +254,8 @@ Stream Stream::Clone( ) const
 
 bool Stream::operator==( const Stream& str ) const
 {
-	assert( m_impl.get( ) != 0 ) ;
-	assert( str.m_impl.get( ) != 0 ) ;
+	PDF_ASSERT( m_impl.get( ) != 0 ) ;
+	PDF_ASSERT( str.m_impl.get( ) != 0 ) ;
 	
 	return m_impl.get() == str.m_impl.get() ;
 }
@@ -273,9 +273,9 @@ bool Stream::operator!=( const Stream& str ) const
 */
 std::size_t Stream::CopyData( std::streambuf *buf ) const
 {
-    assert( buf != 0 ) ;
-	assert( m_impl.get() != 0 ) ;
-	assert( m_impl->filter.get() != 0 ) ;
+    PDF_ASSERT( buf != 0 ) ;
+	PDF_ASSERT( m_impl.get() != 0 ) ;
+	PDF_ASSERT( m_impl->filter.get() != 0 ) ;
 
 	// first reset to the start of the stream
 	m_impl->filter->Rewind( ) ;
@@ -285,9 +285,9 @@ std::size_t Stream::CopyData( std::streambuf *buf ) const
 
 std::size_t Stream::CopyData( unsigned char *buf, std::size_t size ) const
 {
-    assert( buf != 0 ) ;
-	assert( m_impl.get() != 0 ) ;
-	assert( m_impl->filter.get() != 0 ) ;
+    PDF_ASSERT( buf != 0 ) ;
+	PDF_ASSERT( m_impl.get() != 0 ) ;
+	PDF_ASSERT( m_impl->filter.get() != 0 ) ;
 
 	// first reset to the start of the stream
 	m_impl->filter->Rewind( ) ;
@@ -298,7 +298,7 @@ std::size_t Stream::CopyData( unsigned char *buf, std::size_t size ) const
 void Stream::CopyData( std::vector<unsigned char>& buf ) const
 {
 	StreamFilter *f = m_impl->filter.get() ;
-	assert( f != 0 ) ;
+	PDF_ASSERT( f != 0 ) ;
 	
 	// rewind to the start of the stream
 	f->Rewind( ) ;
@@ -323,9 +323,9 @@ void Stream::CopyData( std::vector<unsigned char>& buf ) const
 */
 std::size_t Stream::CopyRawData( std::streambuf *buf ) const
 {
-    assert( buf != 0 ) ;
-	assert( m_impl.get() != 0 ) ;
-	assert( m_impl->filter.get() != 0 ) ;
+    PDF_ASSERT( buf != 0 ) ;
+	PDF_ASSERT( m_impl.get() != 0 ) ;
+	PDF_ASSERT( m_impl->filter.get() != 0 ) ;
 
 	// first reset to the start of the stream
 	m_impl->filter->Rewind( ) ;
@@ -335,8 +335,8 @@ std::size_t Stream::CopyRawData( std::streambuf *buf ) const
 
 std::size_t Stream::CopyFromFilter( StreamFilter *f, std::streambuf *buf )
 {
-	assert( f != 0 ) ;
-	assert( buf != 0 ) ;
+	PDF_ASSERT( f != 0 ) ;
+	PDF_ASSERT( buf != 0 ) ;
 	
 	// rewind to the start of the stream
 	f->Rewind( ) ;
@@ -353,77 +353,64 @@ std::size_t Stream::CopyFromFilter( StreamFilter *f, std::streambuf *buf )
 
 	return total ;
 }
-/*
 
-// TODO: implement this
-std::pair<unsigned char*, std::size_t> Stream::CopyData() const
-{
-	StreamFilter *f = m_impl->filter.get() ;
-	assert( f != 0 ) ;
-	
-	// rewind to the start of the stream
-	f->Rewind( ) ;
-	
-	return std::make_pair( 0, 0 ) ;
-}
-
-*/
-/**	\brief	Write the stream to output stream.
-
-	The stream will be written according to the PDF specification. Note that
+///	Write the stream to output stream.
+/**	The stream will be written according to the PDF specification. Note that
 	the "Length" field will never be indirect reference.
 */
 std::ostream& operator<<( std::ostream& os, const Stream& s )
 {
-	assert( s.m_impl.get() != 0 ) ;
-	assert( s.m_impl->filter.get() != 0 ) ;
+	PDF_ASSERT( s.m_impl.get() != 0 ) ;
+	PDF_ASSERT( s.m_impl->filter.get() != 0 ) ;
 
 	// first flush all buffered data inside the filters
 	s.m_impl->filter->Flush( ) ;
 	os 	<< s.Self( ) << "\nstream\n" ;
-
+	
 	std::size_t length = s.CopyRawData( os.rdbuf() ) ;
-	assert( length == s.Self( )["Length"].To<std::size_t>() );
+
+	PDF_ASSERT_EQUAL( length, s.Self( )["Length"].To<std::size_t>() ) ;
+	PDF_ASSERT_EQUAL( length, s.Length() ) ;
 	
 	return os << "\nendstream" ;
 }
 
 std::streambuf* Stream::InStreamBuf( )
 {
-	assert( m_impl.get() != 0 ) ;
+	PDF_ASSERT( m_impl.get() != 0 ) ;
 	return &m_impl->inbuf ;
 }
 
 std::streambuf* Stream::OutStreamBuf( )
 {
-	assert( m_impl.get() != 0 ) ;
-	assert( m_impl->dirty ) ;
+	PDF_ASSERT( m_impl.get() != 0 ) ;
+	PDF_ASSERT( m_impl->dirty ) ;
 	return &m_impl->outbuf ;
 }
 
 void Stream::Rewind( ) const
 {
-	assert( m_impl.get() != 0 ) ;
+	PDF_ASSERT( m_impl.get() != 0 ) ;
 	m_impl->filter->Rewind( ) ;
 }
 
 Name Stream::Type( ) const
 {
-	assert( m_impl.get() != 0 ) ;
+	PDF_ASSERT( m_impl.get() != 0 ) ;
 	return m_impl->self["Type"] ;
 }
 
 Name Stream::Subtype( ) const
 {
-	assert( m_impl.get() != 0 ) ;
+	PDF_ASSERT( m_impl.get() != 0 ) ;
 	return m_impl->self["Subtype"] ;
 }
 
 std::size_t Stream::Append( const unsigned char *buf, std::size_t size )
 {
-	assert( m_impl.get() != 0 ) ;
-	assert( m_impl->filter.get() != 0 ) ;
-	assert( m_impl->dirty ) ;
+	PDF_ASSERT( m_impl.get() != 0 ) ;
+	PDF_ASSERT( m_impl->filter.get() != 0 ) ;
+	PDF_ASSERT( m_impl->dirty ) ;
 	
 	return m_impl->filter->Write( buf, size ) ;
 }
@@ -436,15 +423,15 @@ std::size_t Stream::Append( const char *str )
 
 bool Stream::IsDirty( ) const
 {
-	assert( m_impl.get() != 0 ) ;
+	PDF_ASSERT( m_impl.get() != 0 ) ;
 	return m_impl->dirty ;
 }
 
 void Stream::Flush( )
 {
-	assert( m_impl.get() != 0 ) ;
-	assert( m_impl->filter.get() != 0 ) ;
-	assert( m_impl->dirty ) ;
+	PDF_ASSERT( m_impl.get() != 0 ) ;
+	PDF_ASSERT( m_impl->filter.get() != 0 ) ;
+	PDF_ASSERT( m_impl->dirty ) ;
 	
 	m_impl->filter->Flush( ) ;
 }

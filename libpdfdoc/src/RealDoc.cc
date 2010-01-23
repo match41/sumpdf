@@ -32,7 +32,6 @@
 
 #include "file/Catalog.hh"
 #include "file/RealFile.hh"
-#include "font/StandardFont.hh"
 #include "font/SimpleFont.hh"
 
 #include "page/RealPage.hh"
@@ -120,20 +119,8 @@ Page* RealDoc::GetPage( std::size_t index )
 
 Font* RealDoc::CreateSimpleFont( const std::string& name )
 {
-#ifdef HAVE_FONTCONFIG
-//	return new StandardFont( Name(name) ) ;
-	return new SimpleFont( name, m_ft_lib ) ;
-#else
-	return new StandardFont( Name(name) ) ;
-#endif
-}
-
-#ifdef HAVE_FONTCONFIG
-Font* RealDoc::CreateSimpleFontByName( const std::string& name )
-{
 	return new SimpleFont( name, m_ft_lib ) ;
 }
-#endif
 
 Page* RealDoc::AddPage( std::size_t index )
 {
