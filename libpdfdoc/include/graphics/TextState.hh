@@ -29,14 +29,15 @@
 
 #include <cstddef>
 
+#include <iosfwd>
+
 namespace pdf {
 
 class Font ;
 class Resources ;
 
-/**	\brief	brief description
-
-	The TextFormat class represent
+///	PDF text state.
+/**	This class represents the text state of a PDF file.
 */
 class TextState
 {
@@ -61,6 +62,11 @@ public :
 	Font* GetFont( ) const ;
 	int RenderMode( ) const ;
 	double TextRise( ) const ;
+
+	std::ostream& Print(
+		std::ostream&		os,
+		const Resources		*res,
+		const TextState& 	prev = TextState() ) ;
 
 private :
 	double	m_char_space ;

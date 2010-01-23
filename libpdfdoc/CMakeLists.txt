@@ -466,6 +466,9 @@ set( UT_SRCS	test/core/TokenTest.cc
 				test/core/StringTest.cc
 				test/core/DictionaryTest.cc
 				test/core/ArrayTest.cc
+				
+				test/graphics/TextStateTest.cc
+				
 				test/stream/StreamTest.cc
 				test/stream/RawFilterTest.cc
 				test/stream/DeflateFilterTest.cc

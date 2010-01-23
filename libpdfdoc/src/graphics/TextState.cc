@@ -26,10 +26,12 @@
 
 #include "graphics/TextState.hh"
 
-// TODO: resolve cyclic dependency
+#include "font/BaseFont.hh"
 #include "page/Resources.hh"
+#include "util/Debug.hh"
 
 #include <cassert>
+#include <iostream>
 
 namespace pdf {
 
@@ -127,6 +129,22 @@ int TextState::RenderMode( ) const
 double TextState::TextRise( ) const
 {
 	return m_text_rise ;
+}
+
+std::ostream& TextState::Print(
+	std::ostream& 		os,
+	const Resources		*res,
+	const TextState& 	prev )
+{
+	PDF_ASSERT( res != 0 ) ;
+	PDF_ASSERT( dynamic_cast<const BaseFont*>(m_font) != 0 ) ;
+
+	if ( m_font_size	!= prev.m_font_size ||
+		 m_font			!= prev.m_font )
+		os	<< res->FindFont( static_cast<const BaseFont*>(m_font) )
+			<< ' ' << m_font_size << " Tf\n" ;
+
+	return os ;
 }
 
 } // end of namespace

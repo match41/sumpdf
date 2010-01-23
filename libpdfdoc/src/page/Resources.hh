@@ -35,6 +35,9 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
+#include <boost/bimap.hpp>
+#include <boost/bimap/set_of.hpp>
+
 #include <vector>
 
 namespace pdf {
@@ -63,7 +66,8 @@ public :
 	void Read( const Dictionary& self_obj, IFile *file ) ;
 	Ref  Write( IFile *file ) const ;
 
-	BaseFont* FindFont( const Name& name ) ;
+	BaseFont* FindFont( const Name& name ) const ;
+	Name FindFont( BaseFont *font ) const ;
 
 private :
 	void ReadFontDict( Dictionary& self, IFile *file ) ;
@@ -78,7 +82,12 @@ private :
 	CompleteObj		m_self ;
 	CompleteObj		m_ext_gstate ;
 
-	typedef std::map<Name, BaseFont*> FontMap ;
+	typedef	boost::bimap<
+		boost::bimaps::set_of<Name>,
+		boost::bimaps::set_of<BaseFont*>
+	> FontMap ; 
+	
+//	typedef std::map<Name, BaseFont*> FontMap ;
 	FontMap				m_fonts ;
 
 	typedef std::map<Name, RealImage*> ImageMap ;

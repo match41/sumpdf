@@ -69,8 +69,8 @@ Resources::Resources( FT_Library ft_lib )
 Resources::~Resources( )
 {
 	using namespace boost ;
-	std::for_each( m_fonts.begin(), m_fonts.end(),
-		bind( &BaseFont::Release, bind( &FontMap::value_type::second, _1 ) ) ) ;
+	std::for_each( m_fonts.left.begin(), m_fonts.left.end(),
+		bind( &BaseFont::Release, bind( &FontMap::left_value_type::second, _1 ) ) ) ;
 }
 
 void Resources::Read( const Dictionary& dict, IFile *file )
@@ -132,7 +132,7 @@ void Resources::ReadFontDict( Dictionary& self, IFile *file )
 			else if ( i->second.Is<Dictionary>() )
 				font = CreateFont( i->second.As<Dictionary>(), file, m_ft_lib ) ;
 
-			m_fonts.insert( std::make_pair( i->first, font ) ) ;
+			m_fonts.insert( FontMap::value_type(i->first, font) ) ;
 		}
 	}
 }
@@ -145,7 +145,7 @@ Ref Resources::WriteFontDict( IFile *file ) const
 	FontPool *pool = &file->Pool( )->fonts ;
 	Dictionary font_dict ;
 	
-	for ( FontMap::const_iterator i = m_fonts.begin(); i != m_fonts.end() ; ++i)
+	for ( FontMap::left_const_iterator i = m_fonts.left.begin(); i != m_fonts.left.end() ; ++i)
 	{
 		assert( i->second != 0 ) ;
 	
@@ -169,10 +169,9 @@ Name Resources::AddFont( BaseFont *font )
 {
 	// first, see if the font is already added
 	using namespace boost ;
-	FontMap::iterator it = std::find_if( m_fonts.begin( ), m_fonts.end( ),
-		bind( &FontMap::value_type::second, _1 ) == font ) ;
-	if ( it != m_fonts.end( ) )
-		return it->first ;
+	FontMap::right_iterator it = m_fonts.right.find( font ) ;
+	if ( it != m_fonts.right.end( ) )
+		return it->second ;
 
 	// create a new name
 	Name name ;
@@ -181,16 +180,22 @@ Name Resources::AddFont( BaseFont *font )
 		std::ostringstream oss ;
 		oss << "F" << m_fonts.size( ) ;
 		name = Name( oss.str() ) ;
-	} while ( m_fonts.find( name ) != m_fonts.end( ) ) ;
+	} while ( m_fonts.left.find( name ) != m_fonts.left.end( ) ) ;
 
-	m_fonts.insert( std::make_pair( name, font ) ) ;
+	m_fonts.insert( FontMap::value_type( name, font ) ) ;
 	return name ;
 }
 
-BaseFont* Resources::FindFont( const Name& name )
+BaseFont* Resources::FindFont( const Name& name ) const
 {
-	FontMap::iterator i = m_fonts.find( name ) ;
-	return i != m_fonts.end() ? i->second : 0 ;
+	FontMap::left_const_iterator i = m_fonts.left.find( name ) ;
+	return i != m_fonts.left.end() ? i->second : 0 ;
+}
+
+Name Resources::FindFont( BaseFont *font ) const
+{
+	FontMap::right_const_iterator i = m_fonts.right.find( font ) ;
+	return i != m_fonts.right.end() ? i->second : Name() ;
 }
 
 } // end of namespace

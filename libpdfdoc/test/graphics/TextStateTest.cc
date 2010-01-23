@@ -15,37 +15,34 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- \***************************************************************************/
+\***************************************************************************/
 
-/**
-	\file	RealDocTest.hh
-	\brief	definition the RealDocTest class
-	\date	Dec 27, 2009
+/**	\file	TextStateTest.cc
+	\brief	implementation of the TextStateTest class
+	\date	Jan 23, 2010
 	\author	Nestal Wan
 */
 
-#ifndef __PDF_REALDOCTEST_HH_EADER_INCLUDED__
-#define __PDF_REALDOCTEST_HH_EADER_INCLUDED__
+#include "TextStateTest.hh"
 
-#include <cppunit/TestFixture.h>
+#include "graphics/TextState.hh"
 
-#include <cppunit/extensions/HelperMacros.h>
+#include <sstream>
 
-///	brief description
-/**	this class represents
+using namespace pdf ;
+
+/**	constructor
 */
-class RealDocTest : public CppUnit::TestFixture
+TextStateTest::TextStateTest( )
 {
-public:
-	RealDocTest( ) ;
+}
 
-	// declare suit function
-	CPPUNIT_TEST_SUITE( RealDocTest ) ;
-		CPPUNIT_TEST( TestRead ) ;
-	CPPUNIT_TEST_SUITE_END( ) ;
+void TextStateTest::TestPrint( )
+{
+	TextState ts ;
+	ts.SetCharSpace( 100 ) ;
+	
+	std::ostringstream ss ;
+//	ts.Print( ss ) ;
+}
 
-private :
-	void TestRead( ) ;
-} ;
-
-#endif // REALDOCTEST_HH_

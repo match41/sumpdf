@@ -15,17 +15,16 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- \***************************************************************************/
+\***************************************************************************/
 
-/**
-	\file	RealDocTest.hh
-	\brief	definition the RealDocTest class
-	\date	Dec 27, 2009
-	\author	Nestal Wan
+/**	\file	TextStateTest.hh
+    \brief	definition the TextStateTest class
+    \date	Jan 23, 2010
+    \author	Nestal Wan
 */
 
-#ifndef __PDF_REALDOCTEST_HH_EADER_INCLUDED__
-#define __PDF_REALDOCTEST_HH_EADER_INCLUDED__
+#ifndef __PDF_TEXTSTATETEST_HH_EADER_INCLUDED__
+#define __PDF_TEXTSTATETEST_HH_EADER_INCLUDED__
 
 #include <cppunit/TestFixture.h>
 
@@ -34,18 +33,18 @@
 ///	brief description
 /**	this class represents
 */
-class RealDocTest : public CppUnit::TestFixture
+class TextStateTest : public CppUnit::TestFixture
 {
-public:
-	RealDocTest( ) ;
-
+public :
+	TextStateTest( ) ;
+	
 	// declare suit function
-	CPPUNIT_TEST_SUITE( RealDocTest ) ;
-		CPPUNIT_TEST( TestRead ) ;
+	CPPUNIT_TEST_SUITE( TextStateTest ) ;
+		CPPUNIT_TEST( TestPrint ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
 private :
-	void TestRead( ) ;
+	void TestPrint( ) ;
 } ;
 
-#endif // REALDOCTEST_HH_
+#endif // TEXTSTATETEST_HH_

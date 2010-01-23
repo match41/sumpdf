@@ -60,11 +60,8 @@ public :
 public :
 	SimpleFont( Dictionary& self, IFile *file, FT_Library ft_lib ) ;
 	SimpleFont( const std::string& font_file, unsigned idx, FT_Library ft_lib );
-	~SimpleFont( ) ;
-
-#ifdef HAVE_FONTCONFIG
 	SimpleFont( const std::string& name, FT_Library ft_lib ) ;
-#endif
+	~SimpleFont( ) ;
 
 	std::string BaseName( ) const ;
 	Ref Write( IFile *file ) const ;
