@@ -188,12 +188,12 @@ PageNode* RealPage::GetLeaf( std::size_t index )
 	return index == 0 ? this : 0 ;
 }
 
-Resources* RealPage::GetResource( )
+RealResources* RealPage::GetResource( )
 {
 	return &m_resources ;
 }
 
-const Resources* RealPage::GetResource( ) const
+const RealResources* RealPage::GetResource( ) const
 {
 	return &m_resources ;
 }

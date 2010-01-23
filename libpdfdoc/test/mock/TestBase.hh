@@ -17,20 +17,35 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	Resources.cc
-	\brief	implementation of the Resources class
-	\date	Jan 23, 2010
-	\author	Nestal Wan
+/**	\file	TestBase.hh
+    \brief	definition the TestBase class
+    \date	Jan 23, 2010
+    \author	Nestal Wan
 */
 
-#include "Resources.hh"
+#ifndef __PDF_TESTBASE_HH_EADER_INCLUDED__
+#define __PDF_TESTBASE_HH_EADER_INCLUDED__
 
-namespace pdf {
+#include <cppunit/TestFixture.h>
 
-/**	destructor
+// freetype headers
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
+///	brief description
+/**	this class represents
 */
-Resources::~Resources( )
+class TestBase : public CppUnit::TestFixture
 {
-}
+public :
+	TestBase( ) ;
 
-} // end of namespace
+public :
+	void setUp( ) ;
+	void tearDown( ) ;
+
+protected :
+	FT_Library	m_ft ;
+} ;
+
+#endif // TESTBASE_HH_

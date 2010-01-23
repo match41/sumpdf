@@ -38,7 +38,7 @@
 
 namespace pdf {
 
-class Resources ;
+class RealResources ;
 
 /**	\brief	brief description
 

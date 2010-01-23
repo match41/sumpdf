@@ -35,7 +35,7 @@ MockFont::MockFont( )
 
 std::string MockFont::BaseName( ) const
 {
-	return "" ;
+	return "MockFont" ;
 }
 
 pdf::Ref MockFont::Write( pdf::IFile *file ) const

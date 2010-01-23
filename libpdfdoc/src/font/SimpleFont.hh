@@ -98,7 +98,7 @@ private :
 	static std::string FindStdFont( const std::string& name ) ;
 
 private :
-	CompleteObj			m_self ;
+	CompleteObj	m_self ;
 
 	FT_Face	m_face ;
 

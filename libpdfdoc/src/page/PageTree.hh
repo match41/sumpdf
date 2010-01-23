@@ -29,7 +29,7 @@
 
 #include "PageNode.hh"
 
-#include "Resources.hh"
+#include "RealResources.hh"
 
 #include <vector>
 
@@ -59,8 +59,8 @@ public :
 	PageNode* GetLeaf( std::size_t index ) ;
 	void AppendLeaf( RealPage *child ) ;
 	void AddLeaf( std::size_t index, RealPage *child ) ;
-	Resources* GetResource( ) ;
-	const Resources* GetResource( ) const ;
+	RealResources* GetResource( ) ;
+	const RealResources* GetResource( ) const ;
 
 private :
 	void AppendNode( PageNode *child ) ;
@@ -70,7 +70,7 @@ private :
 
 private :
 	PageTree				*m_parent ;
-	Resources				m_resources ;
+	RealResources				m_resources ;
 
 	std::vector<PageNode*>	m_kids ;
 	

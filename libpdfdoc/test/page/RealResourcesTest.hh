@@ -1,4 +1,4 @@
-/***************************************************************************\
+/***************************************************************************
  *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
@@ -15,22 +15,47 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
-\***************************************************************************/
+ ***************************************************************************/
 
-/**	\file	Resources.cc
-	\brief	implementation of the Resources class
-	\date	Jan 23, 2010
+/*!
+	\file	ResourcesTest.hh
+	\brief	definition the ResourcesTest class
+	\date	Sat May 10 2008
 	\author	Nestal Wan
 */
 
-#include "Resources.hh"
+#ifndef __PDFUT_RESOURCES_TEST_HEADER_INCLUDED__
+#define __PDFUT_RESOURCES_TEST_HEADER_INCLUDED__
 
-namespace pdf {
+#include "mock/TestBase.hh"
 
-/**	destructor
+#include <cppunit/extensions/HelperMacros.h>
+
+// freetype headers
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
+/*!	\brief	brief description
+	
+	this class represents
 */
-Resources::~Resources( )
+class RealResourcesTest : public TestBase
 {
-}
+public :
+	RealResourcesTest( ) ;
 
-} // end of namespace
+	// declare suit function
+	CPPUNIT_TEST_SUITE( RealResourcesTest ) ;
+		CPPUNIT_TEST( TestNormal ) ;
+		CPPUNIT_TEST( TestReadExistFont ) ;
+	CPPUNIT_TEST_SUITE_END( ) ;
+
+private :
+	void TestNormal( ) ;
+	void TestReadExistFont( ) ;
+
+private :
+	FT_Library		m_ft_lib ;
+} ;
+
+#endif

@@ -24,7 +24,7 @@
 	\author	Nestal Wan
 */
 
-#include "ResourcesTest.hh"
+#include "RealResourcesTest.hh"
 
 #include "mock/MockFile.hh"
 
@@ -32,28 +32,18 @@
 #include "core/Dictionary.hh"
 #include "core/Ref.hh"
 #include "font/SimpleFont.hh"
-#include "page/Resources.hh"
+#include "page/RealResources.hh"
 #include "util/Rect.hh"
 
 #include "mock/Assert.hh"
 
 #include <sstream>
 
-ResourcesTest::ResourcesTest( )
+RealResourcesTest::RealResourcesTest( )
 {
 }
 
-void ResourcesTest::setUp( )
-{
-	::FT_Init_FreeType( &m_ft_lib ) ;
-}
-
-void ResourcesTest::tearDown( )
-{
-	::FT_Done_FreeType( m_ft_lib ) ;
-}
-
-void ResourcesTest::TestNormal( )
+void RealResourcesTest::TestNormal( )
 {
 	std::istringstream iss( "<< /Font << /F0 18 0 R >> /ProcSet [/PDF /Text]\n"
 	                        "/XObject << >> >>" ) ;
@@ -75,18 +65,18 @@ void ResourcesTest::TestNormal( )
 	file.AddObj( pdf::Ref(18,0), fd ) ;
 
 	pdf::Object obj( rdict ) ;
-	pdf::Resources subject( m_ft_lib ) ;
+	pdf::RealResources subject( m_ft ) ;
 	subject.Read( rdict, &file ) ;
 }
 
-void ResourcesTest::TestReadExistFont( )
+void RealResourcesTest::TestReadExistFont( )
 {
 	std::istringstream iss( "<< /Font << /F0 18 0 R >> /ProcSet [/PDF /Text]\n"
 	                        "/XObject << >> >>" ) ;
 	pdf::Dictionary rdict ;
 	CPPUNIT_ASSERT( iss >> rdict ) ;
 
-	pdf::SimpleFont *f = new pdf::SimpleFont( "Times-Roman", m_ft_lib ) ;
+	pdf::SimpleFont *f = new pdf::SimpleFont( "Times-Roman", m_ft ) ;
 	PDF_ASSERT_EQUAL( f->UseCount(), 1u ) ;
 
 	MockFile file ;
@@ -95,7 +85,7 @@ void ResourcesTest::TestReadExistFont( )
 	file.Pool()->fonts.Add( pdf::Ref(18, 0 ), f ) ;
 
 	pdf::Object obj( rdict ) ;
-	pdf::Resources subject( m_ft_lib ) ;
+	pdf::RealResources subject( m_ft ) ;
 	subject.Read( rdict, &file ) ;
 	PDF_ASSERT_EQUAL( f->UseCount(), 2u ) ;
 }

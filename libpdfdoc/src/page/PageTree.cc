@@ -214,12 +214,12 @@ PageNode* PageTree::GetLeaf( std::size_t index )
 	return 0 ;
 }
 
-Resources* PageTree::GetResource( )
+RealResources* PageTree::GetResource( )
 {
 	return &m_resources ;
 }
 
-const Resources* PageTree::GetResource( ) const
+const RealResources* PageTree::GetResource( ) const
 {
 	return &m_resources ;
 }

@@ -17,20 +17,28 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	Resources.cc
-	\brief	implementation of the Resources class
+/**	\file	TestBase.cc
+	\brief	implementation of the TestBase class
 	\date	Jan 23, 2010
 	\author	Nestal Wan
 */
 
-#include "Resources.hh"
+#include "TestBase.hh"
 
-namespace pdf {
-
-/**	destructor
+/**	constructor
 */
-Resources::~Resources( )
+TestBase::TestBase( )
+	: m_ft( 0 )
 {
 }
 
-} // end of namespace
+void TestBase::setUp( )
+{
+	::FT_Init_FreeType( &m_ft ) ;
+}
+
+void TestBase::tearDown( )
+{
+	::FT_Done_FreeType( m_ft ) ;
+	m_ft = 0 ;
+}

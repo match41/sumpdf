@@ -27,7 +27,7 @@
 
 #include "core/Object.hh"
 #include "graphics/RealText.hh"
-#include "page/Resources.hh"
+#include "page/RealResources.hh"
 #include "util/Matrix.hh"
 #include "util/Util.hh"
 
@@ -51,7 +51,7 @@ void RealTextTest::TestTdCmd( )
 	Object	args[]	= { 100, 200 } ;
 	Token	cmd( "Td" ) ;
 	
-	Resources res( m_ft ) ;
+	RealResources res( m_ft ) ;
 	
 	t.OnCommand( cmd, args, Count(args), &res ) ;  
 	PDF_ASSERT_EQUAL( t.front().front().Format(), TextState() ) ;

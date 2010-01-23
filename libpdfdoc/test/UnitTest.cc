@@ -42,7 +42,7 @@
 #include "stream/InStreamBufAdaptorTest.hh"
 #include "stream/OutStreamBufAdaptorTest.hh"
 #include "stream/RawFilterTest.hh"
-#include "page/ResourcesTest.hh"
+#include "page/RealResourcesTest.hh"
 #include "page/PageTest.hh"
 
 // freetype library is optional
@@ -73,7 +73,7 @@ int main( int argc, char **argv )
 	runner.addTest( DictionaryTest::suite( ) ) ;
 	runner.addTest( ArrayTest::suite( ) ) ;
 	runner.addTest( PageTest::suite( ) ) ;
-	runner.addTest( ResourcesTest::suite( ) ) ;
+	runner.addTest( RealResourcesTest::suite( ) ) ;
 	runner.addTest( XObjectTest::suite( ) ) ;
 	runner.addTest( StreamTest::suite( ) ) ;
 	runner.addTest( RealFileTest::suite( ) ) ;

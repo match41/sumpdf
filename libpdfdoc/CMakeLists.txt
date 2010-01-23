@@ -54,6 +54,8 @@ set( INCLUDE_DIR	include/ )
 set( PAGE_HDRS		${PAGE_DIR}/RealPage.hh
 					${PAGE_DIR}/RealContent.hh
 					${PAGE_DIR}/Resources.hh
+					${PAGE_DIR}/RealResources.hh
+					${PAGE_DIR}/MockResources.hh
 					${PAGE_DIR}/PageNode.hh
 					${PAGE_DIR}/PageTree.hh
 					${PAGE_DIR}/XObject.hh
@@ -153,6 +155,8 @@ set( UTIL_INC_HDRS	${INCLUDE_DIR}/util/Exception.hh
 ###############################################################################
 set( PAGE_SRCS  	${PAGE_DIR}/RealPage.cc
 					${PAGE_DIR}/Resources.cc
+					${PAGE_DIR}/RealResources.cc
+					${PAGE_DIR}/MockResources.cc
 					${PAGE_DIR}/Page.cc
 					${PAGE_DIR}/PageContent.cc
 					${PAGE_DIR}/RealContent.cc
@@ -478,7 +482,7 @@ set( UT_SRCS	test/core/TokenTest.cc
 				
 				test/page/PageTest.cc
 				test/page/PageNodeTest.cc
-				test/page/ResourcesTest.cc
+				test/page/RealResourcesTest.cc
 				test/page/XObjectTest.cc
 				
 				test/file/RealFileTest.cc

@@ -1,4 +1,4 @@
-/***************************************************************************
+/***************************************************************************\
  *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
@@ -15,51 +15,42 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+\***************************************************************************/
 
-/*!
-	\file	ResourcesTest.hh
-	\brief	definition the ResourcesTest class
-	\date	Sat May 10 2008
+/**	\file	MockResources.cc
+	\brief	implementation of the MockResources class
+	\date	Jan 23, 2010
 	\author	Nestal Wan
 */
 
-#ifndef __PDFUT_RESOURCES_TEST_HEADER_INCLUDED__
-#define __PDFUT_RESOURCES_TEST_HEADER_INCLUDED__
+#include "MockResources.hh"
 
-#include <cppunit/TestFixture.h>
+#include "font/BaseFont.hh"
 
-#include <cppunit/extensions/HelperMacros.h>
+namespace pdf {
 
-// freetype headers
-#include <ft2build.h>
-#include FT_FREETYPE_H
-
-/*!	\brief	brief description
-	
-	this class represents
+/**	constructor
 */
-class ResourcesTest : public CppUnit::TestFixture
+MockResources::MockResources( )
 {
-public :
-	ResourcesTest( ) ;
+}
 
-	// declare suit function
-	CPPUNIT_TEST_SUITE( ResourcesTest ) ;
-		CPPUNIT_TEST( TestNormal ) ;
-		CPPUNIT_TEST( TestReadExistFont ) ;
-	CPPUNIT_TEST_SUITE_END( ) ;
+Name MockResources::AddFont( BaseFont *font )
+{
+	Name name( font->BaseName( ) ) ;
+	m_font_map[name] = font ;
+	return name ;
+}
 
-public :
-	void setUp( ) ;
-	void tearDown( ) ;
+BaseFont* MockResources::FindFont( const Name& name ) const
+{
+	std::map<Name,BaseFont*>::const_iterator i = m_font_map.find( name ) ;
+	return i != m_font_map.end() ? i->second : 0 ;
+}
 
-private :
-	void TestNormal( ) ;
-	void TestReadExistFont( ) ;
+Name MockResources::FindFont( BaseFont *font ) const
+{
+	return Name( font->BaseName( ) ) ;
+}
 
-private :
-	FT_Library		m_ft_lib ;
-} ;
-
-#endif
+} // end of namespace

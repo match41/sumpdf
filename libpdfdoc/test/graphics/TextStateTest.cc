@@ -26,7 +26,7 @@
 #include "TextStateTest.hh"
 
 #include "graphics/TextState.hh"
-#include "page/Resources.hh"
+#include "page/MockResources.hh"
 
 #include "mock/Assert.hh"
 #include "mock/MockFont.hh"
@@ -50,7 +50,7 @@ void TextStateTest::TestPrint( )
 	MockFont *font = new MockFont ;
 	ts.SetFont( 12.0, font ) ;
 	
-	Resources r( m_ft ) ;
+	MockResources r ;
 	Name n = r.AddFont( font ) ;
 	
 	std::ostringstream ss ;

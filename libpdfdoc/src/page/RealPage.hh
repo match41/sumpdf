@@ -33,7 +33,7 @@
 
 // other libpdfdoc headers
 #include "RealContent.hh"
-#include "Resources.hh"
+#include "RealResources.hh"
 #include "core/Dictionary.hh"
 #include "core/Token.hh"
 #include "file/CompleteObj.hh"
@@ -48,7 +48,7 @@ class Dictionary ;
 class Font ;
 class Name ;
 class Stream ;
-class Resources ;
+class RealResources ;
 class IFile ;
 class Graphics ;
 
@@ -75,8 +75,8 @@ public :
 	
 	PageNode* GetLeaf( std::size_t index ) ;
 	
-	Resources* GetResource( ) ;
-	const Resources* GetResource( ) const ;
+	RealResources* GetResource( ) ;
+	const RealResources* GetResource( ) const ;
 
 	RealContent* GetContent( ) ;
 
@@ -92,9 +92,9 @@ private :
 		Graphics		*gfx ) ;
 
 private :
-	PageTree	*m_parent ;
-	Resources	m_resources ;
-	CompleteObj	m_self ;
+	PageTree		*m_parent ;
+	RealResources	m_resources ;
+	CompleteObj		m_self ;
 	
 	/// in PDF user space. specified by UserUnit or 1/72 inch
 	Rect		m_media_box ;

@@ -26,8 +26,9 @@
 
 #include "graphics/TextState.hh"
 
+#include "core/Name.hh"
 #include "font/BaseFont.hh"
-#include "page/Resources.hh"
+#include "page/MockResources.hh"
 #include "util/Debug.hh"
 
 #include <cassert>
@@ -149,7 +150,8 @@ std::ostream& TextState::Print(
 
 std::ostream& operator<<( std::ostream& os, const TextState& ts )
 {
-	return os ;
+	MockResources r ;
+	return ts.Print( os, &r ) ;
 }
 
 bool TextState::operator==( const TextState& rhs ) const
