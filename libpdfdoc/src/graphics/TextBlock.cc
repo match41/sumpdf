@@ -79,6 +79,13 @@ std::ostream& TextBlock::Print(
 	return os << String( s ) << ' ' << "Tj " ;
 }
 
+std::ostream& operator<<( std::ostream& os, const TextBlock& t )
+{
+	const std::wstring& str = t.Text() ; 
+	return os 	<< "<TextBlock>\n<text>" << std::string(str.begin(), str.end())
+				<< "</text>\n" << t.Format() << "</TextBlock>\n" ;
+}
+
 double TextBlock::Width( ) const
 {
 	return 0.0 ;

@@ -95,6 +95,8 @@ private :
 	std::vector<TextBlock>	m_blks ;
 } ;
 
+std::ostream& operator<<( std::ostream& os, const TextLine& t ) ;
+
 } // end of namespace
 
 #endif // TEXTLINE_HH_

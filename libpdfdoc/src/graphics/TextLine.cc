@@ -33,7 +33,9 @@
 #include "util/Util.hh"
 #include "util/Exception.hh"
 
-#include <cassert>
+#include <algorithm>
+#include <iterator>
+#include <ostream>
 #include <set>
 
 #include <iostream>
@@ -142,6 +144,16 @@ std::ostream& TextLine::Print(
 	return os ;
 }
 
+std::ostream& operator<<( std::ostream& os, const TextLine& t )
+{
+	os << "<TextLine transform=\"" << t.Transform() << "\">\n" ;
+	std::copy(
+		t.begin(),
+		t.end(), 
+		std::ostream_iterator<TextBlock>( os, "\n" ) ) ;
+	return os << "</TextLine>" ;
+}
+
 void TextLine::ChangeState( const TextState& s )
 {
 	if ( m_blks.back().IsEmpty() )
@@ -155,7 +167,6 @@ bool TextLine::operator==( const TextLine& rhs ) const
 	return
 		m_trans == rhs.m_trans &&
 		m_blks	== rhs.m_blks ;
-
 }
 
 bool TextLine::operator!=( const TextLine& rhs ) const

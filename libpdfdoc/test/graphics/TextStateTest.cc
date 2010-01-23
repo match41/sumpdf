@@ -55,7 +55,7 @@ void TextStateTest::TestPrint( )
 	
 	std::ostringstream ss ;
 	ts.Print( ss, &r ) ;
-
-std::cout << ss.str() << std::endl ;
+	
+	PDF_ASSERT_EQUAL( ss.str(), "/MockFont 12 Tf\n" ) ;
 }
 

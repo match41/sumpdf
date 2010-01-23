@@ -70,6 +70,8 @@ private :
 	TextState		m_format ;
 } ;
 
+std::ostream& operator<<( std::ostream& os, const TextBlock& t ) ;
+
 } // end of namespace
 
 #endif // TEXTBLOCK_HH_

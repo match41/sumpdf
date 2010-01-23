@@ -69,8 +69,8 @@ const RealText::HandlerMap RealText::m_handler_map(
 /**	constructor
 */
 RealText::RealText( const TextState& ts )
-	: m_state( ts ),
-	  m_lines( 1, TextLine( Matrix(), ts ) )
+	: m_lines( 1, TextLine( Matrix(), ts ) ),
+	  m_state( ts )
 {
 }
 
@@ -155,6 +155,18 @@ void RealText::Print( std::ostream& os, Resources *res ) const
 			&TextLine::Print, _1, boost::ref(os), boost::ref(ts), res ) ) ;
 		
 	os << "ET\n" ;
+}
+
+/// For debug purpose only. Prints XML.
+std::ostream& operator<<( std::ostream& os, const RealText& t )
+{
+	os << "<RealText>\n" ;
+	std::copy(
+		t.begin(),
+		t.end(),
+		std::ostream_iterator<TextLine>(os, "\n" ) ) ;
+	os << "</RealText>\n" ;
+	return os ;
 }
 
 void RealText::OnTd( Object* args, std::size_t count, Resources* )
@@ -294,9 +306,7 @@ void RealText::OnTf( Object* args, std::size_t count, Resources *res )
 bool RealText::operator==( const RealText& rhs ) const
 {
 	// no need to compare current text state
-	return
-		m_lines		== rhs.m_lines		&&
-		m_line_mat	== rhs.m_line_mat ;
+	return m_lines		== rhs.m_lines ;
 }
 
 bool RealText::operator!=( const RealText& rhs ) const

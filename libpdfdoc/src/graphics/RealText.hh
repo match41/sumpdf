@@ -105,15 +105,17 @@ private :
 	void AddNewLine( const Matrix& mat ) ;
 
 private :
-	///	Current text state
-	TextState	m_state ;
-	
 	///	Lines inside this text object
 	std::vector<TextLine>	m_lines ;
+	
+	///	Current text state
+	TextState	m_state ;
 	
 	///	Current text line matrix. 
 	Matrix		m_line_mat ;
 } ;
+
+std::ostream& operator<<( std::ostream& os, const RealText& t ) ;
 
 } // end of namespace
 
