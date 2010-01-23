@@ -75,7 +75,11 @@ public :
 	void AppendText( const std::wstring& text ) ;
 	void ChangeState( const TextState& s ) ;
 
-	friend std::ostream& operator<<( std::ostream& os, const TextLine& line ) ;
+//	friend std::ostream& operator<<( std::ostream& os, const TextLine& line ) ;
+	std::ostream& Print(
+		std::ostream& 	os,
+		TextState& 		state,
+		Resources		*res ) const ;
 
 private :
 	/// the text matrix

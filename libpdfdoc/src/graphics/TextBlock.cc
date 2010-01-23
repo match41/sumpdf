@@ -69,10 +69,14 @@ void TextBlock::AppendText( const std::wstring& text )
 	m_chars.insert( m_chars.end(), text.begin(), text.end() ) ;
 }
 
-std::ostream& operator<<( std::ostream& os, const TextBlock& b )
+std::ostream& TextBlock::Print(
+	std::ostream& 		os,
+	const TextState& 	state,
+	Resources			*res ) const
 {
-	std::string s( b.m_chars.begin(), b.m_chars.end() ) ;
-	return os << "Tj " << String( s ) << ' ' ;
+	m_format.Print( os, res, state ) ;   
+	std::string s( m_chars.begin(), m_chars.end() ) ;
+	return os << String( s ) << ' ' << "Tj " ;
 }
 
 double TextBlock::Width( ) const

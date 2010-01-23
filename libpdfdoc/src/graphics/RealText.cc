@@ -34,6 +34,8 @@
 #include "page/Resources.hh"
 #include "util/Util.hh"
 
+#include <boost/bind.hpp>
+
 #include <algorithm>
 #include <iterator>
 #include <iostream>
@@ -121,13 +123,15 @@ std::size_t RealText::Count( ) const
 	return m_lines.size( ) ;
 }
 
-void RealText::Output( std::ostream& os ) const
+void RealText::Print( std::ostream& os, Resources *res ) const
 {
 	os << "BT\n" ;
-	std::copy(
+	TextState ts ;
+	std::for_each(
 		m_lines.begin(),
 		m_lines.end(),
-		std::ostream_iterator<TextLine>( os ) ) ;
+		boost::bind(
+			&TextLine::Print, _1, boost::ref(os), boost::ref(ts), res ) ) ;
 		
 	os << "ET\n" ;
 }

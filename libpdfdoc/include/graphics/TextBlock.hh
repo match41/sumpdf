@@ -57,7 +57,10 @@ public :
 
 	double Width( ) const ;
 
-	friend std::ostream& operator<<( std::ostream& os, const TextBlock& b ) ;
+	std::ostream& Print(
+		std::ostream& 		os,
+		const TextState& 	state,
+		Resources			*res ) const ;
 
 private :
 	std::wstring	m_chars ;

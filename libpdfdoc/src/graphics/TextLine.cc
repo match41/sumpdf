@@ -31,6 +31,7 @@
 #include "font/Font.hh"
 
 #include "util/Util.hh"
+#include "util/Exception.hh"
 
 #include <cassert>
 #include <set>
@@ -90,7 +91,7 @@ void TextLine::AppendText( const std::wstring& text )
 {
 	Font *f = m_blks.back().Format().GetFont() ;
 	if ( f == 0 )
-		std::cout << "invalid font!!!!!!!!!!" << std::endl ;
+		throw Exception( "invalid font" ) ;
 	else
 	{
 //		std::cout << "using font: " << f->BaseName() << std::endl ; 
@@ -98,9 +99,12 @@ void TextLine::AppendText( const std::wstring& text )
 	}
 }
 
-std::ostream& operator<<( std::ostream& os, const TextLine& line )
+std::ostream& TextLine::Print(
+	std::ostream& 	os,
+	TextState& 		state,
+	Resources		*res ) const
 {
-	const Matrix& t = line.m_trans ;
+	const Matrix& t = m_trans ;
 	if ( t.M11() == 1 && t.M12() == 0 &&
 		 t.M21() == 0 && t.M22() == 1 )
 		os << "Td " << t.Dx() << ' ' << t.Dy() << '\n' ;
@@ -108,10 +112,12 @@ std::ostream& operator<<( std::ostream& os, const TextLine& line )
 		os << "Tm " << t.M11() << ' ' << t.M12() << ' ' << t.M21() << ' '
 		            << t.M22() << ' ' << t.Dx()  << ' ' << t.Dy( ) << '\n' ; 
 	
-	std::copy(
-		line.m_blks.begin(),
-		line.m_blks.end(),
-		std::ostream_iterator<TextBlock>( os ) ) ;
+	for ( TextLine::const_iterator i = m_blks.begin() ;
+		i != m_blks.end() ; ++i )
+	{
+		i->Print( os, state, res ) ;
+		state = i->Format( ) ;
+	}
 	
 	return os ;
 }

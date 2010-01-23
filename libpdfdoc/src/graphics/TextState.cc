@@ -134,7 +134,7 @@ double TextState::TextRise( ) const
 std::ostream& TextState::Print(
 	std::ostream& 		os,
 	const Resources		*res,
-	const TextState& 	prev )
+	const TextState& 	prev ) const
 {
 	PDF_ASSERT( res != 0 ) ;
 	PDF_ASSERT( dynamic_cast<const BaseFont*>(m_font) != 0 ) ;
