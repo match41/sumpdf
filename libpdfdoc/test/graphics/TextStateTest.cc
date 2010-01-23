@@ -26,8 +26,13 @@
 #include "TextStateTest.hh"
 
 #include "graphics/TextState.hh"
+#include "page/Resources.hh"
+
+#include "mock/Assert.hh"
+#include "mock/MockFont.hh"
 
 #include <sstream>
+#include <iostream>
 
 using namespace pdf ;
 
@@ -37,12 +42,31 @@ TextStateTest::TextStateTest( )
 {
 }
 
+void TextStateTest::setUp( )
+{
+	::FT_Init_FreeType( &m_ft ) ;
+}
+
+void TextStateTest::tearDown( )
+{
+	::FT_Done_FreeType( m_ft ) ;
+}
+
+
 void TextStateTest::TestPrint( )
 {
 	TextState ts ;
 	ts.SetCharSpace( 100 ) ;
 	
+	MockFont *font = new MockFont ;
+	ts.SetFont( 12.0, font ) ;
+	
+	Resources r( m_ft ) ;
+	Name n = r.AddFont( font ) ;
+	
 	std::ostringstream ss ;
-//	ts.Print( ss ) ;
+	ts.Print( ss, &r ) ;
+
+std::cout << ss.str() << std::endl ;
 }
 

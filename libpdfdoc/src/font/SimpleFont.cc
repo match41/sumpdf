@@ -128,7 +128,6 @@ SimpleFont::SimpleFont( Dictionary& self, IFile *file, FT_Library ft_lib )
 			std::string path = FindStdFont( m_base_font.Str() ) ; 
 			std::vector<unsigned char> prog = LoadFile( path ) ;
 			Init( prog, ft_lib ) ;
-std::cout << "font request = " << ori << " font found = " << m_base_font << std::endl ; 
 		}
 		
 		m_self.Read( self, file ) ;

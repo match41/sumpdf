@@ -58,7 +58,6 @@ void SimpleFontTest::tearDown( )
 	::FT_Done_FreeType( m_ft ) ;
 }
 
-#ifdef HAVE_FONTCONFIG
 void SimpleFontTest::TestLoadByName( )
 {
 	pdf::SimpleFont subject( "Arial", m_ft ) ;
@@ -68,6 +67,5 @@ void SimpleFontTest::TestLoadByName( )
 	
 	MockFile file ;
 	pdf::Ref r = subject.Write( &file ) ;
-	std::cout << "descriptor = " << file.Find( r ) << std::endl ;
+//	std::cout << "descriptor = " << file.Find( r ) << std::endl ;
 }
-#endif

@@ -58,3 +58,7 @@ FT_Face MockFont::Face( ) const
 	return 0 ;
 }
 
+FT_Glyph MockFont::Glyph( wchar_t ch, FT_Glyph_Metrics *met ) const
+{
+	return 0 ;
+}

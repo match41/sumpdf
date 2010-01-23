@@ -70,7 +70,8 @@ Resources::~Resources( )
 {
 	using namespace boost ;
 	std::for_each( m_fonts.left.begin(), m_fonts.left.end(),
-		bind( &BaseFont::Release, bind( &FontMap::left_value_type::second, _1 ) ) ) ;
+		bind( &BaseFont::Release,
+			bind( &FontMap::left_value_type::second, _1 ) ) ) ;
 }
 
 void Resources::Read( const Dictionary& dict, IFile *file )

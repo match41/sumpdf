@@ -30,6 +30,10 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+// freetype headers
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 ///	brief description
 /**	this class represents
 */
@@ -43,8 +47,15 @@ public :
 		CPPUNIT_TEST( TestPrint ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
+public :
+	void setUp( ) ;
+	void tearDown( ) ;
+
 private :
 	void TestPrint( ) ;
+
+private :
+	FT_Library	m_ft ;
 } ;
 
 #endif // TEXTSTATETEST_HH_
