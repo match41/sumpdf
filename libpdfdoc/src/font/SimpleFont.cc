@@ -28,6 +28,8 @@
 
 #include "FontException.hh"
 
+#include "FontDescriptor.hh"
+
 #include "core/Array.hh"
 #include "core/Dictionary.hh"
 
@@ -59,6 +61,7 @@ const Name SimpleFont::m_font_types[] =
 	Name("Type0" ),
 } ;
 
+/*
 SimpleFont::SimpleFont( )
 	: m_base_font( "Helvetica-Bold" ),
 	  m_type( type1 )
@@ -72,30 +75,67 @@ SimpleFont::SimpleFont( const Name& base_font, Type type )
 {
 	m_first_char = m_last_char = 0 ;
 }
+*/
 
 SimpleFont::SimpleFont(
 	const std::string& 	font_file,
 	unsigned 			idx,
 	FT_Library 			ft_lib )
-	: m_face( LoadFace( font_file, idx, ft_lib ) ),
-	  m_base_font( ::FT_Get_Postscript_Name( m_face ) ),
-	  m_type( GetFontType( m_face ) ),
-	  m_descriptor( m_face )
+//	: m_face( LoadFace( font_file, idx, ft_lib ) ),
+//	  m_base_font( ::FT_Get_Postscript_Name( m_face ) ),
+//	  m_type( GetFontType( m_face ) ),
+//	  m_descriptor( new FontDesciptor( m_face ) )
 {
+	std::vector<unsigned char> prog = LoadFile( font_file ) ;
+	Init( prog, ft_lib ) ;
+}
+
+SimpleFont::SimpleFont( const std::string& name, FT_Library ft_lib )
+	: m_face( 0 ),
+//	  m_base_font( ::FT_Get_Postscript_Name( m_face ) ),
+	  m_type( unknown )
+//	  m_descriptor( m_face )
+{
+	std::string path = FindFont( name ) ; 
+	std::vector<unsigned char> prog = LoadFile( path ) ;
+	Init( prog, ft_lib ) ;
+}
+
+void SimpleFont::Init( std::vector<unsigned char>& prog, FT_Library ft_lib )
+{
+	FT_Error e = FT_New_Memory_Face(
+		ft_lib,
+		&prog[0],
+		prog.size(),
+		0,
+		&m_face ) ;
+	
+	if ( e != 0 )
+		throw FontException( "cannot create font face" ) ;
+	
+	m_base_font = ::FT_Get_Postscript_Name( m_face ) ;
+	m_type = GetFontType( m_face ) ;
+	m_descriptor.reset( new FontDescriptor( m_face, prog ) ) ;
 	LoadGlyphs( ) ;
+}
+
+std::vector<unsigned char> SimpleFont::LoadFile( const std::string& filename )
+{
+	using boost::format ;
+	std::ifstream fs( filename.c_str(), std::ios::in | std::ios::binary ) ;
+	if ( !fs )
+		throw FontException( format("cannot open font file: %1%") % filename ) ;
+	
+	std::vector<unsigned char> bytes(
+		(std::istreambuf_iterator<char>(fs)),
+		(std::istreambuf_iterator<char>()) ) ;
+	if ( bytes.empty() )
+		throw FontException( format("font file %1% is empty") % filename ) ;
+	return bytes ;
 }
 
 #ifdef HAVE_FONTCONFIG
-SimpleFont::SimpleFont( const std::string& name, FT_Library ft_lib )
-	: m_face( FindFont( name, ft_lib ) ),
-	  m_base_font( ::FT_Get_Postscript_Name( m_face ) ),
-	  m_type( GetFontType( m_face ) ),
-	  m_descriptor( m_face )
-{
-	LoadGlyphs( ) ;
-}
-
-FT_Face SimpleFont::FindFont( const std::string& font, FT_Library ft_lib )
+std::string SimpleFont::FindFont( const std::string& font )
 {
 	FcPattern *sans = FcPatternBuild( NULL,
 		FC_FAMILY,	FcTypeString, 	font.c_str(),
@@ -121,11 +161,11 @@ FT_Face SimpleFont::FindFont( const std::string& font, FT_Library ft_lib )
 	if ( idx != 0 )
 		throw FontException( "font collection is not supported yet" ) ;
 
-	FT_Face face ;
-	if ( FT_New_Face( ft_lib, file, idx, &face ) != 0 )
-		throw FontException( "cannot load font file " + std::string(file) ) ;
+//	FT_Face face ;
+//	if ( FT_New_Face( ft_lib, file, idx, &face ) != 0 )
+//		throw FontException( "cannot load font file " + std::string(file) ) ;
 
-	return LoadFace( file, idx, ft_lib ) ;
+	return file ;
 }
 #endif
 
@@ -185,24 +225,11 @@ SimpleFont::~SimpleFont( )
 	FT_Done_Face( m_face ) ;
 }
 
-///	Loads an FT_Face from a disk file.
-FT_Face SimpleFont::LoadFace(
-	const std::string& 	file,
-	unsigned 			idx,
-	FT_Library 			ft_lib )
-{
-	FT_Face face ;
-	if ( FT_New_Face( ft_lib, file.c_str(), idx, &face ) != 0 )
-		throw FontException( "cannot load font file " + file ) ;
-	
-	return face ;
-}
-
 bool SimpleFont::ReadDescriptor( Dictionary& fd, FT_Library ft_lib, IFile *file )
 {
-	m_descriptor.Read( fd, file ) ;
+	m_descriptor->Read( fd, file ) ;
 
-	const std::vector<unsigned char>& font_file = m_descriptor.FontFile( ) ;
+	const std::vector<unsigned char>& font_file = m_descriptor->FontFile( ) ;
 
 //std::ofstream f( (m_base_font.Str()+".ttf").c_str() ) ;
 //std::copy( font_file.begin(), font_file.end(),
@@ -328,7 +355,7 @@ Ref SimpleFont::Write( IFile *file ) const
 	
 	dict.Get()["Widths"]			= widths ;
 
-	dict.Get()["FontDescriptor"]	= m_descriptor.Write( file ) ;
+	dict.Get()["FontDescriptor"]	= m_descriptor->Write( file ) ;
 
 //	if ( !m_to_unicode.IsNull( ) )
 //		dict.Get()["ToUnitcode"]	= file->WriteObj( m_to_unicode ) ;
@@ -347,11 +374,7 @@ SimpleFont::Type SimpleFont::SubType( const Name& name )
 	const Name *ptr = std::find( pdf::Begin( m_font_types ),
 	                             pdf::End( m_font_types ), name ) ;
 	if ( ptr == pdf::End( m_font_types ) )
-	{
-		std::ostringstream os ;
-		os << "unknown font type: " << name ;
-		throw FontException( os.str() ) ;
-	}
+		throw FontException( boost::format("unknown font type: %1%") % name) ;
 
 	return static_cast<Type>( ptr - pdf::Begin( m_font_types ) ) ;
 }
@@ -383,7 +406,7 @@ FT_Glyph SimpleFont::Glyph( wchar_t ch, FT_Glyph_Metrics *met ) const
 
 FontDescriptor* SimpleFont::Descriptor( )
 {
-	return &m_descriptor ;
+	return m_descriptor.get() ;
 }
 
 BaseFont* CreateFont( Dictionary& obj, IFile *file, FT_Library ft_lib )

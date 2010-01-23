@@ -64,8 +64,8 @@ FontDescriptor::FontDescriptor( )
 	m_italic_angle = m_ascent = m_descent = m_leading = 0.0 ;
 }
 
-FontDescriptor::FontDescriptor( FT_Face face )
-: m_flags( 0 )
+FontDescriptor::FontDescriptor( FT_Face face, std::vector<unsigned char>& prog )
+	: m_flags( 0 )
 {
 	PDF_ASSERT( face != 0 ) ;
 	
@@ -116,7 +116,7 @@ FontDescriptor::FontDescriptor( FT_Face face )
 
 	m_italic_angle	= (post != 0 ? FontUnit(post->italicAngle, face) : 0.0) ;
 	m_leading = 0.0 ;
-	
+/*
 	FT_ULong length = 0 ;
 	FT_Load_Sfnt_Table( face, 0, 0, 0, &length ) ;
 std::cout << "file length is: " << length << std::endl ;
@@ -126,6 +126,8 @@ std::cout << "file length is: " << length << std::endl ;
 std::cout << "file length is: " << m_font_file.size() << std::endl ;
 
 //	FT_Load_Sfnt_Table( face, 0, 0, &m_font_file[0], &length ) ;
+*/
+	m_font_file.swap( prog ) ;
 }
 
 void FontDescriptor::Read( Dictionary& self, IFile *file )

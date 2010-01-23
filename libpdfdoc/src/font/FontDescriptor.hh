@@ -62,7 +62,7 @@ public :
 
 public :
 	FontDescriptor( ) ;
-	explicit FontDescriptor( FT_Face face ) ;
+	explicit FontDescriptor( FT_Face face, std::vector<unsigned char>& prog ) ;
 	
 	void Read( Dictionary& self, IFile *file ) ;
 	Ref Write( IFile *file ) const ;
