@@ -88,7 +88,7 @@ std::ostream& operator<<( std::ostream& os, const TextBlock& t )
 
 double TextBlock::Width( ) const
 {
-	return 0.0 ;
+	return 0.0f ;
 }
 
 bool TextBlock::operator==( const TextBlock& rhs ) const
