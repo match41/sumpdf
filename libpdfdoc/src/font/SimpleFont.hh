@@ -82,7 +82,7 @@ public :
 private :
 	SimpleFont( const Name& base_font, Type type ) ;
 
-	void Init( ) ;
+	void LoadGlyphs( ) ;
 
 	static const Name m_font_types[] ;
 	static Type GetFontType( FT_Face face ) ;
@@ -90,9 +90,7 @@ private :
 	static const Name& SubType( Type t ) ;
 	static Type        SubType( const Name& t ) ;
 
-	void GetWidth( ) ;
-
-	void ReadDescriptor( Dictionary& fd, FT_Library ft_lib, IFile *file ) ;
+	bool ReadDescriptor( Dictionary& fd, FT_Library ft_lib, IFile *file ) ;
 
 	static FT_Face LoadFace(
 		const std::string& 	file,

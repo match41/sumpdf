@@ -26,17 +26,19 @@
 
 #include "SimpleFont.hh"
 
+#include "FontException.hh"
+
 #include "core/Array.hh"
 #include "core/Dictionary.hh"
 
 #include "file/IFile.hh"
 #include "file/ObjectReader.hh"
 
-#include "util/Exception.hh"
 #include "util/Util.hh"
 #include "util/Debug.hh"
 
 #include <boost/bind.hpp>
+#include <boost/format.hpp>
 
 #ifdef HAVE_FONTCONFIG
 #include <fontconfig/fontconfig.h>
@@ -80,7 +82,7 @@ SimpleFont::SimpleFont(
 	  m_type( GetFontType( m_face ) ),
 	  m_descriptor( m_face )
 {
-	Init( ) ;
+	LoadGlyphs( ) ;
 }
 
 #ifdef HAVE_FONTCONFIG
@@ -90,7 +92,7 @@ SimpleFont::SimpleFont( const std::string& name, FT_Library ft_lib )
 	  m_type( GetFontType( m_face ) ),
 	  m_descriptor( m_face )
 {
-	Init( ) ;
+	LoadGlyphs( ) ;
 }
 
 FT_Face SimpleFont::FindFont( const std::string& font, FT_Library ft_lib )
@@ -100,31 +102,36 @@ FT_Face SimpleFont::FindFont( const std::string& font, FT_Library ft_lib )
 		FC_WEIGHT,	FcTypeInteger, 	FC_WEIGHT_MEDIUM,
 	    NULL ) ;
 	if ( sans == 0 )
-		throw Exception( "cannot create font pattern" ) ;
+		throw FontException( "cannot create font pattern" ) ;
 
 	FcResult result ;
 	FcPattern *matched = FcFontMatch( 0, sans, &result ) ;
 
 	FcChar8 *filename ;
 	if ( FcPatternGetString(matched, FC_FILE, 0, &filename ) != FcResultMatch )
-		throw Exception( "cannot find font " + font ) ;
+		throw FontException( "cannot find font " + font ) ;
 
 	const char *file = reinterpret_cast<const char*>( filename ) ;
 
 	int idx ;
 	if ( FcPatternGetInteger( matched, FC_INDEX, 0, &idx ) != FcResultMatch )
-		throw Exception( "cannot find font " + font ) ;
+		throw FontException( "cannot find font " + font ) ;
 
-std::cout << "loading font from " << file << std::endl ;
+	// TODO: how to embed font with index !+ 0?
+	if ( idx != 0 )
+		throw FontException( "font collection is not supported yet" ) ;
+
 	FT_Face face ;
 	if ( FT_New_Face( ft_lib, file, idx, &face ) != 0 )
-		throw Exception( "cannot load font file " + std::string(file) ) ;
+		throw FontException( "cannot load font file " + std::string(file) ) ;
 
 	return LoadFace( file, idx, ft_lib ) ;
 }
 #endif
 
 SimpleFont::SimpleFont( Dictionary& self, IFile *file, FT_Library ft_lib )
+	: m_face( 0 ),
+	  m_type( unknown )
 {
 	PDF_ASSERT( file != 0 ) ;
 	PDF_ASSERT( ft_lib != 0 ) ;
@@ -149,17 +156,19 @@ SimpleFont::SimpleFont( Dictionary& self, IFile *file, FT_Library ft_lib )
 		
 		Dictionary fd ;
 		if ( Detach( file, self, "FontDescriptor", fd ) )
-			ReadDescriptor( fd, ft_lib, file ) ;
+		{
+			if ( ReadDescriptor( fd, ft_lib, file ) )
+				LoadGlyphs( ) ;
+		}
 		
 		m_self.Read( self, file ) ;
-		Init( ) ;
 	}
 	catch ( Exception& e )
 	{
 		std::ostringstream msg ;
 		msg << "cannot read font:\n" << e.what( ) << "\n"
 		    << "Font Dictionary: \n" << self << "\n" ;
-		throw Exception( msg.str( ) ) ;
+		throw FontException( msg.str( ) ) ;
 	}
 }
 
@@ -176,15 +185,6 @@ SimpleFont::~SimpleFont( )
 	FT_Done_Face( m_face ) ;
 }
 
-///	Common initialization procedure for constructor that comes with an FT_Face.
-void SimpleFont::Init( )
-{
-	GetWidth( ) ;
-	
-//	PDF_ASSERT( m_widths.size() ==
-//		static_cast<std::size_t>(m_last_char - m_first_char + 1) ) ;
-}
-
 ///	Loads an FT_Face from a disk file.
 FT_Face SimpleFont::LoadFace(
 	const std::string& 	file,
@@ -193,12 +193,12 @@ FT_Face SimpleFont::LoadFace(
 {
 	FT_Face face ;
 	if ( FT_New_Face( ft_lib, file.c_str(), idx, &face ) != 0 )
-		throw Exception( "cannot load font file " + file ) ;
+		throw FontException( "cannot load font file " + file ) ;
 	
 	return face ;
 }
 
-void SimpleFont::ReadDescriptor( Dictionary& fd, FT_Library ft_lib, IFile *file )
+bool SimpleFont::ReadDescriptor( Dictionary& fd, FT_Library ft_lib, IFile *file )
 {
 	m_descriptor.Read( fd, file ) ;
 
@@ -208,16 +208,22 @@ void SimpleFont::ReadDescriptor( Dictionary& fd, FT_Library ft_lib, IFile *file 
 //std::copy( font_file.begin(), font_file.end(),
 //std::ostreambuf_iterator<char>( f ) ) ;
 //f.close() ;
-	
-	FT_Error e = FT_New_Memory_Face(
-		ft_lib,
-		&font_file[0],
-		font_file.size(),
-		0,
-		&m_face ) ;
-	
-	if ( e != 0 )
-		throw Exception( "cannot create font face" ) ;
+	if ( !font_file.empty() )
+	{
+		FT_Error e = FT_New_Memory_Face(
+			ft_lib,
+			&font_file[0],
+			font_file.size(),
+			0,
+			&m_face ) ;
+		
+		if ( e != 0 )
+			throw FontException( "cannot create font face" ) ;
+		
+		return true ;
+	}
+	else
+		return false ;
 }
 
 double SimpleFont::Width( wchar_t ch ) const
@@ -250,11 +256,14 @@ SimpleFont::Type SimpleFont::GetFontType( FT_Face face )
 	else if ( ::strcasecmp( format, "Type 1" ) == 0 )
 		return type1 ;
 	else
-		throw Exception( "unknown font type: " + std::string(format) ) ;
+		throw FontException( "unknown font type: " + std::string(format) ) ;
 }
 
-void SimpleFont::GetWidth( )
+///	Common initialization procedure for constructor that comes with an FT_Face.
+void SimpleFont::LoadGlyphs( )
 {
+	PDF_ASSERT( m_face != 0 ) ;
+
 	// traverse all characters
 	unsigned		gindex ;
 	unsigned long 	char_code = FT_Get_First_Char( m_face, &gindex ) ;
@@ -267,12 +276,16 @@ void SimpleFont::GetWidth( )
 		// in small font we don't have hinting
 		FT_Error error = FT_Load_Glyph( m_face, gindex, FT_LOAD_NO_SCALE ) ;
 		if ( error != 0 )
-			throw Exception( ) ;
+			throw FontException(
+				boost::format( "cannot load glyph %2% from %1%" )
+				% BaseName() % char_code ) ;
 
 		FT_Glyph glyph ;
 		error = FT_Get_Glyph( m_face->glyph, &glyph ) ;
 		if ( error != 0 )
-			throw Exception( ) ;
+			throw FontException(
+				boost::format( "cannot copy glyph %2% from %1%" )
+				% BaseName() % char_code ) ;
 
 		if ( glyph->format == FT_GLYPH_FORMAT_OUTLINE )
 		{
@@ -337,7 +350,7 @@ SimpleFont::Type SimpleFont::SubType( const Name& name )
 	{
 		std::ostringstream os ;
 		os << "unknown font type: " << name ;
-		throw Exception( os.str() ) ;
+		throw FontException( os.str() ) ;
 	}
 
 	return static_cast<Type>( ptr - pdf::Begin( m_font_types ) ) ;
