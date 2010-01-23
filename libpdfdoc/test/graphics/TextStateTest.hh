@@ -26,7 +26,7 @@
 #ifndef __PDF_TEXTSTATETEST_HH_EADER_INCLUDED__
 #define __PDF_TEXTSTATETEST_HH_EADER_INCLUDED__
 
-#include <cppunit/TestFixture.h>
+#include "mock/TestBase.hh"
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -37,7 +37,7 @@
 ///	brief description
 /**	this class represents
 */
-class TextStateTest : public CppUnit::TestFixture
+class TextStateTest : public TestBase
 {
 public :
 	TextStateTest( ) ;
@@ -47,15 +47,8 @@ public :
 		CPPUNIT_TEST( TestPrint ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
-public :
-	void setUp( ) ;
-	void tearDown( ) ;
-
 private :
 	void TestPrint( ) ;
-
-private :
-	FT_Library	m_ft ;
 } ;
 
 #endif // TEXTSTATETEST_HH_

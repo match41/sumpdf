@@ -36,11 +36,11 @@
 #include "file/ResourcePool.hh"
 #include "font/BaseFont.hh"
 #include "util/Util.hh"
+#include "util/Debug.hh"
 
 #include <boost/bind.hpp>
 
 #include <algorithm>
-#include <cassert>
 #include <sstream>
 
 namespace pdf {
@@ -50,8 +50,8 @@ Resources::Resources( const Resources *parent )
 	  m_ft_lib( parent == 0 ? 0 : parent->m_ft_lib ),
 	  m_proc_set( 1, Name( "PDF" ) )
 {
-	assert( parent != 0 ) ;
-	assert( m_ft_lib != 0 ) ;
+	PDF_ASSERT( parent != 0 ) ;
+	PDF_ASSERT( m_ft_lib != 0 ) ;
 	
     m_proc_set.push_back( Name( "Text" ) ) ;
 }
@@ -61,7 +61,7 @@ Resources::Resources( FT_Library ft_lib )
 	  m_ft_lib( ft_lib ),
 	  m_proc_set( 1, Name( "PDF" ) )
 {
-	assert( m_ft_lib != 0 ) ;
+	PDF_ASSERT( m_ft_lib != 0 ) ;
 	
     m_proc_set.push_back( Name( "Text" ) ) ;
 }
@@ -105,9 +105,9 @@ Ref Resources::Write( IFile *file ) const
 
 void Resources::ReadFontDict( Dictionary& self, IFile *file )
 {
-	assert( file != 0 ) ;
-	assert( file->Pool() != 0 ) ;
-	assert( m_ft_lib != 0 ) ;
+	PDF_ASSERT( file != 0 ) ;
+	PDF_ASSERT( file->Pool() != 0 ) ;
+	PDF_ASSERT( m_ft_lib != 0 ) ;
 
 	Dictionary dict ;
 	if ( Detach( file, self, "Font", dict ) )
@@ -126,7 +126,7 @@ void Resources::ReadFontDict( Dictionary& self, IFile *file )
 					font = CreateFont( self, file, m_ft_lib ) ; 
 					font_pool->Add( link, font ) ;
 				}
-				assert( font != 0 ) ;
+				PDF_ASSERT( font != 0 ) ;
 			}
 			
 			// the font is not an indirect object, so it can't be shared.
@@ -140,15 +140,15 @@ void Resources::ReadFontDict( Dictionary& self, IFile *file )
 
 Ref Resources::WriteFontDict( IFile *file ) const
 {
-	assert( file != 0 ) ;
-	assert( file->Pool() != 0 ) ;
+	PDF_ASSERT( file != 0 ) ;
+	PDF_ASSERT( file->Pool() != 0 ) ;
 
 	FontPool *pool = &file->Pool( )->fonts ;
 	Dictionary font_dict ;
 	
 	for ( FontMap::left_const_iterator i = m_fonts.left.begin(); i != m_fonts.left.end() ; ++i)
 	{
-		assert( i->second != 0 ) ;
+		PDF_ASSERT( i->second != 0 ) ;
 	
 		Ref link = pool->Find( i->second ) ;
 		if ( link == Ref() )

@@ -468,6 +468,7 @@ set( UT_SRCS	test/core/TokenTest.cc
 				test/core/ArrayTest.cc
 				
 				test/graphics/TextStateTest.cc
+				test/graphics/RealTextTest.cc
 				
 				test/stream/StreamTest.cc
 				test/stream/RawFilterTest.cc
@@ -487,6 +488,7 @@ set( UT_SRCS	test/core/TokenTest.cc
 				
 				test/mock/MockFile.cc
 				test/mock/MockFont.cc
+				test/mock/TestBase.cc
 				test/RealDocTest.cc
 )
 

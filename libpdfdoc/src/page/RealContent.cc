@@ -28,6 +28,7 @@
 #include "core/Object.hh"
 #include "core/Token.hh"
 #include "core/TokenSrc.hh"
+#include "graphics/RealText.hh"
 #include "stream/Stream.hh"
 
 #include <boost/bind.hpp>
@@ -144,9 +145,9 @@ const Graphics* RealContent::Item( std::size_t idx ) const
 	return m_gfx.at( idx ) ;
 }
 
-RealText* RealContent::AddText( )
+Text* RealContent::AddText( const TextState& ts )
 {
-	RealText *t = new RealText ;
+	RealText *t = new RealText( ts ) ;
 	m_gfx.push_back( t ) ;
 	return t ;
 }

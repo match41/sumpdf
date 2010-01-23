@@ -17,83 +17,43 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**
-	\file	TextBlock.cc
-	\brief	implementation of the TextBlock class
-	\date	Jan 4, 2010
+/**	\file	RealTextTest.cc
+	\brief	implementation of the RealTextTest class
+	\date	Jan 23, 2010
 	\author	Nestal Wan
 */
 
-#include "graphics/TextBlock.hh"
+#include "RealTextTest.hh"
 
-#include "core/String.hh"
+#include "core/Object.hh"
+#include "graphics/RealText.hh"
+#include "page/Resources.hh"
+#include "util/Matrix.hh"
+#include "util/Util.hh"
 
-#include <iostream>
+#include "mock/Assert.hh"
 
-namespace pdf {
+using namespace pdf ;
 
-///	default constructor
-TextBlock::TextBlock( const std::string& text, const TextState& format )
-	: m_chars( text.begin(), text.end() ),
-	  m_format( format )
+/**	constructor
+*/
+RealTextTest::RealTextTest( )
 {
 }
 
-const TextState& TextBlock::Format() const
+void RealTextTest::TestTdCmd( )
 {
-	return m_format ;
+	RealText t ;
+	PDF_ASSERT_EQUAL( t.Count(), 1U ) ;
+	PDF_ASSERT_EQUAL( t.front().front().Format(), TextState() ) ;
+	PDF_ASSERT_EQUAL( t.front().Transform(), Matrix() ) ;
+	
+	Object	args[]	= { 100, 200 } ;
+	Token	cmd( "Td" ) ;
+	
+	Resources res( m_ft ) ;
+	
+	t.OnCommand( cmd, args, Count(args), &res ) ;  
+	PDF_ASSERT_EQUAL( t.front().front().Format(), TextState() ) ;
+	PDF_ASSERT_EQUAL( t.front().Transform(), Matrix(1,0,0,1,100,200) ) ;
 }
-
-void TextBlock::SetFormat( const TextState& fmt )
-{
-	m_format = fmt ;
-}
-
-bool TextBlock::IsEmpty() const
-{
-	return m_chars.empty() ;
-}
-
-const std::wstring& TextBlock::Text() const
-{
-	return m_chars ;
-}
-
-void TextBlock::SetText( const std::wstring& text )
-{
-	m_chars = text ;
-}
-
-void TextBlock::AppendText( const std::wstring& text )
-{
-	m_chars.insert( m_chars.end(), text.begin(), text.end() ) ;
-}
-
-std::ostream& TextBlock::Print(
-	std::ostream& 		os,
-	const TextState& 	state,
-	Resources			*res ) const
-{
-	m_format.Print( os, res, state ) ;   
-	std::string s( m_chars.begin(), m_chars.end() ) ;
-	return os << String( s ) << ' ' << "Tj " ;
-}
-
-double TextBlock::Width( ) const
-{
-	return 0.0 ;
-}
-
-bool TextBlock::operator==( const TextBlock& rhs ) const
-{
-	return
-		m_chars		== rhs.m_chars	&&
-		m_format	== rhs.m_format ;
-}
-
-bool TextBlock::operator!=( const TextBlock& rhs ) const
-{
-	return !operator==( rhs ) ;
-}
-
-} // end of namespace

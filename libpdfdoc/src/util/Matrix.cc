@@ -29,6 +29,8 @@
 #include "Util.hh"
 
 #include <algorithm>
+#include <iterator>
+#include <ostream>
 
 namespace pdf {
 
@@ -159,6 +161,17 @@ bool Matrix::IsIdentity( ) const
 bool Matrix::operator==( const Matrix& m ) const
 {
 	return std::equal( begin(), end(), m.begin() ) ;
+}
+
+bool Matrix::operator!=( const Matrix& m ) const
+{
+	return !operator==( m ) ;
+}
+
+std::ostream& operator<<( std::ostream& os, const Matrix& m )
+{
+	std::copy( m.begin(), m.end(), std::ostream_iterator<double>( os, " " ) ) ;
+	return os ;
 }
 
 } // end of namespace

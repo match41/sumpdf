@@ -27,6 +27,8 @@
 #ifndef __PDF_MATRIX_HEADER_INCLUDED__
 #define __PDF_MATRIX_HEADER_INCLUDED__
 
+#include <iosfwd>
+
 namespace pdf {
 
 /**	\brief  2 dimention matrix.
@@ -51,6 +53,7 @@ public :
 
 	Matrix& operator=( const Matrix& m ) ;
 	bool operator==( const Matrix& m ) const ;
+	bool operator!=( const Matrix& m ) const ;
 
 	bool IsIdentity( ) const ;
 
@@ -81,6 +84,7 @@ private :
 } ;
 
 Matrix operator*( const Matrix& a, const Matrix& b ) ;
+std::ostream& operator<<( std::ostream& os, const Matrix& m ) ;
 
 } // end of namespace
 

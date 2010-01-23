@@ -72,6 +72,26 @@ TextLine::const_iterator TextLine::end() const
 	return m_blks.end( ) ;
 }
 
+TextBlock& TextLine::front()
+{
+	return m_blks.front() ;
+}
+
+TextBlock& TextLine::back()
+{
+	return m_blks.back() ;
+}
+
+const TextBlock& TextLine::front() const
+{
+	return m_blks.front() ;
+}
+
+const TextBlock& TextLine::back() const
+{
+	return m_blks.back() ;
+}
+
 const Matrix& TextLine::Transform() const
 {
 	return m_trans ;
@@ -128,6 +148,19 @@ void TextLine::ChangeState( const TextState& s )
 		m_blks.back().SetFormat( s ) ;
 	else
 		m_blks.push_back( TextBlock( "", s ) ) ;
+}
+
+bool TextLine::operator==( const TextLine& rhs ) const
+{
+	return
+		m_trans == rhs.m_trans &&
+		m_blks	== rhs.m_blks ;
+
+}
+
+bool TextLine::operator!=( const TextLine& rhs ) const
+{
+	return !operator==( rhs ) ;
 }
 
 } // end of namespace

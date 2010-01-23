@@ -62,6 +62,9 @@ public :
 		const TextState& 	state,
 		Resources			*res ) const ;
 
+	bool operator==( const TextBlock& rhs ) const ;
+	bool operator!=( const TextBlock& rhs ) const ;
+	
 private :
 	std::wstring	m_chars ;
 	TextState		m_format ;

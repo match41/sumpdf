@@ -33,7 +33,7 @@
 #include "core/Dictionary.hh"
 #include "font/SimpleFont.hh"
 #include "graphics/GraphicsVisitor.hh"
-#include "graphics/Text.hh"
+#include "graphics/RealText.hh"
 #include "page/RealPage.hh"
 #include "page/PageTree.hh"
 #include "stream/Stream.hh"

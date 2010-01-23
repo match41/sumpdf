@@ -17,83 +17,34 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**
-	\file	TextBlock.cc
-	\brief	implementation of the TextBlock class
-	\date	Jan 4, 2010
-	\author	Nestal Wan
+/**	\file	RealTextTest.hh
+    \brief	definition the RealTextTest class
+    \date	Jan 23, 2010
+    \author	Nestal Wan
 */
 
-#include "graphics/TextBlock.hh"
+#ifndef __PDF_REALTEXTTEST_HH_EADER_INCLUDED__
+#define __PDF_REALTEXTTEST_HH_EADER_INCLUDED__
 
-#include "core/String.hh"
+#include "mock/TestBase.hh"
 
-#include <iostream>
+#include <cppunit/extensions/HelperMacros.h>
 
-namespace pdf {
-
-///	default constructor
-TextBlock::TextBlock( const std::string& text, const TextState& format )
-	: m_chars( text.begin(), text.end() ),
-	  m_format( format )
+///	brief description
+/**	The RealTextTest class represents
+*/
+class RealTextTest : public TestBase
 {
-}
+public :
+	RealTextTest( ) ;
 
-const TextState& TextBlock::Format() const
-{
-	return m_format ;
-}
+	// declare suit function
+	CPPUNIT_TEST_SUITE( RealTextTest ) ;
+		CPPUNIT_TEST( TestTdCmd ) ;
+	CPPUNIT_TEST_SUITE_END( ) ;
 
-void TextBlock::SetFormat( const TextState& fmt )
-{
-	m_format = fmt ;
-}
+private :
+	void TestTdCmd( ) ;
+} ;
 
-bool TextBlock::IsEmpty() const
-{
-	return m_chars.empty() ;
-}
-
-const std::wstring& TextBlock::Text() const
-{
-	return m_chars ;
-}
-
-void TextBlock::SetText( const std::wstring& text )
-{
-	m_chars = text ;
-}
-
-void TextBlock::AppendText( const std::wstring& text )
-{
-	m_chars.insert( m_chars.end(), text.begin(), text.end() ) ;
-}
-
-std::ostream& TextBlock::Print(
-	std::ostream& 		os,
-	const TextState& 	state,
-	Resources			*res ) const
-{
-	m_format.Print( os, res, state ) ;   
-	std::string s( m_chars.begin(), m_chars.end() ) ;
-	return os << String( s ) << ' ' << "Tj " ;
-}
-
-double TextBlock::Width( ) const
-{
-	return 0.0 ;
-}
-
-bool TextBlock::operator==( const TextBlock& rhs ) const
-{
-	return
-		m_chars		== rhs.m_chars	&&
-		m_format	== rhs.m_format ;
-}
-
-bool TextBlock::operator!=( const TextBlock& rhs ) const
-{
-	return !operator==( rhs ) ;
-}
-
-} // end of namespace
+#endif // REALTEXTTEST_HH_

@@ -36,6 +36,7 @@
 #include "core/DictionaryTest.hh"
 #include "core/ArrayTest.hh"
 #include "graphics/TextStateTest.hh"
+#include "graphics/RealTextTest.hh"
 #include "stream/StreamTest.hh"
 #include "stream/DeflateFilterTest.hh"
 #include "stream/InStreamBufAdaptorTest.hh"
@@ -81,6 +82,7 @@ int main( int argc, char **argv )
 	runner.addTest( RefObjMapTest::suite( ) ) ;
 	runner.addTest( PageNodeTest::suite( ) ) ;
 	runner.addTest( TextStateTest::suite( ) ) ;
+	runner.addTest( RealTextTest::suite( ) ) ;
 	
 // freetype library is optional
 #ifdef HAVE_FREETYPE

@@ -86,8 +86,6 @@ private :
 		boost::bimaps::set_of<Name>,
 		boost::bimaps::set_of<BaseFont*>
 	> FontMap ; 
-	
-//	typedef std::map<Name, BaseFont*> FontMap ;
 	FontMap				m_fonts ;
 
 	typedef std::map<Name, RealImage*> ImageMap ;

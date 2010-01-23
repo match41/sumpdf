@@ -68,6 +68,9 @@ public :
 		const Resources		*res,
 		const TextState& 	prev = TextState() ) const ;
 
+	bool operator==( const TextState& rhs ) const ;
+	bool operator!=( const TextState& rhs ) const ;
+
 private :
 	double	m_char_space ;
 	double	m_word_space ;
@@ -78,6 +81,8 @@ private :
 	int		m_render_mode ;
 	double	m_text_rise ;
 } ;
+
+std::ostream& operator<<( std::ostream& os, const TextState& ts ) ;
 
 } // end of namespace
 

@@ -68,8 +68,9 @@ const RealText::HandlerMap RealText::m_handler_map(
 
 /**	constructor
 */
-RealText::RealText( )
-	: m_lines( 1 )
+RealText::RealText( const TextState& ts )
+	: m_state( ts ),
+	  m_lines( 1, TextLine( Matrix(), ts ) )
 {
 }
 
@@ -91,6 +92,26 @@ RealText::const_iterator RealText::begin() const
 RealText::const_iterator RealText::end() const
 {
 	return m_lines.end( ) ;
+}
+
+TextLine& RealText::front()
+{
+	return m_lines.front() ;
+}
+
+TextLine& RealText::back()
+{
+	return m_lines.back() ;
+}
+
+const TextLine& RealText::front() const
+{
+	return m_lines.front() ;
+}
+
+const TextLine& RealText::back() const
+{
+	return m_lines.back() ;
 }
 
 void RealText::OnCommand(
@@ -269,5 +290,19 @@ void RealText::OnTf( Object* args, std::size_t count, Resources *res )
 		}
 	}
 }
+
+bool RealText::operator==( const RealText& rhs ) const
+{
+	// no need to compare current text state
+	return
+		m_lines		== rhs.m_lines		&&
+		m_line_mat	== rhs.m_line_mat ;
+}
+
+bool RealText::operator!=( const RealText& rhs ) const
+{
+	return !operator==( rhs ) ;
+}
+
 
 } // end of namespace

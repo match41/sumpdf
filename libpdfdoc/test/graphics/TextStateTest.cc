@@ -42,17 +42,6 @@ TextStateTest::TextStateTest( )
 {
 }
 
-void TextStateTest::setUp( )
-{
-	::FT_Init_FreeType( &m_ft ) ;
-}
-
-void TextStateTest::tearDown( )
-{
-	::FT_Done_FreeType( m_ft ) ;
-}
-
-
 void TextStateTest::TestPrint( )
 {
 	TextState ts ;

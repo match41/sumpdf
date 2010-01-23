@@ -66,6 +66,11 @@ public :
 	const_iterator begin() const ;
 	const_iterator end() const ;
 
+	TextBlock& front() ;
+	TextBlock& back() ;
+	const TextBlock& front() const ;
+	const TextBlock& back() const ;
+
 	void AddBlock( const TextBlock& blk ) ;
 
 	const Matrix& Transform() const ;
@@ -75,11 +80,13 @@ public :
 	void AppendText( const std::wstring& text ) ;
 	void ChangeState( const TextState& s ) ;
 
-//	friend std::ostream& operator<<( std::ostream& os, const TextLine& line ) ;
 	std::ostream& Print(
 		std::ostream& 	os,
 		TextState& 		state,
 		Resources		*res ) const ;
+
+	bool operator==( const TextLine& rhs ) const ;
+	bool operator!=( const TextLine& rhs ) const ;
 
 private :
 	/// the text matrix

@@ -28,17 +28,17 @@
 
 #include "page/PageContent.hh"
 
-#include "graphics/RealText.hh"
-
 #include <vector>
 
 namespace pdf {
 
-class Stream ;
-class Token ;
-class Object ;
 class Graphics ;
+class Object ;
 class Resources ;
+class Stream ;
+class Text ;
+class TextState ;
+class Token ;
 
 ///	brief description
 /**	The RealContent class represents
@@ -51,7 +51,7 @@ public :
 	// operations
 	std::size_t Count( ) const ;
 	const Graphics* Item( std::size_t idx ) const ;
-	RealText* AddText( ) ;
+	Text* AddText( const TextState& ts ) ;
 	void VisitGraphics( GraphicsVisitor *visitor ) ;
 
 	void Add( Graphics *gfx ) ;

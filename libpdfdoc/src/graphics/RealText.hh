@@ -40,12 +40,13 @@ class Object ;
 class Resources ;
 
 ///	brief description
-/**	The RealText class represents
+/**	The RealText class represents a text object in a page. It is created for
+	each BT/ET commands pair. It contains a number of text lines.
 */
 class RealText : public Text
 {
 public :
-	RealText( ) ;
+	explicit RealText( const TextState& ts = TextState() ) ;
 
 	void OnCommand(
 		const Token& 	cmd,
@@ -61,11 +62,19 @@ public :
 	const_iterator begin() const ;
 	const_iterator end() const ;
 	
+	TextLine& front() ;
+	TextLine& back() ;
+	const TextLine& front() const ;
+	const TextLine& back() const ;
+	
 	std::size_t Count( ) const ;
 	
 	void AddLine( const TextLine& line ) ;
 
 	void Visit( GraphicsVisitor *visitor ) ;
+
+	bool operator==( const RealText& rhs ) const ;
+	bool operator!=( const RealText& rhs ) const ;
 
 private :
     /// command handler
@@ -96,13 +105,14 @@ private :
 	void AddNewLine( const Matrix& mat ) ;
 
 private :
+	///	Current text state
+	TextState	m_state ;
+	
+	///	Lines inside this text object
 	std::vector<TextLine>	m_lines ;
 	
 	///	Current text line matrix. 
 	Matrix		m_line_mat ;
-	
-	///	Current text state
-	TextState	m_state ;
 } ;
 
 } // end of namespace

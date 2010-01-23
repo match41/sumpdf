@@ -147,4 +147,27 @@ std::ostream& TextState::Print(
 	return os ;
 }
 
+std::ostream& operator<<( std::ostream& os, const TextState& ts )
+{
+	return os ;
+}
+
+bool TextState::operator==( const TextState& rhs ) const
+{
+	return 
+		m_char_space	== rhs.m_char_space	&&
+		m_word_space	== rhs.m_word_space	&&
+		m_hori_scale	== rhs.m_hori_scale	&&
+		m_leading		== rhs.m_leading		&&
+		m_font_size		== rhs.m_font_size		&&
+		m_font 			== rhs.m_font 			&&
+		m_render_mode	== rhs.m_render_mode	&&
+		m_text_rise		== rhs.m_text_rise	;
+}
+
+bool TextState::operator!=( const TextState& rhs ) const
+{
+	return !operator==( rhs ) ;
+}
+
 } // end of namespace

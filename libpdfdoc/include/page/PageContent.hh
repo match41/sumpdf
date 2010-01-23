@@ -31,9 +31,10 @@
 
 namespace pdf {
 
-class Text ;
 class Graphics ;
 class GraphicsVisitor ;
+class Text ;
+class TextState ;
 
 /**	\brief	brief description
 
@@ -48,8 +49,7 @@ public :
 	virtual std::size_t Count( ) const = 0 ;
 	virtual const Graphics* Item( std::size_t idx ) const = 0 ;
 	
-//	virtual void Add( Graphics *item ) = 0 ;
-	virtual Text* AddText( ) = 0 ;
+	virtual Text* AddText( const TextState& ts ) = 0 ;
 	
 	virtual void VisitGraphics( GraphicsVisitor *visitor ) = 0 ;
 } ;
