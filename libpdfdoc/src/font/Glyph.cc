@@ -24,11 +24,20 @@
 */
 
 #include "font/Glyph.hh"
+#include "font/Outline.hh"
 
 #include "FreeTypeWrappers.hh"
 #include "FontException.hh"
 
+#include "util/Debug.hh"
+
 #include <boost/format.hpp>
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
+#include FT_GLYPH_H
+#include FT_IMAGE_H
+#include FT_OUTLINE_H
 
 namespace pdf {
 
@@ -38,6 +47,48 @@ struct Glyph::Impl
 	FT_Glyph_Metrics	met ;
 } ;
 
+namespace {
+
+int MoveTo( const FT_Vector* to, void *user )
+{
+	Outline *out = reinterpret_cast<Outline*>( user ) ;
+	PDF_ASSERT( out != 0 ) ;
+	out->MoveTo( to->x, to->y ) ;
+	return 0 ;
+}
+
+int LineTo( const FT_Vector* to, void *user )
+{
+	Outline *out = reinterpret_cast<Outline*>( user ) ;
+	PDF_ASSERT( out != 0 ) ;
+	out->LineTo( to->x, to->y ) ;
+	return 0 ;
+}
+
+int QuadTo(
+	const FT_Vector	*control,
+	const FT_Vector	*to,
+	void 			*user )
+{
+	Outline *out = reinterpret_cast<Outline*>( user ) ;
+	PDF_ASSERT( out != 0 ) ;
+	out->QuadTo( control->x, control->y, to->x, to->y ) ;
+	return 0 ;
+}
+
+int CubicTo(
+	const FT_Vector	*c1,
+	const FT_Vector	*c2,
+	const FT_Vector	*to,
+	void 			*user )
+{
+	Outline *out = reinterpret_cast<Outline*>( user ) ;
+	PDF_ASSERT( out != 0 ) ;
+	out->CubicTo( c1->x, c1->y, c2->x, c2->y, to->x, to->y ) ;
+	return 0 ;
+}
+
+} // end of anonymous namespace
 
 /**	constructor
 */
@@ -89,6 +140,26 @@ unsigned Glyph::AdvanceX( ) const
 unsigned Glyph::AdvanceY( ) const
 {
 	return m_impl->met.vertAdvance ;
+}
+
+bool Glyph::Decompose( Outline *outline ) const
+{
+	if ( m_impl->glyph->format == FT_GLYPH_FORMAT_OUTLINE )
+	{
+		FT_Outline_Funcs f =
+		{
+			&MoveTo,
+			&LineTo,
+			&QuadTo,
+			&CubicTo,
+			0, 0
+		} ;
+		
+		FT_OutlineGlyph og = reinterpret_cast<FT_OutlineGlyph>( m_impl->glyph ); 
+		return FT_Outline_Decompose( &og->outline, &f, outline ) == 0 ;
+	}
+	else
+		return false ;
 }
 
 } // end of namespace

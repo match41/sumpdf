@@ -17,51 +17,34 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	Glyph.hh
-    \brief	definition the Glyph class
+/**	\file	Outline.hh
+    \brief	definition the Outline class
     \date	Jan 24, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_GLYPH_HEADER_INCLUDED__
-#define __PDF_GLYPH_HEADER_INCLUDED__
-
-#include <boost/shared_ptr.hpp>
+#ifndef __PDF_OUTLINE_HH_EADER_INCLUDED__
+#define __PDF_OUTLINE_HH_EADER_INCLUDED__
 
 namespace pdf {
 
-// freetype wrappers
-namespace ft
-{
-	struct Face ;
-}
-
-class Outline ;
-
 ///	brief description
-/**	The Glyph class represents
+/**	The Outline class represents
 */
-class Glyph
+class Outline
 {
 public :
-	Glyph( unsigned idx, const ft::Face& face ) ;
-	~Glyph( ) ;
-	
-	unsigned Width( ) const ;
-	unsigned Height( ) const ;
-	
-	unsigned AdvanceX( ) const ;
-	unsigned AdvanceY( ) const ;
-
-	bool Decompose( Outline *outline ) const ;
-
-private :
-	struct Impl ;
-	boost::shared_ptr<Impl>	m_impl ;
-	
-	struct OutlineDecomposer ;
+	virtual void MoveTo( unsigned x, unsigned y ) ;
+	virtual void LineTo( unsigned x, unsigned y ) ;
+	virtual void QuadTo(
+		unsigned cx, unsigned cy,
+		unsigned tx, unsigned ty ) = 0 ;
+	virtual void CubicTo(
+		unsigned c1x, unsigned c1y,
+		unsigned c2x, unsigned c2y,
+		unsigned tx,  unsigned ty ) = 0 ;
 } ;
 
 } // end of namespace
 
-#endif // GLYPH_HH_
+#endif // OUTLINE_HH_
