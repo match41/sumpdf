@@ -54,6 +54,8 @@ public :
 	unsigned AdvanceY( ) const ;
 
 	bool Decompose( Outline *outline ) const ;
+	
+	bool IsOutline( ) const ;
 
 private :
 	struct Impl ;

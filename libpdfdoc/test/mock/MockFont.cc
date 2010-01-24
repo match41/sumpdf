@@ -72,3 +72,8 @@ const pdf::Glyph* MockFont::GetGlyph( wchar_t ch ) const
 {
 	return 0 ;
 }
+
+unsigned MockFont::UnitsPerEM() const
+{
+	return 0 ;
+}

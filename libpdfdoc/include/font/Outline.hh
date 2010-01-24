@@ -34,15 +34,13 @@ namespace pdf {
 class Outline
 {
 public :
-	virtual void MoveTo( unsigned x, unsigned y ) ;
-	virtual void LineTo( unsigned x, unsigned y ) ;
-	virtual void QuadTo(
-		unsigned cx, unsigned cy,
-		unsigned tx, unsigned ty ) = 0 ;
+	virtual void MoveTo( int x, int y ) = 0 ;
+	virtual void LineTo( int x, int y ) = 0 ;
+	virtual void QuadTo( int cx, int cy, int tx, int ty ) = 0 ;
 	virtual void CubicTo(
-		unsigned c1x, unsigned c1y,
-		unsigned c2x, unsigned c2y,
-		unsigned tx,  unsigned ty ) = 0 ;
+		int c1x, int c1y,
+		int c2x, int c2y,
+		int tx,  int ty ) = 0 ;
 } ;
 
 } // end of namespace

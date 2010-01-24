@@ -46,6 +46,7 @@ public :
 	FT_Glyph	GetGlyph( wchar_t ch, FT_Glyph_Metrics *met ) const ;
 	const pdf::Glyph*	GetGlyph( wchar_t ch ) const ;
 	double Width( const pdf::Glyph& glyph ) const ;
+	unsigned UnitsPerEM() const ;
 } ;
 
 #endif // MOCKFONT_HH_

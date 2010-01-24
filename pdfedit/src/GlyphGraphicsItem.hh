@@ -28,15 +28,19 @@
 
 #include <QGraphicsItem>
 
+#include <font/Glyph.hh>
+
 // freetype headers
-#include <ft2build.h>
-#include FT_FREETYPE_H
-#include FT_GLYPH_H
+//#include <ft2build.h>
+//#include FT_FREETYPE_H
+//#include FT_GLYPH_H
 
 class QPainterPath ;
 class QPointF ;
 
 namespace pdf {
+
+class Glyph ;
 
 ///	brief description
 /**	The GlyphGraphicsItem class represents
@@ -44,10 +48,10 @@ namespace pdf {
 class GlyphGraphicsItem : public QGraphicsPathItem
 {
 public :
-	explicit GlyphGraphicsItem( FT_Glyph glyph, FT_Glyph_Metrics met ) ;
+	explicit GlyphGraphicsItem( const Glyph& glyph ) ;
 
 private :
-	static int MoveTo( const FT_Vector* to, void *user ) ;
+/*	static int MoveTo( const FT_Vector* to, void *user ) ;
 	int MoveTo( const FT_Vector* to, QPainterPath *p ) ;
 	static int LineTo( const FT_Vector* to, void *user ) ;
 	int LineTo( const FT_Vector* to, QPainterPath *p ) ;
@@ -69,13 +73,14 @@ private :
 		const FT_Vector	*control2,
 		const FT_Vector	*to,
 		QPainterPath	*p ) ;
-
+*/
 	struct Render ;
 
-	QPointF Transform( const FT_Vector *p ) const ;
+//	QPointF Transform( const FT_Vector *p ) const ;
 
 private :
-	FT_Glyph_Metrics	m_metrics ;
+//	FT_Glyph_Metrics	m_metrics ;
+	Glyph	m_glyph ;
 } ;
 
 } // end of namespace

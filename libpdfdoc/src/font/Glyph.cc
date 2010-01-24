@@ -162,4 +162,9 @@ bool Glyph::Decompose( Outline *outline ) const
 		return false ;
 }
 
+bool Glyph::IsOutline( ) const
+{
+	return m_impl->glyph->format == FT_GLYPH_FORMAT_OUTLINE ;
+}
+
 } // end of namespace

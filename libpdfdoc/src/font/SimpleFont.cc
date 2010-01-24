@@ -283,6 +283,11 @@ double SimpleFont::Width( const Glyph& glyph ) const
 	return glyph.AdvanceX() * 1000.0 / m_face->units_per_EM ;
 }
 
+unsigned SimpleFont::UnitsPerEM( ) const
+{
+	return m_face->units_per_EM ;
+}
+
 SimpleFont::Type SimpleFont::GetFontType( FT_Face face )
 {
 	const char *format = ::FT_Get_X11_Font_Format( face ) ;
@@ -402,21 +407,6 @@ std::string SimpleFont::BaseName( ) const
 FT_Face SimpleFont::Face( ) const
 {
 	return m_face ;
-}
-
-FT_Glyph SimpleFont::GetGlyph( wchar_t ch, FT_Glyph_Metrics *met ) const
-{
-	GlyphMap::const_iterator it = m_glyphs.find( ch ) ;
-	if ( it != m_glyphs.end() )
-	{
-		if ( met != 0 )
-			*met = it->second.metrics ;
-		
-		PDF_ASSERT( it->second.glyph != 0 ) ;
-		return it->second.glyph ;
-	}
-	else
-		return 0 ;
 }
 
 const Glyph* SimpleFont::GetGlyph( wchar_t ch ) const

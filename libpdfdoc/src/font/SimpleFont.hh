@@ -68,15 +68,15 @@ public :
 	std::string BaseName( ) const ;
 	Ref Write( IFile *file ) const ;
 
-	FT_Face 	Face( ) const ;
-	FT_Glyph	GetGlyph( wchar_t ch, FT_Glyph_Metrics *met ) const ;
-	const Glyph*		GetGlyph( wchar_t ch ) const ;
+	FT_Face 		Face( ) const ;
+	const Glyph*	GetGlyph( wchar_t ch ) const ;
 	
 	FontDescriptor* Descriptor( ) ;
 
 	double Width( const std::wstring& text, double size ) const ;
 	double Width( wchar_t ch ) const ;
 	double Width( const Glyph& glyph ) const ;	
+	unsigned UnitsPerEM( ) const ;
 	
 private :
 	void LoadGlyphs( ) ;

@@ -25,8 +25,10 @@
 
 #include "GlyphGraphicsItem.hh"
 
-#include FT_IMAGE_H
-#include FT_OUTLINE_H
+#include <font/Outline.hh>
+
+//#include FT_IMAGE_H
+//#include FT_OUTLINE_H
 
 #include <QImage>
 #include <QPainter>
@@ -39,17 +41,38 @@
 
 namespace pdf {
 
-struct GlyphGraphicsItem::Render
+struct GlyphGraphicsItem::Render : public Outline
 {
-	GlyphGraphicsItem				*pthis ;
-	QPainterPath					*painter ;
+	QPainterPath	*p ;
+
+	void MoveTo( int x, int y )
+	{
+		p->moveTo( x, y ) ;
+	}
+	
+	void LineTo( int x, int y )
+	{
+		p->lineTo( x, y ) ;
+	}
+	
+	void QuadTo( int cx, int cy, int tx, int ty )
+	{
+//qDebug() << "cx = " << cx << " cy = " << cy << " tx = " << tx << " ty = " << ty ;
+		p->quadTo( cx, cy, tx, ty ) ;
+	}
+	
+	void CubicTo( int c1x, int c1y, int c2x, int c2y, int tx,  int ty )
+	{
+		p->cubicTo( c1x, c1y, c2x, c2y, tx, ty ) ;
+	}
 } ;
 
 /**	constructor
 */
-GlyphGraphicsItem::GlyphGraphicsItem( FT_Glyph glyph, FT_Glyph_Metrics met )
-	: m_metrics( met )
+GlyphGraphicsItem::GlyphGraphicsItem( const Glyph& glyph )
+	: m_glyph( glyph )
 {
+/*
 	PDF_ASSERT( glyph != 0 ) ;
 	PDF_ASSERT( glyph->format == FT_GLYPH_FORMAT_OUTLINE ) ;
 
@@ -61,18 +84,21 @@ GlyphGraphicsItem::GlyphGraphicsItem( FT_Glyph glyph, FT_Glyph_Metrics met )
 		&GlyphGraphicsItem::CubicTo,
 		0, 0
 	} ;
+*/
 	
-	QPainterPath path( QPointF ( 0.0,0.0 ) ) ;
-	Render r = { this, &path } ;
+	QPainterPath path( QPointF ( 0.0, 0.0 ) ) ;
+	Render r ;
+	r.p = &path ;
+	m_glyph.Decompose( &r ) ;
+//	FT_OutlineGlyph og = reinterpret_cast<FT_OutlineGlyph>( glyph ) ; 
+//	FT_Outline_Decompose( &og->outline, &f, &r ) ;
 	
-	FT_OutlineGlyph og = reinterpret_cast<FT_OutlineGlyph>( glyph ) ; 
-	FT_Outline_Decompose( &og->outline, &f, &r ) ;
-	
-	setBrush( QColor(0, 0, 0) );
+	setBrush( QColor(0, 0, 0) ) ;
 	setPen( QPen( Qt::NoPen ) ) ;
 	setPath( path ) ;
 }
 
+/*
 int GlyphGraphicsItem::MoveTo( const FT_Vector* to, void *user )
 {
 	Render *r = reinterpret_cast<Render*>( user ) ;
@@ -144,5 +170,6 @@ QPointF GlyphGraphicsItem::Transform( const FT_Vector *p ) const
 {
 	return QPointF( p->x, p->y ) ;
 }
+*/
 
 } // end of namespace

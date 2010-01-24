@@ -193,25 +193,27 @@ void MainWnd::LoadTextLine( const TextLine& line )
 	const TextBlock& b = *line.begin() ;
 
 	Font	*font	= b.Format().GetFont() ; 
-	FT_Face face	= font->Face( ) ;
+//	FT_Face face	= font->Face( ) ;
 	
 	Matrix tm = line.Transform() ;
 	const std::wstring& text = b.Text() ;
 	for ( std::size_t i = 0 ; i < text.size() ; i++ )
 	{
-		FT_Glyph_Metrics met ;
-		FT_Glyph g = font->GetGlyph( text[i], &met ) ;
-		PDF_ASSERT( g != 0 ) ;
-		
-		if ( g->format == FT_GLYPH_FORMAT_OUTLINE )
+//		FT_Glyph_Metrics met ;
+//		FT_Glyph g = font->GetGlyph( text[i], &met ) ;
+//		PDF_ASSERT( g != 0 ) ;
+		const Glyph *glyph = font->GetGlyph( text[i] ) ;
+
+//		if ( g->format == FT_GLYPH_FORMAT_OUTLINE )
+		if ( glyph != 0 && glyph->IsOutline() )
 		{
-			GlyphGraphicsItem *item = new GlyphGraphicsItem( g, met ) ;
+			GlyphGraphicsItem *item = new GlyphGraphicsItem( *glyph ) ;
 
 			// scale font by their font size
-			double scalefactor = b.Format().FontSize() / face->units_per_EM ;
+			double scalefactor = b.Format().FontSize() / font->UnitsPerEM() ;
 			item->setTransform( ToQtMatrix( tm ) ) ;
 			item->scale( scalefactor, scalefactor ) ;
-			tm.Dx( tm.Dx() + met.horiAdvance * scalefactor) ;
+			tm.Dx( tm.Dx() + glyph->AdvanceX() * scalefactor) ;
 
 			m_scene->addItem( item ) ;
 		}
