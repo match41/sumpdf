@@ -144,14 +144,6 @@ SimpleFont::SimpleFont( Dictionary& self, IFile *file, FT_Library ft_lib )
 
 SimpleFont::~SimpleFont( )
 {
-	std::for_each(
-		m_glyphs.begin(),
-		m_glyphs.end(),
-		boost::bind(
-			&FT_Done_Glyph,
-			boost::bind( &GlyphData::glyph,
-				boost::bind( &GlyphMap::value_type::second, _1 ) ) ) ) ;
-
 	FT_Done_Face( m_face ) ;
 }
 
@@ -259,21 +251,18 @@ std::string SimpleFont::FindStdFont( const std::string& base_name )
 	return FindFont( name, style ) ;
 }
 
-double SimpleFont::Width( wchar_t ch ) const
-{
-	GlyphMap::const_iterator it = m_glyphs.find( ch ) ;
-	return it != m_glyphs.end()
-		? it->second.metrics.horiAdvance * 1000.0 / m_face->units_per_EM
-		: 0.0 ;
-}
-
 double SimpleFont::Width( const std::wstring& text, double size ) const
 {
 	double width = 0.0 ;
 	for ( std::wstring::const_iterator i = text.begin() ; i < text.end() ; ++i )
 	{
 		if ( *i >= m_first_char && *i <= m_last_char )
-			width += (Width(*i) * size ) ;
+		{
+			const Glyph *g = GetGlyph( *i ) ;
+			PDF_ASSERT( g != 0 ) ;
+			
+			width += (Width(*g) * size ) ;
+		}
 	}
 	return width ;
 }
@@ -330,18 +319,12 @@ void SimpleFont::LoadGlyphs( )
 				boost::format( "cannot copy glyph %2% from %1%" )
 				% BaseName() % char_code ) ;
 
-		ft::Face face_wrapper = { m_face } ;
-
 		if ( glyph->format == FT_GLYPH_FORMAT_OUTLINE )
 		{
-			GlyphData g =
-			{
-				glyph,
-				m_face->glyph->metrics,
-				Glyph( gindex, face_wrapper ) 
-			} ;
-//			m_glyphs[char_code] = g ;
-			m_glyphs.insert( std::make_pair( char_code, g ) ) ;
+			ft::Face face_wrapper = { m_face } ;
+			m_glyphs.insert( std::make_pair(
+				char_code,
+				Glyph( gindex, face_wrapper ) ) ) ;
 		}
 		
 		m_last_char = static_cast<int>( char_code ) ;
@@ -371,8 +354,12 @@ Ref SimpleFont::Write( IFile *file ) const
 
 	Array widths ;
 	for ( int i = m_first_char ; i <= m_last_char ; ++i )
-		widths.push_back( Width(i) ) ;
-	
+	{
+		const Glyph *g = GetGlyph( i ) ;
+		PDF_ASSERT( g != 0 ) ;
+		widths.push_back( Width(*g) ) ;
+	}
+		
 	dict.Get()["Widths"]			= widths ;
 
 	dict.Get()["FontDescriptor"]	= m_descriptor->Write( file ) ;
@@ -404,20 +391,10 @@ std::string SimpleFont::BaseName( ) const
 	return m_base_font.Str( ) ;
 }
 
-FT_Face SimpleFont::Face( ) const
-{
-	return m_face ;
-}
-
 const Glyph* SimpleFont::GetGlyph( wchar_t ch ) const
 {
 	GlyphMap::const_iterator it = m_glyphs.find( ch ) ;
-	if ( it != m_glyphs.end() )
-	{
-		return &it->second.glyph2 ;
-	}
-	else
-		return 0 ;
+	return it != m_glyphs.end() ? &it->second : 0 ;
 }
 
 FontDescriptor* SimpleFont::Descriptor( )
@@ -425,9 +402,9 @@ FontDescriptor* SimpleFont::Descriptor( )
 	return m_descriptor.get() ;
 }
 
-BaseFont* CreateFont( Dictionary& obj, IFile *file, FT_Library ft_lib )
+BaseFont* CreateFont( Dictionary& obj, IFile *file, const ft::Library& ft )
 {
-	return new SimpleFont( obj, file, ft_lib ) ;
+	return new SimpleFont( obj, file, ft.lib ) ;
 }
 
 } // end of namespace

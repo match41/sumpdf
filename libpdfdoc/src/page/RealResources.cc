@@ -34,6 +34,7 @@
 #include "file/RefObjMap.hh"
 #include "file/ResourcePool.hh"
 #include "font/BaseFont.hh"
+#include "font/FreeTypeWrappers.hh"
 #include "util/Util.hh"
 #include "util/Debug.hh"
 
@@ -114,6 +115,8 @@ void RealResources::ReadFontDict( Dictionary& self, IFile *file )
 		FontPool *font_pool = &file->Pool( )->fonts ;
 		for ( Dictionary::iterator i  = dict.begin( ) ; i != dict.end( ) ; ++i )
 		{
+			ft::Library lib = { m_ft_lib } ;
+		
 			BaseFont *font = 0 ;
 			if ( i->second.Is<Ref>() )
 			{
@@ -122,7 +125,7 @@ void RealResources::ReadFontDict( Dictionary& self, IFile *file )
 				if ( font == 0 )
 				{
 					Dictionary self = file->ReadObj( link ) ;
-					font = CreateFont( self, file, m_ft_lib ) ; 
+					font = CreateFont( self, file, lib ) ; 
 					font_pool->Add( link, font ) ;
 				}
 				PDF_ASSERT( font != 0 ) ;
@@ -130,7 +133,7 @@ void RealResources::ReadFontDict( Dictionary& self, IFile *file )
 			
 			// the font is not an indirect object, so it can't be shared.
 			else if ( i->second.Is<Dictionary>() )
-				font = CreateFont( i->second.As<Dictionary>(), file, m_ft_lib ) ;
+				font = CreateFont( i->second.As<Dictionary>(), file, lib ) ;
 
 			m_fonts.insert( FontMap::value_type(i->first, font) ) ;
 		}

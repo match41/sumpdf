@@ -28,7 +28,10 @@
 
 #include "font/BaseFont.hh"
 
-#include "font/FontDescriptor.hh"
+namespace pdf
+{
+	class FontDescriptor ;
+}
 
 ///	brief description
 /**	The MockFont class represents
@@ -42,8 +45,6 @@ public :
 	pdf::Ref Write( pdf::IFile *file ) const ;
 	pdf::FontDescriptor* Descriptor( ) ;
 	double Width( const std::wstring& text, double size ) const ;
-	FT_Face 	Face( ) const ;
-	FT_Glyph	GetGlyph( wchar_t ch, FT_Glyph_Metrics *met ) const ;
 	const pdf::Glyph*	GetGlyph( wchar_t ch ) const ;
 	double Width( const pdf::Glyph& glyph ) const ;
 	unsigned UnitsPerEM() const ;

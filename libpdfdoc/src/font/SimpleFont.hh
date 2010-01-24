@@ -39,7 +39,10 @@
 // boost library
 #include <boost/tr1/unordered_map.hpp>
 
-#include FT_GLYPH_H
+
+// freetype headers
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 #include <vector>
 #include <memory>
@@ -68,13 +71,11 @@ public :
 	std::string BaseName( ) const ;
 	Ref Write( IFile *file ) const ;
 
-	FT_Face 		Face( ) const ;
 	const Glyph*	GetGlyph( wchar_t ch ) const ;
 	
 	FontDescriptor* Descriptor( ) ;
 
 	double Width( const std::wstring& text, double size ) const ;
-	double Width( wchar_t ch ) const ;
 	double Width( const Glyph& glyph ) const ;	
 	unsigned UnitsPerEM( ) const ;
 	
@@ -114,13 +115,7 @@ private :
 //	Object				m_to_unicode ;
 //	Object				m_encoding ;	//!< name or dictionary
 	
-	struct GlyphData
-	{
-		FT_Glyph			glyph ;
-		FT_Glyph_Metrics	metrics ;
-		Glyph				glyph2 ;
-	} ;
-	typedef std::tr1::unordered_map<wchar_t, GlyphData> GlyphMap ;
+	typedef std::tr1::unordered_map<wchar_t, Glyph> GlyphMap ;
 	GlyphMap	m_glyphs ;
 } ;
 

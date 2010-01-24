@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2009 by Nestal Wan                                      *
+ *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,47 +17,40 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/*!
-	\file	BaseFont.hh
-	\brief	definition the BaseFont class
-	\date	Sun Mar 8 2009
-	\author	Nestal Wan
+/**	\file	FreeTypeWrappers.hh
+    \brief	definition the FreeTypeWrappers class
+    \date	Jan 24, 2010
+    \author	Nestal Wan
 */
 
-#ifndef __PDF_BASE_FONT_HEADER_INCLUDED__
-#define __PDF_BASE_FONT_HEADER_INCLUDED__
+#ifndef __PDF_FREETYPEWRAPPERS_HH_EADER_INCLUDED__
+#define __PDF_FREETYPEWRAPPERS_HH_EADER_INCLUDED__
 
-#include "font/Font.hh"
-#include "util/RefCounter.hh"
+// freetype headers
+#include <ft2build.h>
+#include FT_FREETYPE_H
+#include FT_GLYPH_H
 
 namespace pdf {
 
 namespace ft
 {
-	struct Library ;
+	struct Face
+	{
+		FT_Face		face ;
+	} ;
+	
+	struct Library
+	{
+		FT_Library	lib ;
+	} ;
+	
+	struct Glyph
+	{
+		FT_Glyph	glyph ;
+	} ;
 }
-
-class IFile ;
-class Dictionary ;
-class Ref ;
-class FontDescriptor ;
-
-/*!	\brief	base class for all fonts
-	\internal
-
-	This class is the base class of all font classes in libpdfdoc.
-*/
-class BaseFont : public RefCounter, public Font
-{
-public :
-	BaseFont( ) ;
-
-	virtual Ref Write( IFile *file ) const = 0 ;
-	virtual FontDescriptor* Descriptor( ) = 0 ;
-} ;
-
-BaseFont* CreateFont( Dictionary& obj, IFile *file, const ft::Library& ft ) ;
 
 } // end of namespace
 
-#endif
+#endif // FREETYPEWRAPPERS_HH_

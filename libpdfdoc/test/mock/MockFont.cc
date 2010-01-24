@@ -53,16 +53,6 @@ double MockFont::Width( const std::wstring& text, double size ) const
 	return 0.0 ;
 }
 
-FT_Face MockFont::Face( ) const
-{
-	return 0 ;
-}
-
-FT_Glyph MockFont::GetGlyph( wchar_t ch, FT_Glyph_Metrics *met ) const
-{
-	return 0 ;
-}
-
 double MockFont::Width( const pdf::Glyph& glyph ) const
 {
 	return 0 ;

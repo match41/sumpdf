@@ -43,6 +43,11 @@ namespace pdf {
 
 struct Glyph::Impl
 {
+	~Impl( )
+	{
+		FT_Done_Glyph( glyph ) ;
+	}
+
 	FT_Glyph			glyph ;
 	FT_Glyph_Metrics	met ;
 } ;
@@ -113,9 +118,6 @@ Glyph::Glyph( unsigned idx, const ft::Face& face )
 
 Glyph::~Glyph( )
 {
-	/// TODO: not thread-safe here
-	if ( m_impl.unique() )
-		FT_Done_Glyph( m_impl->glyph ) ;
 }
 
 /// Width in un-scaled font unit.
