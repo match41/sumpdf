@@ -27,7 +27,6 @@
 #include "MainWnd.hh"
 
 #include "PageView.hh"
-#include "GlyphGraphicsItem.hh"
 #include "PropertiesDlg.hh"
 
 // Qt headers
@@ -52,10 +51,9 @@
 // libpdfdoc headers
 #include <libpdfdoc.hh>
 #include <Doc.hh>
-#include <page/Page.hh>
 #include <font/Font.hh>
+#include <page/Page.hh>
 #include <util/Rect.hh>
-#include <util/Matrix.hh>
 #include <util/Debug.hh>
 #include <page/PageContent.hh>
 #include <graphics/Text.hh>
@@ -190,26 +188,10 @@ void MainWnd::LoadTextLine( const TextLine& line )
 {
 	for ( TextLine::const_iterator it = line.begin() ; it != line.end() ; ++it )
 	{
-//		it->VisitChars( line.Transform(), this ) ;
 		GlyphGroup *group = new GlyphGroup( *it ) ;
 		group->setTransform( ToQtMatrix( line.Transform() ) ) ;
 		m_scene->addItem( group ) ;
 	}
-}
-
-void MainWnd::OnChar(
-	wchar_t 		ch,
-	const Matrix&	m,
-	const Glyph&	glyph,
-	double			scale_factor )
-{
-	GlyphGraphicsItem *item = new GlyphGraphicsItem( glyph ) ;
-
-	// scale font by their font size
-	item->setTransform( ToQtMatrix( m ) ) ;
-	item->scale( scale_factor, scale_factor ) ;
-
-	m_scene->addItem( item ) ;
 }
 
 void MainWnd::VisitGraphics( Graphics *gfx )
@@ -263,12 +245,20 @@ void MainWnd::StorePage( QGraphicsScene *scene, Doc *doc, Page *page )
 	assert( doc != 0 ) ;
 	assert( page != 0 ) ;
 	
-//	Font *font = doc->CreateSimpleFont( "Arial" ) ;
+	Font *font = doc->CreateSimpleFont( "Arial" ) ;
 	
 	QList<QGraphicsItem *> items = scene->items() ;
 	for ( QList<QGraphicsItem*>::iterator i  = items.begin() ;
 	                                      i != items.end() ; ++i )
 	{
+		GlyphGroup *text =
+			qgraphicsitem_cast<GlyphGroup*>( *i ) ;
+		text = dynamic_cast<GlyphGroup*>( *i ) ;
+		if ( text != 0 )
+		{
+			PDF_ASSERT( text != 0 ) ;
+			qDebug() << "text = " << text ;
+		}
 /*		QGraphicsProxyWidget *text =
 			qgraphicsitem_cast<QGraphicsProxyWidget*>( *i ) ;
 		

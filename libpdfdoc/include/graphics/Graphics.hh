@@ -38,10 +38,14 @@ class GraphicsVisitor ;
 
 /**	\addtogroup	graphics Graphics
 	\brief	Graphics objects module
-	\internal
 	
 	The graphics objects represent visual elements that appears in the page.
 	These classes provide access to their content.
+	
+	All graphics items in a PDF document uses the default coordinate called
+	"User Space". It is a devices independent unit. The default unit in users
+	space is point, which is 1/72 inch. In other words, the coordinate (72,72)
+	is corresponding to one inch right and inch up from the origin.
 */
 
 /**	\brief	brief description

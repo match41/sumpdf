@@ -47,6 +47,11 @@ public :
 		const Matrix&	m,
 		const Glyph&	glyph,
 		double			scale_factor ) ; 
+
+	int type( ) const ;
+
+private :
+	static const int m_type = UserType + 1 ;
 } ;
 
 } // end of namespace

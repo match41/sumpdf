@@ -92,9 +92,24 @@ std::ostream& operator<<( std::ostream& os, const TextBlock& t )
 				<< "</text>\n" << t.Format() << "</TextBlock>\n" ;
 }
 
+/// Width of the text block in text space.
 double TextBlock::Width( ) const
 {
-	return 0.0f ;
+	double font_unit = 0.0 ;
+	
+	Font	*font	= m_format.GetFont() ;
+	double	size	= m_format.FontSize() ;
+	
+	for ( std::wstring::const_iterator i =
+		m_chars.begin() ; i < m_chars.end() ; ++i )
+	{
+		const Glyph *g = font->GetGlyph( *i ) ;
+		if ( g != 0 )
+			font_unit += g->AdvanceX() ;
+	}
+	
+	// divided by 1000 to convert glyph_unit to text space
+	return font->FromFontUnit( font_unit ) * size / 1000.0 ;
 }
 
 double TextBlock::ScaleFactor( ) const

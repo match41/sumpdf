@@ -38,8 +38,10 @@ namespace ft
 
 class Outline ;
 
-///	brief description
-/**	The Glyph class represents
+///	A glyph.
+/**	The Glyph class represents a glyph in an PDF document. The unit of the
+	metrics provided by this class is always in font unit. The actual size
+	of the font unit will be defined by Font::UnitsPerEM().  
 */
 class Glyph
 {

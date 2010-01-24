@@ -78,4 +78,9 @@ GlyphGraphicsItem::GlyphGraphicsItem( const Glyph& glyph )
 	setPath( path ) ;
 }
 
+int GlyphGraphicsItem::type( ) const
+{
+	return m_type ;
+}
+
 } // end of namespace

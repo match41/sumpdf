@@ -272,6 +272,7 @@ double SimpleFont::Width( const Glyph& glyph ) const
 	return glyph.AdvanceX() * 1000.0 / m_face->units_per_EM ;
 }
 
+/// Return the size of the EM square in font units.
 unsigned SimpleFont::UnitsPerEM( ) const
 {
 	return m_face->units_per_EM ;
@@ -332,6 +333,7 @@ void SimpleFont::LoadGlyphs( )
 	}
 }
 
+/// Convert Freetype font unit to PDF glyph unit
 double SimpleFont::FromFontUnit( unsigned val ) const
 {
 	return val * 1000.0 / m_face->units_per_EM ;

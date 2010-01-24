@@ -26,6 +26,7 @@
 #include "RealText.hh"
 
 #include "graphics/GraphicsVisitor.hh"
+#include "graphics/TextBlock.hh"
 
 #include "core/Array.hh"
 #include "core/Object.hh"
@@ -255,10 +256,11 @@ void RealText::OnTJ( Object* args, std::size_t count, Resources *res )
 			std::string& s = i->As<std::string>() ;
 			std::wstring ws( s.begin(), s.end() ) ;
 
-			double width = m_state.GetFont()->Width( ws, m_state.FontSize() ) ;
+			TextBlock tb( s, m_state ) ; 
+//			double width = m_state.GetFont()->Width( ws, m_state.FontSize() ) ;
 
 			Matrix m ;
-			m.Dx( width / 1000.0 ) ;
+			m.Dx( tb.Width() ) ;
 			tm = tm * m ;
 
 			m_lines.back().AppendText( ws ) ;

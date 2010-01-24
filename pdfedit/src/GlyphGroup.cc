@@ -39,6 +39,9 @@ namespace pdf {
 GlyphGroup::GlyphGroup( const TextBlock& blk )
 {
 	blk.VisitChars( Matrix(), this ) ;
+	
+	// setup flags
+	setFlags( ItemIsSelectable | ItemIsMovable ) ; 
 }
 
 void GlyphGroup::OnChar(
@@ -54,6 +57,11 @@ void GlyphGroup::OnChar(
 	item->scale( scale_factor, scale_factor ) ;
 
 	addToGroup( item ) ;
+}
+
+int GlyphGroup::type( ) const
+{
+	return m_type ;
 }
 
 } // end of namespace

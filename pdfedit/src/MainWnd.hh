@@ -30,7 +30,6 @@
 #include <QMainWindow>
 #include "ui_MainWnd.h"
 #include <graphics/GraphicsVisitor.hh>
-#include <graphics/CharVisitor.hh>
 
 #include <QString>
 
@@ -55,8 +54,7 @@ class TextLine ;
 class MainWnd :
 	public QMainWindow,
 	private Ui::MainWndUI,
-	private GraphicsVisitor,
-	private CharVisitor
+	private GraphicsVisitor
 {
 	Q_OBJECT
 
@@ -80,12 +78,6 @@ private :
 	void VisitGraphics( Graphics *gfx ) ;
 	void LoadTextLine( const TextLine& line ) ;
 
-	void OnChar(
-		wchar_t 		ch,
-		const Matrix&	m,
-		const Glyph&	glyph,
-		double			scale_factor ) ; 
-	
 private :
 	std::auto_ptr<Doc>	m_doc ;
 	

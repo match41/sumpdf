@@ -120,25 +120,25 @@ Glyph::~Glyph( )
 {
 }
 
-/// Width in un-scaled font unit.
+/// Width in un-scaled Freetype font unit.
 unsigned Glyph::Width( ) const
 {
 	return m_impl->met.width ;
 }
 
-/// Height in un-scaled font unit.
+/// Height in un-scaled Freetype font unit.
 unsigned Glyph::Height( ) const
 {
 	return m_impl->met.height ;
 }
 
-/// Horizonal advance in un-scaled font unit.
+/// Horizonal advance in un-scaled Freetype font unit.
 unsigned Glyph::AdvanceX( ) const
 {
 	return m_impl->met.horiAdvance ;
 }
 
-/// Vertical advance in un-scaled font unit.
+/// Vertical advance in un-scaled Freetype font unit.
 unsigned Glyph::AdvanceY( ) const
 {
 	return m_impl->met.vertAdvance ;

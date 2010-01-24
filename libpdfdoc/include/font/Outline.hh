@@ -39,6 +39,7 @@ namespace pdf {
 class Outline
 {
 public :
+	/// Move to the specific point.
 	virtual void MoveTo( int x, int y ) = 0 ;
 	virtual void LineTo( int x, int y ) = 0 ;
 	virtual void QuadTo( int cx, int cy, int tx, int ty ) = 0 ;

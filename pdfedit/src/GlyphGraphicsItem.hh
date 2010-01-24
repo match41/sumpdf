@@ -30,11 +30,6 @@
 
 #include <font/Glyph.hh>
 
-// freetype headers
-//#include <ft2build.h>
-//#include FT_FREETYPE_H
-//#include FT_GLYPH_H
-
 class QPainterPath ;
 class QPointF ;
 
@@ -50,36 +45,14 @@ class GlyphGraphicsItem : public QGraphicsPathItem
 public :
 	explicit GlyphGraphicsItem( const Glyph& glyph ) ;
 
+	int type( ) const ;
+
 private :
-/*	static int MoveTo( const FT_Vector* to, void *user ) ;
-	int MoveTo( const FT_Vector* to, QPainterPath *p ) ;
-	static int LineTo( const FT_Vector* to, void *user ) ;
-	int LineTo( const FT_Vector* to, QPainterPath *p ) ;
-	static int QuadTo(
-		const FT_Vector	*control,
-		const FT_Vector	*to,
-		void 			*user ) ;
-	int QuadTo(
-		const FT_Vector* control,
-		const FT_Vector* to,
-		QPainterPath	 *p ) ;
-	static int CubicTo(
-		const FT_Vector	*control1,
-		const FT_Vector	*control2,
-		const FT_Vector	*to,
-		void 			*user ) ;
-	int CubicTo(
-		const FT_Vector	*control1,
-		const FT_Vector	*control2,
-		const FT_Vector	*to,
-		QPainterPath	*p ) ;
-*/
 	struct Render ;
 
-//	QPointF Transform( const FT_Vector *p ) const ;
+	static const int m_type = UserType + 2 ;
 
 private :
-//	FT_Glyph_Metrics	m_metrics ;
 	Glyph	m_glyph ;
 } ;
 
