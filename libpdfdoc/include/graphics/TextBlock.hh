@@ -71,8 +71,7 @@ public :
 	bool operator==( const TextBlock& rhs ) const ;
 	bool operator!=( const TextBlock& rhs ) const ;
 	
-	double ScaleFactor( ) const ;
-	void VisitChars( const Matrix& tm, CharVisitor *v ) const ;
+	void VisitChars( CharVisitor *v ) const ;
 	
 private :
 	std::wstring	m_chars ;

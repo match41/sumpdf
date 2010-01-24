@@ -30,9 +30,10 @@
 #include "PropertiesDlg.hh"
 
 // Qt headers
+#include <QApplication>
 #include <QComboBox>
 #include <QFileDialog>
-#include <QGraphicsItem>
+#include <QGraphicsSimpleTextItem>
 #include <QGraphicsScene>
 #include <QFont>
 #include <QFontDialog>
@@ -81,27 +82,12 @@ MainWnd::MainWnd( QWidget *parent )
 	setupUi( this ) ;
 	setCentralWidget( m_view ) ;
 	
-	connect( m_action_about, SIGNAL(triggered()), this, SLOT(OnAbout()));
-	connect(
-		m_action_properties,
-		SIGNAL(triggered()),
-		this,
-		SLOT(OnProperties()) );
-	connect(
-		m_action_open,
-		SIGNAL(triggered()),
-		this,
-		SLOT(OnOpen()) );
-	connect(
-		m_action_save_as,
-		SIGNAL(triggered()),
-		this,
-		SLOT(OnSaveAs()) );
-	connect(
-		m_action_font,
-		SIGNAL(triggered()),
-		this,
-		SLOT(OnEditFont()) );
+	connect( m_action_about,	SIGNAL(triggered()), this, SLOT(OnAbout()));
+	connect( m_action_prop,		SIGNAL(triggered()), this, SLOT(OnProperties()));
+	connect( m_action_open,		SIGNAL(triggered()), this, SLOT(OnOpen()) );
+	connect( m_action_save_as,	SIGNAL(triggered()), this, SLOT(OnSaveAs()) );
+	connect( m_action_font, 	SIGNAL(triggered()), this, SLOT(OnEditFont()) );
+	connect( m_action_exit, 	SIGNAL(triggered()), qApp, SLOT(quit()) );
 
 	// initialize tool bar
 	m_tool_bar->addAction( m_action_open ) ;
@@ -186,12 +172,25 @@ void MainWnd::VisitText( Text *text )
 
 void MainWnd::LoadTextLine( const TextLine& line )
 {
+	QGraphicsItemGroup *line_group = new QGraphicsItemGroup ;
+	line_group->setFlags( QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemIsMovable ) ;
+	
+	Matrix trm ;
+	
 	for ( TextLine::const_iterator it = line.begin() ; it != line.end() ; ++it )
 	{
 		GlyphGroup *group = new GlyphGroup( *it ) ;
-		group->setTransform( ToQtMatrix( line.Transform() ) ) ;
-		m_scene->addItem( group ) ;
+		group->setTransform( ToQtMatrix( trm ) ) ;
+		line_group->addToGroup( group ) ;
+		
+		trm.Dx( trm.Dx() + group->GetTextBlock().Width() ) ;
+//		m_scene->addItem( group ) ;
 	}
+	
+	// remember to set transform AFTER adding the children, or else the
+	// transform will go wrong.
+	line_group->setTransform( ToQtMatrix( line.Transform() ) ) ;
+	m_scene->addItem( line_group ) ;
 }
 
 void MainWnd::VisitGraphics( Graphics *gfx )
@@ -245,7 +244,7 @@ void MainWnd::StorePage( QGraphicsScene *scene, Doc *doc, Page *page )
 	assert( doc != 0 ) ;
 	assert( page != 0 ) ;
 	
-	Font *font = doc->CreateSimpleFont( "Arial" ) ;
+//	Font *font = doc->CreateSimpleFont( "Arial" ) ;
 	
 	QList<QGraphicsItem *> items = scene->items() ;
 	for ( QList<QGraphicsItem*>::iterator i  = items.begin() ;
@@ -253,7 +252,7 @@ void MainWnd::StorePage( QGraphicsScene *scene, Doc *doc, Page *page )
 	{
 		GlyphGroup *text =
 			qgraphicsitem_cast<GlyphGroup*>( *i ) ;
-		text = dynamic_cast<GlyphGroup*>( *i ) ;
+//		text = dynamic_cast<GlyphGroup*>( *i ) ;
 		if ( text != 0 )
 		{
 			PDF_ASSERT( text != 0 ) ;

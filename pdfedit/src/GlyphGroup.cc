@@ -28,20 +28,25 @@
 #include "GlyphGraphicsItem.hh"
 #include "Util.hh"
 
-#include <graphics/TextBlock.hh>
 #include <util/Debug.hh>
 #include <util/Matrix.hh>
+
+#include <QDebug>
 
 namespace pdf {
 
 /**	constructor
 */
-GlyphGroup::GlyphGroup( const TextBlock& blk )
+GlyphGroup::GlyphGroup( const TextBlock& blk, QGraphicsItem *parent )
+	: QGraphicsItemGroup( parent ),
+	  m_block( blk )
 {
-	blk.VisitChars( Matrix(), this ) ;
-	
+qDebug() << "VVVVVVVVVVVVVVVVVVVVVVVVVVVVV" ;
+qDebug() << QString::fromStdWString(m_block.Text()) ;
+	m_block.VisitChars( this ) ;
+qDebug() << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" ;	
 	// setup flags
-	setFlags( ItemIsSelectable | ItemIsMovable ) ; 
+//	setFlags( ItemIsSelectable | ItemIsMovable ) ; 
 }
 
 void GlyphGroup::OnChar(
@@ -51,7 +56,7 @@ void GlyphGroup::OnChar(
 	double			scale_factor ) 
 {
 	GlyphGraphicsItem *item = new GlyphGraphicsItem( glyph ) ;
-
+qDebug() << ToQtMatrix( m ) ;
 	// scale font by their font size
 	item->setTransform( ToQtMatrix( m ) ) ;
 	item->scale( scale_factor, scale_factor ) ;
@@ -61,7 +66,12 @@ void GlyphGroup::OnChar(
 
 int GlyphGroup::type( ) const
 {
-	return m_type ;
+	return Type ;
+}
+
+const TextBlock& GlyphGroup::GetTextBlock() const
+{
+	return m_block ;
 }
 
 } // end of namespace

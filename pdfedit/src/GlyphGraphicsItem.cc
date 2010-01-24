@@ -80,7 +80,7 @@ GlyphGraphicsItem::GlyphGraphicsItem( const Glyph& glyph )
 
 int GlyphGraphicsItem::type( ) const
 {
-	return m_type ;
+	return Type ;
 }
 
 } // end of namespace

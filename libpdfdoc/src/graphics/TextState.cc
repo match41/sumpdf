@@ -172,4 +172,16 @@ bool TextState::operator!=( const TextState& rhs ) const
 	return !operator==( rhs ) ;
 }
 
+///	Returns the scale factor.
+/**	The scale factor is the factor that transform glyph unit to text space
+	unit directly. For example, if \a i is in glyph unit \i * ScaleFactor()
+	will be in text space unit.
+	\return	The scale factor.
+*/
+double TextState::ScaleFactor( ) const
+{
+	PDF_ASSERT( m_font != 0 ) ;
+	return m_font_size / m_font->UnitsPerEM( ) ;
+}
+
 } // end of namespace

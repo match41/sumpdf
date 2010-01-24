@@ -29,10 +29,11 @@
 #include <QGraphicsItemGroup>
 #include <graphics/CharVisitor.hh>
 
+#include <graphics/TextBlock.hh>
+
 namespace pdf {
 
 class Matrix ;
-class TextBlock ;
 
 ///	brief description
 /**	The GlyphGroup class represents
@@ -40,7 +41,7 @@ class TextBlock ;
 class GlyphGroup : public QGraphicsItemGroup, private CharVisitor
 {
 public :
-	GlyphGroup( const TextBlock& blk ) ;
+	GlyphGroup( const TextBlock& blk, QGraphicsItem *parent = 0 ) ;
 
 	void OnChar(
 		wchar_t 		ch,
@@ -50,8 +51,12 @@ public :
 
 	int type( ) const ;
 
+	static const int Type = UserType + 1 ;
+
+	const TextBlock& GetTextBlock() const ;
+
 private :
-	static const int m_type = UserType + 1 ;
+	TextBlock	m_block ;
 } ;
 
 } // end of namespace

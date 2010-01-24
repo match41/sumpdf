@@ -71,6 +71,8 @@ public :
 	bool operator==( const TextState& rhs ) const ;
 	bool operator!=( const TextState& rhs ) const ;
 
+	double ScaleFactor( ) const ;
+
 private :
 	double	m_char_space ;
 	double	m_word_space ;

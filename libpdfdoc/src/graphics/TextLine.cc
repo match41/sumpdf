@@ -116,7 +116,6 @@ void TextLine::AppendText( const std::wstring& text )
 		throw Exception( "invalid font" ) ;
 	else
 	{
-//		std::cout << "using font: " << f->BaseName() << std::endl ; 
 		m_blks.back().AppendText( text ) ;
 	}
 }

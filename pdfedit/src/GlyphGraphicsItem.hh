@@ -47,10 +47,10 @@ public :
 
 	int type( ) const ;
 
+	static const int Type = UserType + 2 ;
+	
 private :
 	struct Render ;
-
-	static const int m_type = UserType + 2 ;
 
 private :
 	Glyph	m_glyph ;

@@ -93,12 +93,19 @@ std::ostream& operator<<( std::ostream& os, const TextBlock& t )
 }
 
 /// Width of the text block in text space.
+///	Return the width of the string in text space unit.
+/**	This function calculates the width of a string in text space unit. It will
+	be further transform to actual user space units by the text matrix. To
+	convert it to glyph unit (PDF glyph space unit), multiply this value by
+	1000.
+	\return	The width of the string in text space unit.
+	\sa	TextLine::Transform()
+*/
 double TextBlock::Width( ) const
 {
 	double font_unit = 0.0 ;
 	
 	Font	*font	= m_format.GetFont() ;
-	double	size	= m_format.FontSize() ;
 	
 	for ( std::wstring::const_iterator i =
 		m_chars.begin() ; i < m_chars.end() ; ++i )
@@ -108,14 +115,7 @@ double TextBlock::Width( ) const
 			font_unit += g->AdvanceX() ;
 	}
 	
-	// divided by 1000 to convert glyph_unit to text space
-	return font->FromFontUnit( font_unit ) * size / 1000.0 ;
-}
-
-double TextBlock::ScaleFactor( ) const
-{
-	PDF_ASSERT( Format().GetFont() != 0 ) ;
-	return m_format.FontSize() / Format().GetFont()->UnitsPerEM( ) ;
+	return font_unit * m_format.ScaleFactor() ;
 }
 
 bool TextBlock::operator==( const TextBlock& rhs ) const
@@ -130,9 +130,9 @@ bool TextBlock::operator!=( const TextBlock& rhs ) const
 	return !operator==( rhs ) ;
 }
 
-void TextBlock::VisitChars( const Matrix& lt, CharVisitor *v ) const
+void TextBlock::VisitChars( CharVisitor *v ) const
 {
-	Matrix tm	= lt ;
+	Matrix tm ;
 	Font *font	= Format().GetFont( ) ; 
 	PDF_ASSERT( font != 0 ) ;
 	
@@ -143,10 +143,10 @@ void TextBlock::VisitChars( const Matrix& lt, CharVisitor *v ) const
 
 		if ( glyph != 0 && glyph->IsOutline() )
 		{
-			v->OnChar( m_chars[*i], tm, *glyph, ScaleFactor() ) ;
+			v->OnChar( m_chars[*i], tm, *glyph, m_format.ScaleFactor() ) ;
 
-			// scale font by their font size
-			tm.Dx( tm.Dx() + glyph->AdvanceX() * ScaleFactor() ) ;
+			// update X position
+			tm.Dx( tm.Dx() + glyph->AdvanceX() * m_format.ScaleFactor() ) ;
 		}
 		else
 		{

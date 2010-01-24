@@ -66,14 +66,7 @@ public :
 	*/
 	virtual const Glyph*	GetGlyph( wchar_t ch ) const = 0 ;
 	
-	///	Return the width of the string in glyph unit.
-	/**	This function calculates the width of a string in glyph unit. To convert
-		it to user unit (PDF user space unit), divide this value by 1000.
-		\param	text	The text string.
-		\param	size	Size of the font in point (1/72 inch).
-		\return	The width of the string in glyph unit.
-	*/
-	virtual double Width( const std::wstring& text, double size ) const = 0 ;
+//	virtual double Width( const std::wstring& text, double size ) const = 0 ;
 	
 	///	Return the number of font unit in the EM square.
 	/**	In creating the glyph outlines, a type designer uses an imaginary square
