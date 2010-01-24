@@ -36,4 +36,9 @@ QTransform ToQtMatrix( const Matrix& m )
 	return QTransform( m.M11(), m.M12(), m.M21(), m.M22(), m.Dx(), m.Dy() ) ;
 }
 
+Matrix FromQtMatrix( const QTransform& m )
+{
+	return Matrix( m.m11(), m.m12(), m.m21(), m.m22(), m.dx(), m.dy() ) ;
+}
+
 } // end of namespace

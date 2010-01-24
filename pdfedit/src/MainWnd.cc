@@ -33,7 +33,7 @@
 #include <QApplication>
 #include <QComboBox>
 #include <QFileDialog>
-#include <QGraphicsSimpleTextItem>
+#include <QGraphicsItemGroup>
 #include <QGraphicsScene>
 #include <QFont>
 #include <QFontDialog>
@@ -244,34 +244,38 @@ void MainWnd::StorePage( QGraphicsScene *scene, Doc *doc, Page *page )
 	assert( doc != 0 ) ;
 	assert( page != 0 ) ;
 	
+	PageContent *c = page->GetContent( ) ;
+	Text *t = c->AddText( TextState() ) ;
 //	Font *font = doc->CreateSimpleFont( "Arial" ) ;
 	
 	QList<QGraphicsItem *> items = scene->items() ;
 	for ( QList<QGraphicsItem*>::iterator i  = items.begin() ;
 	                                      i != items.end() ; ++i )
 	{
-		GlyphGroup *text =
-			qgraphicsitem_cast<GlyphGroup*>( *i ) ;
 //		text = dynamic_cast<GlyphGroup*>( *i ) ;
-		if ( text != 0 )
-		{
-			PDF_ASSERT( text != 0 ) ;
-			qDebug() << "text = " << text ;
-		}
-/*		QGraphicsProxyWidget *text =
-			qgraphicsitem_cast<QGraphicsProxyWidget*>( *i ) ;
-		
-		QPointF pos = text->scenePos( ) ;
-		TextEdit *edit = qobject_cast<TextEdit*>( text->widget() ) ;
-		assert( edit != 0 ) ;
+		QGraphicsItemGroup *group =
+			qgraphicsitem_cast<QGraphicsItemGroup*>( *i ) ;
 
-		// here we do a little transformation on the y coordinate.
-		// the PDF origin is at the lower left corner and the 
-		// y-coordinate increase upward. However, Qt's origin is at the upper
-		// left corner and increase downward.
-		if ( edit != 0 )
-			page->DrawText( pos.x(), scene->height() - pos.y(), font,
-							edit->toPlainText().toUtf8().data() ) ;*/
+		if ( group != 0 )
+		{
+			PDF_ASSERT( group != 0 ) ;
+			
+			TextLine line( FromQtMatrix( group->transform() ) ) ;
+			
+			QList<QGraphicsItem*> children = group->childItems() ;
+			for ( QList<QGraphicsItem*>::iterator j  = children.begin() ;
+			                                      j != children.end() ; ++j )
+			{
+				GlyphGroup *text =
+					qgraphicsitem_cast<GlyphGroup*>( *j ) ;
+				
+				PDF_ASSERT( text != 0 ) ;
+				line.AddBlock( text->GetTextBlock() ) ;
+			}
+			
+//			line.Print( std::cout, TextState(),
+			t->AddLine( line ) ;
+		}
 	}
 }
 

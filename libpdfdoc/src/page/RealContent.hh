@@ -64,6 +64,8 @@ public :
 			Load( *first++, res ) ;
 	}
 
+	void Write( Stream& str, const Resources *res ) const ;
+
 private :
 	void Load( Stream& str, Resources *res ) ;
 

@@ -54,7 +54,7 @@ public :
 		std::size_t		count,
 		Resources		*res ) ;
 
-	void Print( std::ostream& os, Resources *res ) const ;
+	void Print( std::ostream& os, const Resources *res ) const ;
 
 	iterator begin() ;
 	iterator end() ;

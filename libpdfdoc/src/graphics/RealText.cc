@@ -145,7 +145,7 @@ std::size_t RealText::Count( ) const
 	return m_lines.size( ) ;
 }
 
-void RealText::Print( std::ostream& os, Resources *res ) const
+void RealText::Print( std::ostream& os, const Resources *res ) const
 {
 	os << "BT\n" ;
 	TextState ts ;
@@ -154,7 +154,7 @@ void RealText::Print( std::ostream& os, Resources *res ) const
 		m_lines.end(),
 		boost::bind(
 			&TextLine::Print, _1, boost::ref(os), boost::ref(ts), res ) ) ;
-		
+
 	os << "ET\n" ;
 }
 
@@ -194,8 +194,6 @@ void RealText::OnTD( Object* args, std::size_t count, Resources *res )
 
 void RealText::OnTm( Object* args, std::size_t count, Resources* )
 {
-//std::cout << "Tm: " << std::endl ;
-
 	if ( count >= 6 )
 	{
 		// unlike Td and TD, the Tm command will replace the current
@@ -255,13 +253,7 @@ void RealText::OnTJ( Object* args, std::size_t count, Resources *res )
 		{
 			std::string& s = i->As<std::string>() ;
 			std::wstring ws( s.begin(), s.end() ) ;
-
-			TextBlock tb( s, m_state ) ; 
-//			double width = m_state.GetFont()->Width( ws, m_state.FontSize() ) ;
-
-			Matrix m ;
-			m.Dx( tb.Width() ) ;
-			tm = tm * m ;
+			tm.Dx( tm.Dx() + m_state.Width( ws ) ) ;
 
 			m_lines.back().AppendText( ws ) ;
 		}
@@ -271,9 +263,7 @@ void RealText::OnTJ( Object* args, std::size_t count, Resources *res )
 			
 			// TODO: depend on writing mode, advance horizonal or vertical
 			// assume vertical here.
-			Matrix m ;
-			m.Dx( -disp / 1000.0 * m_state.FontSize() ) ;
-			tm = tm * m ;
+			tm.Dx( tm.Dx() - disp / 1000.0 * m_state.FontSize() ) ;
 			
 			AddNewLine( tm ) ;
 		}

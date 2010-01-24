@@ -33,6 +33,7 @@ namespace pdf
 	class Matrix ;
 	
 	QTransform ToQtMatrix( const Matrix& m ) ;
+	Matrix FromQtMatrix( const QTransform& m ) ;
 
 } // end of namespace
 

@@ -28,6 +28,7 @@
 #include "core/Object.hh"
 #include "core/Token.hh"
 #include "core/TokenSrc.hh"
+#include "graphics/GraphicsVisitor.hh"
 #include "graphics/RealText.hh"
 #include "stream/Stream.hh"
 
@@ -161,6 +162,33 @@ void RealContent::VisitGraphics( GraphicsVisitor *visitor )
 		m_gfx.begin(),
 		m_gfx.end(),
 		boost::bind( &Graphics::Visit, _1, visitor ) ) ;
+}
+
+void RealContent::Write( Stream& str, const Resources *res ) const
+{
+	struct ContentWriter : public GraphicsVisitor
+	{
+		ContentWriter( std::ostream& os, const Resources *res  )
+			: m_os(os), m_res( res )
+		{
+		}
+		
+		void VisitText( Text *text )
+		{
+			text->Print( m_os, m_res ) ; 
+		}
+		
+		void VisitGraphics( Graphics *text )
+		{
+		}
+		
+		std::ostream&		m_os ;
+		const Resources	*m_res ;
+	} ;
+	
+	std::ostream os( str.InStreamBuf() ) ;
+	ContentWriter cw( os, res ) ;
+	(const_cast<RealContent*>(this))->VisitGraphics( &cw ) ;
 }
 
 } // end of namespace

@@ -78,7 +78,7 @@ void TextBlock::AppendText( const std::wstring& text )
 std::ostream& TextBlock::Print(
 	std::ostream& 		os,
 	const TextState& 	state,
-	Resources			*res ) const
+	const Resources		*res ) const
 {
 	m_format.Print( os, res, state ) ;   
 	std::string s( m_chars.begin(), m_chars.end() ) ;
@@ -103,19 +103,7 @@ std::ostream& operator<<( std::ostream& os, const TextBlock& t )
 */
 double TextBlock::Width( ) const
 {
-	double font_unit = 0.0 ;
-	
-	Font	*font	= m_format.GetFont() ;
-	
-	for ( std::wstring::const_iterator i =
-		m_chars.begin() ; i < m_chars.end() ; ++i )
-	{
-		const Glyph *g = font->GetGlyph( *i ) ;
-		if ( g != 0 )
-			font_unit += g->AdvanceX() ;
-	}
-	
-	return font_unit * m_format.ScaleFactor() ;
+	return m_format.Width( m_chars ) ;
 }
 
 bool TextBlock::operator==( const TextBlock& rhs ) const

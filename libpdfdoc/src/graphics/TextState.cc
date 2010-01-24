@@ -28,6 +28,7 @@
 
 #include "core/Name.hh"
 #include "font/BaseFont.hh"
+#include "font/Glyph.hh"
 #include "page/Resources.hh"
 #include "util/Debug.hh"
 
@@ -182,6 +183,20 @@ double TextState::ScaleFactor( ) const
 {
 	PDF_ASSERT( m_font != 0 ) ;
 	return m_font_size / m_font->UnitsPerEM( ) ;
+}
+
+double TextState::Width( const std::wstring& str ) const
+{
+	double font_unit = 0.0 ;
+	
+	for ( std::wstring::const_iterator i = str.begin() ; i < str.end() ; ++i )
+	{
+		const Glyph *g = m_font->GetGlyph( *i ) ;
+		if ( g != 0 )
+			font_unit += g->AdvanceX() ;
+	}
+	
+	return font_unit * ScaleFactor() ;
 }
 
 } // end of namespace

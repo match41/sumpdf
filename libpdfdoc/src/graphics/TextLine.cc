@@ -51,6 +51,9 @@ TextLine::TextLine( const Matrix& transform, const TextState& state )
 
 void TextLine::AddBlock( const TextBlock& blk )
 {
+	if ( m_blks.back().IsEmpty() )
+		m_blks.pop_back( ) ;
+		
 	m_blks.push_back( blk ) ;
 }
 
@@ -123,15 +126,15 @@ void TextLine::AppendText( const std::wstring& text )
 std::ostream& TextLine::Print(
 	std::ostream& 	os,
 	TextState& 		state,
-	Resources		*res ) const
+	const Resources	*res ) const
 {
 	const Matrix& t = m_trans ;
 	if ( t.M11() == 1 && t.M12() == 0 &&
 		 t.M21() == 0 && t.M22() == 1 )
-		os << "Td " << t.Dx() << ' ' << t.Dy() << '\n' ;
+		os << t.Dx() << ' ' << t.Dy() << " Td\n" ;
 	else
-		os << "Tm " << t.M11() << ' ' << t.M12() << ' ' << t.M21() << ' '
-		            << t.M22() << ' ' << t.Dx()  << ' ' << t.Dy( ) << '\n' ; 
+		os	<< t.M11() << ' ' << t.M12() << ' ' << t.M21() << ' '
+			<< t.M22() << ' ' << t.Dx()  << ' ' << t.Dy( ) << " Tm\n" ; 
 	
 	for ( TextLine::const_iterator i = m_blks.begin() ;
 		i != m_blks.end() ; ++i )

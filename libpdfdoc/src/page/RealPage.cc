@@ -133,7 +133,13 @@ Object RealPage::WriteContent( IFile *file ) const
 {
 	assert( file != 0 ) ;
 
-	if ( m_cstrs.size() == 1 )
+	if ( m_cstrs.empty() )
+	{
+		Stream s ;
+		m_content.Write( s, &m_resources ) ;
+		return file->WriteObj( s ) ;
+	}
+	else if ( m_cstrs.size() == 1 )
 		return file->WriteObj( m_cstrs.front() ) ;
 	else
 	{
@@ -209,6 +215,9 @@ RealContent* RealPage::GetContent( )
 	{
 		// decode the graphics commands
 		m_content.Load( m_cstrs.begin(), m_cstrs.end(), &m_resources ) ;
+		
+		// destroy the streams
+		m_cstrs.clear( ) ;
 	}
 	
 	return &m_content ;

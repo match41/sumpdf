@@ -83,7 +83,7 @@ public :
 	std::ostream& Print(
 		std::ostream& 	os,
 		TextState& 		state,
-		Resources		*res ) const ;
+		const Resources	*res ) const ;
 
 	bool operator==( const TextLine& rhs ) const ;
 	bool operator!=( const TextLine& rhs ) const ;

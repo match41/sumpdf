@@ -58,7 +58,7 @@ class Graphics
 public :
 	virtual ~Graphics( ) ;
 	
-	virtual void Print( std::ostream& os, Resources *res ) const = 0 ;
+	virtual void Print( std::ostream& os, const Resources *res ) const = 0 ;
 
 	virtual void Visit( GraphicsVisitor *visitor ) = 0 ;
 } ;

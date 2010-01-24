@@ -66,7 +66,7 @@ public :
 	std::ostream& Print(
 		std::ostream& 		os,
 		const TextState& 	state,
-		Resources			*res ) const ;
+		const Resources		*res ) const ;
 
 	bool operator==( const TextBlock& rhs ) const ;
 	bool operator!=( const TextBlock& rhs ) const ;
