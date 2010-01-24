@@ -78,6 +78,7 @@ public :
 	double Width( const std::wstring& text, double size ) const ;
 	double Width( const Glyph& glyph ) const ;	
 	unsigned UnitsPerEM( ) const ;
+	double FromFontUnit( unsigned val ) const ;
 	
 private :
 	void LoadGlyphs( ) ;

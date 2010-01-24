@@ -29,10 +29,16 @@
 
 #include "TextState.hh"
 
+#include <boost/iterator/iterator_facade.hpp>
+
 #include <iosfwd>
 #include <string>
 
 namespace pdf {
+
+class Glyph ;
+class CharVisitor ;
+class Matrix ;
 
 ///	brief description
 /**	The TextBlock class represent a string of characters with the same
@@ -64,6 +70,9 @@ public :
 
 	bool operator==( const TextBlock& rhs ) const ;
 	bool operator!=( const TextBlock& rhs ) const ;
+	
+	double ScaleFactor( ) const ;
+	void VisitChars( const Matrix& tm, CharVisitor *v ) const ;
 	
 private :
 	std::wstring	m_chars ;

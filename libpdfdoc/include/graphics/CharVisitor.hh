@@ -17,53 +17,36 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	MockFont.cc
-	\brief	implementation of the MockFont class
-	\date	Jan 18, 2010
-	\author	Nestal Wan
+/**	\file	CharVisitor.hh
+    \brief	definition the CharVisitor class
+    \date	Jan 24, 2010
+    \author	Nestal Wan
 */
 
-#include "MockFont.hh"
+#ifndef __PDF_CHARVISITOR_HH_EADER_INCLUDED__
+#define __PDF_CHARVISITOR_HH_EADER_INCLUDED__
 
-#include "core/Ref.hh"
+namespace pdf {
 
-/**	constructor
+class Matrix ;
+class Glyph ;
+
+///	brief description
+/**	The CharVisitor class represents
 */
-MockFont::MockFont( )
+class CharVisitor
 {
-}
+protected :
+	~CharVisitor( ) ;
 
-std::string MockFont::BaseName( ) const
-{
-	return "MockFont" ;
-}
+public :
+	virtual void OnChar(
+		wchar_t 		ch,
+		const Matrix&	m,
+		const Glyph&	glyph,
+		double			scale_factor ) = 0 ;
+} ;
 
-pdf::Ref MockFont::Write( pdf::IFile *file ) const
-{
-	return pdf::Ref( ) ;
-}
+} // end of namespace
 
-pdf::FontDescriptor* MockFont::Descriptor( )
-{
-	return 0 ;
-}
-
-double MockFont::Width( const std::wstring& text, double size ) const
-{
-	return 0.0 ;
-}
-
-double MockFont::FromFontUnit( unsigned val ) const
-{
-	return val ;
-}
-
-const pdf::Glyph* MockFont::GetGlyph( wchar_t ch ) const
-{
-	return 0 ;
-}
-
-unsigned MockFont::UnitsPerEM() const
-{
-	return 0 ;
-}
+#endif // CHARVISITOR_HH_

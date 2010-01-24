@@ -332,6 +332,11 @@ void SimpleFont::LoadGlyphs( )
 	}
 }
 
+double SimpleFont::FromFontUnit( unsigned val ) const
+{
+	return val * 1000.0 / m_face->units_per_EM ;
+}
+
 Ref SimpleFont::Write( IFile *file ) const
 {
 	PDF_ASSERT( file != 0 ) ;

@@ -42,14 +42,12 @@ class Font
 public :
 	virtual ~Font( ) ;
 	
-	virtual std::string BaseName( ) const = 0 ;
-	
-//	virtual FT_Face		Face( ) const = 0 ;
+	virtual std::string 	BaseName( ) const = 0 ;
 	virtual const Glyph*	GetGlyph( wchar_t ch ) const = 0 ;
 	
 	virtual double Width( const std::wstring& text, double size ) const = 0 ;
-	virtual double Width( const Glyph& glyph ) const = 0 ;
 	virtual unsigned UnitsPerEM( ) const = 0 ;
+	virtual double FromFontUnit( unsigned val ) const = 0 ;
 } ;
 
 } // end of namespace

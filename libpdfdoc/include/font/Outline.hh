@@ -28,8 +28,13 @@
 
 namespace pdf {
 
-///	brief description
-/**	The Outline class represents
+///	Outline of a glyph.
+/**	This interface is used for a callback for the Glyph::Decompose() function.
+	Implement this interface and call Glyph::Decompose(), then it will call
+	back with the MoveTo(), LineTo() functions.
+	
+	All units are in font units. Transform font units to real units by calling
+	Font::Width(). 
 */
 class Outline
 {

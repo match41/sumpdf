@@ -17,53 +17,20 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	MockFont.cc
-	\brief	implementation of the MockFont class
-	\date	Jan 18, 2010
+/**	\file	CharVisitor.cc
+	\brief	implementation of the CharVisitor class
+	\date	Jan 24, 2010
 	\author	Nestal Wan
 */
 
-#include "MockFont.hh"
+#include "graphics/CharVisitor.hh"
 
-#include "core/Ref.hh"
+namespace pdf {
 
 /**	constructor
 */
-MockFont::MockFont( )
+CharVisitor::~CharVisitor( )
 {
 }
 
-std::string MockFont::BaseName( ) const
-{
-	return "MockFont" ;
-}
-
-pdf::Ref MockFont::Write( pdf::IFile *file ) const
-{
-	return pdf::Ref( ) ;
-}
-
-pdf::FontDescriptor* MockFont::Descriptor( )
-{
-	return 0 ;
-}
-
-double MockFont::Width( const std::wstring& text, double size ) const
-{
-	return 0.0 ;
-}
-
-double MockFont::FromFontUnit( unsigned val ) const
-{
-	return val ;
-}
-
-const pdf::Glyph* MockFont::GetGlyph( wchar_t ch ) const
-{
-	return 0 ;
-}
-
-unsigned MockFont::UnitsPerEM() const
-{
-	return 0 ;
-}
+} // end of namespace

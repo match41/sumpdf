@@ -46,7 +46,7 @@ public :
 	pdf::FontDescriptor* Descriptor( ) ;
 	double Width( const std::wstring& text, double size ) const ;
 	const pdf::Glyph*	GetGlyph( wchar_t ch ) const ;
-	double Width( const pdf::Glyph& glyph ) const ;
+	double FromFontUnit( unsigned val ) const ; 
 	unsigned UnitsPerEM() const ;
 } ;
 

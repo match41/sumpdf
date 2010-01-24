@@ -130,7 +130,6 @@ void MainWnd::OnEditFont( )
 	if ( ok )
 	{
 		FT_Face face = f.freetypeFace() ;
-		FT_Stream s = face->stream ;
 
 		FcChar8 abc[] = "abc", *f2 ;
 
@@ -187,38 +186,53 @@ void MainWnd::VisitText( Text *text )
 
 void MainWnd::LoadTextLine( const TextLine& line )
 {
-	const TextBlock& b = *line.begin() ;
-
-	Font	*font	= b.Format().GetFont() ; 
-//	FT_Face face	= font->Face( ) ;
-	
-	Matrix tm = line.Transform() ;
-	const std::wstring& text = b.Text() ;
-	for ( std::size_t i = 0 ; i < text.size() ; i++ )
+	for ( TextLine::const_iterator it = line.begin() ; it != line.end() ; ++it )
 	{
-//		FT_Glyph_Metrics met ;
-//		FT_Glyph g = font->GetGlyph( text[i], &met ) ;
-//		PDF_ASSERT( g != 0 ) ;
-		const Glyph *glyph = font->GetGlyph( text[i] ) ;
-
-//		if ( g->format == FT_GLYPH_FORMAT_OUTLINE )
-		if ( glyph != 0 && glyph->IsOutline() )
+		it->VisitChars( line.Transform(), this ) ;
+/*
+		const TextBlock&	blk		= *it ;
+		const Font			*font	= blk.Format().GetFont() ; 
+		
+		Matrix tm = line.Transform() ;
+		const std::wstring& text = blk.Text() ;
+		
+		for ( std::size_t i = 0 ; i < text.size() ; i++ )
 		{
-			GlyphGraphicsItem *item = new GlyphGraphicsItem( *glyph ) ;
+			const Glyph *glyph = font->GetGlyph( text[i] ) ;
+	
+			if ( glyph != 0 && glyph->IsOutline() )
+			{
+				GlyphGraphicsItem *item = new GlyphGraphicsItem( *glyph ) ;
 
-			// scale font by their font size
-			double scalefactor = b.Format().FontSize() / font->UnitsPerEM() ;
-			item->setTransform( ToQtMatrix( tm ) ) ;
-			item->scale( scalefactor, scalefactor ) ;
-			tm.Dx( tm.Dx() + glyph->AdvanceX() * scalefactor) ;
-
-			m_scene->addItem( item ) ;
+				// scale font by their font size
+				item->setTransform( ToQtMatrix( tm ) ) ;
+				item->scale( blk.ScaleFactor(), blk.ScaleFactor() ) ;
+				tm.Dx( tm.Dx() + glyph->AdvanceX() * blk.ScaleFactor() ) ;
+	
+				m_scene->addItem( item ) ;
+			}
+			else
+			{
+				// TODO: handle non-scalable font here
+			}
 		}
-		else
-		{
-			// TODO: handle non-scalable font here
-		}
+*/
 	}
+}
+
+void MainWnd::OnChar(
+	wchar_t 		ch,
+	const Matrix&	m,
+	const Glyph&	glyph,
+	double			scale_factor )
+{
+	GlyphGraphicsItem *item = new GlyphGraphicsItem( glyph ) ;
+
+	// scale font by their font size
+	item->setTransform( ToQtMatrix( m ) ) ;
+	item->scale( scale_factor, scale_factor ) ;
+
+	m_scene->addItem( item ) ;
 }
 
 void MainWnd::VisitGraphics( Graphics *gfx )

@@ -26,7 +26,13 @@
 
 #include "graphics/TextBlock.hh"
 
+#include "graphics/CharVisitor.hh"
+
 #include "core/String.hh"
+#include "font/Font.hh"
+#include "font/Glyph.hh"
+#include "util/Debug.hh"
+#include "util/Matrix.hh"
 
 #include <iostream>
 
@@ -91,6 +97,12 @@ double TextBlock::Width( ) const
 	return 0.0f ;
 }
 
+double TextBlock::ScaleFactor( ) const
+{
+	PDF_ASSERT( Format().GetFont() != 0 ) ;
+	return m_format.FontSize() / Format().GetFont()->UnitsPerEM( ) ;
+}
+
 bool TextBlock::operator==( const TextBlock& rhs ) const
 {
 	return
@@ -101,6 +113,31 @@ bool TextBlock::operator==( const TextBlock& rhs ) const
 bool TextBlock::operator!=( const TextBlock& rhs ) const
 {
 	return !operator==( rhs ) ;
+}
+
+void TextBlock::VisitChars( const Matrix& lt, CharVisitor *v ) const
+{
+	Matrix tm	= lt ;
+	Font *font	= Format().GetFont( ) ; 
+	PDF_ASSERT( font != 0 ) ;
+	
+	for ( std::wstring::const_iterator
+		i = m_chars.begin() ; i != m_chars.end() ; ++i )
+	{
+		const Glyph *glyph = font->GetGlyph( *i ) ;
+
+		if ( glyph != 0 && glyph->IsOutline() )
+		{
+			v->OnChar( m_chars[*i], tm, *glyph, ScaleFactor() ) ;
+
+			// scale font by their font size
+			tm.Dx( tm.Dx() + glyph->AdvanceX() * ScaleFactor() ) ;
+		}
+		else
+		{
+			// TODO: handle non-scalable font here
+		}
+	}
 }
 
 } // end of namespace
