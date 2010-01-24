@@ -29,6 +29,7 @@
 #include "FontException.hh"
 
 #include "FontDescriptor.hh"
+#include "FreeTypeWrappers.hh"
 
 #include "core/Array.hh"
 #include "core/Dictionary.hh"
@@ -277,6 +278,11 @@ double SimpleFont::Width( const std::wstring& text, double size ) const
 	return width ;
 }
 
+double SimpleFont::Width( const Glyph& glyph ) const
+{
+	return glyph.AdvanceX() * 1000.0 / m_face->units_per_EM ;
+}
+
 SimpleFont::Type SimpleFont::GetFontType( FT_Face face )
 {
 	const char *format = ::FT_Get_X11_Font_Format( face ) ;
@@ -319,14 +325,18 @@ void SimpleFont::LoadGlyphs( )
 				boost::format( "cannot copy glyph %2% from %1%" )
 				% BaseName() % char_code ) ;
 
+		ft::Face face_wrapper = { m_face } ;
+
 		if ( glyph->format == FT_GLYPH_FORMAT_OUTLINE )
 		{
 			GlyphData g =
 			{
 				glyph,
 				m_face->glyph->metrics,
+				Glyph( gindex, face_wrapper ) 
 			} ;
-			m_glyphs[char_code] = g ;
+//			m_glyphs[char_code] = g ;
+			m_glyphs.insert( std::make_pair( char_code, g ) ) ;
 		}
 		
 		m_last_char = static_cast<int>( char_code ) ;
@@ -394,7 +404,7 @@ FT_Face SimpleFont::Face( ) const
 	return m_face ;
 }
 
-FT_Glyph SimpleFont::Glyph( wchar_t ch, FT_Glyph_Metrics *met ) const
+FT_Glyph SimpleFont::GetGlyph( wchar_t ch, FT_Glyph_Metrics *met ) const
 {
 	GlyphMap::const_iterator it = m_glyphs.find( ch ) ;
 	if ( it != m_glyphs.end() )
@@ -404,6 +414,17 @@ FT_Glyph SimpleFont::Glyph( wchar_t ch, FT_Glyph_Metrics *met ) const
 		
 		PDF_ASSERT( it->second.glyph != 0 ) ;
 		return it->second.glyph ;
+	}
+	else
+		return 0 ;
+}
+
+const Glyph* SimpleFont::GetGlyph( wchar_t ch ) const
+{
+	GlyphMap::const_iterator it = m_glyphs.find( ch ) ;
+	if ( it != m_glyphs.end() )
+	{
+		return &it->second.glyph2 ;
 	}
 	else
 		return 0 ;

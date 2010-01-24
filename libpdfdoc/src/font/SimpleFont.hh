@@ -29,6 +29,8 @@
 
 #include "BaseFont.hh"
 
+#include "font/Glyph.hh"
+
 // libpdfdoc headers
 #include "core/Name.hh"
 #include "core/Object.hh"
@@ -67,12 +69,14 @@ public :
 	Ref Write( IFile *file ) const ;
 
 	FT_Face 	Face( ) const ;
-	FT_Glyph	Glyph( wchar_t ch, FT_Glyph_Metrics *met ) const ;
+	FT_Glyph	GetGlyph( wchar_t ch, FT_Glyph_Metrics *met ) const ;
+	const Glyph*		GetGlyph( wchar_t ch ) const ;
 	
 	FontDescriptor* Descriptor( ) ;
 
 	double Width( const std::wstring& text, double size ) const ;
 	double Width( wchar_t ch ) const ;
+	double Width( const Glyph& glyph ) const ;	
 	
 private :
 	void LoadGlyphs( ) ;
@@ -114,6 +118,7 @@ private :
 	{
 		FT_Glyph			glyph ;
 		FT_Glyph_Metrics	metrics ;
+		Glyph				glyph2 ;
 	} ;
 	typedef std::tr1::unordered_map<wchar_t, GlyphData> GlyphMap ;
 	GlyphMap	m_glyphs ;

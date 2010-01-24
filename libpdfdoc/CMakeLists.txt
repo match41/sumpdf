@@ -134,7 +134,8 @@ set( INCLUDE_HDRS	${INCLUDE_DIR}/Doc.hh
 					${INCLUDE_DIR}/libpdfdoc.hh
 					${INCLUDE_DIR}/DocInfo.hh )
 
-set( FONT_INC_HDRS	${INCLUDE_DIR}/font/Font.hh )
+set( FONT_INC_HDRS	${INCLUDE_DIR}/font/Font.hh
+					${INCLUDE_DIR}/font/Glyph.hh )
 
 set( PAGE_INC_HDRS	${INCLUDE_DIR}/page/Page.hh
                     ${INCLUDE_DIR}/page/PageContent.hh )
@@ -145,6 +146,7 @@ set( GFX_INC_HDRS	${INCLUDE_DIR}/graphics/Graphics.hh
 					${INCLUDE_DIR}/graphics/TextBlock.hh
 					${INCLUDE_DIR}/graphics/TextState.hh
 					${INCLUDE_DIR}/graphics/TextLine.hh )
+
 set( UTIL_INC_HDRS	${INCLUDE_DIR}/util/Exception.hh
 					${INCLUDE_DIR}/util/Debug.hh
 					${INCLUDE_DIR}/util/Rect.hh
@@ -214,6 +216,7 @@ set( IMG_SRCS  		${IMG_DIR}/Image.cc )
 
 set( FONT_SRCS		${FONT_DIR}/Font.cc
 					${FONT_DIR}/BaseFont.cc
+					${FONT_DIR}/Glyph.cc
 					${FONT_DIR}/FontDescriptor.cc
 					${FONT_DIR}/FontException.cc
 					${FONT_DIR}/sfnt/SfntFile.cc

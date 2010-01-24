@@ -134,7 +134,6 @@ void MainWnd::OnEditFont( )
 	{
 		FT_Face face = f.freetypeFace() ;
 		FT_Stream s = face->stream ;
-qDebug() << "font = " << s->base << " " << s->size ;
 
 		FcChar8 abc[] = "abc", *f2 ;
 
@@ -143,14 +142,13 @@ qDebug() << "font = " << s->base << " " << s->size ;
 		if (FcPatternGetString( p, FC_FILE, 0, &f2) == FcResultMatch)
 			std::cout << "oops: " << f2 << std::endl ;
 
-qDebug() << "here " << p ;
 		FcChar8 *filename2 ;
 		FcResult result ;
 		FcPattern *matched = FcFontMatch( 0, p, &result);
-qDebug() << "here1.5" ;
+		
 		if (FcPatternGetString (matched, FC_FILE, 0, &filename2) != FcResultMatch)
 			std::cout << "oops" << std::endl ;
-qDebug() << "here2" ;
+
 		int id ;
 		if (FcPatternGetInteger (matched, FC_INDEX, 0, &id) != FcResultMatch)
 			std::cout << "oops2" << std::endl ;
@@ -202,7 +200,7 @@ void MainWnd::LoadTextLine( const TextLine& line )
 	for ( std::size_t i = 0 ; i < text.size() ; i++ )
 	{
 		FT_Glyph_Metrics met ;
-		FT_Glyph g = font->Glyph( text[i], &met ) ;
+		FT_Glyph g = font->GetGlyph( text[i], &met ) ;
 		PDF_ASSERT( g != 0 ) ;
 		
 		if ( g->format == FT_GLYPH_FORMAT_OUTLINE )

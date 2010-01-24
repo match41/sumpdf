@@ -17,58 +17,78 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	MockFont.cc
-	\brief	implementation of the MockFont class
-	\date	Jan 18, 2010
+/**	\file	Glyph.cc
+	\brief	implementation of the Glyph class
+	\date	Jan 24, 2010
 	\author	Nestal Wan
 */
 
-#include "MockFont.hh"
+#include "font/Glyph.hh"
 
-#include "core/Ref.hh"
+#include "FreeTypeWrappers.hh"
+#include "FontException.hh"
+
+#include <boost/format.hpp>
+
+namespace pdf {
+
+struct Glyph::Impl
+{
+	FT_Glyph			glyph ;
+	FT_Glyph_Metrics	met ;
+} ;
+
 
 /**	constructor
 */
-MockFont::MockFont( )
+Glyph::Glyph( unsigned idx, const ft::Face& face )
+	: m_impl( new Impl )
 {
+	// load the glyph to the glyph slot in the face
+	// we want to do the scaling in double instead of inside freetype
+	// in small font we don't have hinting
+	FT_Error error = FT_Load_Glyph( face.face, idx, FT_LOAD_NO_SCALE ) ;
+	if ( error != 0 )
+		throw FontException(
+			boost::format( "cannot load glyph %1%" ) % idx ) ;
+
+	error = FT_Get_Glyph( face.face->glyph, &m_impl->glyph ) ;
+	if ( error != 0 )
+		throw FontException(
+			boost::format( "cannot copy glyph %1%" ) % idx ) ;
+
+	m_impl->met = face.face->glyph->metrics ;
 }
 
-std::string MockFont::BaseName( ) const
+Glyph::~Glyph( )
 {
-	return "MockFont" ;
+	/// TODO: not thread-safe here
+	if ( m_impl.unique() )
+		FT_Done_Glyph( m_impl->glyph ) ;
 }
 
-pdf::Ref MockFont::Write( pdf::IFile *file ) const
+/// Width in un-scaled font unit.
+unsigned Glyph::Width( ) const
 {
-	return pdf::Ref( ) ;
+	return m_impl->met.width ;
 }
 
-pdf::FontDescriptor* MockFont::Descriptor( )
+/// Height in un-scaled font unit.
+unsigned Glyph::Height( ) const
 {
-	return 0 ;
+	return m_impl->met.height ;
 }
 
-double MockFont::Width( const std::wstring& text, double size ) const
+/// Horizonal advance in un-scaled font unit.
+unsigned Glyph::AdvanceX( ) const
 {
-	return 0.0 ;
+	return m_impl->met.horiAdvance ;
 }
 
-FT_Face MockFont::Face( ) const
+/// Vertical advance in un-scaled font unit.
+unsigned Glyph::AdvanceY( ) const
 {
-	return 0 ;
+	return m_impl->met.vertAdvance ;
 }
 
-FT_Glyph MockFont::GetGlyph( wchar_t ch, FT_Glyph_Metrics *met ) const
-{
-	return 0 ;
-}
-
-double MockFont::Width( const pdf::Glyph& glyph ) const
-{
-	return 0 ;
-}
-
-const pdf::Glyph* MockFont::GetGlyph( wchar_t ch ) const
-{
-	return 0 ;
-}
+} // end of namespace

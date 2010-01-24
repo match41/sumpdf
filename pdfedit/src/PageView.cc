@@ -58,6 +58,12 @@ void PageView::mousePressEvent( QMouseEvent *event )
 	{
 		qDebug() << item->mapFromParent( pos ) ;
 	}
+	
+	// click at empty space
+	else
+	{
+	}
+	
 
 	QGraphicsView::mousePressEvent( event ) ;
 }

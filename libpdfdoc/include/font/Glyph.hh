@@ -17,35 +17,45 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	MockFont.hh
-    \brief	definition the MockFont class
-    \date	Jan 18, 2010
+/**	\file	Glyph.hh
+    \brief	definition the Glyph class
+    \date	Jan 24, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_MOCKFONT_HH_EADER_INCLUDED__
-#define __PDF_MOCKFONT_HH_EADER_INCLUDED__
+#ifndef __PDF_GLYPH_HEADER_INCLUDED__
+#define __PDF_GLYPH_HEADER_INCLUDED__
 
-#include "font/BaseFont.hh"
+#include <boost/shared_ptr.hpp>
 
-#include "font/FontDescriptor.hh"
+namespace pdf {
+
+// freetype wrappers
+namespace ft
+{
+	struct Face ;
+}
 
 ///	brief description
-/**	The MockFont class represents
+/**	The Glyph class represents
 */
-class MockFont : public pdf::BaseFont
+class Glyph
 {
 public :
-	MockFont( ) ;
+	Glyph( unsigned idx, const ft::Face& face ) ;
+	~Glyph( ) ;
+	
+	unsigned Width( ) const ;
+	unsigned Height( ) const ;
+	
+	unsigned AdvanceX( ) const ;
+	unsigned AdvanceY( ) const ;
 
-	std::string BaseName( ) const ;
-	pdf::Ref Write( pdf::IFile *file ) const ;
-	pdf::FontDescriptor* Descriptor( ) ;
-	double Width( const std::wstring& text, double size ) const ;
-	FT_Face 	Face( ) const ;
-	FT_Glyph	GetGlyph( wchar_t ch, FT_Glyph_Metrics *met ) const ;
-	const pdf::Glyph*	GetGlyph( wchar_t ch ) const ;
-	double Width( const pdf::Glyph& glyph ) const ;
+private :
+	struct Impl ;
+	boost::shared_ptr<Impl>	m_impl ;
 } ;
 
-#endif // MOCKFONT_HH_
+} // end of namespace
+
+#endif // GLYPH_HH_

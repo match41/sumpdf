@@ -36,6 +36,8 @@
 
 namespace pdf {
 
+class Glyph ;
+
 /*!	\brief	brief description
 	
 	this class represents
@@ -48,9 +50,11 @@ public :
 	virtual std::string BaseName( ) const = 0 ;
 	
 	virtual FT_Face		Face( ) const = 0 ;
-	virtual FT_Glyph	Glyph( wchar_t ch, FT_Glyph_Metrics *met = 0 ) const =0;
+	virtual FT_Glyph	GetGlyph( wchar_t ch, FT_Glyph_Metrics *met = 0 ) const =0;
+	virtual const Glyph*	GetGlyph( wchar_t ch ) const = 0 ;
 	
 	virtual double Width( const std::wstring& text, double size ) const = 0 ;
+	virtual double Width( const Glyph& glyph ) const = 0 ;
 } ;
 
 } // end of namespace
