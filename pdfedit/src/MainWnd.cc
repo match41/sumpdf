@@ -46,6 +46,8 @@
 #include <QDebug>
 
 #include "TextEdit.hh"
+#include "GlyphGroup.hh"
+#include "Util.hh"
 
 // libpdfdoc headers
 #include <libpdfdoc.hh>
@@ -188,35 +190,10 @@ void MainWnd::LoadTextLine( const TextLine& line )
 {
 	for ( TextLine::const_iterator it = line.begin() ; it != line.end() ; ++it )
 	{
-		it->VisitChars( line.Transform(), this ) ;
-/*
-		const TextBlock&	blk		= *it ;
-		const Font			*font	= blk.Format().GetFont() ; 
-		
-		Matrix tm = line.Transform() ;
-		const std::wstring& text = blk.Text() ;
-		
-		for ( std::size_t i = 0 ; i < text.size() ; i++ )
-		{
-			const Glyph *glyph = font->GetGlyph( text[i] ) ;
-	
-			if ( glyph != 0 && glyph->IsOutline() )
-			{
-				GlyphGraphicsItem *item = new GlyphGraphicsItem( *glyph ) ;
-
-				// scale font by their font size
-				item->setTransform( ToQtMatrix( tm ) ) ;
-				item->scale( blk.ScaleFactor(), blk.ScaleFactor() ) ;
-				tm.Dx( tm.Dx() + glyph->AdvanceX() * blk.ScaleFactor() ) ;
-	
-				m_scene->addItem( item ) ;
-			}
-			else
-			{
-				// TODO: handle non-scalable font here
-			}
-		}
-*/
+//		it->VisitChars( line.Transform(), this ) ;
+		GlyphGroup *group = new GlyphGroup( *it ) ;
+		group->setTransform( ToQtMatrix( line.Transform() ) ) ;
+		m_scene->addItem( group ) ;
 	}
 }
 
@@ -307,17 +284,6 @@ void MainWnd::StorePage( QGraphicsScene *scene, Doc *doc, Page *page )
 			page->DrawText( pos.x(), scene->height() - pos.y(), font,
 							edit->toPlainText().toUtf8().data() ) ;*/
 	}
-}
-
-QTransform MainWnd::ToQtMatrix( const Matrix& m )
-{
-	// here we do a little transformation on the y coordinate.
-	// the PDF origin is at the lower left corner and the 
-	// y-coordinate increase upward. However, Qt's origin is at the upper
-	// left corner and increase downward.
-	return QTransform(
-		m.M11(), m.M12(), m.M21(), m.M22(), m.Dx(),
-		/*m_scene->height() - */m.Dy() ) ;
 }
 
 } // end of namespace

@@ -1,4 +1,4 @@
-/***************************************************************************
+/***************************************************************************\
  *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
@@ -15,86 +15,40 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+\***************************************************************************/
 
-/**
-	\file	MainWnd.hh
-	\brief	definition the MainWnd class
-	\date	Dec 27, 2009
-	\author	Nestal Wan
+/**	\file	GlyphGroup.hh
+    \brief	definition the GlyphGroup class
+    \date	Jan 24, 2010
+    \author	Nestal Wan
 */
 
-#ifndef __PDF_MAINWND_HH_EADER_INCLUDED__
-#define __PDF_MAINWND_HH_EADER_INCLUDED__
+#ifndef __PDF_GLYPHGROUP_HH_EADER_INCLUDED__
+#define __PDF_GLYPHGROUP_HH_EADER_INCLUDED__
 
-#include <QMainWindow>
-#include "ui_MainWnd.h"
-#include <graphics/GraphicsVisitor.hh>
+#include <QGraphicsItemGroup>
 #include <graphics/CharVisitor.hh>
-
-#include <QString>
-
-#include <memory>
-
-class QGraphicsScene ;
-class QTransform ;
-class QToolBar ;
-class QComboBox ;
 
 namespace pdf {
 
-// widgets
-class PageView ;
-
-// pdfdoc classes
-class Doc ;
-class Page ;
 class Matrix ;
-class TextLine ;
+class TextBlock ;
 
-class MainWnd :
-	public QMainWindow,
-	private Ui::MainWndUI,
-	private GraphicsVisitor,
-	private CharVisitor
+///	brief description
+/**	The GlyphGroup class represents
+*/
+class GlyphGroup : public QGraphicsItemGroup, private CharVisitor
 {
-	Q_OBJECT
-
-public:
-	explicit MainWnd( QWidget *parent = 0 ) ;
-	~MainWnd( ) ;
-	
-	void OpenFile( const QString& file ) ;
-
-public slots :
-	void OnAbout( ) ;
-	void OnOpen( ) ;
-	void OnProperties( ) ;
-	void OnSaveAs( ) ;
-	void OnToolZoom( int choice ) ;
-	void OnEditFont( ) ;
-	
-private :
-	void StorePage( QGraphicsScene *scene, Doc *doc, Page *page ) ;
-	void VisitText( Text *text ) ;
-	void VisitGraphics( Graphics *gfx ) ;
-	void LoadTextLine( const TextLine& line ) ;
+public :
+	GlyphGroup( const TextBlock& blk ) ;
 
 	void OnChar(
 		wchar_t 		ch,
 		const Matrix&	m,
 		const Glyph&	glyph,
 		double			scale_factor ) ; 
-	
-private :
-	std::auto_ptr<Doc>	m_doc ;
-	
-	QGraphicsScene	*m_scene ;
-	PageView		*m_view ;
-	QToolBar		*m_tool_bar ;
-	QComboBox 		*m_zoom_box ; 
 } ;
 
 } // end of namespace
 
-#endif // MAINWND_HH_
+#endif // GLYPHGROUP_HH_

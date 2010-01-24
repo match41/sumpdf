@@ -33,6 +33,8 @@ include(${QT_USE_FILE})
 
 set( BASE_SRCS		src/main.cc
                     src/GlyphGraphicsItem.cc
+                    src/GlyphGroup.cc
+                    src/Util.cc
 					src/MainWnd.cc
 					src/PageView.cc
 					src/TextEdit.cc
