@@ -181,7 +181,7 @@ void RealText::OnTd( Object* args, std::size_t count, Resources* )
 	if ( count >= 2 )
 	{
 		m_line_mat = m_line_mat * Matrix( 1, 0, 0, 1, args[0], args[1] ) ;
-		AddNewLine( ) ;
+		AddLine( TextLine( m_line_mat, m_state ) ) ;
 	}
 }
 
@@ -194,7 +194,7 @@ void RealText::OnTD( Object* args, std::size_t count, Resources *res )
 		m_state.SetLeading( -ty ) ;
 		
 		m_line_mat = m_line_mat * Matrix( 1, 0, 0, 1, args[0], args[1] ) ;
-		AddNewLine( ) ;
+		AddLine( TextLine( m_line_mat, m_state ) ) ;
 	}
 }
 
@@ -207,7 +207,7 @@ void RealText::OnTm( Object* args, std::size_t count, Resources* )
 		m_line_mat = Matrix(
 			args[0], args[1], args[2], args[3], args[4], args[5] ) ;
 		
-		AddNewLine( ) ;
+		AddLine( TextLine( m_line_mat, m_state ) ) ;
 	}
 }
 
@@ -215,8 +215,9 @@ void RealText::OnTstar( Object* , std::size_t , Resources * )
 {
 	m_line_mat = m_line_mat *
 		Matrix( 1, 0, 0, 1, 0, m_state.Leading() ) ;
-	AddNewLine( ) ;
+	AddLine( TextLine( m_line_mat, m_state ) ) ;
 }
+/*
 
 void RealText::AddNewLine( )
 {
@@ -234,6 +235,18 @@ void RealText::AddNewLine( const Matrix& mat )
 	m_lines.push_back( TextLine( mat, m_state ) ) ;
 }
 
+void RealText::AddNewLine( const TextLine& line )
+{
+	PDF_ASSERT( !m_lines.empty() ) ;
+
+	// remove empty lines first
+	if ( m_lines.back().IsEmpty() )
+		m_lines.pop_back() ;
+	
+	m_lines.push_back( line ) ;
+}
+
+*/
 void RealText::OnTj( Object* args, std::size_t count, Resources *res )
 {
 	PDF_ASSERT( !m_lines.empty() ) ;
@@ -271,7 +284,7 @@ void RealText::OnTJ( Object* args, std::size_t count, Resources *res )
 			// assume vertical here.
 			tm.Dx( tm.Dx() - disp / 1000.0 * m_state.FontSize() ) ;
 			
-			AddNewLine( tm ) ;
+			AddLine( TextLine( tm, m_state ) ) ;
 		}
 	}
 }
