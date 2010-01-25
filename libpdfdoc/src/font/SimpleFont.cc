@@ -27,7 +27,6 @@
 #include "SimpleFont.hh"
 
 #include "FontException.hh"
-
 #include "FontDescriptor.hh"
 #include "FreeTypeWrappers.hh"
 
@@ -47,12 +46,14 @@
 #include <fontconfig/fontconfig.h>
 #endif
 
+// freetype headers
+#include FT_XFREE86_H
+
+// libstdc++
 #include <iostream>
 #include <algorithm>
 #include <iterator>
 #include <fstream>
-
-#include FT_XFREE86_H
 
 namespace pdf {
 
@@ -327,6 +328,10 @@ void SimpleFont::LoadGlyphs( )
 				char_code,
 				Glyph( gindex, face_wrapper ) ) ) ;
 		}
+		else
+			throw FontException(
+				boost::format( "font %1% glyph %2% is not outline" )
+							% BaseName() % char_code ) ;
 		
 		m_last_char = static_cast<int>( char_code ) ;
 		char_code = ::FT_Get_Next_Char( m_face, char_code, &gindex ) ;
@@ -363,8 +368,7 @@ Ref SimpleFont::Write( IFile *file ) const
 	for ( int i = m_first_char ; i <= m_last_char ; ++i )
 	{
 		const Glyph *g = GetGlyph( i ) ;
-		PDF_ASSERT( g != 0 ) ;
-		widths.push_back( Width(*g) ) ;
+		widths.push_back( g != 0 ? Width(*g) : 0.0 ) ;
 	}
 		
 	dict.Get()["Widths"]			= widths ;

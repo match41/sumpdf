@@ -28,9 +28,7 @@
 
 #include <cppunit/TestFixture.h>
 
-// freetype headers
-#include <ft2build.h>
-#include FT_FREETYPE_H
+struct FT_LibraryRec_ ;
 
 ///	brief description
 /**	this class represents
@@ -45,7 +43,7 @@ public :
 	void tearDown( ) ;
 
 protected :
-	FT_Library	m_ft ;
+	FT_LibraryRec_	*m_ft ;
 } ;
 
 #endif // TESTBASE_HH_

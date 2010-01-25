@@ -176,7 +176,9 @@ namespace
 
 	bool IsPrint( char ch )
 	{
-		return std::isprint( static_cast<unsigned char>( ch ) ) != 0 ;
+		return
+			std::isprint( static_cast<unsigned char>( ch ) ) != 0 ||
+			ch == '\n' ;
 	}
 }
 

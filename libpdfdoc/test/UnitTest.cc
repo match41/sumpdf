@@ -43,7 +43,8 @@
 #include "stream/OutStreamBufAdaptorTest.hh"
 #include "stream/RawFilterTest.hh"
 #include "page/RealResourcesTest.hh"
-#include "page/PageTest.hh"
+#include "page/RealPageTest.hh"
+#include "page/RealContentTest.hh"
 
 // freetype library is optional
 #ifdef HAVE_FREETYPE
@@ -72,7 +73,7 @@ int main( int argc, char **argv )
 	runner.addTest( StringTest::suite( ) ) ;
 	runner.addTest( DictionaryTest::suite( ) ) ;
 	runner.addTest( ArrayTest::suite( ) ) ;
-	runner.addTest( PageTest::suite( ) ) ;
+	runner.addTest( RealPageTest::suite( ) ) ;
 	runner.addTest( RealResourcesTest::suite( ) ) ;
 	runner.addTest( XObjectTest::suite( ) ) ;
 	runner.addTest( StreamTest::suite( ) ) ;
@@ -83,6 +84,7 @@ int main( int argc, char **argv )
 	runner.addTest( PageNodeTest::suite( ) ) ;
 	runner.addTest( TextStateTest::suite( ) ) ;
 	runner.addTest( RealTextTest::suite( ) ) ;
+	runner.addTest( RealContentTest::suite( ) ) ;
 	
 // freetype library is optional
 #ifdef HAVE_FREETYPE

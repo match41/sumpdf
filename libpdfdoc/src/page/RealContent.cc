@@ -186,9 +186,10 @@ void RealContent::Write( Stream& str, const Resources *res ) const
 		const Resources	*m_res ;
 	} ;
 	
-	std::ostream os( str.InStreamBuf() ) ;
+	std::ostream os( str.OutStreamBuf() ) ;
 	ContentWriter cw( os, res ) ;
 	(const_cast<RealContent*>(this))->VisitGraphics( &cw ) ;
+	os.flush() ;
 }
 
 } // end of namespace

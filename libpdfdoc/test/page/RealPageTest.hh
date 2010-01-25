@@ -1,4 +1,4 @@
-/***************************************************************************\
+/***************************************************************************
  *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
@@ -15,40 +15,55 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
-\***************************************************************************/
+ ***************************************************************************/
 
-/**	\file	MockFont.hh
-    \brief	definition the MockFont class
-    \date	Jan 18, 2010
-    \author	Nestal Wan
+/*!
+	\file	PageTest.hh
+	\brief	definition the PageTest class
+	\date	Thu Mar 20 2008
+	\author	Nestal Wan
 */
 
-#ifndef __PDF_MOCKFONT_HH_EADER_INCLUDED__
-#define __PDF_MOCKFONT_HH_EADER_INCLUDED__
+#ifndef __PDFUT_PAGE_TEST_HEADER_INCLUDED__
+#define __PDFUT_PAGE_TEST_HEADER_INCLUDED__
 
-#include "font/BaseFont.hh"
-#include "font/Glyph.hh"
+#include "mock/TestBase.hh"
+
+#include <cppunit/extensions/HelperMacros.h>
 
 namespace pdf
 {
-	class FontDescriptor ;
+	class PageTree ;
 }
 
-///	brief description
-/**	The MockFont class represents
+/*!	\brief	brief description
+	
+	this class represents
 */
-class MockFont : public pdf::BaseFont
+class RealPageTest : public TestBase
 {
 public :
-	MockFont( ) ;
+	RealPageTest( ) ;
 
-	std::string BaseName( ) const ;
-	pdf::Ref Write( pdf::IFile *file ) const ;
-	pdf::FontDescriptor* Descriptor( ) ;
-	double Width( const std::wstring& text, double size ) const ;
-	const pdf::Glyph*	GetGlyph( wchar_t ch ) const ;
-	double FromFontUnit( unsigned val ) const ; 
-	unsigned UnitsPerEM() const ;
+	// declare suit function
+	CPPUNIT_TEST_SUITE( RealPageTest ) ;
+		CPPUNIT_TEST( TestNormal ) ;
+		CPPUNIT_TEST( TestWrite ) ;
+		CPPUNIT_TEST( TestDecode ) ;
+	CPPUNIT_TEST_SUITE_END( ) ;
+
+public :
+	void setUp( ) ;
+	void tearDown( ) ;
+
+private :
+	void TestNormal( ) ;
+	void TestWrite( ) ;
+	void TestDecode( ) ;
+
+private :
+	pdf::PageTree	*m_root ;
 } ;
 
-#endif // MOCKFONT_HH_
+
+#endif

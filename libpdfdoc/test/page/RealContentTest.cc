@@ -1,4 +1,4 @@
-/***************************************************************************
+/***************************************************************************\
  *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
@@ -15,60 +15,52 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+\***************************************************************************/
 
-/*!
-	\file	PageTest.hh
-	\brief	definition the PageTest class
-	\date	Thu Mar 20 2008
+/**	\file	RealContentTest.cc
+	\brief	implementation of the RealContentTest class
+	\date	Jan 25, 2010
 	\author	Nestal Wan
 */
 
-#ifndef __PDFUT_PAGE_TEST_HEADER_INCLUDED__
-#define __PDFUT_PAGE_TEST_HEADER_INCLUDED__
+#include "RealContentTest.hh"
 
-#include <cppunit/TestFixture.h>
+#include "page/RealContent.hh"
+#include "page/MockResources.hh"
+#include "graphics/Text.hh"
+#include "graphics/TextLine.hh"
+#include "graphics/TextState.hh"
+#include "mock/MockFont.hh"
+#include "stream/Stream.hh"
 
-#include <cppunit/extensions/HelperMacros.h>
+#include <sstream>
 
-// freetype headers
-#include <ft2build.h>
-#include FT_FREETYPE_H
+using namespace pdf ;
 
-namespace pdf
+/**	constructor
+*/
+RealContentTest::RealContentTest( )
 {
-	class PageTree ;
 }
 
-/*!	\brief	brief description
-	
-	this class represents
-*/
-class PageTest : public CppUnit::TestFixture
+void RealContentTest::TestWrite( )
 {
-public :
-	PageTest( ) ;
+	RealContent subject ;
 
-	// declare suit function
-	CPPUNIT_TEST_SUITE( PageTest ) ;
-		CPPUNIT_TEST( TestNormal ) ;
-		CPPUNIT_TEST( TestWrite ) ;
-		CPPUNIT_TEST( TestDecode ) ;
-	CPPUNIT_TEST_SUITE_END( ) ;
-
-public :
-	void setUp( ) ;
-	void tearDown( ) ;
-
-private :
-	void TestNormal( ) ;
-	void TestWrite( ) ;
-	void TestDecode( ) ;
-
-private :
-	FT_Library		m_ft_lib ;
-	pdf::PageTree	*m_root ;
-} ;
-
-
-#endif
+	MockFont font ;
+	TextState ts ;
+	ts.SetFont( 12.0, &font ) ;
+	MockResources res ;
+	Name fname = res.AddFont( &font ) ; 
+	
+	Text *t = subject.AddText( ts ) ;
+	Matrix tm( 1,0,0,1, 100, 200 ) ;
+	TextLine line( tm, ts ) ;
+	line.AppendText( L"Hello World!\n" ) ;
+	line.AppendText( L"This is line 2\n" ) ;
+	t->AddLine( line ) ;
+	
+	Stream str ;
+	subject.Write( str, &res ) ;
+std::cout << str << std::endl ;
+}

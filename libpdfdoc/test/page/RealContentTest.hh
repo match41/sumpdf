@@ -17,38 +17,34 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	MockFont.hh
-    \brief	definition the MockFont class
-    \date	Jan 18, 2010
+/**	\file	RealContentTest.hh
+    \brief	definition the RealContentTest class
+    \date	Jan 25, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_MOCKFONT_HH_EADER_INCLUDED__
-#define __PDF_MOCKFONT_HH_EADER_INCLUDED__
+#ifndef __PDF_REALCONTENTTEST_HH_EADER_INCLUDED__
+#define __PDF_REALCONTENTTEST_HH_EADER_INCLUDED__
 
-#include "font/BaseFont.hh"
-#include "font/Glyph.hh"
+#include "mock/TestBase.hh"
 
-namespace pdf
-{
-	class FontDescriptor ;
-}
+#include <cppunit/extensions/HelperMacros.h>
 
 ///	brief description
-/**	The MockFont class represents
+/**	The RealContentTest class represents
 */
-class MockFont : public pdf::BaseFont
+class RealContentTest : public TestBase
 {
 public :
-	MockFont( ) ;
+	RealContentTest( ) ;
+	
+	// declare suit function
+	CPPUNIT_TEST_SUITE( RealContentTest ) ;
+		CPPUNIT_TEST( TestWrite ) ;
+	CPPUNIT_TEST_SUITE_END( ) ;
 
-	std::string BaseName( ) const ;
-	pdf::Ref Write( pdf::IFile *file ) const ;
-	pdf::FontDescriptor* Descriptor( ) ;
-	double Width( const std::wstring& text, double size ) const ;
-	const pdf::Glyph*	GetGlyph( wchar_t ch ) const ;
-	double FromFontUnit( unsigned val ) const ; 
-	unsigned UnitsPerEM() const ;
+private :
+	void TestWrite( ) ;
 } ;
 
-#endif // MOCKFONT_HH_
+#endif // REALCONTENTTEST_HH_

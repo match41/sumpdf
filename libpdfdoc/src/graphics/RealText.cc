@@ -33,6 +33,7 @@
 #include "core/Token.hh"
 #include "font/BaseFont.hh"
 #include "page/Resources.hh"
+#include "util/Debug.hh"
 #include "util/Util.hh"
 
 #include <boost/bind.hpp>
@@ -40,7 +41,6 @@
 #include <algorithm>
 #include <iterator>
 #include <iostream>
-#include <cassert>
 #include <set>
 
 namespace pdf {
@@ -121,7 +121,7 @@ void RealText::OnCommand(
 	std::size_t		count,
 	Resources		*res )
 {
-	assert( !m_lines.empty() ) ;
+	PDF_ASSERT( !m_lines.empty() ) ;
 
     HandlerMap::const_iterator i = m_handler_map.find( cmd ) ;
     if ( i != m_handler_map.end() )
@@ -130,12 +130,18 @@ void RealText::OnCommand(
 
 void RealText::AddLine( const TextLine& line )
 {
+	PDF_ASSERT( !m_lines.empty() ) ;
+
+	// remove empty lines first
+	if ( m_lines.back().IsEmpty() )
+		m_lines.pop_back() ;
+	
 	m_lines.push_back( line ) ;
 }
 
 void RealText::Visit( GraphicsVisitor *visitor )
 {
-	assert( visitor != 0 ) ;
+	PDF_ASSERT( visitor != 0 ) ;
 	
 	visitor->VisitText( this ) ;
 }
@@ -219,7 +225,7 @@ void RealText::AddNewLine( )
 
 void RealText::AddNewLine( const Matrix& mat )
 {
-	assert( !m_lines.empty() ) ;
+	PDF_ASSERT( !m_lines.empty() ) ;
 
 	// remove empty lines first
 	if ( m_lines.back().IsEmpty() )
@@ -230,7 +236,7 @@ void RealText::AddNewLine( const Matrix& mat )
 
 void RealText::OnTj( Object* args, std::size_t count, Resources *res )
 {
-	assert( !m_lines.empty() ) ;
+	PDF_ASSERT( !m_lines.empty() ) ;
 	
 	if ( count >= 1 )
 	{
@@ -241,7 +247,7 @@ void RealText::OnTj( Object* args, std::size_t count, Resources *res )
 
 void RealText::OnTJ( Object* args, std::size_t count, Resources *res )
 {
-	assert( !m_lines.empty() ) ;
+	PDF_ASSERT( !m_lines.empty() ) ;
 
 	// text matrix
 	Matrix tm = m_line_mat ;
@@ -280,7 +286,7 @@ void RealText::OnDoubleQuote( Object* args, std::size_t count, Resources *res )
 
 void RealText::OnTf( Object* args, std::size_t count, Resources *res )
 {
-	assert( res != 0 ) ;
+	PDF_ASSERT( res != 0 ) ;
 
 	if ( count >= 2 && args[0].Is<Name>() && args[1].IsNumber() )
 	{

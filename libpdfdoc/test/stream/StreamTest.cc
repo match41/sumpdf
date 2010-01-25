@@ -31,7 +31,6 @@
 #include "core/TokenSrc.hh"
 
 #include "stream/Stream.hh"
-#include "stream/InStreamBufAdaptor.hh"
 
 #include "mock/Assert.hh"
 

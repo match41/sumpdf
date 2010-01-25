@@ -24,7 +24,7 @@
 	\author	Nestal Wan
 */
 
-#include "PageTest.hh"
+#include "RealPageTest.hh"
 
 #include "mock/MockFile.hh"
 #include "mock/Assert.hh"
@@ -43,28 +43,29 @@
 #include <sstream>
 #include <iostream>
 
-PageTest::PageTest( )
+RealPageTest::RealPageTest( )
 	: m_root( 0 )
 {
 }
 
-void PageTest::setUp( )
+void RealPageTest::setUp( )
 {
-	::FT_Init_FreeType( &m_ft_lib ) ;
+	TestBase::setUp( ) ;
 
 	// this is the parent page node of the test pages. as it is deleted in
 	// tearDown() all its child pages will be delete, there is no need to
 	// delete the test pages in each case.
-	m_root = new pdf::PageTree( m_ft_lib ) ;
+	m_root = new pdf::PageTree( m_ft ) ;
 }
 
-void PageTest::tearDown( )
+void RealPageTest::tearDown( )
 {
 	delete m_root ;
-	::FT_Done_FreeType( m_ft_lib ) ;
+	
+	TestBase::tearDown( ) ;
 }
 
-void PageTest::TestNormal( )
+void RealPageTest::TestNormal( )
 {
 	std::istringstream ss( "<</Contents 611 0 R /CropBox [0 0 297 419 ] "
 	                       "/MediaBox [0 0 297 419 ] /Parent "
@@ -108,10 +109,10 @@ void PageTest::TestNormal( )
 	CPPUNIT_ASSERT( p->MediaBox() == pdf::Rect( 0, 0, 297, 419 ) ) ;
 }
 
-void PageTest::TestWrite( )
+void RealPageTest::TestWrite( )
 {
 	pdf::RealPage *p  = new pdf::RealPage( m_root ) ;
-	pdf::SimpleFont *f = new pdf::SimpleFont( "TimesNewRoman", m_ft_lib ) ;
+	pdf::SimpleFont *f = new pdf::SimpleFont( "TimesNewRoman", m_ft ) ;
 	p->DrawText( 120, 300, f, "This is a line" ) ;
 	p->DrawText( 120, 400, f, "This is another line" ) ;
 	p->Finish( ) ;
@@ -128,10 +129,10 @@ void PageTest::TestWrite( )
 	CPPUNIT_ASSERT( p->MediaBox() == p2->MediaBox() ) ;
 }
 
-void PageTest::TestDecode( )
+void RealPageTest::TestDecode( )
 {
 	pdf::RealPage *p  = new pdf::RealPage( m_root ) ;
-	pdf::SimpleFont *f = new pdf::SimpleFont( "TimesNewRoman", m_ft_lib ) ;
+	pdf::SimpleFont *f = new pdf::SimpleFont( "TimesNewRoman", m_ft ) ;
 	p->DrawText( 120, 300, f, "This is a line" ) ;
 	p->DrawText( 120, 400, f, "This is another line" ) ;
 	p->Finish( ) ;
