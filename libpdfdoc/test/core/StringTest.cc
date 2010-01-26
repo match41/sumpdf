@@ -91,9 +91,27 @@ void StringTest::TestErrorHex( )
 
 void StringTest::TestOctal( )
 {
-	std::istringstream ss( "(\\050)" ) ;
+	std::istringstream ss( "(\\0503\\051)" ) ;
 
 	pdf::String str ;
 	CPPUNIT_ASSERT( ss >> str ) ;
-	PDF_ASSERT_EQUAL( str.Get(), "\050" ) ;
+	PDF_ASSERT_EQUAL( str.Get(), "\0503\051" ) ;
+}
+
+void StringTest::TestOctal1( )
+{
+	std::istringstream ss( "(\\5a\\1)" ) ;
+
+	pdf::String str ;
+	CPPUNIT_ASSERT( ss >> str ) ;
+	PDF_ASSERT_EQUAL( str.Get(), "\005a\001" ) ;
+}
+
+void StringTest::TestOctal2( )
+{
+	std::istringstream ss( "(\\50a\\51)" ) ;
+
+	pdf::String str ;
+	CPPUNIT_ASSERT( ss >> str ) ;
+	PDF_ASSERT_EQUAL( str.Get(), "\050a\051" ) ;
 }

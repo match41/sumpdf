@@ -71,7 +71,9 @@ private :
 	void DecodeHexString( TokenSrc& is ) ;
 
 	bool HandleEscapeCharacter( TokenSrc& is, char& ch ) ;
-	bool HandleCharacter( TokenSrc& is, char& ch ) ;
+	
+	enum DecodeState { done, extra, quit } ;
+	DecodeState HandleOctal( TokenSrc& is, char& ch ) ;
 } ;
 
 } // end of namespace
