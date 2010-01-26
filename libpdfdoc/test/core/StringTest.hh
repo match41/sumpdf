@@ -49,6 +49,7 @@ public :
 		CPPUNIT_TEST( TestErrorLiteral );
 		CPPUNIT_TEST( TestHex );
 		CPPUNIT_TEST( TestErrorHex );
+		CPPUNIT_TEST( TestOctal );
 	CPPUNIT_TEST_SUITE_END();
 
 private :
@@ -58,6 +59,7 @@ private :
 	void TestErrorLiteral( ) ;
 	void TestHex( ) ;
 	void TestErrorHex( ) ;
+	void TestOctal( ) ;
 } ;
 
 #endif

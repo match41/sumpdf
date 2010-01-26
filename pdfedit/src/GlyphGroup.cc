@@ -38,15 +38,11 @@ namespace pdf {
 /**	constructor
 */
 GlyphGroup::GlyphGroup( const TextBlock& blk, QGraphicsItem *parent )
-	: QGraphicsItemGroup( parent ),
-	  m_block( blk )
+	: QGraphicsItemGroup( parent )
 {
-qDebug() << "VVVVVVVVVVVVVVVVVVVVVVVVVVVVV" ;
-qDebug() << QString::fromStdWString(m_block.Text()) ;
-	m_block.VisitChars( this ) ;
-qDebug() << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" ;	
+	blk.VisitChars( this ) ;
 	// setup flags
-//	setFlags( ItemIsSelectable | ItemIsMovable ) ; 
+	setFlags( ItemIsSelectable | ItemIsMovable ) ;
 }
 
 void GlyphGroup::OnChar(
@@ -56,22 +52,19 @@ void GlyphGroup::OnChar(
 	double			scale_factor ) 
 {
 	GlyphGraphicsItem *item = new GlyphGraphicsItem( glyph ) ;
-qDebug() << ToQtMatrix( m ) ;
+
 	// scale font by their font size
 	item->setTransform( ToQtMatrix( m ) ) ;
 	item->scale( scale_factor, scale_factor ) ;
 
 	addToGroup( item ) ;
+	
+	m_text.append( ch ) ;
 }
 
 int GlyphGroup::type( ) const
 {
 	return Type ;
-}
-
-const TextBlock& GlyphGroup::GetTextBlock() const
-{
-	return m_block ;
 }
 
 } // end of namespace

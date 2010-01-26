@@ -69,7 +69,7 @@ void StringTest::TestErrorLiteral( )
 	
 	pdf::String str ;
 	CPPUNIT_ASSERT( ss >> str ) ;
-	PDF_ASSERT_EQUAL( str.Get(), "12[}}CVDe,.3kk\f4(56)" ) ;
+	PDF_ASSERT_EQUAL( str.Get(), "12[}}CVDe,.3kkk\f4(56)" ) ;
 }
 
 void StringTest::TestHex( )
@@ -87,4 +87,13 @@ void StringTest::TestErrorHex( )
 
 	pdf::String str ;
 	CPPUNIT_ASSERT_THROW( ss >> str, std::ios_base::failure ) ;
+}
+
+void StringTest::TestOctal( )
+{
+	std::istringstream ss( "(\\050)" ) ;
+
+	pdf::String str ;
+	CPPUNIT_ASSERT( ss >> str ) ;
+	PDF_ASSERT_EQUAL( str.Get(), "\050" ) ;
 }

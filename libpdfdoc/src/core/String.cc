@@ -100,11 +100,70 @@ void String::DecodeLiteralString( TokenSrc& is )
 		{
 			case '\\' :
 				if ( !HandleEscapeCharacter( is, ch ) )
-				    continue ;	// ignore bad escape character
+				{
+					bool ch_used = false ;
+				
+					// handle the \ddd octal digits here
+					if ( ch >= '0' && ch < '8' )
+					{
+						char val = ch - '0' ;
+std::cout << "val = " << (int)val << std::endl ;
+						
+						bool quit = false ;
+						
+						// at most 2 more octal digits
+						for ( int i = 0 ; i < 2 && !quit ; i++ )
+						{
+							// no character in input, quit
+							if ( !is.GetChar( ch ) )
+								quit = true ;
+							
+							else if ( ch >= '0' && ch < '8' )
+							{
+								val <<= 3 ;
+								val |= (ch - '0') ;
+std::cout << "val" << i << " = " << (int)val << std::endl ;
+								ch_used = true ;
+							}
+							
+							else
+							{
+								ch_used = false ;
+								break ;
+							}
+						}
+						
+						m_value.push_back( val ) ;
+						
+						if ( quit )
+							break ;
+					}
+					
+					// fall through. PDF specs indicates for unknown character 
+					// after escape character '\' will ignore the escape
+					// character, i.e. the character after '\' will still be
+					// counted.
+					if ( !ch_used )
+					{
+						if ( ch == '(' )
+							bracket_balance++ ;
+						else if ( ch == ')' )
+						{
+							bracket_balance-- ;
+							if ( bracket_balance < 0 )
+								return ;
+						}
+						else
+							m_value.push_back( ch ) ;
+					}
+					continue ;
+				}
 				break ;
+			
 			case '(' :
 				bracket_balance++ ;
 				break ;
+			
 			case ')' :
 				bracket_balance-- ;
 				if ( bracket_balance < 0 )
@@ -115,10 +174,18 @@ void String::DecodeLiteralString( TokenSrc& is )
 	} 
 }
 
+bool String::HandleCharacter( TokenSrc& is, char& ch )
+{
+	return false ;
+}
+
 bool String::HandleEscapeCharacter( TokenSrc& is, char& ch )
 {
+std::cout << "found esp char = \'" << ch << "\'" << std::endl ;
+
 	if ( is.GetChar( ch ) )
 	{
+std::cout << "esp char = \'" << ch << "\'" << std::endl ;
 		switch ( ch )
 		{
 			case 'n'  : ch = '\n' ;     break ;
@@ -132,7 +199,9 @@ bool String::HandleEscapeCharacter( TokenSrc& is, char& ch )
 			
 			// unknown character after escape is not an error.
 			// it will be ignored.
-			default :	return false ;
+			default :
+std::cout << "invalid esp char! \'" << ch << "\'" << std::endl ;
+				return false ;
 		}
 	}
 	return true ;

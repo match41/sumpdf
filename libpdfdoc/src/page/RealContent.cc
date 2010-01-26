@@ -36,6 +36,7 @@
 
 #include <cassert>
 #include <iostream>
+#include <sstream>
 
 namespace pdf {
 

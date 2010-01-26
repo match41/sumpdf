@@ -183,7 +183,7 @@ void MainWnd::LoadTextLine( const TextLine& line )
 		group->setTransform( ToQtMatrix( trm ) ) ;
 		line_group->addToGroup( group ) ;
 		
-		trm.Dx( trm.Dx() + group->GetTextBlock().Width() ) ;
+		trm.Dx( trm.Dx() + it->Width() ) ;
 //		m_scene->addItem( group ) ;
 	}
 	
@@ -261,7 +261,7 @@ void MainWnd::StorePage( QGraphicsScene *scene, Doc *doc, Page *page )
 			PDF_ASSERT( group != 0 ) ;
 			
 			TextLine line( FromQtMatrix( group->transform() ) ) ;
-			
+						
 			QList<QGraphicsItem*> children = group->childItems() ;
 			for ( QList<QGraphicsItem*>::iterator j  = children.begin() ;
 			                                      j != children.end() ; ++j )
@@ -270,7 +270,7 @@ void MainWnd::StorePage( QGraphicsScene *scene, Doc *doc, Page *page )
 					qgraphicsitem_cast<GlyphGroup*>( *j ) ;
 				
 				PDF_ASSERT( text != 0 ) ;
-				line.AddBlock( text->GetTextBlock() ) ;
+//				line.AddBlock( text->GetTextBlock() ) ;
 			}
 			
 //			line.Print( std::cout, TextState(),

@@ -53,10 +53,8 @@ public :
 
 	static const int Type = UserType + 1 ;
 
-	const TextBlock& GetTextBlock() const ;
-
 private :
-	TextBlock	m_block ;
+	QString	m_text ;
 } ;
 
 } // end of namespace

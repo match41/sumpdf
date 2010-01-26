@@ -192,7 +192,7 @@ void ObjectTest::TestObj5( )
 	
 	const pdf::Dictionary& dict = sub.As<pdf::Dictionary>() ;
 	const std::string& a = dict[pdf::Name("CharSet")] ;
-	PDF_ASSERT_EQUAL( a[a.size()-2], 'r' ) ;
+	PDF_ASSERT_EQUAL( a[a.size()-2], '\n' ) ;
 	PDF_ASSERT_EQUAL( a[a.size()-1], 'e' ) ;
 }
 

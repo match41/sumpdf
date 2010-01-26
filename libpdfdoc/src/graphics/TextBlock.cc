@@ -131,7 +131,7 @@ void TextBlock::VisitChars( CharVisitor *v ) const
 
 		if ( glyph != 0 && glyph->IsOutline() )
 		{
-			v->OnChar( m_chars[*i], tm, *glyph, m_format.ScaleFactor() ) ;
+			v->OnChar( *i, tm, *glyph, m_format.ScaleFactor() ) ;
 
 			// update X position
 			tm.Dx( tm.Dx() + glyph->AdvanceX() * m_format.ScaleFactor() ) ;

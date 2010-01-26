@@ -71,6 +71,7 @@ private :
 	void DecodeHexString( TokenSrc& is ) ;
 
 	bool HandleEscapeCharacter( TokenSrc& is, char& ch ) ;
+	bool HandleCharacter( TokenSrc& is, char& ch ) ;
 } ;
 
 } // end of namespace
