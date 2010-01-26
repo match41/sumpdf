@@ -17,56 +17,43 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	RealContentTest.cc
-	\brief	implementation of the RealContentTest class
-	\date	Jan 25, 2010
+/**	\file	MatrixTest.cc
+	\brief	implementation of the MatrixTest class
+	\date	Jan 26, 2010
 	\author	Nestal Wan
 */
 
-#include "RealContentTest.hh"
+#include "MatrixTest.hh"
 
-#include "page/RealContent.hh"
-#include "page/MockResources.hh"
-#include "graphics/Text.hh"
-#include "graphics/TextLine.hh"
-#include "graphics/TextState.hh"
-#include "mock/MockFont.hh"
-#include "stream/Stream.hh"
+#include "util/Matrix.hh"
 
-#include <sstream>
+#include "mock/Assert.hh"
 
 using namespace pdf ;
 
 /**	constructor
 */
-RealContentTest::RealContentTest( )
+MatrixTest::MatrixTest( )
 {
 }
 
-void RealContentTest::TestWrite( )
+void MatrixTest::TestDet( )
 {
-	RealContent subject ;
+	Matrix m( 1,1,1,1,0,0 ) ;
+	PDF_ASSERT_EQUAL( m.Det(), 0.0 ) ;
+}
 
-	MockFont font ;
-	TextState ts ;
-	ts.SetFont( 12.0, &font ) ;
-	MockResources res ;
-	Name fname = res.AddFont( &font ) ; 
+void MatrixTest::TestInv( )
+{
+	Matrix m( 2,0,0,2, 100, 300 ), m2( 1,0,0,1, 500, 300 ) ;
 	
-	Text *t = subject.AddText( ts ) ;
-	Matrix tm( 1,0,0,1, 100, 200 ) ;
-	TextLine line( tm, ts ) ;
-	line.AppendText( L"Hello World!\n" ) ;
-	line.AppendText( L"This is line 2\n" ) ;
-	t->AddLine( line ) ;
+	Matrix r = m * m2 * m2.Inverse() ;
+	PDF_ASSERT_EQUAL( r, m ) ;
+}
 
-	Matrix tm2( 1,0,0,1, 100, 400 ) ;
-	TextLine line2( tm2, ts ) ;
-	line2.AppendText( L"Hello World2!\n" ) ;
-	line2.AppendText( L"This is line 3\n" ) ;
-	t->AddLine( line2 ) ;
-
-	Stream str ;
-	subject.Write( str, &res ) ;
-std::cout << str << std::endl ;
+void MatrixTest::TestMul( )
+{
+	Matrix m( 1,0,0,1, 100, 300 ), m2( 1,0,0,1, 500, 300 ) ;
+	Matrix r = m * m2 ;
+	PDF_ASSERT_EQUAL( r, Matrix( 1,0,0,1, 600, 600 ) ) ;
 }

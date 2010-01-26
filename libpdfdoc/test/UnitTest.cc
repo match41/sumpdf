@@ -60,6 +60,7 @@
 #include "page/PageNodeTest.hh"
 #include "image/PngImageTest.hh"
 #include "image/JpegImageTest.hh"
+#include "util/MatrixTest.hh"
 
 int main( int argc, char **argv )
 {
@@ -102,6 +103,7 @@ int main( int argc, char **argv )
 	runner.addTest( InStreamBufAdaptorTest::suite( ) ) ;
 	runner.addTest( OutStreamBufAdaptorTest::suite( ) ) ;
 	runner.addTest( RawFilterTest::suite( ) ) ;
+	runner.addTest( MatrixTest::suite( ) ) ;
 
 	runner.run();
   

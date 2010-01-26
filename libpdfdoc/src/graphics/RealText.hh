@@ -101,10 +101,6 @@ private :
 
 	void OnTf( Object* args, std::size_t count, Resources *res ) ;
 
-//	void AddNewLine( ) ;
-//	void AddNewLine( const Matrix& mat ) ;
-//	void AddNewLine( const TextLine& line ) ;
-
 private :
 	///	Lines inside this text object
 	std::vector<TextLine>	m_lines ;

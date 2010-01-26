@@ -82,6 +82,7 @@ public :
 
 	std::ostream& Print(
 		std::ostream& 	os,
+		Matrix&			current,
 		TextState& 		state,
 		const Resources	*res ) const ;
 

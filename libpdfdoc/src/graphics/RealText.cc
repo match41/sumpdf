@@ -154,12 +154,16 @@ std::size_t RealText::Count( ) const
 void RealText::Print( std::ostream& os, const Resources *res ) const
 {
 	os << "BT\n" ;
-	TextState ts ;
+	
+	// rendering state
+	TextState	ts ;
+	Matrix		trans ;
+
+	using namespace boost ;
 	std::for_each(
 		m_lines.begin(),
 		m_lines.end(),
-		boost::bind(
-			&TextLine::Print, _1, boost::ref(os), boost::ref(ts), res ) ) ;
+		bind( &TextLine::Print, _1, ref(os), ref(trans), ref(ts), res ) ) ;
 
 	os << "ET\n" ;
 }
@@ -215,38 +219,11 @@ void RealText::OnTstar( Object* , std::size_t , Resources * )
 {
 	m_line_mat = m_line_mat *
 		Matrix( 1, 0, 0, 1, 0, m_state.Leading() ) ;
+	
 	AddLine( TextLine( m_line_mat, m_state ) ) ;
 }
-/*
 
-void RealText::AddNewLine( )
-{
-	AddNewLine( m_line_mat ) ;
-}
-
-void RealText::AddNewLine( const Matrix& mat )
-{
-	PDF_ASSERT( !m_lines.empty() ) ;
-
-	// remove empty lines first
-	if ( m_lines.back().IsEmpty() )
-		m_lines.pop_back() ;
-	
-	m_lines.push_back( TextLine( mat, m_state ) ) ;
-}
-
-void RealText::AddNewLine( const TextLine& line )
-{
-	PDF_ASSERT( !m_lines.empty() ) ;
-
-	// remove empty lines first
-	if ( m_lines.back().IsEmpty() )
-		m_lines.pop_back() ;
-	
-	m_lines.push_back( line ) ;
-}
-
-*/
+///	Shows a Text string
 void RealText::OnTj( Object* args, std::size_t count, Resources *res )
 {
 	PDF_ASSERT( !m_lines.empty() ) ;
@@ -258,6 +235,17 @@ void RealText::OnTj( Object* args, std::size_t count, Resources *res )
 	}
 }
 
+///	\a array TJ
+/**	Show one or more text strings, allowing individual glyph positioning. Each
+	element of array can be a string or a number. If the element is a string,
+	this operator shows the string. If it is a number, the operator adjusts the
+	text position by that amount; that is, it translates the text matrix, Tm.
+	The number is expressed in thousandths of a unit of text space. This amount
+	is subtracted from the current horizontal or vertical coordinate, depending
+	on the writing mode. In the default coordinate system, a positive adjustment
+	has the effect of moving the next glyph painted either to the left or down
+	by the given amount. 
+*/
 void RealText::OnTJ( Object* args, std::size_t count, Resources *res )
 {
 	PDF_ASSERT( !m_lines.empty() ) ;

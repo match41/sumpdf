@@ -174,4 +174,43 @@ std::ostream& operator<<( std::ostream& os, const Matrix& m )
 	return os ;
 }
 
+/// Calculate the determinant of the matrix
+double Matrix::Det( ) const
+{
+	// M11 * M22 - M12 * M21
+	return m_mat[0] * m_mat[3] - m_mat[1] * m_mat[2] ;
+}
+
+Matrix Matrix::Inverse( bool *ok ) const
+{
+	double det = Det( ) ;
+	if ( det == 0.0 )
+	{
+		if ( ok )
+			*ok = false ;
+		return Matrix() ;
+	}
+	else
+	{
+		if ( ok )
+			*ok = false ;
+        
+		double detinv = 1.0 / det ;
+		return Matrix(
+			m_mat[3]*detinv,
+			-m_mat[1]*detinv,
+			-m_mat[2]*detinv,
+			m_mat[0]*detinv,
+			(m_mat[2]*m_mat[5] - m_mat[3]*m_mat[4])*detinv,
+			(m_mat[1]*m_mat[4] - m_mat[0]*m_mat[5])*detinv);
+	}
+}
+
+bool Matrix::IsTranslate( ) const
+{
+	return
+		m_mat[0] == 1.0 && m_mat[1] == 0.0 &&
+		m_mat[2] == 0.0 && m_mat[3] == 1.0 ;
+}
+
 } // end of namespace

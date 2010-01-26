@@ -17,80 +17,38 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**
-    \file	Matrix.hh
-    \brief	definition the Matrix class
-    \date	Jan 6, 2010
+/**	\file	MatrixTest.hh
+    \brief	definition the MatrixTest class
+    \date	Jan 26, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_MATRIX_HEADER_INCLUDED__
-#define __PDF_MATRIX_HEADER_INCLUDED__
+#ifndef __PDF_MATRIXTEST_HH_EADER_INCLUDED__
+#define __PDF_MATRIXTEST_HH_EADER_INCLUDED__
 
-#include <iosfwd>
+#include <cppunit/TestFixture.h>
 
-namespace pdf {
+#include <cppunit/extensions/HelperMacros.h>
 
-/**	\brief  2 dimention matrix.
-
-	This class represents a 2D matrix. It stores six real numbers which
-	are the first and second column of a 3x3 matrix:
-	
-<pre>
-	a b 0
-	c d 0
-	e f 0
-</pre>
-
+///	brief description
+/**	The MatrixTest class represents
 */
-class Matrix
+class MatrixTest : public CppUnit::TestFixture
 {
 public :
-	Matrix( ) ;
-	Matrix( double m11, double m12, double m21, double m22,
-		double dx, double dy ) ;
-	Matrix( const Matrix& m ) ;
+	MatrixTest( ) ;
 
-	Matrix& operator=( const Matrix& m ) ;
-	bool operator==( const Matrix& m ) const ;
-	bool operator!=( const Matrix& m ) const ;
-
-	bool IsIdentity( ) const ;
-
-	double M11() const ;
-	double M12() const ;
-	double M21() const ;
-	double M22() const ;
-	double Dx() const ;
-	double Dy() const ;
-
-	void M11( double val ) ;
-	void M12( double val ) ;
-	void M21( double val ) ;
-	void M22( double val ) ;
-	void Dx( double val ) ;
-	void Dy( double val ) ;
-
-	typedef double*			iterator ;
-	typedef const double*	const_iterator ;
-	
-	iterator begin() ;
-	iterator end() ;
-	const_iterator begin() const ;
-	const_iterator end() const ;
-	
-	double Det( ) const ;
-	Matrix Inverse( bool *ok = 0 ) const ;
-
-	bool IsTranslate( ) const ;
+	// declare suit function
+	CPPUNIT_TEST_SUITE( MatrixTest ) ;
+		CPPUNIT_TEST( TestMul ) ;
+		CPPUNIT_TEST( TestDet ) ;
+		CPPUNIT_TEST( TestInv ) ;
+	CPPUNIT_TEST_SUITE_END( ) ;
 
 private :
-	double	m_mat[6] ;
+	void TestDet( ) ;
+	void TestInv( ) ;
+	void TestMul( ) ;
 } ;
 
-Matrix operator*( const Matrix& a, const Matrix& b ) ;
-std::ostream& operator<<( std::ostream& os, const Matrix& m ) ;
-
-} // end of namespace
-
-#endif
+#endif // MATRIXTEST_HH_

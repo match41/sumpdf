@@ -125,16 +125,20 @@ void TextLine::AppendText( const std::wstring& text )
 
 std::ostream& TextLine::Print(
 	std::ostream& 	os,
+	Matrix&			current,
 	TextState& 		state,
 	const Resources	*res ) const
 {
-	const Matrix& t = m_trans ;
-	if ( t.M11() == 1 && t.M12() == 0 &&
-		 t.M21() == 0 && t.M22() == 1 )
-		os << t.Dx() << ' ' << t.Dy() << " Td\n" ;
+	if ( m_trans.IsTranslate() && current.IsTranslate() )
+		os	<< (m_trans.Dx()-current.Dx()) << ' ' 
+			<< (m_trans.Dy()-current.Dy()) << " Td\n" ;
 	else
-		os	<< t.M11() << ' ' << t.M12() << ' ' << t.M21() << ' '
-			<< t.M22() << ' ' << t.Dx()  << ' ' << t.Dy( ) << " Tm\n" ; 
+		os	<< m_trans.M11() << ' ' << m_trans.M12() << ' '
+			<< m_trans.M21() << ' ' << m_trans.M22() << ' '
+			<< m_trans.Dx()  << ' ' << m_trans.Dy( ) << " Tm\n" ; 
+	
+	// replace current matrix
+	current = m_trans ;
 	
 	for ( TextLine::const_iterator i = m_blks.begin() ;
 		i != m_blks.end() ; ++i )

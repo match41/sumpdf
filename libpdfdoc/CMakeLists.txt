@@ -496,6 +496,8 @@ set( UT_SRCS	test/core/TokenTest.cc
 				test/file/RefObjMapTest.cc
 				test/file/CompleteObjTest.cc
 				
+				test/util/MatrixTest.cc
+				
 				test/mock/MockFile.cc
 				test/mock/MockFont.cc
 				test/mock/TestBase.cc
