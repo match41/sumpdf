@@ -153,6 +153,7 @@ Object RealPage::WriteContent( IFile *file ) const
 	}
 }
 
+/*
 void RealPage::DrawText( double x, double y, Font *f, const std::string& text )
 {
 	assert( f != 0 ) ;
@@ -171,12 +172,22 @@ void RealPage::DrawText( double x, double y, Font *f, const std::string& text )
 	            << String( text ) << " Tj\n"
 	   << "ET\n" << std::flush ;
 }
+*/
 
+void RealPage::UseFont( Font *f )
+{
+	BaseFont *font = dynamic_cast<BaseFont*>( f ) ;
+	assert( font != 0 ) ;
+	m_resources.AddFont( font ) ;
+}
+
+/*
 void RealPage::Finish( )
 {
 	if ( !m_cstrs.empty() )
 		m_cstrs.back().Flush( ) ;
 }
+*/
 
 std::size_t RealPage::Count( ) const
 {

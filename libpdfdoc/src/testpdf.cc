@@ -23,7 +23,6 @@
 #include "font/Font.hh"
 #include "graphics/Text.hh"
 #include "graphics/TextLine.hh"
-#include "graphics/TextBlock.hh"
 #include "page/Page.hh"
 #include "page/PageContent.hh"
 
@@ -43,15 +42,25 @@ int main( int argc, char **argv )
 	
 	pdf::Page *p = doc->AppendPage( ) ;
 	pdf::Font *f = doc->CreateSimpleFont( "Arial" ) ;
-	p->DrawText( 100, 100, f, "Hello world!" ) ;
-	p->DrawText( 100, 200, f, "This is the second line!" ) ;
-	p->Finish( ) ;
+	p->UseFont( f ) ;
+//	p->DrawText( 100, 100, f, "Hello world!" ) ;
+//	p->DrawText( 100, 200, f, "This is the second line!" ) ;
+//	p->Finish( ) ;
 	
-//	pdf::PageContent *c = p->GetContent( ) ;
-//	pdf::Text *t = c->AddText( ) ;
-//	pdf::TextBlock& b = *t->begin()->begin() ;
-//	b.SetText( L"wahaha" ) ;
+	pdf::TextState ts ;
+	ts.SetFont( 12.0, f ) ;
 	
+	pdf::PageContent *c = p->GetContent( ) ;
+	pdf::Text *t = c->AddText( ts ) ;
+	
+	pdf::TextLine line1( pdf::Matrix(1,0,0,1, 100, 100), ts ) ;
+	line1.AppendText( L"Hello world!" ) ;
+	t->AddLine( line1 ) ;
+
+	pdf::TextLine line2( pdf::Matrix(1,0,0,1, 100, 200), ts ) ;
+	line2.AppendText( L"This is the second line!" ) ;
+	t->AddLine( line2 ) ;
+
 	pdf::DocInfo *info = doc->Info() ;
 	info->SetCreator( "Haha" ) ;
 	

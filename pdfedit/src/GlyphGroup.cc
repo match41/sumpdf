@@ -37,7 +37,7 @@ namespace pdf {
 
 /**	constructor
 */
-GlyphGroup::GlyphGroup( const TextBlock& blk, QGraphicsItem *parent )
+GlyphGroup::GlyphGroup( const TextLine& blk, QGraphicsItem *parent )
 	: QGraphicsItemGroup( parent )
 {
 	blk.VisitChars( this ) ;

@@ -64,7 +64,6 @@ set( PAGE_HDRS		${PAGE_DIR}/RealPage.hh
 set( GRAPICS_HDRS	${GRAPICS_DIR}/RealText.hh )
 #                    ${GRAPICS_DIR}/Text.hh
 #                    ${GRAPICS_DIR}/TextLine.hh
-#                    ${GRAPICS_DIR}/TextBlock.hh
 #                    ${GRAPICS_DIR}/TextFormat.hh )
 
 set( FILE_HDRS		${FILE_DIR}/RealFile.hh
@@ -143,7 +142,6 @@ set( PAGE_INC_HDRS	${INCLUDE_DIR}/page/Page.hh
 set( GFX_INC_HDRS	${INCLUDE_DIR}/graphics/Graphics.hh
 					${INCLUDE_DIR}/graphics/GraphicsVisitor.hh
 					${INCLUDE_DIR}/graphics/Text.hh
-					${INCLUDE_DIR}/graphics/TextBlock.hh
 					${INCLUDE_DIR}/graphics/TextState.hh
 					${INCLUDE_DIR}/graphics/CharVisitor.hh
 					${INCLUDE_DIR}/graphics/TextLine.hh )
@@ -174,7 +172,6 @@ set( GRAPICS_SRCS	${GRAPICS_DIR}/Graphics.cc
 					${GRAPICS_DIR}/CharVisitor.cc
 					${GRAPICS_DIR}/RealText.cc
 					${GRAPICS_DIR}/TextLine.cc
-					${GRAPICS_DIR}/TextBlock.cc
 					${GRAPICS_DIR}/TextState.cc )
 
 set( FILE_SRCS		${FILE_DIR}/RealFile.cc

@@ -29,7 +29,7 @@
 #include <QGraphicsItemGroup>
 #include <graphics/CharVisitor.hh>
 
-#include <graphics/TextBlock.hh>
+#include <graphics/TextLine.hh>
 
 namespace pdf {
 
@@ -41,7 +41,7 @@ class Matrix ;
 class GlyphGroup : public QGraphicsItemGroup, private CharVisitor
 {
 public :
-	GlyphGroup( const TextBlock& blk, QGraphicsItem *parent = 0 ) ;
+	GlyphGroup( const TextLine& blk, QGraphicsItem *parent = 0 ) ;
 
 	void OnChar(
 		wchar_t 		ch,

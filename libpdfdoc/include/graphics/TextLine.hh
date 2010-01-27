@@ -27,7 +27,7 @@
 #ifndef __PDF_TEXTLINE_HEADER_INCLUDED__
 #define __PDF_TEXTLINE_HEADER_INCLUDED__
 
-#include "TextBlock.hh"
+//#include "TextBlock.hh"
 #include "TextState.hh"
 #include "util/Matrix.hh"
 
@@ -37,6 +37,8 @@
 #include <vector>
 
 namespace pdf {
+
+class CharVisitor ;
 
 class RealResources ;
 
@@ -49,9 +51,9 @@ class RealResources ;
 */
 class TextLine
 {
-public :
-	typedef std::vector<TextBlock>::iterator		iterator ;
-	typedef std::vector<TextBlock>::const_iterator	const_iterator ;
+//public :
+//	typedef std::vector<TextBlock>::iterator		iterator ;
+//	typedef std::vector<TextBlock>::const_iterator	const_iterator ;
 
 public :
 	explicit TextLine(
@@ -60,25 +62,12 @@ public :
 
 	// uses default generated copy constructor
 
-	iterator begin() ;
-	iterator end() ;
-	
-	const_iterator begin() const ;
-	const_iterator end() const ;
-
-	TextBlock& front() ;
-	TextBlock& back() ;
-	const TextBlock& front() const ;
-	const TextBlock& back() const ;
-
-	void AddBlock( const TextBlock& blk ) ;
-
 	const Matrix& Transform() const ;
 	void SetTransform( const Matrix& t ) ;
 	bool IsEmpty( ) const ;
 
 	void AppendText( const std::wstring& text ) ;
-	void ChangeState( const TextState& s ) ;
+//	void ChangeState( const TextState& s ) ;
 
 	std::ostream& Print(
 		std::ostream& 	os,
@@ -89,11 +78,21 @@ public :
 	bool operator==( const TextLine& rhs ) const ;
 	bool operator!=( const TextLine& rhs ) const ;
 
+	const TextState& Format() const ;
+	void SetFormat( const TextState& fmt ) ;
+
+	const std::wstring& Text() const ; 
+	double Width( ) const ;
+	
+	void VisitChars( CharVisitor *v ) const ;
+
 private :
 	/// the text matrix
 	Matrix	m_trans ;
 	
-	std::vector<TextBlock>	m_blks ;
+//	std::vector<TextBlock>	m_blks ;
+	TextState		m_state ;
+	std::wstring	m_text ;
 } ;
 
 std::ostream& operator<<( std::ostream& os, const TextLine& t ) ;

@@ -113,10 +113,25 @@ void RealPageTest::TestWrite( )
 {
 	pdf::RealPage *p  = new pdf::RealPage( m_root ) ;
 	pdf::SimpleFont *f = new pdf::SimpleFont( "TimesNewRoman", m_ft ) ;
-	p->DrawText( 120, 300, f, "This is a line" ) ;
-	p->DrawText( 120, 400, f, "This is another line" ) ;
-	p->Finish( ) ;
+//	p->DrawText( 120, 300, f, "This is a line" ) ;
+//	p->DrawText( 120, 400, f, "This is another line" ) ;
+//	p->Finish( ) ;
+
+	pdf::TextState ts ;
+	ts.SetFont( 12.0, f ) ;
+	p->UseFont( f ) ;
+
+	pdf::PageContent *c = p->GetContent( ) ;
+	pdf::Text *t = c->AddText( ts ) ;
 	
+	pdf::TextLine line1( pdf::Matrix(1,0,0,1, 120, 300), ts ) ;
+	line1.AppendText( L"This is a line" ) ;
+	t->AddLine( line1 ) ;
+
+	pdf::TextLine line2( pdf::Matrix(1,0,0,1, 120, 400), ts ) ;
+	line2.AppendText( L"This is another line" ) ;
+	t->AddLine( line2 ) ;
+
 	MockFile file ;
 	pdf::Ref link = file.AllocLink( ) ;
 	p->Write( link, &file, file.AllocLink( ) ) ;
@@ -133,14 +148,24 @@ void RealPageTest::TestDecode( )
 {
 	pdf::RealPage *p  = new pdf::RealPage( m_root ) ;
 	pdf::SimpleFont *f = new pdf::SimpleFont( "TimesNewRoman", m_ft ) ;
-	p->DrawText( 120, 300, f, "This is a line" ) ;
-	p->DrawText( 120, 400, f, "This is another line" ) ;
-	p->Finish( ) ;
+//	p->DrawText( 120, 300, f, "This is a line" ) ;
+//	p->DrawText( 120, 400, f, "This is another line" ) ;
+//	p->Finish( ) ;
 
-//	std::vector<pdf::PaintOp> ops ;
+	pdf::TextState ts ;
+	ts.SetFont( 12.0, f ) ;
+	p->UseFont( f ) ;
+
 	pdf::PageContent *c = p->GetContent( ) ;
+	pdf::Text *t = c->AddText( ts ) ;
 	
-//	PDF_ASSERT_EQUAL( c->Count(), 0U ) ;
+	pdf::TextLine line1( pdf::Matrix(1,0,0,1, 120, 300), ts ) ;
+	line1.AppendText( L"This is a line" ) ;
+	t->AddLine( line1 ) ;
+
+	pdf::TextLine line2( pdf::Matrix(1,0,0,1, 120, 400), ts ) ;
+	line2.AppendText( L"This is another line" ) ;
+	t->AddLine( line2 ) ;
 	
 	// visitor
 	struct V : public pdf::GraphicsVisitor
@@ -151,7 +176,7 @@ void RealPageTest::TestDecode( )
 		void VisitText( pdf::Text *t )
 		{
 			CPPUNIT_ASSERT( t != 0 ) ;
-			PDF_ASSERT_EQUAL( t->Count(), 1U ) ;
+			PDF_ASSERT_EQUAL( t->Count(), 2U ) ;
 			
 			const pdf::Matrix& m = t->begin()->Transform() ;
 			if ( m_count == 0 )

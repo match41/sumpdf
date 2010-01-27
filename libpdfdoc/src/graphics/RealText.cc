@@ -184,7 +184,8 @@ void RealText::OnTd( Object* args, std::size_t count, Resources* )
 {
 	if ( count >= 2 )
 	{
-		m_line_mat = m_line_mat * Matrix( 1, 0, 0, 1, args[0], args[1] ) ;
+		m_text_mat = m_line_mat =
+			m_line_mat * Matrix( 1, 0, 0, 1, args[0], args[1] ) ;
 		AddLine( TextLine( m_line_mat, m_state ) ) ;
 	}
 }
@@ -197,7 +198,8 @@ void RealText::OnTD( Object* args, std::size_t count, Resources *res )
 		double	ty	= args[1] ;
 		m_state.SetLeading( -ty ) ;
 		
-		m_line_mat = m_line_mat * Matrix( 1, 0, 0, 1, args[0], args[1] ) ;
+		m_text_mat = m_line_mat =
+			m_line_mat * Matrix( 1, 0, 0, 1, args[0], args[1] ) ;
 		AddLine( TextLine( m_line_mat, m_state ) ) ;
 	}
 }
@@ -208,7 +210,7 @@ void RealText::OnTm( Object* args, std::size_t count, Resources* )
 	{
 		// unlike Td and TD, the Tm command will replace the current
 		// matrix.
-		m_line_mat = Matrix(
+		m_text_mat = m_line_mat = Matrix(
 			args[0], args[1], args[2], args[3], args[4], args[5] ) ;
 		
 		AddLine( TextLine( m_line_mat, m_state ) ) ;
@@ -217,7 +219,7 @@ void RealText::OnTm( Object* args, std::size_t count, Resources* )
 
 void RealText::OnTstar( Object* , std::size_t , Resources * )
 {
-	m_line_mat = m_line_mat *
+	m_text_mat = m_line_mat = m_line_mat *
 		Matrix( 1, 0, 0, 1, 0, m_state.Leading() ) ;
 	
 	AddLine( TextLine( m_line_mat, m_state ) ) ;
@@ -230,8 +232,14 @@ void RealText::OnTj( Object* args, std::size_t count, Resources *res )
 	
 	if ( count >= 1 )
 	{
-		const std::string& s = args[0].As<std::string>() ;
-		m_lines.back().AppendText( std::wstring( s.begin(), s.end() ) ) ;
+		TextLine& current = m_lines.back() ;
+		
+		// must set the font properly before showing text
+		if ( current.Format().GetFont() != 0 )
+		{
+			const std::string& s = args[0].As<std::string>() ;
+			current.AppendText( std::wstring( s.begin(), s.end() ) ) ;
+		}
 	}
 }
 
@@ -250,9 +258,6 @@ void RealText::OnTJ( Object* args, std::size_t count, Resources *res )
 {
 	PDF_ASSERT( !m_lines.empty() ) ;
 
-	// text matrix
-	Matrix tm = m_line_mat ;
-
 	Array& a = args[0].As<Array>() ;
 	for ( Array::iterator i = a.begin() ; i != a.end() ; ++i )
 	{
@@ -260,7 +265,7 @@ void RealText::OnTJ( Object* args, std::size_t count, Resources *res )
 		{
 			std::string& s = i->As<std::string>() ;
 			std::wstring ws( s.begin(), s.end() ) ;
-			tm.Dx( tm.Dx() + m_state.Width( ws ) ) ;
+			m_text_mat.Dx( m_text_mat.Dx() + m_state.Width( ws ) ) ;
 
 			m_lines.back().AppendText( ws ) ;
 		}
@@ -270,9 +275,9 @@ void RealText::OnTJ( Object* args, std::size_t count, Resources *res )
 			
 			// TODO: depend on writing mode, advance horizonal or vertical
 			// assume vertical here.
-			tm.Dx( tm.Dx() - disp / 1000.0 * m_state.FontSize() ) ;
+			m_text_mat.Dx(m_text_mat.Dx() - disp / 1000.0 * m_state.FontSize());
 			
-			AddLine( TextLine( tm, m_state ) ) ;
+			AddLine( TextLine( m_text_mat, m_state ) ) ;
 		}
 	}
 }
@@ -296,8 +301,24 @@ void RealText::OnTf( Object* args, std::size_t count, Resources *res )
 			std::cout << "unknown font: " << args[1] << std::endl ;
 		else
 		{
-			m_state.SetFont( args[1], f ) ;
-			m_lines.back().ChangeState( m_state ) ;
+			double font_size = args[1].To<double>() ;
+			
+			TextLine& current = m_lines.back() ;
+			
+			if ( current.IsEmpty()					||
+				 m_state.FontSize()	!= font_size	||
+				 m_state.GetFont()	!= f )
+			{
+				if ( !current.IsEmpty() )
+					m_text_mat.Dx( m_text_mat.Dx() + current.Width() ) ;
+				
+				m_state.SetFont( font_size, f ) ;
+				
+				if ( current.IsEmpty() )
+					current.SetFormat( m_state ) ;
+				else
+					m_lines.push_back( TextLine( m_text_mat, m_state ) ) ;
+			}
 		}
 	}
 }

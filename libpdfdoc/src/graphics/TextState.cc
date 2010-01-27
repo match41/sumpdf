@@ -143,9 +143,12 @@ std::ostream& TextState::Print(
 
 	if ( m_font_size	!= prev.m_font_size ||
 		 m_font			!= prev.m_font )
-		os	<< res->FindFont( static_cast<const BaseFont*>(m_font) )
-			<< ' ' << m_font_size << " Tf\n" ;
-
+	{
+		Name fname = res->FindFont( static_cast<const BaseFont*>(m_font) ) ;
+		PDF_ASSERT( !fname.empty( ) ) ;
+		
+		os	<< fname << ' ' << m_font_size << " Tf\n" ;
+	}
 	return os ;
 }
 

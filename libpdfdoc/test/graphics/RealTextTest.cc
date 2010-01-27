@@ -53,7 +53,7 @@ void RealTextTest::TestTdCmd( )
 
 	RealText t( ts ) ;
 	PDF_ASSERT_EQUAL( t.Count(), 1U ) ;
-	PDF_ASSERT_EQUAL( t.front().front().Format(), ts ) ;
+	PDF_ASSERT_EQUAL( t.front().Format(), ts ) ;
 	PDF_ASSERT_EQUAL( t.front().Transform(), Matrix() ) ;
 
 	// action: translate to 100,200
@@ -63,7 +63,7 @@ void RealTextTest::TestTdCmd( )
 	
 	// expected: no new text line is added. current matrix translated
 	PDF_ASSERT_EQUAL( t.Count(), 1U ) ;
-	PDF_ASSERT_EQUAL( t.front().front().Format(), ts ) ;
+	PDF_ASSERT_EQUAL( t.front().Format(), ts ) ;
 	PDF_ASSERT_EQUAL( t.front().Transform(), Matrix(1,0,0,1,100,200) ) ;
 
 	// action: move another 300,900
@@ -73,7 +73,7 @@ void RealTextTest::TestTdCmd( )
 	
 	// expected: the two translation is combined
 	PDF_ASSERT_EQUAL( t.Count(), 1U ) ;
-	PDF_ASSERT_EQUAL( t.front().front().Format(), ts ) ;
+	PDF_ASSERT_EQUAL( t.front().Format(), ts ) ;
 	PDF_ASSERT_EQUAL( t.front().Transform(), Matrix(1,0,0,1,400,1100) ) ;
 	
 	RealText exp( ts ) ;

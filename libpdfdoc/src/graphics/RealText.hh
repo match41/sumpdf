@@ -108,8 +108,16 @@ private :
 	///	Current text state
 	TextState	m_state ;
 	
-	///	Current text line matrix. 
+	///	Current text line matrix.
+	/**	This matrix is only affect by the Td/TD and Tm commands. It will be
+		changes when showing text.
+	*/
 	Matrix		m_line_mat ;
+	
+	///	Current text matrix.
+	/**	This matrix is used to create new TextLine objects.
+	*/
+	Matrix		m_text_mat ;
 } ;
 
 std::ostream& operator<<( std::ostream& os, const RealText& t ) ;

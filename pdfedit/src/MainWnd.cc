@@ -59,7 +59,6 @@
 #include <page/PageContent.hh>
 #include <graphics/Text.hh>
 #include <graphics/TextLine.hh>
-#include <graphics/TextBlock.hh>
 
 #include <fontconfig/fontconfig.h>
 #include <fontconfig/fcfreetype.h>
@@ -172,25 +171,25 @@ void MainWnd::VisitText( Text *text )
 
 void MainWnd::LoadTextLine( const TextLine& line )
 {
-	QGraphicsItemGroup *line_group = new QGraphicsItemGroup ;
-	line_group->setFlags( QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemIsMovable ) ;
-	
-	Matrix trm ;
-	
-	for ( TextLine::const_iterator it = line.begin() ; it != line.end() ; ++it )
-	{
-		GlyphGroup *group = new GlyphGroup( *it ) ;
-		group->setTransform( ToQtMatrix( trm ) ) ;
-		line_group->addToGroup( group ) ;
+//	QGraphicsItemGroup *line_group = new QGraphicsItemGroup ;
+//	line_group->setFlags( QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemIsMovable ) ;
+//	
+//	Matrix trm ;
+//	
+//	for ( TextLine::const_iterator it = line.begin() ; it != line.end() ; ++it )
+//	{
+		GlyphGroup *group = new GlyphGroup( line ) ;
+		group->setTransform( ToQtMatrix( line.Transform() ) ) ;
+//		line_group->addToGroup( group ) ;
 		
-		trm.Dx( trm.Dx() + it->Width() ) ;
-//		m_scene->addItem( group ) ;
-	}
-	
-	// remember to set transform AFTER adding the children, or else the
-	// transform will go wrong.
-	line_group->setTransform( ToQtMatrix( line.Transform() ) ) ;
-	m_scene->addItem( line_group ) ;
+//		trm.Dx( trm.Dx() + it->Width() ) ;
+		m_scene->addItem( group ) ;
+//	}
+//	
+//	// remember to set transform AFTER adding the children, or else the
+//	// transform will go wrong.
+//	line_group->setTransform( ToQtMatrix( line.Transform() ) ) ;
+//	m_scene->addItem( line_group ) ;
 }
 
 void MainWnd::VisitGraphics( Graphics *gfx )
