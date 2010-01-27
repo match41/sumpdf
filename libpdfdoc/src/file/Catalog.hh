@@ -45,6 +45,7 @@ class RealPage ;
 class PageTree ;
 class ElementList ;
 class IFile ;
+class Resources ;
 
 /*!	\brief	brief description
 	\internal
@@ -66,6 +67,8 @@ public :
 	std::size_t PageCount( ) const ;
 
 	RealPage*	GetPage( std::size_t index ) ;
+
+	Resources*	GetResource( ) ;
 
 private :
 	CompleteObj	m_self ;

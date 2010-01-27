@@ -29,11 +29,12 @@
 #include <QGraphicsItemGroup>
 #include <graphics/CharVisitor.hh>
 
-#include <graphics/TextLine.hh>
+#include <graphics/TextState.hh>
 
 namespace pdf {
 
 class Matrix ;
+class TextLine ;
 
 ///	brief description
 /**	The GlyphGroup class represents
@@ -41,7 +42,7 @@ class Matrix ;
 class GlyphGroup : public QGraphicsItemGroup, private CharVisitor
 {
 public :
-	GlyphGroup( const TextLine& blk, QGraphicsItem *parent = 0 ) ;
+	explicit GlyphGroup( const TextLine& blk, QGraphicsItem *parent = 0 ) ;
 
 	void OnChar(
 		wchar_t 		ch,
@@ -53,8 +54,11 @@ public :
 
 	static const int Type = UserType + 1 ;
 
+	const TextState& Format( ) const ;
+
 private :
-	QString	m_text ;
+	QString		m_text ;
+	TextState	m_state ;
 } ;
 
 } // end of namespace

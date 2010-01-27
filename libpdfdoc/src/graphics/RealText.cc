@@ -26,7 +26,6 @@
 #include "RealText.hh"
 
 #include "graphics/GraphicsVisitor.hh"
-#include "graphics/TextBlock.hh"
 
 #include "core/Array.hh"
 #include "core/Object.hh"

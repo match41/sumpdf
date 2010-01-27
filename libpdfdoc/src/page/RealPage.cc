@@ -174,12 +174,14 @@ void RealPage::DrawText( double x, double y, Font *f, const std::string& text )
 }
 */
 
+/*
 void RealPage::UseFont( Font *f )
 {
 	BaseFont *font = dynamic_cast<BaseFont*>( f ) ;
 	assert( font != 0 ) ;
 	m_resources.AddFont( font ) ;
 }
+*/
 
 /*
 void RealPage::Finish( )

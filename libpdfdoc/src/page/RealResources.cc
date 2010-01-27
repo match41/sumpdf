@@ -192,13 +192,15 @@ Name RealResources::AddFont( BaseFont *font )
 BaseFont* RealResources::FindFont( const Name& name ) const
 {
 	FontMap::left_const_iterator i = m_fonts.left.find( name ) ;
-	return i != m_fonts.left.end() ? i->second : 0 ;
+	return i != m_fonts.left.end() ? i->second :
+		( m_parent != 0 ? m_parent->FindFont( name ) : 0 ) ;
 }
 
 Name RealResources::FindFont( BaseFont *font ) const
 {
 	FontMap::right_const_iterator i = m_fonts.right.find( font ) ;
-	return i != m_fonts.right.end() ? i->second : Name() ;
+	return i != m_fonts.right.end() ? i->second :
+		( m_parent != 0 ? m_parent->FindFont( font ) : Name() ) ; 
 }
 
 } // end of namespace

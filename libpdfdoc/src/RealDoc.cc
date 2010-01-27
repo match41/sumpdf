@@ -119,7 +119,9 @@ Page* RealDoc::GetPage( std::size_t index )
 
 Font* RealDoc::CreateSimpleFont( const std::string& name )
 {
-	return new SimpleFont( name, m_ft_lib ) ;
+	SimpleFont *f = new SimpleFont( name, m_ft_lib ) ;
+	m_catalog->GetResource()->AddFont( f ) ;
+	return f ;
 }
 
 Page* RealDoc::AddPage( std::size_t index )

@@ -34,10 +34,10 @@
 
 #include "page/RealPage.hh"
 #include "page/PageTree.hh"
-#include "util/Util.hh"
-#include "util/Exception.hh"
 
-#include <cassert>
+#include "util/Debug.hh"
+#include "util/Exception.hh"
+#include "util/Util.hh"
 
 #include <iostream>
 
@@ -57,7 +57,7 @@ Catalog::Catalog( const Ref& link, IFile *file, FT_Library ft_lib )
 	  m_page_mode	( "UseNode" ),
 	  m_tree		( 0 )
 {
-	assert( file != 0 ) ;
+	PDF_ASSERT( file != 0 ) ;
 	Dictionary self = file->ReadObj( link ).As<Dictionary>() ;
 
 	Name type ;
@@ -113,7 +113,7 @@ Catalog::~Catalog( )
 	m_named_dests.clear( ) ;
 
 	// there should be no one linking to the root tree node now.
-	assert( m_tree->UseCount() == 1 ) ;
+	PDF_ASSERT( m_tree->UseCount() == 1 ) ;
 	
 	m_tree->Release() ;
 	m_tree = 0 ;
@@ -148,7 +148,7 @@ Ref Catalog::Write( IFile *file ) const
 
 RealPage* Catalog::AddPage( )
 {
-	assert( m_tree != 0 ) ;
+	PDF_ASSERT( m_tree != 0 ) ;
 
 	// for now the pages are arranged linearly for now
 	return new RealPage( m_tree ) ;
@@ -156,22 +156,28 @@ RealPage* Catalog::AddPage( )
 
 std::size_t Catalog::PageCount( ) const
 {
-	assert( m_tree != 0 ) ;
+	PDF_ASSERT( m_tree != 0 ) ;
 
 	return m_tree->Count( ) ;
 }
 
 RealPage* Catalog::GetPage( std::size_t index )
 {
-	assert( m_tree != 0 ) ;
+	PDF_ASSERT( m_tree != 0 ) ;
 
 	PageNode *p = m_tree->GetLeaf( index ) ;
-	assert( p != 0 ) ;
+	PDF_ASSERT( p != 0 ) ;
 	
 	// no need to use dynamic cast as it will not be child class of RealPage
-	assert( typeid(*p) == typeid(RealPage) ) ;
+	PDF_ASSERT( typeid(*p) == typeid(RealPage) ) ;
 
 	return static_cast<RealPage*>( p ) ;
+}
+
+Resources* Catalog::GetResource( )
+{
+	PDF_ASSERT( m_tree != 0 ) ;
+	return m_tree->GetResource() ;
 }
 
 } // end of namespace

@@ -28,6 +28,8 @@
 #include "GlyphGraphicsItem.hh"
 #include "Util.hh"
 
+#include <graphics/TextLine.hh>
+
 #include <util/Debug.hh>
 #include <util/Matrix.hh>
 
@@ -38,7 +40,9 @@ namespace pdf {
 /**	constructor
 */
 GlyphGroup::GlyphGroup( const TextLine& blk, QGraphicsItem *parent )
-	: QGraphicsItemGroup( parent )
+	: QGraphicsItemGroup( parent ),
+	  m_text( QString::fromStdWString(blk.Text()) ),
+	  m_state( blk.Format() )
 {
 	blk.VisitChars( this ) ;
 	// setup flags
@@ -58,13 +62,16 @@ void GlyphGroup::OnChar(
 	item->scale( scale_factor, scale_factor ) ;
 
 	addToGroup( item ) ;
-	
-	m_text.append( ch ) ;
 }
 
 int GlyphGroup::type( ) const
 {
 	return Type ;
+}
+
+const TextState& GlyphGroup::Format( ) const
+{
+	return m_state ;
 }
 
 } // end of namespace

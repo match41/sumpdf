@@ -155,6 +155,11 @@ void TextLine::SetFormat( const TextState& fmt )
 	m_state = fmt ;
 }
 
+const std::wstring& TextLine::Text() const
+{
+	return m_text ;
+}
+
 /// Width of the text block in text space.
 ///	Return the width of the string in text space unit.
 /**	This function calculates the width of a string in text space unit. It will

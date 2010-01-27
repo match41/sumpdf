@@ -67,7 +67,6 @@ public :
 	bool IsEmpty( ) const ;
 
 	void AppendText( const std::wstring& text ) ;
-//	void ChangeState( const TextState& s ) ;
 
 	std::ostream& Print(
 		std::ostream& 	os,

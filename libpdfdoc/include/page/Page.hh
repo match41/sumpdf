@@ -67,7 +67,7 @@ public :
 	
 	virtual PageContent* GetContent( ) = 0 ;
 	
-	virtual void UseFont( Font *font ) = 0 ;
+//	virtual void UseFont( Font *font ) = 0 ;
 } ;
 
 } // end of namespace

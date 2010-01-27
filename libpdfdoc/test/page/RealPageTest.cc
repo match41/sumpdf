@@ -119,7 +119,7 @@ void RealPageTest::TestWrite( )
 
 	pdf::TextState ts ;
 	ts.SetFont( 12.0, f ) ;
-	p->UseFont( f ) ;
+	p->GetResource()->AddFont( f ) ;
 
 	pdf::PageContent *c = p->GetContent( ) ;
 	pdf::Text *t = c->AddText( ts ) ;
@@ -154,7 +154,7 @@ void RealPageTest::TestDecode( )
 
 	pdf::TextState ts ;
 	ts.SetFont( 12.0, f ) ;
-	p->UseFont( f ) ;
+	p->GetResource()->AddFont( f ) ;
 
 	pdf::PageContent *c = p->GetContent( ) ;
 	pdf::Text *t = c->AddText( ts ) ;

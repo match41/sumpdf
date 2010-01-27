@@ -171,25 +171,9 @@ void MainWnd::VisitText( Text *text )
 
 void MainWnd::LoadTextLine( const TextLine& line )
 {
-//	QGraphicsItemGroup *line_group = new QGraphicsItemGroup ;
-//	line_group->setFlags( QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemIsMovable ) ;
-//	
-//	Matrix trm ;
-//	
-//	for ( TextLine::const_iterator it = line.begin() ; it != line.end() ; ++it )
-//	{
-		GlyphGroup *group = new GlyphGroup( line ) ;
-		group->setTransform( ToQtMatrix( line.Transform() ) ) ;
-//		line_group->addToGroup( group ) ;
-		
-//		trm.Dx( trm.Dx() + it->Width() ) ;
-		m_scene->addItem( group ) ;
-//	}
-//	
-//	// remember to set transform AFTER adding the children, or else the
-//	// transform will go wrong.
-//	line_group->setTransform( ToQtMatrix( line.Transform() ) ) ;
-//	m_scene->addItem( line_group ) ;
+	GlyphGroup *group = new GlyphGroup( line ) ;
+	group->setTransform( ToQtMatrix( line.Transform() ) ) ;
+	m_scene->addItem( group ) ;
 }
 
 void MainWnd::VisitGraphics( Graphics *gfx )
@@ -251,30 +235,14 @@ void MainWnd::StorePage( QGraphicsScene *scene, Doc *doc, Page *page )
 	for ( QList<QGraphicsItem*>::iterator i  = items.begin() ;
 	                                      i != items.end() ; ++i )
 	{
-//		text = dynamic_cast<GlyphGroup*>( *i ) ;
-		QGraphicsItemGroup *group =
-			qgraphicsitem_cast<QGraphicsItemGroup*>( *i ) ;
-
-		if ( group != 0 )
-		{
-			PDF_ASSERT( group != 0 ) ;
-			
-			TextLine line( FromQtMatrix( group->transform() ) ) ;
+		GlyphGroup *text =
+			qgraphicsitem_cast<GlyphGroup*>( *i ) ;
+		
+		PDF_ASSERT( text != 0 ) ;
+		
+		TextLine line( FromQtMatrix( text->transform() ) ) ;
 						
-			QList<QGraphicsItem*> children = group->childItems() ;
-			for ( QList<QGraphicsItem*>::iterator j  = children.begin() ;
-			                                      j != children.end() ; ++j )
-			{
-				GlyphGroup *text =
-					qgraphicsitem_cast<GlyphGroup*>( *j ) ;
-				
-				PDF_ASSERT( text != 0 ) ;
-//				line.AddBlock( text->GetTextBlock() ) ;
-			}
-			
-//			line.Print( std::cout, TextState(),
-			t->AddLine( line ) ;
-		}
+		t->AddLine( line ) ;
 	}
 }
 
