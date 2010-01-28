@@ -17,72 +17,36 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	RealContent.hh
-    \brief	definition the RealContent class
-    \date	Jan 14, 2010
-    \author	Nestal Wan
+/**	\file	FontType.cc
+	\brief	implementation of the FontType class
+	\date	Jan 28, 2010
+	\author	Nestal Wan
 */
 
-#ifndef __PDF_REALCONTENT_HH_EADER_INCLUDED__
-#define __PDF_REALCONTENT_HH_EADER_INCLUDED__
+#include "FontType.hh"
 
-#include "page/PageContent.hh"
+#include "FontException.hh"
 
-#include <vector>
+#include <ft2build.h>
+#include FT_FREETYPE_H
+#include FT_XFREE86_H
 
-namespace pdf {
+namespace pdf { namespace font {
 
-class Graphics ;
-class Object ;
-class Resources ;
-class Stream ;
-class Text ;
-class TextState ;
-class Token ;
-
-///	brief description
-/**	The RealContent class represents
+/**	constructor
 */
-class RealContent : public PageContent 
+Type GetType( FT_FaceRec_ *face )
 {
-public :
-	RealContent( ) ;
+	const char *format = ::FT_Get_X11_Font_Format( face ) ;
 
-	// operations
-	std::size_t Count( ) const ;
-	const Graphics* Item( std::size_t idx ) const ;
-	Text* AddText( const TextState& ts ) ;
-	void VisitGraphics( GraphicsVisitor *visitor ) ;
+	if ( format == 0 )
+		return unknown ;
+	else if ( ::strcasecmp( format, "Truetype" ) == 0 )
+		return truetype ;
+	else if ( ::strcasecmp( format, "Type 1" ) == 0 )
+		return type1 ;
+	else
+		throw FontException( "unknown font type: " + std::string(format) ) ;
+}
 
-	void Add( Graphics *gfx ) ;
-	bool IsEmpty( ) const ;
-
-	template <typename InputIt>
-	void Load( InputIt first, InputIt last, Resources *res )
-	{
-		while ( first != last )
-			Load( *first++, res ) ;
-	}
-
-	void Write( Stream& str, const Resources *res ) const ;
-	
-	void Clear( ) ;
-
-private :
-	void Load( Stream& str, Resources *res ) ;
-
-private :
-	Graphics* ProcessCommand(
-		const Token& 	cmd,
-		Object 			*args,
-		std::size_t 	count,
-		Graphics		*gfx,
-		Resources 		*res  ) ;
-
-private :
-	std::vector<Graphics*> m_gfx ;
-} ;
-
-} // end of namespace
-
-#endif // REALCONTENT_HH_
+} } // end of namespace

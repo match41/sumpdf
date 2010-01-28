@@ -17,72 +17,29 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	RealContent.hh
-    \brief	definition the RealContent class
-    \date	Jan 14, 2010
+/**	\file	FontType.hh
+    \brief	definition the FontType class
+    \date	Jan 28, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_REALCONTENT_HH_EADER_INCLUDED__
-#define __PDF_REALCONTENT_HH_EADER_INCLUDED__
+#ifndef __PDF_FONTTYPE_HH_EADER_INCLUDED__
+#define __PDF_FONTTYPE_HH_EADER_INCLUDED__
 
-#include "page/PageContent.hh"
-
-#include <vector>
+struct FT_FaceRec_ ;
 
 namespace pdf {
 
-class Graphics ;
-class Object ;
-class Resources ;
-class Stream ;
-class Text ;
-class TextState ;
-class Token ;
-
-///	brief description
-/**	The RealContent class represents
-*/
-class RealContent : public PageContent 
+namespace font
 {
-public :
-	RealContent( ) ;
-
-	// operations
-	std::size_t Count( ) const ;
-	const Graphics* Item( std::size_t idx ) const ;
-	Text* AddText( const TextState& ts ) ;
-	void VisitGraphics( GraphicsVisitor *visitor ) ;
-
-	void Add( Graphics *gfx ) ;
-	bool IsEmpty( ) const ;
-
-	template <typename InputIt>
-	void Load( InputIt first, InputIt last, Resources *res )
-	{
-		while ( first != last )
-			Load( *first++, res ) ;
-	}
-
-	void Write( Stream& str, const Resources *res ) const ;
+	///	brief description
+	/**	The FontType class represents
+	*/
+	enum Type { truetype, type1, mmtype1, type3, type0, unknown } ;
 	
-	void Clear( ) ;
-
-private :
-	void Load( Stream& str, Resources *res ) ;
-
-private :
-	Graphics* ProcessCommand(
-		const Token& 	cmd,
-		Object 			*args,
-		std::size_t 	count,
-		Graphics		*gfx,
-		Resources 		*res  ) ;
-
-private :
-	std::vector<Graphics*> m_gfx ;
-} ;
+	Type GetType( FT_FaceRec_ *face ) ;
+}
 
 } // end of namespace
 
-#endif // REALCONTENT_HH_
+#endif // FONTTYPE_HH_

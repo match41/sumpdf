@@ -52,6 +52,8 @@ public :
 	virtual Text* AddText( const TextState& ts ) = 0 ;
 	
 	virtual void VisitGraphics( GraphicsVisitor *visitor ) = 0 ;
+	
+	virtual void Clear( ) = 0 ;
 } ;
 
 } // end of namespace

@@ -26,6 +26,7 @@
 #ifndef __PDF_FONTDESCRIPTOR_HH_EADER_INCLUDED__
 #define __PDF_FONTDESCRIPTOR_HH_EADER_INCLUDED__
 
+#include "FontType.hh"
 #include "core/Name.hh"
 #include "util/Rect.hh"
 
@@ -81,6 +82,8 @@ private :
 	double FontUnit( double val, FT_Face face ) ;
 
 private :
+	font::Type	m_type ;
+
 	std::string	m_family ;
 	std::string	m_psname ;
 	Stretch		m_stretch ;

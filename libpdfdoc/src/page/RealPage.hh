@@ -67,11 +67,8 @@ public :
 	
 	Rect MediaBox( ) const ;
 
-//	void DrawText( double x, double y, Font *font, const std::string& text ) ;
-//	void Finish( ) ;
+	void Clear( ) ;
 	
-//	void UseFont( Font *f ) ;
-
 	std::size_t Count( ) const ;
 	PageTree* Parent( ) ;
 	
@@ -96,7 +93,7 @@ private :
 private :
 	PageTree		*m_parent ;
 	RealResources	m_resources ;
-	CompleteObj		m_self ;
+//	CompleteObj		m_self ;
 	
 	/// in PDF user space. specified by UserUnit or 1/72 inch
 	Rect		m_media_box ;

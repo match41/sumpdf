@@ -78,7 +78,7 @@ void RealPage::Read( Dictionary& self, IFile *file )
 	if ( Detach( file, self, "Resources", res ) )
 		m_resources.Read( res, file ) ;
 	
-	m_self.Read( self, file ) ;
+//	m_self.Read( self, file ) ;
 }
 
 Rect RealPage::MediaBox( ) const
@@ -113,20 +113,19 @@ void RealPage::Write( const Ref& link, IFile *file, const Ref& parent ) const
 {
 	assert( file != 0 ) ;
 	assert( m_parent != 0 ) ;
-	assert( GetResource( ) != 0 ) ;
 
-	CompleteObj self( m_self ) ;
-	self.Get()["Type"]		= Name( "Page" ) ;
- 	self.Get()["Contents"]	= WriteContent( file ) ;
-	self.Get()["Resources"]	= GetResource( )->Write( file ) ;
-	self.Get()["Parent"]	= parent ;
+	Dictionary self ;
+	self["Type"]		= Name( "Page" ) ;
+ 	self["Contents"]	= WriteContent( file ) ;
+	self["Resources"]	= m_resources.Write( file ) ;
+	self["Parent"]	= parent ;
 
     if ( m_media_box != Rect() )
-    	self.Get()["MediaBox"] = Array(
+    	self["MediaBox"] = Array(
     		m_media_box.begin( ),
     		m_media_box.end( ) ) ;
 
-	self.Write( file, link ) ;
+	file->WriteObj( self, link ) ;
 }
 
 Object RealPage::WriteContent( IFile *file ) const
@@ -153,43 +152,10 @@ Object RealPage::WriteContent( IFile *file ) const
 	}
 }
 
-/*
-void RealPage::DrawText( double x, double y, Font *f, const std::string& text )
+void RealPage::Clear( )
 {
-	assert( f != 0 ) ;
-	assert( GetResource( ) != 0 ) ;
-
-	BaseFont *font = dynamic_cast<BaseFont*>( f ) ;
-	assert( font != 0 ) ;
-	Name fname = m_resources.AddFont( font ) ;
-
-	if ( m_cstrs.empty() || !m_cstrs.back().IsDirty() )
-		m_cstrs.push_back( Stream( Stream::deflate ) ) ;
-
-	std::ostream ss( m_cstrs.back().OutStreamBuf( ) ) ;
-	ss << "BT\n"
-       << fname << " 12 Tf " << x << ' ' << y << " Td "
-	            << String( text ) << " Tj\n"
-	   << "ET\n" << std::flush ;
+	m_cstrs.clear( ) ;
 }
-*/
-
-/*
-void RealPage::UseFont( Font *f )
-{
-	BaseFont *font = dynamic_cast<BaseFont*>( f ) ;
-	assert( font != 0 ) ;
-	m_resources.AddFont( font ) ;
-}
-*/
-
-/*
-void RealPage::Finish( )
-{
-	if ( !m_cstrs.empty() )
-		m_cstrs.back().Flush( ) ;
-}
-*/
 
 std::size_t RealPage::Count( ) const
 {

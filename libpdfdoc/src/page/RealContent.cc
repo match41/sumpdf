@@ -193,4 +193,9 @@ void RealContent::Write( Stream& str, const Resources *res ) const
 	os.flush() ;
 }
 
+void RealContent::Clear( )
+{
+	m_gfx.clear( ) ;
+}
+
 } // end of namespace

@@ -25,6 +25,7 @@
 */
 
 #include "SimpleFont.hh"
+#include "FontType.hh"
 
 #include "FontException.hh"
 #include "FontDescriptor.hh"
@@ -74,7 +75,7 @@ SimpleFont::SimpleFont(
 
 SimpleFont::SimpleFont( const std::string& name, FT_Library ft_lib )
 	: m_face( 0 ),
-	  m_type( unknown )
+	  m_type( font::unknown )
 {
 	std::string path = FindFont( name ) ; 
 	std::vector<unsigned char> prog = LoadFile( path ) ;
@@ -83,7 +84,7 @@ SimpleFont::SimpleFont( const std::string& name, FT_Library ft_lib )
 
 SimpleFont::SimpleFont( Dictionary& self, IFile *file, FT_Library ft_lib )
 	: m_face( 0 ),
-	  m_type( unknown ),
+	  m_type( font::unknown ),
 	  m_descriptor( new FontDescriptor )
 {
 	PDF_ASSERT( file != 0 ) ;
@@ -132,7 +133,7 @@ SimpleFont::SimpleFont( Dictionary& self, IFile *file, FT_Library ft_lib )
 			Init( prog, ft_lib ) ;
 		}
 		
-		m_self.Read( self, file ) ;
+//		m_self.Read( self, file ) ;
 	}
 	catch ( Exception& e )
 	{
@@ -161,7 +162,7 @@ void SimpleFont::Init( std::vector<unsigned char>& prog, FT_Library ft_lib )
 		throw FontException( "cannot create font face" ) ;
 	
 	m_base_font = ::FT_Get_Postscript_Name( m_face ) ;
-	m_type = GetFontType( m_face ) ;
+	m_type = font::GetType( m_face ) ;
 	m_descriptor.reset( new FontDescriptor( m_face, prog ) ) ;
 	LoadGlyphs( ) ;
 }
@@ -279,20 +280,6 @@ unsigned SimpleFont::UnitsPerEM( ) const
 	return m_face->units_per_EM ;
 }
 
-SimpleFont::Type SimpleFont::GetFontType( FT_Face face )
-{
-	const char *format = ::FT_Get_X11_Font_Format( face ) ;
-
-	if ( format == 0 )
-		return unknown ;
-	else if ( ::strcasecmp( format, "Truetype" ) == 0 )
-		return truetype ;
-	else if ( ::strcasecmp( format, "Type 1" ) == 0 )
-		return type1 ;
-	else
-		throw FontException( "unknown font type: " + std::string(format) ) ;
-}
-
 ///	Common initialization procedure for constructor that comes with an FT_Face.
 void SimpleFont::LoadGlyphs( )
 {
@@ -348,18 +335,18 @@ Ref SimpleFont::Write( IFile *file ) const
 {
 	PDF_ASSERT( file != 0 ) ;
 
-	CompleteObj dict( m_self ) ;
-	dict.Get()["Type"]		= Name( "Font" ) ;
-	dict.Get()["Subtype"]	= SubType( m_type ) ;
-	dict.Get()["BaseFont"]	= m_base_font ;
-	dict.Get()["FirstChar"]	= m_first_char ;
-	dict.Get()["LastChar"]	= m_last_char ;
+	Dictionary dict ;
+	dict["Type"]		= Name( "Font" ) ;
+	dict["Subtype"]		= SubType( m_type ) ;
+	dict["BaseFont"]	= m_base_font ;
+	dict["FirstChar"]	= m_first_char ;
+	dict["LastChar"]	= m_last_char ;
 	
 //	double mat[] = { 0.001, 0, 0, 0.001, 0, 0 } ;
 //	dict.Get()["FontMatrix"]	= Array( Begin(mat), End(mat) ) ;
 
-	if ( dict.Get().find( "Encoding" ) == dict.Get().end() )
-		dict.Get()["Encoding"]		= Name("WinAnsiEncoding") ;
+	if ( dict.find( "Encoding" ) == dict.end() )
+		dict["Encoding"]		= Name("WinAnsiEncoding") ;
 
 //	if ( !m_encoding.IsNull() )
 //		dict.Get()["Encoding"]		= m_encoding ;
@@ -371,30 +358,30 @@ Ref SimpleFont::Write( IFile *file ) const
 		widths.push_back( g != 0 ? Width(*g) : 0.0 ) ;
 	}
 		
-	dict.Get()["Widths"]			= widths ;
+	dict["Widths"]			= widths ;
 
-	dict.Get()["FontDescriptor"]	= m_descriptor->Write( file ) ;
+	dict["FontDescriptor"]	= m_descriptor->Write( file ) ;
 
 //	if ( !m_to_unicode.IsNull( ) )
 //		dict.Get()["ToUnitcode"]	= file->WriteObj( m_to_unicode ) ;
 
-	return dict.Write( file ) ;
+	return file->WriteObj( dict ) ;
 }
 
-const Name& SimpleFont::SubType( Type t )
+const Name& SimpleFont::SubType( font::Type t )
 {
-	PDF_ASSERT( t >= truetype && t <= type0 ) ;
+	PDF_ASSERT( t >= font::truetype && t <= font::type0 ) ;
 	return m_font_types[t] ;
 }
 
-SimpleFont::Type SimpleFont::SubType( const Name& name )
+font::Type SimpleFont::SubType( const Name& name )
 {
 	const Name *ptr = std::find( pdf::Begin( m_font_types ),
 	                             pdf::End( m_font_types ), name ) ;
 	if ( ptr == pdf::End( m_font_types ) )
 		throw FontException( boost::format("unknown font type: %1%") % name) ;
 
-	return static_cast<Type>( ptr - pdf::Begin( m_font_types ) ) ;
+	return static_cast<font::Type>( ptr - pdf::Begin( m_font_types ) ) ;
 }
 
 std::string SimpleFont::BaseName( ) const

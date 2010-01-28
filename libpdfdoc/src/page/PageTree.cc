@@ -141,6 +141,8 @@ void PageTree::Write( const Ref& link, IFile *file, const Ref& ) const
 	self["Kids"]		= Array( kids.begin( ), kids.end( ) ) ;
 	self["Count"]		= m_count ;
 	self["MediaBox"]	= Array( Begin( mbox ), End( mbox ) ) ;
+	self["Resources"]	= m_resources.Write( file ) ;
+	
 	file->WriteObj( self, link ) ;
 }
 

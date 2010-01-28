@@ -97,13 +97,13 @@ Catalog::Catalog( const Ref& link, IFile *file, FT_Library ft_lib )
 	}
 
 	// we don't know how to handle that now
-	self.erase( "Names" ) ;
-	self.erase( "OpenAction" ) ;
-	
-	// forget it
-	self.clear( ) ;
-	
-	m_self.Read( self, file ) ;
+//	self.erase( "Names" ) ;
+//	self.erase( "OpenAction" ) ;
+//	
+//	// forget it
+//	self.clear( ) ;
+//	
+//	m_self.Read( self, file ) ;
 }
 
 Catalog::~Catalog( )
@@ -121,16 +121,16 @@ Catalog::~Catalog( )
 
 Ref Catalog::Write( IFile *file ) const
 {
-	CompleteObj self( m_self ) ;
+	Dictionary self ;
 
 	Ref tree = file->AllocLink( ) ;
 	m_tree->Write( tree, file, Ref() ) ; 
 
-	self.Get()["Pages"] 	    = tree ;
-	self.Get()["Type"]	    	= Name( "Catalog" ) ;
-	self.Get()["Version"]		= m_version ;
-	self.Get()["PageLayout"]	= m_page_layout ;
-	self.Get()["PageMode"]		= m_page_mode ;
+	self["Pages"] 	    = tree ;
+	self["Type"]	    = Name( "Catalog" ) ;
+	self["Version"]	= m_version ;
+	self["PageLayout"]	= m_page_layout ;
+	self["PageMode"]	= m_page_mode ;
 
 	// write destinations
 	Dictionary dest ;
@@ -140,10 +140,9 @@ Ref Catalog::Write( IFile *file ) const
 		dest.insert( std::make_pair( i->first, i->second.Write( file ) ) ) ;
 	}
 	if ( !dest.empty() )
-		self.Get()["Dests"]		= file->WriteObj(dest) ;
+		self["Dests"]		= file->WriteObj(dest) ;
 
-
-	return self.Write( file ) ;
+	return file->WriteObj( self ) ;
 }
 
 RealPage* Catalog::AddPage( )

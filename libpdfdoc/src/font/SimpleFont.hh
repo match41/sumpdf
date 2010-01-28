@@ -28,6 +28,7 @@
 #define __PDF_REAL_FONT_HEADER_INCLUDED__
 
 #include "BaseFont.hh"
+#include "FontType.hh"
 
 #include "font/Glyph.hh"
 
@@ -59,9 +60,6 @@ class Dictionary ;
 class SimpleFont : public BaseFont
 {
 public :
-	enum Type { truetype, type1, mmtype1, type3, type0, unknown } ;
-
-public :
 	SimpleFont( Dictionary& self, IFile *file, FT_Library ft_lib ) ;
 	SimpleFont( const std::string& font_file, unsigned idx, FT_Library ft_lib );
 	SimpleFont( const std::string& name, FT_Library ft_lib ) ;
@@ -83,10 +81,9 @@ private :
 	void LoadGlyphs( ) ;
 
 	static const Name m_font_types[] ;
-	static Type GetFontType( FT_Face face ) ;
 
-	static const Name& SubType( Type t ) ;
-	static Type        SubType( const Name& t ) ;
+	static const Name&	SubType( font::Type t ) ;
+	static font::Type	SubType( const Name& t ) ;
 
 	static FT_Face LoadFace(
 		const unsigned char	*data,
@@ -103,13 +100,13 @@ private :
 	static std::string FindStdFont( const std::string& name ) ;
 
 private :
-	CompleteObj	m_self ;
+//	CompleteObj	m_self ;
 
 	FT_Face	m_face ;
 
-	Name	m_base_font ;
-	Type	m_type ;
-	int		m_first_char, m_last_char ;
+	Name		m_base_font ;
+	font::Type	m_type ;
+	int			m_first_char, m_last_char ;
 
 	std::auto_ptr<FontDescriptor>		m_descriptor ;
 //	Object				m_to_unicode ;

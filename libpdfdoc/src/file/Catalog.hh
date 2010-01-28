@@ -71,7 +71,7 @@ public :
 	Resources*	GetResource( ) ;
 
 private :
-	CompleteObj	m_self ;
+//	CompleteObj	m_self ;
 	Name		m_version ;
 	Name		m_page_layout ;
 	Name		m_page_mode ;

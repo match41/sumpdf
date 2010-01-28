@@ -74,4 +74,9 @@ const TextState& GlyphGroup::Format( ) const
 	return m_state ;
 }
 
+QString GlyphGroup::Text( ) const
+{
+	return m_text ;
+}
+
 } // end of namespace

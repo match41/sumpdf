@@ -81,8 +81,8 @@ private :
 	const RealResources	*m_parent ;
 	FT_Library		m_ft_lib ;
 
-	CompleteObj		m_self ;
-	CompleteObj		m_ext_gstate ;
+//	CompleteObj		m_self ;
+//	CompleteObj		m_ext_gstate ;
 
 	typedef	boost::bimap<
 		boost::bimaps::set_of<Name>,

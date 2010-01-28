@@ -209,15 +209,10 @@ void MainWnd::OnSaveAs( )
 	{
 		// we shouldn't do like this. we shouldn't create another doc.
 		// we should re-use m_doc.
-		std::auto_ptr<Doc> doc( CreateDoc( ) ) ;
-		Page *page = doc->AppendPage( ) ;
-		StorePage( m_scene, doc.get(), page ) ;
+		Page *p = m_doc->GetPage( 0 ) ;
+		StorePage( m_scene, m_doc.get(), p ) ;
 		
-		doc->Write( fname.toStdString() ) ;
-		
-		// transfer to m_doc if it doesn't exists
-		if ( m_doc.get() == 0 )
-			m_doc = doc ;
+		m_doc->Write( fname.toStdString() ) ;
 	}
 }
 
@@ -228,8 +223,9 @@ void MainWnd::StorePage( QGraphicsScene *scene, Doc *doc, Page *page )
 	assert( page != 0 ) ;
 	
 	PageContent *c = page->GetContent( ) ;
+	c->Clear( ) ;
+	
 	Text *t = c->AddText( TextState() ) ;
-//	Font *font = doc->CreateSimpleFont( "Arial" ) ;
 	
 	QList<QGraphicsItem *> items = scene->items() ;
 	for ( QList<QGraphicsItem*>::iterator i  = items.begin() ;
@@ -238,11 +234,20 @@ void MainWnd::StorePage( QGraphicsScene *scene, Doc *doc, Page *page )
 		GlyphGroup *text =
 			qgraphicsitem_cast<GlyphGroup*>( *i ) ;
 		
-		PDF_ASSERT( text != 0 ) ;
-		
-		TextLine line( FromQtMatrix( text->transform() ) ) ;
-						
-		t->AddLine( line ) ;
+		if ( text != 0 )
+		{
+			PDF_ASSERT( text->Format().GetFont() != 0 ) ;
+
+std::cout << FromQtMatrix( text->transform() ) << std::endl ;
+
+			TextLine line(
+				FromQtMatrix( text->transform() ),
+				text->Format() ) ;
+			
+			line.AppendText( text->Text().toStdWString() ) ;
+							
+			t->AddLine( line ) ;
+		}
 	}
 }
 

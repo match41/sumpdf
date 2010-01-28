@@ -59,13 +59,15 @@ const Name FontDescriptor::m_stretch_names[] =
 /**	constructor
 */
 FontDescriptor::FontDescriptor( )
-	: m_flags( 0 )
+	: m_type( font::unknown ),
+	  m_flags( 0 )
 {
 	m_italic_angle = m_ascent = m_descent = m_leading = 0.0 ;
 }
 
 FontDescriptor::FontDescriptor( FT_Face face, std::vector<unsigned char>& prog )
-	: m_flags( 0 )
+	: m_type( font::GetType( face ) ),
+	  m_flags( 0 )
 {
 	PDF_ASSERT( face != 0 ) ;
 	
@@ -76,7 +78,7 @@ FontDescriptor::FontDescriptor( FT_Face face, std::vector<unsigned char>& prog )
 		FT_Get_Sfnt_Table( face, ft_sfnt_post ) ) ;
 	
 	m_psname		= FT_Get_Postscript_Name( face ) ;
-PDF_ASSERT( !m_psname.empty() ) ;
+	PDF_ASSERT( !m_psname.empty() ) ;
 
 	m_ascent 		= FontUnit(face->ascender,	face) ;
 	m_descent		= FontUnit(face->descender,	face) ;
@@ -126,12 +128,19 @@ PDF_ASSERT( !m_psname.empty() ) ;
 void FontDescriptor::Read( Dictionary& self, IFile *file )
 {
 	// font file can be in FontFile, FontFile2 or 3, depending on font type
+	m_type = font::unknown ;
+	
 	Stream prog ;
-	bool r =
-		Detach( file, self, "FontFile", 	prog ) ||
-		Detach( file, self, "FontFile2", 	prog ) ||
-		Detach( file, self, "FontFile3", 	prog ) ;
-	if ( r )
+	if ( 		Detach( file, self, "FontFile", 	prog ) )
+		m_type = font::type1 ;
+	else if (	Detach( file, self, "FontFile2", 	prog ) )
+		m_type = font::truetype ;
+	
+	// TODO: confirm FontFile3 type
+	else if ( 	Detach( file, self, "FontFile3", 	prog ) )
+		m_type = font::type3 ;
+	
+	if ( m_type != font::unknown ) 
 		prog.CopyData( m_font_file ) ;
 	
 	// optional font family name. normally empty for embedded font
@@ -166,8 +175,6 @@ void FontDescriptor::Read( Dictionary& self, IFile *file )
 	Name	psname ;
 	if ( DetachConv( file, self, "FontName",	psname) )
 		m_psname = psname.Str() ;
-	
-	Name	type ;
 }
 
 Ref FontDescriptor::Write( IFile *file ) const
@@ -202,7 +209,13 @@ Ref FontDescriptor::Write( IFile *file ) const
 		s.AddDictionaryEntry( "Length1", s.Length() ) ;
 
 		// streams must be indirect objects
-		self["FontFile2"]	= file->WriteObj(s) ;
+		Name font_file_name =
+		(
+			m_type == font::type1		? "FontFile"	: (
+			m_type == font::truetype	? "FontFile2"	: "FontFile3" )
+		) ;
+		
+		self[font_file_name]	= file->WriteObj(s) ;
 	}
 	
 	self["Stretch"]		= static_cast<int>( m_stretch ) ;

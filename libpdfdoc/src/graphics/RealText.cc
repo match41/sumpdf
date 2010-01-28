@@ -122,9 +122,9 @@ void RealText::OnCommand(
 {
 	PDF_ASSERT( !m_lines.empty() ) ;
 
-    HandlerMap::const_iterator i = m_handler_map.find( cmd ) ;
-    if ( i != m_handler_map.end() )
-        (this->*(i->second))( args, count, res ) ;
+	HandlerMap::const_iterator i = m_handler_map.find( cmd ) ;
+	if ( i != m_handler_map.end() )
+		(this->*(i->second))( args, count, res ) ;
 }
 
 void RealText::AddLine( const TextLine& line )

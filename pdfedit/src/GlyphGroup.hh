@@ -55,6 +55,8 @@ public :
 	static const int Type = UserType + 1 ;
 
 	const TextState& Format( ) const ;
+	
+	QString Text( ) const ;
 
 private :
 	QString		m_text ;

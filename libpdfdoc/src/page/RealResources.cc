@@ -42,6 +42,7 @@
 
 #include <algorithm>
 #include <sstream>
+#include <iostream>
 
 namespace pdf {
 
@@ -87,20 +88,19 @@ void RealResources::Read( const Dictionary& dict, IFile *file )
 	ReadFontDict( self, file ) ;
 //	ReadSubDict( "XObject", file, m_xobjs ) ;
 
-	m_self.Read( self, file ) ;
-	m_ext_gstate.Read( ext_gstate, file ) ;
+//	m_self.Read( self, file ) ;
+//	m_ext_gstate.Read( ext_gstate, file ) ;
 }
 
 Ref RealResources::Write( IFile *file ) const
 {
-	CompleteObj copy( m_self ) ;
-	Dictionary& dict = copy.Get() ;
+//	CompleteObj copy( m_self ) ;
+	Dictionary dict ;
     
 	dict["ProcSet"]	= Array( m_proc_set.begin( ), m_proc_set.end( ) ) ;
 	dict["Font"]	= WriteFontDict( file ) ;
-//	dict["XObject"]	= WriteSubDict( m_xobjs, repo ) ;
 
-    return copy.Write( file ) ;
+    return file->WriteObj( dict ) ;
 }
 
 void RealResources::ReadFontDict( Dictionary& self, IFile *file )
@@ -147,9 +147,14 @@ Ref RealResources::WriteFontDict( IFile *file ) const
 
 	FontPool *pool = &file->Pool( )->fonts ;
 	Dictionary font_dict ;
+
+std::cout << "writing font dict " << std::endl ;
 	
-	for ( FontMap::left_const_iterator i = m_fonts.left.begin(); i != m_fonts.left.end() ; ++i)
+	for ( FontMap::left_const_iterator i = m_fonts.left.begin() ;
+		i != m_fonts.left.end() ; ++i)
 	{
+std::cout << "font = " << i->first << std::endl ;
+
 		PDF_ASSERT( i->second != 0 ) ;
 	
 		Ref link = pool->Find( i->second ) ;
