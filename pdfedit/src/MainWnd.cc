@@ -238,11 +238,11 @@ void MainWnd::StorePage( QGraphicsScene *scene, Doc *doc, Page *page )
 		{
 			PDF_ASSERT( text->Format().GetFont() != 0 ) ;
 
-std::cout << FromQtMatrix( text->transform() ) << std::endl ;
 
-			TextLine line(
-				FromQtMatrix( text->transform() ),
-				text->Format() ) ;
+			Matrix m = FromQtMatrix( text->sceneTransform() ) ;
+std::cout << m << std::endl ;
+
+			TextLine line( m, text->Format() ) ;
 			
 			line.AppendText( text->Text().toStdWString() ) ;
 							
