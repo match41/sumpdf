@@ -45,6 +45,7 @@ namespace pdf {
 
 const Name FontDescriptor::m_stretch_names[] =
 {
+	"padding",			///< to match the OS/2 table in truetype font enum
 	"UltraCondensed",	///< usWidthClass: 1
 	"ExtraCondensed",	///< usWidthClass: 2
 	"Condensed",		///< usWidthClass: 3
@@ -62,6 +63,7 @@ FontDescriptor::FontDescriptor( )
 	: m_type( font::unknown ),
 	  m_flags( 0 )
 {
+	m_length1 = m_length2 = m_length3 = 0 ;
 	m_italic_angle = m_ascent = m_descent = m_leading = 0.0 ;
 }
 
@@ -70,6 +72,7 @@ FontDescriptor::FontDescriptor( FT_Face face, std::vector<unsigned char>& prog )
 	  m_flags( 0 )
 {
 	PDF_ASSERT( face != 0 ) ;
+	m_length1 = m_length2 = m_length3 = 0 ;
 	
 	TT_OS2	*os2 = reinterpret_cast<TT_OS2*>(
 		FT_Get_Sfnt_Table( face, ft_sfnt_os2 ) ) ;
@@ -125,23 +128,30 @@ FontDescriptor::FontDescriptor( FT_Face face, std::vector<unsigned char>& prog )
 	m_font_file.swap( prog ) ;
 }
 
-void FontDescriptor::Read( Dictionary& self, IFile *file )
+void FontDescriptor::Read( font::Type type, Dictionary& self, IFile *file )
 {
-	// font file can be in FontFile, FontFile2 or 3, depending on font type
-	m_type = font::unknown ;
+	m_type = type ;
 	
+	// font file can be in FontFile, FontFile2 or 3, depending on font type
 	Stream prog ;
-	if ( 		Detach( file, self, "FontFile", 	prog ) )
-		m_type = font::type1 ;
-	else if (	Detach( file, self, "FontFile2", 	prog ) )
-		m_type = font::truetype ;
+	if ( m_type == font::type1 )
+	{
+		if ( Detach( file, self, "FontFile", 	prog ) )
+		{
+			Dictionary prog_dict = prog.Self() ;
+			Detach( file, prog_dict, "Length1", m_length1 ) ;
+			Detach( file, prog_dict, "Length2", m_length2 ) ;
+			Detach( file, prog_dict, "Length3", m_length3 ) ;
+		}
+	}
+	else if ( m_type == font::truetype )
+		Detach( file, self, "FontFile2", 	prog ) ;
 	
 	// TODO: confirm FontFile3 type
-	else if ( 	Detach( file, self, "FontFile3", 	prog ) )
-		m_type = font::type3 ;
+	else if ( m_type == font::type3 )
+		Detach( file, self, "FontFile3", 	prog ) ;
 	
-	if ( m_type != font::unknown ) 
-		prog.CopyData( m_font_file ) ;
+	prog.CopyData( m_font_file ) ;
 	
 	// optional font family name. normally empty for embedded font
 	Detach( file, self, "FontFamily",	m_family ) ;
@@ -206,7 +216,18 @@ Ref FontDescriptor::Write( IFile *file ) const
 		s.Append( &m_font_file[0], m_font_file.size() ) ;
 		s.Flush( ) ;
 		
-		s.AddDictionaryEntry( "Length1", s.Length() ) ;
+		if ( m_type == font::truetype )
+		{
+			s.AddDictionaryEntry( "Length1", m_font_file.size() ) ;
+			self["FontFile2"]	= file->WriteObj( s ) ;
+		}
+		else if ( m_type == font::type1 )
+		{
+			s.AddDictionaryEntry( "Length1", m_length1 ) ;
+			s.AddDictionaryEntry( "Length2", m_length2 ) ;
+			s.AddDictionaryEntry( "Length3", m_length3 ) ;
+			self["FontFile"]	= file->WriteObj( s ) ;
+		}
 
 		// streams must be indirect objects
 		Name font_file_name =
@@ -218,7 +239,8 @@ Ref FontDescriptor::Write( IFile *file ) const
 		self[font_file_name]	= file->WriteObj(s) ;
 	}
 	
-	self["Stretch"]		= static_cast<int>( m_stretch ) ;
+	if ( m_stretch >= ultra_condensed && m_stretch <= ultra_expanded )  
+		self["Stretch"]	= m_stretch_names[m_stretch] ;
 
 	return file->WriteObj( self ) ;
 }

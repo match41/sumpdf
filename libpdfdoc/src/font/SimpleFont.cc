@@ -111,7 +111,7 @@ SimpleFont::SimpleFont( Dictionary& self, IFile *file, FT_Library ft_lib )
 		Dictionary fd ;
 		if ( Detach( file, self, "FontDescriptor", fd ) )
 		{
-			m_descriptor->Read( fd, file ) ;
+			m_descriptor->Read( m_type, fd, file ) ;
 
 			const std::vector<unsigned char>& font_file
 				= m_descriptor->FontFile( ) ;

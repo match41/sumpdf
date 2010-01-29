@@ -241,16 +241,25 @@ std::ostream& operator<<( std::ostream& os, const String& b )
 {
 	if ( b.IsHex() )
 	{
-		os << '<' << std::hex << std::setw( 2 ) ;
+		os << '<' << std::hex << std::setw( 2 ) << std::setfill('0') ;
 		std::transform(
 			b.m_value.begin( ),
 			b.m_value.end( ),
 		    std::ostream_iterator<unsigned short>( os ), ToInt ) ;
-		os << '>' ;
+		os << '>' << std::dec ;
 	}
 	else
-		os << "(" << b.m_value << ")" ;
-
+	{
+		os.put( '(' ) ;
+		for ( std::string::const_iterator i = b.m_value.begin() ;
+			i != b.m_value.end() ; ++i )
+		{
+			if ( *i == '(' || *i == ')' )
+				os.put( '\\' ) ;
+			os.put( *i ) ;
+		}
+		os.put( ')' ) ;
+	}
 	return os ;
 }
 

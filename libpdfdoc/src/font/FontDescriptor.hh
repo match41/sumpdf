@@ -53,7 +53,7 @@ class FontDescriptor
 public :
 	enum Stretch
 	{
-		padding,	///< to match the OS/2 table in true type font enum
+		padding,	///< to match the OS/2 table in truetype font enum
 		
 		ultra_condensed, extra_condensed, condensed, semi_condensed,
 		normal,
@@ -65,7 +65,7 @@ public :
 	FontDescriptor( ) ;
 	explicit FontDescriptor( FT_Face face, std::vector<unsigned char>& prog ) ;
 	
-	void Read( Dictionary& self, IFile *file ) ;
+	void Read( font::Type type, Dictionary& self, IFile *file ) ;
 	Ref Write( IFile *file ) const ;
 	
 	std::string Family( ) const ;
@@ -95,7 +95,10 @@ private :
 				m_stemv, m_stemh, m_avg_width, m_max_width, m_miss_width ;
 
 	double	m_x_min, m_x_max, m_y_min, m_y_max ;
-	
+
+	// for reading type1 font only
+	int	m_length1, m_length2, m_length3 ;
+
 	std::vector<unsigned char>		m_font_file ;
 } ;
 
