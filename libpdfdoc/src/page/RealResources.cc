@@ -148,13 +148,9 @@ Ref RealResources::WriteFontDict( IFile *file ) const
 	FontPool *pool = &file->Pool( )->fonts ;
 	Dictionary font_dict ;
 
-std::cout << "writing font dict " << std::endl ;
-	
 	for ( FontMap::left_const_iterator i = m_fonts.left.begin() ;
 		i != m_fonts.left.end() ; ++i)
 	{
-std::cout << "font = " << i->first << std::endl ;
-
 		PDF_ASSERT( i->second != 0 ) ;
 	
 		Ref link = pool->Find( i->second ) ;

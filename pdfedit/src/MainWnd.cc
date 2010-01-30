@@ -240,7 +240,6 @@ void MainWnd::StorePage( QGraphicsScene *scene, Doc *doc, Page *page )
 
 
 			Matrix m = FromQtMatrix( text->sceneTransform() ) ;
-std::cout << m << std::endl ;
 
 			TextLine line( m, text->Format() ) ;
 			

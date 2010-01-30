@@ -33,6 +33,7 @@
 #include "font/Glyph.hh"
 
 // libpdfdoc headers
+#include "core/Array.hh"
 #include "core/Name.hh"
 #include "core/Object.hh"
 #include "file/CompleteObj.hh"
@@ -108,6 +109,8 @@ private :
 	font::Type	m_type ;
 	int			m_first_char, m_last_char ;
 
+	Array 		m_widths ;
+	
 	std::auto_ptr<FontDescriptor>		m_descriptor ;
 //	Object				m_to_unicode ;
 //	Object				m_encoding ;	//!< name or dictionary

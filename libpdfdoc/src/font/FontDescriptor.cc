@@ -115,10 +115,11 @@ FontDescriptor::FontDescriptor( FT_Face face, std::vector<unsigned char>& prog )
 		m_stretch	= static_cast<Stretch>( os2->usWidthClass ) ;
 	}
 	
-	m_x_min	= FontUnit( face->bbox.xMin, face ) ;
-	m_x_max = FontUnit( face->bbox.xMax, face ) ;
-	m_y_min = FontUnit( face->bbox.yMin, face ) ;
-	m_y_max = FontUnit( face->bbox.yMax, face ) ;
+	double x_min = FontUnit( face->bbox.xMin, face ) ;
+	double x_max = FontUnit( face->bbox.xMax, face ) ;
+	double y_min = FontUnit( face->bbox.yMin, face ) ;
+	double y_max = FontUnit( face->bbox.yMax, face ) ;
+	m_bbox = Rect( x_min, y_min, x_max, y_max ) ; 
 
 	m_italic_angle	= (post != 0 ? FontUnit(post->italicAngle, face) : 0.0) ;
 	m_leading = 0.0 ;
@@ -163,8 +164,10 @@ void FontDescriptor::Read( font::Type type, Dictionary& self, IFile *file )
 			End(m_stretch_names),
 			stretch ) - Begin(m_stretch_names) ) ;
 
+	int flags ;
 	DetachConv( file, self, "FontWeight",	m_weight ) ;
-	DetachConv( file, self, "Flags",		m_flags ) ;
+	if ( DetachConv( file, self, "Flags",	flags ) )
+		m_flags = flags ;
 	
 	Array bbox ;
 	if ( Detach( file, self, "FontBBox", bbox ) )
@@ -199,15 +202,15 @@ Ref FontDescriptor::Write( IFile *file ) const
 	self["Descent"]		= m_descent ;
 	self["CapHeight"]	= m_cap_height ;
 	self["StemV"]		= m_stemv ;
-	self["Flags"]		= 4 ;
+	self["Flags"]		= static_cast<int>( m_flags.to_ulong() ) ;
 	self["Type"]		= Name("FontDescriptor") ;
 	self["ItalicAngle"]	= 0 ;
 	
 	if ( m_x_height != 0.0 )
 		self["XHeight"]		= m_x_height ;
 	
-	Rect bbox( m_x_min, m_y_min, m_x_max, m_y_max ) ;
-	self["FontBBox"]	= Array( bbox.begin(), bbox.end() ) ;
+//	Rect bbox( m_x_min, m_y_min, m_x_max, m_y_max ) ;
+	self["FontBBox"]	= Array( m_bbox.begin(), m_bbox.end() ) ;
 	
 	// embedded font program also needs Length1 for the size of the stream
 	if ( !m_font_file.empty() )

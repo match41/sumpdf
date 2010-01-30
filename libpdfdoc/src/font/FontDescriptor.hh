@@ -36,6 +36,7 @@
 
 #include <string>
 #include <vector>
+#include <bitset>
 
 namespace pdf {
 
@@ -60,7 +61,7 @@ public :
 		semi_expanded, expanded, extra_expanded, ultra_expanded,
 		unknown
 	} ;
-
+	
 public :
 	FontDescriptor( ) ;
 	explicit FontDescriptor( FT_Face face, std::vector<unsigned char>& prog ) ;
@@ -88,16 +89,29 @@ private :
 	std::string	m_psname ;
 	Stretch		m_stretch ;
 	int			m_weight ;
-	int			m_flags ;
 	Rect		m_bbox ;
 	double		m_italic_angle ;
 	double		m_ascent, m_descent, m_leading, m_cap_height, m_x_height,
 				m_stemv, m_stemh, m_avg_width, m_max_width, m_miss_width ;
 
-	double	m_x_min, m_x_max, m_y_min, m_y_max ;
-
 	// for reading type1 font only
 	int	m_length1, m_length2, m_length3 ;
+
+	// TODO: add font flags and style flags
+	enum Flags
+	{
+		fixed_pitch,
+		serif,
+		symbolic,
+		script,
+		nonsymbolic	= 5,
+		italic,
+		all_cap		= 16,
+		small_cap,
+		force_bold,
+	} ;
+	
+	std::bitset<32>	m_flags ;
 
 	std::vector<unsigned char>		m_font_file ;
 } ;

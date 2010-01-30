@@ -98,18 +98,10 @@ std::ostream& TextLine::Print(
 	// replace current matrix
 	current = m_trans ;
 	
-/*
-	for ( TextLine::const_iterator i = m_blks.begin() ;
-		i != m_blks.end() ; ++i )
-	{
-		i->Print( os, state, res ) ;
-		state = i->Format( ) ;
-	}
-*/
 	m_state.Print( os, res, state ) ;   
 	return
 		os	<< String( std::string( m_text.begin(), m_text.end() ) )
-			<< ' ' << "Tj " ;
+			<< ' ' << "Tj\n" ;
 }
 
 std::ostream& operator<<( std::ostream& os, const TextLine& t )

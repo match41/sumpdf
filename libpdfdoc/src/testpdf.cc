@@ -40,12 +40,8 @@ int main( int argc, char **argv )
 	if ( argc >= 2 )
 		doc->Read( argv[1] ) ;
 	
-	pdf::Page *p = doc->AppendPage( ) ;
+/*	pdf::Page *p = doc->AppendPage( ) ;
 	pdf::Font *f = doc->CreateSimpleFont( "Arial" ) ;
-//	p->UseFont( f ) ;
-//	p->DrawText( 100, 100, f, "Hello world!" ) ;
-//	p->DrawText( 100, 200, f, "This is the second line!" ) ;
-//	p->Finish( ) ;
 	
 	pdf::TextState ts ;
 	ts.SetFont( 12.0, f ) ;
@@ -63,7 +59,10 @@ int main( int argc, char **argv )
 
 	pdf::DocInfo *info = doc->Info() ;
 	info->SetCreator( "Haha" ) ;
-	
+*/
+	pdf::Page *p = doc->GetPage( 0 ) ;
+	pdf::PageContent *c = p->GetContent( ) ;
+
 	doc->Write( "test.pdf" ) ;
 	delete doc ;
 

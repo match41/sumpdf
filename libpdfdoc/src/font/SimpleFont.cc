@@ -31,7 +31,6 @@
 #include "FontDescriptor.hh"
 #include "FreeTypeWrappers.hh"
 
-#include "core/Array.hh"
 #include "core/Dictionary.hh"
 
 #include "file/IFile.hh"
@@ -68,6 +67,8 @@ SimpleFont::SimpleFont(
 	const std::string& 	font_file,
 	unsigned 			idx,
 	FT_Library 			ft_lib )
+	: m_first_char( -1 ),
+	  m_last_char( -1 )
 {
 	std::vector<unsigned char> prog = LoadFile( font_file ) ;
 	Init( prog, ft_lib ) ;
@@ -75,7 +76,9 @@ SimpleFont::SimpleFont(
 
 SimpleFont::SimpleFont( const std::string& name, FT_Library ft_lib )
 	: m_face( 0 ),
-	  m_type( font::unknown )
+	  m_type( font::unknown ),
+	  m_first_char( -1 ),
+	  m_last_char( -1 )
 {
 	std::string path = FindFont( name ) ; 
 	std::vector<unsigned char> prog = LoadFile( path ) ;
@@ -85,6 +88,8 @@ SimpleFont::SimpleFont( const std::string& name, FT_Library ft_lib )
 SimpleFont::SimpleFont( Dictionary& self, IFile *file, FT_Library ft_lib )
 	: m_face( 0 ),
 	  m_type( font::unknown ),
+	  m_first_char( -1 ),
+	  m_last_char( -1 ),
 	  m_descriptor( new FontDescriptor )
 {
 	PDF_ASSERT( file != 0 ) ;
@@ -100,10 +105,11 @@ SimpleFont::SimpleFont( Dictionary& self, IFile *file, FT_Library ft_lib )
 		self.Extract( Name("FirstChar"),	m_first_char ) ;
 		self.Extract( Name("LastChar"),		m_last_char ) ;
 
+std::cout << "base font = " << m_base_font << " first = " << m_first_char
+<< " last = " << m_last_char << std::endl ;
+
 		// width is optional
-//		Array widths ;
-//		if ( Detach( file, self, "Widths", widths ) )
-//			m_widths.assign( widths.begin(), widths.end() ) ;
+		Detach( file, self, "Widths", 		m_widths ) ;
 
 //		self.Extract( "Encoding",	m_encoding ) ;
 //		self.Extract( "ToUnicode",	m_to_unicode ) ;
@@ -288,7 +294,7 @@ void SimpleFont::LoadGlyphs( )
 	// traverse all characters
 	unsigned		gindex ;
 	unsigned long 	char_code = FT_Get_First_Char( m_face, &gindex ) ;
-	m_first_char = static_cast<int>( char_code ) ;
+	int first_char = static_cast<int>( char_code ), last_char = -1 ;
 
 	while ( gindex != 0 && char_code < 256 )
 	{
@@ -320,9 +326,14 @@ void SimpleFont::LoadGlyphs( )
 				boost::format( "font %1% glyph %2% is not outline" )
 							% BaseName() % char_code ) ;
 		
-		m_last_char = static_cast<int>( char_code ) ;
+		last_char = static_cast<int>( char_code ) ;
 		char_code = ::FT_Get_Next_Char( m_face, char_code, &gindex ) ;
 	}
+	
+	if ( m_first_char == -1 )
+		m_first_char = first_char ;
+	if ( m_last_char == -1 )
+		m_last_char = last_char ;
 }
 
 /// Convert Freetype font unit to PDF glyph unit
@@ -351,14 +362,18 @@ Ref SimpleFont::Write( IFile *file ) const
 //	if ( !m_encoding.IsNull() )
 //		dict.Get()["Encoding"]		= m_encoding ;
 
-	Array widths ;
-	for ( int i = m_first_char ; i <= m_last_char ; ++i )
+	if ( m_widths.empty() )
 	{
-		const Glyph *g = GetGlyph( i ) ;
-		widths.push_back( g != 0 ? Width(*g) : 0.0 ) ;
+		Array widths ;
+		for ( int i = m_first_char ; i <= m_last_char ; ++i )
+		{
+			const Glyph *g = GetGlyph( i ) ;
+			widths.push_back( g != 0 ? Width(*g) : 0.0 ) ;
+		}
+		dict["Widths"]			= widths ;
 	}
-		
-	dict["Widths"]			= widths ;
+	else
+		dict["Widths"]			= m_widths ;
 
 	dict["FontDescriptor"]	= m_descriptor->Write( file ) ;
 
