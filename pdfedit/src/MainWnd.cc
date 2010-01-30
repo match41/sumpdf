@@ -147,17 +147,24 @@ void MainWnd::OnToolZoom( int choice )
 
 void MainWnd::OpenFile( const QString& file )
 {
-	m_doc.reset( CreateDoc( ) ) ;
-	m_doc->Read( file.toStdString() ) ;
-	
-	if ( m_doc->PageCount() > 0 )
+	try
 	{
-		Page *p = m_doc->GetPage( 0 ) ;
-		Rect r = p->MediaBox( ) ;
-		m_scene->setSceneRect( 0, 0, r.Width(), r.Height() ) ;
+		m_doc.reset( CreateDoc( ) ) ;
+		m_doc->Read( file.toStdString() ) ;
 		
-		PageContent *c = p->GetContent( ) ;
-		c->VisitGraphics( this ) ;
+		if ( m_doc->PageCount() > 0 )
+		{
+			Page *p = m_doc->GetPage( 0 ) ;
+			Rect r = p->MediaBox( ) ;
+			m_scene->setSceneRect( 0, 0, r.Width(), r.Height() ) ;
+			
+			PageContent *c = p->GetContent( ) ;
+			c->VisitGraphics( this ) ;
+		}
+	}
+	catch ( std::exception& e )
+	{
+		QMessageBox::critical( this, "Cannot open document", e.what() ) ;
 	}
 }
 

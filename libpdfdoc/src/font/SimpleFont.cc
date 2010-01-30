@@ -100,13 +100,15 @@ SimpleFont::SimpleFont( Dictionary& self, IFile *file, FT_Library ft_lib )
 		Name subtype ;
 		if ( self.Extract( "Subtype",	subtype ) )
 			m_type	= SubType( subtype ) ;
-
-		self.Extract( Name("BaseFont"),		m_base_font ) ;
+		
+		// base font is absent in type 3 fonts
+		if ( m_type != font::type3 )
+			self.Extract( Name("BaseFont"),		m_base_font ) ;
+		
 		self.Extract( Name("FirstChar"),	m_first_char ) ;
 		self.Extract( Name("LastChar"),		m_last_char ) ;
-
-std::cout << "base font = " << m_base_font << " first = " << m_first_char
-<< " last = " << m_last_char << std::endl ;
+		
+//std::cout << "font : " << m_base_font << " subtype = " << subtype << std::endl ;
 
 		// width is optional
 		Detach( file, self, "Widths", 		m_widths ) ;
@@ -131,22 +133,24 @@ std::cout << "base font = " << m_base_font << " first = " << m_first_char
 		
 		// font descriptor is absent. it may be a standard 14 fonts.
 		// try to search for them instead.
-		else
+		else if ( m_type != font::type3 )
 		{
+std::cout << "searching for: " << m_base_font << std::endl ;
 			std::string ori = m_base_font.Str() ;
-			std::string path = FindStdFont( m_base_font.Str() ) ; 
-			std::vector<unsigned char> prog = LoadFile( path ) ;
-			Init( prog, ft_lib ) ;
+			if ( m_base_font.empty() )
+			{
+				std::string path = FindStdFont( m_base_font.Str() ) ; 
+				std::vector<unsigned char> prog = LoadFile( path ) ;
+				Init( prog, ft_lib ) ;
+			}
 		}
-		
-//		m_self.Read( self, file ) ;
 	}
 	catch ( Exception& e )
 	{
-		std::ostringstream msg ;
-		msg << "cannot read font:\n" << e.what( ) << "\n"
-		    << "Font Dictionary: \n" << self << "\n" ;
-		throw FontException( msg.str( ) ) ;
+		throw FontException(
+			boost::format(
+				"cannot read font:\n%1%\n"
+			    "Font Dictionary: %2%\n" ) % e.what() % self ) ;
 	}
 }
 
@@ -167,7 +171,11 @@ void SimpleFont::Init( std::vector<unsigned char>& prog, FT_Library ft_lib )
 	if ( e != 0 )
 		throw FontException( "cannot create font face" ) ;
 	
-	m_base_font = ::FT_Get_Postscript_Name( m_face ) ;
+	const char *psname = ::FT_Get_Postscript_Name( m_face ) ;
+	m_base_font = (psname != 0 ? psname : "" ) ;
+
+std::cout << " type = " << ::FT_Get_X11_Font_Format( m_face ) << std::endl ;
+	
 	m_type = font::GetType( m_face ) ;
 	m_descriptor.reset( new FontDescriptor( m_face, prog ) ) ;
 	LoadGlyphs( ) ;
@@ -195,7 +203,9 @@ FT_Face SimpleFont::LoadFace(
 {
 	FT_Face face = 0 ;
 	FT_Error e = FT_New_Memory_Face( ft_lib, data, size, 0, &face ) ;
-	
+
+	std::cout << " type = " << ::FT_Get_X11_Font_Format( face ) << std::endl ;
+
 	using boost::format ;
 	if ( e != 0 )
 		throw FontException( format("cannot create font face: %1%") % e ) ;
@@ -314,17 +324,17 @@ void SimpleFont::LoadGlyphs( )
 				boost::format( "cannot copy glyph %2% from %1%" )
 				% BaseName() % char_code ) ;
 
-		if ( glyph->format == FT_GLYPH_FORMAT_OUTLINE )
+//		if ( glyph->format == FT_GLYPH_FORMAT_OUTLINE )
 		{
 			ft::Face face_wrapper = { m_face } ;
 			m_glyphs.insert( std::make_pair(
 				char_code,
 				Glyph( gindex, face_wrapper ) ) ) ;
 		}
-		else
-			throw FontException(
-				boost::format( "font %1% glyph %2% is not outline" )
-							% BaseName() % char_code ) ;
+//		else
+//			throw FontException(
+//				boost::format( "font %1% glyph %2% is not outline" )
+//							% BaseName() % char_code ) ;
 		
 		last_char = static_cast<int>( char_code ) ;
 		char_code = ::FT_Get_Next_Char( m_face, char_code, &gindex ) ;
@@ -349,7 +359,11 @@ Ref SimpleFont::Write( IFile *file ) const
 	Dictionary dict ;
 	dict["Type"]		= Name( "Font" ) ;
 	dict["Subtype"]		= SubType( m_type ) ;
-	dict["BaseFont"]	= m_base_font ;
+	
+	// BaseFont is optional for type 3 fonts
+	if ( m_type != font::type3 )
+		dict["BaseFont"]	= m_base_font ;
+	
 	dict["FirstChar"]	= m_first_char ;
 	dict["LastChar"]	= m_last_char ;
 	

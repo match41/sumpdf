@@ -80,8 +80,9 @@ FontDescriptor::FontDescriptor( FT_Face face, std::vector<unsigned char>& prog )
 	TT_Postscript	*post = reinterpret_cast<TT_Postscript*>(
 		FT_Get_Sfnt_Table( face, ft_sfnt_post ) ) ;
 	
-	m_psname		= FT_Get_Postscript_Name( face ) ;
-	PDF_ASSERT( !m_psname.empty() ) ;
+	const char *psname = FT_Get_Postscript_Name( face ) ;
+	m_psname		= psname ? psname : "" ;
+//	PDF_ASSERT( !m_psname.empty() ) ;
 
 	m_ascent 		= FontUnit(face->ascender,	face) ;
 	m_descent		= FontUnit(face->descender,	face) ;
@@ -192,7 +193,7 @@ void FontDescriptor::Read( font::Type type, Dictionary& self, IFile *file )
 
 Ref FontDescriptor::Write( IFile *file ) const
 {
-	PDF_ASSERT( !m_psname.empty() ) ;
+	PDF_ASSERT( file != 0 ) ;
 
 	Dictionary self ;
 	if ( !m_psname.empty() )

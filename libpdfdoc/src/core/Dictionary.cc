@@ -200,10 +200,19 @@ std::ostream& operator<<( std::ostream& os, const Dictionary& dict )
 	                                 i != dict.end( ) ; ++i )
 	{
 		PDF_ASSERT( !i->second.Is<Stream>() ) ;
+		PDF_ASSERT( !i->first.empty() ) ;
 		
-		// according to PDF spec, an absent key-pair is considered null
-		if ( !i->second.Is<void>( ) )
-			os << i->first << ' ' << i->second << '\n' ;
+		try
+		{
+			// according to PDF spec, an absent key-pair is considered null
+			if ( !i->second.Is<void>( ) )
+				os << i->first << ' ' << i->second << '\n' ;
+		}
+		catch ( std::exception& )
+		{
+			std::cerr << "cannot write " << i->first << std::endl ;
+			throw ;
+		}
 	}
 	return os << ">>" ;
 }
