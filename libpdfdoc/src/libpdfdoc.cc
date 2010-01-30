@@ -43,4 +43,9 @@ Doc*  CreateDoc( )
 	return new RealDoc ;
 }
 
+const char* Version( )
+{
+	return VERSION ;
+}
+
 } // end of namespace

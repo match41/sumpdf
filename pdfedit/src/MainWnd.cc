@@ -189,8 +189,11 @@ void MainWnd::VisitGraphics( Graphics *gfx )
 
 void MainWnd::OnAbout( )
 {
-	QMessageBox::information( this, "About PDF Editor",
-		"PDF Editor version 0.0.1" ) ;
+	std::ostringstream vs ;
+	vs	<< "PDF Editor version " << Version() << '\n'
+		<< "Copyright Nestal Wan 2010\n"
+		<< "License: GPL" ;
+	QMessageBox::information( this, "About PDF Editor", vs.str().c_str() ) ;
 }
 
 void MainWnd::OnProperties( )
@@ -245,10 +248,9 @@ void MainWnd::StorePage( QGraphicsScene *scene, Doc *doc, Page *page )
 		{
 			PDF_ASSERT( text->Format().GetFont() != 0 ) ;
 
-
-			Matrix m = FromQtMatrix( text->sceneTransform() ) ;
-
-			TextLine line( m, text->Format() ) ;
+			TextLine line(
+				FromQtMatrix( text->sceneTransform( ) ),
+				text->Format() ) ;
 			
 			line.AppendText( text->Text().toStdWString() ) ;
 							

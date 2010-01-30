@@ -138,6 +138,8 @@ class Page ;
 
 LIBPDFDOC_API Doc*  CreateDoc( ) ;
 
+LIBPDFDOC_API const char* Version( ) ;
+
 } // end of namespace
 
 #endif
