@@ -47,7 +47,7 @@
 namespace pdf {
 
 ///	constructor
-TextLine::TextLine( const Matrix& transform, const TextState& state )
+TextLine::TextLine( const TextState& state, const Matrix& transform )
     : m_trans( transform ),
       m_state( state )
 {

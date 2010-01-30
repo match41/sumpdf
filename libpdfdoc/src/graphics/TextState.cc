@@ -39,10 +39,11 @@ namespace pdf {
 
 /**	Constructor.
 */
-TextState::TextState( )
-	: m_font( 0 )
+TextState::TextState( double size, Font *font )
+	: m_font_size( size ),
+	  m_font( font )
 {
-	m_char_space = m_word_space = m_hori_scale = m_leading = m_font_size =
+	m_char_space = m_word_space = m_hori_scale = m_leading = 
 	m_text_rise  = 0 ;
 	m_render_mode = 0 ;
 }
@@ -178,7 +179,7 @@ bool TextState::operator!=( const TextState& rhs ) const
 
 ///	Returns the scale factor.
 /**	The scale factor is the factor that transform glyph unit to text space
-	unit directly. For example, if \a i is in glyph unit \i * ScaleFactor()
+	unit directly. For example, if \a i is in glyph unit \a i * ScaleFactor()
 	will be in text space unit.
 	\return	The scale factor.
 */

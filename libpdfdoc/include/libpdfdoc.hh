@@ -42,12 +42,12 @@
 	
 	\section	license		License
 	libpdfdoc is release under
-	<a href="http://www.gnu.org/licenses/gpl-2.1.html">GPL v2</a>.
+	<a href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.html">GPL v2</a>.
 	In short, it is <a href="http://www.gnu.org/philosophy/free-sw.html">Free
-	Software.</a> I am not responsible for any damage it may make. You can
+	Software</a>. I am not responsible for any damage it may make. You can
 	change it, sell it,	distribute it. As libpdfdoc contains some code borrow
 	from GPL project, the license is GPL v2 as a whole. As it is NOT LGPL,
-	tt is not legal to use it in proprietory projects.
+	it is not legal to use it in proprietary projects.
 	
 	Note that it is not "GPL v2 or later". The GPL v3 does not apply to this
 	library.
@@ -58,7 +58,9 @@
 	sourceforge</a>. The latest snapshot is also available in the
 	<a href="http://libpdfxx.git.sourceforge.net/">git</a> repository hosted
 	in sourceforge. To access the repository, configure you git clients to
-	clone from git://libpdfxx.git.sourceforge.net/gitroot/libpdfxx.
+	clone from git://libpdfxx.git.sourceforge.net/gitroot/libpdfxx. See
+	<a href="http://sourceforge.net/projects/libpdfxx/develop">here</a> for more
+	details.
 	
 	\section	depend	Dependencies
 	libpdfdoc depends on the following libraries:
@@ -126,6 +128,27 @@ C:\build\libpdfdoc>cmake -G "Visual Studio 8 2005" \
 		<img src="http://sourceforge.net/sflogo.php?group_id=14057&amp;type=5"
 	         width="210" height="62" border="0" alt="SourceForge Logo" />
 	</a>
+
+	See the \ref getting_start page for a simple tutorial for using the
+	library.
+	
+	\page	getting_start	Getting Started
+	
+	This section will describe how to write a simplest "Hello world" program
+	with libpdfdoc.
+
+\verbatim
+pdf::Doc *doc = pdf::CreateDoc( ) ;
+pdf::Page *p = doc->AppendPage( ) ;
+pdf::Font *f = doc->CreateSimpleFont( "Arial" ) ;
+
+pdf::PageContent *c = p->GetContent( ) ;
+pdf::Text *t = c->AddText( 12.0, f ) ;
+t->AddLine( 100, 100, L"Hello world!" ) ;
+
+doc->Write( "helloworld.pdf" ) ;
+delete doc ;
+\endverbatim
 */
 
 ///	main namespace for libpdfdoc

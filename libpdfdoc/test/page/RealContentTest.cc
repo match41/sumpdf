@@ -55,13 +55,13 @@ void RealContentTest::TestWrite( )
 	
 	Text *t = subject.AddText( ts ) ;
 	Matrix tm( 1,0,0,1, 100, 200 ) ;
-	TextLine line( tm, ts ) ;
+	TextLine line( ts, tm ) ;
 	line.AppendText( L"Hello World!\n" ) ;
 	line.AppendText( L"This is line 2\n" ) ;
 	t->AddLine( line ) ;
 
 	Matrix tm2( 1,0,0,1, 100, 400 ) ;
-	TextLine line2( tm2, ts ) ;
+	TextLine line2( ts, tm2 ) ;
 	line2.AppendText( L"Hello World2!\n" ) ;
 	line2.AppendText( L"This is line 3\n" ) ;
 	t->AddLine( line2 ) ;

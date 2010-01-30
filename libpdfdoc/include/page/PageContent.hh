@@ -31,6 +31,7 @@
 
 namespace pdf {
 
+class Font ;
 class Graphics ;
 class GraphicsVisitor ;
 class Text ;
@@ -50,6 +51,7 @@ public :
 	virtual const Graphics* Item( std::size_t idx ) const = 0 ;
 	
 	virtual Text* AddText( const TextState& ts ) = 0 ;
+	virtual Text* AddText( double size, Font *font ) = 0 ;
 	
 	virtual void VisitGraphics( GraphicsVisitor *visitor ) = 0 ;
 	

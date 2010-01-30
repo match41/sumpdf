@@ -124,11 +124,11 @@ void RealPageTest::TestWrite( )
 	pdf::PageContent *c = p->GetContent( ) ;
 	pdf::Text *t = c->AddText( ts ) ;
 	
-	pdf::TextLine line1( pdf::Matrix(1,0,0,1, 120, 300), ts ) ;
+	pdf::TextLine line1( ts, pdf::Matrix(1,0,0,1, 120, 300) ) ;
 	line1.AppendText( L"This is a line" ) ;
 	t->AddLine( line1 ) ;
 
-	pdf::TextLine line2( pdf::Matrix(1,0,0,1, 120, 400), ts ) ;
+	pdf::TextLine line2( ts, pdf::Matrix(1,0,0,1, 120, 400) ) ;
 	line2.AppendText( L"This is another line" ) ;
 	t->AddLine( line2 ) ;
 
@@ -159,11 +159,11 @@ void RealPageTest::TestDecode( )
 	pdf::PageContent *c = p->GetContent( ) ;
 	pdf::Text *t = c->AddText( ts ) ;
 	
-	pdf::TextLine line1( pdf::Matrix(1,0,0,1, 120, 300), ts ) ;
+	pdf::TextLine line1( ts, pdf::Matrix(1,0,0,1, 120, 300) ) ;
 	line1.AppendText( L"This is a line" ) ;
 	t->AddLine( line1 ) ;
 
-	pdf::TextLine line2( pdf::Matrix(1,0,0,1, 120, 400), ts ) ;
+	pdf::TextLine line2( ts, pdf::Matrix(1,0,0,1, 120, 400) ) ;
 	line2.AppendText( L"This is another line" ) ;
 	t->AddLine( line2 ) ;
 	

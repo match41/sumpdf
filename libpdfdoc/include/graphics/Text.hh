@@ -29,6 +29,7 @@
 
 #include "Graphics.hh"
 
+#include <string>
 #include <vector>
 
 namespace pdf {
@@ -61,6 +62,7 @@ public :
 	virtual std::size_t Count( ) const = 0 ;
 	
 	virtual void AddLine( const TextLine& line ) = 0 ;
+	virtual void AddLine( double x, double y, const std::wstring& text ) = 0 ;
 
 	virtual void Visit( GraphicsVisitor *visitor ) = 0 ;
 

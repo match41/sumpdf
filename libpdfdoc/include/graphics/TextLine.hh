@@ -27,7 +27,8 @@
 #ifndef __PDF_TEXTLINE_HEADER_INCLUDED__
 #define __PDF_TEXTLINE_HEADER_INCLUDED__
 
-//#include "TextBlock.hh"
+#include "libpdfdoc.hh"
+
 #include "TextState.hh"
 #include "util/Matrix.hh"
 
@@ -49,16 +50,12 @@ class RealResources ;
 	of text blocks. Each block will have a string of characters with the same
 	formatting parameters.
 */
-class TextLine
+class LIBPDFDOC_API TextLine
 {
-//public :
-//	typedef std::vector<TextBlock>::iterator		iterator ;
-//	typedef std::vector<TextBlock>::const_iterator	const_iterator ;
-
 public :
 	explicit TextLine(
-		const Matrix&		transform	= Matrix(),
-		const TextState& 	state		= TextState() ) ;
+		const TextState& 	state		= TextState(),		
+		const Matrix&		transform	= Matrix() ) ;
 
 	// uses default generated copy constructor
 

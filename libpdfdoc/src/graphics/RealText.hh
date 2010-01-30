@@ -70,7 +70,8 @@ public :
 	std::size_t Count( ) const ;
 	
 	void AddLine( const TextLine& line ) ;
-
+	void AddLine( double x, double y, const std::wstring& text ) ;
+	
 	void Visit( GraphicsVisitor *visitor ) ;
 
 	bool operator==( const RealText& rhs ) const ;

@@ -27,13 +27,15 @@
 #ifndef __PDF_RECT_HEADER_INCLUDED__
 #define __PDF_RECT_HEADER_INCLUDED__
 
+#include "libpdfdoc.hh"
+
 namespace pdf {
 
 /*!	\brief	brief description
 	
 	this class represents
 */
-class Rect
+class LIBPDFDOC_API Rect
 {
 private :
 	double m_corner[4] ;

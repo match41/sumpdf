@@ -52,6 +52,7 @@ public :
 	std::size_t Count( ) const ;
 	const Graphics* Item( std::size_t idx ) const ;
 	Text* AddText( const TextState& ts ) ;
+	Text* AddText( double size, Font *font ) ;
 	void VisitGraphics( GraphicsVisitor *visitor ) ;
 
 	void Add( Graphics *gfx ) ;

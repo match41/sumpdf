@@ -55,6 +55,14 @@ class Font
 public :
 	virtual ~Font( ) ;
 	
+	/// Return the base name of a font.
+	/**	This function returns the PostScript name of the font. For Type 1 fonts,
+		this is usually the value of the FontName entry in the font program.
+		For TrueType fonts, it is returned by the FT_Get_Postscript_Name()
+		function in FreeType. It will beused for displaying the font's name
+		for client applications.
+		\return	The base name of a font.
+	*/
 	virtual std::string 	BaseName( ) const = 0 ;
 	
 	///	Return the glyph for the corresponding character code.
@@ -65,8 +73,6 @@ public :
 		\return	A point to the glyph, or 0 if the glyph in absent in the font.
 	*/
 	virtual const Glyph*	GetGlyph( wchar_t ch ) const = 0 ;
-	
-//	virtual double Width( const std::wstring& text, double size ) const = 0 ;
 	
 	///	Return the number of font unit in the EM square.
 	/**	In creating the glyph outlines, a type designer uses an imaginary square

@@ -17,7 +17,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	RealRealText.cc
+/**	\file	RealText.cc
 	\brief	implementation of the RealRealText class
 	\date	Jan 13, 2010
 	\author	Nestal Wan
@@ -69,7 +69,7 @@ const RealText::HandlerMap RealText::m_handler_map(
 /**	constructor
 */
 RealText::RealText( const TextState& ts )
-	: m_lines( 1, TextLine( Matrix(), ts ) ),
+	: m_lines( 1, TextLine( ts, Matrix() ) ),
 	  m_state( ts )
 {
 }
@@ -138,6 +138,13 @@ void RealText::AddLine( const TextLine& line )
 	m_lines.push_back( line ) ;
 }
 
+void RealText::AddLine( double x, double y, const std::wstring& text )
+{
+	TextLine line( m_state, Matrix( 1,0,0,1, x, y ) ) ;
+	line.AppendText( text ) ;
+	return AddLine( line ) ;
+}
+
 void RealText::Visit( GraphicsVisitor *visitor )
 {
 	PDF_ASSERT( visitor != 0 ) ;
@@ -185,7 +192,7 @@ void RealText::OnTd( Object* args, std::size_t count, Resources* )
 	{
 		m_text_mat = m_line_mat =
 			m_line_mat * Matrix( 1, 0, 0, 1, args[0], args[1] ) ;
-		AddLine( TextLine( m_line_mat, m_state ) ) ;
+		AddLine( TextLine( m_state, m_line_mat ) ) ;
 	}
 }
 
@@ -199,7 +206,7 @@ void RealText::OnTD( Object* args, std::size_t count, Resources *res )
 		
 		m_text_mat = m_line_mat =
 			m_line_mat * Matrix( 1, 0, 0, 1, args[0], args[1] ) ;
-		AddLine( TextLine( m_line_mat, m_state ) ) ;
+		AddLine( TextLine( m_state, m_line_mat ) ) ;
 	}
 }
 
@@ -212,7 +219,7 @@ void RealText::OnTm( Object* args, std::size_t count, Resources* )
 		m_text_mat = m_line_mat = Matrix(
 			args[0], args[1], args[2], args[3], args[4], args[5] ) ;
 		
-		AddLine( TextLine( m_line_mat, m_state ) ) ;
+		AddLine( TextLine( m_state, m_line_mat ) ) ;
 	}
 }
 
@@ -221,7 +228,7 @@ void RealText::OnTstar( Object* , std::size_t , Resources * )
 	m_text_mat = m_line_mat = m_line_mat *
 		Matrix( 1, 0, 0, 1, 0, m_state.Leading() ) ;
 	
-	AddLine( TextLine( m_line_mat, m_state ) ) ;
+	AddLine( TextLine( m_state, m_line_mat ) ) ;
 }
 
 ///	Shows a Text string
@@ -276,7 +283,7 @@ void RealText::OnTJ( Object* args, std::size_t count, Resources *res )
 			// assume vertical here.
 			m_text_mat.Dx(m_text_mat.Dx() - disp / 1000.0 * m_state.FontSize());
 			
-			AddLine( TextLine( m_text_mat, m_state ) ) ;
+			AddLine( TextLine( m_state, m_line_mat ) ) ;
 		}
 	}
 }
@@ -316,7 +323,7 @@ void RealText::OnTf( Object* args, std::size_t count, Resources *res )
 				if ( current.IsEmpty() )
 					current.SetFormat( m_state ) ;
 				else
-					m_lines.push_back( TextLine( m_text_mat, m_state ) ) ;
+					m_lines.push_back( TextLine( m_state, m_line_mat ) ) ;
 			}
 		}
 	}

@@ -27,6 +27,8 @@
 #ifndef __PDF_MATRIX_HEADER_INCLUDED__
 #define __PDF_MATRIX_HEADER_INCLUDED__
 
+#include "libpdfdoc.hh"
+
 #include <iosfwd>
 
 namespace pdf {
@@ -43,7 +45,7 @@ namespace pdf {
 </pre>
 
 */
-class Matrix
+class LIBPDFDOC_API Matrix
 {
 public :
 	Matrix( ) ;

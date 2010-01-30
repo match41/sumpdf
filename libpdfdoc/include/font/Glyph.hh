@@ -26,6 +26,8 @@
 #ifndef __PDF_GLYPH_HEADER_INCLUDED__
 #define __PDF_GLYPH_HEADER_INCLUDED__
 
+#include "libpdfdoc.hh"
+
 #include <boost/shared_ptr.hpp>
 
 namespace pdf {
@@ -38,12 +40,16 @@ namespace ft
 
 class Outline ;
 
-///	A glyph.
-/**	The Glyph class represents a glyph in an PDF document. The unit of the
-	metrics provided by this class is always in font unit. The actual size
-	of the font unit will be defined by Font::UnitsPerEM().  
+///	A glyph class.
+/**	The Glyph class represents a glyph in an PDF document. A glyph is an image
+	representation of a character in a font face. This class provides access
+	to many information about a glyph, e.g. its metrics and outline rendering.
+	The unit of the metrics provided by this class is always in font unit.
+	The actual size of the font unit is defined by Font::UnitsPerEM().
+	
+	\sa	Font::UnitsPerEM().  
 */
-class Glyph
+class LIBPDFDOC_API Glyph
 {
 public :
 	Glyph( unsigned idx, const ft::Face& face ) ;

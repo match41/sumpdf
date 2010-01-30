@@ -135,7 +135,6 @@ SimpleFont::SimpleFont( Dictionary& self, IFile *file, FT_Library ft_lib )
 		// try to search for them instead.
 		else if ( m_type != font::type3 )
 		{
-std::cout << "searching for: " << m_base_font << std::endl ;
 			std::string ori = m_base_font.Str() ;
 			if ( m_base_font.empty() )
 			{
@@ -174,8 +173,6 @@ void SimpleFont::Init( std::vector<unsigned char>& prog, FT_Library ft_lib )
 	const char *psname = ::FT_Get_Postscript_Name( m_face ) ;
 	m_base_font = (psname != 0 ? psname : "" ) ;
 
-std::cout << " type = " << ::FT_Get_X11_Font_Format( m_face ) << std::endl ;
-	
 	m_type = font::GetType( m_face ) ;
 	m_descriptor.reset( new FontDescriptor( m_face, prog ) ) ;
 	LoadGlyphs( ) ;

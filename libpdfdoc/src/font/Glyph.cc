@@ -95,7 +95,9 @@ int CubicTo(
 
 } // end of anonymous namespace
 
-/**	constructor
+///	Constructor.
+/**	\internal Constructor a glyph given a font face and the glyph index.
+	This function will load the glyph from the font face.
 */
 Glyph::Glyph( unsigned idx, const ft::Face& face )
 	: m_impl( new Impl )
@@ -144,6 +146,15 @@ unsigned Glyph::AdvanceY( ) const
 	return m_impl->met.vertAdvance ;
 }
 
+///	Decompose the glyph outline.
+/**	This function walks through the glyph outline and decompose it into
+	individual segment and Bezier arcs. The caller will implement the Outline
+	interface and the corresponding callback function in the Outline interface
+	will be called for each line segment and Bezier arcs in the glyph.
+	\param	outline		A callback interface to each segment and arcs.
+	\return	\c true if walk through successfully, otherwise \c false. It fails
+			when the glyph is not an outline glyph.
+*/
 bool Glyph::Decompose( Outline *outline ) const
 {
 	if ( m_impl->glyph->format == FT_GLYPH_FORMAT_OUTLINE )
@@ -164,6 +175,7 @@ bool Glyph::Decompose( Outline *outline ) const
 		return false ;
 }
 
+///	Return \c true if the glyph is an outline glyph.
 bool Glyph::IsOutline( ) const
 {
 	return m_impl->glyph->format == FT_GLYPH_FORMAT_OUTLINE ;

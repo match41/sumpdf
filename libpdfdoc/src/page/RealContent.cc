@@ -154,6 +154,11 @@ Text* RealContent::AddText( const TextState& ts )
 	return t ;
 }
 
+Text* RealContent::AddText( double size, Font *font )
+{
+	return AddText( TextState( size, font ) ) ;
+}
+
 void RealContent::VisitGraphics( GraphicsVisitor *visitor )
 {
 	// all pointers are not null

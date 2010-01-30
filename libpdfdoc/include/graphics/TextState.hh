@@ -42,7 +42,7 @@ class Resources ;
 class TextState
 {
 public :
-	TextState( ) ;
+	explicit TextState( double size = 0, Font *font = 0 ) ;
 
 	// compiler generated copy constructor and assignment operator are fine.
 

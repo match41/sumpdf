@@ -27,6 +27,8 @@
 #ifndef __PDF_EXCEPTION_HEADER_INCLUDED__
 #define __PDF_EXCEPTION_HEADER_INCLUDED__
 
+#include "libpdfdoc.hh"
+
 #include <boost/format/format_fwd.hpp>
 
 #include <iosfwd>
@@ -39,7 +41,7 @@ namespace pdf {
 	
 	This class is the base class for all exception class in libpdfdoc.
 */
-class Exception : public std::runtime_error
+class LIBPDFDOC_API Exception : public std::runtime_error
 {
 public :
 	explicit Exception( const std::string& err = std::string( ),
@@ -52,7 +54,7 @@ public :
 	underlying data to a specific type. The what() member function will
 	describe the expected and actual type of the data.
 */
-class BadType : public Exception
+class LIBPDFDOC_API BadType : public Exception
 {
 public :
 	BadType( const std::type_info& from, const std::type_info& to,
@@ -63,7 +65,7 @@ public :
 /**	This exception will be thrown when there is a parse error when reading
 	a PDF file.
 */
-class ParseError : public Exception
+class LIBPDFDOC_API ParseError : public Exception
 {
 public :
 	explicit ParseError( const std::string& err ) ;
