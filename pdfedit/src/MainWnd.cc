@@ -141,6 +141,8 @@ void MainWnd::OnEditFont( )
 
 void MainWnd::OnToolZoom( int choice )
 {
+	PDF_ASSERT( m_zoom_box != 0 ) ;
+
 	qDebug() << "zoom to " << m_zoom_box->itemData( choice ).toDouble() ;
 	m_view->Zoom( m_zoom_box->itemData( choice ).toDouble() ) ;
 }
@@ -151,6 +153,10 @@ void MainWnd::OpenFile( const QString& file )
 	{
 		m_doc.reset( CreateDoc( ) ) ;
 		m_doc->Read( file.toStdString() ) ;
+		
+		// it should have thrown exception when error.
+		// can now clear the screen.
+		m_scene->clear( ) ;
 		
 		if ( m_doc->PageCount() > 0 )
 		{
@@ -241,20 +247,12 @@ void MainWnd::StorePage( QGraphicsScene *scene, Doc *doc, Page *page )
 	for ( QList<QGraphicsItem*>::iterator i  = items.begin() ;
 	                                      i != items.end() ; ++i )
 	{
-		GlyphGroup *text =
-			qgraphicsitem_cast<GlyphGroup*>( *i ) ;
+		GlyphGroup *text = qgraphicsitem_cast<GlyphGroup*>( *i ) ;
 		
 		if ( text != 0 )
 		{
 			PDF_ASSERT( text->Format().GetFont() != 0 ) ;
-
-			TextLine line(
-				FromQtMatrix( text->sceneTransform( ) ),
-				text->Format() ) ;
-			
-			line.AppendText( text->Text().toStdWString() ) ;
-							
-			t->AddLine( line ) ;
+			t->AddLine( text->GetLine() ) ;
 		}
 	}
 }

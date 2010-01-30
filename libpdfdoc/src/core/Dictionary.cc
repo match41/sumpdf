@@ -91,7 +91,7 @@ Dictionary::const_iterator Dictionary::find( const Name& name ) const
 	\return	A pair of iterator and a boolean. The iterator denotes the position
 			of the newly added entry. The boolean is true if the object is
 			newly inserted, i.e. it doesn't exists before. If \a v.second
-			is a null Object, the iterator returned will be \t end().
+			is a null Object, the iterator returned will be \c end().
 	\sa Add()
 */
 std::pair<Dictionary::iterator, bool> Dictionary::insert( const value_type& v )

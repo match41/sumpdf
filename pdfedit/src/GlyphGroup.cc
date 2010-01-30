@@ -30,6 +30,8 @@
 
 #include <graphics/TextLine.hh>
 
+#include "Util.hh"
+
 #include <util/Debug.hh>
 #include <util/Matrix.hh>
 
@@ -77,6 +79,13 @@ const TextState& GlyphGroup::Format( ) const
 QString GlyphGroup::Text( ) const
 {
 	return m_text ;
+}
+
+TextLine GlyphGroup::GetLine( ) const
+{
+	TextLine line( m_state, FromQtMatrix( sceneTransform( ) ) ) ;
+	line.AppendText( m_text.toStdWString() ) ;
+	return line ; 
 }
 
 } // end of namespace

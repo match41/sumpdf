@@ -56,6 +56,8 @@ public :
 
 	const TextState& Format( ) const ;
 	
+	TextLine GetLine( ) const ;
+	
 	QString Text( ) const ;
 
 private :

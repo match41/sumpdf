@@ -92,6 +92,7 @@ RealFile::RealFile( std::ostream *os )
 	offsets in the file. It allows fast look-up for the PDF objects stored
 	in the file.
 	\param	catalog		reference to the document catalog
+	\param	info		reference to the document infor object
 */
 void RealFile::WriteTrailer( const Ref& catalog, const Ref& info )
 {
@@ -216,7 +217,6 @@ void RealFile::WriteObj( const Object& obj, const Ref& link )
 void RealFile::ReadXRef( std::size_t offset, Dictionary& trailer )
 {
 	assert( m_in != 0 ) ;
-//	m_in->rdbuf()->pubseekoff( offset, std::ios::beg ) ;
 	m_in->seekg( offset, std::ios::beg ) ;
 	
 	// reading xref	
