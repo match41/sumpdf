@@ -37,7 +37,7 @@ namespace ft
 	struct Library ;
 }
 
-class IFile ;
+class File ;
 class Dictionary ;
 class Ref ;
 class FontDescriptor ;
@@ -52,11 +52,11 @@ class BaseFont : public RefCounter, public Font
 public :
 	BaseFont( ) ;
 
-	virtual Ref Write( IFile *file ) const = 0 ;
+	virtual Ref Write( File *file ) const = 0 ;
 	virtual FontDescriptor* Descriptor( ) = 0 ;
 } ;
 
-BaseFont* CreateFont( Dictionary& obj, IFile *file, const ft::Library& ft ) ;
+BaseFont* CreateFont( Dictionary& obj, File *file, const ft::Library& ft ) ;
 
 } // end of namespace
 

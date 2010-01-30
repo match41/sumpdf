@@ -27,7 +27,7 @@
 #ifndef __PDFUT_MOCK_FILE_HEADER_INCLUDED__
 #define __PDFUT_MOCK_FILE_HEADER_INCLUDED__
 
-#include "file/IFile.hh"
+#include "file/File.hh"
 
 #include "file/ResourcePool.hh"
 
@@ -40,7 +40,7 @@
 	
 	this class represents
 */
-class MockFile : public pdf::IFile
+class MockFile : public pdf::File
 {
 private :
 	std::map<pdf::Ref, pdf::Object>	m_map ;

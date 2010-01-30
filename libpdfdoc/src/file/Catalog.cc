@@ -27,7 +27,7 @@
 #include "Catalog.hh"
 
 #include "ObjectReader.hh"
-#include "IFile.hh"
+#include "File.hh"
 
 #include "core/Array.hh"
 #include "core/Ref.hh"
@@ -51,7 +51,7 @@ Catalog::Catalog( FT_Library ft_lib )
 {
 }
 
-Catalog::Catalog( const Ref& link, IFile *file, FT_Library ft_lib )
+Catalog::Catalog( const Ref& link, File *file, FT_Library ft_lib )
 	: m_version		( "1.4" ),
 	  m_page_layout	( "SinglePage" ),
 	  m_page_mode	( "UseNode" ),
@@ -119,7 +119,7 @@ Catalog::~Catalog( )
 	m_tree = 0 ;
 }
 
-Ref Catalog::Write( IFile *file ) const
+Ref Catalog::Write( File *file ) const
 {
 	Dictionary self ;
 

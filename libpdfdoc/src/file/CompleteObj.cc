@@ -26,7 +26,7 @@
 
 #include "CompleteObj.hh"
 
-#include "IFile.hh"
+#include "File.hh"
 #include "ResourcePool.hh"
 
 #include "core/TraverseObject.hh"
@@ -69,7 +69,7 @@ CompleteObj::~CompleteObj( )
 				_1 ) ) ) ;
 }
 
-void CompleteObj::Read( Dictionary& dict, IFile *file )
+void CompleteObj::Read( Dictionary& dict, File *file )
 {
 	assert( file != 0 ) ;
 
@@ -81,7 +81,7 @@ void CompleteObj::Read( Dictionary& dict, IFile *file )
 
 void CompleteObj::ReplaceReference(
 	Object& obj,
-	IFile *file,
+	File *file,
 	std::map<ObjWrapper*, Ref>& written ) const
 {
 	assert( file != 0 ) ;
@@ -122,7 +122,7 @@ void CompleteObj::ReplaceReference(
 	}
 }
 
-Ref CompleteObj::Write( IFile *file ) const
+Ref CompleteObj::Write( File *file ) const
 {
 	assert( file != 0 ) ;
 	
@@ -132,7 +132,7 @@ Ref CompleteObj::Write( IFile *file ) const
 	return file->WriteObj( obj ) ;
 }
 
-void CompleteObj::Write( IFile *file, const Ref& link ) const
+void CompleteObj::Write( File *file, const Ref& link ) const
 {
 	assert( file != 0 ) ;
 	
@@ -144,7 +144,7 @@ void CompleteObj::Write( IFile *file, const Ref& link ) const
 
 void CompleteObj::ReplaceChildReference(
 	Object& obj,
-	IFile *file,
+	File *file,
 	std::map<ObjWrapper*, Ref>& written ) const
 {
 	ForEachObj( obj,

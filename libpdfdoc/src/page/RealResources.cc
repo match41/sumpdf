@@ -29,7 +29,7 @@
 #include "XObject.hh"
 
 #include "core/Array.hh"
-#include "file/IFile.hh"
+#include "file/File.hh"
 #include "file/ObjectReader.hh"
 #include "file/RefObjMap.hh"
 #include "file/ResourcePool.hh"
@@ -75,8 +75,10 @@ RealResources::~RealResources( )
 			bind( &FontMap::left_value_type::second, _1 ) ) ) ;
 }
 
-void RealResources::Read( const Dictionary& dict, IFile *file )
+void RealResources::Read( const Dictionary& dict, File *file )
 {
+	PDF_ASSERT( file != 0 ) ;
+
 	Dictionary self = dict ;
 
 	Dictionary ext_gstate ;
@@ -92,7 +94,7 @@ void RealResources::Read( const Dictionary& dict, IFile *file )
 //	m_ext_gstate.Read( ext_gstate, file ) ;
 }
 
-Ref RealResources::Write( IFile *file ) const
+Ref RealResources::Write( File *file ) const
 {
 //	CompleteObj copy( m_self ) ;
 	Dictionary dict ;
@@ -103,7 +105,7 @@ Ref RealResources::Write( IFile *file ) const
     return file->WriteObj( dict ) ;
 }
 
-void RealResources::ReadFontDict( Dictionary& self, IFile *file )
+void RealResources::ReadFontDict( Dictionary& self, File *file )
 {
 	PDF_ASSERT( file != 0 ) ;
 	PDF_ASSERT( file->Pool() != 0 ) ;
@@ -140,7 +142,7 @@ void RealResources::ReadFontDict( Dictionary& self, IFile *file )
 	}
 }
 
-Ref RealResources::WriteFontDict( IFile *file ) const
+Ref RealResources::WriteFontDict( File *file ) const
 {
 	PDF_ASSERT( file != 0 ) ;
 	PDF_ASSERT( file->Pool() != 0 ) ;

@@ -32,7 +32,7 @@
 namespace pdf {
 
 class Array ;
-class IFile ;
+class File ;
 class RealPage ;
 class Ref ;
 
@@ -46,8 +46,8 @@ public :
 	Destination( ) ;
 	~Destination( ) ;
 	
-	void Read( Array& array, IFile *file ) ;
-	Ref Write( IFile *file ) const ;
+	void Read( Array& array, File *file ) ;
+	Ref Write( File *file ) const ;
 
 private :
 	RealPage	*m_page ;

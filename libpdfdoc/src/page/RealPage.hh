@@ -49,7 +49,7 @@ class Font ;
 class Name ;
 class Stream ;
 class RealResources ;
-class IFile ;
+class File ;
 class Graphics ;
 
 /*!	\brief	real implementation of a page
@@ -62,8 +62,8 @@ class RealPage : public Page, public PageNode
 public :
 	explicit RealPage( PageTree *parent ) ;
 
-	void Read( Dictionary& dict, IFile *file ) ;
-	void Write( const Ref& link, IFile *file, const Ref& parent ) const ;
+	void Read( Dictionary& dict, File *file ) ;
+	void Write( const Ref& link, File *file, const Ref& parent ) const ;
 	
 	Rect MediaBox( ) const ;
 
@@ -80,8 +80,8 @@ public :
 	RealContent* GetContent( ) ;
 
 private :
-	void ReadContent( const Object& str_obj, IFile *file ) ;
-	Object WriteContent( IFile *file ) const ; 
+	void ReadContent( const Object& str_obj, File *file ) ;
+	Object WriteContent( File *file ) const ; 
 
 	void Decode( ) ;
 	Graphics* ProcessCommand(

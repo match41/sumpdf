@@ -35,7 +35,7 @@
 
 // other libpdfdoc headers
 #include "file/ObjectReader.hh"
-#include "file/IFile.hh"
+#include "file/File.hh"
 #include "font/BaseFont.hh"
 #include "graphics/RealText.hh"
 #include "util/Rect.hh"
@@ -60,7 +60,7 @@ RealPage::RealPage( PageTree *parent )
 	parent->AppendLeaf( this ) ;
 }
 
-void RealPage::Read( Dictionary& self, IFile *file )
+void RealPage::Read( Dictionary& self, File *file )
 {
 	assert( file != 0 ) ;
 	
@@ -86,7 +86,7 @@ Rect RealPage::MediaBox( ) const
 	return m_media_box ;
 }
 
-void RealPage::ReadContent( const Object& str_obj, IFile *src )
+void RealPage::ReadContent( const Object& str_obj, File *src )
 {
 	// for indirect objects, dereference it
 	if ( str_obj.Is<Ref>( ) )
@@ -109,7 +109,7 @@ void RealPage::ReadContent( const Object& str_obj, IFile *src )
 		throw std::runtime_error( "invalid page content" ) ;
 }
 
-void RealPage::Write( const Ref& link, IFile *file, const Ref& parent ) const
+void RealPage::Write( const Ref& link, File *file, const Ref& parent ) const
 {
 	assert( file != 0 ) ;
 	assert( m_parent != 0 ) ;
@@ -128,7 +128,7 @@ void RealPage::Write( const Ref& link, IFile *file, const Ref& parent ) const
 	file->WriteObj( self, link ) ;
 }
 
-Object RealPage::WriteContent( IFile *file ) const
+Object RealPage::WriteContent( File *file ) const
 {
 	assert( file != 0 ) ;
 
@@ -147,7 +147,7 @@ Object RealPage::WriteContent( IFile *file ) const
 			m_cstrs.begin(),
 			m_cstrs.end(),
 		    strs.begin(),
-		    boost::bind( &IFile::WriteObj, file, _1 ) ) ;
+		    boost::bind( &File::WriteObj, file, _1 ) ) ;
 		return strs ;
 	}
 }

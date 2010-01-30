@@ -24,10 +24,10 @@
 	\author	Nestal Wan
 */
 
-#ifndef __PDF_FILE_HEADER_INCLUDED__
-#define __PDF_FILE_HEADER_INCLUDED__
+#ifndef __PDF_REAL_FILE_HEADER_INCLUDED__
+#define __PDF_REAL_FILE_HEADER_INCLUDED__
 
-#include "IFile.hh"
+#include "File.hh"
 
 #include "ResourcePool.hh"
 
@@ -51,7 +51,7 @@ class Stream ;
 	the end of the PDF file called the trailer. This class is responsible for
 	decoding the file trailer dictionary and the cross reference table.
 */
-class RealFile : public IFile
+class RealFile : public File
 {
 public :
 	explicit RealFile( std::istream *is ) ;

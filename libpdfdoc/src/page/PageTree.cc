@@ -32,7 +32,7 @@
 #include "core/Dictionary.hh"
 
 #include "file/ObjectReader.hh"
-#include "file/IFile.hh"
+#include "file/File.hh"
 #include "file/ResourcePool.hh"
 
 #include "util/Exception.hh"
@@ -71,7 +71,7 @@ PageTree::~PageTree( )
 	               boost::lambda::delete_ptr( ) ) ;
 }
 
-void PageTree::Read( Dictionary& dict, IFile *file )
+void PageTree::Read( Dictionary& dict, File *file )
 {
 	assert( file != 0 ) ;
 	assert( file->Pool() != 0 ) ;
@@ -116,7 +116,7 @@ void PageTree::Read( Dictionary& dict, IFile *file )
 		m_resources.Read( res, file ) ;
 }
 
-void PageTree::Write( const Ref& link, IFile *file, const Ref& ) const
+void PageTree::Write( const Ref& link, File *file, const Ref& ) const
 {
 	assert( file != 0 ) ;
 	assert( file->Pool() != 0 ) ;

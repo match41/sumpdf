@@ -31,7 +31,7 @@
 
 namespace pdf {
 
-class IFile ;
+class File ;
 
 /**	\brief	PDF external objects
 	\internal
@@ -45,7 +45,7 @@ class XObject
 public :
 	XObject( ) ;
 
-	void Init( Object& link, IFile *repo ) ;
+	void Init( Object& link, File *repo ) ;
 
 private :
 	Stream	m_str ;

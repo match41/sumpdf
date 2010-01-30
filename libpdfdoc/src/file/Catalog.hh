@@ -44,7 +44,7 @@ class Ref ;
 class RealPage ;
 class PageTree ;
 class ElementList ;
-class IFile ;
+class File ;
 class Resources ;
 
 /*!	\brief	brief description
@@ -57,10 +57,10 @@ class Catalog
 {
 public :
 	explicit Catalog( FT_Library ft_lib ) ;
-	Catalog( const Ref& link, IFile *file, FT_Library ft_lib ) ;
+	Catalog( const Ref& link, File *file, FT_Library ft_lib ) ;
 	~Catalog( ) ;
 	
-	Ref Write( IFile *file ) const ;
+	Ref Write( File *file ) const ;
 
 	RealPage* AddPage( ) ;
 

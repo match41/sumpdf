@@ -35,7 +35,7 @@
 
 namespace pdf {
 
-class IFile ;
+class File ;
 class Dictionary ;
 class Array ;
 
@@ -53,9 +53,9 @@ public :
 	CompleteObj( const CompleteObj& other ) ;
 	~CompleteObj( ) ;
 	
-	void Read( Dictionary& dict, IFile *file ) ;
-	Ref Write( IFile *file ) const ;
-	void Write( IFile *file, const Ref& link ) const ;
+	void Read( Dictionary& dict, File *file ) ;
+	Ref Write( File *file ) const ;
+	void Write( File *file, const Ref& link ) const ;
 
 	Dictionary& Get( ) ;
 	const Dictionary& Get( ) const ;
@@ -65,11 +65,11 @@ public :
 private :
 	void ReplaceChildReference(
 		Object& obj,
-		IFile *file,
+		File *file,
 		std::map<ObjWrapper*, Ref>& written ) const ;
 	void ReplaceReference(
 		Object& obj,
-		IFile *file,
+		File *file,
 		std::map<ObjWrapper*, Ref>& written ) const ;
 
 private :

@@ -26,7 +26,7 @@
 
 #include "Destination.hh"
 
-#include "IFile.hh"
+#include "File.hh"
 #include "ResourcePool.hh"
 #include "page/RealPage.hh"
 
@@ -47,7 +47,7 @@ Destination::~Destination( )
 		m_page->Release( ) ;
 }
 
-void Destination::Read( Array& array, IFile *file )
+void Destination::Read( Array& array, File *file )
 {
 	m_options.swap( array ) ;
 	if ( m_options.size() > 1 )
@@ -59,7 +59,7 @@ std::cout << "link to page: " << m_page << std::endl ;
 	}
 }
 
-Ref Destination::Write( IFile *file ) const
+Ref Destination::Write( File *file ) const
 {
 	Array self( m_options ) ;
 	PagePool *pool = &file->Pool()->pages ;

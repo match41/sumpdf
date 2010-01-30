@@ -27,7 +27,7 @@
 
 #include "core/Array.hh"
 #include "core/Dictionary.hh"
-#include "file/IFile.hh"
+#include "file/File.hh"
 #include "file/ObjectReader.hh"
 #include "stream/Stream.hh"
 
@@ -130,7 +130,7 @@ FontDescriptor::FontDescriptor( FT_Face face, std::vector<unsigned char>& prog )
 	m_font_file.swap( prog ) ;
 }
 
-void FontDescriptor::Read( font::Type type, Dictionary& self, IFile *file )
+void FontDescriptor::Read( font::Type type, Dictionary& self, File *file )
 {
 	m_type = type ;
 	
@@ -191,7 +191,7 @@ void FontDescriptor::Read( font::Type type, Dictionary& self, IFile *file )
 		m_psname = psname.Str() ;
 }
 
-Ref FontDescriptor::Write( IFile *file ) const
+Ref FontDescriptor::Write( File *file ) const
 {
 	PDF_ASSERT( file != 0 ) ;
 

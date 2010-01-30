@@ -33,7 +33,7 @@
 
 #include "core/Dictionary.hh"
 
-#include "file/IFile.hh"
+#include "file/File.hh"
 #include "file/ObjectReader.hh"
 
 #include "util/Util.hh"
@@ -85,7 +85,7 @@ SimpleFont::SimpleFont( const std::string& name, FT_Library ft_lib )
 	Init( prog, ft_lib ) ;
 }
 
-SimpleFont::SimpleFont( Dictionary& self, IFile *file, FT_Library ft_lib )
+SimpleFont::SimpleFont( Dictionary& self, File *file, FT_Library ft_lib )
 	: m_face( 0 ),
 	  m_type( font::unknown ),
 	  m_first_char( -1 ),
@@ -349,7 +349,7 @@ double SimpleFont::FromFontUnit( unsigned val ) const
 	return val * 1000.0 / m_face->units_per_EM ;
 }
 
-Ref SimpleFont::Write( IFile *file ) const
+Ref SimpleFont::Write( File *file ) const
 {
 	PDF_ASSERT( file != 0 ) ;
 
@@ -426,7 +426,7 @@ FontDescriptor* SimpleFont::Descriptor( )
 	return m_descriptor.get() ;
 }
 
-BaseFont* CreateFont( Dictionary& obj, IFile *file, const ft::Library& ft )
+BaseFont* CreateFont( Dictionary& obj, File *file, const ft::Library& ft )
 {
 	return new SimpleFont( obj, file, ft.lib ) ;
 }

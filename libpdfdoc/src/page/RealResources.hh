@@ -44,7 +44,7 @@
 
 namespace pdf {
 
-class IFile ;
+class File ;
 class BaseFont ;
 class RealImage ;
 class XObject ;
@@ -65,15 +65,15 @@ public :
 
 	Name AddFont( BaseFont *font ) ;
 
-	void Read( const Dictionary& self_obj, IFile *file ) ;
-	Ref  Write( IFile *file ) const ;
+	void Read( const Dictionary& self_obj, File *file ) ;
+	Ref  Write( File *file ) const ;
 
 	BaseFont* FindFont( const Name& name ) const ;
 	Name FindFont( BaseFont *font ) const ;
 
 private :
-	void ReadFontDict( Dictionary& self, IFile *file ) ;
-	Ref WriteFontDict( IFile *file ) const ;
+	void ReadFontDict( Dictionary& self, File *file ) ;
+	Ref WriteFontDict( File *file ) const ;
 
 	XObject* ReadXObj( const Ref& link ) ;
 

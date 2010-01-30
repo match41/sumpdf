@@ -18,49 +18,18 @@
  ***************************************************************************/
 
 /*!
-	\file	IFile.hh
-	\brief	definition the IFile class
+	\file	File.cc
+	\brief	implementation the File class
 	\date	Fri Mar 21 2008
 	\author	Nestal Wan
 */
 
-#ifndef __PDF_IFILE_HEADER_INCLUDED__
-#define __PDF_IFILE_HEADER_INCLUDED__
-
-#include "core/ObjWrapper.hh"
-
-#include <map>
+#include "File.hh"
 
 namespace pdf {
 
-class Object ;
-class Ref ;
-class StreamFilter ;
-struct ResourcePool ;
-
-/*!	\brief	PDF file interface
-
-	This class represents the interface of PDF file structure. It allows the
-	caller to read PDF core objects base on their reference.
-*/
-class IFile
+File::~File( )
 {
-protected :
-	virtual ~IFile( ) ;
-
-public :
-	virtual Object ReadObj( const Ref& obj ) = 0 ;
-	virtual Ref WriteObj( const Object& obj ) = 0 ;
-
-	virtual Ref AllocLink( ) = 0 ;
-	virtual void WriteObj( const Object& obj, const Ref& link ) = 0 ;
-
-	virtual ResourcePool* Pool( ) = 0 ;
-	virtual void ReadObjectLinks(
-		const Object& obj,
-		std::map<Ref, ObjWrapper*>& links ) = 0 ;
-} ;
+}
 
 } // end of namespace
-
-#endif

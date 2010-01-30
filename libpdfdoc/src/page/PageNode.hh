@@ -36,7 +36,7 @@ namespace pdf {
 class Dictionary ;
 class PageTree ;
 class Resources ;
-class IFile ;
+class File ;
 class Ref ;
 
 /*!	\brief	brief description
@@ -50,8 +50,8 @@ class PageNode : public RefCounter
 public :
 	virtual ~PageNode( ) ;
 
-	virtual void Read( Dictionary& self, IFile *file ) = 0 ; 
-	virtual void Write( const Ref& link, IFile *file, const Ref& parent ) 
+	virtual void Read( Dictionary& self, File *file ) = 0 ; 
+	virtual void Write( const Ref& link, File *file, const Ref& parent ) 
 		const = 0 ;
 
 	virtual PageTree* Parent( ) = 0 ;

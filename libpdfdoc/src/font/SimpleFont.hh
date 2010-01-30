@@ -61,13 +61,13 @@ class Dictionary ;
 class SimpleFont : public BaseFont
 {
 public :
-	SimpleFont( Dictionary& self, IFile *file, FT_Library ft_lib ) ;
+	SimpleFont( Dictionary& self, File *file, FT_Library ft_lib ) ;
 	SimpleFont( const std::string& font_file, unsigned idx, FT_Library ft_lib );
 	SimpleFont( const std::string& name, FT_Library ft_lib ) ;
 	~SimpleFont( ) ;
 
 	std::string BaseName( ) const ;
-	Ref Write( IFile *file ) const ;
+	Ref Write( File *file ) const ;
 
 	const Glyph*	GetGlyph( wchar_t ch ) const ;
 	

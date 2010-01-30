@@ -30,7 +30,7 @@
 #include "core/Object.hh"
 
 #include "file/ObjectReader.hh"
-#include "file/IFile.hh"
+#include "file/File.hh"
 
 #include <iostream>
 
@@ -53,7 +53,7 @@ void XObject::Read( Stream& str, IElementSrc *repo )
 	}
 }
 */
-void XObject::Init( Object& obj, IFile *file )
+void XObject::Init( Object& obj, File *file )
 {
 	m_str = DeRefObj<Stream>( file, obj ) ;
 

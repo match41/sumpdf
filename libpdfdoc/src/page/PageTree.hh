@@ -37,7 +37,7 @@ namespace pdf {
 
 class RealPage ;
 class Dictionary ;
-class IFile ;
+class File ;
 
 /*!	\brief	tree nodes in page tree
 	
@@ -50,8 +50,8 @@ public :
 	explicit PageTree( FT_Library ft_lib ) ;
 	~PageTree( ) ;
 
-	void Read( Dictionary& dict, IFile *file ) ;
-	void Write( const Ref& link, IFile *file, const Ref& parent ) const ;
+	void Read( Dictionary& dict, File *file ) ;
+	void Write( const Ref& link, File *file, const Ref& parent ) const ;
 
 	PageTree* Parent( ) ;
 	std::size_t Count( ) const ;

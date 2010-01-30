@@ -28,13 +28,13 @@
 #ifndef __PDF_OBJECT_READER_HEADER_INCLUDED__
 #define __PDF_OBJECT_READER_HEADER_INCLUDED__
 
-#include "IFile.hh"
+#include "File.hh"
 #include "core/Dictionary.hh"
 
 namespace pdf {
 
 template <typename ObjType>
-bool Detach( IFile *file, Dictionary& dict, const Name& name, ObjType& result )
+bool Detach( File *file, Dictionary& dict, const Name& name, ObjType& result )
 {
 	Dictionary::iterator i = dict.find( name ) ;
 	if ( i != dict.end( ) )
@@ -51,7 +51,7 @@ bool Detach( IFile *file, Dictionary& dict, const Name& name, ObjType& result )
 }
 
 template <typename ObjType>
-bool DetachConv( IFile *file, Dictionary& dict, const Name& name, ObjType& result )
+bool DetachConv( File *file, Dictionary& dict, const Name& name, ObjType& result )
 {
 	Dictionary::iterator i = dict.find( name ) ;
 	if ( i != dict.end( ) )
@@ -68,7 +68,7 @@ bool DetachConv( IFile *file, Dictionary& dict, const Name& name, ObjType& resul
 }
 
 template <typename ObjType>
-bool DeRef( IFile *file, const Dictionary& dict, const Name& name,
+bool DeRef( File *file, const Dictionary& dict, const Name& name,
             ObjType& result )
 {
 	Dictionary::const_iterator i = dict.find( name ) ;
@@ -85,7 +85,7 @@ bool DeRef( IFile *file, const Dictionary& dict, const Name& name,
 }
 
 template <typename ObjType>
-ObjType DeRefObj( IFile *file, const Object& obj )
+ObjType DeRefObj( File *file, const Object& obj )
 {
 	if ( obj.Is<Ref>( ) )
 	{
