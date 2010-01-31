@@ -290,6 +290,7 @@ double SimpleFont::Width( const Glyph& glyph ) const
 /// Return the size of the EM square in font units.
 unsigned SimpleFont::UnitsPerEM( ) const
 {
+	PDF_ASSERT( m_face != 0 ) ;
 	return m_face->units_per_EM ;
 }
 
