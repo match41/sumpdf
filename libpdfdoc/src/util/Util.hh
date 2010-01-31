@@ -109,6 +109,10 @@ struct DeletePtr
 	}
 } ;
 
+#ifdef WIN32
+#define strcasecmp _stricmp
+#endif
+
 } // end of namespace
 
 #endif

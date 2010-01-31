@@ -26,6 +26,7 @@
 #include "FontType.hh"
 
 #include "FontException.hh"
+#include "util/Util.hh"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H

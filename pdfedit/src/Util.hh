@@ -26,7 +26,10 @@
 #ifndef __PDF_UTIL_HH_EADER_INCLUDED__
 #define __PDF_UTIL_HH_EADER_INCLUDED__
 
+#include <string>
+
 class QTransform ;
+class QString ;
 
 namespace pdf
 {
@@ -34,6 +37,9 @@ namespace pdf
 	
 	QTransform ToQtMatrix( const Matrix& m ) ;
 	Matrix FromQtMatrix( const QTransform& m ) ;
+
+	std::wstring ToWStr( const QString& str ) ;
+	QString FromWStr( const std::wstring& str ) ;
 
 } // end of namespace
 

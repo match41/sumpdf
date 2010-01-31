@@ -60,8 +60,8 @@
 #include <graphics/Text.hh>
 #include <graphics/TextLine.hh>
 
-#include <fontconfig/fontconfig.h>
-#include <fontconfig/fcfreetype.h>
+//#include <fontconfig/fontconfig.h>
+//#include <fontconfig/fcfreetype.h>
 
 #include <boost/bind.hpp>
 
@@ -110,7 +110,7 @@ MainWnd::~MainWnd( )
 
 void MainWnd::OnEditFont( )
 {
-	bool ok = true ;
+/*	bool ok = true ;
 	QFont f = QFontDialog::getFont( &ok, this ) ;
 	if ( ok )
 	{
@@ -136,7 +136,7 @@ void MainWnd::OnEditFont( )
 		  
 		std::cout << "file is " << filename2 << " " << id << std::endl ; 
 
-	}
+	}*/
 }
 
 void MainWnd::OnToolZoom( int choice )

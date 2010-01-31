@@ -43,7 +43,7 @@ namespace pdf {
 */
 GlyphGroup::GlyphGroup( const TextLine& blk, QGraphicsItem *parent )
 	: QGraphicsItemGroup( parent ),
-	  m_text( QString::fromStdWString(blk.Text()) ),
+	  m_text( FromWStr(blk.Text()) ),
 	  m_state( blk.Format() )
 {
 	blk.VisitChars( this ) ;
@@ -84,7 +84,7 @@ QString GlyphGroup::Text( ) const
 TextLine GlyphGroup::GetLine( ) const
 {
 	TextLine line( m_state, FromQtMatrix( sceneTransform( ) ) ) ;
-	line.AppendText( m_text.toStdWString() ) ;
+	line.AppendText( ToWStr(m_text) ) ;
 	return line ; 
 }
 
