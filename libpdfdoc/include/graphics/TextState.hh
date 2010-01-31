@@ -27,8 +27,7 @@
 #ifndef __PDF_TEXTFORMAT_HH_EADER_INCLUDED__
 #define __PDF_TEXTFORMAT_HH_EADER_INCLUDED__
 
-#include <cstddef>
-
+#include <string>
 #include <iosfwd>
 
 namespace pdf {
