@@ -27,6 +27,7 @@
 
 #include <util/Matrix.hh>
 
+#include <QString>
 #include <QTransform>
 
 namespace pdf {
@@ -39,6 +40,25 @@ QTransform ToQtMatrix( const Matrix& m )
 Matrix FromQtMatrix( const QTransform& m )
 {
 	return Matrix( m.m11(), m.m12(), m.m21(), m.m22(), m.dx(), m.dy() ) ;
+}
+
+std::wstring ToWStr( const QString& str )
+{
+	const unsigned short *b2 = str.utf16() ;
+	
+	std::wstring s ;
+	while ( *b2 != 0 )
+		s.push_back( *b2++ ) ;
+
+	return s ;
+}
+
+QString FromWStr( const std::wstring& str )
+{
+	QString s ;
+	for ( std::wstring::const_iterator i = str.begin() ; i != str.end() ; ++i )
+		s.push_back( *i ) ;
+	return s ;
 }
 
 } // end of namespace
