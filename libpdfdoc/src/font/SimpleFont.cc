@@ -26,6 +26,7 @@
 
 #include "SimpleFont.hh"
 #include "FontType.hh"
+#include "RealGlyph.hh"
 
 #include "FontException.hh"
 #include "FontDescriptor.hh"
@@ -155,6 +156,13 @@ SimpleFont::SimpleFont( Dictionary& self, File *file, FT_Library ft_lib )
 
 SimpleFont::~SimpleFont( )
 {
+	// destroy all glyph before the face
+	std::for_each(
+		m_glyphs.begin(),
+		m_glyphs.end(),
+		boost::bind<void>( DeletePtr(),
+			boost::bind( &GlyphMap::value_type::second, _1 ) ) ) ;
+	
 	FT_Done_Face( m_face ) ;
 }
 
@@ -327,7 +335,7 @@ void SimpleFont::LoadGlyphs( )
 			ft::Face face_wrapper = { m_face } ;
 			m_glyphs.insert( std::make_pair(
 				char_code,
-				Glyph( gindex, face_wrapper ) ) ) ;
+				new RealGlyph( gindex, face_wrapper ) ) ) ;
 		}
 //		else
 //			throw FontException(
@@ -422,7 +430,7 @@ std::string SimpleFont::BaseName( ) const
 const Glyph* SimpleFont::GetGlyph( wchar_t ch ) const
 {
 	GlyphMap::const_iterator it = m_glyphs.find( ch ) ;
-	return it != m_glyphs.end() ? &it->second : 0 ;
+	return it != m_glyphs.end() ? it->second : 0 ;
 }
 
 FontDescriptor* SimpleFont::Descriptor( )

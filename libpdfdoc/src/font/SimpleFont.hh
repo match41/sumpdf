@@ -30,8 +30,6 @@
 #include "BaseFont.hh"
 #include "FontType.hh"
 
-#include "font/Glyph.hh"
-
 // libpdfdoc headers
 #include "core/Array.hh"
 #include "core/Name.hh"
@@ -51,6 +49,8 @@
 namespace pdf {
 
 class Dictionary ;
+class RealGlyph ;
+class Glyph ;
 
 ///	general font for PDF files
 /**	\internal
@@ -73,8 +73,6 @@ public :
 	
 	FontDescriptor* Descriptor( ) ;
 
-//	double Width( const std::wstring& text, double size ) const ;
-//	double Width( const Glyph& glyph ) const ;	
 	unsigned UnitsPerEM( ) const ;
 	double FromFontUnit( unsigned val ) const ;
 	
@@ -115,7 +113,7 @@ private :
 //	Object				m_to_unicode ;
 //	Object				m_encoding ;	//!< name or dictionary
 	
-	typedef std::tr1::unordered_map<wchar_t, Glyph> GlyphMap ;
+	typedef std::tr1::unordered_map<wchar_t, RealGlyph*> GlyphMap ;
 	GlyphMap	m_glyphs ;
 } ;
 

@@ -118,6 +118,7 @@ set( FONT_HDRS		${FONT_DIR}/Types.hh
 					${FONT_DIR}/FontDescriptor.hh
 					${FONT_DIR}/FontException.hh
 					${FONT_DIR}/FontType.hh
+					${FONT_DIR}/RealGlyph.hh
 					${FONT_DIR}/sfnt/SfntFile.hh
 					${FONT_DIR}/sfnt/sfnt.h
 					${FONT_DIR}/sfnt/pdfobj.h
@@ -220,6 +221,7 @@ set( IMG_SRCS  		${IMG_DIR}/Image.cc )
 set( FONT_SRCS		${FONT_DIR}/Font.cc
 					${FONT_DIR}/BaseFont.cc
 					${FONT_DIR}/Glyph.cc
+					${FONT_DIR}/RealGlyph.cc
 					${FONT_DIR}/FontDescriptor.cc
 					${FONT_DIR}/FontException.cc
 					${FONT_DIR}/FontType.cc

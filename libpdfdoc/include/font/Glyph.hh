@@ -26,17 +26,7 @@
 #ifndef __PDF_GLYPH_HEADER_INCLUDED__
 #define __PDF_GLYPH_HEADER_INCLUDED__
 
-#include "libpdfdoc.hh"
-
-#include <boost/shared_ptr.hpp>
-
 namespace pdf {
-
-// freetype wrappers
-namespace ft
-{
-	struct Face ;
-}
 
 class Outline ;
 
@@ -49,27 +39,21 @@ class Outline ;
 	
 	\sa	Font::UnitsPerEM().  
 */
-class LIBPDFDOC_API Glyph
+class Glyph
 {
-public :
-	Glyph( unsigned idx, const ft::Face& face ) ;
+protected :
 	~Glyph( ) ;
-	
-	unsigned Width( ) const ;
-	unsigned Height( ) const ;
-	
-	unsigned AdvanceX( ) const ;
-	unsigned AdvanceY( ) const ;
 
-	bool Decompose( Outline *outline ) const ;
+public :
+	virtual unsigned Width( ) const = 0 ;
+	virtual unsigned Height( ) const = 0 ;
 	
-	bool IsOutline( ) const ;
+	virtual unsigned AdvanceX( ) const = 0 ;
+	virtual unsigned AdvanceY( ) const = 0 ;
 
-private :
-	struct Impl ;
-	boost::shared_ptr<Impl>	m_impl ;
+	virtual bool Decompose( Outline *outline ) const = 0 ;
 	
-	struct OutlineDecomposer ;
+	virtual bool IsOutline( ) const = 0 ;
 } ;
 
 } // end of namespace

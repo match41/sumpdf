@@ -110,13 +110,13 @@ void RealTextTest::TestTJ( )
 	Token	cmd2( "Tj" ) ;
 	t.OnCommand( cmd2, args2, Count(args2), &res ) ;
 	
-	PDF_ASSERT_EQUAL( t.Count(), 2U ) ;
+	PDF_ASSERT_EQUAL( t.Count(), 1U ) ;
 	PDF_ASSERT_EQUAL( t.back().Format(), ts ) ;
-	PDF_ASSERT_EQUAL( 
-		t.back().Transform(),
-		Matrix(1,0,0,1, 3 * MockFont::m_char_width, 0 ) ) ;
+//	PDF_ASSERT_EQUAL( 
+//		t.back().Transform(),
+//		Matrix(1,0,0,1, 3 * MockFont::m_char_width, 0 ) ) ;
 		
-	CPPUNIT_ASSERT( t.back().Text() == L"abc" ) ;
+	CPPUNIT_ASSERT( t.back().Text() == L"abcabc" ) ;
 //	PDF_ASSERT_EQUAL( t.back().Width(), 3 * MockFont::m_char_width ) ;
 
 }
