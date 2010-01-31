@@ -27,6 +27,8 @@
 
 #include "core/Ref.hh"
 
+namespace pdfut {
+
 /**	constructor
 */
 MockFont::MockFont( )
@@ -50,15 +52,17 @@ pdf::FontDescriptor* MockFont::Descriptor( )
 
 double MockFont::FromFontUnit( unsigned val ) const
 {
-	return val ;
+	return val * 1000.0 / UnitsPerEM() ;
 }
 
 const pdf::Glyph* MockFont::GetGlyph( wchar_t ch ) const
 {
-	return 0 ;
+	return &m_glyph ;
 }
 
 unsigned MockFont::UnitsPerEM() const
 {
-	return 0 ;
+	return 2048 ;
 }
+
+} // end of namespace

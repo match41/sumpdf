@@ -36,6 +36,8 @@
 
 using namespace pdf ;
 
+namespace pdfut {
+
 /**	constructor
 */
 TextStateTest::TextStateTest( )
@@ -59,3 +61,4 @@ void TextStateTest::TestPrint( )
 	PDF_ASSERT_EQUAL( ss.str(), "/MockFont 12 Tf\n" ) ;
 }
 
+} // end of namespace

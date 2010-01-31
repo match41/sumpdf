@@ -33,24 +33,10 @@
 
 #include <boost/format.hpp>
 
-#include <ft2build.h>
-#include FT_FREETYPE_H
-#include FT_GLYPH_H
 #include FT_IMAGE_H
 #include FT_OUTLINE_H
 
 namespace pdf {
-
-struct RealGlyph::Impl
-{
-	~Impl( )
-	{
-		FT_Done_Glyph( glyph ) ;
-	}
-
-	FT_Glyph			glyph ;
-	FT_Glyph_Metrics	met ;
-} ;
 
 namespace {
 
@@ -100,7 +86,6 @@ int CubicTo(
 	This function will load the glyph from the font face.
 */
 RealGlyph::RealGlyph( unsigned idx, const ft::Face& face )
-	: m_impl( new Impl )
 {
 	// load the glyph to the glyph slot in the face
 	// we want to do the scaling in double instead of inside freetype
@@ -110,40 +95,47 @@ RealGlyph::RealGlyph( unsigned idx, const ft::Face& face )
 		throw FontException(
 			boost::format( "cannot load glyph %1%" ) % idx ) ;
 
-	error = FT_Get_Glyph( face.face->glyph, &m_impl->glyph ) ;
+	error = FT_Get_Glyph( face.face->glyph, &m_glyph ) ;
 	if ( error != 0 )
 		throw FontException(
 			boost::format( "cannot copy glyph %1%" ) % idx ) ;
 
-	m_impl->met = face.face->glyph->metrics ;
+	m_met = face.face->glyph->metrics ;
+}
+
+RealGlyph::RealGlyph( const RealGlyph& rhs )
+	: m_met( rhs.m_met )
+{
+	FT_Glyph_Copy( rhs.m_glyph, &m_glyph ) ;
 }
 
 RealGlyph::~RealGlyph( )
 {
+	FT_Done_Glyph( m_glyph ) ;
 }
 
 /// Width in un-scaled Freetype font unit.
 unsigned RealGlyph::Width( ) const
 {
-	return m_impl->met.width ;
+	return m_met.width ;
 }
 
 /// Height in un-scaled Freetype font unit.
 unsigned RealGlyph::Height( ) const
 {
-	return m_impl->met.height ;
+	return m_met.height ;
 }
 
 /// Horizonal advance in un-scaled Freetype font unit.
 unsigned RealGlyph::AdvanceX( ) const
 {
-	return m_impl->met.horiAdvance ;
+	return m_met.horiAdvance ;
 }
 
 /// Vertical advance in un-scaled Freetype font unit.
 unsigned RealGlyph::AdvanceY( ) const
 {
-	return m_impl->met.vertAdvance ;
+	return m_met.vertAdvance ;
 }
 
 ///	Decompose the glyph outline.
@@ -157,7 +149,7 @@ unsigned RealGlyph::AdvanceY( ) const
 */
 bool RealGlyph::Decompose( Outline *outline ) const
 {
-	if ( m_impl->glyph->format == FT_GLYPH_FORMAT_OUTLINE )
+	if ( m_glyph->format == FT_GLYPH_FORMAT_OUTLINE )
 	{
 		FT_Outline_Funcs f =
 		{
@@ -168,7 +160,7 @@ bool RealGlyph::Decompose( Outline *outline ) const
 			0, 0
 		} ;
 		
-		FT_OutlineGlyph og = reinterpret_cast<FT_OutlineGlyph>( m_impl->glyph ); 
+		FT_OutlineGlyph og = reinterpret_cast<FT_OutlineGlyph>( m_glyph ); 
 		return FT_Outline_Decompose( &og->outline, &f, outline ) == 0 ;
 	}
 	else
@@ -178,7 +170,7 @@ bool RealGlyph::Decompose( Outline *outline ) const
 ///	Return \c true if the glyph is an outline glyph.
 bool RealGlyph::IsOutline( ) const
 {
-	return m_impl->glyph->format == FT_GLYPH_FORMAT_OUTLINE ;
+	return m_glyph->format == FT_GLYPH_FORMAT_OUTLINE ;
 }
 
 } // end of namespace

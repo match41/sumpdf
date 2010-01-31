@@ -27,7 +27,10 @@
 #define __PDF_REALGLYPH_HEADER_INCLUDED__
 
 #include "font/Glyph.hh"
-#include <boost/shared_ptr.hpp>
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
+#include FT_GLYPH_H
 
 namespace pdf {
 
@@ -52,6 +55,7 @@ class RealGlyph : public Glyph
 {
 public :
 	RealGlyph( unsigned idx, const ft::Face& face ) ;
+	RealGlyph( const RealGlyph& rhs ) ;
 	~RealGlyph( ) ;
 
 	unsigned Width( ) const ;
@@ -65,8 +69,8 @@ public :
 	bool IsOutline( ) const ;
 
 private :
-	struct Impl ;
-	boost::shared_ptr<Impl>	m_impl ;
+	FT_Glyph			m_glyph ;
+	FT_Glyph_Metrics	m_met ;
 	
 	struct OutlineDecomposer ;
 } ;

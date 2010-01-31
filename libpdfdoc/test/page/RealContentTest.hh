@@ -30,6 +30,8 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+namespace pdfut {
+
 ///	brief description
 /**	The RealContentTest class represents
 */
@@ -46,5 +48,7 @@ public :
 private :
 	void TestWrite( ) ;
 } ;
+
+} // end of namespace
 
 #endif // REALCONTENTTEST_HH_

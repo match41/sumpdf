@@ -34,6 +34,8 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
+namespace pdfut {
+
 ///	brief description
 /**	this class represents
 */
@@ -50,5 +52,7 @@ public :
 private :
 	void TestPrint( ) ;
 } ;
+
+} // end of namespace
 
 #endif // TEXTSTATETEST_HH_

@@ -17,47 +17,50 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	Glyph.hh
-    \brief	definition the Glyph class
-    \date	Jan 24, 2010
-    \author	Nestal Wan
+/**	\file	MockGlyph.cc
+	\brief	implementation of the MockGlyph class
+	\date	Jan 31, 2010
+	\author	Nestal Wan
 */
 
-#ifndef __PDF_GLYPH_HEADER_INCLUDED__
-#define __PDF_GLYPH_HEADER_INCLUDED__
+#include "MockGlyph.hh"
 
-struct FT_GlyphRec_ ;
+namespace pdfut {
 
-namespace pdf {
-
-class Outline ;
-
-///	A glyph class.
-/**	The Glyph class represents a glyph in an PDF document. A glyph is an image
-	representation of a character in a font face. This class provides access
-	to many information about a glyph, e.g. its metrics and outline rendering.
-	The unit of the metrics provided by this class is always in font unit.
-	The actual size of the font unit is defined by Font::UnitsPerEM().
-	
-	\sa	Font::UnitsPerEM().  
+/**	constructor
 */
-class Glyph
+MockGlyph::MockGlyph( )
 {
-protected :
-	~Glyph( ) ;
+}
 
-public :
-	virtual unsigned Width( ) const = 0 ;
-	virtual unsigned Height( ) const = 0 ;
-	
-	virtual unsigned AdvanceX( ) const = 0 ;
-	virtual unsigned AdvanceY( ) const = 0 ;
+unsigned MockGlyph::Width( ) const
+{
+	return 500 ;
+}
 
-	virtual bool Decompose( Outline *outline ) const = 0 ;
-	
-	virtual bool IsOutline( ) const = 0 ;
-} ;
+unsigned MockGlyph::Height( ) const
+{
+	return 1024 ;
+}
+
+unsigned MockGlyph::AdvanceX( ) const
+{
+	return 1024 ;
+}
+
+unsigned MockGlyph::AdvanceY( ) const
+{
+	return 0 ;
+}
+
+bool MockGlyph::Decompose( pdf::Outline * ) const
+{
+	return false ;
+}
+
+bool MockGlyph::IsOutline( ) const
+{
+	return false ;
+}
 
 } // end of namespace
-
-#endif // GLYPH_HH_

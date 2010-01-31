@@ -27,12 +27,15 @@
 #define __PDF_MOCKFONT_HH_EADER_INCLUDED__
 
 #include "font/BaseFont.hh"
-#include "font/Glyph.hh"
+
+#include "MockGlyph.hh"
 
 namespace pdf
 {
 	class FontDescriptor ;
 }
+
+namespace pdfut {
 
 ///	brief description
 /**	The MockFont class represents
@@ -51,6 +54,11 @@ public :
 	const pdf::Glyph*	GetGlyph( wchar_t ch ) const ;
 	double FromFontUnit( unsigned val ) const ; 
 	unsigned UnitsPerEM() const ;
+
+private :
+	MockGlyph	m_glyph ;
 } ;
+
+} // end of namespace
 
 #endif // MOCKFONT_HH_

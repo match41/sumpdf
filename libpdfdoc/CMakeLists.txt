@@ -504,6 +504,7 @@ set( UT_SRCS	test/core/TokenTest.cc
 				
 				test/mock/MockFile.cc
 				test/mock/MockFont.cc
+				test/mock/MockGlyph.cc
 				test/mock/TestBase.cc
 				test/RealDocTest.cc
 )

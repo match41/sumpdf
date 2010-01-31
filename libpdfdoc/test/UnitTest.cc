@@ -64,6 +64,8 @@
 
 int main( int argc, char **argv )
 {
+	using namespace pdfut ;
+
 	CppUnit::TextUi::TestRunner runner;
 	runner.addTest( RealDocTest::suite( ) ) ;
 	runner.addTest( TokenTest::suite( ) ) ;
@@ -84,7 +86,7 @@ int main( int argc, char **argv )
 	runner.addTest( RefObjMapTest::suite( ) ) ;
 	runner.addTest( PageNodeTest::suite( ) ) ;
 	runner.addTest( TextStateTest::suite( ) ) ;
-	runner.addTest( pdfut::RealTextTest::suite( ) ) ;
+	runner.addTest( RealTextTest::suite( ) ) ;
 	runner.addTest( RealContentTest::suite( ) ) ;
 	
 // freetype library is optional

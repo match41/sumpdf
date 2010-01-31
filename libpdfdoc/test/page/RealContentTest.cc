@@ -35,6 +35,8 @@
 
 #include <sstream>
 
+namespace pdfut {
+
 using namespace pdf ;
 
 /**	constructor
@@ -69,3 +71,5 @@ void RealContentTest::TestWrite( )
 	Stream str ;
 	subject.Write( str, &res ) ;
 }
+
+} // end of namespace

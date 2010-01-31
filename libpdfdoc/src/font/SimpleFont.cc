@@ -272,29 +272,6 @@ std::string SimpleFont::FindStdFont( const std::string& base_name )
 	return FindFont( name, style ) ;
 }
 
-/*
-double SimpleFont::Width( const std::wstring& text, double size ) const
-{
-	double width = 0.0 ;
-	for ( std::wstring::const_iterator i = text.begin() ; i < text.end() ; ++i )
-	{
-		if ( *i >= m_first_char && *i <= m_last_char )
-		{
-			const Glyph *g = GetGlyph( *i ) ;
-			PDF_ASSERT( g != 0 ) ;
-			
-			width += (Width(*g) * size ) ;
-		}
-	}
-	return width ;
-}
-
-double SimpleFont::Width( const Glyph& glyph ) const
-{
-	return glyph.AdvanceX() * 1000.0 / m_face->units_per_EM ;
-}
-*/
-
 /// Return the size of the EM square in font units.
 unsigned SimpleFont::UnitsPerEM( ) const
 {
