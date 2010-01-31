@@ -48,7 +48,7 @@ BaseFont* MockResources::FindFont( const Name& name ) const
 	return i != m_font_map.end() ? i->second : 0 ;
 }
 
-Name MockResources::FindFont( BaseFont *font ) const
+Name MockResources::FindFont( const BaseFont *font ) const
 {
 	return Name( font->BaseName( ) ) ;
 }
