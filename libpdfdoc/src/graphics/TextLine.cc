@@ -65,7 +65,6 @@ void TextLine::SetTransform( const Matrix& t )
 
 bool TextLine::IsEmpty( ) const
 {
-//	return m_blks.size() == 1 && m_blks.front().IsEmpty() ;
 	return m_text.empty( ) ;
 }
 
@@ -76,7 +75,6 @@ void TextLine::AppendText( const std::wstring& text )
 		throw Exception( "invalid font" ) ;
 	else
 	{
-//		m_blks.back().AppendText( text ) ;
 		m_text.insert( m_text.end(), text.begin(), text.end() ) ;
 	}
 }
@@ -113,16 +111,6 @@ std::ostream& operator<<( std::ostream& os, const TextLine& t )
 //		std::ostream_iterator<TextBlock>( os, "\n" ) ) ;
 	return os << "</TextLine>" ;
 }
-
-/*
-void TextLine::ChangeState( const TextState& s )
-{
-	if ( m_blks.back().IsEmpty() )
-		m_blks.back().SetFormat( s ) ;
-	else
-		m_blks.push_back( TextBlock( "", s ) ) ;
-}
-*/
 
 bool TextLine::operator==( const TextLine& rhs ) const
 {

@@ -69,7 +69,7 @@ public :
 	Ref  Write( File *file ) const ;
 
 	BaseFont* FindFont( const Name& name ) const ;
-	Name FindFont( BaseFont *font ) const ;
+	Name FindFont( const BaseFont *font ) const ;
 
 private :
 	void ReadFontDict( Dictionary& self, File *file ) ;

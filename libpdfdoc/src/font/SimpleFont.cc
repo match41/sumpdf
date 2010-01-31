@@ -105,8 +105,8 @@ SimpleFont::SimpleFont( Dictionary& self, File *file, FT_Library ft_lib )
 		if ( m_type != font::type3 )
 			self.Extract( Name("BaseFont"),		m_base_font ) ;
 		
-		self.Extract( Name("FirstChar"),	m_first_char ) ;
-		self.Extract( Name("LastChar"),		m_last_char ) ;
+		Detach( file, self, "FirstChar",	m_first_char ) ;
+		Detach( file, self, "LastChar",		m_last_char ) ;
 		
 //std::cout << "font : " << m_base_font << " subtype = " << subtype << std::endl ;
 

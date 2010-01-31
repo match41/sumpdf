@@ -67,5 +67,9 @@ void SimpleFontTest::TestLoadByName( )
 	
 	MockFile file ;
 	pdf::Ref r = subject.Write( &file ) ;
+	
+	pdf::Object fdo = file.ReadObj( r ) ;
+	CPPUNIT_ASSERT( fdo.Is<pdf::Dictionary>() ) ;
+	PDF_ASSERT_EQUAL( fd->Family(), "" ) ; 
 //	std::cout << "descriptor = " << file.Find( r ) << std::endl ;
 }

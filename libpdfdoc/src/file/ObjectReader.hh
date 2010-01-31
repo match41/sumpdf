@@ -29,20 +29,20 @@
 #define __PDF_OBJECT_READER_HEADER_INCLUDED__
 
 #include "File.hh"
+#include "core/Object.hh"
 #include "core/Dictionary.hh"
 
 namespace pdf {
 
 template <typename ObjType>
-bool Detach( File *file, Dictionary& dict, const Name& name, ObjType& result )
+bool DetachTo( File *file, Dictionary& dict, const Name& name, ObjType& result )
 {
 	Dictionary::iterator i = dict.find( name ) ;
 	if ( i != dict.end( ) )
 	{
-		if ( i->second.Type( ) == Object::ref )
-			result = file->ReadObj( i->second ).As<ObjType>() ;
-		else
-			std::swap( i->second.As<ObjType>(), result ) ;
+		result = ( i->second.Type( ) == Object::ref ) ?
+			file->ReadObj( i->second ).To<ObjType>() :
+			i->second.To<ObjType>() ;
 
 		dict.erase( i ) ;
 		return true ;
@@ -50,21 +50,48 @@ bool Detach( File *file, Dictionary& dict, const Name& name, ObjType& result )
 	return false ;
 }
 
-template <typename ObjType>
-bool DetachConv( File *file, Dictionary& dict, const Name& name, ObjType& result )
+template <typename T>
+struct Detacher
 {
-	Dictionary::iterator i = dict.find( name ) ;
-	if ( i != dict.end( ) )
+	bool operator()( File *file, Dictionary& dict, const Name& name, T& result )
 	{
-		if ( i->second.Type( ) == Object::ref )
-			result = file->ReadObj( i->second ).To<ObjType>() ;
-		else
-			result = i->second.To<ObjType>() ;
+		Dictionary::iterator i = dict.find( name ) ;
+		if ( i != dict.end( ) )
+		{
+			if ( i->second.Type( ) == Object::ref )
+				result = file->ReadObj( i->second ).As<T>() ;
+			else
+				std::swap( i->second.As<T>(), result ) ;
 
-		dict.erase( i ) ;
-		return true ;
+			dict.erase( i ) ;
+			return true ;
+		}
+		return false ;
 	}
-	return false ;
+} ;
+
+template <>
+struct Detacher<int>
+{
+	bool operator()( File *file, Dictionary& dict, const Name& name, int& t )
+	{
+		return DetachTo( file, dict, name, t ) ;
+	}
+} ;
+
+template <>
+struct Detacher<double>
+{
+	bool operator()( File *file, Dictionary& dict, const Name& name, double& t )
+	{
+		return DetachTo( file, dict, name, t ) ;
+	}
+} ;
+
+template <typename ObjType>
+bool Detach( File *file, Dictionary& dict, const Name& name, ObjType& result )
+{
+	return Detacher<ObjType>()( file, dict, name, result ) ;
 }
 
 template <typename ObjType>

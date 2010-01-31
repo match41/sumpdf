@@ -52,6 +52,7 @@ public :
 		CPPUNIT_TEST( TestSimple ) ;
 		CPPUNIT_TEST( TestReadStream ) ;
 		CPPUNIT_TEST( TestReadObjectLinks ) ;
+		CPPUNIT_TEST( TestDetach ) ;
 	CPPUNIT_TEST_SUITE_END();
 
 public :

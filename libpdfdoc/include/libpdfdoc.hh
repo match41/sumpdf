@@ -64,7 +64,7 @@
 	
 	\section	depend	Dependencies
 	libpdfdoc depends on the following libraries:
-	- <a href="http://www.boost.org">The Boost Library</a>
+	- <a href="http://www.boost.org">The Boost Library v1.37 or above</a>
 	- <a href="http://zlib.net">Zlib</a>
 	- <a href="http://www.freetype.org">Freetype</a>
 	- <a href="http://libpng.sourceforge.net/index.html">libpng</a> (Optional)
@@ -72,6 +72,12 @@
 	- <a href= 
 	"http://apps.sourceforge.net/mediawiki/cppunit/index.php?title=Main_Page">
 	cppunit</a> (Optional)
+	
+	These are available for all major Linux distributions. For Win32 platforms,
+	most of the libraries (zlib, Freetype, libpng) can be downloaded from the
+	<a href="http://gnuwin32.sourceforge.net/">GNU Win32 project</a>. For Boost,
+	<a href="http://www.boostpro.com/download">BoostPro Computing</a> provides
+	pre-built libraries with a nice installer for Win32.
 	
 	\section	build	Building libpdfdoc
 	libpdfdoc uses the <a href="http://www.cmake.org/">cmake</a> build system

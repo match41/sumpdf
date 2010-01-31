@@ -17,34 +17,36 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	Resources.hh
-    \brief	definition the Resources class
-    \date	Jan 23, 2010
+/**	\file	DetachTest.hh
+    \brief	definition the DetachTest class
+    \date	Jan 31, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_RESOURCES_HH_EADER_INCLUDED__
-#define __PDF_RESOURCES_HH_EADER_INCLUDED__
+#ifndef __PDF_DETACHTEST_HH_EADER_INCLUDED__
+#define __PDF_DETACHTEST_HH_EADER_INCLUDED__
 
-namespace pdf {
+#include <cppunit/TestFixture.h>
 
-class Name ;
-class BaseFont ;
+#include <cppunit/extensions/HelperMacros.h>
+
+namespace pdfut {
 
 ///	brief description
-/**	The Resources class represents
+/**	The DetachTest class represents
 */
-class Resources
+class DetachTest : public CppUnit::TestFixture
 {
-protected :
-	~Resources( ) ;
-
 public :
-	virtual Name AddFont( BaseFont *font ) = 0 ;
-	virtual BaseFont* FindFont( const Name& name ) const = 0 ;
-	virtual Name FindFont( const BaseFont *font ) const = 0 ;
+	DetachTest( ) ;
+	
+	// declare suit function
+	CPPUNIT_TEST_SUITE( DetachTest ) ;
+		CPPUNIT_TEST( TestDetach ) ;
+	CPPUNIT_TEST_SUITE_END();
+
 } ;
 
 } // end of namespace
 
-#endif // RESOURCES_HH_
+#endif // DETACHTEST_HH_

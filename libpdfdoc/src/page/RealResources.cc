@@ -199,9 +199,11 @@ BaseFont* RealResources::FindFont( const Name& name ) const
 		( m_parent != 0 ? m_parent->FindFont( name ) : 0 ) ;
 }
 
-Name RealResources::FindFont( BaseFont *font ) const
+Name RealResources::FindFont( const BaseFont *font ) const
 {
-	FontMap::right_const_iterator i = m_fonts.right.find( font ) ;
+	BaseFont *ncfont = const_cast<BaseFont*>( font ) ;
+
+	FontMap::right_const_iterator i = m_fonts.right.find( ncfont ) ;
 	return i != m_fonts.right.end() ? i->second :
 		( m_parent != 0 ? m_parent->FindFont( font ) : Name() ) ; 
 }

@@ -17,34 +17,20 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	Resources.hh
-    \brief	definition the Resources class
-    \date	Jan 23, 2010
-    \author	Nestal Wan
+/**	\file	DetachTest.cc
+	\brief	implementation of the DetachTest class
+	\date	Jan 31, 2010
+	\author	Nestal Wan
 */
 
-#ifndef __PDF_RESOURCES_HH_EADER_INCLUDED__
-#define __PDF_RESOURCES_HH_EADER_INCLUDED__
+#include "DetachTest.hh"
 
 namespace pdf {
 
-class Name ;
-class BaseFont ;
-
-///	brief description
-/**	The Resources class represents
+/**	constructor
 */
-class Resources
+DetachTest::DetachTest( )
 {
-protected :
-	~Resources( ) ;
-
-public :
-	virtual Name AddFont( BaseFont *font ) = 0 ;
-	virtual BaseFont* FindFont( const Name& name ) const = 0 ;
-	virtual Name FindFont( const BaseFont *font ) const = 0 ;
-} ;
+}
 
 } // end of namespace
-
-#endif // RESOURCES_HH_

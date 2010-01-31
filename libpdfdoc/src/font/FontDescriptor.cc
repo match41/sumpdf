@@ -25,6 +25,8 @@
 
 #include "FontDescriptor.hh"
 
+#include "FontException.hh"
+
 #include "core/Array.hh"
 #include "core/Dictionary.hh"
 #include "file/File.hh"
@@ -138,12 +140,14 @@ void FontDescriptor::Read( font::Type type, Dictionary& self, File *file )
 	Stream prog ;
 	if ( m_type == font::type1 )
 	{
+		// type1 font has 3 different lengths
 		if ( Detach( file, self, "FontFile", 	prog ) )
 		{
 			Dictionary prog_dict = prog.Self() ;
-			Detach( file, prog_dict, "Length1", m_length1 ) ;
-			Detach( file, prog_dict, "Length2", m_length2 ) ;
-			Detach( file, prog_dict, "Length3", m_length3 ) ;
+			if ( !Detach( file, prog_dict, "Length1", m_length1 ) ||
+				 !Detach( file, prog_dict, "Length2", m_length2 ) ||
+				 !Detach( file, prog_dict, "Length3", m_length3 ) )
+				throw FontException( "missing length for type 1 font" ) ; 
 		}
 	}
 	else if ( m_type == font::truetype )
@@ -159,35 +163,35 @@ void FontDescriptor::Read( font::Type type, Dictionary& self, File *file )
 	Detach( file, self, "FontFamily",	m_family ) ;
 	
 	Name stretch ;
-	if ( DetachConv( file, self, "FontStretch", stretch ) )
+	if ( Detach( file, self, "FontStretch", stretch ) )
 		m_stretch = static_cast<Stretch>(std::find(
 			Begin(m_stretch_names),
 			End(m_stretch_names),
 			stretch ) - Begin(m_stretch_names) ) ;
 
 	int flags ;
-	DetachConv( file, self, "FontWeight",	m_weight ) ;
-	if ( DetachConv( file, self, "Flags",	flags ) )
+	Detach( file, self, "FontWeight",	m_weight ) ;
+	if ( Detach( file, self, "Flags",	flags ) )
 		m_flags = flags ;
 	
 	Array bbox ;
 	if ( Detach( file, self, "FontBBox", bbox ) )
 		m_bbox = Rect( bbox.begin(), bbox.end() ) ;
 
-	DetachConv( file, self, "ItalicAngle",	m_italic_angle ) ;
-	DetachConv( file, self, "Ascent",		m_ascent ) ;
-	DetachConv( file, self, "Descent",		m_descent ) ;
-	DetachConv( file, self, "Leading",		m_leading ) ;
-	DetachConv( file, self, "CapHeight",	m_cap_height ) ;
-	DetachConv( file, self, "XHeight",		m_x_height ) ;
-	DetachConv( file, self, "StemV",		m_stemv ) ;
-	DetachConv( file, self, "StemH",		m_stemh ) ;
-	DetachConv( file, self, "AvgWidth",		m_avg_width ) ;
-	DetachConv( file, self, "MaxWidth",		m_max_width ) ;
-	DetachConv( file, self, "MissingWidth",	m_miss_width ) ;
+	Detach( file, self, "ItalicAngle",	m_italic_angle ) ;
+	Detach( file, self, "Ascent",		m_ascent ) ;
+	Detach( file, self, "Descent",		m_descent ) ;
+	Detach( file, self, "Leading",		m_leading ) ;
+	Detach( file, self, "CapHeight",	m_cap_height ) ;
+	Detach( file, self, "XHeight",		m_x_height ) ;
+	Detach( file, self, "StemV",		m_stemv ) ;
+	Detach( file, self, "StemH",		m_stemh ) ;
+	Detach( file, self, "AvgWidth",		m_avg_width ) ;
+	Detach( file, self, "MaxWidth",		m_max_width ) ;
+	Detach( file, self, "MissingWidth",	m_miss_width ) ;
 	
 	Name	psname ;
-	if ( DetachConv( file, self, "FontName",	psname) )
+	if ( Detach( file, self, "FontName",	psname) )
 		m_psname = psname.Str() ;
 }
 
@@ -198,6 +202,9 @@ Ref FontDescriptor::Write( File *file ) const
 	Dictionary self ;
 	if ( !m_psname.empty() )
 		self["FontName"]	= Name(m_psname) ;
+	
+	if ( !m_family.empty() )
+		self["Family"]		= m_family ;
 	
 	self["Ascent"]		= m_ascent ;
 	self["Descent"]		= m_descent ;
