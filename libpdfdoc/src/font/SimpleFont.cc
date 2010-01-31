@@ -201,8 +201,6 @@ FT_Face SimpleFont::LoadFace(
 	FT_Face face = 0 ;
 	FT_Error e = FT_New_Memory_Face( ft_lib, data, size, 0, &face ) ;
 
-	std::cout << " type = " << ::FT_Get_X11_Font_Format( face ) << std::endl ;
-
 	using boost::format ;
 	if ( e != 0 )
 		throw FontException( format("cannot create font face: %1%") % e ) ;

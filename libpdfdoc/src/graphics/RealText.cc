@@ -283,7 +283,7 @@ void RealText::OnTJ( Object* args, std::size_t count, Resources *res )
 			// assume vertical here.
 			m_text_mat.Dx(m_text_mat.Dx() - disp / 1000.0 * m_state.FontSize());
 			
-			AddLine( TextLine( m_state, m_line_mat ) ) ;
+			AddLine( TextLine( m_state, m_text_mat ) ) ;
 		}
 	}
 }
@@ -323,7 +323,7 @@ void RealText::OnTf( Object* args, std::size_t count, Resources *res )
 				if ( current.IsEmpty() )
 					current.SetFormat( m_state ) ;
 				else
-					m_lines.push_back( TextLine( m_state, m_line_mat ) ) ;
+					m_lines.push_back( TextLine( m_state, m_text_mat ) ) ;
 			}
 		}
 	}
