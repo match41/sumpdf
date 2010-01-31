@@ -30,6 +30,8 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+namespace pdfut {
+
 ///	brief description
 /**	The RealTextTest class represents
 */
@@ -41,10 +43,14 @@ public :
 	// declare suit function
 	CPPUNIT_TEST_SUITE( RealTextTest ) ;
 		CPPUNIT_TEST( TestTdCmd ) ;
+		CPPUNIT_TEST( TestTJ ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
 private :
 	void TestTdCmd( ) ;
+	void TestTJ( ) ;
 } ;
 
 #endif // REALTEXTTEST_HH_
+
+} // end of namespace

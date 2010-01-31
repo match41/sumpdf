@@ -68,5 +68,4 @@ void RealContentTest::TestWrite( )
 
 	Stream str ;
 	subject.Write( str, &res ) ;
-std::cout << str << std::endl ;
 }

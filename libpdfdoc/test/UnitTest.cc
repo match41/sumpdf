@@ -84,7 +84,7 @@ int main( int argc, char **argv )
 	runner.addTest( RefObjMapTest::suite( ) ) ;
 	runner.addTest( PageNodeTest::suite( ) ) ;
 	runner.addTest( TextStateTest::suite( ) ) ;
-	runner.addTest( RealTextTest::suite( ) ) ;
+	runner.addTest( pdfut::RealTextTest::suite( ) ) ;
 	runner.addTest( RealContentTest::suite( ) ) ;
 	
 // freetype library is optional

@@ -73,8 +73,8 @@ public :
 	
 	FontDescriptor* Descriptor( ) ;
 
-	double Width( const std::wstring& text, double size ) const ;
-	double Width( const Glyph& glyph ) const ;	
+//	double Width( const std::wstring& text, double size ) const ;
+//	double Width( const Glyph& glyph ) const ;	
 	unsigned UnitsPerEM( ) const ;
 	double FromFontUnit( unsigned val ) const ;
 	

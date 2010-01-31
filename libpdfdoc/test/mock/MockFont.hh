@@ -40,12 +40,14 @@ namespace pdf
 class MockFont : public pdf::BaseFont
 {
 public :
+	static const double m_char_width = 10.0 ;
+
+public :
 	MockFont( ) ;
 
 	std::string BaseName( ) const ;
 	pdf::Ref Write( pdf::File *file ) const ;
 	pdf::FontDescriptor* Descriptor( ) ;
-	double Width( const std::wstring& text, double size ) const ;
 	const pdf::Glyph*	GetGlyph( wchar_t ch ) const ;
 	double FromFontUnit( unsigned val ) const ; 
 	unsigned UnitsPerEM() const ;

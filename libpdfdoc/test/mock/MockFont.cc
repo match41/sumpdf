@@ -48,11 +48,6 @@ pdf::FontDescriptor* MockFont::Descriptor( )
 	return 0 ;
 }
 
-double MockFont::Width( const std::wstring& text, double size ) const
-{
-	return 0.0 ;
-}
-
 double MockFont::FromFontUnit( unsigned val ) const
 {
 	return val ;

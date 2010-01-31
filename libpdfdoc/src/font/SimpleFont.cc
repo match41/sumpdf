@@ -264,6 +264,7 @@ std::string SimpleFont::FindStdFont( const std::string& base_name )
 	return FindFont( name, style ) ;
 }
 
+/*
 double SimpleFont::Width( const std::wstring& text, double size ) const
 {
 	double width = 0.0 ;
@@ -284,6 +285,7 @@ double SimpleFont::Width( const Glyph& glyph ) const
 {
 	return glyph.AdvanceX() * 1000.0 / m_face->units_per_EM ;
 }
+*/
 
 /// Return the size of the EM square in font units.
 unsigned SimpleFont::UnitsPerEM( ) const
@@ -378,7 +380,10 @@ Ref SimpleFont::Write( File *file ) const
 		for ( int i = m_first_char ; i <= m_last_char ; ++i )
 		{
 			const Glyph *g = GetGlyph( i ) ;
-			widths.push_back( g != 0 ? Width(*g) : 0.0 ) ;
+			widths.push_back(
+				g != 0
+					? (g->AdvanceX() * 1000.0 / m_face->units_per_EM)
+					: 0.0 ) ;
 		}
 		dict["Widths"]			= widths ;
 	}

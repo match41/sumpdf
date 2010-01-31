@@ -34,6 +34,8 @@
 #include "mock/Assert.hh"
 #include "mock/MockFont.hh"
 
+namespace pdfut {
+
 using namespace pdf ;
 
 /**	constructor
@@ -80,3 +82,43 @@ void RealTextTest::TestTdCmd( )
 	exp.back() = TextLine( ts, Matrix(1,0,0,1,400,1100) ) ;
 	PDF_ASSERT_EQUAL( t, exp ) ;
 }
+
+void RealTextTest::TestTJ( )
+{
+	MockResources res ;
+	MockFont font ;
+	res.AddFont( &font ) ;
+	
+	TextState ts ;
+	ts.SetFont( 12.0, &font ) ;
+
+	RealText t( ts ) ;
+	
+	// action: display a string "abc"
+	Object	args[]	= { "abc" } ;
+	Token	cmd( "Tj" ) ;
+	t.OnCommand( cmd, args, Count(args), &res ) ;
+	
+	PDF_ASSERT_EQUAL( t.Count(), 1U ) ;
+	PDF_ASSERT_EQUAL( t.front().Format(), ts ) ;
+	PDF_ASSERT_EQUAL( t.front().Transform(), Matrix() ) ;
+	CPPUNIT_ASSERT( t.front().Text() == L"abc" ) ;
+//	PDF_ASSERT_EQUAL( t.front().Width(), 3 * MockFont::m_char_width ) ;
+	
+	// action: display another string "abc"
+	Object	args2[]	= { "abc" } ;
+	Token	cmd2( "Tj" ) ;
+	t.OnCommand( cmd2, args2, Count(args2), &res ) ;
+	
+	PDF_ASSERT_EQUAL( t.Count(), 2U ) ;
+	PDF_ASSERT_EQUAL( t.back().Format(), ts ) ;
+	PDF_ASSERT_EQUAL( 
+		t.back().Transform(),
+		Matrix(1,0,0,1, 3 * MockFont::m_char_width, 0 ) ) ;
+		
+	CPPUNIT_ASSERT( t.back().Text() == L"abc" ) ;
+//	PDF_ASSERT_EQUAL( t.back().Width(), 3 * MockFont::m_char_width ) ;
+
+}
+
+} // end of nameapce
