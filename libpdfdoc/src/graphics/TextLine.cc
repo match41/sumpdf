@@ -47,9 +47,13 @@
 namespace pdf {
 
 ///	constructor
-TextLine::TextLine( const TextState& state, const Matrix& transform )
+TextLine::TextLine(
+	const TextState& 	state,
+	const Matrix& 		transform,
+	const std::wstring&	text )
     : m_trans( transform ),
-      m_state( state )
+      m_state( state ),
+      m_text( text )
 {
 }
 
@@ -176,6 +180,29 @@ void TextLine::VisitChars( CharVisitor *v ) const
 		{
 			// TODO: handle non-scalable font here
 		}
+	}
+}
+
+void TextLine::AppendSpace( double width )
+{
+//	PDF_ASSERT( m_space.empty() || m_space
+	
+	// no text, just translate the matrix
+	if ( m_text.empty() )
+	{
+		// TODO: vertical writing mode
+		Matrix m( 1,0,0,1, width, 0 ) ;
+		m_trans = m_trans * m ;
+	}
+	// there is a space at the end of the string, no need to add a new one.
+	// just merge them as one.
+	if ( !m_space.empty() && m_space.back().index == m_text.size() )
+		m_space.back().width += width ;
+	
+	else
+	{
+		Space spc = { m_text.size(), width } ;
+		m_space.push_back( spc ) ;
 	}
 }
 

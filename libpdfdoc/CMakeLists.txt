@@ -226,6 +226,7 @@ set( FONT_SRCS		${FONT_DIR}/Font.cc
 					${FONT_DIR}/FontDescriptor.cc
 					${FONT_DIR}/FontException.cc
 					${FONT_DIR}/FontType.cc
+					${FONT_DIR}/Outline.cc
 					${FONT_DIR}/sfnt/SfntFile.cc
 					${FONT_DIR}/sfnt/sfnt.c
 					${FONT_DIR}/sfnt/pdfobj.cc

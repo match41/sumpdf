@@ -46,17 +46,17 @@ class RealResources ;
 ///	brief description
 /**	\ingroup graphics
 
-	The TextLine class represent a line of text. Inside the line, the text
-	matrix (e.g. position) will not change. A line of text contains a list
-	of text blocks. Each block will have a string of characters with the same
-	formatting parameters.
+	The TextLine class represent a unit of text. Within a text line, the text
+	matrix (e.g. position) and the text state will not change. In other words,
+	the text line contains the text, matrix and the text state. 
 */
 class LIBPDFDOC_API TextLine
 {
 public :
 	explicit TextLine(
 		const TextState& 	state		= TextState(),		
-		const Matrix&		transform	= Matrix() ) ;
+		const Matrix&		transform	= Matrix(),
+		const std::wstring&	text		= std::wstring() ) ;
 
 	// uses default generated copy constructor
 
@@ -65,6 +65,8 @@ public :
 	bool IsEmpty( ) const ;
 
 	void AppendText( const std::wstring& text ) ;
+
+	void AppendSpace( double width ) ;
 
 	std::ostream& Print(
 		std::ostream& 	os,
@@ -75,10 +77,14 @@ public :
 	bool operator==( const TextLine& rhs ) const ;
 	bool operator!=( const TextLine& rhs ) const ;
 
+	/// Returns the text state of the text line.
 	const TextState& Format() const ;
 	void SetFormat( const TextState& fmt ) ;
 
-	const std::wstring& Text() const ; 
+	///	Returns the unicode string of the text line.
+	const std::wstring& Text() const ;
+	
+	///	Returns the width of the text line in text space units.
 	double Width( ) const ;
 	
 	///	Walkthrough all characters in the text line.
@@ -91,12 +97,30 @@ public :
 	void VisitChars( CharVisitor *v ) const ;
 
 private :
-	/// the text matrix
+	/// The text matrix.
 	Matrix	m_trans ;
 	
-//	std::vector<TextBlock>	m_blks ;
+	///	The text state.
 	TextState		m_state ;
+	
+	///	The text string.
 	std::wstring	m_text ;
+
+	///	Represent a space inside the text line.
+	/**	The TJ command can be used to specify a horizontal (or vertical, 
+		depending on text direction) displacement of current text base point.
+	*/
+	struct Space
+	{
+		std::size_t	index ;
+		double		width ;
+	} ;
+	
+	///	A collection of spaces.
+	/**	In this vector, the index field will be monotonically increasing to
+		allow fast binary search.
+	*/
+	std::vector<Space>	m_space ;
 } ;
 
 std::ostream& operator<<( std::ostream& os, const TextLine& t ) ;
