@@ -25,6 +25,7 @@
 
 #include "GlyphGraphicsItem.hh"
 
+#include <font/Glyph.hh>
 #include <font/Outline.hh>
 
 #include <QImage>
@@ -65,13 +66,13 @@ struct GlyphGraphicsItem::Render : public Outline
 
 /**	constructor
 */
-GlyphGraphicsItem::GlyphGraphicsItem( const Glyph& glyph )
+GlyphGraphicsItem::GlyphGraphicsItem( const Glyph *glyph )
 	: m_glyph( glyph )
 {
 	QPainterPath path( QPointF ( 0.0, 0.0 ) ) ;
 	Render r ;
 	r.p = &path ;
-	m_glyph.Decompose( &r ) ;
+	m_glyph->Decompose( &r ) ;
 	
 	setBrush( QColor(0, 0, 0) ) ;
 	setPen( QPen( Qt::NoPen ) ) ;

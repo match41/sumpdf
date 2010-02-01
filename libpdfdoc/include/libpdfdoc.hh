@@ -75,7 +75,8 @@
 	
 	These are available for all major Linux distributions. For Win32 platforms,
 	most of the libraries (zlib, Freetype, libpng) can be downloaded from the
-	<a href="http://gnuwin32.sourceforge.net/">GNU Win32 project</a>. For Boost,
+	<a href="http://gnuwin32.sourceforge.net/packages.html">GNU Win32
+	project</a>. For Boost,
 	<a href="http://www.boostpro.com/download">BoostPro Computing</a> provides
 	pre-built libraries with a nice installer for Win32.
 	

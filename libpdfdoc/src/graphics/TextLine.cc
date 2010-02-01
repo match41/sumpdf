@@ -167,7 +167,7 @@ void TextLine::VisitChars( CharVisitor *v ) const
 
 		if ( glyph != 0 && glyph->IsOutline() )
 		{
-			v->OnChar( *i, tm, *glyph, m_state.ScaleFactor() ) ;
+			v->OnChar( *i, tm, glyph, m_state.ScaleFactor() ) ;
 
 			// update X position
 			tm.Dx( tm.Dx() + glyph->AdvanceX() * m_state.ScaleFactor() ) ;
