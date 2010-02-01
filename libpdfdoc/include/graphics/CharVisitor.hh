@@ -54,7 +54,7 @@ public :
 	virtual void OnChar(
 		wchar_t 		ch,
 		const Matrix&	m,
-		const Glyph&	glyph,
+		const Glyph		*glyph,
 		double			scale_factor ) = 0 ;
 } ;
 

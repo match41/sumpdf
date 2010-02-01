@@ -54,7 +54,7 @@ GlyphGroup::GlyphGroup( const TextLine& blk, QGraphicsItem *parent )
 void GlyphGroup::OnChar(
 	wchar_t 		ch,
 	const Matrix&	m,
-	const Glyph&	glyph,
+	const Glyph		*glyph,
 	double			scale_factor ) 
 {
 	GlyphGraphicsItem *item = new GlyphGraphicsItem( glyph ) ;

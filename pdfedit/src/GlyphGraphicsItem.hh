@@ -28,8 +28,6 @@
 
 #include <QGraphicsItem>
 
-#include <font/Glyph.hh>
-
 class QPainterPath ;
 class QPointF ;
 
@@ -43,7 +41,7 @@ class Glyph ;
 class GlyphGraphicsItem : public QGraphicsPathItem
 {
 public :
-	explicit GlyphGraphicsItem( const Glyph& glyph ) ;
+	explicit GlyphGraphicsItem( const Glyph *glyph ) ;
 
 	int type( ) const ;
 
@@ -53,7 +51,7 @@ private :
 	struct Render ;
 
 private :
-	Glyph	m_glyph ;
+	const Glyph	*m_glyph ;
 } ;
 
 } // end of namespace

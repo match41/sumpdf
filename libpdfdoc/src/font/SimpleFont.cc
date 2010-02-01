@@ -311,7 +311,7 @@ void SimpleFont::LoadGlyphs( )
 		{
 			ft::Face face_wrapper = { m_face } ;
 			m_glyphs.insert( std::make_pair(
-				char_code,
+				static_cast<wchar_t>(char_code),
 				new RealGlyph( gindex, face_wrapper ) ) ) ;
 		}
 //		else
