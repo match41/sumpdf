@@ -37,8 +37,11 @@
 
 namespace pdf {
 
-/*!	\brief	base class for exception in libpdfdoc
-	
+/**	\defgroup	exception	Exception Classes
+*/
+
+///	base class for exception in libpdfdoc
+/**	\ingroup exception
 	This class is the base class for all exception class in libpdfdoc.
 */
 class LIBPDFDOC_API Exception : public std::runtime_error
@@ -50,7 +53,8 @@ public :
 } ;
 
 ///	Invalid type exception.
-/**	This exception will be thrown when the Object cannot convert its
+/**	\ingroup exception
+	This exception will be thrown when the Object cannot convert its
 	underlying data to a specific type. The what() member function will
 	describe the expected and actual type of the data.
 */
@@ -62,7 +66,8 @@ public :
 } ;
 
 ///	Parse error exception.
-/**	This exception will be thrown when there is a parse error when reading
+/**	\ingroup exception
+	This exception will be thrown when there is a parse error when reading
 	a PDF file.
 */
 class LIBPDFDOC_API ParseError : public Exception

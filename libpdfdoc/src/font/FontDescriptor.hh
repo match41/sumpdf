@@ -44,10 +44,10 @@ class Dictionary ;
 class File ;
 class Ref ;
 
-///	A font descriptor
-/**	The FontDescriptor class represents a font descriptor in a PDF file. It
-	contains information about a font face. It is used to guess the appearance
-	of a font without knowing its font program.
+/**	\internal	\brief	A font descriptor
+	The FontDescriptor class represents a font descriptor in a PDF
+	file. It contains information about a font face. It is used to guess the
+	appearance of a font without knowing its font program.
 */
 class FontDescriptor
 {

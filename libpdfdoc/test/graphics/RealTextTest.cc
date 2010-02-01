@@ -89,8 +89,7 @@ void RealTextTest::TestTJ( )
 	MockFont font ;
 	Name fname = res.AddFont( &font ) ;
 	
-	TextState ts ;
-	ts.SetFont( 12.0, &font ) ;
+	TextState ts( 12.0, &font ) ;
 
 	RealText t( ts ) ;
 	

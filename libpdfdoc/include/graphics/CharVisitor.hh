@@ -31,8 +31,9 @@ namespace pdf {
 class Matrix ;
 class Glyph ;
 
-///	brief description
-/**	The CharVisitor class represents
+///	Callback interface for TextLine::VisitChars()
+/**	\ingroup graphics
+	The CharVisitor class represents
 */
 class CharVisitor
 {
@@ -40,6 +41,16 @@ protected :
 	~CharVisitor( ) ;
 
 public :
+	///	Retrieve character information on a TextLine.
+	/**	This function will be called by TextLine::VisitChars() for each
+		character in the text line.
+		\param	ch	The unicode character code.
+		\param	m	The transformation matrix of the character. It will be
+					advance accordingly for each call to OnChar().
+		\param	glyph			The glyph of the character.
+		\param	scale_factor	Scale factor of transforming font units to
+								glyph units.
+	*/
 	virtual void OnChar(
 		wchar_t 		ch,
 		const Matrix&	m,

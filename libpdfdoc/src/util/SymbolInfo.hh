@@ -34,8 +34,8 @@
 
 namespace pdf {
 
-/*!	\brief	source code symbolic information
-    \internal
+///	ource code symbolic information
+/**	\internal
 	
 	This class represents symbolic information about the source code,
 	e.g. function names and line numbers. It provides an interface to

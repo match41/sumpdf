@@ -37,8 +37,8 @@ namespace pdf {
 class TextLine ;
 class GraphicsVisitor ;
 
-/**	\brief	brief description
-
+///	Text objects.
+/**	\ingroup graphics
 	The Text class represent a PDF text object. It is the stuff enclosed by
 	a BT...ET operators in the content stream of a page. It consists of a number
 	of text lines.

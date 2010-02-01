@@ -43,7 +43,8 @@ class CharVisitor ;
 
 class RealResources ;
 
-/**	\brief	brief description
+///	brief description
+/**	\ingroup graphics
 
 	The TextLine class represent a line of text. Inside the line, the text
 	matrix (e.g. position) will not change. A line of text contains a list
@@ -80,6 +81,13 @@ public :
 	const std::wstring& Text() const ; 
 	double Width( ) const ;
 	
+	///	Walkthrough all characters in the text line.
+	/**	This function will call CharVisitor::OnChar() for each character it
+		contains. The arguments of CharVisitor::OnChar() provide information
+		to render the character glyphs.
+		\param	v	An implementation of the CharVisitor interface. Its
+					OnChar() member function will be called.
+	*/
 	void VisitChars( CharVisitor *v ) const ;
 
 private :

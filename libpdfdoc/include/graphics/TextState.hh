@@ -36,7 +36,9 @@ class Font ;
 class Resources ;
 
 ///	PDF text state.
-/**	This class represents the text state of a PDF file.
+/**	\ingroup graphics
+	This class represents the text state of a PDF file. It contains properties
+	like font size, spacing and other parameters affecting text appearance.
 */
 class TextState
 {

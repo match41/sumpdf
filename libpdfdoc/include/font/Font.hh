@@ -33,8 +33,8 @@ namespace pdf {
 
 class Glyph ;
 
-/**	\addtogroup	font Font
-	\brief	Font module
+/**	\defgroup	font Fonts
+	\brief		Font module
 
 	libpdfdoc provides a number of classes for font handling. They provide
 	access to important font metrics and functions for rendering the font
@@ -45,10 +45,12 @@ class Glyph ;
 	Freetype page</a> for details on the background about fonts.
 */
 
-/*!	\brief	brief description
-	\addtogroup	font Font
+///	The Font class.
+/**	\ingroup	font
 	
-	this class represents
+	This class represents a font in the PDF document. It can be created by
+	reading a PDF document which contain some fonts, or by manually creating
+	by a font file.
 */
 class Font
 {

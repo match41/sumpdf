@@ -42,10 +42,8 @@ class Dictionary ;
 class Ref ;
 class FontDescriptor ;
 
-/*!	\brief	base class for all fonts
-	\internal
-
-	This class is the base class of all font classes in libpdfdoc.
+///	\internal	base class for all fonts
+/**	This class is the base class of all font classes in libpdfdoc.
 */
 class BaseFont : public RefCounter, public Font
 {

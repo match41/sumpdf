@@ -37,9 +37,10 @@ class GraphicsVisitor ;
 class Text ;
 class TextState ;
 
-/**	\brief	brief description
-
-	The PageContent class represent
+///	Content of a page.
+/**	\ingroup page
+	The PageContent class represent the content of a page in a PDF document.
+	It is made up of a collection of visual elements called "graphics".
 */
 class PageContent
 {
@@ -47,7 +48,10 @@ protected :
 	~PageContent( ) ;
 
 public :
+	///	Returns the number of graphics elements.
 	virtual std::size_t Count( ) const = 0 ;
+	
+	///	Returns the specific graphics element given by an index.
 	virtual const Graphics* Item( std::size_t idx ) const = 0 ;
 	
 	virtual Text* AddText( const TextState& ts ) = 0 ;

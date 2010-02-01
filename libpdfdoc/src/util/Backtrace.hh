@@ -35,7 +35,8 @@
 namespace pdf {
 
 ///	A shortcut to print out backtrace information
-/**	The sole reason for this class to exists is to provide the
+/**	\internal
+	The sole reason for this class to exists is to provide the
 	operator<< overload to allow:
 	
 \code

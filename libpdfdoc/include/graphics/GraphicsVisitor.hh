@@ -32,8 +32,8 @@ namespace pdf {
 class Graphics ;
 class Text ;
 
-/**	\brief	brief description
-
+///	brief description
+/**	\ingroup graphics
 	The GraphicsVisitor class represent
 */
 class GraphicsVisitor

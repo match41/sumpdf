@@ -29,7 +29,8 @@
 namespace pdf {
 
 ///	Outline of a glyph.
-/**	This interface is used for a callback for the Glyph::Decompose() function.
+/**	\ingroup font
+	This interface is used for a callback for the Glyph::Decompose() function.
 	Implement this interface and call Glyph::Decompose(), then it will call
 	back with the MoveTo(), LineTo() functions.
 	
@@ -38,11 +39,20 @@ namespace pdf {
 */
 class Outline
 {
+protected :
+	~Outline( ) ;
+
 public :
-	/// Move to the specific point.
+	/// Move to the current point to specific point.
 	virtual void MoveTo( int x, int y ) = 0 ;
+	
+	///	Draw a straight line from current point and move current point.
 	virtual void LineTo( int x, int y ) = 0 ;
+	
+	/// Draw a quadratic Beize curve from current point.
 	virtual void QuadTo( int cx, int cy, int tx, int ty ) = 0 ;
+	
+	/// Draw a cubic Beize curve from current point.
 	virtual void CubicTo(
 		int c1x, int c1y,
 		int c2x, int c2y,

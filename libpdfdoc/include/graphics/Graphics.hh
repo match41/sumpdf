@@ -36,8 +36,8 @@ class Token ;
 class Resources ;
 class GraphicsVisitor ;
 
-/**	\addtogroup	graphics Graphics
-	\brief	Graphics objects module
+/**	\defgroup	graphics Graphics
+	\brief		Graphics objects module
 	
 	The graphics objects represent visual elements that appears in the page.
 	These classes provide access to their content.
@@ -48,8 +48,8 @@ class GraphicsVisitor ;
 	is corresponding to one inch right and inch up from the origin.
 */
 
-/**	\brief	brief description
-
+///	brief description
+/**	\ingroup graphics
 	The Graphics class represent base class for anything that appears in the
 	page.
 */
