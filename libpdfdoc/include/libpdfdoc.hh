@@ -37,8 +37,17 @@ namespace pdf {
 class Doc ;
 class Page ;
 
+///	Exported function to create a document object
+/**	This function is exported from the libpdfdoc DLL to create a document
+	object. A pointer to the Doc interface is returned. Clients must use
+	interact with the PDF document by using the Doc interface pointer. After
+	using the Doc object, clients must delete it.
+	\return	a pointer to the Doc interface of the PDF document object. Clients
+			must delete it after use.
+*/
 LIBPDFDOC_API Doc*  CreateDoc( ) ;
 
+/// Exported function to get the version string of libpdfdoc.
 LIBPDFDOC_API const char* Version( ) ;
 
 } // end of namespace

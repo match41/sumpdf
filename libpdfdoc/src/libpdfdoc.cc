@@ -30,14 +30,6 @@
 
 namespace pdf {
 
-///	Exported function to create a document object
-/**	This function is exported from the libpdfdoc DLL to create a document
-	object. A pointer to the Doc interface is returned. Clients must use
-	interact with the PDF document by using the Doc interface pointer. After
-	using the Doc object, clients must delete it.
-	\return	a pointer to the Doc interface of the PDF document object. Clients
-			must delete it after use.
-*/
 Doc*  CreateDoc( )
 {
 	return new RealDoc ;
@@ -45,7 +37,8 @@ Doc*  CreateDoc( )
 
 const char* Version( )
 {
-	return VERSION ;
+	static const char version[] = VERSION ;
+	return version ;
 }
 
 } // end of namespace

@@ -50,7 +50,7 @@ class Glyph ;
 	
 	This class represents a font in the PDF document. It can be created by
 	reading a PDF document which contain some fonts, or by manually creating
-	by a font file.
+	by a font file. It provides access to the Glyph in the font.
 */
 class Font
 {
@@ -61,7 +61,7 @@ public :
 	/**	This function returns the PostScript name of the font. For Type 1 fonts,
 		this is usually the value of the FontName entry in the font program.
 		For TrueType fonts, it is returned by the FT_Get_Postscript_Name()
-		function in FreeType. It will beused for displaying the font's name
+		function in FreeType. It will be used for displaying the font's name
 		for client applications.
 		\return	The base name of a font.
 	*/
