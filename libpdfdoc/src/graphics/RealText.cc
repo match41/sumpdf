@@ -114,6 +114,16 @@ const TextLine& RealText::back() const
 	return m_lines.back() ;
 }
 
+const TextLine& RealText::at( std::size_t idx ) const
+{
+	return m_lines.at(idx) ;
+}
+
+TextLine& RealText::at( std::size_t idx )
+{
+	return m_lines.at(idx) ;
+}
+
 void RealText::OnCommand(
 	const Token& 	cmd,
 	Object 			*args,
@@ -244,7 +254,11 @@ void RealText::OnTj( Object* args, std::size_t count, Resources *res )
 		if ( current.Format().GetFont() != 0 )
 		{
 			const std::string& s = args[0].As<std::string>() ;
-			current.AppendText( std::wstring( s.begin(), s.end() ) ) ;
+			std::wstring ws( s.begin(), s.end() ) ;
+			
+			current.AppendText( ws ) ;
+			
+			m_text_mat.Dx( m_text_mat.Dx() + m_state.Width( ws ) ) ; 
 		}
 	}
 }
@@ -264,6 +278,11 @@ void RealText::OnTJ( Object* args, std::size_t count, Resources *res )
 {
 	PDF_ASSERT( !m_lines.empty() ) ;
 
+	// current line
+	TextLine& current = m_lines.back() ;
+
+	double offset = 0.0 ;
+
 	Array& a = args[0].As<Array>() ;
 	for ( Array::iterator i = a.begin() ; i != a.end() ; ++i )
 	{
@@ -271,21 +290,22 @@ void RealText::OnTJ( Object* args, std::size_t count, Resources *res )
 		{
 			std::string& s = i->As<std::string>() ;
 			std::wstring ws( s.begin(), s.end() ) ;
-			m_text_mat.Dx( m_text_mat.Dx() + m_state.Width( ws ) ) ;
+			offset += m_state.Width( ws ) ;
 
-			m_lines.back().AppendText( ws ) ;
+			current.AppendText( ws ) ;
 		}
 		else if ( i->IsNumber() )
 		{
-			double disp = i->To<double>() ;
+			double disp = i->To<double>() / 1000.0 * m_state.FontSize() ;
+			offset -= disp ;
 			
-			// TODO: depend on writing mode, advance horizonal or vertical
-			// assume vertical here.
-			m_text_mat.Dx(m_text_mat.Dx() - disp / 1000.0 * m_state.FontSize());
-			
-			AddLine( TextLine( m_state, m_text_mat ) ) ;
+			current.AppendSpace( disp ) ;
 		}
 	}
+	
+	// TODO: depend on writing mode, advance horizonal or vertical
+	// assume vertical here.
+	m_text_mat.Dx( m_text_mat.Dx() + offset ) ; 
 }
 
 void RealText::OnSingleQuote( Object* args, std::size_t count, Resources *res )
@@ -315,9 +335,6 @@ void RealText::OnTf( Object* args, std::size_t count, Resources *res )
 				 m_state.FontSize()	!= font_size	||
 				 m_state.GetFont()	!= f )
 			{
-				if ( !current.IsEmpty() )
-					m_text_mat.Dx( m_text_mat.Dx() + current.Width() ) ;
-				
 				m_state.SetFont( font_size, f ) ;
 				
 				if ( current.IsEmpty() )

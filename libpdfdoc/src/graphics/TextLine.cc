@@ -37,8 +37,12 @@
 #include "util/Exception.hh"
 #include "util/Util.hh"
 
+#include <boost/bind.hpp>
+
 #include <algorithm>
+#include <numeric>
 #include <iterator>
+#include <functional>
 #include <ostream>
 #include <set>
 
@@ -78,9 +82,7 @@ void TextLine::AppendText( const std::wstring& text )
 	if ( f == 0 )
 		throw Exception( "invalid font" ) ;
 	else
-	{
 		m_text.insert( m_text.end(), text.begin(), text.end() ) ;
-	}
 }
 
 std::ostream& TextLine::Print(
@@ -155,7 +157,15 @@ const std::wstring& TextLine::Text() const
 */
 double TextLine::Width( ) const
 {
-	return m_state.Width( m_text ) ;
+	return m_state.Width( m_text ) -
+		std::accumulate(
+			m_space.begin(),
+			m_space.end(),
+			0.0,
+			boost::bind(
+				std::plus<double>(),
+				_1,
+				boost::bind( &Space::width, _2 ) ) ) ;
 }
 
 void TextLine::VisitChars( CharVisitor *v ) const
@@ -164,14 +174,22 @@ void TextLine::VisitChars( CharVisitor *v ) const
 	Font *font	= m_state.GetFont( ) ; 
 	PDF_ASSERT( font != 0 ) ;
 	
-	for ( std::wstring::const_iterator
-		i = m_text.begin() ; i != m_text.end() ; ++i )
+	std::vector<Space>::const_iterator sp = m_space.begin( ) ;
+	
+	for ( std::size_t idx = 0 ; idx < m_text.size() ; ++idx )
 	{
-		const Glyph *glyph = font->GetGlyph( *i ) ;
+		// has space?
+		if ( sp != m_space.end() && idx == sp->index )
+		{
+			tm.Dx( tm.Dx() - sp->width ) ;
+			++sp ;
+		}
+	
+		const Glyph *glyph = font->GetGlyph( m_text[idx] ) ;
 
 		if ( glyph != 0 && glyph->IsOutline() )
 		{
-			v->OnChar( *i, tm, glyph, m_state.ScaleFactor() ) ;
+			v->OnChar( m_text[idx], tm, glyph, m_state ) ;
 
 			// update X position
 			tm.Dx( tm.Dx() + glyph->AdvanceX() * m_state.ScaleFactor() ) ;

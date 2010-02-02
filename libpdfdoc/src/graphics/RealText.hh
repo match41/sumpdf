@@ -64,9 +64,12 @@ public :
 	
 	TextLine& front() ;
 	TextLine& back() ;
+	TextLine& at( std::size_t idx ) ;
 	const TextLine& front() const ;
 	const TextLine& back() const ;
-	
+	const TextLine& at( std::size_t idx ) const ;
+
+
 	std::size_t Count( ) const ;
 	
 	void AddLine( const TextLine& line ) ;

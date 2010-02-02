@@ -30,6 +30,7 @@ namespace pdf {
 
 class Matrix ;
 class Glyph ;
+class TextState ;
 
 ///	Callback interface for TextLine::VisitChars()
 /**	\ingroup graphics
@@ -47,15 +48,15 @@ public :
 		\param	ch	The unicode character code.
 		\param	m	The transformation matrix of the character. It will be
 					advance accordingly for each call to OnChar().
-		\param	glyph			The glyph of the character.
-		\param	scale_factor	Scale factor of transforming font units to
-								glyph units.
+		\param	glyph	The glyph of the character.
+		\param	state	Text state of the current character. It should be the
+						same for all character in the same text line.
 	*/
 	virtual void OnChar(
-		wchar_t 		ch,
-		const Matrix&	m,
-		const Glyph		*glyph,
-		double			scale_factor ) = 0 ;
+		wchar_t 			ch,
+		const Matrix&		m,
+		const Glyph			*glyph,
+		const TextState&	state ) = 0 ;
 } ;
 
 } // end of namespace

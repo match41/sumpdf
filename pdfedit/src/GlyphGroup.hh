@@ -45,10 +45,10 @@ public :
 	explicit GlyphGroup( const TextLine& blk, QGraphicsItem *parent = 0 ) ;
 
 	void OnChar(
-		wchar_t 		ch,
-		const Matrix&	m,
-		const Glyph		*glyph,
-		double			scale_factor ) ; 
+		wchar_t 			ch,
+		const Matrix&		m,
+		const Glyph			*glyph,
+		const TextState&	state ) ; 
 
 	int type( ) const ;
 
