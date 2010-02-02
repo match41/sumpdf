@@ -17,14 +17,14 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	TextStateTest.hh
-    \brief	definition the TextStateTest class
-    \date	Jan 23, 2010
+/**	\file	TextLineTest.hh
+    \brief	definition the TextLineTest class
+    \date	Feb 2, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_TEXTSTATETEST_HH_EADER_INCLUDED__
-#define __PDF_TEXTSTATETEST_HH_EADER_INCLUDED__
+#ifndef __PDF_TEXTLINETEST_HH_EADER_INCLUDED__
+#define __PDF_TEXTLINETEST_HH_EADER_INCLUDED__
 
 #include "mock/TestBase.hh"
 
@@ -33,15 +33,16 @@
 namespace pdfut {
 
 ///	brief description
-/**	this class represents
+/**	\internal
+	The TextLineTest class represents
 */
-class TextStateTest : public TestBase
+class TextLineTest : public TestBase
 {
 public :
-	TextStateTest( ) ;
-	
+	TextLineTest( ) ;
+
 	// declare suit function
-	CPPUNIT_TEST_SUITE( TextStateTest ) ;
+	CPPUNIT_TEST_SUITE( TextLineTest ) ;
 		CPPUNIT_TEST( TestPrint ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
@@ -51,4 +52,4 @@ private :
 
 } // end of namespace
 
-#endif // TEXTSTATETEST_HH_
+#endif // TEXTLINETEST_HH_

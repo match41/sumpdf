@@ -36,6 +36,7 @@
 #include "core/DictionaryTest.hh"
 #include "core/ArrayTest.hh"
 #include "graphics/TextStateTest.hh"
+#include "graphics/TextLineTest.hh"
 #include "graphics/RealTextTest.hh"
 #include "stream/StreamTest.hh"
 #include "stream/DeflateFilterTest.hh"
@@ -88,6 +89,7 @@ int main( int argc, char **argv )
 	runner.addTest( TextStateTest::suite( ) ) ;
 	runner.addTest( RealTextTest::suite( ) ) ;
 	runner.addTest( RealContentTest::suite( ) ) ;
+	runner.addTest( TextLineTest::suite( ) ) ;
 	
 // freetype library is optional
 #ifdef HAVE_FREETYPE

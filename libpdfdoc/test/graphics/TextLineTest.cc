@@ -17,38 +17,50 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	TextStateTest.hh
-    \brief	definition the TextStateTest class
-    \date	Jan 23, 2010
-    \author	Nestal Wan
+/**	\file	TextLineTest.cc
+	\brief	implementation of the TextLineTest class
+	\date	Feb 2, 2010
+	\author	Nestal Wan
 */
 
-#ifndef __PDF_TEXTSTATETEST_HH_EADER_INCLUDED__
-#define __PDF_TEXTSTATETEST_HH_EADER_INCLUDED__
+#include "TextLineTest.hh"
 
-#include "mock/TestBase.hh"
+#include "core/Array.hh"
+#include "core/Name.hh"
+#include "graphics/TextLine.hh"
+#include "graphics/TextState.hh"
+#include "util/Matrix.hh"
 
-#include <cppunit/extensions/HelperMacros.h>
+#include "page/MockResources.hh"
+#include "mock/MockFont.hh"
+
+#include <iostream>
 
 namespace pdfut {
 
-///	brief description
-/**	this class represents
-*/
-class TextStateTest : public TestBase
-{
-public :
-	TextStateTest( ) ;
-	
-	// declare suit function
-	CPPUNIT_TEST_SUITE( TextStateTest ) ;
-		CPPUNIT_TEST( TestPrint ) ;
-	CPPUNIT_TEST_SUITE_END( ) ;
+using namespace pdf ;
 
-private :
-	void TestPrint( ) ;
-} ;
+/**	constructor
+	
+*/
+TextLineTest::TextLineTest( )
+{
+}
+
+void TextLineTest::TestPrint( )
+{
+	MockResources res ;
+	MockFont font ;
+	Name fname = res.AddFont( &font ) ;
+	
+	TextState ts( 12.0, &font ) ;
+	TextLine subject( ts, Matrix() ) ;
+	subject.AppendText( L"hello" ) ;
+	subject.AppendSpace( 100 ) ;
+	subject.AppendText( L"world" ) ;
+	
+	Matrix m ;
+	subject.Print( std::cout, m, ts, &res ) ;
+}
 
 } // end of namespace
-
-#endif // TEXTSTATETEST_HH_

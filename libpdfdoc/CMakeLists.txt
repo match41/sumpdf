@@ -483,6 +483,7 @@ set( UT_SRCS	test/core/TokenTest.cc
 				test/core/ArrayTest.cc
 				
 				test/graphics/TextStateTest.cc
+				test/graphics/TextLineTest.cc
 				test/graphics/RealTextTest.cc
 				
 				test/stream/StreamTest.cc

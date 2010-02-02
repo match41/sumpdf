@@ -28,6 +28,7 @@
 
 #include "graphics/CharVisitor.hh"
 
+#include "core/Array.hh"
 #include "core/Object.hh"
 #include "core/String.hh"
 #include "core/Token.hh"
@@ -102,10 +103,34 @@ std::ostream& TextLine::Print(
 	// replace current matrix
 	current = m_trans ;
 	
-	m_state.Print( os, res, state ) ;   
-	return
-		os	<< String( std::string( m_text.begin(), m_text.end() ) )
-			<< ' ' << "Tj\n" ;
+	m_state.Print( os, res, state ) ;
+	if ( m_space.empty() )
+		return
+			os	<< String( std::string( m_text.begin(), m_text.end() ) )
+				<< " Tj\n" ;
+	else
+	{
+		Array a ;
+		std::size_t idx = 0 ;
+		for ( std::vector<Space>::const_iterator i = m_space.begin() ;
+			i != m_space.end() ; ++i )
+		{
+			if ( i->index != 0 )
+			{
+				a.push_back( std::string(
+					m_text.begin() + idx,
+					m_text.begin() + idx + i->index ) ) ;
+				
+				idx += i->index ;
+			}
+			
+			a.push_back( i->width ) ;
+		}
+		
+		
+		
+		return os << a << " TJ\n" ;
+	}
 }
 
 std::ostream& operator<<( std::ostream& os, const TextLine& t )
