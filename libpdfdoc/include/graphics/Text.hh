@@ -37,8 +37,8 @@ namespace pdf {
 class TextLine ;
 class GraphicsVisitor ;
 
-/**	\brief	brief description
-
+///	Text objects.
+/**	\ingroup graphics
 	The Text class represent a PDF text object. It is the stuff enclosed by
 	a BT...ET operators in the content stream of a page. It consists of a number
 	of text lines.
@@ -53,19 +53,27 @@ protected :
 	~Text( ) ;
 
 public :
+
+	///	\name Iterator access members
+	//@{
+	///	Iterator access to the underlying text lines
 	virtual iterator begin() = 0 ;
 	virtual iterator end() = 0 ;
 	
 	virtual const_iterator begin() const = 0 ;
 	virtual const_iterator end() const = 0 ;
+	//@}
 	
 	virtual std::size_t Count( ) const = 0 ;
 	
+	///	Add a new line to the text object.
 	virtual void AddLine( const TextLine& line ) = 0 ;
+	
+	/// Add a new line with coordinate and text.
 	virtual void AddLine( double x, double y, const std::wstring& text ) = 0 ;
 
+	///	Visitor rebound function.
 	virtual void Visit( GraphicsVisitor *visitor ) = 0 ;
-
 } ;
 
 } // end of namespace

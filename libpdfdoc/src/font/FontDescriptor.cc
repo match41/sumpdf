@@ -59,7 +59,7 @@ const Name FontDescriptor::m_stretch_names[] =
 	"UltraExpanded",	///< usWidthClass: 9
 } ;
 
-/**	constructor
+/**	\internal	constructor
 */
 FontDescriptor::FontDescriptor( )
 	: m_type( font::unknown ),
@@ -132,6 +132,7 @@ FontDescriptor::FontDescriptor( FT_Face face, std::vector<unsigned char>& prog )
 	m_font_file.swap( prog ) ;
 }
 
+///	Read the font descriptor from file.
 void FontDescriptor::Read( font::Type type, Dictionary& self, File *file )
 {
 	m_type = type ;

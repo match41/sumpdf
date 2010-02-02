@@ -31,6 +31,7 @@
 
 namespace pdf {
 
+///	\internal	Reference counting helper class
 class RefCounter
 {
 protected :

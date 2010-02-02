@@ -132,21 +132,11 @@ unsigned RealGlyph::AdvanceX( ) const
 	return m_met.horiAdvance ;
 }
 
-/// Vertical advance in un-scaled Freetype font unit.
 unsigned RealGlyph::AdvanceY( ) const
 {
 	return m_met.vertAdvance ;
 }
 
-///	Decompose the glyph outline.
-/**	This function walks through the glyph outline and decompose it into
-	individual segment and Bezier arcs. The caller will implement the Outline
-	interface and the corresponding callback function in the Outline interface
-	will be called for each line segment and Bezier arcs in the glyph.
-	\param	outline		A callback interface to each segment and arcs.
-	\return	\c true if walk through successfully, otherwise \c false. It fails
-			when the glyph is not an outline glyph.
-*/
 bool RealGlyph::Decompose( Outline *outline ) const
 {
 	if ( m_glyph->format == FT_GLYPH_FORMAT_OUTLINE )

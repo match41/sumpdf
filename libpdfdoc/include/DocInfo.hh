@@ -34,10 +34,13 @@ namespace pdf {
 /*!	\brief	PDF document info. 
 
 	This class provides interface functions to access PDF document meta
-	information. The following information can be access:
+	information. The following information can be accessed:
 
-	- creator
-	- producer
+	- Creator
+	- Producer
+	- Author
+	- Subject
+	- Keywords
 */
 class DocInfo
 {

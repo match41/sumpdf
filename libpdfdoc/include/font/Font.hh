@@ -33,8 +33,8 @@ namespace pdf {
 
 class Glyph ;
 
-/**	\addtogroup	font Font
-	\brief	Font module
+/**	\defgroup	font Fonts
+	\brief		Font module
 
 	libpdfdoc provides a number of classes for font handling. They provide
 	access to important font metrics and functions for rendering the font
@@ -45,10 +45,12 @@ class Glyph ;
 	Freetype page</a> for details on the background about fonts.
 */
 
-/*!	\brief	brief description
-	\addtogroup	font Font
+///	The Font class.
+/**	\ingroup	font
 	
-	this class represents
+	This class represents a font in the PDF document. It can be created by
+	reading a PDF document which contain some fonts, or by manually creating
+	by a font file. It provides access to the Glyph in the font.
 */
 class Font
 {
@@ -59,7 +61,7 @@ public :
 	/**	This function returns the PostScript name of the font. For Type 1 fonts,
 		this is usually the value of the FontName entry in the font program.
 		For TrueType fonts, it is returned by the FT_Get_Postscript_Name()
-		function in FreeType. It will beused for displaying the font's name
+		function in FreeType. It will be used for displaying the font's name
 		for client applications.
 		\return	The base name of a font.
 	*/

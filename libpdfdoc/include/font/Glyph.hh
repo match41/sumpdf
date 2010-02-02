@@ -33,7 +33,8 @@ namespace pdf {
 class Outline ;
 
 ///	A glyph class.
-/**	The Glyph class represents a glyph in an PDF document. A glyph is an image
+/**	\ingroup font
+	The Glyph class represents a glyph in an PDF document. A glyph is an image
 	representation of a character in a font face. This class provides access
 	to many information about a glyph, e.g. its metrics and outline rendering.
 	The unit of the metrics provided by this class is always in font unit.
@@ -44,17 +45,36 @@ class Outline ;
 class Glyph
 {
 protected :
+	/// protected destructor to ensure no polymorphic deletion.
 	~Glyph( ) ;
 
 public :
+	/// Width in un-scaled Freetype font unit.
 	virtual unsigned Width( ) const = 0 ;
+	
+	/// Height in un-scaled Freetype font unit.
 	virtual unsigned Height( ) const = 0 ;
 	
+	/// Horizonal advance in un-scaled Freetype font unit.
 	virtual unsigned AdvanceX( ) const = 0 ;
+
+	/// Vertical advance in un-scaled Freetype font unit.
 	virtual unsigned AdvanceY( ) const = 0 ;
 
+	///	Decompose the glyph outline.
+	/**	This function walks through the glyph outline and decompose it into
+		individual segment and Bezier arcs. The caller will implement the
+		Outline interface and the corresponding callback function in the Outline
+		interface will be called for each line segment and Bezier arcs in the
+		glyph.
+		
+		\param	outline		A callback interface to each segment and arcs.
+		\return	\c true if walk through successfully, otherwise \c false.
+				It fails when the glyph is not an outline glyph.
+	*/
 	virtual bool Decompose( Outline *outline ) const = 0 ;
 	
+	///	Return true if the glyph is outline glyph, otherwise false.
 	virtual bool IsOutline( ) const = 0 ;
 } ;
 
