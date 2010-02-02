@@ -175,4 +175,29 @@ void RealTextTest::TestTJ( )
 	PDF_ASSERT_EQUAL( mat2, Matrix(1,0,0,1, 60.0, 0) ) ;
 }
 
+void RealTextTest::TestTjx2( )
+{
+	MockResources res ;
+	MockFont font ;
+	Name fname = res.AddFont( &font ) ;
+	
+	TextState ts( 12.0, &font ) ;
+	RealText t( ts ) ;
+
+	// action: display a string "111"
+	Object	args[]	= { "111" } ;
+	Token	cmd( "Tj" ) ;
+	t.OnCommand( cmd, args, Count(args), &res ) ;
+
+	// action: display a string "222"
+	Object	args2[]	= { "222" } ;
+	Token	cmd2( "Tj" ) ;
+	t.OnCommand( cmd2, args2, Count(args2), &res ) ;
+
+	PDF_ASSERT_EQUAL( t.Count(), 1U ) ;
+	PDF_ASSERT_EQUAL( t.front().Format(), ts ) ;
+	PDF_ASSERT_EQUAL( t.front().Transform(), Matrix() ) ;
+	CPPUNIT_ASSERT( t.front().Text() == L"111222" ) ;
+}
+
 } // end of nameapce

@@ -17,44 +17,25 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	RealTextTest.hh
-    \brief	definition the RealTextTest class
-    \date	Jan 23, 2010
-    \author	Nestal Wan
+/**	\file	ExceptionDlg.cc
+	\brief	implementation of the ExceptionDlg class
+	\date	Feb 2, 2010
+	\author	Nestal Wan
 */
 
-#ifndef __PDF_REALTEXTTEST_HH_EADER_INCLUDED__
-#define __PDF_REALTEXTTEST_HH_EADER_INCLUDED__
+#include "ExceptionDlg.hh"
 
-#include "mock/TestBase.hh"
+namespace pdf {
 
-#include <cppunit/extensions/HelperMacros.h>
-
-namespace pdfut {
-
-///	brief description
-/**	The RealTextTest class represents
+/**	constructor
+	
 */
-class RealTextTest : public TestBase
+ExceptionDlg::ExceptionDlg( const char *msg, QWidget *parent )
+	: QDialog( parent )
 {
-public :
-	RealTextTest( ) ;
-
-	// declare suit function
-	CPPUNIT_TEST_SUITE( RealTextTest ) ;
-		CPPUNIT_TEST( TestTdCmd ) ;
-		CPPUNIT_TEST( TestTj ) ;
-		CPPUNIT_TEST( TestTjx2 ) ;
-		CPPUNIT_TEST( TestTJ ) ;
-	CPPUNIT_TEST_SUITE_END( ) ;
-
-private :
-	void TestTdCmd( ) ;
-	void TestTj( ) ;
-	void TestTJ( ) ;
-	void TestTjx2( ) ;
-} ;
-
-#endif // REALTEXTTEST_HH_
+	setupUi( this ) ;
+	
+	m_msg_edit->setPlainText( msg ) ;
+}
 
 } // end of namespace

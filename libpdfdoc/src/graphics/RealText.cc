@@ -336,7 +336,7 @@ void RealText::OnTf( Object* args, std::size_t count, Resources *res )
 				 m_state.GetFont()	!= f )
 			{
 				m_state.SetFont( font_size, f ) ;
-				
+
 				if ( current.IsEmpty() )
 					current.SetFormat( m_state ) ;
 				else
