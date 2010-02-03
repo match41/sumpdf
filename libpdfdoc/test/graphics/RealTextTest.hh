@@ -43,12 +43,16 @@ public :
 	// declare suit function
 	CPPUNIT_TEST_SUITE( RealTextTest ) ;
 		CPPUNIT_TEST( TestTdCmd ) ;
+		CPPUNIT_TEST( TestTj ) ;
+		CPPUNIT_TEST( TestTjx2 ) ;
 		CPPUNIT_TEST( TestTJ ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
 private :
 	void TestTdCmd( ) ;
+	void TestTj( ) ;
 	void TestTJ( ) ;
+	void TestTjx2( ) ;
 } ;
 
 #endif // REALTEXTTEST_HH_

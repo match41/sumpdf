@@ -43,9 +43,6 @@ namespace pdfut {
 class MockFont : public pdf::BaseFont
 {
 public :
-	static const double m_char_width = 10.0 ;
-
-public :
 	MockFont( ) ;
 
 	std::string BaseName( ) const ;

@@ -52,16 +52,16 @@ GlyphGroup::GlyphGroup( const TextLine& blk, QGraphicsItem *parent )
 }
 
 void GlyphGroup::OnChar(
-	wchar_t 		ch,
-	const Matrix&	m,
-	const Glyph		*glyph,
-	double			scale_factor ) 
+	wchar_t 			ch,
+	const Matrix&		m,
+	const Glyph			*glyph,
+	const TextState&	state ) 
 {
 	GlyphGraphicsItem *item = new GlyphGraphicsItem( glyph ) ;
 
 	// scale font by their font size
 	item->setTransform( ToQtMatrix( m ) ) ;
-	item->scale( scale_factor, scale_factor ) ;
+	item->scale( state.ScaleFactor(), state.ScaleFactor() ) ;
 
 	addToGroup( item ) ;
 }

@@ -41,7 +41,8 @@ set( BASE_SRCS		src/main.cc
 					src/MainWnd.cc
 					src/PageView.cc
 					src/TextEdit.cc
-					src/PropertiesDlg.cc )
+					src/PropertiesDlg.cc
+					src/ExceptionDlg.cc )
 
 ###############################################################################
 # all sources
@@ -53,13 +54,16 @@ qt4_automoc( ${SRCS} )
 set( MOC_SRCS	src/MainWnd.cc
 				src/PropertiesDlg.cc
 				src/PageView.cc
-				src/TextEdit.cc )
+				src/TextEdit.cc
+				src/ExceptionDlg.cc )
 set( MOC_HDRS	src/MainWnd.hh
 				src/PropertiesDlg.hh
 				src/PageView.hh
-				src/TextEdit.hh )
+				src/TextEdit.hh
+				src/ExceptionDlg.hh )
 set( UIS 		ui/MainWnd.ui
-				ui/Properties.ui )
+				ui/Properties.ui
+				ui/ExceptionDlg.ui )
 
 qt4_wrap_ui( UIH ${UIS})
 qt4_wrap_cpp( MOC_SRCS ${MOC_HDRS})

@@ -30,10 +30,6 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-// freetype headers
-#include <ft2build.h>
-#include FT_FREETYPE_H
-
 namespace pdfut {
 
 ///	brief description

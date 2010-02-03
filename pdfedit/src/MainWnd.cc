@@ -28,6 +28,7 @@
 
 #include "PageView.hh"
 #include "PropertiesDlg.hh"
+#include "ExceptionDlg.hh"
 
 // Qt headers
 #include <QApplication>
@@ -59,9 +60,6 @@
 #include <page/PageContent.hh>
 #include <graphics/Text.hh>
 #include <graphics/TextLine.hh>
-
-//#include <fontconfig/fontconfig.h>
-//#include <fontconfig/fcfreetype.h>
 
 #include <boost/bind.hpp>
 
@@ -171,7 +169,9 @@ void MainWnd::OpenFile( const QString& file )
 	}
 	catch ( std::exception& e )
 	{
-		QMessageBox::critical( this, "Cannot open document", e.what() ) ;
+//		QMessageBox::critical( this, "Cannot open document", e.what() ) ;
+		ExceptionDlg dlg( e.what(), this ) ;
+		dlg.exec() ;
 	}
 }
 

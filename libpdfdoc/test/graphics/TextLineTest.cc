@@ -17,54 +17,50 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	GlyphGroup.hh
-    \brief	definition the GlyphGroup class
-    \date	Jan 24, 2010
-    \author	Nestal Wan
+/**	\file	TextLineTest.cc
+	\brief	implementation of the TextLineTest class
+	\date	Feb 2, 2010
+	\author	Nestal Wan
 */
 
-#ifndef __PDF_GLYPHGROUP_HH_EADER_INCLUDED__
-#define __PDF_GLYPHGROUP_HH_EADER_INCLUDED__
+#include "TextLineTest.hh"
 
-#include <QGraphicsItemGroup>
-#include <graphics/CharVisitor.hh>
+#include "core/Array.hh"
+#include "core/Name.hh"
+#include "graphics/TextLine.hh"
+#include "graphics/TextState.hh"
+#include "util/Matrix.hh"
 
-#include <graphics/TextState.hh>
+#include "page/MockResources.hh"
+#include "mock/MockFont.hh"
 
-namespace pdf {
+#include <iostream>
 
-class Matrix ;
-class TextLine ;
+namespace pdfut {
 
-///	brief description
-/**	The GlyphGroup class represents
+using namespace pdf ;
+
+/**	constructor
+	
 */
-class GlyphGroup : public QGraphicsItemGroup, private CharVisitor
+TextLineTest::TextLineTest( )
 {
-public :
-	explicit GlyphGroup( const TextLine& blk, QGraphicsItem *parent = 0 ) ;
+}
 
-	void OnChar(
-		wchar_t 			ch,
-		const Matrix&		m,
-		const Glyph			*glyph,
-		const TextState&	state ) ; 
-
-	int type( ) const ;
-
-	static const int Type = UserType + 1 ;
-
-	const TextState& Format( ) const ;
+void TextLineTest::TestPrint( )
+{
+	MockResources res ;
+	MockFont font ;
+	Name fname = res.AddFont( &font ) ;
 	
-	TextLine GetLine( ) const ;
+	TextState ts( 12.0, &font ) ;
+	TextLine subject( ts, Matrix() ) ;
+	subject.AppendText( L"hello" ) ;
+	subject.AppendSpace( 100 ) ;
+	subject.AppendText( L"world" ) ;
 	
-	QString Text( ) const ;
-
-private :
-	QString		m_text ;
-	TextState	m_state ;
-} ;
+	Matrix m ;
+	subject.Print( std::cout, m, ts, &res ) ;
+}
 
 } // end of namespace
-
-#endif // GLYPHGROUP_HH_

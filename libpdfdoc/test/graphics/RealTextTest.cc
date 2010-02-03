@@ -25,6 +25,7 @@
 
 #include "RealTextTest.hh"
 
+#include "core/Array.hh"
 #include "core/Object.hh"
 #include "graphics/RealText.hh"
 #include "page/MockResources.hh"
@@ -83,7 +84,7 @@ void RealTextTest::TestTdCmd( )
 	PDF_ASSERT_EQUAL( t, exp ) ;
 }
 
-void RealTextTest::TestTJ( )
+void RealTextTest::TestTj( )
 {
 	MockResources res ;
 	MockFont font ;
@@ -118,8 +119,6 @@ void RealTextTest::TestTJ( )
 	
 	// double font size
 	TextState ts2x( 24.0, &font ) ;
-	
-	// action: display another string "abc"
 	Object	args3[]	= { fname, 24.0 } ;
 	Token	cmd3( "Tf" ) ;
 	t.OnCommand( cmd3, args3, Count(args3), &res ) ;
@@ -134,6 +133,71 @@ void RealTextTest::TestTJ( )
 	PDF_ASSERT_EQUAL( 
 		t.back().Transform(),
 		Matrix(1,0,0,1, 36.0, 0 ) ) ;
+}
+
+void RealTextTest::TestTJ( )
+{
+	MockResources res ;
+	MockFont font ;
+	Name fname = res.AddFont( &font ) ;
+	
+	TextState ts( 12.0, &font ) ;
+
+	RealText t( ts ) ;
+	
+	// action: display a string "abc"
+	Object	tj_ops[] = { "abc", -2000.0, "cde" } ;
+	Token	cmd( "TJ" ) ;
+	Array	tj( Begin(tj_ops), End(tj_ops) ) ;
+	Object	args[] = { tj } ;
+	t.OnCommand( cmd, args, Count(args), &res ) ;
+
+	PDF_ASSERT_EQUAL( t.Count(), 1U ) ;
+	PDF_ASSERT_EQUAL( t.front().Format(), ts ) ;
+	
+	const TextLine& line = t.front() ;
+	PDF_ASSERT_EQUAL( line.Width(), 60.0 ) ;
+
+	// double font size and a new TextLine object should be generated
+	Object	args3[]	= { fname, 24.0 } ;
+	Token	cmd3( "Tf" ) ;
+	t.OnCommand( cmd3, args3, Count(args3), &res ) ;
+	
+	Object	args4[]	= { "cdef" } ;
+	Token	cmd4( "Tj" ) ;
+	t.OnCommand( cmd4, args4, Count(args4), &res ) ;
+
+	// 2 text lines in total
+	PDF_ASSERT_EQUAL( t.Count(), 2U ) ;
+
+	// next object starts at 60.0 units further
+	const Matrix& mat2 = t.back().Transform() ;
+	PDF_ASSERT_EQUAL( mat2, Matrix(1,0,0,1, 60.0, 0) ) ;
+}
+
+void RealTextTest::TestTjx2( )
+{
+	MockResources res ;
+	MockFont font ;
+	Name fname = res.AddFont( &font ) ;
+	
+	TextState ts( 12.0, &font ) ;
+	RealText t( ts ) ;
+
+	// action: display a string "111"
+	Object	args[]	= { "111" } ;
+	Token	cmd( "Tj" ) ;
+	t.OnCommand( cmd, args, Count(args), &res ) ;
+
+	// action: display a string "222"
+	Object	args2[]	= { "222" } ;
+	Token	cmd2( "Tj" ) ;
+	t.OnCommand( cmd2, args2, Count(args2), &res ) ;
+
+	PDF_ASSERT_EQUAL( t.Count(), 1U ) ;
+	PDF_ASSERT_EQUAL( t.front().Format(), ts ) ;
+	PDF_ASSERT_EQUAL( t.front().Transform(), Matrix() ) ;
+	CPPUNIT_ASSERT( t.front().Text() == L"111222" ) ;
 }
 
 } // end of nameapce

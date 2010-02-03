@@ -17,54 +17,39 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	GlyphGroup.hh
-    \brief	definition the GlyphGroup class
-    \date	Jan 24, 2010
+/**	\file	TextLineTest.hh
+    \brief	definition the TextLineTest class
+    \date	Feb 2, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_GLYPHGROUP_HH_EADER_INCLUDED__
-#define __PDF_GLYPHGROUP_HH_EADER_INCLUDED__
+#ifndef __PDF_TEXTLINETEST_HH_EADER_INCLUDED__
+#define __PDF_TEXTLINETEST_HH_EADER_INCLUDED__
 
-#include <QGraphicsItemGroup>
-#include <graphics/CharVisitor.hh>
+#include "mock/TestBase.hh"
 
-#include <graphics/TextState.hh>
+#include <cppunit/extensions/HelperMacros.h>
 
-namespace pdf {
-
-class Matrix ;
-class TextLine ;
+namespace pdfut {
 
 ///	brief description
-/**	The GlyphGroup class represents
+/**	\internal
+	The TextLineTest class represents
 */
-class GlyphGroup : public QGraphicsItemGroup, private CharVisitor
+class TextLineTest : public TestBase
 {
 public :
-	explicit GlyphGroup( const TextLine& blk, QGraphicsItem *parent = 0 ) ;
+	TextLineTest( ) ;
 
-	void OnChar(
-		wchar_t 			ch,
-		const Matrix&		m,
-		const Glyph			*glyph,
-		const TextState&	state ) ; 
-
-	int type( ) const ;
-
-	static const int Type = UserType + 1 ;
-
-	const TextState& Format( ) const ;
-	
-	TextLine GetLine( ) const ;
-	
-	QString Text( ) const ;
+	// declare suit function
+	CPPUNIT_TEST_SUITE( TextLineTest ) ;
+		CPPUNIT_TEST( TestPrint ) ;
+	CPPUNIT_TEST_SUITE_END( ) ;
 
 private :
-	QString		m_text ;
-	TextState	m_state ;
+	void TestPrint( ) ;
 } ;
 
 } // end of namespace
 
-#endif // GLYPHGROUP_HH_
+#endif // TEXTLINETEST_HH_
