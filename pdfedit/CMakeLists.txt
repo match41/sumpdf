@@ -29,6 +29,9 @@ find_package( Qt4 REQUIRED )
 find_package( Boost COMPONENTS program_options REQUIRED )
 find_package( Freetype REQUIRED )
 
+# we don't want to let the boost header to choose the libraries for us
+add_definitions( -DBOOST_ALL_NO_LIB )
+
 include(${QT_USE_FILE})
 
 set( BASE_SRCS		src/main.cc
