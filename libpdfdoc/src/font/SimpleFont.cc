@@ -62,6 +62,8 @@ const Name SimpleFont::m_font_types[] =
 {
 	Name("TrueType"), Name("Type1"), Name("MMType1"), Name("Type3"),
 	Name("Type0" ),
+	
+	Name("Type1"),	// CFF opentype font is treated as type1
 } ;
 
 SimpleFont::SimpleFont(
@@ -112,8 +114,8 @@ SimpleFont::SimpleFont( Dictionary& self, File *file, FT_Library ft_lib )
 		// width is optional
 		Detach( file, self, "Widths", 		m_widths ) ;
 
-//		self.Extract( "Encoding",	m_encoding ) ;
-//		self.Extract( "ToUnicode",	m_to_unicode ) ;
+		Detach( file, self, "Encoding",		m_encoding ) ;
+		Detach( file, self, "ToUnicode",	m_to_unicode ) ;
 		
 		Dictionary fd ;
 		if ( Detach( file, self, "FontDescriptor", fd ) )
@@ -365,15 +367,14 @@ Ref SimpleFont::Write( File *file ) const
 	dict["FirstChar"]	= m_first_char ;
 	dict["LastChar"]	= m_last_char ;
 	
-//	double mat[] = { 0.001, 0, 0, 0.001, 0, 0 } ;
-//	dict.Get()["FontMatrix"]	= Array( Begin(mat), End(mat) ) ;
-
-	if ( dict.find( "Encoding" ) == dict.end() )
-		dict["Encoding"]		= Name("WinAnsiEncoding") ;
-
-//	if ( !m_encoding.IsNull() )
-//		dict.Get()["Encoding"]		= m_encoding ;
-
+	if ( !m_encoding.Is<void>() )
+		dict["Encoding"]		= m_encoding ;
+	else
+		dict["Encoding"]		= Name( "WinAnsiEncoding" ) ;
+	
+	if ( !m_to_unicode.Is<void>() )
+		dict["ToUnicode"]		= m_to_unicode ;
+	
 	if ( m_widths.empty() )
 	{
 		Array widths ;

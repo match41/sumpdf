@@ -110,8 +110,8 @@ private :
 	Array 		m_widths ;
 	
 	std::auto_ptr<FontDescriptor>		m_descriptor ;
-//	Object				m_to_unicode ;
-//	Object				m_encoding ;	//!< name or dictionary
+	Object				m_to_unicode ;
+	Object				m_encoding ;	//!< name or dictionary
 	
 	typedef std::tr1::unordered_map<wchar_t, RealGlyph*> GlyphMap ;
 	GlyphMap	m_glyphs ;

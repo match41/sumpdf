@@ -228,6 +228,10 @@ Ref FontDescriptor::Write( File *file ) const
 		s.Append( &m_font_file[0], m_font_file.size() ) ;
 		s.Flush( ) ;
 		
+		// it seems the OpenType can work for both truetype and type1 fonts
+		// we add it anyway
+//		s.AddDictionaryEntry( "Subtype", Name("OpenType" ) ) ;
+		
 		if ( m_type == font::truetype )
 		{
 			s.AddDictionaryEntry( "Length1", m_font_file.size() ) ;
