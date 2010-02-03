@@ -33,9 +33,9 @@ namespace pdf {
 namespace font
 {
 	///	brief description
-	/**	The FontType class represents
+	/**	The Type enum represents an enumeration of font types.
 	*/
-	enum Type { truetype, type1, mmtype1, type3, type0, unknown } ;
+	enum Type { truetype, type1, mmtype1, type3, type0, openType, unknown } ;
 	
 	Type GetType( FT_FaceRec_ *face ) ;
 }

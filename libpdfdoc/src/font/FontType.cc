@@ -42,14 +42,21 @@ Type GetType( FT_FaceRec_ *face )
 
 	if ( format == 0 )
 		return unknown ;
+	
 	else if ( ::strcasecmp( format, "Truetype" ) == 0 )
 		return truetype ;
+	
 	else if ( ::strcasecmp( format, "Type 1" ) == 0 )
 		return type1 ;
 	
 	// treat as type1
 	else if ( ::strcasecmp( format, "PCF" ) == 0 )
 		return type1 ;
+	
+	// OpenType CFF
+	else if ( ::strcasecmp( format, "CFF" ) == 0 )
+		return openType ;
+	
 	else
 		throw FontException( "unknown font type: " + std::string(format) ) ;
 }

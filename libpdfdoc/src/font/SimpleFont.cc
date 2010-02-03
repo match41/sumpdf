@@ -109,8 +109,6 @@ SimpleFont::SimpleFont( Dictionary& self, File *file, FT_Library ft_lib )
 		Detach( file, self, "FirstChar",	m_first_char ) ;
 		Detach( file, self, "LastChar",		m_last_char ) ;
 		
-//std::cout << "font : " << m_base_font << " subtype = " << subtype << std::endl ;
-
 		// width is optional
 		Detach( file, self, "Widths", 		m_widths ) ;
 
@@ -136,14 +134,20 @@ SimpleFont::SimpleFont( Dictionary& self, File *file, FT_Library ft_lib )
 		// try to search for them instead.
 		else if ( m_type != font::type3 )
 		{
-			std::string ori = m_base_font.Str() ;
-			if ( m_base_font.empty() )
+			if ( !m_base_font.empty() )
 			{
-				std::string path = FindStdFont( m_base_font.Str() ) ; 
+				std::string path = FindStdFont( m_base_font.Str() ) ;
+
 				std::vector<unsigned char> prog = LoadFile( path ) ;
 				Init( prog, ft_lib ) ;
 			}
+			else
+			{
+				throw Exception( "no font name. can't load font" ) ;
+			}
 		}
+		else
+			throw Exception( "no descriptor?" ) ;
 	}
 	catch ( Exception& e )
 	{
@@ -198,6 +202,7 @@ std::vector<unsigned char> SimpleFont::LoadFile( const std::string& filename )
 		(std::istreambuf_iterator<char>()) ) ;
 	if ( bytes.empty() )
 		throw FontException( format("font file %1% is empty") % filename ) ;
+	
 	return bytes ;
 }
 
@@ -222,9 +227,10 @@ std::string SimpleFont::FindFont(
 	const std::string& style )
 {
 	FcPattern *sans = FcPatternBuild( NULL,
-		FC_FAMILY,	FcTypeString, 	font.c_str(),
-		FC_WEIGHT,	FcTypeInteger, 	FC_WEIGHT_MEDIUM,
-		FC_STYLE,	FcTypeString, 	style.c_str(),
+		FC_FAMILY,		FcTypeString, 	font.c_str(),
+		FC_WEIGHT,		FcTypeInteger, 	FC_WEIGHT_MEDIUM,
+		FC_STYLE,		FcTypeString, 	style.c_str(),
+		FC_SCALABLE,	FcTypeBool,		true,
 	    NULL ) ;
 	if ( sans == 0 )
 		throw FontException( "cannot create font pattern" ) ;
@@ -265,9 +271,18 @@ std::string SimpleFont::FindStdFont( const std::string& base_name )
 	if ( pos != std::string::npos && pos + 1 < base_name.size() )
 		style = base_name.substr( pos+1 ) ;
 
-	// as Helvetica is quite rare, we use Arial to replace it
+	// simple font mappings for the standard fonts
 	if ( name == "Helvetica" )
-		name = "Arial" ;
+		name = "Liberation Sans" ;
+
+	else if ( name == "Times" )
+		name = "Liberation Serif" ;
+
+	else if ( name == "Courier" )
+		name = "Liberation Mono" ;
+
+	else if ( name == "Symbol" )
+		name = "Standard Symbols L" ;
 
 	return FindFont( name, style ) ;
 }
