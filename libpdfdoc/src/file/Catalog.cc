@@ -28,6 +28,7 @@
 
 #include "ObjectReader.hh"
 #include "File.hh"
+#include "NameTree.hh"
 
 #include "core/Array.hh"
 #include "core/Ref.hh"
@@ -43,11 +44,25 @@
 
 namespace pdf {
 
+struct Catalog::NameDict
+{
+	NameTree	m_dests, m_ap, m_javascript, m_pages, m_temps, m_ids, m_urls,
+				m_emb_files, m_alt_present, m_rend ;
+
+	void Read( Dictionary& self, File *file )
+	{
+		Dictionary dests ;
+		if ( Detach( file, self, "Dests", dests ) )
+			m_dests.Read( dests, file ) ;
+	}
+} ;
+
 Catalog::Catalog( FT_Library ft_lib )
-: m_version		( "1.4" ),
-  m_page_layout	( "SinglePage" ),
-  m_page_mode	( "UseNode" ),
-  m_tree		( new PageTree( ft_lib ) )
+	: m_version		( "1.4" ),
+	  m_page_layout	( "SinglePage" ),
+	  m_page_mode	( "UseNode" ),
+	  m_tree		( new PageTree( ft_lib ) ),
+	  m_name_dict	( new NameDict )
 {
 }
 
@@ -55,7 +70,8 @@ Catalog::Catalog( const Ref& link, File *file, FT_Library ft_lib )
 	: m_version		( "1.4" ),
 	  m_page_layout	( "SinglePage" ),
 	  m_page_mode	( "UseNode" ),
-	  m_tree		( 0 )
+	  m_tree		( 0 ),
+	  m_name_dict	( new NameDict )
 {
 	PDF_ASSERT( file != 0 ) ;
 	Dictionary self = file->ReadObj( link ).As<Dictionary>() ;
@@ -96,7 +112,10 @@ Catalog::Catalog( const Ref& link, File *file, FT_Library ft_lib )
 		}
 	}
 
-	
+	Dictionary name_dict ;
+	if ( Detach( file, self, "Names", name_dict ) )
+		m_name_dict->Read( name_dict, file ) ;
+		
 	std::cout << "catalog: " << self << std::endl ;
 }
 

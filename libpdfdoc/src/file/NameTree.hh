@@ -44,12 +44,15 @@ class Ref ;
 class NameTree
 {
 public :
-	explicit NameTree( Dictionary& self, File *file ) ;
+	NameTree( ) ;
+	NameTree( Dictionary& self, File *file ) ;
 	~NameTree( ) ;
 	
+	void Read( Dictionary& self, File *file ) ;
 	Ref Write( File *file ) const ;
 
 	const Object& LookUp( const std::string& key ) const ;
+	void Add( const std::string& key, const Object& val ) ;
 
 private :
 	typedef std::map<std::string, Object>	NameMap ;

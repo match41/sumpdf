@@ -40,38 +40,16 @@
 
 namespace pdf {
 
+NameTree::NameTree( )
+{
+}
+
 /**	constructor
 	
 */
 NameTree::NameTree( Dictionary& self, File *file )
 {
-	Array kids ;
-	if ( Detach( file, self, "Kids", kids ) )
-	{
-		for ( Array::iterator i = kids.begin() ; i != kids.end() ; ++i )
-		{
-			Dictionary kid_self = file->ReadObj( *i ).As<Dictionary>() ;
-			m_kids.push_back( new NameTree( kid_self, file ) ) ;
-		}
-	}
-	
-	Array names ;
-	if ( Detach( file, self, "Names", names ) )
-	{
-		Array::iterator it = names.begin() ;
-		while ( it != names.end() )
-		{
-			std::string key ;
-			key.swap( it->As<std::string>() ) ;
-		
-			it++ ;
-			if ( it != names.end() )
-			{
-				it->Swap( m_names[key] ) ;
-				it++ ;
-			}
-		}
-	}
+	Read( self, file ) ;
 }
 
 const Object& NameTree::LookUp( const std::string& key ) const
@@ -80,8 +58,14 @@ const Object& NameTree::LookUp( const std::string& key ) const
 	return i != m_names.end() ? i->second : Object::NullObj() ;
 }
 
+void NameTree::Add( const std::string& key, const Object& val )
+{
+	m_names.insert( std::make_pair(key, val) ) ;
+}
+
 NameTree::~NameTree( )
 {
+	std::for_each( m_kids.begin(), m_kids.end(), DeletePtr() ) ; 
 }
 
 Ref NameTree::Write( File *file ) const
@@ -118,6 +102,37 @@ Ref NameTree::Write( File *file ) const
 	}
 	
 	return file->WriteObj( self ) ;
+}
+
+void NameTree::Read( Dictionary& self, File *file )
+{
+	Array kids ;
+	if ( Detach( file, self, "Kids", kids ) )
+	{
+		for ( Array::iterator i = kids.begin() ; i != kids.end() ; ++i )
+		{
+			Dictionary kid_self = file->ReadObj( *i ).As<Dictionary>() ;
+			m_kids.push_back( new NameTree( kid_self, file ) ) ;
+		}
+	}
+	
+	Array names ;
+	if ( Detach( file, self, "Names", names ) )
+	{
+		Array::iterator it = names.begin() ;
+		while ( it != names.end() )
+		{
+			std::string key ;
+			key.swap( it->As<std::string>() ) ;
+		
+			it++ ;
+			if ( it != names.end() )
+			{
+				it->Swap( m_names[key] ) ;
+				it++ ;
+			}
+		}
+	}
 }
 
 } // end of namespace

@@ -57,7 +57,8 @@ void NameTreeTest::TestSimple( )
 	Dictionary self ;
 	self["Names"] = Array( Begin(name), End(name) ) ;
 
-	NameTree subject( self, &file ) ;
+	NameTree subject;
+	subject.Read( self, &file ) ;
 	PDF_ASSERT_EQUAL( subject.LookUp( "v1" ), Object(100) ) ;
 	PDF_ASSERT_EQUAL( subject.LookUp( "v2" ), Object(101.0) ) ; 
 	PDF_ASSERT_EQUAL( subject.LookUp( "v3" ), Object::NullObj() ) ;
@@ -66,12 +67,10 @@ void NameTreeTest::TestSimple( )
 void NameTreeTest::TestWrite( )
 {
 	MockFile file ;
-	Object kids[] = { "nestal", 100, "ada", 101.0 } ;
-
-	Dictionary self ;
-	self["Names"] = Array( Begin(kids), End(kids) ) ;
+	NameTree subject ;
+	subject.Add( "nestal", 100.1 ) ;
+	subject.Add( "ada", 110.1 ) ;
 	
-	NameTree subject( self, &file ) ;
 	Ref r = subject.Write( &file ) ; 
 	std::cout << file.Find( r ) << std::endl ;
 }

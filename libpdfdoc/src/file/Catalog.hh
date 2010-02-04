@@ -37,6 +37,7 @@
 #include FT_FREETYPE_H
 
 #include <vector>
+#include <memory>
 
 namespace pdf {
 
@@ -71,13 +72,16 @@ public :
 	Resources*	GetResource( ) ;
 
 private :
-//	CompleteObj	m_self ;
 	Name		m_version ;
 	Name		m_page_layout ;
 	Name		m_page_mode ;
 
 	PageTree	*m_tree ;
 	std::map<Name, Destination>	m_named_dests ;
+	
+	// name dictionary
+	struct NameDict ;
+	std::auto_ptr<NameDict>	m_name_dict ;
 } ;
 
 } // end of namespace
