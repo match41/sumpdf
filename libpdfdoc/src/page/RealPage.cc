@@ -77,8 +77,6 @@ void RealPage::Read( Dictionary& self, File *file )
 	Dictionary res ;
 	if ( Detach( file, self, "Resources", res ) )
 		m_resources.Read( res, file ) ;
-	
-//	m_self.Read( self, file ) ;
 }
 
 Rect RealPage::MediaBox( ) const

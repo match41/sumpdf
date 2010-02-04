@@ -96,14 +96,8 @@ Catalog::Catalog( const Ref& link, File *file, FT_Library ft_lib )
 		}
 	}
 
-	// we don't know how to handle that now
-//	self.erase( "Names" ) ;
-//	self.erase( "OpenAction" ) ;
-//	
-//	// forget it
-//	self.clear( ) ;
-//	
-//	m_self.Read( self, file ) ;
+	
+	std::cout << "catalog: " << self << std::endl ;
 }
 
 Catalog::~Catalog( )
