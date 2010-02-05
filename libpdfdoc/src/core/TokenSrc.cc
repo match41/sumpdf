@@ -27,6 +27,7 @@
 #include "TokenSrc.hh"
 
 #include "util/SymbolInfo.hh"
+#include "util/Debug.hh"
 
 #include <boost/bind.hpp>
 
@@ -127,7 +128,8 @@ TokenSrc& TokenSrc::GetChar( char& ch )
 	else
 	{
 		const std::string& s = m_cache.back().Get() ;
-		assert( m_pos < s.size( ) ) ;
+		
+		PDF_ASSERT( m_pos < s.size( ) ) ;
 		ch = s[m_pos] ;
 		
 		// read the last character of the token. now the whole token

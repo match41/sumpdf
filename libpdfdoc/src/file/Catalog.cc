@@ -115,8 +115,6 @@ Catalog::Catalog( const Ref& link, File *file, FT_Library ft_lib )
 	Dictionary name_dict ;
 	if ( Detach( file, self, "Names", name_dict ) )
 		m_name_dict->Read( name_dict, file ) ;
-		
-	std::cout << "catalog: " << self << std::endl ;
 }
 
 Catalog::~Catalog( )

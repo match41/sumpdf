@@ -31,6 +31,8 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+namespace pdfut {
+
 class ArrayTest : public CppUnit::TestFixture
 {
 public :
@@ -42,13 +44,17 @@ public :
 		CPPUNIT_TEST( TestDifferent ) ;
 		CPPUNIT_TEST( TestRead ) ;
 		CPPUNIT_TEST( TestString ) ;
+		CPPUNIT_TEST( TestTJ ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
 private :
 	void TestNormal( ) ;
 	void TestDifferent( ) ;
 	void TestRead( ) ;
+	void TestTJ( ) ;
 	void TestString( ) ;
 } ;
+
+} // end of namespace
 
 #endif

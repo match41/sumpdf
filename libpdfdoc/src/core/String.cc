@@ -204,18 +204,40 @@ TokenSrc& String::ReadXDigit( TokenSrc& is, char& digit )
 
 void String::DecodeHexString( TokenSrc& is )
 {
-	char ch ;
-	while ( ReadXDigit( is, ch ) )
+	// the 3rd byte is never written to keep it null-terminated
+	char ch[3] = {} ;
+	
+	while ( ReadXDigit( is, ch[0] ) )
 	{
-		if ( ch == '>' )
+		if ( ch[0] == '>' )
 			break ;
-			
-		char ch2 ;
-		if ( std::isxdigit( ch ) && ReadXDigit( is, ch2 ) &&
-		     std::isxdigit( ch2 ) )
+		
+		if ( std::isxdigit( ch[0] ) )
 		{
-			char result[3] = { ch, ch2, '\0' } ;
-			m_value.push_back( static_cast<char>(std::strtol( result, 0, 16 )));
+			if ( !ReadXDigit( is, ch[1] ) )
+			{
+				is.SetState( std::ios::failbit ) ;
+				break ;
+			}
+			else
+			{
+				bool quit = false ;
+				if ( ch[1] == '>' )
+				{
+					ch[1] = '0' ; // treat as 0 for missing second character
+					quit = true ;
+				}
+				else if ( !std::isxdigit( ch[1] ) )
+				{
+					is.SetState( std::ios::failbit ) ;
+					break ;
+				}
+				
+				m_value.push_back( static_cast<char>(std::strtol( ch, 0, 16 )));
+				
+				if ( quit )
+					break ;
+			}
 		}
 		else
 			is.SetState( std::ios::failbit ) ;
@@ -241,11 +263,13 @@ std::ostream& operator<<( std::ostream& os, const String& b )
 {
 	if ( b.IsHex() )
 	{
-		os << '<' << std::hex << std::setw( 2 ) << std::setfill('0') ;
-		std::transform(
-			b.m_value.begin( ),
-			b.m_value.end( ),
-		    std::ostream_iterator<unsigned short>( os ), ToInt ) ;
+		os << '<' ;
+		for ( std::string::const_iterator i = b.m_value.begin() ;
+			i != b.m_value.end() ; ++i )
+		{
+			os	<< std::hex << std::setw( 2 ) << std::setfill('0')
+				<< static_cast<unsigned short>(static_cast<unsigned char>(*i)) ;
+		}
 		os << '>' << std::dec ;
 	}
 	else
