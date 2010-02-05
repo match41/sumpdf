@@ -244,15 +244,8 @@ Ref FontDescriptor::Write( File *file ) const
 			s.AddDictionaryEntry( "Length3", m_length3 ) ;
 			self["FontFile"]	= file->WriteObj( s ) ;
 		}
-
-		// streams must be indirect objects
-		Name font_file_name =
-		(
-			m_type == font::type1		? "FontFile"	: (
-			m_type == font::truetype	? "FontFile2"	: "FontFile3" )
-		) ;
-		
-		self[font_file_name]	= file->WriteObj(s) ;
+		else
+			self["FontFile3"]	= file->WriteObj( s ) ;
 	}
 	
 	if ( m_stretch >= ultra_condensed && m_stretch <= ultra_expanded )  

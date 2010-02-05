@@ -30,12 +30,15 @@
 
 #include "RefObjMap.hh"
 #include "core/ObjWrapper.hh"
+#include "file/MakeFunc.hh"
 
 namespace pdf {
 
 class BaseFont ;
 class Object ;
 class PageNode ;
+class RealResources ;
+class RefCounter ;
 
 typedef RefObjMap<BaseFont>			FontPool ;
 typedef RefObjMap<ObjWrapper>		ObjectPool ;
@@ -48,6 +51,36 @@ struct ResourcePool
 	PagePool	pages ;
 	
 	Ref Find( void *anything ) const ;
+} ;
+
+class ElementPool
+{
+public :
+	template <typename Element>
+	Element* Load( const Ref& key, const MakeFunc<Element>& make )
+	{
+		RefCounter *tmp = m_pool.Find( key ) ;
+		if ( tmp == 0 )
+		{
+			Element *t = make() ;
+			
+			// never add Ref() to the map.
+			// Ref() is reserved for the case in which we don't want to
+			// share the element.
+			if ( key != Ref() )
+				m_pool.Add( key, t ) ;
+			
+			return t ;
+		}
+		else
+		{
+			// throw exception if type mismatch
+			return &dynamic_cast<Element&>( *tmp ) ;
+		}
+	}
+
+private :
+	RefObjMap<RefCounter>	m_pool ;
 } ;
 
 } // end of namespace

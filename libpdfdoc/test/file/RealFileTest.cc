@@ -169,25 +169,3 @@ void RealFileTest::TestReadStream( )
 	PDF_ASSERT_EQUAL( count, exp_size ) ;
 	PDF_ASSERT_EQUAL( output.str(), exp.str() ) ;
 }
-
-void RealFileTest::TestReadObjectLinks( )
-{
-	// open expected file to compare and verify
-	std::ifstream file( (std::string(TEST_DATA_DIR) +
-	                    "FileTestSimple.pdf").c_str( ),
-	                    std::ios::in | std::ios::binary ) ;
-	RealFile f( &file ) ;
-	
-	// this is the catalog
-	Object obj = f.ReadObj( f.Root( ) ) ;
-	std::map<Ref, ObjWrapper*> objmap ;
-	f.ReadObjectLinks( obj, objmap ) ;
-	
-	CPPUNIT_ASSERT_EQUAL( objmap.size(), static_cast<std::size_t>(5UL) ) ;
-	PDF_ASSERT_EQUAL( objmap[Ref( 3, 0 )]->Get(), *m_page ) ; 
-	CPPUNIT_ASSERT( m_content->IsContentEqual( objmap[Ref( 4, 0 )]->Get() ) ) ;
-	PDF_ASSERT_EQUAL( objmap[Ref( 2, 0 )]->Get(), *m_res ) ;
-	PDF_ASSERT_EQUAL( objmap[Ref( 5, 0 )]->Get(), *m_font ) ;
-	PDF_ASSERT_EQUAL( objmap[Ref( 1, 0 )]->Get(), *m_page_tree ) ;
-	
-}

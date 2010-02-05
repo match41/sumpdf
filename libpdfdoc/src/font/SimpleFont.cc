@@ -373,11 +373,6 @@ Ref SimpleFont::Write( File *file ) const
 	
 	if ( !m_encoding.Is<void>() )
 		dict["Encoding"]		= m_encoding ;
-	else
-		dict["Encoding"]		= Name( "WinAnsiEncoding" ) ;
-	
-	if ( !m_to_unicode.Is<void>() )
-		dict["ToUnicode"]		= m_to_unicode ;
 	
 	if ( m_widths.empty() )
 	{
@@ -397,8 +392,8 @@ Ref SimpleFont::Write( File *file ) const
 
 	dict["FontDescriptor"]	= m_descriptor->Write( file ) ;
 
-//	if ( !m_to_unicode.IsNull( ) )
-//		dict.Get()["ToUnitcode"]	= file->WriteObj( m_to_unicode ) ;
+	if ( !m_to_unicode.Is<void>( ) )
+		dict["ToUnitcode"]	= file->WriteObj( m_to_unicode ) ;
 
 	return file->WriteObj( dict ) ;
 }

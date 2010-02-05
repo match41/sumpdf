@@ -31,7 +31,7 @@
 
 #include "core/Dictionary.hh"
 #include "core/Name.hh"
-#include "file/CompleteObj.hh"
+//#include "file/CompleteObj.hh"
 
 // freetype headers
 #include <ft2build.h>

@@ -29,7 +29,7 @@
 
 #include "core/Dictionary.hh"
 #include "core/Name.hh"
-#include "file/CompleteObj.hh"
+//#include "file/CompleteObj.hh"
 #include "file/Destination.hh"
 
 // freetype headers

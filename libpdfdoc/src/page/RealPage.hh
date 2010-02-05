@@ -36,7 +36,6 @@
 #include "RealResources.hh"
 #include "core/Dictionary.hh"
 #include "core/Token.hh"
-#include "file/CompleteObj.hh"
 #include "stream/Stream.hh"
 #include "util/Rect.hh"
 

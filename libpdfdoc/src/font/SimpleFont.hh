@@ -34,7 +34,7 @@
 #include "core/Array.hh"
 #include "core/Name.hh"
 #include "core/Object.hh"
-#include "file/CompleteObj.hh"
+//#include "file/CompleteObj.hh"
 
 // boost library
 #include <boost/tr1/unordered_map.hpp>

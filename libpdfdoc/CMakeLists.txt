@@ -75,7 +75,6 @@ set( FILE_HDRS		${FILE_DIR}/RealFile.hh
 					${FILE_DIR}/Catalog.hh
 					${FILE_DIR}/ObjectReader.hh
 					${FILE_DIR}/RefObjMap.hh
-					${FILE_DIR}/CompleteObj.hh
 					${FILE_DIR}/Destination.hh
 					${FILE_DIR}/NameTree.hh
 					${FILE_DIR}/ResourcePool.hh )
@@ -186,7 +185,6 @@ set( FILE_SRCS		${FILE_DIR}/RealFile.cc
 					${FILE_DIR}/Catalog.cc
 					${FILE_DIR}/ResourcePool.cc
 					${FILE_DIR}/Destination.cc
-					${FILE_DIR}/CompleteObj.cc
 					${FILE_DIR}/NameTree.cc
 					${FILE_DIR}/DocInfo.cc )
 
@@ -503,7 +501,6 @@ set( UT_SRCS	test/core/TokenTest.cc
 				test/file/RealFileTest.cc
 				test/file/CatalogTest.cc
 				test/file/RefObjMapTest.cc
-				test/file/CompleteObjTest.cc
 				test/file/NameTreeTest.cc
 				
 				test/util/MatrixTest.cc

@@ -67,9 +67,9 @@ public :
 	Ref AllocLink( ) ;
 	void WriteObj( const Object& obj, const Ref& link ) ;
 	ResourcePool* Pool( ) ;
-	void ReadObjectLinks(
-		const Object& obj,
-		std::map<Ref, ObjWrapper*>& links ) ;
+//	void ReadObjectLinks(
+//		const Object& obj,
+//		std::map<Ref, ObjWrapper*>& links ) ;
 	
 private :
 	void ReadXRef( std::size_t offset, Dictionary& trailer ) ;

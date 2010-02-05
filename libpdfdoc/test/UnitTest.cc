@@ -56,7 +56,6 @@
 #include "file/RealFileTest.hh"
 #include "file/CatalogTest.hh"
 #include "file/RefObjMapTest.hh"
-#include "file/CompleteObjTest.hh"
 #include "file/NameTreeTest.hh"
 #include "font/SimpleFontTest.hh"
 #include "page/PageNodeTest.hh"
@@ -83,7 +82,6 @@ int main( int argc, char **argv )
 	runner.addTest( XObjectTest::suite( ) ) ;
 	runner.addTest( StreamTest::suite( ) ) ;
 	runner.addTest( RealFileTest::suite( ) ) ;
-	runner.addTest( CompleteObjTest::suite( ) ) ;
 	runner.addTest( CatalogTest::suite( ) ) ;
 	runner.addTest( RefObjMapTest::suite( ) ) ;
 	runner.addTest( PageNodeTest::suite( ) ) ;

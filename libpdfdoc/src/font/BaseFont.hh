@@ -30,6 +30,8 @@
 #include "font/Font.hh"
 #include "util/RefCounter.hh"
 
+#include "file/MakeFunc.hh"
+
 namespace pdf {
 
 namespace ft
@@ -55,6 +57,19 @@ public :
 } ;
 
 BaseFont* CreateFont( Dictionary& obj, File *file, const ft::Library& ft ) ;
+
+template <>
+struct MakeFunc<BaseFont>
+{
+	BaseFont* operator()( )
+	{
+		return CreateFont( *obj, file, *ft ) ;
+	}
+	
+	Dictionary	*obj ;
+	File		*file ;
+	ft::Library	*ft ;
+} ;
 
 } // end of namespace
 

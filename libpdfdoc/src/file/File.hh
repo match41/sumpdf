@@ -56,9 +56,9 @@ public :
 	virtual void WriteObj( const Object& obj, const Ref& link ) = 0 ;
 
 	virtual ResourcePool* Pool( ) = 0 ;
-	virtual void ReadObjectLinks(
-		const Object& obj,
-		std::map<Ref, ObjWrapper*>& links ) = 0 ;
+//	virtual void ReadObjectLinks(
+//		const Object& obj,
+//		std::map<Ref, ObjWrapper*>& links ) = 0 ;
 } ;
 
 } // end of namespace
