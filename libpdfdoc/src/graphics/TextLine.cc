@@ -48,6 +48,7 @@
 #include <set>
 
 #include <iostream>
+#include <iomanip>
 
 namespace pdf {
 

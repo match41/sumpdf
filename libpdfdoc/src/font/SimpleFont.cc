@@ -55,6 +55,7 @@
 #include <algorithm>
 #include <iterator>
 #include <fstream>
+#include <cstring>
 
 namespace pdf {
 
@@ -300,6 +301,9 @@ unsigned SimpleFont::UnitsPerEM( ) const
 void SimpleFont::LoadGlyphs( )
 {
 	PDF_ASSERT( m_face != 0 ) ;
+
+	if ( m_face->charmap == 0 && m_face->num_charmaps > 0 )
+		FT_Select_Charmap( m_face, m_face->charmaps[0]->encoding ) ;
 
 	// traverse all characters
 	unsigned		gindex ;
