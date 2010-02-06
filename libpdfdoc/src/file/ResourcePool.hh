@@ -30,7 +30,8 @@
 
 #include "RefObjMap.hh"
 #include "core/ObjWrapper.hh"
-#include "file/MakeFunc.hh"
+
+#include <boost/function.hpp>
 
 namespace pdf {
 
@@ -57,12 +58,12 @@ class ElementPool
 {
 public :
 	template <typename Element>
-	Element* Load( const Ref& key, const MakeFunc<Element>& make )
+	Element* Load( const Ref& key, const boost::function<Element*()>& maker )
 	{
 		RefCounter *tmp = m_pool.Find( key ) ;
 		if ( tmp == 0 )
 		{
-			Element *t = make() ;
+			Element *t = maker() ;
 			
 			// never add Ref() to the map.
 			// Ref() is reserved for the case in which we don't want to
@@ -77,6 +78,11 @@ public :
 			// throw exception if type mismatch
 			return &dynamic_cast<Element&>( *tmp ) ;
 		}
+	}
+	
+	void Add( const Ref& key, RefCounter *element )
+	{
+		m_pool.Add( key, element ) ;
 	}
 
 private :

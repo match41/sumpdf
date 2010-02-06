@@ -82,10 +82,10 @@ void RealResourcesTest::TestReadExistFont( )
 	MockFile file ;
 	file.AddObj( pdf::Ref(1,0),  rdict ) ;
 
-	file.Pool()->fonts.Add( pdf::Ref(18, 0 ), f ) ;
+//	file.Pool()->fonts.Add( pdf::Ref(18, 0 ), f ) ;
 
-	pdf::Object obj( rdict ) ;
-	pdf::RealResources subject( m_ft ) ;
-	subject.Read( rdict, &file ) ;
-	PDF_ASSERT_EQUAL( f->UseCount(), 2u ) ;
+//	pdf::Object obj( rdict ) ;
+//	pdf::RealResources subject( m_ft ) ;
+//	subject.Read( rdict, &file ) ;
+//	PDF_ASSERT_EQUAL( f->UseCount(), 2u ) ;
 }

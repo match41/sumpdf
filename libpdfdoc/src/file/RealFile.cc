@@ -343,41 +343,9 @@ Ref RealFile::DocInfo( ) const
 	return info.Is<Ref>() ? info.As<Ref>() : Ref() ;
 }
 
-ResourcePool* RealFile::Pool( )
+ElementPool* RealFile::Pool( )
 {
 	return &m_pool ;
 }
-
-//void RealFile::CacheObject( const Object& obj, std::map<Ref, ObjWrapper*>& links )
-//{
-//	if ( obj.Is<Ref>() )
-//	{
-//		const Ref& link = obj.As<Ref>() ;
-//		
-//		ObjWrapper *wp = m_pool.objs.Find( link ) ;
-//		if ( wp == 0 )
-//		{
-//			wp = new ObjWrapper( ReadObj( link ) ) ;
-//			m_pool.objs.Add( link, wp ) ;
-//			
-//			ReadObjectLinks( wp->Get(), links ) ;
-//		}
-//		else
-//		{
-//			assert( wp->UseCount() > 1 ) ;
-//		}
-//
-//		// the newly added ref count belongs to "links"
-//		links.insert( std::make_pair( link, wp ) ) ;
-//	}
-//}
-
-//void RealFile::ReadObjectLinks(
-//	const Object& obj,
-//	std::map<Ref, ObjWrapper*>& links )
-//{
-//	using namespace boost ;
-//	ForEachObj( obj, bind( &RealFile::CacheObject, this, _1, ref(links) ) ) ;
-//}
 
 } // end of namespace

@@ -114,12 +114,20 @@ void RealResources::ReadFontDict( Dictionary& self, File *file )
 	Dictionary dict ;
 	if ( Detach( file, self, "Font", dict ) )
 	{
-		FontPool *font_pool = &file->Pool( )->fonts ;
+		ElementPool *pool = file->Pool( ) ;
 		for ( Dictionary::iterator i  = dict.begin( ) ; i != dict.end( ) ; ++i )
 		{
 			ft::Library lib = { m_ft_lib } ;
 		
-			BaseFont *font = 0 ;
+			Dictionary font_dict ;
+		
+			BaseFont *font = pool->Load(
+				i->second.To<Ref>(std::nothrow),
+				BaseFont::Maker(
+					DeRefObj( file, i->second, font_dict ),
+					file,
+					lib ) ) ;
+/*
 			if ( i->second.Is<Ref>() )
 			{
 				const Ref& link = i->second.As<Ref>() ;
@@ -136,6 +144,7 @@ void RealResources::ReadFontDict( Dictionary& self, File *file )
 			// the font is not an indirect object, so it can't be shared.
 			else if ( i->second.Is<Dictionary>() )
 				font = CreateFont( i->second.As<Dictionary>(), file, lib ) ;
+*/
 
 			m_fonts.insert( FontMap::value_type(i->first, font) ) ;
 		}
@@ -147,7 +156,7 @@ Ref RealResources::WriteFontDict( File *file ) const
 	PDF_ASSERT( file != 0 ) ;
 	PDF_ASSERT( file->Pool() != 0 ) ;
 
-	FontPool *pool = &file->Pool( )->fonts ;
+//	ElementPool *pool = &file->Pool( ) ;
 	Dictionary font_dict ;
 
 	for ( FontMap::left_const_iterator i = m_fonts.left.begin() ;
@@ -155,9 +164,9 @@ Ref RealResources::WriteFontDict( File *file ) const
 	{
 		PDF_ASSERT( i->second != 0 ) ;
 	
-		Ref link = pool->Find( i->second ) ;
+		Ref link = /*pool->Find( i->second ) ;
 		if ( link == Ref() )
-			link = i->second->Write( file ) ;
+			link =*/ i->second->Write( file ) ;
 		
 		font_dict.insert( std::make_pair( i->first, link ) ) ;
 	}

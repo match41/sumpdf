@@ -64,13 +64,7 @@ const pdf::Object& MockFile::Find( const pdf::Ref& link ) const
 	return i != m_map.end( ) ? i->second : pdf::Object::NullObj() ;
 }
 
-pdf::ResourcePool* MockFile::Pool( )
+pdf::ElementPool* MockFile::Pool( )
 {
 	return &m_pool ;
-}
-
-void MockFile::ReadObjectLinks(
-	const pdf::Object& obj,
-	std::map<pdf::Ref, pdf::ObjWrapper*>& links )
-{
 }

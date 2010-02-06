@@ -38,6 +38,7 @@
 #include <iosfwd>
 #include <sstream>
 #include <stdexcept>
+#include <new>
 
 namespace pdf {
 
@@ -230,6 +231,19 @@ public :
 	operator T() const
 	{
 		return To<T>( ) ;
+	}
+
+	template <typename T>
+	T To( std::nothrow_t ) const
+	{
+		try
+		{
+			return As<T>() ;
+		}
+		catch ( BadType& )
+		{
+			return T() ;
+		}
 	}
 
 	///	Conversion function to arbitrary types

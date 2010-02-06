@@ -52,18 +52,17 @@ void Destination::Read( Array& array, File *file )
 	m_options.swap( array ) ;
 	if ( m_options.size() > 1 )
 	{
-		PagePool *pool = &file->Pool()->pages ;
-		Ref page_link = m_options[0].As<Ref>() ;
-		m_page = dynamic_cast<RealPage*>( pool->Find( page_link ) ) ;
-std::cout << "link to page: " << m_page << std::endl ;
+//		PagePool *pool = &file->Pool()->pages ;
+//		Ref page_link = m_options[0].As<Ref>() ;
+//		m_page = dynamic_cast<RealPage*>( pool->Find( page_link ) ) ;
 	}
 }
 
 Ref Destination::Write( File *file ) const
 {
 	Array self( m_options ) ;
-	PagePool *pool = &file->Pool()->pages ;
-	self[0] = pool->Find( m_page ) ;
+//	PagePool *pool = &file->Pool()->pages ;
+//	self[0] = pool->Find( m_page ) ;
 	return file->WriteObj( self ) ;
 }
 

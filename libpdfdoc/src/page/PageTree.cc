@@ -35,13 +35,13 @@
 #include "file/File.hh"
 #include "file/ResourcePool.hh"
 
+#include "util/Debug.hh"
 #include "util/Exception.hh"
 #include "util/Util.hh"
 
 #include <boost/bind.hpp>
 #include <boost/lambda/construct.hpp>
 
-#include <cassert>
 #include <numeric>
 
 #include <iostream>
@@ -53,7 +53,7 @@ PageTree::PageTree( PageTree *parent )
 	  m_resources( parent == 0 ? 0 : parent->GetResource() ),
 	  m_count( 0 )
 {
-	assert( parent != 0 ) ;
+	PDF_ASSERT( parent != 0 ) ;
 	if ( parent )
 		parent->AppendNode( this ) ;
 }
@@ -73,14 +73,14 @@ PageTree::~PageTree( )
 
 void PageTree::Read( Dictionary& dict, File *file )
 {
-	assert( file != 0 ) ;
-	assert( file->Pool() != 0 ) ;
+	PDF_ASSERT( file != 0 ) ;
+	PDF_ASSERT( file->Pool() != 0 ) ;
 
 	Array pages ;
 	if ( !Detach( file, dict, "Kids", pages ) )
 		throw ParseError( "no children in page tree" ) ;
 
-	PagePool *pool = &file->Pool()->pages;  
+//	PagePool *pool = &file->Pool()->pages;  
 		
 	for ( Array::iterator i = pages.begin() ; i != pages.end() ; ++i )
 	{
@@ -103,8 +103,8 @@ void PageTree::Read( Dictionary& dict, File *file )
 			throw ParseError( "invalid page type" ) ;
 		assert( p != 0 ) ;
 		
-		if ( i->Is<Ref>() )
-			pool->Add( *i, p ) ;
+//		if ( i->Is<Ref>() )
+//			pool->Add( *i, p ) ;
 	}
 
 	// leaf count is required
@@ -118,9 +118,9 @@ void PageTree::Read( Dictionary& dict, File *file )
 
 void PageTree::Write( const Ref& link, File *file, const Ref& ) const
 {
-	assert( file != 0 ) ;
-	assert( file->Pool() != 0 ) ;
-	PagePool *pool = &file->Pool()->pages;  
+	PDF_ASSERT( file != 0 ) ;
+	PDF_ASSERT( file->Pool() != 0 ) ;
+	ElementPool *pool = file->Pool() ;  
 
 	std::vector<Ref> kids ;
 	for ( std::vector<PageNode*>::const_iterator i  = m_kids.begin() ;

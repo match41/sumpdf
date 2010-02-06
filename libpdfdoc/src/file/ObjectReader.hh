@@ -122,6 +122,20 @@ ObjType DeRefObj( File *file, const Object& obj )
 		return obj.As<ObjType>( )  ;
 }
 
+template <typename ObjType>
+ObjType& DeRefObj( File *file, Object& src, ObjType& dest )
+{
+	if ( src.Is<Ref>( ) )
+	{
+		ObjType obj = file->ReadObj( src.As<Ref>() ) ;
+		std::swap( dest, obj ) ;
+	}
+	else
+		std::swap( dest, src.As<ObjType>( ) ) ;
+	
+	return dest ;
+}
+
 } // end of namespace
 
 #endif // OBJECTREADER_HH_

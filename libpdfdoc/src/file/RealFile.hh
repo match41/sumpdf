@@ -66,10 +66,7 @@ public :
 	Ref WriteObj( const Object& obj ) ;	
 	Ref AllocLink( ) ;
 	void WriteObj( const Object& obj, const Ref& link ) ;
-	ResourcePool* Pool( ) ;
-//	void ReadObjectLinks(
-//		const Object& obj,
-//		std::map<Ref, ObjWrapper*>& links ) ;
+	ElementPool* Pool( ) ;
 	
 private :
 	void ReadXRef( std::size_t offset, Dictionary& trailer ) ;
@@ -91,7 +88,7 @@ private :
 	std::ostream	*m_out ;
 		
 	Dictionary		m_trailer ;
-	ResourcePool	m_pool ;
+	ElementPool	m_pool ;
 } ;
 
 } // end of namespace
