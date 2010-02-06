@@ -36,7 +36,7 @@ namespace pdf {
 class Object ;
 class Ref ;
 class StreamFilter ;
-struct ElementPool ;
+class ElementPool ;
 
 /*!	\brief	PDF file interface
 

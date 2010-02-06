@@ -30,8 +30,6 @@
 #include "font/Font.hh"
 #include "util/RefCounter.hh"
 
-#include "file/MakeFunc.hh"
-
 #include <boost/function.hpp>
 
 namespace pdf {
