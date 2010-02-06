@@ -54,15 +54,15 @@ void Destination::Read( Array& array, File *file )
 	{
 		ElementPool *pool = file->Pool( ) ;
 		Ref page_link = m_options[0].As<Ref>() ;
-		m_page = pool->Find<RealPage>( page_link ) ;
+		m_page = pool->Acquire<RealPage>( page_link ) ;
 	}
 }
 
 Ref Destination::Write( File *file ) const
 {
 	Array self( m_options ) ;
-//	PagePool *pool = &file->Pool()->pages ;
-//	self[0] = pool->Find( m_page ) ;
+	ElementPool *pool = file->Pool() ;
+	self[0] = pool->Find( m_page ) ;
 	return file->WriteObj( self ) ;
 }
 

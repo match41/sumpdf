@@ -76,6 +76,16 @@ public :
 		return i != m_pool.left.end() ? &dynamic_cast<Element&>(*i->second) : 0;
 	}
 
+	template <typename Element>
+	Element* Acquire( const Ref& key )
+	{
+		Element *e = Find<Element>( key ) ;
+		if ( e != 0 )
+			e->AddRef( ) ;
+			
+		return e ;
+	}
+
 	Ref Find( RefCounter *element )
 	{
 		MapType::right_iterator i = m_pool.right.find( element ) ;

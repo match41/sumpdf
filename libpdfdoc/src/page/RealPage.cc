@@ -130,7 +130,16 @@ void RealPage::Write( const Ref& link, File *file, const Ref& parent ) const
 	Dictionary self ;
 	self["Type"]		= Name( "Page" ) ;
  	self["Contents"]	= WriteContent( file ) ;
-	self["Resources"]	= m_resources->Write( file ) ;
+
+	ElementPool *pool = file->Pool() ;
+	Ref ref = pool->Find( m_resources ) ;
+	if ( ref == Ref() )
+	{
+		ref = m_resources->Write( file ) ;
+		pool->Add( ref, m_resources ) ;
+	}
+	self["Resources"]	= ref ;
+
 	self["Parent"]	= parent ;
 
     if ( m_media_box != Rect() )

@@ -68,8 +68,10 @@ PageTree::PageTree( FT_Library ft_lib )
 
 PageTree::~PageTree( )
 {
-	std::for_each( m_kids.begin(), m_kids.end(),
-	               boost::lambda::delete_ptr( ) ) ;
+	std::for_each(
+		m_kids.begin(),
+		m_kids.end(),
+	    boost::mem_fn( &PageNode::Release ) ) ;
 	m_resources->Release( ) ;
 }
 
@@ -149,7 +151,15 @@ void PageTree::Write( const Ref& link, File *file, const Ref& ) const
 	self["Kids"]		= Array( kids.begin( ), kids.end( ) ) ;
 	self["Count"]		= m_count ;
 	self["MediaBox"]	= Array( Begin( mbox ), End( mbox ) ) ;
-	self["Resources"]	= m_resources->Write( file ) ;
+	
+	Ref ref = pool->Find( m_resources ) ;
+	if ( ref == Ref() )
+	{
+		ref = m_resources->Write( file ) ;
+		pool->Add( ref, m_resources ) ;
+	}
+	
+	self["Resources"]	= ref ;
 	
 	file->WriteObj( self, link ) ;
 }
