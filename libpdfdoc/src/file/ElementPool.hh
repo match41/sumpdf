@@ -37,30 +37,6 @@ class RefCounter ;
 class ElementPool
 {
 public :
-	template <typename Maker>
-	typename Maker::result_type Load( const Ref& key, Maker maker )
-	{
-		typedef typename Maker::result_type ElementPtr ;
-	
-		RefCounter *tmp = m_pool.Find( key ) ;
-		if ( tmp == 0 )
-		{
-			ElementPtr t = maker() ;
-			
-			// never add Ref() to the map.
-			// Ref() is reserved for the case in which we don't want to
-			// share the element.
-			if ( key != Ref() )
-				m_pool.Add( key, t ) ;
-			
-			return t ;
-		}
-		
-		// throw exception if type mismatch
-		else
-			return dynamic_cast<ElementPtr>( tmp ) ;
-	}
-	
 	template <typename Element>
 	bool Find( const Ref& link, Element* &element )
 	{
@@ -68,7 +44,7 @@ public :
 		{
 			if ( element != 0 )
 				element->Release( ) ;
-				
+			
 			element = Find<Element>( link ) ;
 			return true ;
 		}

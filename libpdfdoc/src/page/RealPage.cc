@@ -74,17 +74,17 @@ void RealPage::Read( Dictionary& self, File *file )
 	if ( Detach( file, self, "MediaBox", a ) )
 		m_media_box = Rect( a.begin( ), a.end( ) ) ;
 
-	if ( m_resources != 0 )
-		m_resources->Release( ) ;
-	
 	ElementPool *pool = file->Pool( ) ;
-	m_resources = pool->Load(
-		self["Resources"].To<Ref>(std::nothrow),
-		boost::bind(
-			NewPtr<RealResources>(),
-			m_parent->GetResource(),
-			self["Resources"],
-			file ) ) ;
+	Ref link = self["Resources"].To<Ref>( std::nothrow ) ;
+	if ( !pool->Find( link, m_resources ) )  
+	{
+		Dictionary res_dict ;
+		if ( Detach( file, self, "Resources", res_dict ) )
+		{
+			m_resources->Read( res_dict, file ) ;
+			pool->Add( link, m_resources ) ; 
+		}
+	}
 }
 
 RealPage::~RealPage( )

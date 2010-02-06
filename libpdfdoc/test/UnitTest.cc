@@ -57,6 +57,7 @@
 #include "file/CatalogTest.hh"
 #include "file/RefObjMapTest.hh"
 #include "file/NameTreeTest.hh"
+#include "file/ElementPoolTest.hh"
 #include "font/SimpleFontTest.hh"
 #include "page/PageNodeTest.hh"
 #include "image/PngImageTest.hh"
@@ -90,6 +91,7 @@ int main( int argc, char **argv )
 	runner.addTest( RealContentTest::suite( ) ) ;
 	runner.addTest( TextLineTest::suite( ) ) ;
 	runner.addTest( NameTreeTest::suite( ) ) ;
+	runner.addTest( ElementPoolTest::suite( ) ) ;
 	
 // freetype library is optional
 #ifdef HAVE_FREETYPE

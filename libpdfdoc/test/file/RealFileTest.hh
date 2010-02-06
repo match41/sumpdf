@@ -38,6 +38,8 @@ namespace pdf
 	class File ;
 }
 
+namespace pdfut {
+
 /*!	\brief	brief description
 	
 	this class represents
@@ -70,5 +72,7 @@ private :
 	pdf::Dictionary	*m_doc_info ;
 	pdf::Dictionary	*m_catalog ;
 } ;
+
+} // end of namespace
 
 #endif

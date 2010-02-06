@@ -1,4 +1,4 @@
-/***************************************************************************
+/***************************************************************************\
  *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
@@ -15,44 +15,61 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+\***************************************************************************/
 
-/*!
-	\file	File.hh
-	\brief	definition the File class
-	\date	Fri Mar 21 2008
+/**	\file	ElementPoolTest.cc
+	\brief	implementation of the ElementPoolTest class
+	\date	Feb 6, 2010
 	\author	Nestal Wan
 */
 
-#ifndef __PDF_FILE_HEADER_INCLUDED__
-#define __PDF_FILE_HEADER_INCLUDED__
+#include "ElementPoolTest.hh"
 
-namespace pdf {
+#include "file/ElementPool.hh"
+#include "util/RefCounter.hh"
 
-class Object ;
-class Ref ;
-class ElementPool ;
+#include "mock/Assert.hh"
 
-/*!	\brief	PDF file interface
+namespace pdfut {
 
-	This class represents the interface of PDF file structure. It allows the
-	caller to read PDF core objects base on their reference.
-*/
-class File
+using namespace pdf ;
+
+namespace
 {
-protected :
-	virtual ~File( ) ;
+	struct TestElement : public RefCounter
+	{
+	} ;
+}
 
-public :
-	virtual Object ReadObj( const Ref& obj ) = 0 ;
-	virtual Ref WriteObj( const Object& obj ) = 0 ;
+ElementPoolTest::ElementPoolTest( )
+{
+}
 
-	virtual Ref AllocLink( ) = 0 ;
-	virtual void WriteObj( const Object& obj, const Ref& link ) = 0 ;
+void ElementPoolTest::setUp( )
+{
+}
 
-	virtual ElementPool* Pool( ) = 0 ;
-} ;
+void ElementPoolTest::tearDown( )
+{
+}
+
+void ElementPoolTest::Test( )
+{
+	ElementPool subject ;
+	
+	TestElement *rc1 = new TestElement ;
+	subject.Add( Ref(100,0), rc1 ) ;
+	
+	PDF_ASSERT_EQUAL( subject.Find<TestElement>( Ref(100,0) ), rc1 ) ;
+	PDF_ASSERT_EQUAL( rc1->UseCount(), 2U ) ;
+	PDF_ASSERT_EQUAL( subject.Find( rc1 ), Ref(100,0) ) ;
+	CPPUNIT_ASSERT( subject.Has( Ref(100,0) ) ) ;
+	CPPUNIT_ASSERT( !subject.Has( Ref(101,0) ) ) ;
+	
+	TestElement *rc2 = new TestElement ;
+	CPPUNIT_ASSERT( subject.Find( Ref(100,0), rc2 ) ) ;
+	PDF_ASSERT_EQUAL( rc2, rc1 ) ;
+	PDF_ASSERT_EQUAL( rc1->UseCount(), 3U ) ;
+}
 
 } // end of namespace
-
-#endif

@@ -130,15 +130,19 @@ void RealResources::ReadFontDict( Dictionary& self, File *file )
 		for ( Dictionary::iterator i  = dict.begin( ) ; i != dict.end( ) ; ++i )
 		{
 			ft::Library lib = { m_ft_lib } ;
-		
-			Dictionary font_dict ;
-		
-			BaseFont *font = pool->Load(
-				i->second.To<Ref>(std::nothrow),
-				boost::bind( &CreateFont,
+			
+			BaseFont *font = 0 ;
+			
+			Ref link = i->second.To<Ref>( std::nothrow ) ;
+			if ( !pool->Find( link, font ) )  
+			{
+				Dictionary font_dict ;
+				font = CreateFont(
 					DeRefObj( file, i->second, font_dict ),
 					file,
-					lib ) ) ;
+					lib ) ;
+				pool->Add( link, font ) ; 
+			}
 
 			m_fonts.insert( FontMap::value_type(i->first, font) ) ;
 		}

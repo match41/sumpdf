@@ -33,12 +33,13 @@
 #include "core/Array.hh"
 #include "core/Object.hh"
 #include "core/Token.hh"
-#include "core/ObjWrapper.hh"
 #include "util/RefCounterWrapper.hh"
 #include "util/Util.hh"
 #include "stream/Stream.hh"
 
 #include "mock/Assert.hh"
+
+namespace pdfut {
 
 using namespace pdf ;
 
@@ -169,3 +170,5 @@ void RealFileTest::TestReadStream( )
 	PDF_ASSERT_EQUAL( count, exp_size ) ;
 	PDF_ASSERT_EQUAL( output.str(), exp.str() ) ;
 }
+
+} // end of namespace

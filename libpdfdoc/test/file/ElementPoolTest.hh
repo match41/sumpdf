@@ -17,28 +17,39 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**
-    \file	ObjWrapper.hh
-    \brief	definition the ObjWrapper class
-    \date	Jan 1, 2010
+/**	\file	ElementPoolTest.hh
+    \brief	definition the ElementPoolTest class
+    \date	Feb 6, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_OBJWRAPPER_HH_EADER_INCLUDED__
-#define __PDF_OBJWRAPPER_HH_EADER_INCLUDED__
+#ifndef __PDFUT_ELEMENTPOOLTEST_HH_EADER_INCLUDED__
+#define __PDFUT_ELEMENTPOOLTEST_HH_EADER_INCLUDED__
 
-namespace pdf {
+#include <cppunit/TestFixture.h>
 
-//template <typename T>
-//class RefCounterWrapper ;
-//
-//class Object ;
-//
-///**	\brief	A reference-counted PDF object
-//	\internal
-//*/
-//typedef RefCounterWrapper<Object>	ObjWrapper ;
+#include <cppunit/extensions/HelperMacros.h>
+
+namespace pdfut {
+
+class ElementPoolTest : public CppUnit::TestFixture
+{
+public :
+	ElementPoolTest( ) ;
+
+	// declare suit function
+	CPPUNIT_TEST_SUITE( ElementPoolTest ) ;
+		CPPUNIT_TEST( Test ) ;
+	CPPUNIT_TEST_SUITE_END();
+
+public :
+	void setUp( ) ;
+	void tearDown( ) ;
+
+private :
+	void Test( ) ;
+} ;
 
 } // end of namespace
 
-#endif // OBJWRAPPER_HH_
+#endif // ELEMENTPOOLTEST_HH_

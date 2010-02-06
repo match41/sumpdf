@@ -87,7 +87,6 @@ set( CORE_HDRS  	${CORE_DIR}/Object.hh
 					${CORE_DIR}/TokenSrc.hh
 					${CORE_DIR}/String.hh
 					${CORE_DIR}/Name.hh
-					${CORE_DIR}/ObjWrapper.hh
 					${CORE_DIR}/TraverseObject.hh )
 					
 set( STRM_HDRS		${STRM_DIR}/Stream.hh
@@ -501,6 +500,7 @@ set( UT_SRCS	test/core/TokenTest.cc
 				test/file/CatalogTest.cc
 				test/file/RefObjMapTest.cc
 				test/file/NameTreeTest.cc
+				test/file/ElementPoolTest.cc
 				
 				test/util/MatrixTest.cc
 				
