@@ -30,8 +30,6 @@
 #include "font/Font.hh"
 #include "util/RefCounter.hh"
 
-#include <boost/function.hpp>
-
 namespace pdf {
 
 namespace ft
@@ -54,11 +52,6 @@ public :
 
 	virtual Ref Write( File *file ) const = 0 ;
 	virtual FontDescriptor* Descriptor( ) = 0 ;
-	
-	static boost::function<BaseFont* ()> Maker(
-		Dictionary& 		obj,
-		File 				*file,
-		const ft::Library&	ft ) ;
 } ;
 
 BaseFont* CreateFont( Dictionary& obj, File *file, const ft::Library& ft ) ;

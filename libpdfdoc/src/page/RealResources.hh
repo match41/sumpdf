@@ -28,10 +28,10 @@
 #define __PDF_RESOURCES_HEADER_INCLUDED__
 
 #include "Resources.hh"
+#include "util/RefCounter.hh"
 
 #include "core/Dictionary.hh"
 #include "core/Name.hh"
-//#include "file/CompleteObj.hh"
 
 // freetype headers
 #include <ft2build.h>
@@ -49,6 +49,7 @@ class BaseFont ;
 class RealImage ;
 class XObject ;
 class Object ;
+class Ref ;
 
 /*!	\brief	page resources
 
@@ -56,11 +57,12 @@ class Object ;
 	streams. These objects are referred by names in the content stream. The
 	resources dictionary maps their names to the actual objects.
 */
-class RealResources : public Resources
+class RealResources : public Resources, public RefCounter
 {
 public :
 	explicit RealResources( const RealResources *parent ) ;
 	explicit RealResources( FT_Library ft_lib ) ;
+	RealResources( const RealResources *parent, Object& self, File *file ) ;
 	~RealResources( ) ;
 
 	Name AddFont( BaseFont *font ) ;
@@ -80,9 +82,6 @@ private :
 private :
 	const RealResources	*m_parent ;
 	FT_Library		m_ft_lib ;
-
-//	CompleteObj		m_self ;
-//	CompleteObj		m_ext_gstate ;
 
 	typedef	boost::bimap<
 		boost::bimaps::set_of<Name>,

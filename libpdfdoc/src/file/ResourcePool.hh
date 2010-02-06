@@ -31,8 +31,6 @@
 #include "RefObjMap.hh"
 #include "core/ObjWrapper.hh"
 
-#include <boost/function.hpp>
-
 namespace pdf {
 
 class BaseFont ;
@@ -41,29 +39,18 @@ class PageNode ;
 class RealResources ;
 class RefCounter ;
 
-typedef RefObjMap<BaseFont>			FontPool ;
-typedef RefObjMap<ObjWrapper>		ObjectPool ;
-typedef RefObjMap<PageNode>			PagePool ;
-
-struct ResourcePool
-{
-	FontPool	fonts ;
-	ObjectPool	objs ;
-	PagePool	pages ;
-	
-	Ref Find( void *anything ) const ;
-} ;
-
 class ElementPool
 {
 public :
-	template <typename Element>
-	Element* Load( const Ref& key, const boost::function<Element*()>& maker )
+	template <typename Maker>
+	typename Maker::result_type Load( const Ref& key, Maker maker )
 	{
+		typedef Maker::result_type ElementPtr ;
+	
 		RefCounter *tmp = m_pool.Find( key ) ;
 		if ( tmp == 0 )
 		{
-			Element *t = maker() ;
+			ElementPtr t = maker() ;
 			
 			// never add Ref() to the map.
 			// Ref() is reserved for the case in which we don't want to
@@ -73,16 +60,29 @@ public :
 			
 			return t ;
 		}
+		
+		// throw exception if type mismatch
 		else
-		{
-			// throw exception if type mismatch
-			return &dynamic_cast<Element&>( *tmp ) ;
-		}
+			return dynamic_cast<ElementPtr>( tmp ) ;
 	}
 	
 	void Add( const Ref& key, RefCounter *element )
 	{
 		m_pool.Add( key, element ) ;
+	}
+
+	template <typename Element>
+	Element* Find( const Ref& key ) const
+	{
+		RefCounter *tmp = m_pool.Find( key ) ;
+		
+		// throw exception if type mismatch
+		return tmp != 0 ? &dynamic_cast<Element&>( *tmp ) : 0 ;
+	}
+
+	Ref Find( RefCounter *element )
+	{
+		return m_pool.Find( element ) ;
 	}
 
 private :

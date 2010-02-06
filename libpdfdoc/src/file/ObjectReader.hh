@@ -29,8 +29,11 @@
 #define __PDF_OBJECT_READER_HEADER_INCLUDED__
 
 #include "File.hh"
+#include "ResourcePool.hh"
 #include "core/Object.hh"
 #include "core/Dictionary.hh"
+
+#include <boost/bind.hpp>
 
 namespace pdf {
 
@@ -130,7 +133,7 @@ ObjType& DeRefObj( File *file, Object& src, ObjType& dest )
 		ObjType obj = file->ReadObj( src.As<Ref>() ) ;
 		std::swap( dest, obj ) ;
 	}
-	else
+	else if ( !src.Is<void>() )
 		std::swap( dest, src.As<ObjType>( ) ) ;
 	
 	return dest ;

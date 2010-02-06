@@ -30,10 +30,10 @@
 // base class headers
 #include "page/Page.hh"
 #include "PageNode.hh"
+#include "RealResources.hh"
 
 // other libpdfdoc headers
 #include "RealContent.hh"
-#include "RealResources.hh"
 #include "core/Dictionary.hh"
 #include "core/Token.hh"
 #include "stream/Stream.hh"
@@ -91,8 +91,7 @@ private :
 
 private :
 	PageTree		*m_parent ;
-	RealResources	m_resources ;
-//	CompleteObj		m_self ;
+	RealResources	*m_resources ;
 	
 	/// in PDF user space. specified by UserUnit or 1/72 inch
 	Rect		m_media_box ;

@@ -109,6 +109,35 @@ struct DeletePtr
 	}
 } ;
 
+template <typename T>
+struct NewPtr
+{
+	typedef T* result_type ;
+	
+	T* operator()( )
+	{
+		return new T ;
+	}
+	
+	template <typename A1>
+	T* operator()( A1 a )
+	{
+		return new T(a) ;
+	}
+	
+	template <typename A1, typename A2>
+	T* operator()( A1 a1, A2 a2 )
+	{
+		return new T(a1, a2) ;
+	}
+
+	template <typename A1, typename A2, typename A3>
+	T* operator()( A1 a1, A2 a2, A3 a3 )
+	{
+		return new T(a1, a2, a3) ;
+	}
+} ;
+
 #ifdef WIN32
 #define strcasecmp _stricmp
 #endif

@@ -28,21 +28,4 @@
 
 namespace pdf {
 
-Ref ResourcePool::Find( void *anything ) const
-{
-	Ref result = fonts.Find( static_cast<BaseFont*>( anything ) ) ;
-	if ( result != Ref() )
-		return result ;
-
-	result = objs.Find( static_cast<ObjWrapper*>( anything ) ) ;
-	if ( result != Ref() )
-		return result ;
-
-	result = pages.Find( static_cast<PageNode*>( anything ) ) ;
-	if ( result != Ref() )
-		return result ;
-	
-	return Ref( ) ;
-}
-
 } // end of namespace

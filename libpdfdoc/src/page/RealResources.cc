@@ -67,6 +67,20 @@ RealResources::RealResources( FT_Library ft_lib )
     m_proc_set.push_back( Name( "Text" ) ) ;
 }
 
+RealResources::RealResources( const RealResources *parent, Object& self, File *file )
+	: m_parent( parent ),
+	  m_ft_lib( parent == 0 ? 0 : parent->m_ft_lib ),
+	  m_proc_set( 1, Name( "PDF" ) )
+{
+	PDF_ASSERT( parent != 0 ) ;
+	PDF_ASSERT( m_ft_lib != 0 ) ;
+	
+    m_proc_set.push_back( Name( "Text" ) ) ;
+    
+    Dictionary self_dict ;
+    Read( DeRefObj( file, self, self_dict ), file ) ;
+}
+
 RealResources::~RealResources( )
 {
 	using namespace boost ;
@@ -88,15 +102,10 @@ void RealResources::Read( const Dictionary& dict, File *file )
 	m_proc_set.assign( proc_set.begin( ), proc_set.end( ) ) ;
 
 	ReadFontDict( self, file ) ;
-//	ReadSubDict( "XObject", file, m_xobjs ) ;
-
-//	m_self.Read( self, file ) ;
-//	m_ext_gstate.Read( ext_gstate, file ) ;
 }
 
 Ref RealResources::Write( File *file ) const
 {
-//	CompleteObj copy( m_self ) ;
 	Dictionary dict ;
     
 	dict["ProcSet"]	= Array( m_proc_set.begin( ), m_proc_set.end( ) ) ;
@@ -123,28 +132,10 @@ void RealResources::ReadFontDict( Dictionary& self, File *file )
 		
 			BaseFont *font = pool->Load(
 				i->second.To<Ref>(std::nothrow),
-				BaseFont::Maker(
+				boost::bind( &CreateFont,
 					DeRefObj( file, i->second, font_dict ),
 					file,
 					lib ) ) ;
-/*
-			if ( i->second.Is<Ref>() )
-			{
-				const Ref& link = i->second.As<Ref>() ;
-				font = font_pool->Find( link ) ;
-				if ( font == 0 )
-				{
-					Dictionary self = file->ReadObj( link ) ;
-					font = CreateFont( self, file, lib ) ; 
-					font_pool->Add( link, font ) ;
-				}
-				PDF_ASSERT( font != 0 ) ;
-			}
-			
-			// the font is not an indirect object, so it can't be shared.
-			else if ( i->second.Is<Dictionary>() )
-				font = CreateFont( i->second.As<Dictionary>(), file, lib ) ;
-*/
 
 			m_fonts.insert( FontMap::value_type(i->first, font) ) ;
 		}
@@ -156,7 +147,7 @@ Ref RealResources::WriteFontDict( File *file ) const
 	PDF_ASSERT( file != 0 ) ;
 	PDF_ASSERT( file->Pool() != 0 ) ;
 
-//	ElementPool *pool = &file->Pool( ) ;
+	ElementPool *pool = file->Pool( ) ;
 	Dictionary font_dict ;
 
 	for ( FontMap::left_const_iterator i = m_fonts.left.begin() ;
@@ -164,9 +155,9 @@ Ref RealResources::WriteFontDict( File *file ) const
 	{
 		PDF_ASSERT( i->second != 0 ) ;
 	
-		Ref link = /*pool->Find( i->second ) ;
+		Ref link = pool->Find( i->second ) ;
 		if ( link == Ref() )
-			link =*/ i->second->Write( file ) ;
+			link = i->second->Write( file ) ;
 		
 		font_dict.insert( std::make_pair( i->first, link ) ) ;
 	}
@@ -215,6 +206,14 @@ Name RealResources::FindFont( const BaseFont *font ) const
 	FontMap::right_const_iterator i = m_fonts.right.find( ncfont ) ;
 	return i != m_fonts.right.end() ? i->second :
 		( m_parent != 0 ? m_parent->FindFont( font ) : Name() ) ; 
+}
+
+namespace
+{
+	RealResources* Create( const RealResources *parent )
+	{
+		return new RealResources( parent ) ;
+	}
 }
 
 } // end of namespace

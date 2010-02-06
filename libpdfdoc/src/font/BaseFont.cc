@@ -34,12 +34,4 @@ BaseFont::BaseFont( )
 {
 }
 
-boost::function<BaseFont* ()> BaseFont::Maker(
-	Dictionary& 		obj,
-	File 				*file,
-	const ft::Library&	ft )
-{
-	return boost::bind( &CreateFont, boost::ref(obj), file, boost::ref(ft) ) ;
-}
-
 } // end of namespace

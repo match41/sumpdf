@@ -27,6 +27,7 @@
 #include "RealPage.hh"
 
 #include "PageTree.hh"
+#include "RealResources.hh"
 
 // core object headers
 #include "core/Array.hh"
@@ -34,8 +35,9 @@
 #include "core/String.hh"
 
 // other libpdfdoc headers
-#include "file/ObjectReader.hh"
 #include "file/File.hh"
+#include "file/ObjectReader.hh"
+#include "file/ResourcePool.hh"
 #include "font/BaseFont.hh"
 #include "graphics/RealText.hh"
 #include "util/Rect.hh"
@@ -52,7 +54,7 @@ namespace pdf {
 
 RealPage::RealPage( PageTree *parent )
 	: m_parent( parent ),
-	  m_resources( parent->GetResource() ),
+	  m_resources( 0 ),
 	  m_media_box( 0, 0, 595, 842 ),
 	  m_rotate( 0 )
 {
@@ -74,10 +76,24 @@ void RealPage::Read( Dictionary& self, File *file )
 	if ( Detach( file, self, "MediaBox", a ) )
 		m_media_box = Rect( a.begin( ), a.end( ) ) ;
 
-	Dictionary res ;
+	if ( m_resources != 0 )
+		m_resources->Release( ) ;
+//	m_resources = new RealResources( m_parent->GetResource() ) ;
+
+/*	Dictionary res ;
 	if ( Detach( file, self, "Resources", res ) )
-		m_resources.Read( res, file ) ;
+		m_resources->Read( res, file ) ;
+*/
+	ElementPool *pool = file->Pool( ) ;
+	m_resources = pool->Load(
+		self["Resources"].To<Ref>(std::nothrow),
+		boost::bind(
+			NewPtr<RealResources>(),
+			m_parent->GetResource(),
+			self["Resources"],
+			file ) ) ;
 }
+
 
 Rect RealPage::MediaBox( ) const
 {
@@ -115,7 +131,7 @@ void RealPage::Write( const Ref& link, File *file, const Ref& parent ) const
 	Dictionary self ;
 	self["Type"]		= Name( "Page" ) ;
  	self["Contents"]	= WriteContent( file ) ;
-	self["Resources"]	= m_resources.Write( file ) ;
+	self["Resources"]	= m_resources->Write( file ) ;
 	self["Parent"]	= parent ;
 
     if ( m_media_box != Rect() )
@@ -133,7 +149,7 @@ Object RealPage::WriteContent( File *file ) const
 	if ( m_cstrs.empty() )
 	{
 		Stream s ;
-		m_content.Write( s, &m_resources ) ;
+		m_content.Write( s, m_resources ) ;
 		return file->WriteObj( s ) ;
 	}
 	else if ( m_cstrs.size() == 1 )
@@ -173,12 +189,12 @@ PageNode* RealPage::GetLeaf( std::size_t index )
 
 RealResources* RealPage::GetResource( )
 {
-	return &m_resources ;
+	return m_resources ;
 }
 
 const RealResources* RealPage::GetResource( ) const
 {
-	return &m_resources ;
+	return m_resources ;
 }
 
 ///	Get the contents of a page
@@ -191,7 +207,7 @@ RealContent* RealPage::GetContent( )
 	if ( m_content.IsEmpty() )
 	{
 		// decode the graphics commands
-		m_content.Load( m_cstrs.begin(), m_cstrs.end(), &m_resources ) ;
+		m_content.Load( m_cstrs.begin(), m_cstrs.end(), m_resources ) ;
 		
 		// destroy the streams
 		m_cstrs.clear( ) ;
