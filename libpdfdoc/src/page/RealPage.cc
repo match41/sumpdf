@@ -37,16 +37,14 @@
 // other libpdfdoc headers
 #include "file/File.hh"
 #include "file/ObjectReader.hh"
-#include "file/ResourcePool.hh"
-#include "font/BaseFont.hh"
-#include "graphics/RealText.hh"
+#include "file/ElementPool.hh"
+#include "util/Debug.hh"
 #include "util/Rect.hh"
 #include "util/Util.hh"
 
 #include <boost/bind.hpp>
 
 #include <algorithm>
-#include <cassert>
 #include <iostream>
 #include <stdexcept>
 
@@ -54,7 +52,7 @@ namespace pdf {
 
 RealPage::RealPage( PageTree *parent )
 	: m_parent( parent ),
-	  m_resources( 0 ),
+	  m_resources( new RealResources( parent->GetResource() ) ),
 	  m_media_box( 0, 0, 595, 842 ),
 	  m_rotate( 0 )
 {
@@ -78,12 +76,7 @@ void RealPage::Read( Dictionary& self, File *file )
 
 	if ( m_resources != 0 )
 		m_resources->Release( ) ;
-//	m_resources = new RealResources( m_parent->GetResource() ) ;
-
-/*	Dictionary res ;
-	if ( Detach( file, self, "Resources", res ) )
-		m_resources->Read( res, file ) ;
-*/
+	
 	ElementPool *pool = file->Pool( ) ;
 	m_resources = pool->Load(
 		self["Resources"].To<Ref>(std::nothrow),
@@ -94,6 +87,11 @@ void RealPage::Read( Dictionary& self, File *file )
 			file ) ) ;
 }
 
+RealPage::~RealPage( )
+{
+	PDF_ASSERT( m_resources != 0 ) ;
+	m_resources->Release( ) ;
+}
 
 Rect RealPage::MediaBox( ) const
 {
@@ -125,9 +123,10 @@ void RealPage::ReadContent( const Object& str_obj, File *src )
 
 void RealPage::Write( const Ref& link, File *file, const Ref& parent ) const
 {
-	assert( file != 0 ) ;
-	assert( m_parent != 0 ) ;
-
+	PDF_ASSERT( file != 0 ) ;
+	PDF_ASSERT( m_parent != 0 ) ;
+	PDF_ASSERT( m_resources != 0 ) ;
+	
 	Dictionary self ;
 	self["Type"]		= Name( "Page" ) ;
  	self["Contents"]	= WriteContent( file ) ;

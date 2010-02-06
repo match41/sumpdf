@@ -29,15 +29,15 @@
 
 namespace pdf {
 
-template <typename T>
-class RefCounterWrapper ;
-
-class Object ;
-
-/**	\brief	A reference-counted PDF object
-	\internal
-*/
-typedef RefCounterWrapper<Object>	ObjWrapper ;
+//template <typename T>
+//class RefCounterWrapper ;
+//
+//class Object ;
+//
+///**	\brief	A reference-counted PDF object
+//	\internal
+//*/
+//typedef RefCounterWrapper<Object>	ObjWrapper ;
 
 } // end of namespace
 

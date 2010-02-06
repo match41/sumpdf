@@ -29,13 +29,16 @@
 
 #include "PageNode.hh"
 
-#include "RealResources.hh"
-
 #include <vector>
+
+// freetype headers
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 namespace pdf {
 
 class RealPage ;
+class RealResources ;
 class Dictionary ;
 class File ;
 
@@ -70,7 +73,7 @@ private :
 
 private :
 	PageTree				*m_parent ;
-	RealResources				m_resources ;
+	RealResources			*m_resources ;
 
 	std::vector<PageNode*>	m_kids ;
 	

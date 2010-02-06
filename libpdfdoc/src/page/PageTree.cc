@@ -27,13 +27,14 @@
 #include "PageTree.hh"
 
 #include "RealPage.hh"
+#include "RealResources.hh"
 
 #include "core/Array.hh"
 #include "core/Dictionary.hh"
 
 #include "file/ObjectReader.hh"
 #include "file/File.hh"
-#include "file/ResourcePool.hh"
+#include "file/ElementPool.hh"
 
 #include "util/Debug.hh"
 #include "util/Exception.hh"
@@ -50,7 +51,7 @@ namespace pdf {
 
 PageTree::PageTree( PageTree *parent )
 	: m_parent( parent ),
-	  m_resources( parent == 0 ? 0 : parent->GetResource() ),
+	  m_resources( new RealResources(parent == 0 ? 0 : parent->GetResource()) ),
 	  m_count( 0 )
 {
 	PDF_ASSERT( parent != 0 ) ;
@@ -60,7 +61,7 @@ PageTree::PageTree( PageTree *parent )
 
 PageTree::PageTree( FT_Library ft_lib )
 	: m_parent( 0 ),
-	  m_resources( ft_lib ),
+	  m_resources( new RealResources( ft_lib ) ),
 	  m_count( 0 )
 {
 }
@@ -69,6 +70,7 @@ PageTree::~PageTree( )
 {
 	std::for_each( m_kids.begin(), m_kids.end(),
 	               boost::lambda::delete_ptr( ) ) ;
+	m_resources->Release( ) ;
 }
 
 void PageTree::Read( Dictionary& dict, File *file )
@@ -80,8 +82,7 @@ void PageTree::Read( Dictionary& dict, File *file )
 	if ( !Detach( file, dict, "Kids", pages ) )
 		throw ParseError( "no children in page tree" ) ;
 
-//	PagePool *pool = &file->Pool()->pages;  
-		
+	ElementPool *pool = file->Pool( ) ;
 	for ( Array::iterator i = pages.begin() ; i != pages.end() ; ++i )
 	{
 		Dictionary d = DeRefObj<Dictionary>( file, *i ) ;
@@ -103,17 +104,24 @@ void PageTree::Read( Dictionary& dict, File *file )
 			throw ParseError( "invalid page type" ) ;
 		assert( p != 0 ) ;
 		
-//		if ( i->Is<Ref>() )
-//			pool->Add( *i, p ) ;
+		if ( i->Is<Ref>() )
+			pool->Add( *i, p ) ;
 	}
 
 	// leaf count is required
 	if ( !Detach( file, dict, "Count", m_count ) )
 		throw ParseError( "cannot get leaf count in page node" ) ;
-	
-	Dictionary res ;
-	if ( Detach( file, dict, "Resources", res ) )
-		m_resources.Read( res, file ) ;
+
+	Ref link = dict["Resources"].To<Ref>( std::nothrow ) ;
+	if ( !pool->Find( link, m_resources ) )  
+	{
+		Dictionary res_dict ;
+		if ( Detach( file, dict, "Resources", res_dict ) )
+		{
+			m_resources->Read( res_dict, file ) ;
+			pool->Add( link, m_resources ) ; 
+		}
+	}
 }
 
 void PageTree::Write( const Ref& link, File *file, const Ref& ) const
@@ -141,7 +149,7 @@ void PageTree::Write( const Ref& link, File *file, const Ref& ) const
 	self["Kids"]		= Array( kids.begin( ), kids.end( ) ) ;
 	self["Count"]		= m_count ;
 	self["MediaBox"]	= Array( Begin( mbox ), End( mbox ) ) ;
-	self["Resources"]	= m_resources.Write( file ) ;
+	self["Resources"]	= m_resources->Write( file ) ;
 	
 	file->WriteObj( self, link ) ;
 }
@@ -218,12 +226,12 @@ PageNode* PageTree::GetLeaf( std::size_t index )
 
 RealResources* PageTree::GetResource( )
 {
-	return &m_resources ;
+	return m_resources ;
 }
 
 const RealResources* PageTree::GetResource( ) const
 {
-	return &m_resources ;
+	return m_resources ;
 }
 
 } // end of namespace

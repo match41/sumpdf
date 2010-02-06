@@ -27,7 +27,7 @@
 #include "Destination.hh"
 
 #include "File.hh"
-#include "ResourcePool.hh"
+#include "ElementPool.hh"
 #include "page/RealPage.hh"
 
 #include <iostream>
@@ -52,9 +52,9 @@ void Destination::Read( Array& array, File *file )
 	m_options.swap( array ) ;
 	if ( m_options.size() > 1 )
 	{
-//		PagePool *pool = &file->Pool()->pages ;
-//		Ref page_link = m_options[0].As<Ref>() ;
-//		m_page = dynamic_cast<RealPage*>( pool->Find( page_link ) ) ;
+		ElementPool *pool = file->Pool( ) ;
+		Ref page_link = m_options[0].As<Ref>() ;
+		m_page = pool->Find<RealPage>( page_link ) ;
 	}
 }
 

@@ -29,7 +29,7 @@
 
 #include "file/File.hh"
 
-#include "file/ResourcePool.hh"
+#include "file/ElementPool.hh"
 
 #include "core/Object.hh"
 #include "core/Ref.hh"

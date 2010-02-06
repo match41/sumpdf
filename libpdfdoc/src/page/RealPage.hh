@@ -30,23 +30,15 @@
 // base class headers
 #include "page/Page.hh"
 #include "PageNode.hh"
-#include "RealResources.hh"
 
 // other libpdfdoc headers
 #include "RealContent.hh"
-#include "core/Dictionary.hh"
-#include "core/Token.hh"
 #include "stream/Stream.hh"
 #include "util/Rect.hh"
-
-#include <string>
 
 namespace pdf {
 
 class Dictionary ;
-class Font ;
-class Name ;
-class Stream ;
 class RealResources ;
 class File ;
 class Graphics ;
@@ -60,6 +52,7 @@ class RealPage : public Page, public PageNode
 {
 public :
 	explicit RealPage( PageTree *parent ) ;
+	~RealPage( ) ;
 
 	void Read( Dictionary& dict, File *file ) ;
 	void Write( const Ref& link, File *file, const Ref& parent ) const ;

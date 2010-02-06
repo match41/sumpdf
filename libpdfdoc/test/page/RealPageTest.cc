@@ -36,6 +36,7 @@
 #include "graphics/RealText.hh"
 #include "page/RealPage.hh"
 #include "page/PageTree.hh"
+#include "page/RealResources.hh"
 #include "stream/Stream.hh"
 #include "util/Rect.hh"
 #include "util/Matrix.hh"

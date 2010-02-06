@@ -46,7 +46,7 @@ class RealPage ;
 class PageTree ;
 class ElementList ;
 class File ;
-class Resources ;
+class RealResources ;
 
 /*!	\brief	brief description
 	\internal
@@ -69,7 +69,7 @@ public :
 
 	RealPage*	GetPage( std::size_t index ) ;
 
-	Resources*	GetResource( ) ;
+	RealResources*	GetResource( ) ;
 
 private :
 	Name		m_version ;

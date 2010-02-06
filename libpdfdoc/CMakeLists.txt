@@ -77,7 +77,7 @@ set( FILE_HDRS		${FILE_DIR}/RealFile.hh
 					${FILE_DIR}/RefObjMap.hh
 					${FILE_DIR}/Destination.hh
 					${FILE_DIR}/NameTree.hh
-					${FILE_DIR}/ResourcePool.hh )
+					${FILE_DIR}/ElementPool.hh )
 
 set( CORE_HDRS  	${CORE_DIR}/Object.hh
 					${CORE_DIR}/Ref.hh
@@ -183,7 +183,6 @@ set( GRAPICS_SRCS	${GRAPICS_DIR}/Graphics.cc
 set( FILE_SRCS		${FILE_DIR}/RealFile.cc
 					${FILE_DIR}/File.cc
 					${FILE_DIR}/Catalog.cc
-					${FILE_DIR}/ResourcePool.cc
 					${FILE_DIR}/Destination.cc
 					${FILE_DIR}/NameTree.cc
 					${FILE_DIR}/DocInfo.cc )

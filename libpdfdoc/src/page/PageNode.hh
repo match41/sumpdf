@@ -56,8 +56,8 @@ public :
 
 	virtual PageTree* Parent( ) = 0 ;
 
-	virtual Resources* GetResource( ) = 0 ;
-	virtual const Resources* GetResource( ) const = 0 ;
+//	virtual Resources* GetResource( ) = 0 ;
+//	virtual const Resources* GetResource( ) const = 0 ;
 
 	virtual std::size_t Count( ) const = 0 ;
 	virtual PageNode* GetLeaf( std::size_t index ) = 0 ;

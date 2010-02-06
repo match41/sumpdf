@@ -29,7 +29,7 @@
 
 #include "File.hh"
 
-#include "ResourcePool.hh"
+#include "ElementPool.hh"
 
 #include "core/Dictionary.hh"
 
@@ -78,8 +78,6 @@ private :
 	Stream ReadStream( Dictionary& dict ) ;
 
 	class	ObjectWriter ;
-
-	void CacheObject( const Object& obj, std::map<Ref, ObjWrapper*>& links ) ;
 
 private :
 	std::vector<std::size_t>	m_objs ;

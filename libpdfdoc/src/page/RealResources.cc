@@ -32,7 +32,7 @@
 #include "file/File.hh"
 #include "file/ObjectReader.hh"
 #include "file/RefObjMap.hh"
-#include "file/ResourcePool.hh"
+#include "file/ElementPool.hh"
 #include "font/BaseFont.hh"
 #include "font/FreeTypeWrappers.hh"
 #include "util/Util.hh"
@@ -67,7 +67,10 @@ RealResources::RealResources( FT_Library ft_lib )
     m_proc_set.push_back( Name( "Text" ) ) ;
 }
 
-RealResources::RealResources( const RealResources *parent, Object& self, File *file )
+RealResources::RealResources(
+	const RealResources *parent,
+	Object& 			self,
+	File 				*file )
 	: m_parent( parent ),
 	  m_ft_lib( parent == 0 ? 0 : parent->m_ft_lib ),
 	  m_proc_set( 1, Name( "PDF" ) )

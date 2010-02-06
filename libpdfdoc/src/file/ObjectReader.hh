@@ -29,7 +29,6 @@
 #define __PDF_OBJECT_READER_HEADER_INCLUDED__
 
 #include "File.hh"
-#include "ResourcePool.hh"
 #include "core/Object.hh"
 #include "core/Dictionary.hh"
 

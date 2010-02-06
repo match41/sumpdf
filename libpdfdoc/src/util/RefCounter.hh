@@ -36,6 +36,7 @@ class RefCounter
 {
 protected :
 	RefCounter( ) ;
+	virtual ~RefCounter( ) ;
 
 public :
 	virtual void AddRef( ) ;

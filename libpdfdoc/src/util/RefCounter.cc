@@ -33,6 +33,10 @@ RefCounter::RefCounter( )
 {
 }
 
+RefCounter::~RefCounter( )
+{
+}
+
 void RefCounter::AddRef( )
 {
 	++m_count ;

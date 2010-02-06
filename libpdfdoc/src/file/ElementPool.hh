@@ -29,14 +29,9 @@
 #define __PDF_RESOURCEPOOL_HEADER_INCLUDED__
 
 #include "RefObjMap.hh"
-#include "core/ObjWrapper.hh"
 
 namespace pdf {
 
-class BaseFont ;
-class Object ;
-class PageNode ;
-class RealResources ;
 class RefCounter ;
 
 class ElementPool
@@ -45,7 +40,7 @@ public :
 	template <typename Maker>
 	typename Maker::result_type Load( const Ref& key, Maker maker )
 	{
-		typedef Maker::result_type ElementPtr ;
+		typedef typename Maker::result_type ElementPtr ;
 	
 		RefCounter *tmp = m_pool.Find( key ) ;
 		if ( tmp == 0 )
@@ -66,13 +61,29 @@ public :
 			return dynamic_cast<ElementPtr>( tmp ) ;
 	}
 	
+	template <typename Element>
+	bool Find( const Ref& link, Element* &element )
+	{
+		if ( m_pool.IsExist( link ) )
+		{
+			if ( element != 0 )
+				element->Release( ) ;
+				
+			element = Find<Element>( link ) ;
+			return true ;
+		}
+		else
+			return false ;
+	}
+	
 	void Add( const Ref& key, RefCounter *element )
 	{
-		m_pool.Add( key, element ) ;
+		if ( key != Ref() )
+			m_pool.Add( key, element ) ;
 	}
 
 	template <typename Element>
-	Element* Find( const Ref& key ) const
+	Element* Find( const Ref& key )
 	{
 		RefCounter *tmp = m_pool.Find( key ) ;
 		
@@ -83,6 +94,11 @@ public :
 	Ref Find( RefCounter *element )
 	{
 		return m_pool.Find( element ) ;
+	}
+
+	bool Has( const Ref& key ) const
+	{
+		return m_pool.IsExist( key ) ;
 	}
 
 private :

@@ -34,6 +34,7 @@
 #include "file/RealFile.hh"
 #include "font/SimpleFont.hh"
 
+#include "page/RealResources.hh"
 #include "page/RealPage.hh"
 #include "page/PageTree.hh"
 

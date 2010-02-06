@@ -184,7 +184,7 @@ RealPage* Catalog::GetPage( std::size_t index )
 	return static_cast<RealPage*>( p ) ;
 }
 
-Resources* Catalog::GetResource( )
+RealResources* Catalog::GetResource( )
 {
 	PDF_ASSERT( m_tree != 0 ) ;
 	return m_tree->GetResource() ;
