@@ -55,9 +55,9 @@ void RealTextTest::TestTdCmd( )
 	ts.SetFont( 12.0, &font ) ;
 
 	RealText t( ts ) ;
-	PDF_ASSERT_EQUAL( t.Count(), 1U ) ;
-	PDF_ASSERT_EQUAL( t.front().Format(), ts ) ;
-	PDF_ASSERT_EQUAL( t.front().Transform(), Matrix() ) ;
+	PDFUT_ASSERT_EQUAL( t.Count(), 1U ) ;
+	PDFUT_ASSERT_EQUAL( t.front().Format(), ts ) ;
+	PDFUT_ASSERT_EQUAL( t.front().Transform(), Matrix() ) ;
 
 	// action: translate to 100,200
 	Object	args[]	= { 100, 200 } ;
@@ -65,9 +65,9 @@ void RealTextTest::TestTdCmd( )
 	t.OnCommand( cmd, args, Count(args), &res ) ;  
 	
 	// expected: no new text line is added. current matrix translated
-	PDF_ASSERT_EQUAL( t.Count(), 1U ) ;
-	PDF_ASSERT_EQUAL( t.front().Format(), ts ) ;
-	PDF_ASSERT_EQUAL( t.front().Transform(), Matrix(1,0,0,1,100,200) ) ;
+	PDFUT_ASSERT_EQUAL( t.Count(), 1U ) ;
+	PDFUT_ASSERT_EQUAL( t.front().Format(), ts ) ;
+	PDFUT_ASSERT_EQUAL( t.front().Transform(), Matrix(1,0,0,1,100,200) ) ;
 
 	// action: move another 300,900
 	args[0] = 300 ;
@@ -75,13 +75,13 @@ void RealTextTest::TestTdCmd( )
 	t.OnCommand( cmd, args, Count(args), &res ) ;  
 	
 	// expected: the two translation is combined
-	PDF_ASSERT_EQUAL( t.Count(), 1U ) ;
-	PDF_ASSERT_EQUAL( t.front().Format(), ts ) ;
-	PDF_ASSERT_EQUAL( t.front().Transform(), Matrix(1,0,0,1,400,1100) ) ;
+	PDFUT_ASSERT_EQUAL( t.Count(), 1U ) ;
+	PDFUT_ASSERT_EQUAL( t.front().Format(), ts ) ;
+	PDFUT_ASSERT_EQUAL( t.front().Transform(), Matrix(1,0,0,1,400,1100) ) ;
 	
 	RealText exp( ts ) ;
 	exp.back() = TextLine( ts, Matrix(1,0,0,1,400,1100) ) ;
-	PDF_ASSERT_EQUAL( t, exp ) ;
+	PDFUT_ASSERT_EQUAL( t, exp ) ;
 }
 
 void RealTextTest::TestTj( )
@@ -99,23 +99,23 @@ void RealTextTest::TestTj( )
 	Token	cmd( "Tj" ) ;
 	t.OnCommand( cmd, args, Count(args), &res ) ;
 	
-	PDF_ASSERT_EQUAL( t.Count(), 1U ) ;
-	PDF_ASSERT_EQUAL( t.front().Format(), ts ) ;
-	PDF_ASSERT_EQUAL( t.front().Transform(), Matrix() ) ;
+	PDFUT_ASSERT_EQUAL( t.Count(), 1U ) ;
+	PDFUT_ASSERT_EQUAL( t.front().Format(), ts ) ;
+	PDFUT_ASSERT_EQUAL( t.front().Transform(), Matrix() ) ;
 	CPPUNIT_ASSERT( t.front().Text() == L"abc" ) ;
-	PDF_ASSERT_EQUAL( t.front().Width(), 18 ) ;
-	PDF_ASSERT_EQUAL( t.front().Format().GetFont(), &font ) ;
+	PDFUT_ASSERT_EQUAL( t.front().Width(), 18 ) ;
+	PDFUT_ASSERT_EQUAL( t.front().Format().GetFont(), &font ) ;
 	
 	// action: display another string "abc"
 	Object	args2[]	= { "abc" } ;
 	Token	cmd2( "Tj" ) ;
 	t.OnCommand( cmd2, args2, Count(args2), &res ) ;
 	
-	PDF_ASSERT_EQUAL( t.Count(), 1U ) ;
-	PDF_ASSERT_EQUAL( t.back().Format(), ts ) ;
+	PDFUT_ASSERT_EQUAL( t.Count(), 1U ) ;
+	PDFUT_ASSERT_EQUAL( t.back().Format(), ts ) ;
 		
 	CPPUNIT_ASSERT( t.back().Text() == L"abcabc" ) ;
-	PDF_ASSERT_EQUAL( t.back().Width(), 36 ) ;
+	PDFUT_ASSERT_EQUAL( t.back().Width(), 36 ) ;
 	
 	// double font size
 	TextState ts2x( 24.0, &font ) ;
@@ -128,9 +128,9 @@ void RealTextTest::TestTj( )
 	Token	cmd4( "Tj" ) ;
 	t.OnCommand( cmd4, args4, Count(args4), &res ) ;
 
-	PDF_ASSERT_EQUAL( t.Count(), 2U ) ;
-	PDF_ASSERT_EQUAL( t.back().Format(), ts2x ) ;
-	PDF_ASSERT_EQUAL( 
+	PDFUT_ASSERT_EQUAL( t.Count(), 2U ) ;
+	PDFUT_ASSERT_EQUAL( t.back().Format(), ts2x ) ;
+	PDFUT_ASSERT_EQUAL( 
 		t.back().Transform(),
 		Matrix(1,0,0,1, 36.0, 0 ) ) ;
 }
@@ -152,11 +152,11 @@ void RealTextTest::TestTJ( )
 	Object	args[] = { tj } ;
 	t.OnCommand( cmd, args, Count(args), &res ) ;
 
-	PDF_ASSERT_EQUAL( t.Count(), 1U ) ;
-	PDF_ASSERT_EQUAL( t.front().Format(), ts ) ;
+	PDFUT_ASSERT_EQUAL( t.Count(), 1U ) ;
+	PDFUT_ASSERT_EQUAL( t.front().Format(), ts ) ;
 	
 	const TextLine& line = t.front() ;
-	PDF_ASSERT_EQUAL( line.Width(), 60.0 ) ;
+	PDFUT_ASSERT_EQUAL( line.Width(), 60.0 ) ;
 
 	// double font size and a new TextLine object should be generated
 	Object	args3[]	= { fname, 24.0 } ;
@@ -168,11 +168,11 @@ void RealTextTest::TestTJ( )
 	t.OnCommand( cmd4, args4, Count(args4), &res ) ;
 
 	// 2 text lines in total
-	PDF_ASSERT_EQUAL( t.Count(), 2U ) ;
+	PDFUT_ASSERT_EQUAL( t.Count(), 2U ) ;
 
 	// next object starts at 60.0 units further
 	const Matrix& mat2 = t.back().Transform() ;
-	PDF_ASSERT_EQUAL( mat2, Matrix(1,0,0,1, 60.0, 0) ) ;
+	PDFUT_ASSERT_EQUAL( mat2, Matrix(1,0,0,1, 60.0, 0) ) ;
 }
 
 void RealTextTest::TestTjx2( )
@@ -194,9 +194,9 @@ void RealTextTest::TestTjx2( )
 	Token	cmd2( "Tj" ) ;
 	t.OnCommand( cmd2, args2, Count(args2), &res ) ;
 
-	PDF_ASSERT_EQUAL( t.Count(), 1U ) ;
-	PDF_ASSERT_EQUAL( t.front().Format(), ts ) ;
-	PDF_ASSERT_EQUAL( t.front().Transform(), Matrix() ) ;
+	PDFUT_ASSERT_EQUAL( t.Count(), 1U ) ;
+	PDFUT_ASSERT_EQUAL( t.front().Format(), ts ) ;
+	PDFUT_ASSERT_EQUAL( t.front().Transform(), Matrix() ) ;
 	CPPUNIT_ASSERT( t.front().Text() == L"111222" ) ;
 }
 

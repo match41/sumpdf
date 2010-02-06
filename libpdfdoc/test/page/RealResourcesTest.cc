@@ -77,7 +77,7 @@ void RealResourcesTest::TestReadExistFont( )
 	CPPUNIT_ASSERT( iss >> rdict ) ;
 
 	pdf::SimpleFont *f = new pdf::SimpleFont( "Times-Roman", m_ft ) ;
-	PDF_ASSERT_EQUAL( f->UseCount(), 1u ) ;
+	PDFUT_ASSERT_EQUAL( f->UseCount(), 1u ) ;
 
 	MockFile file ;
 	file.AddObj( pdf::Ref(1,0),  rdict ) ;

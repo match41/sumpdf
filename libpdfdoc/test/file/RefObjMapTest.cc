@@ -49,7 +49,7 @@ void RefObjMapTest::TestSimple( )
 	Dummy *d = new Dummy ;
 	map.Add( pdf::Ref( 100, 0 ), d ) ;
 	Dummy *out = map.Find( pdf::Ref( 100, 0 ) ) ;
-	PDF_ASSERT_EQUAL( out, d ) ;
-	PDF_ASSERT_EQUAL( out->UseCount(), 2U ) ;
-	PDF_ASSERT_EQUAL( map.Find( out ), pdf::Ref( 100, 0 ) ) ; 
+	PDFUT_ASSERT_EQUAL( out, d ) ;
+	PDFUT_ASSERT_EQUAL( out->UseCount(), 2U ) ;
+	PDFUT_ASSERT_EQUAL( map.Find( out ), pdf::Ref( 100, 0 ) ) ; 
 }

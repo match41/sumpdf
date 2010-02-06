@@ -60,16 +60,16 @@ void ElementPoolTest::Test( )
 	TestElement *rc1 = new TestElement ;
 	subject.Add( Ref(100,0), rc1 ) ;
 	
-	PDF_ASSERT_EQUAL( subject.Find<TestElement>( Ref(100,0) ), rc1 ) ;
-	PDF_ASSERT_EQUAL( rc1->UseCount(), 2U ) ;
-	PDF_ASSERT_EQUAL( subject.Find( rc1 ), Ref(100,0) ) ;
+	PDFUT_ASSERT_EQUAL( subject.Find<TestElement>( Ref(100,0) ), rc1 ) ;
+	PDFUT_ASSERT_EQUAL( rc1->UseCount(), 1U ) ;
+	PDFUT_ASSERT_EQUAL( subject.Find( rc1 ), Ref(100,0) ) ;
 	CPPUNIT_ASSERT( subject.Has( Ref(100,0) ) ) ;
 	CPPUNIT_ASSERT( !subject.Has( Ref(101,0) ) ) ;
 	
 	TestElement *rc2 = new TestElement ;
-	CPPUNIT_ASSERT( subject.Find( Ref(100,0), rc2 ) ) ;
-	PDF_ASSERT_EQUAL( rc2, rc1 ) ;
-	PDF_ASSERT_EQUAL( rc1->UseCount(), 3U ) ;
+	CPPUNIT_ASSERT( subject.Acquire( Ref(100,0), rc2 ) ) ;
+	PDFUT_ASSERT_EQUAL( rc2, rc1 ) ;
+	PDFUT_ASSERT_EQUAL( rc1->UseCount(), 2U ) ;
 }
 
 } // end of namespace

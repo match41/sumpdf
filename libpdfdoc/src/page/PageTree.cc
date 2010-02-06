@@ -113,7 +113,7 @@ void PageTree::Read( Dictionary& dict, File *file )
 		throw ParseError( "cannot get leaf count in page node" ) ;
 
 	Ref link = dict["Resources"].To<Ref>( std::nothrow ) ;
-	if ( !pool->Find( link, m_resources ) )  
+	if ( !pool->Acquire( link, m_resources ) )  
 	{
 		Dictionary res_dict ;
 		if ( Detach( file, dict, "Resources", res_dict ) )

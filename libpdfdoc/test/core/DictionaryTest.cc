@@ -151,8 +151,8 @@ void DictionaryTest::TestImage( )
 	pdf::Dictionary subject ;
 	CPPUNIT_ASSERT( ss >> subject ) ;
 	CPPUNIT_ASSERT( !subject.empty() ) ;
-	PDF_ASSERT_EQUAL( subject["Type"].As<pdf::Name>(), "XObject" ) ;
-	PDF_ASSERT_EQUAL(
+	PDFUT_ASSERT_EQUAL( subject["Type"].As<pdf::Name>(), "XObject" ) ;
+	PDFUT_ASSERT_EQUAL(
 		subject["Length"].As<pdf::Ref>(),
 		pdf::Object(pdf::Ref( 24, 0 )) ) ;
 }
@@ -161,12 +161,12 @@ void DictionaryTest::TestExtract( )
 {
 	pdf::Dictionary subject ;
 	subject["AAA"] = pdf::Name( "BBB" ) ;
-	PDF_ASSERT_EQUAL( subject.size(), 1U ) ;
+	PDFUT_ASSERT_EQUAL( subject.size(), 1U ) ;
 	
 	pdf::Name out ;
 	subject.Extract( "AAA", out ) ;
-	PDF_ASSERT_EQUAL( out, pdf::Name( "BBB" ) ) ;
-	PDF_ASSERT_EQUAL( subject.size(), 0U ) ;
+	PDFUT_ASSERT_EQUAL( out, pdf::Name( "BBB" ) ) ;
+	PDFUT_ASSERT_EQUAL( subject.size(), 0U ) ;
 }
 
 void DictionaryTest::TestSwap( )
@@ -185,12 +185,12 @@ void DictionaryTest::TestNull( )
 {
 	pdf::Dictionary s ;
 	CPPUNIT_ASSERT( s["???"].Is<void>() ) ;
-	PDF_ASSERT_EQUAL( s.size(), 0U ) ; 
+	PDFUT_ASSERT_EQUAL( s.size(), 0U ) ; 
 	CPPUNIT_ASSERT( s.empty() ) ;
 	
 	s["haha"] = pdf::Object() ;
 	CPPUNIT_ASSERT( s.find( "haha" ) == s.end() ) ;
-	PDF_ASSERT_EQUAL( s.size(), 0U ) ;
+	PDFUT_ASSERT_EQUAL( s.size(), 0U ) ;
 	CPPUNIT_ASSERT( s.empty() ) ;
 }
 
@@ -198,30 +198,30 @@ void DictionaryTest::TestErase( )
 {
 	pdf::Dictionary s ;
 	s["???"] = "haha" ;
-	PDF_ASSERT_EQUAL( s.size(), 1U ) ;
+	PDFUT_ASSERT_EQUAL( s.size(), 1U ) ;
 	
 	s["!!!"] = "hehe" ;
-	PDF_ASSERT_EQUAL( s.size(), 2U ) ;
+	PDFUT_ASSERT_EQUAL( s.size(), 2U ) ;
 	
 	s.erase( "???" ) ;
-	PDF_ASSERT_EQUAL( s.size(), 1U ) ;
+	PDFUT_ASSERT_EQUAL( s.size(), 1U ) ;
 	CPPUNIT_ASSERT( s["???"].Is<void>() ) ;
 	CPPUNIT_ASSERT( s.find( "haha" ) == s.end() ) ;
-	PDF_ASSERT_EQUAL( s["!!!"], "hehe" ) ;
+	PDFUT_ASSERT_EQUAL( s["!!!"], "hehe" ) ;
 }
 
 void DictionaryTest::TestEraseByAddNull( )
 {
 	pdf::Dictionary s ;
 	s["???"] = "haha" ;
-	PDF_ASSERT_EQUAL( s.size(), 1U ) ;
+	PDFUT_ASSERT_EQUAL( s.size(), 1U ) ;
 	
 	s["!!!"] = "hehe" ;
-	PDF_ASSERT_EQUAL( s.size(), 2U ) ;
+	PDFUT_ASSERT_EQUAL( s.size(), 2U ) ;
 	
 	s.Add( "???", pdf::Object() ) ;
-	PDF_ASSERT_EQUAL( s.size(), 1U ) ;
+	PDFUT_ASSERT_EQUAL( s.size(), 1U ) ;
 	CPPUNIT_ASSERT( s["???"].Is<void>() ) ;
 	CPPUNIT_ASSERT( s.find( "haha" ) == s.end() ) ;
-	PDF_ASSERT_EQUAL( s["!!!"], "hehe" ) ;
+	PDFUT_ASSERT_EQUAL( s["!!!"], "hehe" ) ;
 }

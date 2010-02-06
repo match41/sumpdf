@@ -50,13 +50,13 @@ namespace pdf {
 
 } // end of namespace
 
-#define PDF_ASSERT_EQUAL(actual, expected)          \
+#define PDFUT_ASSERT_EQUAL(actual, expected)          \
   ( pdf::AssertEquals( (expected),              \
                        (actual),                \
                        CPPUNIT_SOURCELINE(),    \
                        #actual" == "#expected) )
 
-#define PDF_ASSERT_NULL(actual)          \
+#define PDFUT_ASSERT_NULL(actual)          \
   ( pdf::AssertEquals( ((void*)0),              \
                        (actual),                \
                        CPPUNIT_SOURCELINE(),    \

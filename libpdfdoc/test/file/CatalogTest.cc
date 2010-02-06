@@ -69,6 +69,6 @@ void CatalogTest::TestRead( )
 	file.AddObj( pdf::Ref( 3, 0 ),	page_dict ) ;
 	
 	pdf::Catalog c( pdf::Ref( 2, 0 ), &file, m_ft_lib ) ;
-	PDF_ASSERT_EQUAL( c.PageCount( ), 1U ) ;
+	PDFUT_ASSERT_EQUAL( c.PageCount( ), 1U ) ;
 	CPPUNIT_ASSERT( c.GetPage( 0 ) != 0 ) ;
 }

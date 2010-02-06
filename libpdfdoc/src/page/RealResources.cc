@@ -134,7 +134,7 @@ void RealResources::ReadFontDict( Dictionary& self, File *file )
 			BaseFont *font = 0 ;
 			
 			Ref link = i->second.To<Ref>( std::nothrow ) ;
-			if ( !pool->Find( link, font ) )  
+			if ( !pool->Acquire( link, font ) )  
 			{
 				Dictionary font_dict ;
 				font = CreateFont(

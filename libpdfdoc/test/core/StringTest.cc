@@ -43,7 +43,7 @@ void StringTest::TestLiteral( )
 	std::istringstream ss( "(123456)" ) ;
 	pdf::String str ;
 	CPPUNIT_ASSERT( ss >> str ) ;
-	PDF_ASSERT_EQUAL( str.Get(), "123456" ) ;
+	PDFUT_ASSERT_EQUAL( str.Get(), "123456" ) ;
 }
 
 void StringTest::TestLiteralWithBrackets( )
@@ -51,7 +51,7 @@ void StringTest::TestLiteralWithBrackets( )
 	std::istringstream ss( "(123()4(56))" ) ;
 	pdf::String str ;
 	CPPUNIT_ASSERT( ss >> str ) ;
-	PDF_ASSERT_EQUAL( str.Get(), "123()4(56)" ) ;
+	PDFUT_ASSERT_EQUAL( str.Get(), "123()4(56)" ) ;
 }
 
 void StringTest::TestLiteralWithEscape( )
@@ -59,7 +59,7 @@ void StringTest::TestLiteralWithEscape( )
 	std::istringstream ss( "(123(\\b\\f)4(56))" ) ;
 	pdf::String str ;
 	CPPUNIT_ASSERT( ss >> str ) ;
-	PDF_ASSERT_EQUAL( str.Get(), "123(\b\f)4(56)" ) ;
+	PDFUT_ASSERT_EQUAL( str.Get(), "123(\b\f)4(56)" ) ;
 }
 
 void StringTest::TestErrorLiteral( )
@@ -69,7 +69,7 @@ void StringTest::TestErrorLiteral( )
 	
 	pdf::String str ;
 	CPPUNIT_ASSERT( ss >> str ) ;
-	PDF_ASSERT_EQUAL( str.Get(), "12[}}CVDe,.3kkk\f4(56)" ) ;
+	PDFUT_ASSERT_EQUAL( str.Get(), "12[}}CVDe,.3kkk\f4(56)" ) ;
 }
 
 void StringTest::TestHex( )
@@ -77,7 +77,7 @@ void StringTest::TestHex( )
 	std::istringstream ss( "<6465666768696a6b>" ) ;
 	pdf::String str ;
 	CPPUNIT_ASSERT( ss >> str ) ;
-	PDF_ASSERT_EQUAL( str.Get(), "defghijk" ) ;
+	PDFUT_ASSERT_EQUAL( str.Get(), "defghijk" ) ;
 }
 
 void StringTest::TestErrorHex( )
@@ -95,7 +95,7 @@ void StringTest::TestOctal( )
 
 	pdf::String str ;
 	CPPUNIT_ASSERT( ss >> str ) ;
-	PDF_ASSERT_EQUAL( str.Get(), "\0503\051" ) ;
+	PDFUT_ASSERT_EQUAL( str.Get(), "\0503\051" ) ;
 }
 
 void StringTest::TestOctal1( )
@@ -104,7 +104,7 @@ void StringTest::TestOctal1( )
 
 	pdf::String str ;
 	CPPUNIT_ASSERT( ss >> str ) ;
-	PDF_ASSERT_EQUAL( str.Get(), "\005a\001" ) ;
+	PDFUT_ASSERT_EQUAL( str.Get(), "\005a\001" ) ;
 }
 
 void StringTest::TestOctal2( )
@@ -113,5 +113,5 @@ void StringTest::TestOctal2( )
 
 	pdf::String str ;
 	CPPUNIT_ASSERT( ss >> str ) ;
-	PDF_ASSERT_EQUAL( str.Get(), "\050a\051" ) ;
+	PDFUT_ASSERT_EQUAL( str.Get(), "\050a\051" ) ;
 }

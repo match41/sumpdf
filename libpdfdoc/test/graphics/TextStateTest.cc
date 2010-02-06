@@ -62,7 +62,7 @@ void TextStateTest::TestPrint( )
 	std::ostringstream ss ;
 	ts.Print( ss, &r ) ;
 	
-	PDF_ASSERT_EQUAL( ss.str(), "/MockFont 12 Tf\n" ) ;
+	PDFUT_ASSERT_EQUAL( ss.str(), "/MockFont 12 Tf\n" ) ;
 }
 
 } // end of namespace

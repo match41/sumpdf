@@ -45,17 +45,17 @@ void TokenSrcTest::TestReadToken( )
 	
 	pdf::Token t ;
 	CPPUNIT_ASSERT( subject.ReadToken( t ) ) ;
-	PDF_ASSERT_EQUAL( t.Get(), "Hello" ) ;
+	PDFUT_ASSERT_EQUAL( t.Get(), "Hello" ) ;
 	CPPUNIT_ASSERT( !subject.HasCache( ) ) ;
 	
 	subject.PutBack( t ) ;
 	CPPUNIT_ASSERT( subject.HasCache( ) ) ;
 	CPPUNIT_ASSERT( subject.ReadToken( t ) ) ;
-	PDF_ASSERT_EQUAL( t.Get(), "Hello" ) ;
+	PDFUT_ASSERT_EQUAL( t.Get(), "Hello" ) ;
 	CPPUNIT_ASSERT( !subject.HasCache( ) ) ;
 
 	CPPUNIT_ASSERT( subject.ReadToken( t ) ) ;
-	PDF_ASSERT_EQUAL( t.Get(), "world" ) ;
+	PDFUT_ASSERT_EQUAL( t.Get(), "world" ) ;
 	CPPUNIT_ASSERT( !subject.HasCache( ) ) ;
 }
 
@@ -68,11 +68,11 @@ void TokenSrcTest::TestGetChar( )
 	
 	char ch ;
 	CPPUNIT_ASSERT( subject.GetChar( ch ) ) ;
-	PDF_ASSERT_EQUAL( ch, 'h' ) ;
+	PDFUT_ASSERT_EQUAL( ch, 'h' ) ;
 
 	pdf::Token t ;
 	CPPUNIT_ASSERT( subject >> t ) ;
-	PDF_ASSERT_EQUAL( t.Get(), "ello" ) ;
+	PDFUT_ASSERT_EQUAL( t.Get(), "ello" ) ;
 	
 	subject.PutBack( t ) ;
 	char ello[4] ;
@@ -80,11 +80,11 @@ void TokenSrcTest::TestGetChar( )
 	CPPUNIT_ASSERT( subject.GetChar( ello[1] ) ) ;
 	CPPUNIT_ASSERT( subject.GetChar( ello[2] ) ) ;
 	CPPUNIT_ASSERT( subject.GetChar( ello[3] ) ) ;
-	PDF_ASSERT_EQUAL( std::string( ello, pdf::Count(ello) ), "ello" ) ;
+	PDFUT_ASSERT_EQUAL( std::string( ello, pdf::Count(ello) ), "ello" ) ;
 
 	pdf::Token t2 ;
 	CPPUNIT_ASSERT( subject >> t2 ) ;
-	PDF_ASSERT_EQUAL( t2.Get(), "world" ) ;
+	PDFUT_ASSERT_EQUAL( t2.Get(), "world" ) ;
 	
 	CPPUNIT_ASSERT( !subject.HasCache() ) ;
 }
@@ -99,13 +99,13 @@ void TokenSrcTest::TestPeekAllCache( )
 	
 	pdf::Token t[2] ;
 	CPPUNIT_ASSERT( subject.Peek( t, pdf::Count(t) ) == pdf::End(t) ) ;
-	PDF_ASSERT_EQUAL( t[0].Get(), "hello" ) ;
-	PDF_ASSERT_EQUAL( t[1].Get(), "world" ) ;
+	PDFUT_ASSERT_EQUAL( t[0].Get(), "hello" ) ;
+	PDFUT_ASSERT_EQUAL( t[1].Get(), "world" ) ;
 	
 	pdf::Token a[2] ;
 	CPPUNIT_ASSERT( subject >> a[0] >> a[1] ) ;
-	PDF_ASSERT_EQUAL( a[0].Get(), "hello" ) ;
-	PDF_ASSERT_EQUAL( a[1].Get(), "world" ) ;
+	PDFUT_ASSERT_EQUAL( a[0].Get(), "hello" ) ;
+	PDFUT_ASSERT_EQUAL( a[1].Get(), "world" ) ;
 }
 
 void TokenSrcTest::TestPeekWithRead( )
@@ -116,8 +116,8 @@ void TokenSrcTest::TestPeekWithRead( )
 	pdf::Token hello, world ;
 	CPPUNIT_ASSERT( ss >> hello >> world ) ;
 	CPPUNIT_ASSERT( subject ) ;
-	PDF_ASSERT_EQUAL( hello.Get(), "hello" ) ;
-	PDF_ASSERT_EQUAL( world.Get(), "world" ) ;
+	PDFUT_ASSERT_EQUAL( hello.Get(), "hello" ) ;
+	PDFUT_ASSERT_EQUAL( world.Get(), "world" ) ;
 
 	subject.PutBack( world ) ;
 	subject.PutBack( hello ) ;
@@ -125,17 +125,17 @@ void TokenSrcTest::TestPeekWithRead( )
 	pdf::Token t[4] ;
 	CPPUNIT_ASSERT( subject.Peek( t, pdf::Count(t) ) == pdf::End(t) ) ;
 	CPPUNIT_ASSERT( subject ) ;
-	PDF_ASSERT_EQUAL( t[0].Get(), "hello" ) ;
-	PDF_ASSERT_EQUAL( t[1].Get(), "world" ) ;
-	PDF_ASSERT_EQUAL( t[2].Get(), "foo" ) ;
-	PDF_ASSERT_EQUAL( t[3].Get(), "bar" ) ;
+	PDFUT_ASSERT_EQUAL( t[0].Get(), "hello" ) ;
+	PDFUT_ASSERT_EQUAL( t[1].Get(), "world" ) ;
+	PDFUT_ASSERT_EQUAL( t[2].Get(), "foo" ) ;
+	PDFUT_ASSERT_EQUAL( t[3].Get(), "bar" ) ;
 
 	pdf::Token a[4] ;
 	CPPUNIT_ASSERT( subject >> a[0] >> a[1] >> a[2] >> a[3] ) ;
-	PDF_ASSERT_EQUAL( a[0].Get(), "hello" ) ;
-	PDF_ASSERT_EQUAL( a[1].Get(), "world" ) ;
-	PDF_ASSERT_EQUAL( a[2].Get(), "foo" ) ;
-	PDF_ASSERT_EQUAL( a[3].Get(), "bar" ) ;
+	PDFUT_ASSERT_EQUAL( a[0].Get(), "hello" ) ;
+	PDFUT_ASSERT_EQUAL( a[1].Get(), "world" ) ;
+	PDFUT_ASSERT_EQUAL( a[2].Get(), "foo" ) ;
+	PDFUT_ASSERT_EQUAL( a[3].Get(), "bar" ) ;
 }
 
 void TokenSrcTest::TestIgnoreCache( )

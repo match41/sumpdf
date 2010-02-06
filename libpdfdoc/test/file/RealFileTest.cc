@@ -147,7 +147,7 @@ void RealFileTest::TestSimple( )
 		(std::istreambuf_iterator<char>( exp ) ),
 		(std::istreambuf_iterator<char>( ) ) ) ;
 	
-	PDF_ASSERT_EQUAL( file_str, exp_str ) ;
+	PDFUT_ASSERT_EQUAL( file_str, exp_str ) ;
 }
 
 void RealFileTest::TestReadStream( )
@@ -167,8 +167,8 @@ void RealFileTest::TestReadStream( )
 	std::stringstream exp ;
 	std::size_t exp_size = m_content->CopyData( exp.rdbuf() ) ;
 	
-	PDF_ASSERT_EQUAL( count, exp_size ) ;
-	PDF_ASSERT_EQUAL( output.str(), exp.str() ) ;
+	PDFUT_ASSERT_EQUAL( count, exp_size ) ;
+	PDFUT_ASSERT_EQUAL( output.str(), exp.str() ) ;
 }
 
 } // end of namespace

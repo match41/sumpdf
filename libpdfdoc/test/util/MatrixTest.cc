@@ -40,7 +40,7 @@ MatrixTest::MatrixTest( )
 void MatrixTest::TestDet( )
 {
 	Matrix m( 1,1,1,1,0,0 ) ;
-	PDF_ASSERT_EQUAL( m.Det(), 0.0 ) ;
+	PDFUT_ASSERT_EQUAL( m.Det(), 0.0 ) ;
 }
 
 void MatrixTest::TestInv( )
@@ -48,12 +48,12 @@ void MatrixTest::TestInv( )
 	Matrix m( 2,0,0,2, 100, 300 ), m2( 1,0,0,1, 500, 300 ) ;
 	
 	Matrix r = m * m2 * m2.Inverse() ;
-	PDF_ASSERT_EQUAL( r, m ) ;
+	PDFUT_ASSERT_EQUAL( r, m ) ;
 }
 
 void MatrixTest::TestMul( )
 {
 	Matrix m( 1,0,0,1, 100, 300 ), m2( 1,0,0,1, 500, 300 ) ;
 	Matrix r = m * m2 ;
-	PDF_ASSERT_EQUAL( r, Matrix( 1,0,0,1, 600, 600 ) ) ;
+	PDFUT_ASSERT_EQUAL( r, Matrix( 1,0,0,1, 600, 600 ) ) ;
 }

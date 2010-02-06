@@ -59,9 +59,9 @@ void NameTreeTest::TestSimple( )
 
 	NameTree subject;
 	subject.Read( self, &file ) ;
-	PDF_ASSERT_EQUAL( subject.LookUp( "v1" ), Object(100) ) ;
-	PDF_ASSERT_EQUAL( subject.LookUp( "v2" ), Object(101.0) ) ; 
-	PDF_ASSERT_EQUAL( subject.LookUp( "v3" ), Object::NullObj() ) ;
+	PDFUT_ASSERT_EQUAL( subject.LookUp( "v1" ), Object(100) ) ;
+	PDFUT_ASSERT_EQUAL( subject.LookUp( "v2" ), Object(101.0) ) ; 
+	PDFUT_ASSERT_EQUAL( subject.LookUp( "v3" ), Object::NullObj() ) ;
 }
 
 void NameTreeTest::TestWrite( )

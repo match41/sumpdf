@@ -70,9 +70,9 @@ void ArrayTest::TestRead( )
 	std::istringstream ss( "[10 /Hello 123.0 (am a string)]");
 	pdf::Array sub ;
 	CPPUNIT_ASSERT( ss >> sub ) ;
-	PDF_ASSERT_EQUAL( sub[0], 10 ) ;
-	PDF_ASSERT_EQUAL( sub[1].As<pdf::Name>(), pdf::Name("Hello") ) ;
-	PDF_ASSERT_EQUAL( sub[2], 123.0 ) ;
+	PDFUT_ASSERT_EQUAL( sub[0], 10 ) ;
+	PDFUT_ASSERT_EQUAL( sub[1].As<pdf::Name>(), pdf::Name("Hello") ) ;
+	PDFUT_ASSERT_EQUAL( sub[2], 123.0 ) ;
 /*	CPPUNIT_ASSERT( sub[3] == std::string("I am a string") ) ;
 	pdf::Dictionary d ;
 	d["Type"] = pdf::Name("Dict") ;
@@ -95,8 +95,8 @@ void ArrayTest::TestTJ( )
 	CPPUNIT_ASSERT( ss >> sub ) ;
 	
 	char obj1[] = { 0x01, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x10 } ;
-	PDF_ASSERT_EQUAL( sub.size(), 27U ) ;
-	PDF_ASSERT_EQUAL( sub[0].As<std::string>(), obj1 ) ;
+	PDFUT_ASSERT_EQUAL( sub.size(), 27U ) ;
+	PDFUT_ASSERT_EQUAL( sub[0].As<std::string>(), obj1 ) ;
 }
 
 } // end of namespace

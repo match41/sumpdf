@@ -76,7 +76,7 @@ void RealPage::Read( Dictionary& self, File *file )
 
 	ElementPool *pool = file->Pool( ) ;
 	Ref link = self["Resources"].To<Ref>( std::nothrow ) ;
-	if ( !pool->Find( link, m_resources ) )  
+	if ( !pool->Acquire( link, m_resources ) )  
 	{
 		Dictionary res_dict ;
 		if ( Detach( file, self, "Resources", res_dict ) )

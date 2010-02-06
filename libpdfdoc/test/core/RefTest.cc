@@ -43,8 +43,8 @@ void RefTest::TestNormal( )
 	std::istringstream ss( "1 9 R" ) ;
 	pdf::Ref obj ;
 	CPPUNIT_ASSERT( ss >> obj ) ;
-	PDF_ASSERT_EQUAL( obj.ID( ), 1U ) ;
-	PDF_ASSERT_EQUAL( obj.Gen( ), 9U ) ;
+	PDFUT_ASSERT_EQUAL( obj.ID( ), 1U ) ;
+	PDFUT_ASSERT_EQUAL( obj.Gen( ), 9U ) ;
 }
 
 void RefTest::TestError( )
@@ -52,8 +52,8 @@ void RefTest::TestError( )
 	std::istringstream ss( "1 0 a a R" ) ;
 	pdf::Ref obj ;
 	CPPUNIT_ASSERT( !(ss >> obj) ) ;
-	PDF_ASSERT_EQUAL( obj.ID( ), 0U ) ;
-	PDF_ASSERT_EQUAL( obj.Gen( ), 0U ) ;
+	PDFUT_ASSERT_EQUAL( obj.ID( ), 0U ) ;
+	PDFUT_ASSERT_EQUAL( obj.Gen( ), 0U ) ;
 }
 
 void RefTest::TestNonIntError( )
@@ -63,16 +63,16 @@ void RefTest::TestNonIntError( )
 	
 	pdf::Ref obj ;
 	CPPUNIT_ASSERT( !(src >> obj) ) ;
-	PDF_ASSERT_EQUAL( obj.ID( ), 0U ) ;
-	PDF_ASSERT_EQUAL( obj.Gen( ), 0U ) ;
+	PDFUT_ASSERT_EQUAL( obj.ID( ), 0U ) ;
+	PDFUT_ASSERT_EQUAL( obj.Gen( ), 0U ) ;
 	
 	// the 3 tokens can still be read
 	pdf::Token t[3] ;
 	src.ResetState( ) ;
 	CPPUNIT_ASSERT( src.Peek( t, pdf::Count(t) ) == pdf::End(t) ) ;
-	PDF_ASSERT_EQUAL( t[0].Get(), "82" ) ;
-	PDF_ASSERT_EQUAL( t[1].Get(), "/" ) ;
-	PDF_ASSERT_EQUAL( t[2].Get(), "R" ) ;
+	PDFUT_ASSERT_EQUAL( t[0].Get(), "82" ) ;
+	PDFUT_ASSERT_EQUAL( t[1].Get(), "/" ) ;
+	PDFUT_ASSERT_EQUAL( t[2].Get(), "R" ) ;
 
 }
 
@@ -84,13 +84,13 @@ void RefTest::TestTooFewToken( )
 	
 	pdf::Ref obj ;
 	CPPUNIT_ASSERT( !(src >> obj) ) ;
-	PDF_ASSERT_EQUAL( obj.ID( ), 0U ) ;
-	PDF_ASSERT_EQUAL( obj.Gen( ), 0U ) ;
+	PDFUT_ASSERT_EQUAL( obj.ID( ), 0U ) ;
+	PDFUT_ASSERT_EQUAL( obj.Gen( ), 0U ) ;
 
 	// the 2 tokens can still be read
 	pdf::Token t[2] ;
 	src.ResetState( ) ;
-	PDF_ASSERT_EQUAL( src.Peek( t, pdf::Count(t) ), pdf::End(t) ) ;
-	PDF_ASSERT_EQUAL( t[0].Get(), "2" ) ;
-	PDF_ASSERT_EQUAL( t[1].Get(), "a" ) ;
+	PDFUT_ASSERT_EQUAL( src.Peek( t, pdf::Count(t) ), pdf::End(t) ) ;
+	PDFUT_ASSERT_EQUAL( t[0].Get(), "2" ) ;
+	PDFUT_ASSERT_EQUAL( t[1].Get(), "a" ) ;
 }

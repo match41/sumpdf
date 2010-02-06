@@ -45,7 +45,7 @@ void SimpleFontTest::TestSimple( )
 		std::string(TEST_DATA_DIR) +"FreeMonoBoldOblique.ttf",
 		0,
 		m_ft ) ;
-	PDF_ASSERT_EQUAL( subject.BaseName( ), "FreeMonoBoldOblique" ) ;
+	PDFUT_ASSERT_EQUAL( subject.BaseName( ), "FreeMonoBoldOblique" ) ;
 }
 
 void SimpleFontTest::setUp( )
@@ -61,7 +61,7 @@ void SimpleFontTest::tearDown( )
 void SimpleFontTest::TestLoadByName( )
 {
 	pdf::SimpleFont subject( "Arial", m_ft ) ;
-	PDF_ASSERT_EQUAL( subject.BaseName( ), "ArialMT" ) ;
+	PDFUT_ASSERT_EQUAL( subject.BaseName( ), "ArialMT" ) ;
 	
 	pdf::FontDescriptor *fd = subject.Descriptor( ) ;
 	
@@ -70,6 +70,6 @@ void SimpleFontTest::TestLoadByName( )
 	
 	pdf::Object fdo = file.ReadObj( r ) ;
 	CPPUNIT_ASSERT( fdo.Is<pdf::Dictionary>() ) ;
-	PDF_ASSERT_EQUAL( fd->Family(), "" ) ; 
+	PDFUT_ASSERT_EQUAL( fd->Family(), "" ) ; 
 //	std::cout << "descriptor = " << file.Find( r ) << std::endl ;
 }

@@ -55,10 +55,10 @@ void PageNodeTest::TestCount( )
 	              *level2	= new pdf::PageTree( level1 ) ;
 	new pdf::RealPage( level2 ) ;
 	
-	PDF_ASSERT_EQUAL( m_root->Count( ), 1u ) ;
+	PDFUT_ASSERT_EQUAL( m_root->Count( ), 1u ) ;
 
 	new pdf::RealPage( level1 ) ;
-	PDF_ASSERT_EQUAL( m_root->Count( ), 2u ) ;
+	PDFUT_ASSERT_EQUAL( m_root->Count( ), 2u ) ;
 }
 
 void PageNodeTest::TestGetLeaf( )
@@ -67,15 +67,15 @@ void PageNodeTest::TestGetLeaf( )
 	              *level2	= new pdf::PageTree( level1 ) ;
 	pdf::RealPage *page		= new pdf::RealPage( level2 ) ;
 
-	PDF_ASSERT_EQUAL( m_root->GetLeaf( 0 ), page ) ;
-	PDF_ASSERT_NULL( m_root->GetLeaf( m_root->Count() ) ) ;
-	PDF_ASSERT_NULL( m_root->GetLeaf( 100 ) ) ;
+	PDFUT_ASSERT_EQUAL( m_root->GetLeaf( 0 ), page ) ;
+	PDFUT_ASSERT_NULL( m_root->GetLeaf( m_root->Count() ) ) ;
+	PDFUT_ASSERT_NULL( m_root->GetLeaf( 100 ) ) ;
 
 	pdf::RealPage *page2	= new pdf::RealPage( level1 ) ;
-	PDF_ASSERT_EQUAL( m_root->GetLeaf( 0 ), page ) ;
-	PDF_ASSERT_EQUAL( m_root->GetLeaf( 1 ), page2 ) ;
-	PDF_ASSERT_NULL( m_root->GetLeaf( m_root->Count() ) ) ;
-	PDF_ASSERT_NULL( m_root->GetLeaf( 100 ) ) ;
+	PDFUT_ASSERT_EQUAL( m_root->GetLeaf( 0 ), page ) ;
+	PDFUT_ASSERT_EQUAL( m_root->GetLeaf( 1 ), page2 ) ;
+	PDFUT_ASSERT_NULL( m_root->GetLeaf( m_root->Count() ) ) ;
+	PDFUT_ASSERT_NULL( m_root->GetLeaf( 100 ) ) ;
 }
 
 void PageNodeTest::TestOrder( )

@@ -275,5 +275,5 @@ void StreamTest::TestFlush( )
 	
 	std::size_t len = s.Length() ;
 	s.Flush() ;
-	PDF_ASSERT_EQUAL( len, s.Length() ) ;
+	PDFUT_ASSERT_EQUAL( len, s.Length() ) ;
 }

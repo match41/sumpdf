@@ -177,19 +177,19 @@ void RealPageTest::TestDecode( )
 		void VisitText( pdf::Text *t )
 		{
 			CPPUNIT_ASSERT( t != 0 ) ;
-			PDF_ASSERT_EQUAL( t->Count(), 2U ) ;
+			PDFUT_ASSERT_EQUAL( t->Count(), 2U ) ;
 			
 			const pdf::Matrix& m = t->begin()->Transform() ;
 			if ( m_count == 0 )
 			{
-				PDF_ASSERT_EQUAL( m.Dx(), 120 ) ;
-				PDF_ASSERT_EQUAL( m.Dy(), 300 ) ;
+				PDFUT_ASSERT_EQUAL( m.Dx(), 120 ) ;
+				PDFUT_ASSERT_EQUAL( m.Dy(), 300 ) ;
 				m_count++ ;
 			}
 			else if ( m_count == 1 )
 			{
-				PDF_ASSERT_EQUAL( m.Dx(), 120 ) ;
-				PDF_ASSERT_EQUAL( m.Dy(), 400 ) ;
+				PDFUT_ASSERT_EQUAL( m.Dx(), 120 ) ;
+				PDFUT_ASSERT_EQUAL( m.Dy(), 400 ) ;
 			}
 			
 		}
