@@ -27,7 +27,6 @@
 #ifndef __PDF_CATALOG_HEADER_INCLUDED__
 #define __PDF_CATALOG_HEADER_INCLUDED__
 
-#include "core/Dictionary.hh"
 #include "core/Name.hh"
 #include "file/Destination.hh"
 
@@ -35,7 +34,7 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-#include <vector>
+#include <map>
 #include <memory>
 
 namespace pdf {

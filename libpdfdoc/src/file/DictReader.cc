@@ -25,6 +25,9 @@
 
 #include "DictReader.hh"
 
+#include "ArrayReader.hh"
+#include "File.hh"
+
 #include "stream/Stream.hh"
 #include "core/Array.hh"
 
@@ -54,16 +57,22 @@ DictReader::DictReader( Object& obj, File *file )
 		m_dict.swap( obj.As<Dictionary>() ) ;
 }
 
-template <typename ObjType>
-bool DictReader::Detach( const Name& name, ObjType& result )
+void DictReader::Swap( DictReader& dict )
 {
-	Dictionary::iterator i = m_dict.find( name ) ;
+	m_dict.swap( dict.m_dict ) ;
+	std::swap( m_file, dict.m_file ) ;
+}
+
+template <typename T>
+bool DictReader::Detach( Dictionary::iterator i, T& result )
+{
 	if ( i != m_dict.end( ) )
 	{
-		if ( i->second.Is<Ref>() )
-			result = m_file->ReadObj( i->second ).As<ObjType>() ;
+		Object& obj = i->second ;
+		if ( obj.Is<Ref>() )
+			result = m_file->ReadObj( obj ).As<T>() ;
 		else
-			std::swap( i->second.As<ObjType>(), result ) ;
+			std::swap( obj.As<T>(), result ) ;
 
 		m_dict.erase( i ) ;
 		return true ;
@@ -71,26 +80,29 @@ bool DictReader::Detach( const Name& name, ObjType& result )
 	return false ;
 }
 
-template bool DictReader::Detach( const Name& name, Dictionary& result ) ;
-template bool DictReader::Detach( const Name& name, Array& result ) ;
-template bool DictReader::Detach( const Name& name, Name& result ) ;
-template bool DictReader::Detach( const Name& name, std::string& result ) ;
-template bool DictReader::Detach( const Name& name, bool& result ) ;
-template bool DictReader::Detach( const Name& name, Stream& result ) ;
-template bool DictReader::Detach( const Name& name, Ref& result ) ;
-template bool DictReader::Detach( const Name& name, Object& result ) ;
+template bool DictReader::Detach( Dictionary::iterator, Dictionary& ) ;
+template bool DictReader::Detach( Dictionary::iterator, Array& ) ;
+template bool DictReader::Detach( Dictionary::iterator, Name& ) ;
+template bool DictReader::Detach( Dictionary::iterator, std::string& ) ;
+template bool DictReader::Detach( Dictionary::iterator, bool& ) ;
+template bool DictReader::Detach( Dictionary::iterator, Stream& ) ;
+template bool DictReader::Detach( Dictionary::iterator, Ref& ) ;
+template bool DictReader::Detach( Dictionary::iterator, Object& ) ;
 
 namespace
 {
-	template <typename ObjType>
-	bool DetachTo( File *file, Dictionary& dict, const Name& name, ObjType& result )
+	template <typename T>
+	bool DetachTo(
+		File 					*file,
+		Dictionary&				dict,
+		Dictionary::iterator	i,
+		T&						result )
 	{
-		Dictionary::iterator i = dict.find( name ) ;
 		if ( i != dict.end( ) )
 		{
 			result = ( i->second.Is<Ref>() ) ?
-				file->ReadObj( i->second ).To<ObjType>() :
-				i->second.To<ObjType>() ;
+				file->ReadObj( i->second ).To<T>() :
+				i->second.To<T>() ;
 		
 			dict.erase( i ) ;
 			return true ;
@@ -100,22 +112,24 @@ namespace
 }
 
 template <>
-bool DictReader::Detach<int>( const Name& name, int& result )
+bool DictReader::Detach<int>( Dictionary::iterator i, int& result )
 {
-	return DetachTo( m_file, m_dict, name, result ) ;
+	return DetachTo( m_file, m_dict, i, result ) ;
 }
 
 template <>
-bool DictReader::Detach<double>( const Name& name, double& result )
+bool DictReader::Detach<double>( Dictionary::iterator i, double& result )
 {
-	return DetachTo( m_file, m_dict, name, result ) ;
+	return DetachTo( m_file, m_dict, i, result ) ;
 }
 
 template <>
-bool DictReader::Detach<DictReader>( const Name& name, DictReader& result )
+bool DictReader::Detach<DictReader>(
+	Dictionary::iterator	i,
+	DictReader& 			result )
 {
 	Dictionary dict ;
-	if ( Detach( name, dict ) )
+	if ( Detach( i, dict ) )
 	{
 		result.m_dict.swap( dict ) ;
 		result.m_file = m_file ;
@@ -123,6 +137,29 @@ bool DictReader::Detach<DictReader>( const Name& name, DictReader& result )
 	}
 	else
 		return false ;
+}
+
+template <>
+bool DictReader::Detach<ArrayReader>(
+	Dictionary::iterator	i,
+	ArrayReader&			result)
+{
+	Array array ;
+	if ( Detach( i, array ) )
+	{
+		result->swap( array ) ;
+		result.SetFile( m_file ) ;
+		return true ;
+	}
+	else
+		return false ;
+}
+
+template <>
+DictReader DictReader::DeRefObj( const Object& obj )
+{
+	Dictionary dict = DeRefObj<Dictionary>( obj ) ;
+	return DictReader( dict, m_file ) ;
 }
 
 Dictionary* DictReader::operator->()
@@ -153,6 +190,16 @@ Object& DictReader::operator[]( const Name& name )
 const Object& DictReader::operator[]( const Name& name ) const
 {
 	return m_dict[name] ;
+}
+
+File* DictReader::GetFile( ) const
+{
+	return m_file ;
+}
+
+void DictReader::SetFile( File *file )
+{
+	m_file = file ;
 }
 
 } // end of namespace

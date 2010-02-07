@@ -29,8 +29,9 @@
 #include "File.hh"
 #include "core/Object.hh"
 #include "core/Dictionary.hh"
+#include "core/Ref.hh"
 
-#include <boost/bind.hpp>
+#include <utility>
 
 namespace pdf {
 
@@ -45,8 +46,16 @@ public :
 	DictReader( Dictionary& dict, File *file ) ;
 	DictReader( Object& obj, File *file ) ;
 	
+	void Swap( DictReader& dict ) ;
+	
 	template <typename ObjType>
-	bool Detach( const Name& name, ObjType& result ) ;
+	bool Detach( const Name& name, ObjType& result )
+	{
+		return Detach( m_dict.find(name), result ) ;
+	}
+
+	template <typename T>
+	bool Detach( Dictionary::iterator i, T& result ) ;
 
 	template <typename ObjType>
 	bool DeRef( const Name& name, ObjType& result )
@@ -63,15 +72,12 @@ public :
 		return false ;
 	}
 
-	template <typename ObjType>
-	ObjType DeRefObj( const Object& obj )
+	template <typename T>
+	T DeRefObj( const Object& obj )
 	{
-		if ( obj.Is<Ref>( ) )
-		{
-			return m_file->ReadObj( obj.As<Ref>() ) ;
-		}
-		else
-			return obj.As<ObjType>( )  ;
+		return obj.Is<Ref>()
+			? m_file->ReadObj( obj.As<Ref>() ).As<T>()
+			: obj.As<T>( ) ;
 	}
 
 	template <typename ObjType>
@@ -88,6 +94,41 @@ public :
 		return dest ;
 	}
 
+	template <typename T, typename Iterator>
+	T At( Iterator i ) const
+	{
+		if ( i != m_dict.end() )
+		{
+			const Object& obj = i->second ;
+		
+			// if it is what you want, then return it
+			if ( obj.Is<T>() )
+				return obj.To<T>() ;
+			
+			// if it is a Ref instead, read the file for it and try to convert
+			// it to T.
+			// note that if it is a Ref but T is really a Ref, that means the
+			// caller said she want a Ref explicit, we don't de-reference it.
+			else if ( obj.Is<Ref>() )
+				return m_file->ReadObj( obj.As<Ref>() ).To<T>() ;
+		}
+		
+		// nothing we can do
+		return T() ;	
+	}
+
+	template <typename T>
+	T At( const Name& name ) const
+	{
+		return At<T>( m_dict.find( name ) ) ;
+	}
+
+	template <typename T>
+	T At( const char *name ) const
+	{
+		return At<T>( m_dict.find( Name(name) ) ) ;
+	}
+
 	// pointer-like operations for dictionary
 	Dictionary* operator->() ;
 	const Dictionary* operator->() const ;
@@ -99,10 +140,16 @@ public :
 	Object& operator[]( const Name& name ) ;
 	const Object& operator[]( const Name& name ) const ;
 
+	File* GetFile( ) const ;
+	void SetFile( File *file ) ;
+
 private :
 	Dictionary	m_dict ;
 	File		*m_file ;
 } ;
+
+template <>
+DictReader DictReader::DeRefObj( const Object& obj ) ;
 
 } // end of namespace
 

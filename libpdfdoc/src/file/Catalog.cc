@@ -31,6 +31,7 @@
 #include "DictReader.hh"
 
 #include "core/Array.hh"
+#include "core/Dictionary.hh"
 #include "core/Ref.hh"
 
 #include "page/RealPage.hh"
