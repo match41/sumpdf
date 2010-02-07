@@ -41,8 +41,6 @@
 #include "util/Util.hh"
 
 #include <boost/bind.hpp>
-#include <boost/lambda/construct.hpp>
-
 #include <numeric>
 
 #include <iostream>

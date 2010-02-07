@@ -72,6 +72,7 @@ set( GRAPICS_HDRS	${GRAPICS_DIR}/RealText.hh )
 
 set( FILE_HDRS		${FILE_DIR}/RealFile.hh
 					${FILE_DIR}/File.hh
+					${FILE_DIR}/DictReader.hh
 					${FILE_DIR}/Catalog.hh
 					${FILE_DIR}/ObjectReader.hh
 					${FILE_DIR}/RefObjMap.hh
@@ -180,6 +181,7 @@ set( GRAPICS_SRCS	${GRAPICS_DIR}/Graphics.cc
 					${GRAPICS_DIR}/TextState.cc )
 
 set( FILE_SRCS		${FILE_DIR}/RealFile.cc
+					${FILE_DIR}/DictReader.cc
 					${FILE_DIR}/File.cc
 					${FILE_DIR}/Catalog.cc
 					${FILE_DIR}/Destination.cc

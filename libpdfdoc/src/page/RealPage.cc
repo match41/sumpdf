@@ -36,7 +36,7 @@
 
 // other libpdfdoc headers
 #include "file/File.hh"
-#include "file/ObjectReader.hh"
+#include "file/DictReader.hh"
 #include "file/ElementPool.hh"
 #include "util/Debug.hh"
 #include "util/Rect.hh"
@@ -56,30 +56,31 @@ RealPage::RealPage( PageTree *parent )
 	  m_media_box( 0, 0, 595, 842 ),
 	  m_rotate( 0 )
 {
-	assert( parent != 0 ) ;
+	PDF_ASSERT( parent != 0 ) ;
 	parent->AppendLeaf( this ) ;
 }
 
 void RealPage::Read( Dictionary& self, File *file )
 {
-	assert( file != 0 ) ;
+	PDF_ASSERT( file != 0 ) ;
+	DictReader dict( self, file ) ;
 	
 	// read content
 	Object contents ;
-	if ( Detach( file, self, "Contents", contents ) )
+	if ( dict.Detach( "Contents", contents ) )
 	    ReadContent( contents, file ) ;
 
 	// media box
 	Array a ;
-	if ( Detach( file, self, "MediaBox", a ) )
+	if ( dict.Detach( "MediaBox", a ) )
 		m_media_box = Rect( a.begin( ), a.end( ) ) ;
 
 	ElementPool *pool = file->Pool( ) ;
-	Ref link = self["Resources"].To<Ref>( std::nothrow ) ;
+	Ref link = dict["Resources"].To<Ref>( std::nothrow ) ;
 	if ( !pool->Acquire( link, m_resources ) )  
 	{
 		Dictionary res_dict ;
-		if ( Detach( file, self, "Resources", res_dict ) )
+		if ( dict.Detach( "Resources", res_dict ) )
 		{
 			m_resources->Read( res_dict, file ) ;
 			pool->Add( link, m_resources ) ; 
