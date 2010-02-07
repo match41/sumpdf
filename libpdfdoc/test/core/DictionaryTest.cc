@@ -157,18 +157,6 @@ void DictionaryTest::TestImage( )
 		pdf::Object(pdf::Ref( 24, 0 )) ) ;
 }
 
-void DictionaryTest::TestExtract( )
-{
-	pdf::Dictionary subject ;
-	subject["AAA"] = pdf::Name( "BBB" ) ;
-	PDFUT_ASSERT_EQUAL( subject.size(), 1U ) ;
-	
-	pdf::Name out ;
-	subject.Extract( "AAA", out ) ;
-	PDFUT_ASSERT_EQUAL( out, pdf::Name( "BBB" ) ) ;
-	PDFUT_ASSERT_EQUAL( subject.size(), 0U ) ;
-}
-
 void DictionaryTest::TestSwap( )
 {
 	pdf::Dictionary s1, s2 ;

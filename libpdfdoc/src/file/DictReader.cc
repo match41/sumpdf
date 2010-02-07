@@ -31,6 +31,8 @@
 #include "stream/Stream.hh"
 #include "core/Array.hh"
 
+#include "util/Debug.hh"
+
 namespace pdf {
 
 DictReader::DictReader( )
@@ -64,30 +66,28 @@ void DictReader::Swap( DictReader& dict )
 }
 
 template <typename T>
-bool DictReader::Detach( Dictionary::iterator i, T& result )
+bool DictReader::At( Dictionary::iterator i, T& result )
 {
-	if ( i != m_dict.end( ) )
-	{
-		Object& obj = i->second ;
-		if ( obj.Is<Ref>() )
-			result = m_file->ReadObj( obj ).As<T>() ;
-		else
-			std::swap( obj.As<T>(), result ) ;
-
-		m_dict.erase( i ) ;
-		return true ;
-	}
-	return false ;
+	PDF_ASSERT( i != m_dict.end( ) ) ;
+	
+	Object& obj = i->second ;
+	
+	bool is_ref = obj.Is<Ref>() ; 
+	if ( is_ref )
+		result = m_file->ReadObj( obj ).As<T>() ;
+	else
+		std::swap( obj.As<T>(), result ) ;
+	return is_ref ;
 }
 
-template bool DictReader::Detach( Dictionary::iterator, Dictionary& ) ;
-template bool DictReader::Detach( Dictionary::iterator, Array& ) ;
-template bool DictReader::Detach( Dictionary::iterator, Name& ) ;
-template bool DictReader::Detach( Dictionary::iterator, std::string& ) ;
-template bool DictReader::Detach( Dictionary::iterator, bool& ) ;
-template bool DictReader::Detach( Dictionary::iterator, Stream& ) ;
-template bool DictReader::Detach( Dictionary::iterator, Ref& ) ;
-template bool DictReader::Detach( Dictionary::iterator, Object& ) ;
+template bool DictReader::At( Dictionary::iterator, Dictionary& ) ;
+template bool DictReader::At( Dictionary::iterator, Array& ) ;
+template bool DictReader::At( Dictionary::iterator, Name& ) ;
+template bool DictReader::At( Dictionary::iterator, std::string& ) ;
+template bool DictReader::At( Dictionary::iterator, bool& ) ;
+template bool DictReader::At( Dictionary::iterator, Stream& ) ;
+template bool DictReader::At( Dictionary::iterator, Ref& ) ;
+template bool DictReader::At( Dictionary::iterator, Object& ) ;
 
 namespace
 {
@@ -103,8 +103,6 @@ namespace
 			result = ( i->second.Is<Ref>() ) ?
 				file->ReadObj( i->second ).To<T>() :
 				i->second.To<T>() ;
-		
-			dict.erase( i ) ;
 			return true ;
 		}
 		return false ;
@@ -112,54 +110,43 @@ namespace
 }
 
 template <>
-bool DictReader::Detach<int>( Dictionary::iterator i, int& result )
+bool DictReader::At<int>( Dictionary::iterator i, int& result )
 {
 	return DetachTo( m_file, m_dict, i, result ) ;
 }
 
 template <>
-bool DictReader::Detach<double>( Dictionary::iterator i, double& result )
+bool DictReader::At<double>( Dictionary::iterator i, double& result )
 {
 	return DetachTo( m_file, m_dict, i, result ) ;
 }
 
 template <>
-bool DictReader::Detach<DictReader>(
+bool DictReader::At<DictReader>(
 	Dictionary::iterator	i,
 	DictReader& 			result )
 {
+	PDF_ASSERT( i != m_dict.end( ) ) ;
+	
 	Dictionary dict ;
-	if ( Detach( i, dict ) )
-	{
-		result.m_dict.swap( dict ) ;
-		result.m_file = m_file ;
-		return true ;
-	}
-	else
-		return false ;
+	bool rtn = At( i, dict ) ;
+	result.m_dict.swap( dict ) ;
+	result.m_file = m_file ;
+	return rtn ;
 }
 
 template <>
-bool DictReader::Detach<ArrayReader>(
+bool DictReader::At<ArrayReader>(
 	Dictionary::iterator	i,
 	ArrayReader&			result)
 {
-	Array array ;
-	if ( Detach( i, array ) )
-	{
-		result->swap( array ) ;
-		result.SetFile( m_file ) ;
-		return true ;
-	}
-	else
-		return false ;
-}
+	PDF_ASSERT( i != m_dict.end( ) ) ;
 
-template <>
-DictReader DictReader::DeRefObj( const Object& obj )
-{
-	Dictionary dict = DeRefObj<Dictionary>( obj ) ;
-	return DictReader( dict, m_file ) ;
+	Array array ;
+	bool rtn = At( i, array ) ;
+	result->swap( array ) ;
+	result.SetFile( m_file ) ;
+	return rtn ;
 }
 
 Dictionary* DictReader::operator->()

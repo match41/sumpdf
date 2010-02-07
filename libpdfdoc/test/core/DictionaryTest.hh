@@ -43,7 +43,6 @@ public :
 		CPPUNIT_TEST( TestTrailer ) ;
 		CPPUNIT_TEST( TestDoubleEnd ) ;
 		CPPUNIT_TEST( TestImage ) ;
-		CPPUNIT_TEST( TestExtract ) ;
 		CPPUNIT_TEST( TestSwap ) ;
 		CPPUNIT_TEST( TestNull ) ;
 		CPPUNIT_TEST( TestErase ) ;
@@ -56,7 +55,6 @@ private :
 	void TestTrailer( ) ;
 	void TestDoubleEnd( ) ;
 	void TestImage( ) ;
-	void TestExtract( ) ;
 	void TestSwap( ) ;
 	void TestNull( ) ;
 	void TestErase( ) ;

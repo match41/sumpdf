@@ -30,6 +30,8 @@
 
 struct FT_LibraryRec_ ;
 
+namespace pdfut {
+
 ///	brief description
 /**	this class represents
 */
@@ -45,5 +47,7 @@ public :
 protected :
 	FT_LibraryRec_	*m_ft ;
 } ;
+
+} // end of namespace
 
 #endif // TESTBASE_HH_

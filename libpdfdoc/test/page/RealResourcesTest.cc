@@ -31,6 +31,7 @@
 #include "core/Ref.hh"
 #include "core/Dictionary.hh"
 #include "core/Ref.hh"
+#include "file/DictReader.hh"
 #include "font/SimpleFont.hh"
 #include "page/RealResources.hh"
 #include "util/Rect.hh"
@@ -38,6 +39,10 @@
 #include "mock/Assert.hh"
 
 #include <sstream>
+
+namespace pdfut {
+
+using namespace pdf ;
 
 RealResourcesTest::RealResourcesTest( )
 {
@@ -66,7 +71,9 @@ void RealResourcesTest::TestNormal( )
 
 	pdf::Object obj( rdict ) ;
 	pdf::RealResources subject( m_ft ) ;
-	subject.Read( rdict, &file ) ;
+	
+	DictReader reader( rdict, &file ) ;
+	subject.Read( reader ) ;
 }
 
 void RealResourcesTest::TestReadExistFont( )
@@ -89,3 +96,5 @@ void RealResourcesTest::TestReadExistFont( )
 //	subject.Read( rdict, &file ) ;
 //	PDF_ASSERT_EQUAL( f->UseCount(), 2u ) ;
 }
+
+} // end of namespace

@@ -66,14 +66,14 @@ public :
 
 	Name AddFont( BaseFont *font ) ;
 
-	void Read( Dictionary& self_obj, File *file ) ;
+	void Read( DictReader& self ) ;
 	Ref  Write( File *file ) const ;
 
 	BaseFont* FindFont( const Name& name ) const ;
 	Name FindFont( const BaseFont *font ) const ;
 
 private :
-	void ReadFontDict( DictReader& self, File *file ) ;
+	void ReadFontDict( DictReader& self ) ;
 	Ref WriteFontDict( File *file ) const ;
 
 private :

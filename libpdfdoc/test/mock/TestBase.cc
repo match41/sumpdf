@@ -29,6 +29,8 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
+namespace pdfut {
+
 /**	constructor
 */
 TestBase::TestBase( )
@@ -46,3 +48,5 @@ void TestBase::tearDown( )
 	::FT_Done_FreeType( m_ft ) ;
 	m_ft = 0 ;
 }
+
+} // end of namespace

@@ -51,48 +51,19 @@ public :
 	template <typename ObjType>
 	bool Detach( const Name& name, ObjType& result )
 	{
-		return Detach( m_dict.find(name), result ) ;
-	}
-
-	template <typename T>
-	bool Detach( Dictionary::iterator i, T& result ) ;
-
-	template <typename ObjType>
-	bool DeRef( const Name& name, ObjType& result )
-	{
-		Dictionary::const_iterator i = m_dict.find( name ) ;
-		if ( i != m_dict.end( ) )
+		Dictionary::iterator i = m_dict.find( name ) ;
+		if ( i != m_dict.end() )
 		{
-			result = i->second.Is<Ref>()
-				? m_file->ReadObj( i->second )
-				: i->second.As<ObjType>() ;
-
+			At( i, result ) ;
+			m_dict.erase( i ) ;
 			return true ;
 		}
-		return false ;
+		else
+			return false ;
 	}
 
 	template <typename T>
-	T DeRefObj( const Object& obj )
-	{
-		return obj.Is<Ref>()
-			? m_file->ReadObj( obj.As<Ref>() ).As<T>()
-			: obj.As<T>( ) ;
-	}
-
-	template <typename ObjType>
-	ObjType& DeRefObj( Object& src, ObjType& dest )
-	{
-		if ( src.Is<Ref>( ) )
-		{
-			ObjType obj = m_file->ReadObj( src.As<Ref>() ) ;
-			std::swap( dest, obj ) ;
-		}
-		else if ( !src.Is<void>() )
-			std::swap( dest, src.As<ObjType>( ) ) ;
-		
-		return dest ;
-	}
+	bool At( Dictionary::iterator i, T& result ) ;
 
 	template <typename T, typename Iterator>
 	T At( Iterator i ) const
@@ -147,9 +118,6 @@ private :
 	Dictionary	m_dict ;
 	File		*m_file ;
 } ;
-
-template <>
-DictReader DictReader::DeRefObj( const Object& obj ) ;
 
 } // end of namespace
 

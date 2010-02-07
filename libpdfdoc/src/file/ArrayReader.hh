@@ -53,16 +53,18 @@ public :
 	{
 		if ( idx < m_array.size() )
 		{
+			const Object& obj = m_array[idx] ;
+			
 			// if it is what you want, then return it
-			if ( m_array[idx].Is<T>() )
-				return m_array[idx].To<T>() ;
+			if ( obj.Is<T>() )
+				return obj.To<T>() ;
 			
 			// if it is a Ref instead, read the file for it and try to convert
 			// it to T.
 			// note that if it is a Ref but T is really a Ref, that means the
 			// caller said she want a Ref explicit, we don't de-reference it.
-			else if ( m_array[idx].Is<Ref>() )
-				return m_file->ReadObj( m_array[idx].As<Ref>() ).To<T>() ;
+			else if ( obj.Is<Ref>() )
+				return m_file->ReadObj( obj.As<Ref>() ).To<T>() ;
 		}
 		
 		// nothing we can do

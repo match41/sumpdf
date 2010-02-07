@@ -98,30 +98,6 @@ public :
 	bool operator==( const Dictionary& dict ) const ;
 	
 	void Add( const Name& key, const Object& value ) ;
-
-	/*!	\brief	get and remove a value from the dictionary
-	
-		This function will search the dictionary for \a key and swap it to
-		\a value . The value is then removed.
-		\param	key		the key to search
-		\param	value	the result
-		\return			true if \a key is found in the dictionary, otherwise
-						false
-		\throw	BadType	if \a key is found but the value is not of type \a T
-	*/
-	template <typename T>
-	bool Extract( const Name& key, T& value )
-	{
-		iterator i = m_map.find( key ) ;
-		if ( i != m_map.end( ) )
-		{
-			std::swap( value, i->second.As<T>() ) ;
-			m_map.erase( i ) ;
-			return true ;
-		}
-		else
-			return false ;
-	}
 } ;
 
 } // end of namespace

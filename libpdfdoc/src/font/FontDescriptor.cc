@@ -133,7 +133,7 @@ FontDescriptor::FontDescriptor( FT_Face face, std::vector<unsigned char>& prog )
 }
 
 ///	Read the font descriptor from file.
-void FontDescriptor::Read( font::Type type, DictReader& reader, File *file )
+void FontDescriptor::Read( font::Type type, DictReader& reader )
 {
 	m_type = type ;
 	
@@ -145,7 +145,7 @@ void FontDescriptor::Read( font::Type type, DictReader& reader, File *file )
 		if ( reader.Detach( "FontFile", 	prog ) )
 		{
 			Dictionary prog_dict = prog.Self() ;
-			DictReader prog_reader( prog_dict, file ) ;
+			DictReader prog_reader( prog_dict, reader.GetFile() ) ;
 			if ( !prog_reader.Detach( "Length1", m_length1 ) ||
 				 !prog_reader.Detach( "Length2", m_length2 ) ||
 				 !prog_reader.Detach( "Length3", m_length3 ) )

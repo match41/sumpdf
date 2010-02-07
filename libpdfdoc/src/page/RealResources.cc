@@ -73,19 +73,15 @@ RealResources::~RealResources( )
 			bind( &FontMap::left_value_type::second, _1 ) ) ) ;
 }
 
-void RealResources::Read( Dictionary& dict, File *file )
+void RealResources::Read( DictReader& self )
 {
-	PDF_ASSERT( file != 0 ) ;
-
-	DictReader self( dict, file ) ;
-
 	Dictionary ext_gstate ;
 	Array proc_set ;
 	self.Detach( "ExtGState",	ext_gstate ) ;
 	self.Detach( "ProcSet",		proc_set ) ;
 	m_proc_set.assign( proc_set.begin( ), proc_set.end( ) ) ;
 
-	ReadFontDict( self, file ) ;
+	ReadFontDict( self ) ;
 }
 
 Ref RealResources::Write( File *file ) const
@@ -98,16 +94,16 @@ Ref RealResources::Write( File *file ) const
     return file->WriteObj( dict ) ;
 }
 
-void RealResources::ReadFontDict( DictReader& self, File *file )
+void RealResources::ReadFontDict( DictReader& self )
 {
-	PDF_ASSERT( file != 0 ) ;
-	PDF_ASSERT( file->Pool() != 0 ) ;
+	PDF_ASSERT( self.GetFile() != 0 ) ;
+	PDF_ASSERT( self.GetFile()->Pool() != 0 ) ;
 	PDF_ASSERT( m_ft_lib != 0 ) ;
 
 	DictReader dict ;
 	if ( self.Detach( "Font", dict ) )
 	{
-		ElementPool *pool = file->Pool( ) ;
+		ElementPool *pool = self.GetFile()->Pool( ) ;
 		for ( Dictionary::iterator i  = dict->begin( ) ; i != dict->end( ) ; ++i )
 		{
 			ft::Library lib = { m_ft_lib } ;
@@ -117,8 +113,9 @@ void RealResources::ReadFontDict( DictReader& self, File *file )
 			Ref link = i->second.To<Ref>( std::nothrow ) ;
 			if ( !pool->Acquire( link, font ) )  
 			{
-				DictReader font_dict( i->second, file ) ;
-				font = CreateFont( font_dict, file, lib ) ;
+				DictReader font_dict ;
+				dict.At( i, font_dict ) ;
+				font = CreateFont( font_dict, lib ) ;
 				pool->Add( link, font ) ; 
 			}
 

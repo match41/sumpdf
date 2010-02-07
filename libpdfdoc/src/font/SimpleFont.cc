@@ -89,25 +89,24 @@ SimpleFont::SimpleFont( const std::string& name, FT_Library ft_lib )
 	Init( prog, ft_lib ) ;
 }
 
-SimpleFont::SimpleFont( DictReader& reader, File *file, FT_Library ft_lib )
+SimpleFont::SimpleFont( DictReader& reader, FT_Library ft_lib )
 	: m_face( 0 ),
 	  m_type( font::unknown ),
 	  m_first_char( -1 ),
 	  m_last_char( -1 ),
 	  m_descriptor( new FontDescriptor )
 {
-	PDF_ASSERT( file != 0 ) ;
 	PDF_ASSERT( ft_lib != 0 ) ;
 	
 	try
 	{
 		Name subtype ;
-		if ( reader->Extract( "Subtype",	subtype ) )
+		if ( reader.Detach( "Subtype",	subtype ) )
 			m_type	= SubType( subtype ) ;
 		
 		// base font is absent in type 3 fonts
 		if ( m_type != font::type3 )
-			reader->Extract( Name("BaseFont"),		m_base_font ) ;
+			reader.Detach( "BaseFont",	m_base_font ) ;
 		
 		reader.Detach( "FirstChar",	m_first_char ) ;
 		reader.Detach( "LastChar",	m_last_char ) ;
@@ -121,7 +120,7 @@ SimpleFont::SimpleFont( DictReader& reader, File *file, FT_Library ft_lib )
 		DictReader fd ;
 		if ( reader.Detach( "FontDescriptor", fd ) )
 		{
-			m_descriptor->Read( m_type, fd, file ) ;
+			m_descriptor->Read( m_type, fd ) ;
 
 			const std::vector<unsigned char>& font_file
 				= m_descriptor->FontFile( ) ;
@@ -430,9 +429,9 @@ FontDescriptor* SimpleFont::Descriptor( )
 	return m_descriptor.get() ;
 }
 
-BaseFont* CreateFont( DictReader& obj, File *file, const ft::Library& ft )
+BaseFont* CreateFont( DictReader& obj, const ft::Library& ft )
 {
-	return new SimpleFont( obj, file, ft.lib ) ;
+	return new SimpleFont( obj, ft.lib ) ;
 }
 
 } // end of namespace

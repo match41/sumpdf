@@ -54,7 +54,7 @@ public :
 	virtual FontDescriptor* Descriptor( ) = 0 ;
 } ;
 
-BaseFont* CreateFont( DictReader& obj, File *file, const ft::Library& ft ) ;
+BaseFont* CreateFont( DictReader& obj, const ft::Library& ft ) ;
 
 } // end of namespace
 

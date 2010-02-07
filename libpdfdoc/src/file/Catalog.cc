@@ -103,15 +103,16 @@ Catalog::Catalog( const Ref& link, File *file, FT_Library ft_lib )
 	self.Detach( "PageMode",	m_page_mode ) ;
 
 	// read destintions
-	Dictionary dest ;
+	DictReader dest ;
 	if ( self.Detach( "Dests", dest ) )
 	{
-		for ( Dictionary::iterator i = dest.begin() ; i != dest.end() ; ++i )
+		for ( Dictionary::iterator i = dest->begin() ; i != dest->end() ; ++i )
 		{
-			Array darray = self.DeRefObj<Array>( i->second ) ; 
+			Array darray ;
+			self.At( i->second, darray ) ; 
 			
 			Destination d ;
-			d.Read( darray, file ) ;
+			d.Read( darray, self.GetFile() ) ;
 			
 			m_named_dests.insert( std::make_pair( i->first, d ) ) ;
 		}

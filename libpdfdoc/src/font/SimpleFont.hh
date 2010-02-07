@@ -61,7 +61,7 @@ class Glyph ;
 class SimpleFont : public BaseFont
 {
 public :
-	SimpleFont( DictReader& self, File *file, FT_Library ft_lib ) ;
+	SimpleFont( DictReader& self, FT_Library ft_lib ) ;
 	SimpleFont( const std::string& font_file, unsigned idx, FT_Library ft_lib );
 	SimpleFont( const std::string& name, FT_Library ft_lib ) ;
 	~SimpleFont( ) ;

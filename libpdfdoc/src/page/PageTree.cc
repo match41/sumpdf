@@ -106,7 +106,8 @@ void PageTree::Read( DictReader& dict )
 		}
 		else
 			throw ParseError( "invalid page type" ) ;
-		assert( p != 0 ) ;
+		
+		PDF_ASSERT( p != 0 ) ;
 		
 		if ( pages[i].Is<Ref>() )
 			pool->Add( pages[i], p ) ;
@@ -119,10 +120,10 @@ void PageTree::Read( DictReader& dict )
 	Ref link = dict.At<Ref>("Resources" ) ;
 	if ( !pool->Acquire( link, m_resources ) )  
 	{
-		Dictionary res_dict ;
+		DictReader res_dict ;
 		if ( dict.Detach( "Resources", res_dict ) )
 		{
-			m_resources->Read( res_dict, file ) ;
+			m_resources->Read( res_dict ) ;
 			pool->Add( link, m_resources ) ; 
 		}
 	}

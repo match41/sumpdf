@@ -79,10 +79,10 @@ void RealPage::Read( DictReader& dict )
 	Ref link = dict["Resources"].To<Ref>( std::nothrow ) ;
 	if ( !pool->Acquire( link, m_resources ) )  
 	{
-		Dictionary res_dict ;
+		DictReader res_dict ;
 		if ( dict.Detach( "Resources", res_dict ) )
 		{
-			m_resources->Read( res_dict, file ) ;
+			m_resources->Read( res_dict ) ;
 			pool->Add( link, m_resources ) ; 
 		}
 	}
