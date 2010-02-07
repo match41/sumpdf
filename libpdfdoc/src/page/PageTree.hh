@@ -62,8 +62,8 @@ public :
 	PageNode* GetLeaf( std::size_t index ) ;
 	void AppendLeaf( RealPage *child ) ;
 	void AddLeaf( std::size_t index, RealPage *child ) ;
-	RealResources* GetResource( ) ;
-	const RealResources* GetResource( ) const ;
+	Resources* GetResource( ) ;
+	const Resources* GetResource( ) const ;
 
 private :
 	void AppendNode( PageNode *child ) ;
