@@ -34,9 +34,10 @@
 #include "core/Dictionary.hh"
 #include "core/Ref.hh"
 
+#include "font/SimpleFont.hh"
+
 #include "page/RealPage.hh"
 #include "page/PageTree.hh"
-#include "page/RealResources.hh"
 
 #include "util/Debug.hh"
 #include "util/Exception.hh"
@@ -60,16 +61,16 @@ struct Catalog::NameDict
 	}
 } ;
 
-Catalog::Catalog( FT_Library ft_lib )
+Catalog::Catalog( FT_LibraryRec_ *ft )
 	: m_version		( "1.4" ),
 	  m_page_layout	( "SinglePage" ),
 	  m_page_mode	( "UseNode" ),
-	  m_tree		( new PageTree( ft_lib ) ),
+	  m_tree		( new PageTree( ft ) ),
 	  m_name_dict	( new NameDict )
 {
 }
 
-Catalog::Catalog( const Ref& link, File *file, FT_Library ft_lib )
+Catalog::Catalog( const Ref& link, File *file, FT_LibraryRec_ *ft )
 	: m_version		( "1.4" ),
 	  m_page_layout	( "SinglePage" ),
 	  m_page_mode	( "UseNode" ),
@@ -95,7 +96,7 @@ Catalog::Catalog( const Ref& link, File *file, FT_Library ft_lib )
 		throw ParseError( "no page tree in catalog" ) ;
 	
 	// root page tree has no parent
-	m_tree = new PageTree( ft_lib ) ;
+	m_tree = new PageTree( ft ) ;
 	m_tree->Read( tree ) ;
 	
 	self.Detach( "Version",		m_version ) ;
@@ -162,7 +163,7 @@ Ref Catalog::Write( File *file ) const
 	return file->WriteObj( self ) ;
 }
 
-RealPage* Catalog::AddPage( )
+Page* Catalog::AddPage( )
 {
 	PDF_ASSERT( m_tree != 0 ) ;
 
@@ -177,7 +178,7 @@ std::size_t Catalog::PageCount( ) const
 	return m_tree->Count( ) ;
 }
 
-RealPage* Catalog::GetPage( std::size_t index )
+Page* Catalog::GetPage( std::size_t index )
 {
 	PDF_ASSERT( m_tree != 0 ) ;
 
@@ -190,10 +191,10 @@ RealPage* Catalog::GetPage( std::size_t index )
 	return static_cast<RealPage*>( p ) ;
 }
 
-Resources* Catalog::GetResource( )
+Font* Catalog::CreateSimpleFont( const std::string& name )
 {
 	PDF_ASSERT( m_tree != 0 ) ;
-	return m_tree->GetResource() ;
+	return m_tree->CreateSimpleFont( name ) ;
 }
 
 } // end of namespace

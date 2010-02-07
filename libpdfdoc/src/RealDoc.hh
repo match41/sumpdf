@@ -33,12 +33,10 @@
 #include "core/Dictionary.hh"
 #include "core/Name.hh"
 
-// freetype headers
-#include <ft2build.h>
-#include FT_FREETYPE_H
-
 #include <string>
 #include <fstream>
+
+struct FT_LibraryRec_ ;
 
 namespace pdf {
 
@@ -81,7 +79,7 @@ private :
 	std::ifstream		m_readfs ;
 	
 	//! Freetype library for loading the font files.
-	FT_Library			m_ft_lib ;
+	FT_LibraryRec_		*m_ft_lib ;
 
 	struct Info_ : public DocInfo
 	{

@@ -31,12 +31,15 @@
 #include "file/DictReader.hh"
 #include "file/RefObjMap.hh"
 #include "file/ElementPool.hh"
-#include "font/BaseFont.hh"
-#include "font/FreeTypeWrappers.hh"
+#include "font/SimpleFont.hh"
 #include "util/Util.hh"
 #include "util/Debug.hh"
 
 #include <boost/bind.hpp>
+
+// freetype headers
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 #include <algorithm>
 #include <sstream>
@@ -55,9 +58,9 @@ RealResources::RealResources( const RealResources *parent )
     m_proc_set.push_back( Name( "Text" ) ) ;
 }
 
-RealResources::RealResources( FT_Library ft_lib )
+RealResources::RealResources( FT_LibraryRec_ * ft )
 	: m_parent( 0 ),
-	  m_ft_lib( ft_lib ),
+	  m_ft_lib( ft ),
 	  m_proc_set( 1, Name( "PDF" ) )
 {
 	PDF_ASSERT( m_ft_lib != 0 ) ;
@@ -106,8 +109,6 @@ void RealResources::ReadFontDict( DictReader& self )
 		ElementPool *pool = self.GetFile()->Pool( ) ;
 		for ( Dictionary::iterator i  = dict->begin( ) ; i != dict->end( ) ; ++i )
 		{
-			ft::Library lib = { m_ft_lib } ;
-			
 			BaseFont *font = 0 ;
 			
 			Ref link = i->second.To<Ref>( std::nothrow ) ;
@@ -115,7 +116,7 @@ void RealResources::ReadFontDict( DictReader& self )
 			{
 				DictReader font_dict ;
 				dict.At( i, font_dict ) ;
-				font = CreateFont( font_dict, lib ) ;
+				font = CreateFont( font_dict, m_ft_lib ) ;
 				pool->Add( link, font ) ; 
 			}
 
@@ -177,11 +178,19 @@ BaseFont* RealResources::FindFont( const Name& name ) const
 
 Name RealResources::FindFont( const BaseFont *font ) const
 {
+	// we don't modify it anyway. it is for searching in the map
 	BaseFont *ncfont = const_cast<BaseFont*>( font ) ;
 
 	FontMap::right_const_iterator i = m_fonts.right.find( ncfont ) ;
 	return i != m_fonts.right.end() ? i->second :
 		( m_parent != 0 ? m_parent->FindFont( font ) : Name() ) ; 
+}
+
+Font* RealResources::CreateSimpleFont( const std::string& name )
+{
+	SimpleFont *f = new SimpleFont( name, m_ft_lib ) ;
+	AddFont( f ) ;
+	return f ;
 }
 
 } // end of namespace

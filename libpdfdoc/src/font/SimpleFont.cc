@@ -30,7 +30,6 @@
 
 #include "FontException.hh"
 #include "FontDescriptor.hh"
-#include "FreeTypeWrappers.hh"
 
 #include "core/Dictionary.hh"
 
@@ -48,6 +47,8 @@
 #endif
 
 // freetype headers
+#include <ft2build.h>
+#include FT_FREETYPE_H
 #include FT_XFREE86_H
 
 // libstdc++
@@ -208,10 +209,10 @@ std::vector<unsigned char> SimpleFont::LoadFile( const std::string& filename )
 	return bytes ;
 }
 
-FT_Face SimpleFont::LoadFace(
+FT_FaceRec_* SimpleFont::LoadFace(
 	const unsigned char	*data,
 	std::size_t 		size,
-	FT_Library 			ft_lib )
+	FT_LibraryRec_		*ft_lib )
 {
 	FT_Face face = 0 ;
 	FT_Error e = FT_New_Memory_Face( ft_lib, data, size, 0, &face ) ;
@@ -329,10 +330,9 @@ void SimpleFont::LoadGlyphs( )
 
 //		if ( glyph->format == FT_GLYPH_FORMAT_OUTLINE )
 		{
-			ft::Face face_wrapper = { m_face } ;
 			m_glyphs.insert( std::make_pair(
 				static_cast<wchar_t>(char_code),
-				new RealGlyph( gindex, face_wrapper ) ) ) ;
+				new RealGlyph( gindex, m_face ) ) ) ;
 		}
 //		else
 //			throw FontException(
@@ -429,9 +429,9 @@ FontDescriptor* SimpleFont::Descriptor( )
 	return m_descriptor.get() ;
 }
 
-BaseFont* CreateFont( DictReader& obj, const ft::Library& ft )
+BaseFont* CreateFont( DictReader& obj, FT_LibraryRec_ *ft )
 {
-	return new SimpleFont( obj, ft.lib ) ;
+	return new SimpleFont( obj, ft ) ;
 }
 
 } // end of namespace

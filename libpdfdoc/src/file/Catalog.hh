@@ -30,21 +30,19 @@
 #include "core/Name.hh"
 #include "file/Destination.hh"
 
-// freetype headers
-#include <ft2build.h>
-#include FT_FREETYPE_H
-
 #include <map>
 #include <memory>
 
+struct FT_LibraryRec_ ;
+
 namespace pdf {
 
-class Ref ;
-class RealPage ;
-class PageTree ;
 class ElementList ;
 class File ;
-class Resources ;
+class Font ;
+class PageTree ;
+class Ref ;
+class Page ;
 
 /*!	\brief	brief description
 	\internal
@@ -55,19 +53,19 @@ class Resources ;
 class Catalog
 {
 public :
-	explicit Catalog( FT_Library ft_lib ) ;
-	Catalog( const Ref& link, File *file, FT_Library ft_lib ) ;
+	explicit Catalog( FT_LibraryRec_ *ft ) ;
+	Catalog( const Ref& link, File *file, FT_LibraryRec_ *ft ) ;
 	~Catalog( ) ;
 	
 	Ref Write( File *file ) const ;
 
-	RealPage* AddPage( ) ;
+	Page* AddPage( ) ;
 
 	std::size_t PageCount( ) const ;
 
-	RealPage*	GetPage( std::size_t index ) ;
+	Page*	GetPage( std::size_t index ) ;
 
-	Resources*	GetResource( ) ;
+	Font* CreateSimpleFont( const std::string& name ) ;
 
 private :
 	Name		m_version ;

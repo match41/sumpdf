@@ -26,13 +26,15 @@
 #include "font/RealGlyph.hh"
 #include "font/Outline.hh"
 
-#include "FreeTypeWrappers.hh"
 #include "FontException.hh"
 
 #include "util/Debug.hh"
 
 #include <boost/format.hpp>
 
+// freetype headers
+#include <ft2build.h>
+#include FT_FREETYPE_H
 #include FT_IMAGE_H
 #include FT_OUTLINE_H
 
@@ -85,22 +87,22 @@ int CubicTo(
 /**	\internal Constructor a glyph given a font face and the glyph index.
 	This function will load the glyph from the font face.
 */
-RealGlyph::RealGlyph( unsigned idx, const ft::Face& face )
+RealGlyph::RealGlyph( unsigned idx, FT_Face face )
 {
 	// load the glyph to the glyph slot in the face
 	// we want to do the scaling in double instead of inside freetype
 	// in small font we don't have hinting
-	FT_Error error = FT_Load_Glyph( face.face, idx, FT_LOAD_NO_SCALE ) ;
+	FT_Error error = FT_Load_Glyph( face, idx, FT_LOAD_NO_SCALE ) ;
 	if ( error != 0 )
 		throw FontException(
 			boost::format( "cannot load glyph %1%" ) % idx ) ;
 
-	error = FT_Get_Glyph( face.face->glyph, &m_glyph ) ;
+	error = FT_Get_Glyph( face->glyph, &m_glyph ) ;
 	if ( error != 0 )
 		throw FontException(
 			boost::format( "cannot copy glyph %1%" ) % idx ) ;
 
-	m_met = face.face->glyph->metrics ;
+	m_met = face->glyph->metrics ;
 }
 
 RealGlyph::RealGlyph( const RealGlyph& rhs )

@@ -39,12 +39,11 @@
 // boost library
 #include <boost/tr1/unordered_map.hpp>
 
-// freetype headers
-#include <ft2build.h>
-#include FT_FREETYPE_H
-
 #include <vector>
 #include <memory>
+
+struct FT_FaceRec_ ;
+struct FT_LibraryRec_ ;
 
 namespace pdf {
 
@@ -61,9 +60,12 @@ class Glyph ;
 class SimpleFont : public BaseFont
 {
 public :
-	SimpleFont( DictReader& self, FT_Library ft_lib ) ;
-	SimpleFont( const std::string& font_file, unsigned idx, FT_Library ft_lib );
-	SimpleFont( const std::string& name, FT_Library ft_lib ) ;
+	SimpleFont( DictReader& self, FT_LibraryRec_ *ft_lib ) ;
+	SimpleFont(
+		const std::string&	font_file,
+		unsigned 			idx,
+		FT_LibraryRec_ 		*ft_lib ) ;
+	SimpleFont( const std::string& name, FT_LibraryRec_ *ft_lib ) ;
 	~SimpleFont( ) ;
 
 	std::string BaseName( ) const ;
@@ -84,12 +86,12 @@ private :
 	static const Name&	SubType( font::Type t ) ;
 	static font::Type	SubType( const Name& t ) ;
 
-	static FT_Face LoadFace(
+	static FT_FaceRec_* LoadFace(
 		const unsigned char	*data,
 		std::size_t 		size,
-		FT_Library 			ft_lib );
+		FT_LibraryRec_ 		*ft_lib );
 
-	void Init( std::vector<unsigned char>& prog, FT_Library ft_lib ) ; 
+	void Init( std::vector<unsigned char>& prog, FT_LibraryRec_ *ft_lib ) ; 
 
 	static std::string FindFont(
 		const std::string& font_name,
@@ -101,7 +103,7 @@ private :
 private :
 //	CompleteObj	m_self ;
 
-	FT_Face	m_face ;
+	FT_FaceRec_	*m_face ;
 
 	Name		m_base_font ;
 	font::Type	m_type ;

@@ -26,22 +26,18 @@
 
 #include "RealDoc.hh"
 
-#include "core/Array.hh"
 #include "core/Ref.hh"
 #include "core/Object.hh"
 
 #include "file/Catalog.hh"
 #include "file/RealFile.hh"
-#include "font/SimpleFont.hh"
 
-#include "page/RealPage.hh"
-#include "page/PageTree.hh"
-#include "page/Resources.hh"
+#include "util/Debug.hh"
 
-#include <boost/bind.hpp>
-#include <boost/lambda/construct.hpp>
+// freetype headers
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
-#include <algorithm>
 #include <sstream>
 #include <stdexcept>
 
@@ -57,6 +53,7 @@ RealDoc::RealDoc( )
 	: m_catalog( 0 )	// not exception safe
 {
 	::FT_Init_FreeType( &m_ft_lib ) ;
+	
 	m_catalog = new Catalog( m_ft_lib ) ;
 }
 
@@ -81,7 +78,10 @@ void RealDoc::Read( const std::string& filename )
 	// read the cross reference of the PDF file
 	RealFile file( &m_readfs ) ;
 
-	m_catalog		= new Catalog( file.Root( ), &file, m_ft_lib ) ;
+	PDF_ASSERT( m_catalog != 0 ) ;
+	delete m_catalog ;
+	
+	m_catalog = new Catalog( file.Root( ), &file, m_ft_lib ) ;
 	
 	// DocInfo is optional
 	if ( file.DocInfo( ) != Ref() )
@@ -109,20 +109,20 @@ Page* RealDoc::AppendPage( )
 
 std::size_t RealDoc::PageCount( ) const
 {
-	assert( m_catalog != 0 ) ;
+	PDF_ASSERT( m_catalog != 0 ) ;
 	return m_catalog->PageCount( ) ;
 }
 
 Page* RealDoc::GetPage( std::size_t index )
 {
+	PDF_ASSERT( m_catalog != 0 ) ;
 	return m_catalog->GetPage( index ) ;
 }
 
 Font* RealDoc::CreateSimpleFont( const std::string& name )
 {
-	SimpleFont *f = new SimpleFont( name, m_ft_lib ) ;
-	m_catalog->GetResource()->AddFont( f ) ;
-	return f ;
+	PDF_ASSERT( m_catalog != 0 ) ;
+	return m_catalog->CreateSimpleFont( name ) ;
 }
 
 Page* RealDoc::AddPage( std::size_t index )

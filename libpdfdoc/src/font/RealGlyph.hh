@@ -34,12 +34,6 @@
 
 namespace pdf {
 
-// freetype wrappers
-namespace ft
-{
-	struct Face ;
-}
-
 class Outline ;
 
 ///	A glyph class.
@@ -54,7 +48,7 @@ class Outline ;
 class RealGlyph : public Glyph
 {
 public :
-	RealGlyph( unsigned idx, const ft::Face& face ) ;
+	RealGlyph( unsigned idx, FT_Face face ) ;
 	RealGlyph( const RealGlyph& rhs ) ;
 	~RealGlyph( ) ;
 

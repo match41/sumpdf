@@ -58,9 +58,9 @@ PageTree::PageTree( PageTree *parent )
 		parent->AppendNode( this ) ;
 }
 
-PageTree::PageTree( FT_Library ft_lib )
+PageTree::PageTree( FT_LibraryRec_ *ft )
 	: m_parent( 0 ),
-	  m_resources( new RealResources( ft_lib ) ),
+	  m_resources( new RealResources( ft ) ),
 	  m_count( 0 )
 {
 }
@@ -239,12 +239,20 @@ PageNode* PageTree::GetLeaf( std::size_t index )
 
 RealResources* PageTree::GetResource( )
 {
+	PDF_ASSERT( m_resources != 0 ) ;
 	return m_resources ;
 }
 
 const RealResources* PageTree::GetResource( ) const
 {
+	PDF_ASSERT( m_resources != 0 ) ;
 	return m_resources ;
+}
+
+Font* PageTree::CreateSimpleFont( const std::string& name )
+{
+	PDF_ASSERT( m_resources != 0 ) ;
+	return m_resources->CreateSimpleFont( name ) ;
 }
 
 } // end of namespace

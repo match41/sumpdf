@@ -33,18 +33,17 @@
 #include "core/Dictionary.hh"
 #include "core/Name.hh"
 
-// freetype headers
-#include <ft2build.h>
-#include FT_FREETYPE_H
-
 #include <boost/bimap.hpp>
 #include <boost/bimap/set_of.hpp>
 
 #include <vector>
 
+class FT_LibraryRec_ ;
+
 namespace pdf {
 
 class File ;
+class Font ;
 class BaseFont ;
 class DictReader ;
 class RealImage ;
@@ -61,7 +60,7 @@ class RealResources : public Resources, public RefCounter
 {
 public :
 	explicit RealResources( const RealResources *parent ) ;
-	explicit RealResources( FT_Library ft_lib ) ;
+	explicit RealResources( FT_LibraryRec_ *ft ) ;
 	~RealResources( ) ;
 
 	Name AddFont( BaseFont *font ) ;
@@ -72,13 +71,15 @@ public :
 	BaseFont* FindFont( const Name& name ) const ;
 	Name FindFont( const BaseFont *font ) const ;
 
+	Font* CreateSimpleFont( const std::string& name ) ;
+
 private :
 	void ReadFontDict( DictReader& self ) ;
 	Ref WriteFontDict( File *file ) const ;
 
 private :
 	const RealResources	*m_parent ;
-	FT_Library		m_ft_lib ;
+	FT_LibraryRec_		*m_ft_lib ;
 
 	typedef	boost::bimap<
 		boost::bimaps::set_of<Name>,

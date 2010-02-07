@@ -30,12 +30,9 @@
 #include "font/Font.hh"
 #include "util/RefCounter.hh"
 
-namespace pdf {
+struct FT_LibraryRec_ ;
 
-namespace ft
-{
-	struct Library ;
-}
+namespace pdf {
 
 class File ;
 class DictReader ;
@@ -54,7 +51,7 @@ public :
 	virtual FontDescriptor* Descriptor( ) = 0 ;
 } ;
 
-BaseFont* CreateFont( DictReader& obj, const ft::Library& ft ) ;
+BaseFont* CreateFont( DictReader& obj, FT_LibraryRec_ *ft ) ;
 
 } // end of namespace
 

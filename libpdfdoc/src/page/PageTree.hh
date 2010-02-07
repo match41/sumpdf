@@ -30,10 +30,9 @@
 #include "PageNode.hh"
 
 #include <vector>
+#include <string>
 
-// freetype headers
-#include <ft2build.h>
-#include FT_FREETYPE_H
+struct FT_LibraryRec_ ;
 
 namespace pdf {
 
@@ -41,6 +40,7 @@ class RealPage ;
 class RealResources ;
 class Dictionary ;
 class File ;
+class Font ;
 
 /*!	\brief	tree nodes in page tree
 	
@@ -50,7 +50,7 @@ class PageTree : public PageNode
 {
 public :
 	explicit PageTree( PageTree *parent ) ;
-	explicit PageTree( FT_Library ft_lib ) ;
+	explicit PageTree( FT_LibraryRec_* ft ) ;
 	~PageTree( ) ;
 
 	void Read( DictReader& dict ) ;
@@ -64,6 +64,8 @@ public :
 	void AddLeaf( std::size_t index, RealPage *child ) ;
 	RealResources* GetResource( ) ;
 	const RealResources* GetResource( ) const ;
+
+	Font* CreateSimpleFont( const std::string& name ) ;
 
 private :
 	void AppendNode( PageNode *child ) ;
