@@ -30,6 +30,11 @@
 
 namespace pdf {
 
+DictReader::DictReader( )
+	: m_file( 0 )
+{
+}
+
 /**	constructor
 	
 */
@@ -38,6 +43,15 @@ DictReader::DictReader( Dictionary& dict, File *file )
 {
 	// grand theft auto
 	m_dict.swap( dict ) ;
+}
+
+DictReader::DictReader( Object& obj, File *file )
+	: m_file( file )
+{
+	if ( obj.Is<Ref>() )
+		m_dict = file->ReadObj( obj.As<Ref>() ).As<Dictionary>() ;
+	else
+		m_dict.swap( obj.As<Dictionary>() ) ;
 }
 
 template <typename ObjType>
@@ -74,7 +88,7 @@ namespace
 		Dictionary::iterator i = dict.find( name ) ;
 		if ( i != dict.end( ) )
 		{
-			result = ( i->second.Type( ) == Object::ref ) ?
+			result = ( i->second.Is<Ref>() ) ?
 				file->ReadObj( i->second ).To<ObjType>() :
 				i->second.To<ObjType>() ;
 		
@@ -95,6 +109,20 @@ template <>
 bool DictReader::Detach<double>( const Name& name, double& result )
 {
 	return DetachTo( m_file, m_dict, name, result ) ;
+}
+
+template <>
+bool DictReader::Detach<DictReader>( const Name& name, DictReader& result )
+{
+	Dictionary dict ;
+	if ( Detach( name, dict ) )
+	{
+		result.m_dict.swap( dict ) ;
+		result.m_file = m_file ;
+		return true ;
+	}
+	else
+		return false ;
 }
 
 Dictionary* DictReader::operator->()

@@ -46,8 +46,8 @@ namespace pdf {
 
 class File ;
 class BaseFont ;
+class DictReader ;
 class RealImage ;
-class XObject ;
 class Object ;
 class Ref ;
 
@@ -62,22 +62,19 @@ class RealResources : public Resources, public RefCounter
 public :
 	explicit RealResources( const RealResources *parent ) ;
 	explicit RealResources( FT_Library ft_lib ) ;
-	RealResources( const RealResources *parent, Object& self, File *file ) ;
 	~RealResources( ) ;
 
 	Name AddFont( BaseFont *font ) ;
 
-	void Read( const Dictionary& self_obj, File *file ) ;
+	void Read( Dictionary& self_obj, File *file ) ;
 	Ref  Write( File *file ) const ;
 
 	BaseFont* FindFont( const Name& name ) const ;
 	Name FindFont( const BaseFont *font ) const ;
 
 private :
-	void ReadFontDict( Dictionary& self, File *file ) ;
+	void ReadFontDict( DictReader& self, File *file ) ;
 	Ref WriteFontDict( File *file ) const ;
-
-	XObject* ReadXObj( const Ref& link ) ;
 
 private :
 	const RealResources	*m_parent ;
@@ -91,8 +88,6 @@ private :
 
 	typedef std::map<Name, RealImage*> ImageMap ;
 	ImageMap			m_images ;
-
-	std::map<Name, XObject*>	m_xobjs ;
 
 	std::vector<Name>	m_proc_set ;
 } ;

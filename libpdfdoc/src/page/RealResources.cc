@@ -26,11 +26,9 @@
 
 #include "RealResources.hh"
 
-#include "XObject.hh"
-
 #include "core/Array.hh"
 #include "file/File.hh"
-#include "file/ObjectReader.hh"
+#include "file/DictReader.hh"
 #include "file/RefObjMap.hh"
 #include "file/ElementPool.hh"
 #include "font/BaseFont.hh"
@@ -67,23 +65,6 @@ RealResources::RealResources( FT_Library ft_lib )
     m_proc_set.push_back( Name( "Text" ) ) ;
 }
 
-RealResources::RealResources(
-	const RealResources *parent,
-	Object& 			self,
-	File 				*file )
-	: m_parent( parent ),
-	  m_ft_lib( parent == 0 ? 0 : parent->m_ft_lib ),
-	  m_proc_set( 1, Name( "PDF" ) )
-{
-	PDF_ASSERT( parent != 0 ) ;
-	PDF_ASSERT( m_ft_lib != 0 ) ;
-	
-    m_proc_set.push_back( Name( "Text" ) ) ;
-    
-    Dictionary self_dict ;
-    Read( DeRefObj( file, self, self_dict ), file ) ;
-}
-
 RealResources::~RealResources( )
 {
 	using namespace boost ;
@@ -92,16 +73,16 @@ RealResources::~RealResources( )
 			bind( &FontMap::left_value_type::second, _1 ) ) ) ;
 }
 
-void RealResources::Read( const Dictionary& dict, File *file )
+void RealResources::Read( Dictionary& dict, File *file )
 {
 	PDF_ASSERT( file != 0 ) ;
 
-	Dictionary self = dict ;
+	DictReader self( dict, file ) ;
 
 	Dictionary ext_gstate ;
 	Array proc_set ;
-	Detach( file, self, "ExtGState",	ext_gstate ) ;
-	Detach( file, self, "ProcSet",		proc_set ) ;
+	self.Detach( "ExtGState",	ext_gstate ) ;
+	self.Detach( "ProcSet",		proc_set ) ;
 	m_proc_set.assign( proc_set.begin( ), proc_set.end( ) ) ;
 
 	ReadFontDict( self, file ) ;
@@ -117,17 +98,17 @@ Ref RealResources::Write( File *file ) const
     return file->WriteObj( dict ) ;
 }
 
-void RealResources::ReadFontDict( Dictionary& self, File *file )
+void RealResources::ReadFontDict( DictReader& self, File *file )
 {
 	PDF_ASSERT( file != 0 ) ;
 	PDF_ASSERT( file->Pool() != 0 ) ;
 	PDF_ASSERT( m_ft_lib != 0 ) ;
 
-	Dictionary dict ;
-	if ( Detach( file, self, "Font", dict ) )
+	DictReader dict ;
+	if ( self.Detach( "Font", dict ) )
 	{
 		ElementPool *pool = file->Pool( ) ;
-		for ( Dictionary::iterator i  = dict.begin( ) ; i != dict.end( ) ; ++i )
+		for ( Dictionary::iterator i  = dict->begin( ) ; i != dict->end( ) ; ++i )
 		{
 			ft::Library lib = { m_ft_lib } ;
 			
@@ -136,11 +117,8 @@ void RealResources::ReadFontDict( Dictionary& self, File *file )
 			Ref link = i->second.To<Ref>( std::nothrow ) ;
 			if ( !pool->Acquire( link, font ) )  
 			{
-				Dictionary font_dict ;
-				font = CreateFont(
-					DeRefObj( file, i->second, font_dict ),
-					file,
-					lib ) ;
+				DictReader font_dict( i->second, file ) ;
+				font = CreateFont( font_dict, file, lib ) ;
 				pool->Add( link, font ) ; 
 			}
 
@@ -170,12 +148,6 @@ Ref RealResources::WriteFontDict( File *file ) const
 	}
 	
 	return file->WriteObj( font_dict ) ;
-}
-
-XObject* RealResources::ReadXObj( const Ref& link )
-{
-	// XObjects are made from streams, so we read them as streams
-	return 0 ;
 }
 
 Name RealResources::AddFont( BaseFont *font )
@@ -213,14 +185,6 @@ Name RealResources::FindFont( const BaseFont *font ) const
 	FontMap::right_const_iterator i = m_fonts.right.find( ncfont ) ;
 	return i != m_fonts.right.end() ? i->second :
 		( m_parent != 0 ? m_parent->FindFont( font ) : Name() ) ; 
-}
-
-namespace
-{
-	RealResources* Create( const RealResources *parent )
-	{
-		return new RealResources( parent ) ;
-	}
 }
 
 } // end of namespace

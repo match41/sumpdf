@@ -41,7 +41,9 @@ namespace pdf {
 class DictReader
 {
 public :
+	DictReader( ) ;
 	DictReader( Dictionary& dict, File *file ) ;
+	DictReader( Object& obj, File *file ) ;
 	
 	template <typename ObjType>
 	bool Detach( const Name& name, ObjType& result ) ;

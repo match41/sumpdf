@@ -32,7 +32,7 @@
 #include "core/Array.hh"
 #include "core/Dictionary.hh"
 
-#include "file/ObjectReader.hh"
+#include "file/DictReader.hh"
 #include "file/File.hh"
 #include "file/ElementPool.hh"
 
@@ -73,19 +73,20 @@ PageTree::~PageTree( )
 	m_resources->Release( ) ;
 }
 
-void PageTree::Read( Dictionary& dict, File *file )
+void PageTree::Read( Dictionary& self, File *file )
 {
 	PDF_ASSERT( file != 0 ) ;
 	PDF_ASSERT( file->Pool() != 0 ) ;
+	DictReader dict( self, file ) ;
 
 	Array pages ;
-	if ( !Detach( file, dict, "Kids", pages ) )
+	if ( !dict.Detach( "Kids", pages ) )
 		throw ParseError( "no children in page tree" ) ;
 
 	ElementPool *pool = file->Pool( ) ;
 	for ( Array::iterator i = pages.begin() ; i != pages.end() ; ++i )
 	{
-		Dictionary d = DeRefObj<Dictionary>( file, *i ) ;
+		Dictionary d = dict.DeRefObj<Dictionary>( *i ) ;
 		const Name& type = d["Type"].As<Name>() ; 
 		
 		PageNode *p = 0 ;
@@ -109,14 +110,14 @@ void PageTree::Read( Dictionary& dict, File *file )
 	}
 
 	// leaf count is required
-	if ( !Detach( file, dict, "Count", m_count ) )
+	if ( !dict.Detach( "Count", m_count ) )
 		throw ParseError( "cannot get leaf count in page node" ) ;
 
 	Ref link = dict["Resources"].To<Ref>( std::nothrow ) ;
 	if ( !pool->Acquire( link, m_resources ) )  
 	{
 		Dictionary res_dict ;
-		if ( Detach( file, dict, "Resources", res_dict ) )
+		if ( dict.Detach( "Resources", res_dict ) )
 		{
 			m_resources->Read( res_dict, file ) ;
 			pool->Add( link, m_resources ) ; 

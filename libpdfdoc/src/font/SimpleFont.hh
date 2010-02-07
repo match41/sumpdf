@@ -48,7 +48,7 @@
 
 namespace pdf {
 
-class Dictionary ;
+class DictReader ;
 class RealGlyph ;
 class Glyph ;
 
@@ -61,7 +61,7 @@ class Glyph ;
 class SimpleFont : public BaseFont
 {
 public :
-	SimpleFont( Dictionary& self, File *file, FT_Library ft_lib ) ;
+	SimpleFont( DictReader& self, File *file, FT_Library ft_lib ) ;
 	SimpleFont( const std::string& font_file, unsigned idx, FT_Library ft_lib );
 	SimpleFont( const std::string& name, FT_Library ft_lib ) ;
 	~SimpleFont( ) ;

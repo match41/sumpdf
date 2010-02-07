@@ -40,7 +40,7 @@
 
 namespace pdf {
 
-class Dictionary ;
+class DictReader ;
 class File ;
 class Ref ;
 
@@ -66,7 +66,7 @@ public :
 	FontDescriptor( ) ;
 	explicit FontDescriptor( FT_Face face, std::vector<unsigned char>& prog ) ;
 	
-	void Read( font::Type type, Dictionary& self, File *file ) ;
+	void Read( font::Type type, DictReader& self, File *file ) ;
 	Ref Write( File *file ) const ;
 	
 	std::string Family( ) const ;

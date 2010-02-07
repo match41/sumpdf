@@ -32,7 +32,7 @@
 
 namespace pdf {
 
-class Dictionary ;
+class DictReader ;
 class File ;
 class Object ;
 class Ref ;
@@ -45,10 +45,10 @@ class NameTree
 {
 public :
 	NameTree( ) ;
-	NameTree( Dictionary& self, File *file ) ;
+	NameTree( DictReader& self, File *file ) ;
 	~NameTree( ) ;
 	
-	void Read( Dictionary& self, File *file ) ;
+	void Read( DictReader& self, File *file ) ;
 	Ref Write( File *file ) const ;
 
 	const Object& LookUp( const std::string& key ) const ;

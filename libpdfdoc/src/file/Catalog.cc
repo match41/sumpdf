@@ -26,15 +26,16 @@
 
 #include "Catalog.hh"
 
-#include "ObjectReader.hh"
 #include "File.hh"
 #include "NameTree.hh"
+#include "DictReader.hh"
 
 #include "core/Array.hh"
 #include "core/Ref.hh"
 
 #include "page/RealPage.hh"
 #include "page/PageTree.hh"
+#include "page/RealResources.hh"
 
 #include "util/Debug.hh"
 #include "util/Exception.hh"
@@ -51,8 +52,9 @@ struct Catalog::NameDict
 
 	void Read( Dictionary& self, File *file )
 	{
-		Dictionary dests ;
-		if ( Detach( file, self, "Dests", dests ) )
+		DictReader reader( self, file ), dests ;
+		
+		if ( reader.Detach( "Dests", dests ) )
 			m_dests.Read( dests, file ) ;
 	}
 } ;
@@ -74,10 +76,12 @@ Catalog::Catalog( const Ref& link, File *file, FT_Library ft_lib )
 	  m_name_dict	( new NameDict )
 {
 	PDF_ASSERT( file != 0 ) ;
-	Dictionary self = file->ReadObj( link ).As<Dictionary>() ;
+	Dictionary d = file->ReadObj( link ).As<Dictionary>() ;
+
+	DictReader self( d, file ) ;
 
 	Name type ;
-	if ( !Detach( file, self, "Type", type ) || type != "Catalog" )
+	if ( !self.Detach( "Type", type ) || type != "Catalog" )
 	{
 		std::ostringstream oss ;
 		oss << "invalid catalog type: " << type ;
@@ -86,24 +90,24 @@ Catalog::Catalog( const Ref& link, File *file, FT_Library ft_lib )
 
 	// page tree is mandatory
 	Dictionary tree ;
-	if ( !Detach( file, self, "Pages", tree ) )
+	if ( !self.Detach( "Pages", tree ) )
 		throw ParseError( "no page tree in catalog" ) ;
 	
 	// root page tree has no parent
 	m_tree = new PageTree( ft_lib ) ;
 	m_tree->Read( tree, file ) ;
 	
-	Detach( file, self, "Version",		m_version ) ;
-	Detach( file, self, "PageLayout",	m_page_layout ) ;
-	Detach( file, self, "PageMode",		m_page_mode ) ;
+	self.Detach( "Version",		m_version ) ;
+	self.Detach( "PageLayout",	m_page_layout ) ;
+	self.Detach( "PageMode",	m_page_mode ) ;
 
 	// read destintions
 	Dictionary dest ;
-	if ( Detach( file, self, "Dests", dest ) )
+	if ( self.Detach( "Dests", dest ) )
 	{
 		for ( Dictionary::iterator i = dest.begin() ; i != dest.end() ; ++i )
 		{
-			Array darray = DeRefObj<Array>( file, i->second ) ; 
+			Array darray = self.DeRefObj<Array>( i->second ) ; 
 			
 			Destination d ;
 			d.Read( darray, file ) ;
@@ -113,7 +117,7 @@ Catalog::Catalog( const Ref& link, File *file, FT_Library ft_lib )
 	}
 
 	Dictionary name_dict ;
-	if ( Detach( file, self, "Names", name_dict ) )
+	if ( self.Detach( "Names", name_dict ) )
 		m_name_dict->Read( name_dict, file ) ;
 }
 
@@ -184,7 +188,7 @@ RealPage* Catalog::GetPage( std::size_t index )
 	return static_cast<RealPage*>( p ) ;
 }
 
-RealResources* Catalog::GetResource( )
+Resources* Catalog::GetResource( )
 {
 	PDF_ASSERT( m_tree != 0 ) ;
 	return m_tree->GetResource() ;

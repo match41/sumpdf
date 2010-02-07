@@ -30,7 +30,7 @@
 #include "core/Array.hh"
 #include "core/Dictionary.hh"
 #include "file/File.hh"
-#include "file/ObjectReader.hh"
+#include "file/DictReader.hh"
 #include "stream/Stream.hh"
 
 #include "util/Util.hh"
@@ -133,7 +133,7 @@ FontDescriptor::FontDescriptor( FT_Face face, std::vector<unsigned char>& prog )
 }
 
 ///	Read the font descriptor from file.
-void FontDescriptor::Read( font::Type type, Dictionary& self, File *file )
+void FontDescriptor::Read( font::Type type, DictReader& reader, File *file )
 {
 	m_type = type ;
 	
@@ -142,57 +142,59 @@ void FontDescriptor::Read( font::Type type, Dictionary& self, File *file )
 	if ( m_type == font::type1 )
 	{
 		// type1 font has 3 different lengths
-		if ( Detach( file, self, "FontFile", 	prog ) )
+		if ( reader.Detach( "FontFile", 	prog ) )
 		{
 			Dictionary prog_dict = prog.Self() ;
-			if ( !Detach( file, prog_dict, "Length1", m_length1 ) ||
-				 !Detach( file, prog_dict, "Length2", m_length2 ) ||
-				 !Detach( file, prog_dict, "Length3", m_length3 ) )
+			DictReader prog_reader( prog_dict, file ) ;
+			if ( !prog_reader.Detach( "Length1", m_length1 ) ||
+				 !prog_reader.Detach( "Length2", m_length2 ) ||
+				 !prog_reader.Detach( "Length3", m_length3 ) )
 				throw FontException( "missing length for type 1 font" ) ; 
 		}
 	}
 	else if ( m_type == font::truetype )
-		Detach( file, self, "FontFile2", 	prog ) ;
+		reader.Detach( "FontFile2", 	prog ) ;
 	
 	// TODO: confirm FontFile3 type
 	else if ( m_type == font::type3 )
-		Detach( file, self, "FontFile3", 	prog ) ;
+		reader.Detach( "FontFile3", 	prog ) ;
 	
 	prog.CopyData( m_font_file ) ;
 	
 	// optional font family name. normally empty for embedded font
-	Detach( file, self, "FontFamily",	m_family ) ;
+	reader.Detach( "FontFamily",	m_family ) ;
 	
 	Name stretch ;
-	if ( Detach( file, self, "FontStretch", stretch ) )
+	if ( reader.Detach( "FontStretch", stretch ) )
 		m_stretch = static_cast<Stretch>(std::find(
 			Begin(m_stretch_names),
 			End(m_stretch_names),
 			stretch ) - Begin(m_stretch_names) ) ;
 
+	reader.Detach( "FontWeight",	m_weight ) ;
+	
 	int flags ;
-	Detach( file, self, "FontWeight",	m_weight ) ;
-	if ( Detach( file, self, "Flags",	flags ) )
+	if ( reader.Detach( "Flags",	flags ) )
 		m_flags = flags ;
 	
 	Array bbox ;
-	if ( Detach( file, self, "FontBBox", bbox ) )
+	if ( reader.Detach( "FontBBox", bbox ) )
 		m_bbox = Rect( bbox.begin(), bbox.end() ) ;
 
-	Detach( file, self, "ItalicAngle",	m_italic_angle ) ;
-	Detach( file, self, "Ascent",		m_ascent ) ;
-	Detach( file, self, "Descent",		m_descent ) ;
-	Detach( file, self, "Leading",		m_leading ) ;
-	Detach( file, self, "CapHeight",	m_cap_height ) ;
-	Detach( file, self, "XHeight",		m_x_height ) ;
-	Detach( file, self, "StemV",		m_stemv ) ;
-	Detach( file, self, "StemH",		m_stemh ) ;
-	Detach( file, self, "AvgWidth",		m_avg_width ) ;
-	Detach( file, self, "MaxWidth",		m_max_width ) ;
-	Detach( file, self, "MissingWidth",	m_miss_width ) ;
+	reader.Detach( "ItalicAngle",	m_italic_angle ) ;
+	reader.Detach( "Ascent",		m_ascent ) ;
+	reader.Detach( "Descent",		m_descent ) ;
+	reader.Detach( "Leading",		m_leading ) ;
+	reader.Detach( "CapHeight",		m_cap_height ) ;
+	reader.Detach( "XHeight",		m_x_height ) ;
+	reader.Detach( "StemV",			m_stemv ) ;
+	reader.Detach( "StemH",			m_stemh ) ;
+	reader.Detach( "AvgWidth",		m_avg_width ) ;
+	reader.Detach( "MaxWidth",		m_max_width ) ;
+	reader.Detach( "MissingWidth",	m_miss_width ) ;
 	
 	Name	psname ;
-	if ( Detach( file, self, "FontName",	psname) )
+	if ( reader.Detach( "FontName",	psname) )
 		m_psname = psname.Str() ;
 }
 

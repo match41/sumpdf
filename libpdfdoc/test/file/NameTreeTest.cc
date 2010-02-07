@@ -26,8 +26,8 @@
 #include "NameTreeTest.hh"
 
 #include "file/NameTree.hh"
+#include "file/DictReader.hh"
 
-#include "core/Dictionary.hh"
 #include "core/Array.hh"
 #include "core/Object.hh"
 
@@ -54,7 +54,7 @@ void NameTreeTest::TestSimple( )
 	MockFile file ;
 	Object name[] = { "v1", 100, "v2", 101.0 } ;
 
-	Dictionary self ;
+	DictReader self ;
 	self["Names"] = Array( Begin(name), End(name) ) ;
 
 	NameTree subject;

@@ -52,7 +52,6 @@
     #include "font/SimpleFontTest.hh"
 #endif
 
-#include "page/XObjectTest.hh"
 #include "file/RealFileTest.hh"
 #include "file/CatalogTest.hh"
 #include "file/RefObjMapTest.hh"
@@ -80,7 +79,6 @@ int main( int argc, char **argv )
 	runner.addTest( ArrayTest::suite( ) ) ;
 	runner.addTest( RealPageTest::suite( ) ) ;
 	runner.addTest( RealResourcesTest::suite( ) ) ;
-	runner.addTest( XObjectTest::suite( ) ) ;
 	runner.addTest( StreamTest::suite( ) ) ;
 	runner.addTest( RealFileTest::suite( ) ) ;
 	runner.addTest( CatalogTest::suite( ) ) ;

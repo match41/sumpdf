@@ -29,7 +29,6 @@
 
 #include "core/Dictionary.hh"
 #include "core/Name.hh"
-//#include "file/CompleteObj.hh"
 #include "file/Destination.hh"
 
 // freetype headers
@@ -46,7 +45,7 @@ class RealPage ;
 class PageTree ;
 class ElementList ;
 class File ;
-class RealResources ;
+class Resources ;
 
 /*!	\brief	brief description
 	\internal
@@ -69,7 +68,7 @@ public :
 
 	RealPage*	GetPage( std::size_t index ) ;
 
-	RealResources*	GetResource( ) ;
+	Resources*	GetResource( ) ;
 
 private :
 	Name		m_version ;

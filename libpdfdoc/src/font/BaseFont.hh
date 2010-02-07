@@ -38,7 +38,7 @@ namespace ft
 }
 
 class File ;
-class Dictionary ;
+class DictReader ;
 class Ref ;
 class FontDescriptor ;
 
@@ -54,7 +54,7 @@ public :
 	virtual FontDescriptor* Descriptor( ) = 0 ;
 } ;
 
-BaseFont* CreateFont( Dictionary& obj, File *file, const ft::Library& ft ) ;
+BaseFont* CreateFont( DictReader& obj, File *file, const ft::Library& ft ) ;
 
 } // end of namespace
 

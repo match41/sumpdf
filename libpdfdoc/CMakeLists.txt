@@ -62,7 +62,6 @@ set( PAGE_HDRS		${PAGE_DIR}/RealPage.hh
 					${PAGE_DIR}/MockResources.hh
 					${PAGE_DIR}/PageNode.hh
 					${PAGE_DIR}/PageTree.hh
-					${PAGE_DIR}/XObject.hh
 					${PAGE_DIR}/RealImage.hh )
 
 set( GRAPICS_HDRS	${GRAPICS_DIR}/RealText.hh )
@@ -74,7 +73,6 @@ set( FILE_HDRS		${FILE_DIR}/RealFile.hh
 					${FILE_DIR}/File.hh
 					${FILE_DIR}/DictReader.hh
 					${FILE_DIR}/Catalog.hh
-					${FILE_DIR}/ObjectReader.hh
 					${FILE_DIR}/RefObjMap.hh
 					${FILE_DIR}/Destination.hh
 					${FILE_DIR}/NameTree.hh
@@ -169,7 +167,6 @@ set( PAGE_SRCS  	${PAGE_DIR}/RealPage.cc
 					${PAGE_DIR}/RealContent.cc
 					${PAGE_DIR}/PageNode.cc
 					${PAGE_DIR}/PageTree.cc
-					${PAGE_DIR}/XObject.cc
 					${PAGE_DIR}/RealImage.cc )
 
 set( GRAPICS_SRCS	${GRAPICS_DIR}/Graphics.cc
@@ -496,7 +493,6 @@ set( UT_SRCS	test/core/TokenTest.cc
 				test/page/RealContentTest.cc
 				test/page/PageNodeTest.cc
 				test/page/RealResourcesTest.cc
-				test/page/XObjectTest.cc
 				
 				test/file/RealFileTest.cc
 				test/file/CatalogTest.cc

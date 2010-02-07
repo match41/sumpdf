@@ -26,7 +26,7 @@
 #include "NameTree.hh"
 
 #include "File.hh"
-#include "ObjectReader.hh"
+#include "DictReader.hh"
 
 #include "core/Array.hh"
 #include "core/Dictionary.hh"
@@ -47,7 +47,7 @@ NameTree::NameTree( )
 /**	constructor
 	
 */
-NameTree::NameTree( Dictionary& self, File *file )
+NameTree::NameTree( DictReader& self, File *file )
 {
 	Read( self, file ) ;
 }
@@ -104,20 +104,22 @@ Ref NameTree::Write( File *file ) const
 	return file->WriteObj( self ) ;
 }
 
-void NameTree::Read( Dictionary& self, File *file )
+void NameTree::Read( DictReader& self, File *file )
 {
 	Array kids ;
-	if ( Detach( file, self, "Kids", kids ) )
+	if ( self.Detach( "Kids", kids ) )
 	{
 		for ( Array::iterator i = kids.begin() ; i != kids.end() ; ++i )
 		{
+			// kids must be indirect objects
 			Dictionary kid_self = file->ReadObj( *i ).As<Dictionary>() ;
-			m_kids.push_back( new NameTree( kid_self, file ) ) ;
+			DictReader kid_reader( kid_self, file ) ;
+			m_kids.push_back( new NameTree( kid_reader, file ) ) ;
 		}
 	}
 	
 	Array names ;
-	if ( Detach( file, self, "Names", names ) )
+	if ( self.Detach( "Names", names ) )
 	{
 		Array::iterator it = names.begin() ;
 		while ( it != names.end() )

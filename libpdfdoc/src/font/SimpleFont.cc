@@ -35,7 +35,7 @@
 #include "core/Dictionary.hh"
 
 #include "file/File.hh"
-#include "file/ObjectReader.hh"
+#include "file/DictReader.hh"
 
 #include "util/Util.hh"
 #include "util/Debug.hh"
@@ -89,7 +89,7 @@ SimpleFont::SimpleFont( const std::string& name, FT_Library ft_lib )
 	Init( prog, ft_lib ) ;
 }
 
-SimpleFont::SimpleFont( Dictionary& self, File *file, FT_Library ft_lib )
+SimpleFont::SimpleFont( DictReader& reader, File *file, FT_Library ft_lib )
 	: m_face( 0 ),
 	  m_type( font::unknown ),
 	  m_first_char( -1 ),
@@ -102,24 +102,24 @@ SimpleFont::SimpleFont( Dictionary& self, File *file, FT_Library ft_lib )
 	try
 	{
 		Name subtype ;
-		if ( self.Extract( "Subtype",	subtype ) )
+		if ( reader->Extract( "Subtype",	subtype ) )
 			m_type	= SubType( subtype ) ;
 		
 		// base font is absent in type 3 fonts
 		if ( m_type != font::type3 )
-			self.Extract( Name("BaseFont"),		m_base_font ) ;
+			reader->Extract( Name("BaseFont"),		m_base_font ) ;
 		
-		Detach( file, self, "FirstChar",	m_first_char ) ;
-		Detach( file, self, "LastChar",		m_last_char ) ;
+		reader.Detach( "FirstChar",	m_first_char ) ;
+		reader.Detach( "LastChar",	m_last_char ) ;
 		
 		// width is optional
-		Detach( file, self, "Widths", 		m_widths ) ;
+		reader.Detach( "Widths", 	m_widths ) ;
 
-		Detach( file, self, "Encoding",		m_encoding ) ;
-		Detach( file, self, "ToUnicode",	m_to_unicode ) ;
+		reader.Detach( "Encoding",	m_encoding ) ;
+		reader.Detach( "ToUnicode",	m_to_unicode ) ;
 		
-		Dictionary fd ;
-		if ( Detach( file, self, "FontDescriptor", fd ) )
+		DictReader fd ;
+		if ( reader.Detach( "FontDescriptor", fd ) )
 		{
 			m_descriptor->Read( m_type, fd, file ) ;
 
@@ -157,7 +157,7 @@ SimpleFont::SimpleFont( Dictionary& self, File *file, FT_Library ft_lib )
 		throw FontException(
 			boost::format(
 				"cannot read font:\n%1%\n"
-			    "Font Dictionary: %2%\n" ) % e.what() % self ) ;
+			    "Font Dictionary: %2%\n" ) % e.what() % *reader ) ;
 	}
 }
 
@@ -430,7 +430,7 @@ FontDescriptor* SimpleFont::Descriptor( )
 	return m_descriptor.get() ;
 }
 
-BaseFont* CreateFont( Dictionary& obj, File *file, const ft::Library& ft )
+BaseFont* CreateFont( DictReader& obj, File *file, const ft::Library& ft )
 {
 	return new SimpleFont( obj, file, ft.lib ) ;
 }
