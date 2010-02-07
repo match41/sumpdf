@@ -68,3 +68,8 @@ pdf::ElementPool* MockFile::Pool( )
 {
 	return &m_pool ;
 }
+
+void MockFile::ClearPool( )
+{
+	m_pool.Clear() ;
+}

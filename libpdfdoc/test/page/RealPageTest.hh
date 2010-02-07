@@ -36,6 +36,8 @@ namespace pdf
 	class PageTree ;
 }
 
+namespace pdfut {
+
 /*!	\brief	brief description
 	
 	this class represents
@@ -65,5 +67,6 @@ private :
 	pdf::PageTree	*m_root ;
 } ;
 
+} // end of namespace
 
 #endif

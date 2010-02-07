@@ -90,13 +90,13 @@ Catalog::Catalog( const Ref& link, File *file, FT_Library ft_lib )
 	}
 
 	// page tree is mandatory
-	Dictionary tree ;
+	DictReader tree ;
 	if ( !self.Detach( "Pages", tree ) )
 		throw ParseError( "no page tree in catalog" ) ;
 	
 	// root page tree has no parent
 	m_tree = new PageTree( ft_lib ) ;
-	m_tree->Read( tree, file ) ;
+	m_tree->Read( tree ) ;
 	
 	self.Detach( "Version",		m_version ) ;
 	self.Detach( "PageLayout",	m_page_layout ) ;

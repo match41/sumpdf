@@ -54,7 +54,7 @@ public :
 	explicit RealPage( PageTree *parent ) ;
 	~RealPage( ) ;
 
-	void Read( Dictionary& dict, File *file ) ;
+	void Read( DictReader& dict ) ;
 	void Write( const Ref& link, File *file, const Ref& parent ) const ;
 	
 	Rect MediaBox( ) const ;

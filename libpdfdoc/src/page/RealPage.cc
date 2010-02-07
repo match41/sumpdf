@@ -60,10 +60,10 @@ RealPage::RealPage( PageTree *parent )
 	parent->AppendLeaf( this ) ;
 }
 
-void RealPage::Read( Dictionary& self, File *file )
+void RealPage::Read( DictReader& dict )
 {
+	File *file = dict.GetFile() ;
 	PDF_ASSERT( file != 0 ) ;
-	DictReader dict( self, file ) ;
 	
 	// read content
 	Object contents ;

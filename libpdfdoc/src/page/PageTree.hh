@@ -53,7 +53,7 @@ public :
 	explicit PageTree( FT_Library ft_lib ) ;
 	~PageTree( ) ;
 
-	void Read( Dictionary& dict, File *file ) ;
+	void Read( DictReader& dict ) ;
 	void Write( const Ref& link, File *file, const Ref& parent ) const ;
 
 	PageTree* Parent( ) ;

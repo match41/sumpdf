@@ -28,10 +28,7 @@
 #ifndef __PDF_RESOURCEPOOL_HEADER_INCLUDED__
 #define __PDF_RESOURCEPOOL_HEADER_INCLUDED__
 
-//#include "RefObjMap.hh"
-
 #include "core/Ref.hh"
-#include "util/Debug.hh"
 
 #include <boost/bimap.hpp>
 #include <boost/bimap/set_of.hpp>
@@ -43,6 +40,8 @@ class RefCounter ;
 class ElementPool
 {
 public :
+	ElementPool( ) ;
+
 	template <typename Element>
 	bool Acquire( const Ref& link, Element* &element )
 	{
@@ -61,12 +60,6 @@ public :
 			return false ;
 	}
 	
-	void Add( const Ref& key, RefCounter *element )
-	{
-		if ( key != Ref() )
-			m_pool.insert( MapEntry( key, element ) ) ;
-	}
-
 	template <typename Element>
 	Element* Find( const Ref& key )
 	{
@@ -86,20 +79,15 @@ public :
 		return e ;
 	}
 
-	Ref Find( RefCounter *element )
-	{
-		MapType::right_iterator i = m_pool.right.find( element ) ;
-		return i != m_pool.right.end() ? i->second : Ref() ;
-	}
+	void Add( const Ref& key, RefCounter *element ) ;
+	
+	Ref Find( RefCounter *element ) ;
 
-	bool Has( const Ref& key ) const
-	{
-		return m_pool.left.find( key ) != m_pool.left.end( ) ;
-	}
+	bool Has( const Ref& key ) const ;
+	
+	void Clear( ) ;
 
 private :
-//	RefObjMap<RefCounter>	m_pool ;
-
 	typedef	boost::bimap<
 		boost::bimaps::set_of<Ref>,
 		boost::bimaps::set_of<RefCounter*>

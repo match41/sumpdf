@@ -31,6 +31,7 @@
 
 #include "core/Ref.hh"
 #include "core/Dictionary.hh"
+#include "file/DictReader.hh"
 #include "font/SimpleFont.hh"
 #include "graphics/GraphicsVisitor.hh"
 #include "graphics/RealText.hh"
@@ -43,6 +44,10 @@
 
 #include <sstream>
 #include <iostream>
+
+namespace pdfut {
+
+using namespace pdf ;
 
 RealPageTest::RealPageTest( )
 	: m_root( 0 )
@@ -105,7 +110,9 @@ void RealPageTest::TestNormal( )
 	
 	pdf::Object obj( d ) ;
 	pdf::RealPage *p  = new pdf::RealPage( m_root ) ;
-	p->Read( d, &file ) ;
+	
+	DictReader reader( d, &file ) ;
+	p->Read( reader ) ;
 
 	CPPUNIT_ASSERT( p->MediaBox() == pdf::Rect( 0, 0, 297, 419 ) ) ;
 }
@@ -136,12 +143,16 @@ void RealPageTest::TestWrite( )
 	MockFile file ;
 	pdf::Ref link = file.AllocLink( ) ;
 	p->Write( link, &file, file.AllocLink( ) ) ;
+	file.ClearPool( ) ;
 	
 	pdf::Object out = file.Find( link ) ;
 	CPPUNIT_ASSERT( out.Is<pdf::Dictionary>( ) ) ;
 	
 	pdf::RealPage *p2 = new pdf::RealPage( m_root ) ;
-	p2->Read( out.As<pdf::Dictionary>(), &file ) ;
+	
+	DictReader reader( out.As<pdf::Dictionary>(), &file ) ;
+	p->Read( reader ) ;
+	
 	CPPUNIT_ASSERT( p->MediaBox() == p2->MediaBox() ) ;
 }
 
@@ -200,3 +211,5 @@ void RealPageTest::TestDecode( )
 	
 	c->VisitGraphics( &v ) ;
 }
+
+} // end of namespace

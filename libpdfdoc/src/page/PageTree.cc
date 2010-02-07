@@ -74,11 +74,12 @@ PageTree::~PageTree( )
 	m_resources->Release( ) ;
 }
 
-void PageTree::Read( Dictionary& self, File *file )
+void PageTree::Read( DictReader& dict )
 {
+	File *file = dict.GetFile() ;
+	
 	PDF_ASSERT( file != 0 ) ;
 	PDF_ASSERT( file->Pool() != 0 ) ;
-	DictReader dict( self, file ) ;
 
 	ArrayReader pages ;
 	if ( !dict.Detach( "Kids", pages ) )
@@ -95,13 +96,13 @@ void PageTree::Read( Dictionary& self, File *file )
 		if ( type == "Pages" )
 		{
 			p = new PageTree( this ) ;
-			p->Read( *d, file ) ;
+			p->Read( d ) ;
 		}
 		
 		else if ( type == "Page" )
 		{
 			p = new RealPage( this ) ;
-			p->Read( *d, file ) ;
+			p->Read( d ) ;
 		}
 		else
 			throw ParseError( "invalid page type" ) ;

@@ -182,6 +182,7 @@ set( FILE_SRCS		${FILE_DIR}/RealFile.cc
 					${FILE_DIR}/DictReader.cc
 					${FILE_DIR}/ArrayReader.cc
 					${FILE_DIR}/File.cc
+					${FILE_DIR}/ElementPool.cc
 					${FILE_DIR}/Catalog.cc
 					${FILE_DIR}/Destination.cc
 					${FILE_DIR}/NameTree.cc

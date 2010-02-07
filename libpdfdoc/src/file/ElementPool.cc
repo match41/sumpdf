@@ -1,4 +1,4 @@
-/***************************************************************************
+/***************************************************************************\
  *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
@@ -15,52 +15,47 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+\***************************************************************************/
 
-/*!
-	\file	MockFile.hh
-	\brief	definition the MockFile class
-	\date	Sat Mar 22 2008
+/**	\file	ElementPool.cc
+	\brief	implementation of the ElementPool class
+	\date	Feb 7, 2010
 	\author	Nestal Wan
 */
 
-#ifndef __PDFUT_MOCK_FILE_HEADER_INCLUDED__
-#define __PDFUT_MOCK_FILE_HEADER_INCLUDED__
+#include "ElementPool.hh"
 
-#include "file/File.hh"
+#include "util/Debug.hh"
 
-#include "file/ElementPool.hh"
+namespace pdf {
 
-#include "core/Object.hh"
-#include "core/Ref.hh"
-
-#include <map>
-
-/*!	\brief	brief description
+/**	constructor
 	
-	this class represents
 */
-class MockFile : public pdf::File
+ElementPool::ElementPool( )
 {
-private :
-	std::map<pdf::Ref, pdf::Object>	m_map ;
+}
 
-	std::size_t	m_counter ;
-	
-	pdf::ElementPool	m_pool ;
+void ElementPool::Add( const Ref& key, RefCounter *element )
+{
+	if ( key != Ref() )
+		m_pool.insert( MapEntry( key, element ) ) ;
+}
 
-public :
-	MockFile( ) ;
-	
-	void AddObj( const pdf::Ref& link, const pdf::Object& obj ) ;
-	const pdf::Object& Find( const pdf::Ref& link ) const ;
-	void ClearPool( ) ;
-	
-	pdf::Object ReadObj( const pdf::Ref& obj ) ;
-	pdf::Ref WriteObj( const pdf::Object& obj ) ;
-	pdf::Ref AllocLink( ) ;
-	void WriteObj( const pdf::Object& obj, const pdf::Ref& link ) ;
-	pdf::ElementPool* Pool( ) ;
-} ;
+Ref ElementPool::Find( RefCounter *element )
+{
+	MapType::right_iterator i = m_pool.right.find( element ) ;
+	return i != m_pool.right.end() ? i->second : Ref() ;
+}
 
-#endif
+bool ElementPool::Has( const Ref& key ) const
+{
+	return m_pool.left.find( key ) != m_pool.left.end( ) ;
+}
+
+void ElementPool::Clear( )
+{
+	m_pool.clear() ;
+}
+
+} // end of namespace
