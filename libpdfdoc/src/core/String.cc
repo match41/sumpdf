@@ -126,6 +126,11 @@ void String::DecodeLiteralString( TokenSrc& is )
 				bracket_balance-- ;
 				if ( bracket_balance < 0 )
 					return ;
+		
+			case 0x09 :
+			case 0x0B :
+				std::cout << "we read you " << (int)ch << std::endl ;
+				break ;
 		}
 		
 		m_value.push_back( ch ) ;

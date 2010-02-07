@@ -103,7 +103,9 @@ private :
 	void OnSingleQuote( Object* args, std::size_t count, Resources *res ) ;
 	void OnDoubleQuote( Object* args, std::size_t count, Resources *res ) ;
 
+	// text state command handlers
 	void OnTf( Object* args, std::size_t count, Resources *res ) ;
+	void OnTL( Object* args, std::size_t count, Resources *res ) ;
 
 private :
 	///	Lines inside this text object

@@ -145,9 +145,7 @@ SimpleFont::SimpleFont( DictReader& reader, FT_Library ft_lib )
 				Init( prog, ft_lib ) ;
 			}
 			else
-			{
 				throw Exception( "no font name. can't load font" ) ;
-			}
 		}
 		else
 			throw Exception( "no descriptor?" ) ;
@@ -302,6 +300,9 @@ void SimpleFont::LoadGlyphs( )
 {
 	PDF_ASSERT( m_face != 0 ) ;
 
+	// by default, freetype will select the unicode charmap, but there are
+	// some cases that the unicode charmap is not present. we need to select
+	// whatever charmap we have.
 	if ( m_face->charmap == 0 && m_face->num_charmaps > 0 )
 		FT_Select_Charmap( m_face, m_face->charmaps[0]->encoding ) ;
 
@@ -310,8 +311,10 @@ void SimpleFont::LoadGlyphs( )
 	unsigned long 	char_code = FT_Get_First_Char( m_face, &gindex ) ;
 	int first_char = static_cast<int>( char_code ), last_char = -1 ;
 
+//std::cout << "font: " << BaseName() << std::endl ;
 	while ( gindex != 0 && char_code < 256 )
 	{
+//std::cout << "gindex = " << gindex << " char code = " << char_code << std::endl ;
 		// load the glyph to the glyph slot in the face
 		// we want to do the scaling in double instead of inside freetype
 		// in small font we don't have hinting
@@ -405,8 +408,11 @@ const Name& SimpleFont::SubType( font::Type t )
 
 font::Type SimpleFont::SubType( const Name& name )
 {
-	const Name *ptr = std::find( pdf::Begin( m_font_types ),
-	                             pdf::End( m_font_types ), name ) ;
+	const Name *ptr = std::find(
+		pdf::Begin( m_font_types ),
+	    pdf::End( m_font_types ),
+	    name ) ;
+	    
 	if ( ptr == pdf::End( m_font_types ) )
 		throw FontException( boost::format("unknown font type: %1%") % name) ;
 

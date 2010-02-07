@@ -44,6 +44,7 @@ public :
 		CPPUNIT_TEST( TestPeekWithRead ) ;
 		CPPUNIT_TEST( TestIgnoreCache ) ;
 		CPPUNIT_TEST( TestIgnoreRead ) ;
+		CPPUNIT_TEST( TestSpaceInString ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
 private :
@@ -53,6 +54,7 @@ private :
 	void TestPeekWithRead( ) ;
 	void TestIgnoreCache( ) ;
 	void TestIgnoreRead( ) ;
+	void TestSpaceInString( ) ;
 } ;
 
 #endif

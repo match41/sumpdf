@@ -60,6 +60,7 @@ const RealText::HandlerMap::value_type	RealText::m_handler_map_values[] =
 
 	// text state commands
 	std::make_pair( "Tf",	&RealText::OnTf ),
+	std::make_pair( "TL",	&RealText::OnTL ),
 } ;
 
 const RealText::HandlerMap RealText::m_handler_map(
@@ -235,14 +236,15 @@ void RealText::OnTm( Object* args, std::size_t count, Resources* )
 
 void RealText::OnTstar( Object* , std::size_t , Resources * )
 {
+std::cout << "advancing " << m_state.Leading() << std::endl ;
 	m_text_mat = m_line_mat = m_line_mat *
-		Matrix( 1, 0, 0, 1, 0, m_state.Leading() ) ;
+		Matrix( 1, 0, 0, 1, 0, -m_state.Leading() ) ;
 	
 	AddLine( TextLine( m_state, m_line_mat ) ) ;
 }
 
 ///	Shows a Text string
-void RealText::OnTj( Object* args, std::size_t count, Resources *res )
+void RealText::OnTj( Object* args, std::size_t count, Resources * )
 {
 	PDF_ASSERT( !m_lines.empty() ) ;
 	
@@ -327,6 +329,7 @@ void RealText::OnTf( Object* args, std::size_t count, Resources *res )
 			std::cout << "unknown font: " << args[1] << std::endl ;
 		else
 		{
+std::cout << "using font: " << f->BaseName() << std::endl ;
 			double font_size = args[1].To<double>() ;
 			
 			TextLine& current = m_lines.back() ;
@@ -344,6 +347,12 @@ void RealText::OnTf( Object* args, std::size_t count, Resources *res )
 			}
 		}
 	}
+}
+
+void RealText::OnTL( Object* args, std::size_t count, Resources *res )
+{
+	if ( count > 0 && args[0].IsNumber() )
+		m_state.SetLeading( args[0].To<double>() ) ;
 }
 
 bool RealText::operator==( const RealText& rhs ) const

@@ -62,6 +62,11 @@ void RealContent::Load( Stream& str, Resources *res )
 	// rewind to stream start for reading
 	str.Rewind( ) ;
 	
+//	std::ostringstream ss ;
+//	str.CopyData( ss.rdbuf() ) ;
+//	std::cout << ss.str() << std::endl ;
+//	str.Rewind() ;
+	
 	std::istream s( str.InStreamBuf() ) ;
 	TokenSrc src( s ) ;
 	std::vector<Object> args ;
@@ -86,6 +91,10 @@ void RealContent::Load( Stream& str, Resources *res )
 			src.ResetState( ) ;
 			if ( src >> cmd )
 			{
+std::cout << cmd.Get() << " " ;
+std::copy( args.begin(), args.end(), std::ostream_iterator<Object>( std::cout, " " ) ) ;
+std::cout << std::endl ;
+
 				current = ProcessCommand(
 					cmd,
 					args.empty() ? 0 : &args[0],	// don't touch args[0]

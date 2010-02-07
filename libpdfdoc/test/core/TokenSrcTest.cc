@@ -167,3 +167,13 @@ void TokenSrcTest::TestIgnoreRead( )
 	CPPUNIT_ASSERT( subject >> t ) ;	
 	CPPUNIT_ASSERT( t.Get() == "pig" ) ;
 }
+
+void TokenSrcTest::TestSpaceInString( )
+{
+	std::istringstream ss( "(\t)" ) ;
+	pdf::TokenSrc subject( ss ) ;
+
+	pdf::Token t ;
+	CPPUNIT_ASSERT( ss >> t ) ;
+	PDFUT_ASSERT_EQUAL( t.Get(), "(\t)" ) ;
+}
