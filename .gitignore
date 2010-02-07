@@ -1,0 +1,32 @@
+# Qt moc generated files
+moc*.h
+moc*.cxx
+ui_*.h
+
+# cmake generated files
+CMakeCache.txt
+*/CMakeFiles/*
+Makefile
+*/doc/htdocs/*
+.cproject
+.project
+cmake_install.cmake
+
+# compiler output
+*.a
+*.o
+testpdf
+pdfedit
+qtest
+unittest
+
+# doxygen output
+*.tag
+
+# general
+*.bak
+*~
+
+# test data
+*.pdf
+!libpdfdoc/test/testdata/*
