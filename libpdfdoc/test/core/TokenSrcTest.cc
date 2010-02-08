@@ -173,7 +173,9 @@ void TokenSrcTest::TestSpaceInString( )
 	std::istringstream ss( "(\t)" ) ;
 	pdf::TokenSrc subject( ss ) ;
 
-	pdf::Token t ;
-	CPPUNIT_ASSERT( ss >> t ) ;
-	PDFUT_ASSERT_EQUAL( t.Get(), "(\t)" ) ;
+	pdf::Token t1, t2, t3 ;
+	CPPUNIT_ASSERT( ss >> t1 >> t2 >> t3 ) ;
+	PDFUT_ASSERT_EQUAL( t1.Get(), "(" ) ;
+	PDFUT_ASSERT_EQUAL( t2.Get(), "\t" ) ;
+	PDFUT_ASSERT_EQUAL( t3.Get(), ")" ) ;
 }

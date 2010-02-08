@@ -130,11 +130,12 @@ Object RealFile::ReadObj( const Ref& obj )
 	
 	std::size_t id, gen ;
 	
-	Token objstr ;
+	Token space, objstr ;
 	
-	if ( (*m_in >> id >> gen >> objstr)	&&
+	if ( (*m_in >> id >> gen >> space >> objstr)	&&
 	     objstr.Get()	== "obj"	&&
 	     obj.ID()		== id		&&
+	     space.IsSpace()			&&
 	     obj.Gen()		== gen )
 	{
 		// from now on, we must use TokenSrc to read the PDF objects.
@@ -162,7 +163,7 @@ Object RealFile::ReadObj( const Ref& obj )
 	std::ostringstream ss ;
 	ss << "cannot read object ID " << obj
 	   << " offset: " << std::hex << offset
-	   << " current token: " << objstr.Get() ;
+	   << " current token: \"" << objstr.Get() << "\"" ;
 	throw ParseError( ss.str() ) ;
 }
 
