@@ -27,8 +27,6 @@
 #ifndef __PDF_REAL_IMAGE_HEADER_INCLUDED__
 #define __PDF_REAL_IMAGE_HEADER_INCLUDED__
 
-#include "XObject.hh"
-
 #include <string>
 
 namespace pdf {

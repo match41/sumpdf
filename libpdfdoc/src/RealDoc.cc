@@ -78,10 +78,13 @@ void RealDoc::Read( const std::string& filename )
 	// read the cross reference of the PDF file
 	RealFile file( &m_readfs ) ;
 
+	// for exception safety, first create a new catalog before deleting
+	// the exsiting one.
+	Catalog *catalog = new Catalog( file.Root( ), &file, m_ft_lib ) ;
+	
 	PDF_ASSERT( m_catalog != 0 ) ;
 	delete m_catalog ;
-	
-	m_catalog = new Catalog( file.Root( ), &file, m_ft_lib ) ;
+	m_catalog = catalog ;
 	
 	// DocInfo is optional
 	if ( file.DocInfo( ) != Ref() )
@@ -102,7 +105,7 @@ void RealDoc::Write( const std::string& filename ) const
 
 Page* RealDoc::AppendPage( )
 {
-	assert( m_catalog != 0 ) ;
+	PDF_ASSERT( m_catalog != 0 ) ;
 
 	return m_catalog->AddPage( ) ;
 }

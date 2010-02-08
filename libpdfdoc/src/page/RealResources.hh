@@ -38,7 +38,7 @@
 
 #include <vector>
 
-class FT_LibraryRec_ ;
+struct FT_LibraryRec_ ;
 
 namespace pdf {
 

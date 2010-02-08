@@ -63,8 +63,8 @@ void TokenTest::TestAllNumbers( )
 		pdf::Token( "89" ),
 	} ;
 	
+	CPPUNIT_ASSERT_EQUAL( vec.size( ), pdf::Count( result ) ) ;
 	CPPUNIT_ASSERT( std::equal( vec.begin( ), vec.end( ), result ) ) ;
-	CPPUNIT_ASSERT( vec.size( ) == pdf::Count( result ) ) ;
 }
 
 void TokenTest::TestAllDelimitor( )
@@ -90,8 +90,8 @@ void TokenTest::TestAllDelimitor( )
 		pdf::Token( "[" ),
 	} ;
 	
+	CPPUNIT_ASSERT_EQUAL( vec.size( ), pdf::Count( result ) ) ;
 	CPPUNIT_ASSERT( std::equal( vec.begin( ), vec.end( ), result ) ) ;
-	CPPUNIT_ASSERT( vec.size( ) == pdf::Count( result ) ) ;
 }
 
 void TokenTest::TestMixChar( )
@@ -128,6 +128,6 @@ void TokenTest::TestMixChar( )
 		pdf::Token( ")" ),
 	} ;
 	
+	CPPUNIT_ASSERT_EQUAL( vec.size( ), pdf::Count( result ) ) ;
 	CPPUNIT_ASSERT( std::equal( vec.begin( ), vec.end( ), result ) ) ;
-	CPPUNIT_ASSERT( vec.size( ) == pdf::Count( result ) ) ;
 }

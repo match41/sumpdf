@@ -61,8 +61,7 @@ set( PAGE_HDRS		${PAGE_DIR}/RealPage.hh
 					${PAGE_DIR}/RealResources.hh
 					${PAGE_DIR}/MockResources.hh
 					${PAGE_DIR}/PageNode.hh
-					${PAGE_DIR}/PageTree.hh
-					${PAGE_DIR}/RealImage.hh )
+					${PAGE_DIR}/PageTree.hh )
 
 set( GRAPICS_HDRS	${GRAPICS_DIR}/RealText.hh )
 #                    ${GRAPICS_DIR}/Text.hh
@@ -167,8 +166,7 @@ set( PAGE_SRCS  	${PAGE_DIR}/RealPage.cc
 					${PAGE_DIR}/PageContent.cc
 					${PAGE_DIR}/RealContent.cc
 					${PAGE_DIR}/PageNode.cc
-					${PAGE_DIR}/PageTree.cc
-					${PAGE_DIR}/RealImage.cc )
+					${PAGE_DIR}/PageTree.cc )
 
 set( GRAPICS_SRCS	${GRAPICS_DIR}/Graphics.cc
 					${GRAPICS_DIR}/GraphicsVisitor.cc
