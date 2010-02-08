@@ -89,6 +89,7 @@ public :
 	TokenSrc& GetChar( char& ch ) ;
 
 private :
+	TokenSrc& ExtractToken( Token& token ) ;
 	bool Cache( std::size_t count ) ;
 
 private :

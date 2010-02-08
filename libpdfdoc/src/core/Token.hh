@@ -61,6 +61,8 @@ public :
 	T As( ) const ;
 
 	bool IsInt( ) const ;
+	
+	bool IsSpace( ) const ;
 
 private :
 	static bool IsCharInToken( char ch, const std::string& text ) ;

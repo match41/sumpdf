@@ -113,8 +113,8 @@ void TokenSrcTest::TestPeekWithRead( )
 	std::istringstream ss( "hello world foo bar" ) ;
 	pdf::TokenSrc subject( ss ) ;
 
-	pdf::Token hello, world ;
-	CPPUNIT_ASSERT( ss >> hello >> world ) ;
+	pdf::Token hello, space, world ;
+	CPPUNIT_ASSERT( ss >> hello >> space >> world ) ;
 	CPPUNIT_ASSERT( subject ) ;
 	PDFUT_ASSERT_EQUAL( hello.Get(), "hello" ) ;
 	PDFUT_ASSERT_EQUAL( world.Get(), "world" ) ;

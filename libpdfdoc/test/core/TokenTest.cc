@@ -47,12 +47,19 @@ void TokenTest::TestAllNumbers( )
 	pdf::Token result[] =
 	{
 		pdf::Token( "1" ),
+		pdf::Token( " " ),
 		pdf::Token( "2" ),
+		pdf::Token( " " ),
 		pdf::Token( "3" ),
+		pdf::Token( " " ),
 		pdf::Token( "4" ),
+		pdf::Token( " " ),
 		pdf::Token( "5" ),
+		pdf::Token( " " ),
 		pdf::Token( "6" ),
+		pdf::Token( " " ),
 		pdf::Token( "7" ),
+		pdf::Token( " " ),
 		pdf::Token( "89" ),
 	} ;
 	
@@ -69,11 +76,17 @@ void TokenTest::TestAllDelimitor( )
 	pdf::Token result[] =
 	{
 		pdf::Token( "<<" ),
+		pdf::Token( " " ),
 		pdf::Token( "[" ),
+		pdf::Token( " " ),
 		pdf::Token( "{" ),
+		pdf::Token( " " ),
 		pdf::Token( "%" ),
+		pdf::Token( " " ),
 		pdf::Token( ">" ),
+		pdf::Token( " " ),
 		pdf::Token( "]" ),
+		pdf::Token( " " ),
 		pdf::Token( "[" ),
 	} ;
 	
@@ -90,20 +103,28 @@ void TokenTest::TestMixChar( )
 	pdf::Token result[] =
 	{
 		pdf::Token( "<<" ),
+		pdf::Token( " " ),
 		pdf::Token( "/" ),
 		pdf::Token( "Name" ),
+		pdf::Token( " " ),
 		pdf::Token( "1" ),
 		pdf::Token( "/" ),
 		pdf::Token( "Add" ),
+		pdf::Token( " " ),
 		pdf::Token( "[" ),
 		pdf::Token( "192" ),
+		pdf::Token( " " ),
 		pdf::Token( "168" ),
+		pdf::Token( " " ),
 		pdf::Token( "0" ),
+		pdf::Token( " " ),
 		pdf::Token( "1" ),
 		pdf::Token( "]" ),
 		pdf::Token( ">>" ),
+		pdf::Token( " " ),
 		pdf::Token( "(" ),
 		pdf::Token( "string" ),
+		pdf::Token( " " ),
 		pdf::Token( ")" ),
 	} ;
 	

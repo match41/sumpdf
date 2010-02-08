@@ -44,10 +44,23 @@ TokenSrc::TokenSrc( std::istream& file )
 {
 }
 
+TokenSrc& TokenSrc::ExtractToken( Token& token )
+{
+	do
+	{
+		if ( !(m_file >> token) )
+			break ;
+	} while ( token.IsSpace() ) ;
+	
+	return *this ;
+}
+
 TokenSrc& TokenSrc::ReadToken( Token& token )
 {
 	if ( m_cache.empty( ) )
-		m_file >> token ;
+	{
+		ExtractToken( token ) ;
+	}
 	else	
 	{
 		token.Swap( m_cache.back() ) ;
@@ -157,7 +170,7 @@ bool TokenSrc::Cache( std::size_t count )
 	while ( m_cache.size() < count )
 	{
 		pdf::Token t ;
-		if ( m_file >> t )
+		if ( ExtractToken( t ) )
 			m_cache.push_front( t ) ;
 		else
 			break ;
@@ -184,7 +197,7 @@ void TokenSrc::Ignore( std::size_t count )
 	Token t ;
 	while ( count > 0 && m_file )
 	{
-		m_file >> t ;
+		ExtractToken( t ) ;
 		count-- ;
 	}
 }

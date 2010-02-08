@@ -56,8 +56,8 @@ std::istream& operator>>( std::istream& is, Token& token )
 	std::string text ;
 
 	// skip spaces
-	while ( std::isspace( is.peek() ) && is )
-		is.get() ;
+//	while ( std::isspace( is.peek() ) && is )
+//		is.get() ;
 	
 	int ich ;
 	while ( (ich = is.peek()) != std::char_traits<char>::eof() )
@@ -104,6 +104,10 @@ bool Token::IsCharInToken( char ch, const std::string& token )
 {
 	// new token. must put the char in
 	if ( token.empty() )
+		return true ;
+	
+	// group all space characters in one token
+	else if ( std::isspace( ch ) && std::isspace( *token.rbegin() ) )
 		return true ;
 	
 	// treat << and >> as one token
@@ -174,6 +178,11 @@ bool Token::IsInt( ) const
 			return false ;
 	}
 	return true ;
+}
+
+bool Token::IsSpace( ) const
+{
+	return !m_token.empty() && std::isspace( *m_token.begin() ) ; 
 }
 
 } // end of namespace
