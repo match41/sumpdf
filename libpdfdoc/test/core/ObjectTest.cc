@@ -29,6 +29,8 @@
 #include "core/Object.hh"
 #include "core/TraverseObject.hh"
 #include "core/Array.hh"
+#include "core/TokenSrc.hh"
+#include "core/Token.hh"
 
 #include "stream/Stream.hh"
 
@@ -43,6 +45,10 @@
 #include <iterator>
 #include <sstream>
 #include <vector>
+
+namespace pdfut {
+
+using namespace pdf ;
 
 ObjectTest::ObjectTest( )
 {
@@ -239,3 +245,15 @@ void ObjectTest::TestConvert( )
 	long li = obj ;
 	PDFUT_ASSERT_EQUAL( li, 100 ) ;
 }
+
+void ObjectTest::TestVTab( )
+{
+	std::istringstream ss( "(\x09)" ) ;
+	TokenSrc src( ss ) ;
+	
+	pdf::Object str ;
+	CPPUNIT_ASSERT( src >> str ) ;
+	PDFUT_ASSERT_EQUAL( str.As<std::string>(), "\x09" ) ;
+}
+
+} // end of namespace

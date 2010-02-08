@@ -204,7 +204,7 @@ void TextLine::VisitChars( CharVisitor *v ) const
 	
 	for ( std::size_t idx = 0 ; idx < m_text.size() ; ++idx )
 	{
-std::cout << "char code = " << (unsigned)m_text[idx] << std::endl ;
+//std::cout << "char code = " << (unsigned)m_text[idx] << std::endl ;
 		// has space?
 		if ( sp != m_space.end() && idx == sp->index )
 		{

@@ -31,10 +31,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace CppUnit
-{
-	class Test ;
-}
+namespace pdfut {
 
 class ObjectTest : public CppUnit::TestFixture
 {
@@ -58,6 +55,7 @@ public :
 		CPPUNIT_TEST( TestConvertToFloat ) ;
 		CPPUNIT_TEST( TestIsVoid ) ;
 		CPPUNIT_TEST( TestConvert ) ;
+		CPPUNIT_TEST( TestVTab ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
 private :
@@ -77,6 +75,9 @@ private :
 	void TestConvertToFloat( ) ;
 	void TestIsVoid( ) ;
 	void TestConvert( ) ;
+	void TestVTab( ) ;
 } ;
+
+} // end of namespace
 
 #endif

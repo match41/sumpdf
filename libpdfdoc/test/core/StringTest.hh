@@ -31,10 +31,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace CppUnit
-{
-	class Test ;
-}
+namespace pdfut {
 
 class StringTest : public CppUnit::TestFixture
 {
@@ -52,6 +49,8 @@ public :
 		CPPUNIT_TEST( TestOctal );
 		CPPUNIT_TEST( TestOctal1 );
 		CPPUNIT_TEST( TestOctal2 );
+		CPPUNIT_TEST( TestSpace );
+		CPPUNIT_TEST( TestVTab );
 	CPPUNIT_TEST_SUITE_END();
 
 private :
@@ -64,6 +63,10 @@ private :
 	void TestOctal( ) ;
 	void TestOctal1( ) ;
 	void TestOctal2( ) ;
+	void TestSpace( ) ;
+	void TestVTab( ) ;
 } ;
+
+} // end of namespace
 
 #endif

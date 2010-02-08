@@ -27,12 +27,18 @@
 #include "StringTest.hh"
 
 #include "core/String.hh"
+#include "core/Token.hh"
+#include "core/TokenSrc.hh"
 
 #include "mock/Assert.hh"
 
 #include <sstream>
 #include <vector>
 #include <stdexcept>
+
+namespace pdfut {
+
+using namespace pdf ;
 
 StringTest::StringTest( )
 {
@@ -115,3 +121,25 @@ void StringTest::TestOctal2( )
 	CPPUNIT_ASSERT( ss >> str ) ;
 	PDFUT_ASSERT_EQUAL( str.Get(), "\050a\051" ) ;
 }
+
+void StringTest::TestSpace( )
+{
+	std::istringstream ss( "( )" ) ;
+	TokenSrc src( ss ) ;
+	
+	pdf::String str ;
+	CPPUNIT_ASSERT( src >> str ) ;
+	PDFUT_ASSERT_EQUAL( str.Get(), " " ) ;
+}
+
+void StringTest::TestVTab( )
+{
+	std::istringstream ss( "(\x09)" ) ;
+	TokenSrc src( ss ) ;
+	
+	pdf::String str ;
+	CPPUNIT_ASSERT( src >> str ) ;
+	PDFUT_ASSERT_EQUAL( str.Get(), "\x09" ) ;
+}
+
+} // end of namespace
