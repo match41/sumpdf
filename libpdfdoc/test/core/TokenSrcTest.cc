@@ -113,8 +113,8 @@ void TokenSrcTest::TestPeekWithRead( )
 	std::istringstream ss( "hello world foo bar" ) ;
 	pdf::TokenSrc subject( ss ) ;
 
-	pdf::Token hello, space, world ;
-	CPPUNIT_ASSERT( ss >> hello >> space >> world ) ;
+	pdf::Token hello, world ;
+	CPPUNIT_ASSERT( ss >> hello >> world ) ;
 	CPPUNIT_ASSERT( subject ) ;
 	PDFUT_ASSERT_EQUAL( hello.Get(), "hello" ) ;
 	PDFUT_ASSERT_EQUAL( world.Get(), "world" ) ;
@@ -173,9 +173,7 @@ void TokenSrcTest::TestSpaceInString( )
 	std::istringstream ss( "(\t)" ) ;
 	pdf::TokenSrc subject( ss ) ;
 
-	pdf::Token t1, t2, t3 ;
-	CPPUNIT_ASSERT( ss >> t1 >> t2 >> t3 ) ;
-	PDFUT_ASSERT_EQUAL( t1.Get(), "(" ) ;
-	PDFUT_ASSERT_EQUAL( t2.Get(), "\t" ) ;
-	PDFUT_ASSERT_EQUAL( t3.Get(), ")" ) ;
+	pdf::Token t1 ;
+	CPPUNIT_ASSERT( ss >> t1 ) ;
+	PDFUT_ASSERT_EQUAL( t1.Get(), "(\t)" ) ;
 }

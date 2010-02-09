@@ -67,6 +67,10 @@ public :
 private :
 	static bool IsCharInToken( char ch, const std::string& text ) ;
 	static bool IsDelimiter( char ch ) ;
+	
+	static void DecodeBracketString( std::istream& is, std::string& string ) ;
+	static void DecodeHexString( std::istream& is, std::string& string ) ;
+	static void DecodeToken( std::istream& is, std::string& string ) ;
 
 private :
 	std::string	m_token ;

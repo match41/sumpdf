@@ -38,20 +38,8 @@
 #include <stdexcept>
 #include <algorithm>
 
-struct A
-{
-	A( int i, int j )
-	{
-std::cout << "i = " << i << " j = " << j << std::endl ;
-	}
-} ;
-
 int main( int argc, char **argv )
 {
-	std::vector<A*> va( 10 ) ;
-	std::generate( va.begin(), va.end(), boost::bind( pdf::NewPtr<A>(), 10, 20 ) ) ;
-	return 0 ;
-
 	pdf::Doc *doc = pdf::CreateDoc( ) ;
 	if ( argc >= 2 )
 		doc->Read( argv[1] ) ;

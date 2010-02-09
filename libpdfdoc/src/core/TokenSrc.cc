@@ -46,12 +46,13 @@ TokenSrc::TokenSrc( std::istream& file )
 
 TokenSrc& TokenSrc::ExtractToken( Token& token )
 {
-	do
-	{
-		if ( !(m_file >> token) )
-			break ;
-	} while ( token.IsSpace() ) ;
+//	do
+//	{
+//		if ( !(m_file >> token) )
+//			break ;
+//	} while ( token.IsSpace() ) ;
 	
+	m_file >> token ;
 	return *this ;
 }
 

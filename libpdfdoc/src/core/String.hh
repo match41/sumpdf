@@ -67,13 +67,13 @@ private :
 	static TokenSrc& ReadXDigit( TokenSrc& is, char& digit ) ;
 
 private :
-	void DecodeLiteralString( TokenSrc& is ) ;
+	void DecodeLiteralString( std::istream& is ) ;
 	void DecodeHexString( TokenSrc& is ) ;
 
-	bool HandleEscapeCharacter( TokenSrc& is, char& ch ) ;
+	bool HandleEscapeCharacter( std::istream& is, char& ch ) ;
 	
 	enum DecodeState { done, extra, quit } ;
-	DecodeState HandleOctal( TokenSrc& is, char& ch ) ;
+	DecodeState HandleOctal( std::istream& is, char& ch ) ;
 } ;
 
 } // end of namespace

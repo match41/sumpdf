@@ -55,20 +55,19 @@ std::istream& operator>>( std::istream& is, Token& token )
 {
 	std::string text ;
 
-	// skip spaces
-//	while ( std::isspace( is.peek() ) && is )
-//		is.get() ;
-	
-	int ich ;
-	while ( (ich = is.peek()) != std::char_traits<char>::eof() )
+	// skip all spaces
+	while ( std::isspace( is.peek() ) && is )
+		is.get() ;
+
+	int ich = is.peek() ;
+	if ( ich != std::char_traits<char>::eof() )
 	{
-		char ch = std::char_traits<char>::to_char_type( ich ) ;
-		
-		if ( !Token::IsCharInToken( ch, text ) )
-			break ;
-		
-		text.push_back( ch ) ;
-		is.ignore( ) ;
+		switch ( ich )
+		{
+			case '(': Token::DecodeBracketString( is, text ) ; break ;
+//			case '<': Token::DecodeHexString( is, text ) ; break ;
+			default : Token::DecodeToken( is, text ) ; break ;
+		}
 	}
 	
 	// only commit when parsing is successful
@@ -81,6 +80,51 @@ std::istream& operator>>( std::istream& is, Token& token )
 		is.setstate( is.failbit ) ;
 	
 	return is ;
+}
+
+void Token::DecodeBracketString( std::istream& is, std::string& text )
+{
+	// assume the first char is (
+	is.ignore() ;
+	int bracket = 1 ;
+	text.push_back( '(' ) ;
+	
+	char ch ;
+	while ( bracket > 0 && is.get( ch ) )
+	{
+		if ( ch == '(' )
+			bracket++ ;
+		else if ( ch == ')' )
+			bracket-- ;
+	
+		text.push_back( ch ) ;
+	}
+}
+
+void Token::DecodeHexString( std::istream& is, std::string& text )
+{
+	char ch ;
+	while ( is.get( ch ) )
+	{
+		text.push_back( ch ) ;
+		if ( ch == '>' )
+			break ;
+	}
+}
+
+void Token::DecodeToken( std::istream& is, std::string& text )
+{
+	int ich ;
+	while ( (ich = is.peek()) != std::char_traits<char>::eof() )
+	{
+		char ch = std::char_traits<char>::to_char_type( ich ) ;
+		
+		if ( !Token::IsCharInToken( ch, text ) )
+			break ;
+		
+		text.push_back( ch ) ;
+		is.ignore( ) ;
+	}
 }
 
 /**	\brief	Check if a character is a PDF delimiter.
@@ -104,10 +148,6 @@ bool Token::IsCharInToken( char ch, const std::string& token )
 {
 	// new token. must put the char in
 	if ( token.empty() )
-		return true ;
-	
-	// group all space characters in one token
-	else if ( std::isspace( ch ) && std::isspace( *token.rbegin() ) )
 		return true ;
 	
 	// treat << and >> as one token

@@ -35,6 +35,7 @@
 #include "stream/Stream.hh"
 
 #include "util/Util.hh"
+#include "util/Debug.hh"
 
 #include <boost/variant/apply_visitor.hpp>
 
@@ -372,9 +373,15 @@ TokenSrc& operator>>( TokenSrc& src, Object& obj )
 	Token t ;
 	if ( src >> t )
 	{
-		assert( !t.Get().empty( ) ) ;
+		PDF_ASSERT( !t.Get().empty( ) ) ;
+		
+		Token key = t ;
+		if ( t.Get()[0] == '(' )
+			key = Token( "(" ) ;
+		else if ( t.Get()[0] == '<' && t.Get() != "<<" )
+			key = Token( "<" ) ;
 
-		FuncMap::const_iterator it = map.find( t ) ;
+		FuncMap::const_iterator it = map.find( key ) ;
 		
 		// token that represents objects with known types
 		if ( it != map.end( ) )

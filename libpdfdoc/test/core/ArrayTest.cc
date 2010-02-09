@@ -30,6 +30,9 @@
 #include "core/Dictionary.hh"
 #include "util/Util.hh"
 
+#include "core/Token.hh"
+#include "core/TokenSrc.hh"
+
 #include "mock/Assert.hh"
 
 #include <algorithm>
@@ -38,6 +41,8 @@
 #include <vector>
 
 namespace pdfut {
+
+using namespace pdf ;
 
 ArrayTest::ArrayTest( )
 {
@@ -97,6 +102,21 @@ void ArrayTest::TestTJ( )
 	char obj1[] = { 0x01, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x10, '\0' } ;
 	PDFUT_ASSERT_EQUAL( sub.size(), 27U ) ;
 	PDFUT_ASSERT_EQUAL( sub[0].As<std::string>(), obj1 ) ;
+}
+
+void ArrayTest::TestGsTJ( )
+{
+	std::istringstream ss(
+		"[(\x9)95.985(\x9)95.0775(\x3)94.9402(\x4)97.6199(\x5)99.0967"
+		"(\x6)93.9489(\x5)99.0967(\x7)99.2789(\x8)91.3616(\x9)95.0775"
+		"(\xa)98.1911(\x7)93.4046(\x7)99.2789(\x2)95.0782(\x3)94.9406"
+		"(\x0b)100.133(\x9)95.0775(\xc)100.421(\x5)99.0953]" ) ;
+	
+	TokenSrc src( ss ) ;
+	Array sub ;
+	CPPUNIT_ASSERT( src >> sub ) ;
+	
+	std::cout << sub[2] << " " << sub[3] << std::endl ;
 }
 
 } // end of namespace

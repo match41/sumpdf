@@ -40,6 +40,7 @@
 #include <iostream>
 #include <iomanip>
 #include <iterator>
+#include <sstream>
 
 namespace pdf {
 
@@ -77,26 +78,36 @@ TokenSrc& operator>>( TokenSrc& src, String& obj )
 	
 	if ( src >> t )
 	{
-		if ( t.Get() == "(" )
-			obj.DecodeLiteralString( src ) ;
-		
-		else if ( t.Get() == "<" )
-			obj.DecodeHexString( src ) ;
+		std::istringstream is( t.Get() ) ;
 	
-		else
+		char ch ;
+		if ( is.get(ch) )
+		{
+			if ( ch == '(' )
+				obj.DecodeLiteralString( is ) ;
+			
+			else if ( ch == '<' )
+				obj.DecodeHexString( src ) ;
+			
+			else
+				is.setstate( std::ios::failbit ) ;
+		}
+		
+		if ( !is )
 			src.SetState( std::ios::failbit ) ;
 	}
 	return src ;
 }
 
-void String::DecodeLiteralString( TokenSrc& is )
+void String::DecodeLiteralString( std::istream& is )
 {
-	int bracket_balance = 0 ;
+	// assume the first char is '('
+	int bracket_balance = 1 ;
 
 	DecodeState state = done ;
 
 	char ch ;
-	while ( state == extra || is.GetChar( ch ) )
+	while ( state == extra || is.get( ch ) )
 	{
 		state = done ;
 	
@@ -124,13 +135,8 @@ void String::DecodeLiteralString( TokenSrc& is )
 			
 			case ')' :
 				bracket_balance-- ;
-				if ( bracket_balance < 0 )
+				if ( bracket_balance <= 0 )
 					return ;
-		
-			case 0x09 :
-			case 0x0B :
-				std::cout << "we read you " << (int)ch << std::endl ;
-				break ;
 		}
 		
 		m_value.push_back( ch ) ;
@@ -138,7 +144,7 @@ void String::DecodeLiteralString( TokenSrc& is )
 }
 
 //void String::HandleOctal( TokenSrc& is, char& ch, bool& quit, bool& used )
-String::DecodeState String::HandleOctal( TokenSrc& is, char& ch )
+String::DecodeState String::HandleOctal( std::istream& is, char& ch )
 {
 	DecodeState ret = extra ;
 	
@@ -151,7 +157,7 @@ String::DecodeState String::HandleOctal( TokenSrc& is, char& ch )
 		for ( int i = 0 ; i < 2 ; i++ )
 		{
 			// no character in input, quit
-			if ( !is.GetChar( ch ) )
+			if ( !is.get( ch ) )
 				return quit ;
 			
 			else if ( ch >= '0' && ch < '8' )
@@ -174,9 +180,9 @@ String::DecodeState String::HandleOctal( TokenSrc& is, char& ch )
 	return ret ;
 }
 
-bool String::HandleEscapeCharacter( TokenSrc& is, char& ch )
+bool String::HandleEscapeCharacter( std::istream& is, char& ch )
 {
-	if ( is.GetChar( ch ) )
+	if ( is.get( ch ) )
 	{
 		switch ( ch )
 		{

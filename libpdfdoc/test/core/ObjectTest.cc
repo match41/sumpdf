@@ -45,6 +45,7 @@
 #include <iterator>
 #include <sstream>
 #include <vector>
+#include <iostream>
 
 namespace pdfut {
 
@@ -198,6 +199,7 @@ void ObjectTest::TestObj5( )
 	
 	const pdf::Dictionary& dict = sub.As<pdf::Dictionary>() ;
 	const std::string& a = dict[pdf::Name("CharSet")] ;
+
 	PDFUT_ASSERT_EQUAL( a[a.size()-2], '\n' ) ;
 	PDFUT_ASSERT_EQUAL( a[a.size()-1], 'e' ) ;
 }

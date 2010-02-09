@@ -31,6 +31,8 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+namespace pdfut {
+
 class TokenTest : public CppUnit::TestFixture
 {
 public :
@@ -48,5 +50,7 @@ private :
 	void TestAllDelimitor( ) ;
 	void TestMixChar( ) ;
 } ;
+
+} // end of namespace
 
 #endif

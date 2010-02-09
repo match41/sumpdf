@@ -130,12 +130,11 @@ Object RealFile::ReadObj( const Ref& obj )
 	
 	std::size_t id, gen ;
 	
-	Token space, objstr ;
+	Token objstr ;
 	
-	if ( (*m_in >> id >> gen >> space >> objstr)	&&
+	if ( (*m_in >> id >> gen >> objstr)	&&
 	     objstr.Get()	== "obj"	&&
 	     obj.ID()		== id		&&
-	     space.IsSpace()			&&
 	     obj.Gen()		== gen )
 	{
 		// from now on, we must use TokenSrc to read the PDF objects.
