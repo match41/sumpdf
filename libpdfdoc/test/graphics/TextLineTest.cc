@@ -59,8 +59,8 @@ void TextLineTest::TestPrint( )
 	subject.AppendSpace( 100 ) ;
 	subject.AppendText( L"world" ) ;
 	
-	Matrix m ;
-	subject.Print( std::cout, m, ts, &res ) ;
+//	Matrix m ;
+//	subject.Print( std::cout, m, ts, &res ) ;
 }
 
 } // end of namespace

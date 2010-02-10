@@ -31,6 +31,8 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+namespace pdfut {
+
 class NameTest : public CppUnit::TestFixture
 {
 public :
@@ -48,5 +50,7 @@ private :
 	void TestTwoNames( ) ;
 	void TestNonName( ) ;
 } ;
+
+} // end of namespace
 
 #endif

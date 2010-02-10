@@ -28,13 +28,16 @@
 
 #include "core/Object.hh"
 
-#include <cppunit/TestSuite.h>
-#include <cppunit/TestCaller.h>
+#include "mock/Assert.hh" 
 
 #include <algorithm>
 #include <iterator>
 #include <sstream>
 #include <vector>
+
+namespace pdfut {
+
+using namespace pdf ;
 
 NameTest::NameTest( )
 {
@@ -45,7 +48,7 @@ void NameTest::TestOneName( )
 	std::istringstream ss( "/Hello" ) ;
 	pdf::Name name ;
 	CPPUNIT_ASSERT( ss >> name ) ;
-	CPPUNIT_ASSERT( name == pdf::Name( "Hello" ) ) ;
+	PDFUT_ASSERT_EQUAL( name, pdf::Name( "Hello" ) ) ;
 }
 
 void NameTest::TestTwoNames( )
@@ -53,8 +56,8 @@ void NameTest::TestTwoNames( )
 	std::istringstream ss( "/Hello/World" ) ;
 	pdf::Name name, name2 ;
 	CPPUNIT_ASSERT( ss >> name >> name2 ) ;
-	CPPUNIT_ASSERT( name == pdf::Name( "Hello" ) ) ;
-	CPPUNIT_ASSERT( name2 == pdf::Name( "World" ) ) ;
+	PDFUT_ASSERT_EQUAL( name, pdf::Name( "Hello" ) ) ;
+	PDFUT_ASSERT_EQUAL( name2, pdf::Name( "World" ) ) ;
 }
 
 void NameTest::TestNonName( )
@@ -62,5 +65,7 @@ void NameTest::TestNonName( )
 	std::istringstream ss( "1234" ) ;
 	pdf::Name name ;
 	CPPUNIT_ASSERT( !(ss >> name) ) ;
-	CPPUNIT_ASSERT( name == pdf::Name( ) ) ;
+	PDFUT_ASSERT_EQUAL( name, pdf::Name( ) ) ;
 }
+
+} // end of namespace
