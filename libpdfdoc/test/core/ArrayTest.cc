@@ -116,7 +116,9 @@ void ArrayTest::TestGsTJ( )
 	Array sub ;
 	CPPUNIT_ASSERT( src >> sub ) ;
 	
-	std::cout << sub[2] << " " << sub[3] << std::endl ;
+	PDFUT_ASSERT_EQUAL( sub.size(), 38U ) ;
+	PDFUT_ASSERT_EQUAL( sub[2], "\x9" ) ;
+	PDFUT_ASSERT_EQUAL( sub[3], 95.0775 ) ;
 }
 
 } // end of namespace

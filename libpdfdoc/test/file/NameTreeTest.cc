@@ -71,8 +71,13 @@ void NameTreeTest::TestWrite( )
 	subject.Add( "nestal", 100.1 ) ;
 	subject.Add( "ada", 110.1 ) ;
 	
+	Object limit[] = { "ada", "nestal" } ;
+	Object names[] = { "ada", 110.1, "nestal", 100.1 } ;
+	
 	Ref r = subject.Write( &file ) ; 
-	std::cout << file.Find( r ) << std::endl ;
+	Dictionary dict = file.Find( r ).As<Dictionary>() ;
+	PDFUT_ASSERT_EQUAL( dict["Limits"], Array(Begin(limit), End(limit) ) ) ; 
+	PDFUT_ASSERT_EQUAL( dict["Names"],  Array(Begin(names), End(names) ) ) ; 
 }
 
 } // end of namespace

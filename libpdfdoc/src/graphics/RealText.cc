@@ -236,7 +236,6 @@ void RealText::OnTm( Object* args, std::size_t count, Resources* )
 
 void RealText::OnTstar( Object* , std::size_t , Resources * )
 {
-std::cout << "advancing " << m_state.Leading() << std::endl ;
 	m_text_mat = m_line_mat = m_line_mat *
 		Matrix( 1, 0, 0, 1, 0, -m_state.Leading() ) ;
 	
@@ -329,7 +328,6 @@ void RealText::OnTf( Object* args, std::size_t count, Resources *res )
 			std::cout << "unknown font: " << args[1] << std::endl ;
 		else
 		{
-std::cout << "using font: " << f->BaseName() << std::endl ;
 			double font_size = args[1].To<double>() ;
 			
 			TextLine& current = m_lines.back() ;

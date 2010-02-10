@@ -51,6 +51,8 @@ public :
 		CPPUNIT_TEST( TestOctal2 );
 		CPPUNIT_TEST( TestSpace );
 		CPPUNIT_TEST( TestVTab );
+		CPPUNIT_TEST( TestSpacesMix );
+		CPPUNIT_TEST( TestBrackets );
 	CPPUNIT_TEST_SUITE_END();
 
 private :
@@ -65,6 +67,8 @@ private :
 	void TestOctal2( ) ;
 	void TestSpace( ) ;
 	void TestVTab( ) ;
+	void TestSpacesMix( ) ;
+	void TestBrackets( ) ;
 } ;
 
 } // end of namespace

@@ -142,4 +142,24 @@ void StringTest::TestVTab( )
 	PDFUT_ASSERT_EQUAL( str.Get(), "\x09" ) ;
 }
 
+void StringTest::TestSpacesMix( )
+{
+	std::istringstream ss( "(\x09abc\nb\t123\x0b)" ) ;
+	TokenSrc src( ss ) ;
+	
+	pdf::String str ;
+	CPPUNIT_ASSERT( src >> str ) ;
+	PDFUT_ASSERT_EQUAL( str.Get(), "\x09abc\nb\t123\x0b" ) ;
+}
+
+void StringTest::TestBrackets( )
+{
+	std::istringstream ss( "(\x09(abcd hello???(\nb)\t12)3\x0b)" ) ;
+	TokenSrc src( ss ) ;
+	
+	pdf::String str ;
+	CPPUNIT_ASSERT( src >> str ) ;
+	PDFUT_ASSERT_EQUAL( str.Get(), "\x09(abcd hello???(\nb)\t12)3\x0b" ) ;
+}
+
 } // end of namespace
