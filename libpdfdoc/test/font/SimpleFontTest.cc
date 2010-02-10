@@ -61,7 +61,7 @@ void SimpleFontTest::tearDown( )
 void SimpleFontTest::TestLoadByName( )
 {
 	pdf::SimpleFont subject( "Arial", m_ft ) ;
-	PDFUT_ASSERT_EQUAL( subject.BaseName( ), "Arial" ) ;
+	PDFUT_ASSERT_EQUAL( subject.BaseName( ), "ArialMT" ) ;
 	
 	pdf::FontDescriptor *fd = subject.Descriptor( ) ;
 	
