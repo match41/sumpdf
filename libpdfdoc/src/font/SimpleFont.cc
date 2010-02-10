@@ -239,8 +239,9 @@ std::string SimpleFont::FindFont(
 {
 	FcPattern *sans = FcPatternBuild( NULL,
 		FC_FAMILY,		FcTypeString, 	font.c_str(),
-		FC_WEIGHT,		FcTypeInteger, 	FC_WEIGHT_MEDIUM,
+		FC_WEIGHT,		FcTypeInteger, 	FC_WEIGHT_NORMAL,
 		FC_STYLE,		FcTypeString, 	style.c_str(),
+		FC_WIDTH,		FcTypeInteger,	FC_WIDTH_NORMAL,
 		FC_SCALABLE,	FcTypeBool,		true,
 	    NULL ) ;
 	if ( sans == 0 )
