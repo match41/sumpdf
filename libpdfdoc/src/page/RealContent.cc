@@ -91,9 +91,10 @@ void RealContent::Load( Stream& str, Resources *res )
 			src.ResetState( ) ;
 			if ( src >> cmd )
 			{
-std::cout << cmd.Get() << " " ;
+/*std::cout << cmd.Get() << " " ;
 std::copy( args.begin(), args.end(), std::ostream_iterator<Object>( std::cout, " " ) ) ;
 std::cout << std::endl ;
+*/
 
 				current = ProcessCommand(
 					cmd,

@@ -131,6 +131,16 @@ SimpleFont::SimpleFont( DictReader& reader, FT_Library ft_lib )
 				m_face = LoadFace( &font_file[0], font_file.size(), ft_lib ) ;
 				LoadGlyphs( ) ;
 			}
+			else if ( !m_base_font.empty() )
+			{
+				std::string path = FindStdFont( m_base_font.Str() ) ;
+
+				std::vector<unsigned char> prog = LoadFile( path ) ;
+				Init( prog, ft_lib ) ;
+			}
+			else
+				throw Exception( "no font name. can't load font" ) ;
+
 		}
 		
 		// font descriptor is absent. it may be a standard 14 fonts.
@@ -267,23 +277,44 @@ std::string SimpleFont::FindFont( const std::string&, const std::string& )
 
 std::string SimpleFont::FindStdFont( const std::string& base_name )
 {
+	std::size_t embed = base_name.find_first_of( "+" ) ;
 	std::size_t pos = base_name.find_first_of( "-" ) ;
-	std::string name = base_name.substr( 0, pos ), style ;
+	
+	if ( embed != std::string::npos )
+		embed = embed + 1 ;
+	else
+		embed = 0 ;
+	
+	std::string name = base_name.substr( embed, pos - embed ), style ;
 	if ( pos != std::string::npos && pos + 1 < base_name.size() )
 		style = base_name.substr( pos+1 ) ;
 
 	// simple font mappings for the standard fonts
 	if ( name == "Helvetica" )
+#ifndef WIN32
 		name = "Liberation Sans" ;
+#else
+		name = "Arial" ;
+#endif
 
 	else if ( name == "Times" )
+#ifndef WIN32
 		name = "Liberation Serif" ;
+#else
+		name = "TimesNewRoman" ;
+#endif
 
 	else if ( name == "Courier" )
+#ifndef WIN32
 		name = "Liberation Mono" ;
+#else
+		name = "Courier New" ;
+#endif
 
+#ifndef WIN32
 	else if ( name == "Symbol" )
 		name = "Standard Symbols L" ;
+#endif
 
 	return FindFont( name, style ) ;
 }

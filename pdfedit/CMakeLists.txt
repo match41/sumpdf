@@ -72,6 +72,45 @@ add_executable( pdfedit WIN32 ${SRCS} ${UIH} ${MOC_SRCS} )
 add_executable( qtest WIN32 src/test.cc )
 
 ###############################################################################
+# finding optional fontconfig library
+###############################################################################
+find_path( FONTCONFIG_INCLUDE_DIR
+	fontconfig/fontconfig.h
+	/usr/include
+	/usr/local/include
+	${FONTCONFIG_PREFIX}/include )
+
+find_library( FONTCONFIG_LIBRARY_DEBUG NAMES fontconfig
+	PATHS
+		/usr/lib
+    	/usr/lib64
+        /usr/local/lib
+        /usr/local/lib64
+        ${FONTCONFIG_PREFIX}/lib
+	PATH_SUFFIXES debug )
+
+find_library( FONTCONFIG_LIBRARY_RELEASE NAMES fontconfig
+	PATHS
+		/usr/lib
+    	/usr/lib64
+        /usr/local/lib
+        /usr/local/lib64
+        ${FONTCONFIG_PREFIX}/lib
+	PATH_SUFFIXES release )
+
+set( FONTCONFIG_LIBRARY debug	${FONTCONFIG_LIBRARY_DEBUG}
+                     optimized	${FONTCONFIG_LIBRARY_RELEASE} )
+
+if ( FONTCONFIG_INCLUDE_DIR AND FONTCONFIG_LIBRARY )
+	message( STATUS "found fontconfig" )
+	set( FONTCONFIG_FOUND TRUE )
+	set( OPT_INCS	${OPT_INCS}
+	                ${FONTCONFIG_INCLUDE_DIR} )
+	add_definitions( -DHAVE_FONTCONFIG )
+	set( OPT_LIBS   ${OPT_LIBS} ${FONTCONFIG_LIBRARY} )	
+endif ( FONTCONFIG_INCLUDE_DIR AND FONTCONFIG_LIBRARY )
+
+###############################################################################
 # unix specific libraries
 ###############################################################################
 if ( UNIX )
