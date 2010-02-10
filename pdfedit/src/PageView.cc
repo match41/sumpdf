@@ -44,8 +44,10 @@ PageView::PageView( QGraphicsScene *scene, QWidget *parent )
 
 void PageView::Zoom( double factor )
 {
+	double physical = physicalDpiX() / 72.0 ;
+
 	QMatrix m ;
-	m.scale( factor, -factor ) ;
+	m.scale( factor * physical, -factor * physical ) ;
 	setMatrix( m ) ;
 }
 

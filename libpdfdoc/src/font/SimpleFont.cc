@@ -292,25 +292,25 @@ std::string SimpleFont::FindStdFont( const std::string& base_name )
 
 	// simple font mappings for the standard fonts
 	if ( name == "Helvetica" )
-#ifndef WIN32
-		name = "Liberation Sans" ;
-#else
+//#ifndef WIN32
+//		name = "Liberation Sans" ;
+//#else
 		name = "Arial" ;
-#endif
+//#endif
 
 	else if ( name == "Times" )
-#ifndef WIN32
-		name = "Liberation Serif" ;
-#else
+//#ifndef WIN32
+//		name = "Liberation Serif" ;
+//#else
 		name = "TimesNewRoman" ;
-#endif
+//#endif
 
 	else if ( name == "Courier" )
-#ifndef WIN32
-		name = "Liberation Mono" ;
-#else
+//#ifndef WIN32
+//		name = "Liberation Mono" ;
+//#else
 		name = "Courier New" ;
-#endif
+//#endif
 
 #ifndef WIN32
 	else if ( name == "Symbol" )

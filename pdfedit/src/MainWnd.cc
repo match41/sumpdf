@@ -44,6 +44,8 @@
 #include <QTransform>
 #include <QToolBar>
 
+#include <QGraphicsRectItem>
+
 #include <QDebug>
 
 #include "TextEdit.hh"
@@ -91,7 +93,12 @@ MainWnd::MainWnd( QWidget *parent )
 	m_tool_bar->addAction( m_action_open ) ;
 	
 	m_zoom_box->addItem( "100%", 1.0 ) ;
+	m_zoom_box->addItem( "125%", 1.25 ) ;
+	m_zoom_box->addItem( "150%", 1.5 ) ;
+	m_zoom_box->addItem( "175%", 1.75 ) ;
 	m_zoom_box->addItem( "200%", 2.0 ) ;
+	m_zoom_box->addItem( "250%", 2.5 ) ;
+	m_zoom_box->addItem( "300%", 3.0 ) ;
 	connect(
 		m_zoom_box,
 		SIGNAL(currentIndexChanged(int)),
@@ -99,6 +106,10 @@ MainWnd::MainWnd( QWidget *parent )
 		SLOT(OnToolZoom(int)) ) ;
 	
 	m_tool_bar->addWidget( m_zoom_box ) ;
+	
+	QGraphicsRectItem *item = new QGraphicsRectItem( 100, 100, m_view->physicalDpiX(), m_view->physicalDpiX() ) ;
+	qDebug() << m_view->physicalDpiX() << " " << m_view->physicalDpiY() ;
+	m_scene->addItem( item ) ;
 }
 
 /**	destructor is for the auto_ptr	
