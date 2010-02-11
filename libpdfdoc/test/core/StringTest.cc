@@ -144,12 +144,12 @@ void StringTest::TestVTab( )
 
 void StringTest::TestSpacesMix( )
 {
-	std::istringstream ss( "(\x09abc\nb\t123\x0b)" ) ;
+	std::istringstream ss( "(\x09""abc\nb\t123\x0b)" ) ;
 	TokenSrc src( ss ) ;
 	
 	pdf::String str ;
 	CPPUNIT_ASSERT( src >> str ) ;
-	PDFUT_ASSERT_EQUAL( str.Get(), "\x09abc\nb\t123\x0b" ) ;
+	PDFUT_ASSERT_EQUAL( str.Get(), "\x09""abc\nb\t123\x0b" ) ;
 }
 
 void StringTest::TestBrackets( )
