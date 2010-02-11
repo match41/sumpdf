@@ -154,12 +154,12 @@ void StringTest::TestSpacesMix( )
 
 void StringTest::TestBrackets( )
 {
-	std::istringstream ss( "(\x09(abcd hello???(\nb)\t12)3\x0b)" ) ;
+	std::istringstream ss( "(\x09(abcd hello?? ?(\nb)\t12)3\x0b)" ) ;
 	TokenSrc src( ss ) ;
 	
 	pdf::String str ;
 	CPPUNIT_ASSERT( src >> str ) ;
-	PDFUT_ASSERT_EQUAL( str.Get(), "\x09(abcd hello???(\nb)\t12)3\x0b" ) ;
+	PDFUT_ASSERT_EQUAL( str.Get(), "\x09(abcd hello?? ?(\nb)\t12)3\x0b" ) ;
 }
 
 } // end of namespace
