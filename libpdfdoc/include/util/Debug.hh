@@ -69,7 +69,8 @@ namespace pdf
 	
 
 #else
-#define PDF_ASSERT( expr )	(static_cast<void>(0))
+#define PDF_ASSERT( expr )				(static_cast<void>(0))
+#define PDF_ASSERT_EQUAL( expr, expr2 )	(static_cast<void>(0))
 #endif
 
 #endif // DEBUG_HH_
