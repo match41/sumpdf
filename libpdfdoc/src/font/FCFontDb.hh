@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2009 by Nestal Wan                                      *
+ *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,25 +17,41 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**
-	\file	pdfobj.hh
-	\brief	C++ wrapper header for pdfobj.h
-	\date	Dec 13, 2009
-	\author	nestal
+/**	\file	FCFontDb.hh
+    \brief	definition the FCFontDb class
+    \date	Feb 11, 2010
+    \author	Nestal Wan
 */
 
+#ifndef __PDF_FCFONTDB_HEADER_INCLUDED__
+#define __PDF_FCFONTDB_HEADER_INCLUDED__
 
-#ifndef __PDF_PDFOBJ_HEADER_INCLUDED__
-#define __PDF_PDFOBJ_HEADER_INCLUDED__
+#include "font/FontDb.hh"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include <map>
 
-#include "pdfobj.h"
+namespace pdf {
 
-#ifdef __cplusplus
-}
-#endif
+///	brief description
+/**	\internal
+	The FCFontDb class represents
+*/
+class FCFontDb : public FontDb
+{
+public :
+	FCFontDb( ) ;
+	~FCFontDb( ) ;
 
-#endif // PDFOBJ_HH_
+	FT_LibraryRec_* Library() ;
+	
+	FT_FaceRec_* LoadFont(
+		const std::string& base_name,
+		const std::string& style ) ;
+
+private :
+	FT_LibraryRec_	*m_ft ;
+} ;
+
+} // end of namespace
+
+#endif // FCFONTDB_HH_

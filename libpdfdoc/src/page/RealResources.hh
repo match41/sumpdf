@@ -42,9 +42,10 @@ struct FT_LibraryRec_ ;
 
 namespace pdf {
 
+class BaseFont ;
 class File ;
 class Font ;
-class BaseFont ;
+class FontDb ;
 class DictReader ;
 class RealImage ;
 class Object ;
@@ -60,7 +61,7 @@ class RealResources : public Resources, public RefCounter
 {
 public :
 	explicit RealResources( const RealResources *parent ) ;
-	explicit RealResources( FT_LibraryRec_ *ft ) ;
+	explicit RealResources( FontDb *fontdb ) ;
 	~RealResources( ) ;
 
 	Name AddFont( BaseFont *font ) ;
@@ -79,7 +80,7 @@ private :
 
 private :
 	const RealResources	*m_parent ;
-	FT_LibraryRec_		*m_ft_lib ;
+	FontDb				*m_font_db ;
 
 	typedef	boost::bimap<
 		boost::bimaps::set_of<Name>,

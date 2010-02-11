@@ -40,6 +40,41 @@ find_package( PNG )
 find_package( JPEG )
 
 ###############################################################################
+# finding optional fontconfig library
+###############################################################################
+find_path( FONTCONFIG_INCLUDE_DIR
+	fontconfig/fontconfig.h
+	/usr/include
+	/usr/local/include
+	${FONTCONFIG_PREFIX}/include )
+
+find_library( FONTCONFIG_LIBRARY_DEBUG NAMES fontconfig
+	PATHS
+		/usr/lib
+    	/usr/lib64
+        /usr/local/lib
+        /usr/local/lib64
+        ${FONTCONFIG_PREFIX}/lib
+	PATH_SUFFIXES debug )
+
+find_library( FONTCONFIG_LIBRARY_RELEASE NAMES fontconfig
+	PATHS
+		/usr/lib
+    	/usr/lib64
+        /usr/local/lib
+        /usr/local/lib64
+        ${FONTCONFIG_PREFIX}/lib
+	PATH_SUFFIXES release )
+
+set( FONTCONFIG_LIBRARY debug	${FONTCONFIG_LIBRARY_DEBUG}
+                    optimized	${FONTCONFIG_LIBRARY_RELEASE} )
+
+if ( FONTCONFIG_INCLUDE_DIR AND FONTCONFIG_LIBRARY )
+	message( STATUS "found fontconfig" )
+	set( FONTCONFIG_FOUND TRUE )
+endif ( FONTCONFIG_INCLUDE_DIR AND FONTCONFIG_LIBRARY )
+
+###############################################################################
 # source subdirectories
 ###############################################################################
 set( PAGE_DIR		src/page/ )
@@ -64,9 +99,6 @@ set( PAGE_HDRS		${PAGE_DIR}/RealPage.hh
 					${PAGE_DIR}/PageTree.hh )
 
 set( GRAPICS_HDRS	${GRAPICS_DIR}/RealText.hh )
-#                    ${GRAPICS_DIR}/Text.hh
-#                    ${GRAPICS_DIR}/TextLine.hh
-#                    ${GRAPICS_DIR}/TextFormat.hh )
 
 set( FILE_HDRS		${FILE_DIR}/RealFile.hh
 					${FILE_DIR}/File.hh
@@ -117,15 +149,7 @@ set( FONT_HDRS		${FONT_DIR}/Types.hh
 					${FONT_DIR}/FontDescriptor.hh
 					${FONT_DIR}/FontException.hh
 					${FONT_DIR}/FontType.hh
-					${FONT_DIR}/RealGlyph.hh
-					${FONT_DIR}/sfnt/SfntFile.hh
-					${FONT_DIR}/sfnt/sfnt.h
-					${FONT_DIR}/sfnt/pdfobj.h
-					${FONT_DIR}/sfnt/pdfobj.hh
-					${FONT_DIR}/sfnt/mem.h
-					${FONT_DIR}/sfnt/system.h
-					${FONT_DIR}/sfnt/mfileio.h
-					${FONT_DIR}/sfnt/numbers.h )
+					${FONT_DIR}/RealGlyph.hh )
 
 set( BASE_HDRS		src/RealDoc.hh )
 
@@ -138,7 +162,8 @@ set( INCLUDE_HDRS	${INCLUDE_DIR}/Doc.hh
 					${INCLUDE_DIR}/DocInfo.hh )
 
 set( FONT_INC_HDRS	${INCLUDE_DIR}/font/Font.hh
-					${INCLUDE_DIR}/font/Glyph.hh )
+					${INCLUDE_DIR}/font/Glyph.hh
+					${INCLUDE_DIR}/font/FontDb.hh )
 
 set( PAGE_INC_HDRS	${INCLUDE_DIR}/page/Page.hh
                     ${INCLUDE_DIR}/page/PageContent.hh )
@@ -225,12 +250,7 @@ set( FONT_SRCS		${FONT_DIR}/Font.cc
 					${FONT_DIR}/FontException.cc
 					${FONT_DIR}/FontType.cc
 					${FONT_DIR}/Outline.cc
-					${FONT_DIR}/sfnt/SfntFile.cc
-					${FONT_DIR}/sfnt/sfnt.c
-					${FONT_DIR}/sfnt/pdfobj.cc
-					${FONT_DIR}/sfnt/mem.c
-					${FONT_DIR}/sfnt/mfileio.c
-					${FONT_DIR}/sfnt/numbers.c )
+					${FONT_DIR}/FontDb.cc )
 
 set( BASE_SRCS		src/Doc.cc
 					src/RealDoc.cc
@@ -295,6 +315,18 @@ if ( JPEG_FOUND )
 	add_definitions( -DHAVE_JPEG )
 endif ( JPEG_FOUND )
 
+# fontconfig
+if ( FONTCONFIG_FOUND )
+	set( FONT_SRCS	${FONT_SRCS}
+					${FONT_DIR}/FCFontDb.cc )
+	set( FONT_HDRS	${FONT_HDRS}
+					${FONT_DIR}/FCFontDb.hh )
+	set( OPT_INCS	${OPT_INCS}
+	                ${FONTCONFIG_INCLUDE_DIR} )
+	add_definitions( -DHAVE_FONTCONFIG )
+	set( OPT_LIBS   ${OPT_LIBS} ${FONTCONFIG_LIBRARY} )	
+endif ( FONTCONFIG_FOUND )
+
 ###############################################################################
 # all headers
 ###############################################################################
@@ -329,45 +361,6 @@ SOURCE_GROUP( "image"		FILES ${IMG_SRCS}  		${IMG_HDRS} )
 SOURCE_GROUP( "stream"		FILES ${STRM_SRCS}		${STRM_HDRS} )
 SOURCE_GROUP( "base"		FILES ${BASE_SRCS}		${BASE_HDRS} )
 SOURCE_GROUP( "include"		FILES ${INCLUDE_HDRS} )
-
-###############################################################################
-# finding optional fontconfig library
-###############################################################################
-find_path( FONTCONFIG_INCLUDE_DIR
-	fontconfig/fontconfig.h
-	/usr/include
-	/usr/local/include
-	${FONTCONFIG_PREFIX}/include )
-
-find_library( FONTCONFIG_LIBRARY_DEBUG NAMES fontconfig
-	PATHS
-		/usr/lib
-    	/usr/lib64
-        /usr/local/lib
-        /usr/local/lib64
-        ${FONTCONFIG_PREFIX}/lib
-	PATH_SUFFIXES debug )
-
-find_library( FONTCONFIG_LIBRARY_RELEASE NAMES fontconfig
-	PATHS
-		/usr/lib
-    	/usr/lib64
-        /usr/local/lib
-        /usr/local/lib64
-        ${FONTCONFIG_PREFIX}/lib
-	PATH_SUFFIXES release )
-
-set( FONTCONFIG_LIBRARY debug	${FONTCONFIG_LIBRARY_DEBUG}
-                     optimized	${FONTCONFIG_LIBRARY_RELEASE} )
-
-if ( FONTCONFIG_INCLUDE_DIR AND FONTCONFIG_LIBRARY )
-	message( STATUS "found fontconfig" )
-	set( FONTCONFIG_FOUND TRUE )
-	set( OPT_INCS	${OPT_INCS}
-	                ${FONTCONFIG_INCLUDE_DIR} )
-	add_definitions( -DHAVE_FONTCONFIG )
-	set( OPT_LIBS   ${OPT_LIBS} ${FONTCONFIG_LIBRARY} )	
-endif ( FONTCONFIG_INCLUDE_DIR AND FONTCONFIG_LIBRARY )
 
 ###############################################################################
 # unix specific libraries

@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2009 by Nestal Wan                                      *
+ *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,37 +15,41 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- \***************************************************************************/
+\***************************************************************************/
 
-/**
- \file	SfntFile.hh
- \brief	definition the SfntFile class
- \date	Dec 22, 2009
- \author	nestal
- */
+/**	\file	FontDb.hh
+    \brief	definition the FontDb class
+    \date	Feb 11, 2010
+    \author	Nestal Wan
+*/
 
-#ifndef __PDF_SFNTFILE_HEADER_INCLUDED__
-#define __PDF_SFNTFILE_HEADER_INCLUDED__
+#ifndef __PDF_FONTDB_HH_EADER_INCLUDED__
+#define __PDF_FONTDB_HH_EADER_INCLUDED__
 
-#include <memory>
+struct FT_LibraryRec_ ;
+struct FT_FaceRec_ ;
 
-// freetype headers
-#include <ft2build.h>
-#include FT_FREETYPE_H
+#include <string>
 
-namespace tex {
+namespace pdf {
 
-class SfntFile
+///	Font database.
+/**	\internal
+	The FontDb class is an interface for searching and loading fonts. It keeps
+	the Freetype library pointer and uses it for loading font.
+*/
+class FontDb
 {
-public:
-	SfntFile( FT_Face face ) ;
-	~SfntFile( ) ;
-
-private :
-	struct Impl ;
-	Impl	*m_sfnt ;
+public :
+	virtual ~FontDb( ) ;
+	
+	virtual FT_LibraryRec_* Library() = 0 ;
+	
+	virtual FT_FaceRec_* LoadFont(
+		const std::string& base_name,
+		const std::string& style ) = 0 ;
 } ;
 
 } // end of namespace
 
-#endif // SFNTFILE_HH_
+#endif // FONTDB_HH_

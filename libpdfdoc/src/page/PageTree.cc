@@ -58,9 +58,9 @@ PageTree::PageTree( PageTree *parent )
 		parent->AppendNode( this ) ;
 }
 
-PageTree::PageTree( FT_LibraryRec_ *ft )
+PageTree::PageTree( FontDb *fontdb )
 	: m_parent( 0 ),
-	  m_resources( new RealResources( ft ) ),
+	  m_resources( new RealResources( fontdb ) ),
 	  m_count( 0 )
 {
 }

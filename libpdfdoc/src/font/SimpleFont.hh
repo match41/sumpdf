@@ -43,11 +43,11 @@
 #include <memory>
 
 struct FT_FaceRec_ ;
-struct FT_LibraryRec_ ;
 
 namespace pdf {
 
 class DictReader ;
+class FontDb ;
 class RealGlyph ;
 class Glyph ;
 
@@ -60,12 +60,12 @@ class Glyph ;
 class SimpleFont : public BaseFont
 {
 public :
-	SimpleFont( DictReader& self, FT_LibraryRec_ *ft_lib ) ;
+	SimpleFont( DictReader& self, FontDb *fontdb ) ;
 	SimpleFont(
 		const std::string&	font_file,
 		unsigned 			idx,
-		FT_LibraryRec_ 		*ft_lib ) ;
-	SimpleFont( const std::string& name, FT_LibraryRec_ *ft_lib ) ;
+		FontDb 				*fontdb ) ;
+	SimpleFont( const std::string& name, FontDb *fontdb ) ;
 	~SimpleFont( ) ;
 
 	std::string BaseName( ) const ;
@@ -89,9 +89,9 @@ private :
 	static FT_FaceRec_* LoadFace(
 		const unsigned char	*data,
 		std::size_t 		size,
-		FT_LibraryRec_ 		*ft_lib );
+		FontDb 				*fontdb );
 
-	void Init( std::vector<unsigned char>& prog, FT_LibraryRec_ *ft_lib ) ; 
+	void Init( std::vector<unsigned char>& prog, FontDb *fontdb ) ; 
 
 	static std::string FindFont(
 		const std::string& font_name,
@@ -99,7 +99,7 @@ private :
 	static std::vector<unsigned char> LoadFile( const std::string& filename ) ;
 
 	static std::string FindStdFont( const std::string& name ) ;
-	bool InitWithStdFont( const std::string& name, FT_LibraryRec_ *ft_lib ) ;
+	bool InitWithStdFont( const std::string& name, FontDb *fontdb ) ;
 
 private :
 	FT_FaceRec_	*m_face ;

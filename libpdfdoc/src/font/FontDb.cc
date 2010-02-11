@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2009 by Nestal Wan                                      *
+ *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,30 +17,21 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**
-	\file	pdfobj.cc
-	\brief	definition the pdfobj class
-	\date	Dec 12, 2009
-	\author	nestal
+/**	\file	FontDb.cc
+	\brief	implementation of the FontDb class
+	\date	Feb 11, 2010
+	\author	Nestal Wan
 */
 
-#include "pdfobj.hh"
+#include "font/FontDb.hh"
 
-#include "core/Object.hh"
-#include "stream/Stream.hh"
+namespace pdf {
 
-#include <cassert>
-
-using namespace pdf ;
-
-struct pdf_obj
+/**	constructor
+	
+*/
+FontDb::~FontDb( )
 {
-	Object	*obj ;
-} ;
-
-pdf_obj    *pdf_new_stream        (int flags)
-{
-	pdf_obj *obj	= new pdf_obj ;
-	obj->obj		= new Object( Stream( ) ) ;
-	return obj ;
 }
+
+} // end of namespace

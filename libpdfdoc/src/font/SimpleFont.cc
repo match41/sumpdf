@@ -25,11 +25,12 @@
 */
 
 #include "SimpleFont.hh"
+
 #include "FontType.hh"
 #include "RealGlyph.hh"
-
 #include "FontException.hh"
 #include "FontDescriptor.hh"
+#include "font/FontDb.hh"
 
 #include "core/Dictionary.hh"
 
@@ -71,15 +72,15 @@ const Name SimpleFont::m_font_types[] =
 SimpleFont::SimpleFont(
 	const std::string& 	font_file,
 	unsigned 			idx,
-	FT_Library 			ft_lib )
+	FontDb 				*fontdb )
 	: m_first_char( -1 ),
 	  m_last_char( -1 )
 {
 	std::vector<unsigned char> prog = LoadFile( font_file ) ;
-	Init( prog, ft_lib ) ;
+	Init( prog, fontdb ) ;
 }
 
-SimpleFont::SimpleFont( const std::string& name, FT_Library ft_lib )
+SimpleFont::SimpleFont( const std::string& name, FontDb *fontdb )
 	: m_face( 0 ),
 	  m_type( font::unknown ),
 	  m_first_char( -1 ),
@@ -87,17 +88,17 @@ SimpleFont::SimpleFont( const std::string& name, FT_Library ft_lib )
 {
 	std::string path = FindFont( name ) ; 
 	std::vector<unsigned char> prog = LoadFile( path ) ;
-	Init( prog, ft_lib ) ;
+	Init( prog, fontdb ) ;
 }
 
-SimpleFont::SimpleFont( DictReader& reader, FT_Library ft_lib )
+SimpleFont::SimpleFont( DictReader& reader, FontDb *font_db )
 	: m_face( 0 ),
 	  m_type( font::unknown ),
 	  m_first_char( -1 ),
 	  m_last_char( -1 ),
 	  m_descriptor( new FontDescriptor )
 {
-	PDF_ASSERT( ft_lib != 0 ) ;
+	PDF_ASSERT( font_db != 0 ) ;
 	
 	try
 	{
@@ -128,10 +129,10 @@ SimpleFont::SimpleFont( DictReader& reader, FT_Library ft_lib )
 			
 			if ( !font_file.empty() )
 			{
-				m_face = LoadFace( &font_file[0], font_file.size(), ft_lib ) ;
+				m_face = LoadFace( &font_file[0], font_file.size(), font_db ) ;
 				LoadGlyphs( ) ;
 			}
-			else if ( !InitWithStdFont( m_base_font.Str(), ft_lib )  )
+			else if ( !InitWithStdFont( m_base_font.Str(), font_db )  )
 				throw Exception( "can't load font " + m_base_font.Str() ) ;
 		}
 		
@@ -139,7 +140,7 @@ SimpleFont::SimpleFont( DictReader& reader, FT_Library ft_lib )
 		// try to search for them instead.
 		else if ( m_type != font::type3 )
 		{
-			if ( !InitWithStdFont( m_base_font.Str(), ft_lib )  )
+			if ( !InitWithStdFont( m_base_font.Str(), font_db )  )
 				throw Exception( "no font name. can't load font" ) ;
 		}
 		else
@@ -166,24 +167,24 @@ SimpleFont::~SimpleFont( )
 	FT_Done_Face( m_face ) ;
 }
 
-bool SimpleFont::InitWithStdFont( const std::string& name, FT_LibraryRec_ *ft_lib )
+bool SimpleFont::InitWithStdFont( const std::string& name, FontDb *font_db )
 {
 	if ( !m_base_font.empty() )
 	{
 		std::string path = FindStdFont( m_base_font.Str() ) ;
 
 		std::vector<unsigned char> prog = LoadFile( path ) ;
-		Init( prog, ft_lib ) ;
+		Init( prog, font_db ) ;
 		return true ;
 	}
 	else
 		return false ;
 }
 	
-void SimpleFont::Init( std::vector<unsigned char>& prog, FT_Library ft_lib )
+void SimpleFont::Init( std::vector<unsigned char>& prog, FontDb *font_db )
 {
 	FT_Error e = FT_New_Memory_Face(
-		ft_lib,
+		font_db->Library(),
 		&prog[0],
 		prog.size(),
 		0,
@@ -219,10 +220,10 @@ std::vector<unsigned char> SimpleFont::LoadFile( const std::string& filename )
 FT_FaceRec_* SimpleFont::LoadFace(
 	const unsigned char	*data,
 	std::size_t 		size,
-	FT_LibraryRec_		*ft_lib )
+	FontDb 				*font_db )
 {
 	FT_Face face = 0 ;
-	FT_Error e = FT_New_Memory_Face( ft_lib, data, size, 0, &face ) ;
+	FT_Error e = FT_New_Memory_Face( font_db->Library(), data, size, 0, &face );
 
 	using boost::format ;
 	if ( e != 0 )
@@ -466,9 +467,9 @@ FontDescriptor* SimpleFont::Descriptor( )
 	return m_descriptor.get() ;
 }
 
-BaseFont* CreateFont( DictReader& obj, FT_LibraryRec_ *ft )
+BaseFont* CreateFont( DictReader& obj, FontDb *db )
 {
-	return new SimpleFont( obj, ft ) ;
+	return new SimpleFont( obj, db ) ;
 }
 
 } // end of namespace

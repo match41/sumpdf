@@ -34,8 +34,6 @@
 #include "core/Dictionary.hh"
 #include "core/Ref.hh"
 
-#include "font/SimpleFont.hh"
-
 #include "page/RealPage.hh"
 #include "page/PageTree.hh"
 
@@ -61,16 +59,16 @@ struct Catalog::NameDict
 	}
 } ;
 
-Catalog::Catalog( FT_LibraryRec_ *ft )
+Catalog::Catalog( FontDb *fontdb )
 	: m_version		( "1.4" ),
 	  m_page_layout	( "SinglePage" ),
 	  m_page_mode	( "UseNode" ),
-	  m_tree		( new PageTree( ft ) ),
+	  m_tree		( new PageTree( fontdb ) ),
 	  m_name_dict	( new NameDict )
 {
 }
 
-Catalog::Catalog( const Ref& link, File *file, FT_LibraryRec_ *ft )
+Catalog::Catalog( const Ref& link, File *file, FontDb *fontdb )
 	: m_version		( "1.4" ),
 	  m_page_layout	( "SinglePage" ),
 	  m_page_mode	( "UseNode" ),
@@ -96,7 +94,7 @@ Catalog::Catalog( const Ref& link, File *file, FT_LibraryRec_ *ft )
 		throw ParseError( "no page tree in catalog" ) ;
 	
 	// root page tree has no parent
-	m_tree = new PageTree( ft ) ;
+	m_tree = new PageTree( fontdb ) ;
 	m_tree->Read( tree ) ;
 	
 	self.Detach( "Version",		m_version ) ;

@@ -32,8 +32,6 @@
 #include <vector>
 #include <string>
 
-struct FT_LibraryRec_ ;
-
 namespace pdf {
 
 class RealPage ;
@@ -41,6 +39,7 @@ class RealResources ;
 class Dictionary ;
 class File ;
 class Font ;
+class FontDb ;
 
 /*!	\brief	tree nodes in page tree
 	
@@ -50,7 +49,7 @@ class PageTree : public PageNode
 {
 public :
 	explicit PageTree( PageTree *parent ) ;
-	explicit PageTree( FT_LibraryRec_* ft ) ;
+	explicit PageTree( FontDb *fontdb ) ;
 	~PageTree( ) ;
 
 	void Read( DictReader& dict ) ;

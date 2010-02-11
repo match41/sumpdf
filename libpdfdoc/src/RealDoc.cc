@@ -32,6 +32,8 @@
 #include "file/Catalog.hh"
 #include "file/RealFile.hh"
 
+#include "font/FCFontDb.hh"
+
 #include "util/Debug.hh"
 
 // freetype headers
@@ -50,11 +52,9 @@ const std::string RealDoc::Info_::m_empty ;
 /**	It will create an empty document with only one page.
 */
 RealDoc::RealDoc( )
-	: m_catalog( 0 )	// not exception safe
+	: m_font_db( new FCFontDb ),
+	  m_catalog( new Catalog( m_font_db.get() ) )
 {
-	::FT_Init_FreeType( &m_ft_lib ) ;
-	
-	m_catalog = new Catalog( m_ft_lib ) ;
 }
 
 /**	The destructor will delete all the elements contained. It traverses the
@@ -62,11 +62,7 @@ RealDoc::RealDoc( )
 */
 RealDoc::~RealDoc( )
 {
-	// traverse the document to get all elements
-	delete m_catalog ;
-
-	// catalog depends on freetype
-	::FT_Done_FreeType( m_ft_lib ) ;
+	// the auto_ptr's will do the job
 }
 
 void RealDoc::Read( const std::string& filename )
@@ -80,11 +76,10 @@ void RealDoc::Read( const std::string& filename )
 
 	// for exception safety, first create a new catalog before deleting
 	// the exsiting one.
-	Catalog *catalog = new Catalog( file.Root( ), &file, m_ft_lib ) ;
+	Catalog *catalog = new Catalog( file.Root( ), &file, m_font_db.get() ) ;
 	
-	PDF_ASSERT( m_catalog != 0 ) ;
-	delete m_catalog ;
-	m_catalog = catalog ;
+	PDF_ASSERT( m_catalog.get() != 0 ) ;
+	m_catalog.reset( catalog ) ;
 	
 	// DocInfo is optional
 	if ( file.DocInfo( ) != Ref() )
@@ -105,26 +100,26 @@ void RealDoc::Write( const std::string& filename ) const
 
 Page* RealDoc::AppendPage( )
 {
-	PDF_ASSERT( m_catalog != 0 ) ;
+	PDF_ASSERT( m_catalog.get() != 0 ) ;
 
 	return m_catalog->AddPage( ) ;
 }
 
 std::size_t RealDoc::PageCount( ) const
 {
-	PDF_ASSERT( m_catalog != 0 ) ;
+	PDF_ASSERT( m_catalog.get() != 0 ) ;
 	return m_catalog->PageCount( ) ;
 }
 
 Page* RealDoc::GetPage( std::size_t index )
 {
-	PDF_ASSERT( m_catalog != 0 ) ;
+	PDF_ASSERT( m_catalog.get() != 0 ) ;
 	return m_catalog->GetPage( index ) ;
 }
 
 Font* RealDoc::CreateSimpleFont( const std::string& name )
 {
-	PDF_ASSERT( m_catalog != 0 ) ;
+	PDF_ASSERT( m_catalog.get() != 0 ) ;
 	return m_catalog->CreateSimpleFont( name ) ;
 }
 

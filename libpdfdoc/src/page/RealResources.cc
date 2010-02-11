@@ -49,21 +49,21 @@ namespace pdf {
 
 RealResources::RealResources( const RealResources *parent )
 	: m_parent( parent ),
-	  m_ft_lib( parent == 0 ? 0 : parent->m_ft_lib ),
+	  m_font_db( parent == 0 ? 0 : parent->m_font_db ),
 	  m_proc_set( 1, Name( "PDF" ) )
 {
 	PDF_ASSERT( parent != 0 ) ;
-	PDF_ASSERT( m_ft_lib != 0 ) ;
+	PDF_ASSERT( m_font_db != 0 ) ;
 	
     m_proc_set.push_back( Name( "Text" ) ) ;
 }
 
-RealResources::RealResources( FT_LibraryRec_ * ft )
+RealResources::RealResources( FontDb *font_db )
 	: m_parent( 0 ),
-	  m_ft_lib( ft ),
+	  m_font_db( font_db ),
 	  m_proc_set( 1, Name( "PDF" ) )
 {
-	PDF_ASSERT( m_ft_lib != 0 ) ;
+	PDF_ASSERT( m_font_db != 0 ) ;
 	
     m_proc_set.push_back( Name( "Text" ) ) ;
 }
@@ -101,7 +101,7 @@ void RealResources::ReadFontDict( DictReader& self )
 {
 	PDF_ASSERT( self.GetFile() != 0 ) ;
 	PDF_ASSERT( self.GetFile()->Pool() != 0 ) ;
-	PDF_ASSERT( m_ft_lib != 0 ) ;
+	PDF_ASSERT( m_font_db != 0 ) ;
 
 	DictReader dict ;
 	if ( self.Detach( "Font", dict ) )
@@ -116,7 +116,7 @@ void RealResources::ReadFontDict( DictReader& self )
 			{
 				DictReader font_dict ;
 				dict.At( i, font_dict ) ;
-				font = CreateFont( font_dict, m_ft_lib ) ;
+				font = CreateFont( font_dict, m_font_db ) ;
 				pool->Add( link, font ) ; 
 			}
 
@@ -188,7 +188,7 @@ Name RealResources::FindFont( const BaseFont *font ) const
 
 Font* RealResources::CreateSimpleFont( const std::string& name )
 {
-	SimpleFont *f = new SimpleFont( name, m_ft_lib ) ;
+	SimpleFont *f = new SimpleFont( name, m_font_db ) ;
 	AddFont( f ) ;
 	return f ;
 }

@@ -40,6 +40,7 @@ namespace pdf {
 class ElementList ;
 class File ;
 class Font ;
+class FontDb ;
 class PageTree ;
 class Ref ;
 class Page ;
@@ -53,8 +54,8 @@ class Page ;
 class Catalog
 {
 public :
-	explicit Catalog( FT_LibraryRec_ *ft ) ;
-	Catalog( const Ref& link, File *file, FT_LibraryRec_ *ft ) ;
+	explicit Catalog( FontDb *fontdb ) ;
+	Catalog( const Ref& link, File *file, FontDb *fontdb ) ;
 	~Catalog( ) ;
 	
 	Ref Write( File *file ) const ;

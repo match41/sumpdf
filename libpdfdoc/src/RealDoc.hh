@@ -35,13 +35,13 @@
 
 #include <string>
 #include <fstream>
-
-struct FT_LibraryRec_ ;
+#include <memory>
 
 namespace pdf {
 
 class IndirectObj ;
 class Font ;
+class FontDb ;
 class Page ;
 class Catalog ;
 
@@ -71,16 +71,16 @@ public :
 	DocInfo* Info( ) ;
 
 private :
+	//! font database for loading the font files.
+	std::auto_ptr<FontDb>	m_font_db ;
+
 	//! Catalog of the document
-	Catalog				*m_catalog ;
+	std::auto_ptr<Catalog>	m_catalog ;
 	
 	//! The file stream of the PDF file. It is only for reading.
 	//! Some objects from the document will only be read on-demand.
-	std::ifstream		m_readfs ;
+	std::ifstream			m_readfs ;
 	
-	//! Freetype library for loading the font files.
-	FT_LibraryRec_		*m_ft_lib ;
-
 	struct Info_ : public DocInfo
 	{
 		Dictionary	m_dict ;

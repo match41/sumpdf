@@ -30,14 +30,13 @@
 #include "font/Font.hh"
 #include "util/RefCounter.hh"
 
-struct FT_LibraryRec_ ;
-
 namespace pdf {
 
 class File ;
 class DictReader ;
 class Ref ;
 class FontDescriptor ;
+class FontDb ;
 
 ///	\internal	base class for all fonts
 /**	This class is the base class of all font classes in libpdfdoc.
@@ -51,7 +50,7 @@ public :
 	virtual FontDescriptor* Descriptor( ) = 0 ;
 } ;
 
-BaseFont* CreateFont( DictReader& obj, FT_LibraryRec_ *ft ) ;
+BaseFont* CreateFont( DictReader& obj, FontDb *ft ) ;
 
 } // end of namespace
 
