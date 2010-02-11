@@ -99,10 +99,9 @@ private :
 	static std::vector<unsigned char> LoadFile( const std::string& filename ) ;
 
 	static std::string FindStdFont( const std::string& name ) ;
+	bool InitWithStdFont( const std::string& name, FT_LibraryRec_ *ft_lib ) ;
 
 private :
-//	CompleteObj	m_self ;
-
 	FT_FaceRec_	*m_face ;
 
 	Name		m_base_font ;

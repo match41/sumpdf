@@ -131,30 +131,15 @@ SimpleFont::SimpleFont( DictReader& reader, FT_Library ft_lib )
 				m_face = LoadFace( &font_file[0], font_file.size(), ft_lib ) ;
 				LoadGlyphs( ) ;
 			}
-			else if ( !m_base_font.empty() )
-			{
-				std::string path = FindStdFont( m_base_font.Str() ) ;
-
-				std::vector<unsigned char> prog = LoadFile( path ) ;
-				Init( prog, ft_lib ) ;
-			}
-			else
-				throw Exception( "no font name. can't load font" ) ;
-
+			else if ( !InitWithStdFont( m_base_font.Str(), ft_lib )  )
+				throw Exception( "can't load font " + m_base_font.Str() ) ;
 		}
 		
 		// font descriptor is absent. it may be a standard 14 fonts.
 		// try to search for them instead.
 		else if ( m_type != font::type3 )
 		{
-			if ( !m_base_font.empty() )
-			{
-				std::string path = FindStdFont( m_base_font.Str() ) ;
-
-				std::vector<unsigned char> prog = LoadFile( path ) ;
-				Init( prog, ft_lib ) ;
-			}
-			else
+			if ( !InitWithStdFont( m_base_font.Str(), ft_lib )  )
 				throw Exception( "no font name. can't load font" ) ;
 		}
 		else
@@ -181,6 +166,20 @@ SimpleFont::~SimpleFont( )
 	FT_Done_Face( m_face ) ;
 }
 
+bool SimpleFont::InitWithStdFont( const std::string& name, FT_LibraryRec_ *ft_lib )
+{
+	if ( !m_base_font.empty() )
+	{
+		std::string path = FindStdFont( m_base_font.Str() ) ;
+
+		std::vector<unsigned char> prog = LoadFile( path ) ;
+		Init( prog, ft_lib ) ;
+		return true ;
+	}
+	else
+		return false ;
+}
+	
 void SimpleFont::Init( std::vector<unsigned char>& prog, FT_Library ft_lib )
 {
 	FT_Error e = FT_New_Memory_Face(
