@@ -24,29 +24,26 @@
 */
 
 #include "TestBase.hh"
-
-// freetype headers
-#include <ft2build.h>
-#include FT_FREETYPE_H
+#include "MockFontDb.hh"
 
 namespace pdfut {
 
 /**	constructor
 */
 TestBase::TestBase( )
-	: m_ft( 0 )
+	: m_font_db( 0 )
 {
 }
 
 void TestBase::setUp( )
 {
-	::FT_Init_FreeType( &m_ft ) ;
+	m_font_db = new MockFontDb ;
 }
 
 void TestBase::tearDown( )
 {
-	::FT_Done_FreeType( m_ft ) ;
-	m_ft = 0 ;
+	delete m_font_db ;
+	m_font_db = 0 ;
 }
 
 } // end of namespace

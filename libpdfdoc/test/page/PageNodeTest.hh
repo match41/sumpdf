@@ -27,7 +27,7 @@
 #ifndef __PDFUT_PAGE_NODE_TEST_HEADER_INCLUDED__
 #define __PDFUT_PAGE_NODE_TEST_HEADER_INCLUDED__
 
-#include <cppunit/TestFixture.h>
+#include "mock/TestBase.hh"
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -40,11 +40,13 @@ namespace pdf
 	class PageTree ;
 }
 
+namespace pdfut {
+
 /*!	\brief	brief description
 	
 	this class represents
 */
-class PageNodeTest : public CppUnit::TestFixture
+class PageNodeTest : public TestBase
 {
 public :
 	PageNodeTest( ) ;
@@ -66,8 +68,9 @@ private :
 	void TestOrder( ) ;
 
 private :
-	FT_Library		m_ft_lib ;
 	pdf::PageTree	*m_root ;
 } ;
+
+} // end of namespace
 
 #endif

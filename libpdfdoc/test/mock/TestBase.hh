@@ -28,7 +28,10 @@
 
 #include <cppunit/TestFixture.h>
 
-struct FT_LibraryRec_ ;
+namespace pdf
+{
+	class FontDb ;
+}
 
 namespace pdfut {
 
@@ -45,7 +48,7 @@ public :
 	void tearDown( ) ;
 
 protected :
-	FT_LibraryRec_	*m_ft ;
+	pdf::FontDb	*m_font_db ;
 } ;
 
 } // end of namespace

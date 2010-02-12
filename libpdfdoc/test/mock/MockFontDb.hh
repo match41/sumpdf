@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2009 by Nestal Wan                                      *
+ *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,53 +17,40 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/*!
-	\file	SimpleFontTest.cc
-	\brief	implementation the SimpleFontTest class
-	\date	Sun Mar 8 2009
-	\author	Nestal Wan
+/**	\file	MockFontDb.hh
+    \brief	definition the MockFontDb class
+    \date	Feb 12, 2010
+    \author	Nestal Wan
 */
 
-#include "SimpleFontTest.hh"
+#ifndef __PDF_MOCKFONTDB_HH_EADER_INCLUDED__
+#define __PDF_MOCKFONTDB_HH_EADER_INCLUDED__
 
-#include "font/SimpleFont.hh"
-#include "font/FontDescriptor.hh"
+#include "font/FontDb.hh"
 
-#include "mock/Assert.hh"
-#include "mock/MockFile.hh"
-
-#include <sstream>
-#include <iostream>
+struct FT_LibraryRec_ ;
 
 namespace pdfut {
 
-SimpleFontTest::SimpleFontTest( )
+///	brief description
+/**	\internal
+	The MockFontDb class represents
+*/
+class MockFontDb : public pdf::FontDb
 {
-}
+public :
+	MockFontDb( ) ;
+	
+	FT_LibraryRec_* Library() ;
+	
+	FT_FaceRec_* LoadFont(
+		const std::string& base_name,
+		const std::string& style ) ;
 
-void SimpleFontTest::TestSimple( )
-{
-	pdf::SimpleFont subject(
-		std::string(TEST_DATA_DIR) +"FreeMonoBoldOblique.ttf",
-		0,
-		m_font_db ) ;
-	PDFUT_ASSERT_EQUAL( subject.BaseName( ), "FreeMonoBoldOblique" ) ;
-}
-
-void SimpleFontTest::TestLoadByName( )
-{
-	pdf::SimpleFont subject( "Arial", m_font_db ) ;
-	PDFUT_ASSERT_EQUAL( subject.BaseName( ), "ArialMT" ) ;
-	
-	pdf::FontDescriptor *fd = subject.Descriptor( ) ;
-	
-	MockFile file ;
-	pdf::Ref r = subject.Write( &file ) ;
-	
-	pdf::Object fdo = file.ReadObj( r ) ;
-	CPPUNIT_ASSERT( fdo.Is<pdf::Dictionary>() ) ;
-	PDFUT_ASSERT_EQUAL( fd->Family(), "" ) ; 
-//	std::cout << "descriptor = " << file.Find( r ) << std::endl ;
-}
+private :
+	FT_LibraryRec_* m_ft ;
+} ;
 
 } // end of namespace
+
+#endif // MOCKFONTDB_HH_

@@ -31,6 +31,8 @@
 
 #include "mock/Assert.hh"
 
+namespace pdfut {
+
 PageNodeTest::PageNodeTest( )
 	: m_root( 0 )
 {
@@ -38,15 +40,14 @@ PageNodeTest::PageNodeTest( )
 
 void PageNodeTest::setUp( )
 {
-	::FT_Init_FreeType( &m_ft_lib ) ;
-
-	m_root = new pdf::PageTree( m_ft_lib ) ;
+	TestBase::setUp( ) ;
+	m_root = new pdf::PageTree( m_font_db ) ;
 }
 
 void PageNodeTest::tearDown( )
 {
 	delete m_root ;
-	::FT_Done_FreeType( m_ft_lib ) ;
+	TestBase::tearDown( ) ;
 }
 
 void PageNodeTest::TestCount( )
@@ -100,3 +101,5 @@ void PageNodeTest::TestOrder( )
 	CPPUNIT_ASSERT( m_root->GetLeaf( 2 ) == page2 ) ;
 	CPPUNIT_ASSERT( m_root->GetLeaf( 3 ) == page3 ) ;
 }
+
+} // end of namespace

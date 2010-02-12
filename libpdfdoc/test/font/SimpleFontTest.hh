@@ -27,19 +27,17 @@
 #ifndef __PDFUT_SIMPLE_FONT_TEST_HEADER_INCLUDED__
 #define __PDFUT_SIMPLE_FONT_TEST_HEADER_INCLUDED__
 
-#include <cppunit/TestFixture.h>
+#include "mock/TestBase.hh"
 
 #include <cppunit/extensions/HelperMacros.h>
 
-// freetype headers
-#include <ft2build.h>
-#include FT_FREETYPE_H
+namespace pdfut {
 
 /*!	\brief	brief description
 	
 	this class represents
 */
-class SimpleFontTest : public CppUnit::TestFixture
+class SimpleFontTest : public TestBase
 {
 public :
 	SimpleFontTest( ) ;
@@ -50,16 +48,11 @@ public :
 		CPPUNIT_TEST( TestLoadByName ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
-public :
-	void setUp( ) ;
-	void tearDown( ) ;
-
 private :
 	void TestSimple( ) ;
 	void TestLoadByName( ) ;
-
-private :
-	FT_Library	m_ft ;
 } ;
+
+} // end of namespace
 
 #endif

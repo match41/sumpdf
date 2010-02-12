@@ -500,6 +500,7 @@ set( UT_SRCS	test/core/TokenTest.cc
 				test/mock/MockFont.cc
 				test/mock/MockGlyph.cc
 				test/mock/TestBase.cc
+				test/mock/MockFontDb.cc
 				test/RealDocTest.cc
 )
 

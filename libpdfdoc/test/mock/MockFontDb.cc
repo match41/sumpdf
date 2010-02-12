@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2009 by Nestal Wan                                      *
+ *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,53 +17,47 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/*!
-	\file	SimpleFontTest.cc
-	\brief	implementation the SimpleFontTest class
-	\date	Sun Mar 8 2009
+/**	\file	MockFontDb.cc
+	\brief	implementation of the MockFontDb class
+	\date	Feb 12, 2010
 	\author	Nestal Wan
 */
 
-#include "SimpleFontTest.hh"
+#include "MockFontDb.hh"
 
-#include "font/SimpleFont.hh"
-#include "font/FontDescriptor.hh"
-
-#include "mock/Assert.hh"
-#include "mock/MockFile.hh"
-
-#include <sstream>
-#include <iostream>
+// freetype headers
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 namespace pdfut {
 
-SimpleFontTest::SimpleFontTest( )
+using namespace pdf ;
+
+/**	constructor
+	
+*/
+MockFontDb::MockFontDb( )
+	: m_ft( 0 )
 {
+	::FT_Init_FreeType( &m_ft ) ;
 }
 
-void SimpleFontTest::TestSimple( )
+FT_LibraryRec_* MockFontDb::Library()
 {
-	pdf::SimpleFont subject(
-		std::string(TEST_DATA_DIR) +"FreeMonoBoldOblique.ttf",
+	return m_ft ;
+}
+
+FT_FaceRec_* MockFontDb::LoadFont(
+	const std::string& base_name,
+	const std::string& style )
+{
+	FT_Face face = 0 ;
+	FT_Error e = FT_New_Face(
+		m_ft,
+		(std::string(TEST_DATA_DIR) +"FreeMonoBoldOblique.ttf").c_str(),
 		0,
-		m_font_db ) ;
-	PDFUT_ASSERT_EQUAL( subject.BaseName( ), "FreeMonoBoldOblique" ) ;
-}
-
-void SimpleFontTest::TestLoadByName( )
-{
-	pdf::SimpleFont subject( "Arial", m_font_db ) ;
-	PDFUT_ASSERT_EQUAL( subject.BaseName( ), "ArialMT" ) ;
-	
-	pdf::FontDescriptor *fd = subject.Descriptor( ) ;
-	
-	MockFile file ;
-	pdf::Ref r = subject.Write( &file ) ;
-	
-	pdf::Object fdo = file.ReadObj( r ) ;
-	CPPUNIT_ASSERT( fdo.Is<pdf::Dictionary>() ) ;
-	PDFUT_ASSERT_EQUAL( fd->Family(), "" ) ; 
-//	std::cout << "descriptor = " << file.Find( r ) << std::endl ;
+		&face ) ;
+	return e != 0 ? face : 0 ;
 }
 
 } // end of namespace

@@ -70,7 +70,7 @@ void RealResourcesTest::TestNormal( )
 	file.AddObj( pdf::Ref(18,0), fd ) ;
 
 	pdf::Object obj( rdict ) ;
-	pdf::RealResources subject( m_ft ) ;
+	pdf::RealResources subject( m_font_db ) ;
 	
 	DictReader reader( rdict, &file ) ;
 	subject.Read( reader ) ;
@@ -83,7 +83,7 @@ void RealResourcesTest::TestReadExistFont( )
 	pdf::Dictionary rdict ;
 	CPPUNIT_ASSERT( iss >> rdict ) ;
 
-	pdf::SimpleFont *f = new pdf::SimpleFont( "Times-Roman", m_ft ) ;
+	pdf::SimpleFont *f = new pdf::SimpleFont( "Times-Roman", m_font_db ) ;
 	PDFUT_ASSERT_EQUAL( f->UseCount(), 1u ) ;
 
 	MockFile file ;

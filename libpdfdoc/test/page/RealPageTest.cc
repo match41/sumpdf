@@ -61,7 +61,7 @@ void RealPageTest::setUp( )
 	// this is the parent page node of the test pages. as it is deleted in
 	// tearDown() all its child pages will be delete, there is no need to
 	// delete the test pages in each case.
-	m_root = new pdf::PageTree( m_ft ) ;
+	m_root = new pdf::PageTree( m_font_db ) ;
 }
 
 void RealPageTest::tearDown( )
@@ -120,7 +120,7 @@ void RealPageTest::TestNormal( )
 void RealPageTest::TestWrite( )
 {
 	pdf::RealPage *p  = new pdf::RealPage( m_root ) ;
-	pdf::SimpleFont *f = new pdf::SimpleFont( "TimesNewRoman", m_ft ) ;
+	pdf::SimpleFont *f = new pdf::SimpleFont( "TimesNewRoman", m_font_db ) ;
 //	p->DrawText( 120, 300, f, "This is a line" ) ;
 //	p->DrawText( 120, 400, f, "This is another line" ) ;
 //	p->Finish( ) ;
@@ -159,7 +159,7 @@ void RealPageTest::TestWrite( )
 void RealPageTest::TestDecode( )
 {
 	pdf::RealPage *p  = new pdf::RealPage( m_root ) ;
-	pdf::SimpleFont *f = new pdf::SimpleFont( "TimesNewRoman", m_ft ) ;
+	pdf::SimpleFont *f = new pdf::SimpleFont( "TimesNewRoman", m_font_db ) ;
 //	p->DrawText( 120, 300, f, "This is a line" ) ;
 //	p->DrawText( 120, 400, f, "This is another line" ) ;
 //	p->Finish( ) ;

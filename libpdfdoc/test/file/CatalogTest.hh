@@ -27,19 +27,17 @@
 #ifndef __PDFUT_CATALOGTEST_HEADER_INCLUDED__
 #define __PDFUT_CATALOGTEST_HEADER_INCLUDED__
 
-#include <cppunit/TestFixture.h>
+#include "mock/TestBase.hh"
 
 #include <cppunit/extensions/HelperMacros.h>
 
-// freetype headers
-#include <ft2build.h>
-#include FT_FREETYPE_H
+namespace pdfut {
 
 /*!	\brief	brief description
 	
 	this class represents
 */
-class CatalogTest : public CppUnit::TestFixture
+class CatalogTest : public TestBase
 {
 public:
 	CatalogTest( ) ;
@@ -49,15 +47,10 @@ public:
 		CPPUNIT_TEST( TestRead ) ;
 	CPPUNIT_TEST_SUITE_END();
 
-public :
-	void setUp( ) ;
-	void tearDown( ) ;
-
 private :
 	void TestRead( ) ;
-
-private :
-	FT_Library	m_ft_lib ;
 } ;
+
+} // end of namespace
 
 #endif // CATALOGTEST_H_
