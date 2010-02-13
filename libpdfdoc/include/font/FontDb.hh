@@ -30,6 +30,7 @@ struct FT_LibraryRec_ ;
 struct FT_FaceRec_ ;
 
 #include <string>
+#include <vector>
 
 namespace pdf {
 
@@ -45,9 +46,13 @@ public :
 	
 	virtual FT_LibraryRec_* Library() = 0 ;
 	
-	virtual FT_FaceRec_* LoadFont(
+	virtual std::vector<unsigned char> FindFont( 
 		const std::string& base_name,
 		const std::string& style ) = 0 ;
+	
+	virtual FT_FaceRec_* LoadFont(
+		const unsigned char	*data,
+		std::size_t			size ) = 0 ;
 } ;
 
 } // end of namespace

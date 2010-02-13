@@ -61,10 +61,10 @@ class SimpleFont : public BaseFont
 {
 public :
 	SimpleFont( DictReader& self, FontDb *fontdb ) ;
-	SimpleFont(
-		const std::string&	font_file,
-		unsigned 			idx,
-		FontDb 				*fontdb ) ;
+//	SimpleFont(
+//		const std::string&	font_file,
+//		unsigned 			idx,
+//		FontDb 				*fontdb ) ;
 	SimpleFont( const std::string& name, FontDb *fontdb ) ;
 	~SimpleFont( ) ;
 
@@ -93,12 +93,10 @@ private :
 
 	void Init( std::vector<unsigned char>& prog, FontDb *fontdb ) ; 
 
-	static std::string FindFont(
-		const std::string& font_name,
-		const std::string& style = "normal" ) ;
-	static std::vector<unsigned char> LoadFile( const std::string& filename ) ;
-
-	static std::string FindStdFont( const std::string& name ) ;
+	static std::vector<unsigned char> FindStdFont(
+		const std::string&	name,
+		FontDb 				*fontdb ) ;
+	
 	bool InitWithStdFont( const std::string& name, FontDb *fontdb ) ;
 
 private :

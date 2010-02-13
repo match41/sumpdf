@@ -28,8 +28,6 @@
 
 #include "font/FontDb.hh"
 
-#include <map>
-
 namespace pdf {
 
 ///	brief description
@@ -44,9 +42,13 @@ public :
 
 	FT_LibraryRec_* Library() ;
 	
-	FT_FaceRec_* LoadFont(
+	std::vector<unsigned char> FindFont(
 		const std::string& base_name,
 		const std::string& style ) ;
+
+	FT_FaceRec_* LoadFont(
+		const unsigned char	*data,
+		std::size_t			size ) ;
 
 private :
 	FT_LibraryRec_	*m_ft ;

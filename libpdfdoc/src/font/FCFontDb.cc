@@ -27,6 +27,8 @@
 
 #include "FontException.hh"
 
+#include <boost/format.hpp>
+
 // freetype headers
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -37,6 +39,9 @@
 #else
 #include <fontconfig/fontconfig.h>
 #endif
+
+#include <fstream>
+#include <iterator>
 
 namespace pdf {
 
@@ -59,7 +64,7 @@ FT_LibraryRec_* FCFontDb::Library()
 	return m_ft ;
 }
 
-FT_FaceRec_* FCFontDb::LoadFont(
+std::vector<unsigned char> FCFontDb::FindFont(
 	const std::string& base_name,
 	const std::string& style )
 {
@@ -92,10 +97,30 @@ FT_FaceRec_* FCFontDb::LoadFont(
 	if ( idx != 0 )
 		throw FontException( "font collection is not supported yet" ) ;
 
-	FT_Face face ;
-	FT_Error e = FT_New_Face( m_ft, file, 0, &face ) ;
+	std::ifstream fs( file, std::ios::binary | std::ios::in ) ;
+	std::vector<unsigned char> prog(
+		(std::istreambuf_iterator<char>( fs )),
+		(std::istreambuf_iterator<char>()) ) ;
+	
+	using boost::format ;
+	if ( prog.empty() )
+		throw FontException( format("font file %1% is empty") % file ) ;
+	
+	return prog ;
+}
 
-	return e != 0 ? face : 0 ;
+FT_FaceRec_* FCFontDb::LoadFont(
+	const unsigned char	*data,
+	std::size_t			size )
+{
+	FT_Face face = 0 ;
+	FT_Error e = FT_New_Memory_Face( m_ft, data, size, 0, &face ) ;
+	
+	using boost::format ;
+	if ( e != 0 )
+		throw FontException( format("cannot create font face: %1%") % e ) ;
+	
+	return face ;
 }
 
 } // end of namespace

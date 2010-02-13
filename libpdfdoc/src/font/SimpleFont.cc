@@ -69,6 +69,7 @@ const Name SimpleFont::m_font_types[] =
 	Name("Type1"),	// CFF opentype font is treated as type1
 } ;
 
+/*
 SimpleFont::SimpleFont(
 	const std::string& 	font_file,
 	unsigned 			idx,
@@ -79,6 +80,7 @@ SimpleFont::SimpleFont(
 	std::vector<unsigned char> prog = LoadFile( font_file ) ;
 	Init( prog, fontdb ) ;
 }
+*/
 
 SimpleFont::SimpleFont( const std::string& name, FontDb *fontdb )
 	: m_face( 0 ),
@@ -86,8 +88,7 @@ SimpleFont::SimpleFont( const std::string& name, FontDb *fontdb )
 	  m_first_char( -1 ),
 	  m_last_char( -1 )
 {
-	std::string path = FindFont( name ) ; 
-	std::vector<unsigned char> prog = LoadFile( path ) ;
+	std::vector<unsigned char> prog = fontdb->FindFont( name, "Normal" ) ;
 	Init( prog, fontdb ) ;
 }
 
@@ -129,7 +130,9 @@ SimpleFont::SimpleFont( DictReader& reader, FontDb *font_db )
 			
 			if ( !font_file.empty() )
 			{
-				m_face = LoadFace( &font_file[0], font_file.size(), font_db ) ;
+				m_face = font_db->LoadFont( &font_file[0], font_file.size() ) ;
+				PDF_ASSERT( m_face != 0 ) ;
+				
 				LoadGlyphs( ) ;
 			}
 			else if ( !InitWithStdFont( m_base_font.Str(), font_db )  )
@@ -171,9 +174,9 @@ bool SimpleFont::InitWithStdFont( const std::string& name, FontDb *font_db )
 {
 	if ( !m_base_font.empty() )
 	{
-		std::string path = FindStdFont( m_base_font.Str() ) ;
-
-		std::vector<unsigned char> prog = LoadFile( path ) ;
+		std::vector<unsigned char> prog = FindStdFont(
+			m_base_font.Str(),
+			font_db ) ;
 		Init( prog, font_db ) ;
 		return true ;
 	}
@@ -201,82 +204,9 @@ void SimpleFont::Init( std::vector<unsigned char>& prog, FontDb *font_db )
 	LoadGlyphs( ) ;
 }
 
-std::vector<unsigned char> SimpleFont::LoadFile( const std::string& filename )
-{
-	using boost::format ;
-	std::ifstream fs( filename.c_str(), std::ios::in | std::ios::binary ) ;
-	if ( !fs )
-		throw FontException( format("cannot open font file: %1%") % filename ) ;
-	
-	std::vector<unsigned char> bytes(
-		(std::istreambuf_iterator<char>(fs)),
-		(std::istreambuf_iterator<char>()) ) ;
-	if ( bytes.empty() )
-		throw FontException( format("font file %1% is empty") % filename ) ;
-	
-	return bytes ;
-}
-
-FT_FaceRec_* SimpleFont::LoadFace(
-	const unsigned char	*data,
-	std::size_t 		size,
-	FontDb 				*font_db )
-{
-	FT_Face face = 0 ;
-	FT_Error e = FT_New_Memory_Face( font_db->Library(), data, size, 0, &face );
-
-	using boost::format ;
-	if ( e != 0 )
-		throw FontException( format("cannot create font face: %1%") % e ) ;
-	
-	return face ;
-}
-
-#ifdef HAVE_FONTCONFIG
-std::string SimpleFont::FindFont(
-	const std::string& font,
-	const std::string& style )
-{
-	FcPattern *sans = FcPatternBuild( NULL,
-		FC_FAMILY,		FcTypeString, 	font.c_str(),
-		FC_WEIGHT,		FcTypeInteger, 	FC_WEIGHT_NORMAL,
-		FC_STYLE,		FcTypeString, 	style.c_str(),
-		FC_WIDTH,		FcTypeInteger,	FC_WIDTH_NORMAL,
-		FC_SCALABLE,	FcTypeBool,		true,
-	    NULL ) ;
-	if ( sans == 0 )
-		throw FontException( "cannot create font pattern" ) ;
-
-	FcResult result ;
-	FcPattern *matched = FcFontMatch( 0, sans, &result ) ;
-
-	FcChar8 *filename ;
-	if ( FcPatternGetString(matched, FC_FILE, 0, &filename ) != FcResultMatch )
-		throw FontException( "cannot find font " + font ) ;
-
-	const char *file = reinterpret_cast<const char*>( filename ) ;
-	if ( file == 0 )
-		throw FontException( "cannot find font " + font ) ;
-	
-	int idx ;
-	if ( FcPatternGetInteger( matched, FC_INDEX, 0, &idx ) != FcResultMatch )
-		throw FontException( "cannot find font " + font ) ;
-
-	// TODO: how to embed font with index != 0?
-	if ( idx != 0 )
-		throw FontException( "font collection is not supported yet" ) ;
-
-	return file ;
-}
-#else
-std::string SimpleFont::FindFont( const std::string&, const std::string& )
-{
-	// TODO: implement fond searching without fontconfig
-	return "" ;
-}
-#endif
-
-std::string SimpleFont::FindStdFont( const std::string& base_name )
+std::vector<unsigned char> SimpleFont::FindStdFont(
+	const std::string&	base_name,
+	FontDb				*fdb )
 {
 	std::size_t embed = base_name.find_first_of( "+" ) ;
 	std::size_t pos = base_name.find_first_of( "-" ) ;
@@ -317,7 +247,7 @@ std::string SimpleFont::FindStdFont( const std::string& base_name )
 		name = "Standard Symbols L" ;
 #endif
 
-	return FindFont( name, style ) ;
+	return fdb->FindFont( name, style ) ;
 }
 
 /// Return the size of the EM square in font units.

@@ -29,6 +29,9 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
+#include <fstream>
+#include <iterator>
+
 namespace pdfut {
 
 using namespace pdf ;
@@ -47,17 +50,25 @@ FT_LibraryRec_* MockFontDb::Library()
 	return m_ft ;
 }
 
-FT_FaceRec_* MockFontDb::LoadFont(
+std::vector<unsigned char> MockFontDb::FindFont(
 	const std::string& base_name,
 	const std::string& style )
 {
+	std::string file = std::string(TEST_DATA_DIR) +"FreeMonoBoldOblique.ttf" ;
+	
+	std::ifstream fs( file.c_str(), std::ios::binary | std::ios::in ) ;
+	return std::vector<unsigned char>(
+		(std::istreambuf_iterator<char>( fs )),
+		(std::istreambuf_iterator<char>()) ) ;
+}
+
+FT_FaceRec_* MockFontDb::LoadFont(
+	const unsigned char	*data,
+	std::size_t			size )
+{
 	FT_Face face = 0 ;
-	FT_Error e = FT_New_Face(
-		m_ft,
-		(std::string(TEST_DATA_DIR) +"FreeMonoBoldOblique.ttf").c_str(),
-		0,
-		&face ) ;
-	return e != 0 ? face : 0 ;
+	FT_Error e = FT_New_Memory_Face( m_ft, data, size, 0, &face ) ;
+	return e == 0 ? face : 0 ;
 }
 
 } // end of namespace
