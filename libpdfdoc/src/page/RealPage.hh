@@ -29,7 +29,7 @@
 
 // base class headers
 #include "page/Page.hh"
-#include "PageNode.hh"
+#include "PageTree.hh"
 
 // other libpdfdoc headers
 #include "RealContent.hh"
@@ -58,7 +58,8 @@ public :
 	void Write( const Ref& link, File *file, const Ref& parent ) const ;
 	
 	Rect MediaBox( ) const ;
-
+	Rect CropBox( ) const ;
+	
 	void Clear( ) ;
 	
 	std::size_t Count( ) const ;

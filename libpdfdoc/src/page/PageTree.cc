@@ -39,6 +39,7 @@
 
 #include "util/Debug.hh"
 #include "util/Exception.hh"
+#include "util/Rect.hh"
 #include "util/Util.hh"
 
 #include <boost/bind.hpp>
@@ -253,6 +254,18 @@ Font* PageTree::CreateSimpleFont( const std::string& name )
 {
 	PDF_ASSERT( m_resources != 0 ) ;
 	return m_resources->CreateSimpleFont( name ) ;
+}
+
+// TODO: unimplemented
+Rect PageTree::MediaBox( ) const
+{
+	return Rect( ) ;
+}
+
+// TODO: unimplemented
+Rect PageTree::CropBox( ) const
+{
+	return Rect( ) ;
 }
 
 } // end of namespace

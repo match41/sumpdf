@@ -62,20 +62,24 @@ RealPage::RealPage( PageTree *parent )
 
 void RealPage::Read( DictReader& dict )
 {
-	File *file = dict.GetFile() ;
-	PDF_ASSERT( file != 0 ) ;
-	
+	PDF_ASSERT( dict.GetFile() != 0 ) ;
+
 	// read content
 	Object contents ;
 	if ( dict.Detach( "Contents", contents ) )
-	    ReadContent( contents, file ) ;
+	    ReadContent( contents, dict.GetFile() ) ;
 
 	// media box
 	Array a ;
 	if ( dict.Detach( "MediaBox", a ) )
 		m_media_box = Rect( a.begin( ), a.end( ) ) ;
+	else
+	{
+		PDF_ASSERT( m_parent != 0 ) ;
+		m_media_box = m_parent->MediaBox() ;
+	}
 
-	ElementPool *pool = file->Pool( ) ;
+	ElementPool *pool = dict.GetFile()->Pool( ) ;
 	Ref link = dict["Resources"].To<Ref>( std::nothrow ) ;
 	if ( !pool->Acquire( link, m_resources ) )  
 	{
@@ -84,6 +88,11 @@ void RealPage::Read( DictReader& dict )
 		{
 			m_resources->Read( res_dict ) ;
 			pool->Add( link, m_resources ) ; 
+		}
+		else
+		{
+			m_resources = m_parent->GetResource() ;
+			m_resources->AddRef( ) ;
 		}
 	}
 }
@@ -99,8 +108,16 @@ Rect RealPage::MediaBox( ) const
 	return m_media_box ;
 }
 
+// TODO: unimplemented
+Rect RealPage::CropBox( ) const
+{
+	return Rect() ;
+}
+
 void RealPage::ReadContent( const Object& str_obj, File *src )
 {
+	PDF_ASSERT( src != 0 ) ;
+	
 	// for indirect objects, dereference it
 	if ( str_obj.Is<Ref>( ) )
 		ReadContent( src->ReadObj( str_obj ), src ) ;
@@ -139,11 +156,14 @@ void RealPage::Write( const Ref& link, File *file, const Ref& parent ) const
 		ref = m_resources->Write( file ) ;
 		pool->Add( ref, m_resources ) ;
 	}
+	
+	// write resources as an indirect reference
+	PDF_ASSERT( ref != Ref() ) ;
 	self["Resources"]	= ref ;
+	
+	self["Parent"]		= parent ;
 
-	self["Parent"]	= parent ;
-
-    if ( m_media_box != Rect() )
+    if ( m_media_box != m_parent->MediaBox() )
     	self["MediaBox"] = Array(
     		m_media_box.begin( ),
     		m_media_box.end( ) ) ;
@@ -161,8 +181,10 @@ Object RealPage::WriteContent( File *file ) const
 		m_content.Write( s, m_resources ) ;
 		return file->WriteObj( s ) ;
 	}
+	
 	else if ( m_cstrs.size() == 1 )
 		return file->WriteObj( m_cstrs.front() ) ;
+	
 	else
 	{
 		Array strs( m_cstrs.size() ) ;

@@ -27,14 +27,16 @@
 #ifndef __PDF_PAGE_NODE_HEADER_INCLUDED__
 #define __PDF_PAGE_NODE_HEADER_INCLUDED__
 
+#include "page/Page.hh"
+
 #include "util/RefCounter.hh"
+#include "util/Rect.hh"
 
 #include <cstddef>
 
 namespace pdf {
 
 class DictReader ;
-class PageTree ;
 class File ;
 class Ref ;
 
@@ -53,10 +55,14 @@ public :
 	virtual void Write( const Ref& link, File *file, const Ref& parent ) 
 		const = 0 ;
 
-	virtual PageTree* Parent( ) = 0 ;
+	virtual PageNode* Parent( ) = 0 ;
 
 	virtual std::size_t Count( ) const = 0 ;
 	virtual PageNode* GetLeaf( std::size_t index ) = 0 ;
+	
+	// page boundaries
+	virtual Rect CropBox( ) const = 0;
+	virtual Rect MediaBox( ) const = 0 ;
 } ;
 
 } // end of namespace

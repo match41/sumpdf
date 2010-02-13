@@ -59,7 +59,8 @@ public :
 	*/
 	virtual Rect MediaBox( ) const = 0 ;
 	
-	
+	virtual Rect CropBox( ) const = 0 ;
+
 	virtual PageContent* GetContent( ) = 0 ;
 } ;
 

@@ -1,4 +1,4 @@
-/***************************************************************************
+/***************************************************************************\
  *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
@@ -15,37 +15,52 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+\***************************************************************************/
 
-/*!
-	\file	RealImage.hh
-	\brief	definition the Image class
-	\date	Thu Oct 16 2008
-	\author	Nestal Wan
+/**	\file	PageInfo.hh
+    \brief	definition the PageInfo class
+    \date	Feb 13, 2010
+    \author	Nestal Wan
 */
 
-#ifndef __PDF_REAL_IMAGE_HEADER_INCLUDED__
-#define __PDF_REAL_IMAGE_HEADER_INCLUDED__
+#ifndef __PDF_PAGEINFO_HH_EADER_INCLUDED__
+#define __PDF_PAGEINFO_HH_EADER_INCLUDED__
 
-#include <string>
+#include "util/Rect.hh"
 
 namespace pdf {
 
-class Ref ;
-class IElementSrc ;
+class DictReader ;
+class Dictionary ;
+class File ;
+class PageTree ;
+class RealResources ;
 
-/*!	\brief	brief description
-	
-	this class represents
+///	brief description
+/**	\internal
+	The PageInfo class represents common properties of PageTree and RealPage.
 */
-class RealImage : public XObject
+class PageInfo
 {
 public :
-	explicit RealImage( const std::string& filename = std::string() ) ;
+	explicit PageInfo( PageTree *parent = 0 ) ;
 
-//	void Init( Object& obj, ElementReader *src ) ;
+	void Read( DictReader& dict ) ;
+	void Write( Dictionary& dict, File *file ) ;
+
+	RealResources* GetResource( ) ;
+	const RealResources* GetResource( ) const ;
+
+	PageTree* Parent( ) ;
+
+private :
+	PageTree		*m_parent ;
+	RealResources	*m_res ;
+	
+	Rect		m_media_box ;
+	Rect		m_crop_box ;
 } ;
 
 } // end of namespace
 
-#endif
+#endif // PAGEINFO_HH_

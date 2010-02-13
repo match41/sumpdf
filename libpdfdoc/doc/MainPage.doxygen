@@ -1,4 +1,4 @@
-/*!	\mainpage	libpdfdoc Project Home Page
+/**	\mainpage	libpdfdoc Project Home Page
 	\section	intro	Introduction
 	libpdfdoc is a library to access
 	<a href="http://www.adobe.com/devnet/pdf/pdf_reference.html">PDF (Portable
@@ -111,8 +111,8 @@ C:\build\libpdfdoc>cmake -G "Visual Studio 8 2005" \
 
 	See the \ref getting_start page for a simple tutorial for using the
 	library.
-	
-	\page	getting_start	Getting Started
+*/
+/**	\page	getting_start	Getting Started
 	
 	This section will describe how to write a simplest "Hello world" program
 	with libpdfdoc.
@@ -139,4 +139,17 @@ delete doc ;
 	
 	The second line call pdf::Doc::AppendPage() to insert a new page at the end
 	of the document.
+*/
+/**	\page	pdf_note	PDF Implementation Note
+
+	The aim of this page is to document the PDF implementation in libpdf++.
+	In some aspect, libpdf++ does not stictly follow the behaviour specified
+	by the
+	<a href="http://www.adobe.com/devnet/pdf/pdf_reference.html">PDF
+	Specification</a>. It is because to maintain compatibility with other
+	existing PDF software, or more specifically, acrobat reader.
+	
+	-	Some fields are defined as "Required" are not actually required.
+		Acrobat reader can still correctly read the document. Examples includes:
+		* the /Type field for fonts.	  	
 */

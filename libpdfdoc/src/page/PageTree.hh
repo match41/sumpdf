@@ -63,6 +63,9 @@ public :
 	void AddLeaf( std::size_t index, RealPage *child ) ;
 	RealResources* GetResource( ) ;
 	const RealResources* GetResource( ) const ;
+	
+	Rect MediaBox( ) const ;
+	Rect CropBox( ) const ;
 
 	Font* CreateSimpleFont( const std::string& name ) ;
 
