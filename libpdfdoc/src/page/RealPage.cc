@@ -198,4 +198,9 @@ RealContent* RealPage::GetContent( )
 	return &m_content ;
 }
 
+int RealPage::Rotation( ) const
+{
+	return m_pinfo.Rotation( ) ;
+}
+
 } // end of namespace

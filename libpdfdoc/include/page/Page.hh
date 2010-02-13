@@ -62,6 +62,8 @@ public :
 	virtual Rect CropBox( ) const = 0 ;
 
 	virtual PageContent* GetContent( ) = 0 ;
+	
+	virtual int Rotation( ) const = 0 ;
 } ;
 
 } // end of namespace

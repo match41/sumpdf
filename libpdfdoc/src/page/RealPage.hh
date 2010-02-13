@@ -70,6 +70,7 @@ public :
 	const RealResources* GetResource( ) const ;
 
 	RealContent* GetContent( ) ;
+	int Rotation( ) const ;
 
 private :
 	void ReadContent( const Object& str_obj, File *file ) ;

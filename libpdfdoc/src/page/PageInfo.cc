@@ -103,7 +103,8 @@ void PageInfo::Read( DictReader& dict )
 		}
 	}
 	
-	dict.Detach( "Rotate", m_rotate ) ;
+	if ( !dict.Detach( "Rotate", m_rotate ) )
+		m_rotate = m_parent->Rotation( ) ;
 }
 
 void PageInfo::Write( Dictionary& dict, File *file ) const
@@ -161,6 +162,11 @@ Rect PageInfo::MediaBox() const
 Rect PageInfo::CropBox() const
 {
 	return m_crop_box ;
+}
+
+int PageInfo::Rotation( ) const
+{
+	return m_rotate ;
 }
 
 } // end of namespace

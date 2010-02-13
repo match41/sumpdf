@@ -59,6 +59,8 @@ public :
 	Rect MediaBox() const ;
 	Rect CropBox() const ;
 
+	int Rotation( ) const ;
+
 private :
 	PageTree		*m_parent ;
 	RealResources	*m_res ;

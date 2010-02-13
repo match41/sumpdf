@@ -244,4 +244,9 @@ Rect PageTree::CropBox( ) const
 	return m_pinfo.CropBox() ;
 }
 
+int PageTree::Rotation( ) const
+{
+	return m_pinfo.Rotation( ) ;
+}
+
 } // end of namespace

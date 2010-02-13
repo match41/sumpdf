@@ -70,6 +70,8 @@ public :
 
 	Font* CreateSimpleFont( const std::string& name ) ;
 
+	int Rotation( ) const ;
+
 private :
 	void AppendNode( PageNode *child ) ;
 	void IncChildCount( ) ;
