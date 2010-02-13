@@ -50,8 +50,7 @@
 namespace pdf {
 
 PageTree::PageTree( PageTree *parent )
-	: m_parent( parent ),
-	  m_resources( new RealResources(parent == 0 ? 0 : parent->GetResource()) ),
+	: m_pinfo( parent ),
 	  m_count( 0 )
 {
 	PDF_ASSERT( parent != 0 ) ;
@@ -60,8 +59,7 @@ PageTree::PageTree( PageTree *parent )
 }
 
 PageTree::PageTree( FontDb *fontdb )
-	: m_parent( 0 ),
-	  m_resources( new RealResources( fontdb ) ),
+	: m_pinfo( fontdb ),
 	  m_count( 0 )
 {
 }
@@ -72,7 +70,6 @@ PageTree::~PageTree( )
 		m_kids.begin(),
 		m_kids.end(),
 	    boost::mem_fn( &PageNode::Release ) ) ;
-	m_resources->Release( ) ;
 }
 
 void PageTree::Read( DictReader& dict )
@@ -118,16 +115,7 @@ void PageTree::Read( DictReader& dict )
 	if ( !dict.Detach( "Count", m_count ) )
 		throw ParseError( "cannot get leaf count in page node" ) ;
 
-	Ref link = dict.At<Ref>("Resources" ) ;
-	if ( !pool->Acquire( link, m_resources ) )  
-	{
-		DictReader res_dict ;
-		if ( dict.Detach( "Resources", res_dict ) )
-		{
-			m_resources->Read( res_dict ) ;
-			pool->Add( link, m_resources ) ; 
-		}
-	}
+	m_pinfo.Read( dict ) ;
 }
 
 void PageTree::Write( const Ref& link, File *file, const Ref& ) const
@@ -154,8 +142,9 @@ void PageTree::Write( const Ref& link, File *file, const Ref& ) const
 	self["Type"]		= Name( "Pages" ) ;
 	self["Kids"]		= Array( kids.begin( ), kids.end( ) ) ;
 	self["Count"]		= m_count ;
-	self["MediaBox"]	= Array( Begin( mbox ), End( mbox ) ) ;
+//	self["MediaBox"]	= Array( Begin( mbox ), End( mbox ) ) ;
 	
+/*
 	Ref ref = pool->Find( m_resources ) ;
 	if ( ref == Ref() )
 	{
@@ -164,7 +153,9 @@ void PageTree::Write( const Ref& link, File *file, const Ref& ) const
 	}
 	
 	self["Resources"]	= ref ;
-	
+*/
+	m_pinfo.Write( self, file ) ;
+
 	file->WriteObj( self, link ) ;
 }
 
@@ -205,7 +196,7 @@ void PageTree::AppendNode( PageNode *child )
 
 PageTree* PageTree::Parent( )
 {
-	return m_parent ;
+	return m_pinfo.Parent() ;
 }
 
 std::size_t PageTree::Count( ) const
@@ -240,32 +231,29 @@ PageNode* PageTree::GetLeaf( std::size_t index )
 
 RealResources* PageTree::GetResource( )
 {
-	PDF_ASSERT( m_resources != 0 ) ;
-	return m_resources ;
+	return m_pinfo.GetResource() ;
 }
 
 const RealResources* PageTree::GetResource( ) const
 {
-	PDF_ASSERT( m_resources != 0 ) ;
-	return m_resources ;
+	return m_pinfo.GetResource() ;
 }
 
 Font* PageTree::CreateSimpleFont( const std::string& name )
 {
-	PDF_ASSERT( m_resources != 0 ) ;
-	return m_resources->CreateSimpleFont( name ) ;
+	return m_pinfo.GetResource()->CreateSimpleFont( name ) ;
 }
 
 // TODO: unimplemented
 Rect PageTree::MediaBox( ) const
 {
-	return Rect( ) ;
+	return m_pinfo.MediaBox() ;
 }
 
 // TODO: unimplemented
 Rect PageTree::CropBox( ) const
 {
-	return Rect( ) ;
+	return m_pinfo.CropBox() ;
 }
 
 } // end of namespace

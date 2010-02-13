@@ -30,6 +30,7 @@
 // base class headers
 #include "page/Page.hh"
 #include "PageTree.hh"
+#include "PageInfo.hh"
 
 // other libpdfdoc headers
 #include "RealContent.hh"
@@ -84,13 +85,15 @@ private :
 		Graphics		*gfx ) ;
 
 private :
-	PageTree		*m_parent ;
+/*	PageTree		*m_parent ;
 	RealResources	*m_resources ;
 	
 	/// in PDF user space. specified by UserUnit or 1/72 inch
 	Rect		m_media_box ;
-	
-	RealContent	m_content ;
+*/
+	PageInfo			m_pinfo ;
+
+	RealContent			m_content ;
 
 	std::vector<Stream>	m_cstrs ;
 

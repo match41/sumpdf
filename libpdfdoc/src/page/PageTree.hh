@@ -28,6 +28,7 @@
 #define __PDF_PAGE_TREE_HEADER_INCLUDED__
 
 #include "PageNode.hh"
+#include "PageInfo.hh"
 
 #include <vector>
 #include <string>
@@ -76,8 +77,7 @@ private :
 	void UpdateCount( ) const ;
 
 private :
-	PageTree				*m_parent ;
-	RealResources			*m_resources ;
+	PageInfo				m_pinfo ;
 
 	std::vector<PageNode*>	m_kids ;
 	

@@ -51,9 +51,9 @@
 namespace pdf {
 
 RealPage::RealPage( PageTree *parent )
-	: m_parent( parent ),
-	  m_resources( new RealResources( parent->GetResource() ) ),
-	  m_media_box( 0, 0, 595, 842 ),
+	: m_pinfo( parent ),
+//	  m_resources( new RealResources( parent->GetResource() ) ),
+//	  m_media_box( 0, 0, 595, 842 ),
 	  m_rotate( 0 )
 {
 	PDF_ASSERT( parent != 0 ) ;
@@ -69,6 +69,8 @@ void RealPage::Read( DictReader& dict )
 	if ( dict.Detach( "Contents", contents ) )
 	    ReadContent( contents, dict.GetFile() ) ;
 
+	m_pinfo.Read( dict ) ;
+/*
 	// media box
 	Array a ;
 	if ( dict.Detach( "MediaBox", a ) )
@@ -95,23 +97,24 @@ void RealPage::Read( DictReader& dict )
 			m_resources->AddRef( ) ;
 		}
 	}
+*/
 }
 
 RealPage::~RealPage( )
 {
-	PDF_ASSERT( m_resources != 0 ) ;
-	m_resources->Release( ) ;
+//	PDF_ASSERT( m_resources != 0 ) ;
+//	m_resources->Release( ) ;
 }
 
 Rect RealPage::MediaBox( ) const
 {
-	return m_media_box ;
+	return m_pinfo.MediaBox() ;
 }
 
 // TODO: unimplemented
 Rect RealPage::CropBox( ) const
 {
-	return Rect() ;
+	return m_pinfo.CropBox() ;
 }
 
 void RealPage::ReadContent( const Object& str_obj, File *src )
@@ -142,13 +145,14 @@ void RealPage::ReadContent( const Object& str_obj, File *src )
 void RealPage::Write( const Ref& link, File *file, const Ref& parent ) const
 {
 	PDF_ASSERT( file != 0 ) ;
-	PDF_ASSERT( m_parent != 0 ) ;
-	PDF_ASSERT( m_resources != 0 ) ;
+//	PDF_ASSERT( m_parent != 0 ) ;
+//	PDF_ASSERT( m_resources != 0 ) ;
 	
 	Dictionary self ;
 	self["Type"]		= Name( "Page" ) ;
  	self["Contents"]	= WriteContent( file ) ;
 
+/*
 	ElementPool *pool = file->Pool() ;
 	Ref ref = pool->Find( m_resources ) ;
 	if ( ref == Ref() )
@@ -160,13 +164,17 @@ void RealPage::Write( const Ref& link, File *file, const Ref& parent ) const
 	// write resources as an indirect reference
 	PDF_ASSERT( ref != Ref() ) ;
 	self["Resources"]	= ref ;
+*/
 	
 	self["Parent"]		= parent ;
 
+/*
     if ( m_media_box != m_parent->MediaBox() )
     	self["MediaBox"] = Array(
     		m_media_box.begin( ),
     		m_media_box.end( ) ) ;
+*/
+	m_pinfo.Write( self, file ) ;
 
 	file->WriteObj( self, link ) ;
 }
@@ -178,7 +186,7 @@ Object RealPage::WriteContent( File *file ) const
 	if ( m_cstrs.empty() )
 	{
 		Stream s ;
-		m_content.Write( s, m_resources ) ;
+		m_content.Write( s, m_pinfo.GetResource() ) ;
 		return file->WriteObj( s ) ;
 	}
 	
@@ -209,7 +217,7 @@ std::size_t RealPage::Count( ) const
 
 PageTree* RealPage::Parent( )
 {
-	return m_parent ;
+	return m_pinfo.Parent( ) ;
 }
 
 PageNode* RealPage::GetLeaf( std::size_t index )
@@ -220,12 +228,12 @@ PageNode* RealPage::GetLeaf( std::size_t index )
 
 RealResources* RealPage::GetResource( )
 {
-	return m_resources ;
+	return m_pinfo.GetResource() ;
 }
 
 const RealResources* RealPage::GetResource( ) const
 {
-	return m_resources ;
+	return m_pinfo.GetResource() ;
 }
 
 ///	Get the contents of a page
@@ -238,7 +246,7 @@ RealContent* RealPage::GetContent( )
 	if ( m_content.IsEmpty() )
 	{
 		// decode the graphics commands
-		m_content.Load( m_cstrs.begin(), m_cstrs.end(), m_resources ) ;
+		m_content.Load( m_cstrs.begin(), m_cstrs.end(), m_pinfo.GetResource());
 		
 		// destroy the streams
 		m_cstrs.clear( ) ;

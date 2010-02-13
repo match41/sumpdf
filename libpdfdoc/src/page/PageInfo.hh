@@ -35,6 +35,7 @@ class Dictionary ;
 class File ;
 class PageTree ;
 class RealResources ;
+class FontDb ;
 
 ///	brief description
 /**	\internal
@@ -43,15 +44,20 @@ class RealResources ;
 class PageInfo
 {
 public :
-	explicit PageInfo( PageTree *parent = 0 ) ;
+	explicit PageInfo( PageTree *parent ) ;
+	explicit PageInfo( FontDb *fontdb ) ;
+	~PageInfo( ) ;
 
 	void Read( DictReader& dict ) ;
-	void Write( Dictionary& dict, File *file ) ;
+	void Write( Dictionary& dict, File *file ) const ;
 
 	RealResources* GetResource( ) ;
 	const RealResources* GetResource( ) const ;
 
 	PageTree* Parent( ) ;
+
+	Rect MediaBox() const ;
+	Rect CropBox() const ;
 
 private :
 	PageTree		*m_parent ;

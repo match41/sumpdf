@@ -42,13 +42,27 @@ namespace pdf {
 	
 */
 PageInfo::PageInfo( PageTree *parent )
-	: m_parent( parent )
+	: m_parent( parent ),
+	  m_res( new RealResources( parent == 0 ? 0 : parent->GetResource() ) )
 {
+}
+
+PageInfo::PageInfo( FontDb *fontdb )
+	: m_parent( 0 ),
+	  m_res( new RealResources( fontdb ) )
+{
+}
+
+PageInfo::~PageInfo( )
+{
+	PDF_ASSERT( m_res != 0 ) ;
+	m_res->Release() ;
 }
 
 void PageInfo::Read( DictReader& dict )
 {
 	PDF_ASSERT( dict.GetFile() != 0 ) ;
+	PDF_ASSERT( m_res != 0 ) ;
 
 	// media box
 	Array mbox ;
@@ -88,9 +102,10 @@ void PageInfo::Read( DictReader& dict )
 	}
 }
 
-void PageInfo::Write( Dictionary& dict, File *file )
+void PageInfo::Write( Dictionary& dict, File *file ) const
 {
 	PDF_ASSERT( file != 0 ) ;
+	PDF_ASSERT( m_res != 0 ) ;
 	
 	ElementPool *pool = file->Pool() ;
 	PDF_ASSERT( pool != 0 ) ;
@@ -115,17 +130,29 @@ void PageInfo::Write( Dictionary& dict, File *file )
 
 RealResources* PageInfo::GetResource( )
 {
+	PDF_ASSERT( m_res != 0 ) ;
 	return m_res ;
 }
 
 const RealResources* PageInfo::GetResource( ) const
 {
+	PDF_ASSERT( m_res != 0 ) ;
 	return m_res ;
 }
 
 PageTree* PageInfo::Parent( )
 {
 	return m_parent ;
+}
+
+Rect PageInfo::MediaBox() const
+{
+	return m_media_box ;
+}
+
+Rect PageInfo::CropBox() const
+{
+	return m_crop_box ;
 }
 
 } // end of namespace
