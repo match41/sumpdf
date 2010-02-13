@@ -51,10 +51,7 @@
 namespace pdf {
 
 RealPage::RealPage( PageTree *parent )
-	: m_pinfo( parent ),
-//	  m_resources( new RealResources( parent->GetResource() ) ),
-//	  m_media_box( 0, 0, 595, 842 ),
-	  m_rotate( 0 )
+	: m_pinfo( parent )
 {
 	PDF_ASSERT( parent != 0 ) ;
 	parent->AppendLeaf( this ) ;
@@ -70,40 +67,10 @@ void RealPage::Read( DictReader& dict )
 	    ReadContent( contents, dict.GetFile() ) ;
 
 	m_pinfo.Read( dict ) ;
-/*
-	// media box
-	Array a ;
-	if ( dict.Detach( "MediaBox", a ) )
-		m_media_box = Rect( a.begin( ), a.end( ) ) ;
-	else
-	{
-		PDF_ASSERT( m_parent != 0 ) ;
-		m_media_box = m_parent->MediaBox() ;
-	}
-
-	ElementPool *pool = dict.GetFile()->Pool( ) ;
-	Ref link = dict["Resources"].To<Ref>( std::nothrow ) ;
-	if ( !pool->Acquire( link, m_resources ) )  
-	{
-		DictReader res_dict ;
-		if ( dict.Detach( "Resources", res_dict ) )
-		{
-			m_resources->Read( res_dict ) ;
-			pool->Add( link, m_resources ) ; 
-		}
-		else
-		{
-			m_resources = m_parent->GetResource() ;
-			m_resources->AddRef( ) ;
-		}
-	}
-*/
 }
 
 RealPage::~RealPage( )
 {
-//	PDF_ASSERT( m_resources != 0 ) ;
-//	m_resources->Release( ) ;
 }
 
 Rect RealPage::MediaBox( ) const
@@ -111,7 +78,6 @@ Rect RealPage::MediaBox( ) const
 	return m_pinfo.MediaBox() ;
 }
 
-// TODO: unimplemented
 Rect RealPage::CropBox( ) const
 {
 	return m_pinfo.CropBox() ;
@@ -145,35 +111,12 @@ void RealPage::ReadContent( const Object& str_obj, File *src )
 void RealPage::Write( const Ref& link, File *file, const Ref& parent ) const
 {
 	PDF_ASSERT( file != 0 ) ;
-//	PDF_ASSERT( m_parent != 0 ) ;
-//	PDF_ASSERT( m_resources != 0 ) ;
 	
 	Dictionary self ;
 	self["Type"]		= Name( "Page" ) ;
  	self["Contents"]	= WriteContent( file ) ;
-
-/*
-	ElementPool *pool = file->Pool() ;
-	Ref ref = pool->Find( m_resources ) ;
-	if ( ref == Ref() )
-	{
-		ref = m_resources->Write( file ) ;
-		pool->Add( ref, m_resources ) ;
-	}
-	
-	// write resources as an indirect reference
-	PDF_ASSERT( ref != Ref() ) ;
-	self["Resources"]	= ref ;
-*/
-	
 	self["Parent"]		= parent ;
-
-/*
-    if ( m_media_box != m_parent->MediaBox() )
-    	self["MediaBox"] = Array(
-    		m_media_box.begin( ),
-    		m_media_box.end( ) ) ;
-*/
+	
 	m_pinfo.Write( self, file ) ;
 
 	file->WriteObj( self, link ) ;

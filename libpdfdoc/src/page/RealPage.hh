@@ -35,14 +35,12 @@
 // other libpdfdoc headers
 #include "RealContent.hh"
 #include "stream/Stream.hh"
-#include "util/Rect.hh"
 
 namespace pdf {
 
 class Dictionary ;
 class RealResources ;
 class File ;
-class Graphics ;
 
 /*!	\brief	real implementation of a page
 	
@@ -77,27 +75,12 @@ private :
 	void ReadContent( const Object& str_obj, File *file ) ;
 	Object WriteContent( File *file ) const ; 
 
-	void Decode( ) ;
-	Graphics* ProcessCommand(
-		const Token& 	cmd,
-		Object 			*args,
-		std::size_t		count,
-		Graphics		*gfx ) ;
-
 private :
-/*	PageTree		*m_parent ;
-	RealResources	*m_resources ;
-	
-	/// in PDF user space. specified by UserUnit or 1/72 inch
-	Rect		m_media_box ;
-*/
 	PageInfo			m_pinfo ;
 
 	RealContent			m_content ;
 
 	std::vector<Stream>	m_cstrs ;
-
-	int	m_rotate ;
 } ;
 
 } // end of namespace

@@ -137,23 +137,11 @@ void PageTree::Write( const Ref& link, File *file, const Ref& ) const
 	// update page count before writing
 	UpdateCount( ) ;
 
-	double mbox[] = { 0, 0, 595.1, 842.1 } ;
 	Dictionary self ;
 	self["Type"]		= Name( "Pages" ) ;
 	self["Kids"]		= Array( kids.begin( ), kids.end( ) ) ;
 	self["Count"]		= m_count ;
-//	self["MediaBox"]	= Array( Begin( mbox ), End( mbox ) ) ;
 	
-/*
-	Ref ref = pool->Find( m_resources ) ;
-	if ( ref == Ref() )
-	{
-		ref = m_resources->Write( file ) ;
-		pool->Add( ref, m_resources ) ;
-	}
-	
-	self["Resources"]	= ref ;
-*/
 	m_pinfo.Write( self, file ) ;
 
 	file->WriteObj( self, link ) ;

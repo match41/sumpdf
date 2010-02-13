@@ -65,6 +65,8 @@ private :
 	
 	Rect		m_media_box ;
 	Rect		m_crop_box ;
+
+	int	m_rotate ;
 } ;
 
 } // end of namespace

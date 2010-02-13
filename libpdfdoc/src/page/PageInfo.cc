@@ -43,13 +43,15 @@ namespace pdf {
 */
 PageInfo::PageInfo( PageTree *parent )
 	: m_parent( parent ),
-	  m_res( new RealResources( parent == 0 ? 0 : parent->GetResource() ) )
+	  m_res( new RealResources( parent == 0 ? 0 : parent->GetResource() ) ),
+	  m_rotate( 0 )
 {
 }
 
 PageInfo::PageInfo( FontDb *fontdb )
 	: m_parent( 0 ),
-	  m_res( new RealResources( fontdb ) )
+	  m_res( new RealResources( fontdb ) ),
+	  m_rotate( 0 )
 {
 }
 
@@ -100,6 +102,8 @@ void PageInfo::Read( DictReader& dict )
 			m_res->AddRef( ) ;
 		}
 	}
+	
+	dict.Detach( "Rotate", m_rotate ) ;
 }
 
 void PageInfo::Write( Dictionary& dict, File *file ) const
@@ -126,6 +130,10 @@ void PageInfo::Write( Dictionary& dict, File *file ) const
 
     if ( m_parent == 0 || m_crop_box != m_parent->CropBox() )
     	dict["CropBox"] = Array( m_crop_box.begin( ), m_crop_box.end( ) ) ;
+
+    // default value is zero, so no need to write if zero.
+    if ( m_rotate != 0 )
+    	dict["Rotate"]	= m_rotate ;
 }
 
 RealResources* PageInfo::GetResource( )
