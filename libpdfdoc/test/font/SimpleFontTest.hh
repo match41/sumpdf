@@ -44,7 +44,6 @@ public :
 
 	// declare suit function
 	CPPUNIT_TEST_SUITE( SimpleFontTest ) ;
-		CPPUNIT_TEST( TestSimple ) ;
 		CPPUNIT_TEST( TestLoadByName ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 

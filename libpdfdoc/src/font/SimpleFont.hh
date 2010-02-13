@@ -61,10 +61,6 @@ class SimpleFont : public BaseFont
 {
 public :
 	SimpleFont( DictReader& self, FontDb *fontdb ) ;
-//	SimpleFont(
-//		const std::string&	font_file,
-//		unsigned 			idx,
-//		FontDb 				*fontdb ) ;
 	SimpleFont( const std::string& name, FontDb *fontdb ) ;
 	~SimpleFont( ) ;
 

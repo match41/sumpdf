@@ -69,27 +69,16 @@ const Name SimpleFont::m_font_types[] =
 	Name("Type1"),	// CFF opentype font is treated as type1
 } ;
 
-/*
-SimpleFont::SimpleFont(
-	const std::string& 	font_file,
-	unsigned 			idx,
-	FontDb 				*fontdb )
-	: m_first_char( -1 ),
-	  m_last_char( -1 )
-{
-	std::vector<unsigned char> prog = LoadFile( font_file ) ;
-	Init( prog, fontdb ) ;
-}
-*/
-
-SimpleFont::SimpleFont( const std::string& name, FontDb *fontdb )
+SimpleFont::SimpleFont( const std::string& name, FontDb *font_db )
 	: m_face( 0 ),
 	  m_type( font::unknown ),
 	  m_first_char( -1 ),
 	  m_last_char( -1 )
 {
-	std::vector<unsigned char> prog = fontdb->FindFont( name, "Normal" ) ;
-	Init( prog, fontdb ) ;
+	PDF_ASSERT( font_db != 0 ) ;
+	
+	std::vector<unsigned char> prog = font_db->FindFont( name, "Normal" ) ;
+	Init( prog, font_db ) ;
 }
 
 SimpleFont::SimpleFont( DictReader& reader, FontDb *font_db )
@@ -174,6 +163,7 @@ bool SimpleFont::InitWithStdFont( const std::string& name, FontDb *font_db )
 {
 	if ( !m_base_font.empty() )
 	{
+		PDF_ASSERT( font_db != 0 ) ;
 		std::vector<unsigned char> prog = FindStdFont(
 			m_base_font.Str(),
 			font_db ) ;
@@ -186,15 +176,8 @@ bool SimpleFont::InitWithStdFont( const std::string& name, FontDb *font_db )
 	
 void SimpleFont::Init( std::vector<unsigned char>& prog, FontDb *font_db )
 {
-	FT_Error e = FT_New_Memory_Face(
-		font_db->Library(),
-		&prog[0],
-		prog.size(),
-		0,
-		&m_face ) ;
-	
-	if ( e != 0 )
-		throw FontException( "cannot create font face" ) ;
+	PDF_ASSERT( font_db != 0 ) ;
+	m_face = font_db->LoadFont( &prog[0], prog.size() ) ;
 	
 	const char *psname = ::FT_Get_Postscript_Name( m_face ) ;
 	m_base_font = (psname != 0 ? psname : "" ) ;
