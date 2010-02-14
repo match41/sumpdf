@@ -274,6 +274,10 @@ endif ( UNIX )
 if ( WIN32 )
     set( UTIL_SRCS  ${UTIL_SRCS}
 					${UTIL_DIR}/SymbolInfo32.cpp )
+    set( FONT_HDRS  ${FONT_HDRS}
+					${FONT_DIR}/Win32FontDb.hh )
+    set( FONT_SRCS  ${FONT_SRCS}
+					${FONT_DIR}/Win32FontDb.cc )
 endif ( WIN32 )
 
 ###############################################################################

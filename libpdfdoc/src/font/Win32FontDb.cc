@@ -25,6 +25,12 @@
 
 #include "Win32FontDb.hh"
 
+#include "FontException.hh"
+
+#include <windows.h>
+
+#include <cstring>
+
 namespace pdf {
 
 /**	constructor
@@ -38,7 +44,32 @@ std::vector<unsigned char> Win32FontDb::FindFont(
 	const std::string& base_name,
 	const std::string& style )
 {
-	return std::vector<unsigned char>() ;
+	HDC hdc = CreateCompatibleDC( NULL ) ;
+	HFONT hfont = CreateFont(
+		0,				// height
+		0,				// width,
+		0,				// escapement
+		0,				// orientation
+		FW_REGULAR,		// weight
+		stricmp( style.c_str(), "italic" ) == 0,	// italic
+		FALSE,			// underline
+		FALSE,			// strikeout
+		DEFAULT_CHARSET,		// charset
+		OUT_DEFAULT_PRECIS,		// match precision
+		CLIP_DEFAULT_PRECIS,	// clip precision
+		DEFAULT_QUALITY,		// quality
+		DEFAULT_PITCH,			// pitch
+		base_name.c_str() ) ;	// family name
+	
+	SelectObject( hdc, (HGDIOBJ)hfont ) ;
+	DWORD size = GetFontData( hdc, 0, 0, 0, 0 ) ;
+	if ( size != GDI_ERROR )
+	{
+		std::vector<unsigned char> result( size ) ;
+		GetFontData( hdc, 0, 0, &result[0], size ) ;
+		return result ;
+	}
+	return std::vector<unsigned char>( ) ;	
 }
 
 } // end of namespace
