@@ -35,3 +35,32 @@ FontDb::~FontDb( )
 }
 
 } // end of namespace
+
+///////////////////////////////////////////////////////////////////////////
+// probably we should create another new C++ source file 
+
+#ifdef HAVE_FONTCONFIG
+	#include "FCFontDb.hh"
+#elif defined WIN32
+	#include "Win32FontDb.hh"
+#else
+	#error No suitable FontDb implementation
+#endif
+
+namespace pdf {
+
+std::auto_ptr<FontDb> CreateFontDb( )
+{
+#ifdef HAVE_FONTCONFIG
+	return std::auto_ptr<FontDb>( new FCFontDb ) ;
+
+#elif defined WIN32
+	return std::auto_ptr<FontDb>( new Win32FontDb ) ;
+
+#else
+	// should never runs
+	return std::auto_ptr<FontDb>() ;
+#endif
+}
+
+} // end of namespace

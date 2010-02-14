@@ -29,6 +29,7 @@
 struct FT_LibraryRec_ ;
 struct FT_FaceRec_ ;
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -54,6 +55,8 @@ public :
 		const unsigned char	*data,
 		std::size_t			size ) = 0 ;
 } ;
+
+std::auto_ptr<FontDb> CreateFontDb( ) ;
 
 } // end of namespace
 

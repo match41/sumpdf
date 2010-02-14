@@ -32,7 +32,7 @@
 #include "file/Catalog.hh"
 #include "file/RealFile.hh"
 
-#include "font/FCFontDb.hh"
+#include "font/FontDb.hh"
 
 #include "util/Debug.hh"
 
@@ -52,7 +52,7 @@ const std::string RealDoc::Info_::m_empty ;
 /**	It will create an empty document with only one page.
 */
 RealDoc::RealDoc( )
-	: m_font_db( new FCFontDb ),
+	: m_font_db( CreateFontDb() ),
 	  m_catalog( new Catalog( m_font_db.get() ) )
 {
 }
