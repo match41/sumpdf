@@ -46,6 +46,7 @@
 #include "page/RealResourcesTest.hh"
 #include "page/RealPageTest.hh"
 #include "page/RealContentTest.hh"
+#include "font/FontDbTest.hh"
 
 // freetype library is optional
 #ifdef HAVE_FREETYPE
@@ -90,6 +91,7 @@ int main( int argc, char **argv )
 	runner.addTest( TextLineTest::suite( ) ) ;
 	runner.addTest( NameTreeTest::suite( ) ) ;
 	runner.addTest( ElementPoolTest::suite( ) ) ;
+	runner.addTest( FontDbTest::suite( ) ) ;
 	
 // freetype library is optional
 #ifdef HAVE_FREETYPE

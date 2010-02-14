@@ -503,6 +503,7 @@ set( UT_SRCS	test/core/TokenTest.cc
 				test/file/ElementPoolTest.cc
 				
 				test/util/MatrixTest.cc
+				test/font/FontDbTest.cc
 				
 				test/mock/MockFile.cc
 				test/mock/MockFont.cc
