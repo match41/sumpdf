@@ -170,9 +170,10 @@ void MainWnd::OpenFile( const QString& file )
 		
 		if ( m_doc->PageCount() > 0 )
 		{
+			// only load page 0 for now
 			Page *p = m_doc->GetPage( 0 ) ;
 			Rect r = p->MediaBox( ) ;
-			m_scene->setSceneRect( 0, 0, r.Width(), r.Height() ) ;
+			m_scene->setSceneRect( r.Left(), r.Bottom(), r.Width(), r.Height());
 			
 			PageContent *c = p->GetContent( ) ;
 			c->VisitGraphics( this ) ;
@@ -180,7 +181,6 @@ void MainWnd::OpenFile( const QString& file )
 	}
 	catch ( std::exception& e )
 	{
-//		QMessageBox::critical( this, "Cannot open document", e.what() ) ;
 		ExceptionDlg dlg( e.what(), this ) ;
 		dlg.exec() ;
 	}

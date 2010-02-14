@@ -75,4 +75,24 @@ double Rect::Height( ) const
 	return m_corner[3] - m_corner[1] ;
 }
 
+double Rect::Top( ) const
+{
+	return m_corner[3] ;
+}
+
+double Rect::Bottom( ) const
+{
+	return m_corner[1] ;
+}
+
+double Rect::Left( ) const
+{
+	return m_corner[0] ;
+}
+
+double Rect::Right( ) const
+{
+	return m_corner[2] ;
+}
+
 } // end of namespace

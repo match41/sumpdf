@@ -75,7 +75,7 @@ void RealDoc::Read( const std::string& filename )
 	RealFile file( &m_readfs ) ;
 
 	// for exception safety, first create a new catalog before deleting
-	// the exsiting one.
+	// the existing one.
 	Catalog *catalog = new Catalog( file.Root( ), &file, m_font_db.get() ) ;
 	
 	PDF_ASSERT( m_catalog.get() != 0 ) ;

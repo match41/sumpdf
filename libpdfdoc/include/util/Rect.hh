@@ -61,6 +61,11 @@ public :
 	
 	double Width( ) const ;
 	double Height( ) const ;
+	
+	double Top( ) const ;
+	double Bottom( ) const ;
+	double Left( ) const ;
+	double Right( ) const ;
 } ;
 
 } // end of namespace
