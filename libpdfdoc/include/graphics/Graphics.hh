@@ -27,14 +27,15 @@
 #ifndef __PDF_GRAPHICS_HH_EADER_INCLUDED__
 #define __PDF_GRAPHICS_HH_EADER_INCLUDED__
 
-#include <cstddef>
 #include <iosfwd>
+#include <cstddef>
 
 namespace pdf {
 
+class GraphicsVisitor ;
 class Token ;
 class Resources ;
-class GraphicsVisitor ;
+class Object ;
 
 /**	\defgroup	graphics Graphics
 	\brief		Graphics objects module
@@ -58,6 +59,12 @@ class Graphics
 public :
 	virtual ~Graphics( ) ;
 	
+	virtual void OnCommand(
+		const Token& 	cmd,
+		Object 			*args,
+		std::size_t		count,
+		Resources		*res ) = 0 ;
+
 	virtual void Print( std::ostream& os, const Resources *res ) const = 0 ;
 
 	virtual void Visit( GraphicsVisitor *visitor ) = 0 ;

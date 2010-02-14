@@ -34,6 +34,7 @@
 
 #include <boost/bind.hpp>
 
+#include <algorithm>
 #include <cassert>
 #include <iostream>
 #include <sstream>
@@ -119,6 +120,7 @@ Graphics* RealContent::ProcessCommand(
 	Resources 		*res  )
 {
 	assert( count > 0 || args == 0 ) ;
+	
 
 	if ( cmd == Token("BT") && gfx == 0 )
 	{
@@ -132,8 +134,7 @@ Graphics* RealContent::ProcessCommand(
 	else if ( gfx != 0 )
 	{
 		// TODO: remove dynamic_cast
-		RealText *text = dynamic_cast<RealText*>( gfx ) ;
-		text->OnCommand( cmd, args, count, res ) ;
+		gfx->OnCommand( cmd, args, count, res ) ;
 	}
 	
 	return gfx ;
@@ -179,6 +180,7 @@ void RealContent::VisitGraphics( GraphicsVisitor *visitor )
 
 void RealContent::Write( Stream& str, const Resources *res ) const
 {
+/*
 	struct ContentWriter : public GraphicsVisitor
 	{
 		ContentWriter( std::ostream& os, const Resources *res  )
@@ -198,10 +200,18 @@ void RealContent::Write( Stream& str, const Resources *res ) const
 		std::ostream&		m_os ;
 		const Resources	*m_res ;
 	} ;
+*/
 	
 	std::ostream os( str.OutStreamBuf() ) ;
-	ContentWriter cw( os, res ) ;
-	(const_cast<RealContent*>(this))->VisitGraphics( &cw ) ;
+//	ContentWriter cw( os, res ) ;
+//	(const_cast<RealContent*>(this))->VisitGraphics( &cw ) ;
+
+	using namespace boost ;
+	std::for_each(
+		m_gfx.begin(),
+		m_gfx.end(),
+		bind( &Graphics::Print, _1, ref(os), res ) ) ;
+
 	os.flush() ;
 }
 

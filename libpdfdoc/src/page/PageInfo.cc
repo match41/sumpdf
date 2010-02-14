@@ -103,7 +103,7 @@ void PageInfo::Read( DictReader& dict )
 		}
 	}
 	
-	if ( !dict.Detach( "Rotate", m_rotate ) )
+	if ( !dict.Detach( "Rotate", m_rotate ) && m_parent != 0 )
 		m_rotate = m_parent->Rotation( ) ;
 }
 

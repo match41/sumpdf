@@ -364,5 +364,4 @@ bool RealText::operator!=( const RealText& rhs ) const
 	return !operator==( rhs ) ;
 }
 
-
 } // end of namespace
