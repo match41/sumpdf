@@ -17,33 +17,41 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	FCFontDb.hh
-    \brief	definition the FCFontDb class
-    \date	Feb 11, 2010
+/**	\file	BasicFontDb.hh
+    \brief	definition the BasicFontDb class
+    \date	Feb 14, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_FCFONTDB_HEADER_INCLUDED__
-#define __PDF_FCFONTDB_HEADER_INCLUDED__
+#ifndef __PDF_BASICFONTDB_HH_EADER_INCLUDED__
+#define __PDF_BASICFONTDB_HH_EADER_INCLUDED__
 
-#include "BasicFontDb.hh"
+#include "font/FontDb.hh"
+
+struct FT_LibraryRec_ ;
 
 namespace pdf {
 
 ///	brief description
 /**	\internal
-	The FCFontDb class represents
+	The BasicFontDb class represents
 */
-class FCFontDb : public BasicFontDb
+class BasicFontDb : public FontDb 
 {
 public :
-	FCFontDb( ) ;
+	BasicFontDb( ) ;
+	~BasicFontDb( ) ;
 
-	std::vector<unsigned char> FindFont(
-		const std::string& base_name,
-		const std::string& style ) ;
+	FT_LibraryRec_* Library() ;
+
+	FT_FaceRec_* LoadFont(
+		const unsigned char	*data,
+		std::size_t			size ) ;
+
+protected :
+	FT_LibraryRec_	*m_ft ;
 } ;
 
 } // end of namespace
 
-#endif // FCFONTDB_HH_
+#endif // BASICFONTDB_HH_

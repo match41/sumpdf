@@ -49,19 +49,7 @@ namespace pdf {
 	
 */
 FCFontDb::FCFontDb( )
-	: m_ft( 0 )
 {
-	FT_Init_FreeType( &m_ft ) ;
-}
-
-FCFontDb::~FCFontDb( )
-{
-	FT_Done_FreeType( m_ft ) ;
-}
-
-FT_LibraryRec_* FCFontDb::Library()
-{
-	return m_ft ;
 }
 
 std::vector<unsigned char> FCFontDb::FindFont(
@@ -107,20 +95,6 @@ std::vector<unsigned char> FCFontDb::FindFont(
 		throw FontException( format("font file %1% is empty") % file ) ;
 	
 	return prog ;
-}
-
-FT_FaceRec_* FCFontDb::LoadFont(
-	const unsigned char	*data,
-	std::size_t			size )
-{
-	FT_Face face = 0 ;
-	FT_Error e = FT_New_Memory_Face( m_ft, data, size, 0, &face ) ;
-	
-	using boost::format ;
-	if ( e != 0 )
-		throw FontException( format("cannot create font face: %1%") % e ) ;
-	
-	return face ;
 }
 
 } // end of namespace

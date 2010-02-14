@@ -17,14 +17,14 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	FCFontDb.hh
-    \brief	definition the FCFontDb class
-    \date	Feb 11, 2010
+/**	\file	Win32FontDb.hh
+    \brief	definition the Win32FontDb class
+    \date	Feb 14, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_FCFONTDB_HEADER_INCLUDED__
-#define __PDF_FCFONTDB_HEADER_INCLUDED__
+#ifndef __PDF_WIN32FONTDB_HH_EADER_INCLUDED__
+#define __PDF_WIN32FONTDB_HH_EADER_INCLUDED__
 
 #include "BasicFontDb.hh"
 
@@ -32,18 +32,18 @@ namespace pdf {
 
 ///	brief description
 /**	\internal
-	The FCFontDb class represents
+	The Win32FontDb class represents
 */
-class FCFontDb : public BasicFontDb
+class Win32FontDb : public BasicFontDb
 {
 public :
-	FCFontDb( ) ;
+	Win32FontDb( ) ;
 
-	std::vector<unsigned char> FindFont(
+	std::vector<unsigned char> FindFont( 
 		const std::string& base_name,
 		const std::string& style ) ;
 } ;
 
 } // end of namespace
 
-#endif // FCFONTDB_HH_
+#endif // WIN32FONTDB_HH_

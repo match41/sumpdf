@@ -17,33 +17,56 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	FCFontDb.hh
-    \brief	definition the FCFontDb class
-    \date	Feb 11, 2010
-    \author	Nestal Wan
+/**	\file	BasicFontDb.cc
+	\brief	implementation of the BasicFontDb class
+	\date	Feb 14, 2010
+	\author	Nestal Wan
 */
-
-#ifndef __PDF_FCFONTDB_HEADER_INCLUDED__
-#define __PDF_FCFONTDB_HEADER_INCLUDED__
 
 #include "BasicFontDb.hh"
 
+#include "FontException.hh"
+
+#include <boost/format.hpp>
+
+// freetype headers
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 namespace pdf {
 
-///	brief description
-/**	\internal
-	The FCFontDb class represents
+/**	constructor
+	
 */
-class FCFontDb : public BasicFontDb
+BasicFontDb::BasicFontDb( )
+	: m_ft( 0 )
 {
-public :
-	FCFontDb( ) ;
+	FT_Init_FreeType( &m_ft ) ;
+}
 
-	std::vector<unsigned char> FindFont(
-		const std::string& base_name,
-		const std::string& style ) ;
-} ;
+BasicFontDb::~BasicFontDb( )
+{
+	FT_Done_FreeType( m_ft ) ;
+}
+
+FT_LibraryRec_* BasicFontDb::Library()
+{
+	return m_ft ;
+}
+
+
+FT_FaceRec_* BasicFontDb::LoadFont(
+	const unsigned char	*data,
+	std::size_t			size )
+{
+	FT_Face face = 0 ;
+	FT_Error e = FT_New_Memory_Face( m_ft, data, size, 0, &face ) ;
+	
+	using boost::format ;
+	if ( e != 0 )
+		throw FontException( format("cannot create font face: %1%") % e ) ;
+	
+	return face ;
+}
 
 } // end of namespace
-
-#endif // FCFONTDB_HH_
