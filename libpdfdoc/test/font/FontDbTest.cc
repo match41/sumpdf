@@ -29,6 +29,10 @@
 
 #include "mock/Assert.hh"
 
+// freetype headers
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 namespace pdfut {
 
 using namespace pdf ;
@@ -49,6 +53,11 @@ void FontDbTest::Test( )
 {
 	std::auto_ptr<FontDb> subject = CreateFontDb() ;
 	std::vector<unsigned char> data = subject->FindFont( "Arial", "" ) ;
+	CPPUNIT_ASSERT( !data.empty() ) ;
+	
+	FT_Face face = subject->LoadFont( &data[0], data.size() ) ;
+	CPPUNIT_ASSERT( face != 0 ) ;
+	PDFUT_ASSERT_EQUAL( face->family_name, std::string("Arial") ) ;
 }
 
 } // end of namespace

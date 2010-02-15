@@ -50,7 +50,6 @@
 // freetype headers
 #include <ft2build.h>
 #include FT_FREETYPE_H
-#include FT_XFREE86_H
 
 // libstdc++
 #include <iostream>
