@@ -17,50 +17,21 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	FontDb.cc
-	\brief	implementation of the FontDb class
-	\date	Feb 11, 2010
+/**	\file	CompositeFont.cc
+	\brief	implementation of the CompositeFont class
+	\date	Feb 15, 2010
 	\author	Nestal Wan
 */
 
-#include "font/FontDb.hh"
+#include "CompositeFont.hh"
 
 namespace pdf {
 
 /**	constructor
 	
 */
-FontDb::~FontDb( )
+CompositeFont::CompositeFont( DictReader& dict, FontDb *ft )
 {
-}
-
-} // end of namespace
-
-///////////////////////////////////////////////////////////////////////////
-// probably we should create another new C++ source file 
-
-#ifdef HAVE_FONTCONFIG
-	#include "FCFontDb.hh"
-#elif defined WIN32
-	#include "Win32FontDb.hpp"
-#else
-	#error No suitable FontDb implementation
-#endif
-
-namespace pdf {
-
-std::auto_ptr<FontDb> CreateFontDb( )
-{
-#ifdef HAVE_FONTCONFIG
-	return std::auto_ptr<FontDb>( new FCFontDb ) ;
-
-#elif defined WIN32
-	return std::auto_ptr<FontDb>( new Win32FontDb ) ;
-
-#else
-	// should never runs
-	return std::auto_ptr<FontDb>() ;
-#endif
 }
 
 } // end of namespace

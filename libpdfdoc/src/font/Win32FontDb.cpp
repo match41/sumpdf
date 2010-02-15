@@ -23,7 +23,7 @@
 	\author	Nestal Wan
 */
 
-#include "Win32FontDb.hh"
+#include "Win32FontDb.hpp"
 
 #include "FontException.hh"
 

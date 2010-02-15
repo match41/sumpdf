@@ -17,50 +17,41 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	FontDb.cc
-	\brief	implementation of the FontDb class
-	\date	Feb 11, 2010
-	\author	Nestal Wan
+/**	\file	CompositeFont.hh
+    \brief	definition the CompositeFont class
+    \date	Feb 15, 2010
+    \author	Nestal Wan
 */
 
-#include "font/FontDb.hh"
+#ifndef __PDF_COMPOSITEFONT_HEADER_INCLUDED__
+#define __PDF_COMPOSITEFONT_HEADER_INCLUDED__
+
+#include "BaseFont.hh"
+
+#include <string>
 
 namespace pdf {
 
-/**	constructor
+class DictReader ;
+class FontDb ;
+
+///	PDF composite font (a.k.a. Type 0 font)
+/**	\internal
+	The CompositeFont class represents
+*/
+class CompositeFont : public BaseFont
+{
+public :
+	CompositeFont( DictReader& dict, FontDb *ft ) ;
+	CompositeFont( const std::string& name, FontDb *ft ) ;
+
+	// BaseFont virtual functions
+	Ref Write( File *file ) const ;
+	FontDescriptor* Descriptor( ) ;
 	
-*/
-FontDb::~FontDb( )
-{
-}
+	
+} ;
 
 } // end of namespace
 
-///////////////////////////////////////////////////////////////////////////
-// probably we should create another new C++ source file 
-
-#ifdef HAVE_FONTCONFIG
-	#include "FCFontDb.hh"
-#elif defined WIN32
-	#include "Win32FontDb.hpp"
-#else
-	#error No suitable FontDb implementation
-#endif
-
-namespace pdf {
-
-std::auto_ptr<FontDb> CreateFontDb( )
-{
-#ifdef HAVE_FONTCONFIG
-	return std::auto_ptr<FontDb>( new FCFontDb ) ;
-
-#elif defined WIN32
-	return std::auto_ptr<FontDb>( new Win32FontDb ) ;
-
-#else
-	// should never runs
-	return std::auto_ptr<FontDb>() ;
-#endif
-}
-
-} // end of namespace
+#endif // COMPOSITEFONT_HH_

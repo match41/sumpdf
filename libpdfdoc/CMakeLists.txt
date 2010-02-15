@@ -146,6 +146,8 @@ set( IMG_HDRS  		${IMG_DIR}/Image.hh
 
 set( FONT_HDRS		${FONT_DIR}/Types.hh
 					${FONT_DIR}/BaseFont.hh 
+                    ${FONT_DIR}/SimpleFont.hh
+                    ${FONT_DIR}/CompositeFont.hh
 					${FONT_DIR}/FontDescriptor.hh
 					${FONT_DIR}/FontException.hh
 					${FONT_DIR}/RealGlyph.hh
@@ -246,6 +248,8 @@ set( IMG_SRCS  		${IMG_DIR}/Image.cc )
 
 set( FONT_SRCS		${FONT_DIR}/Font.cc
 					${FONT_DIR}/BaseFont.cc
+                    ${FONT_DIR}/SimpleFont.cc
+                    ${FONT_DIR}/CompositeFont.cc
 					${FONT_DIR}/Glyph.cc
 					${FONT_DIR}/RealGlyph.cc
 					${FONT_DIR}/FontDescriptor.cc
@@ -274,27 +278,14 @@ if ( WIN32 )
     set( UTIL_SRCS  ${UTIL_SRCS}
 					${UTIL_DIR}/SymbolInfo32.cpp )
     set( FONT_HDRS  ${FONT_HDRS}
-					${FONT_DIR}/Win32FontDb.hh )
+					${FONT_DIR}/Win32FontDb.hpp )
     set( FONT_SRCS  ${FONT_SRCS}
-					${FONT_DIR}/Win32FontDb.cc )
+					${FONT_DIR}/Win32FontDb.cpp )
 endif ( WIN32 )
 
 ###############################################################################
 # optional sources
 ###############################################################################
-
-# freetype
-if ( FREETYPE_FOUND )
-    set( FONT_SRCS  ${FONT_SRCS}
-                    ${FONT_DIR}/SimpleFont.cc )
-    set( FONT_HDRS  ${FONT_HDRS}
-                    ${FONT_DIR}/SimpleFont.hh )
-    set( OPT_LIBS   ${OPT_LIBS}
-                    ${FREETYPE_LIBRARIES} )
-    set( OPT_INCS   ${OPT_INCS}
-                    ${FREETYPE_INCLUDE_DIRS} )
-    add_definitions( -DHAVE_FREETYPE )
-endif ( FREETYPE_FOUND )
 
 # libpng
 if ( PNG_FOUND )
@@ -391,20 +382,27 @@ endif ( WIN32 )
 ###############################################################################
 target_link_libraries( pdfdoc_static
                        ${ZLIB_LIBRARIES}
+                       ${FREETYPE_LIBRARIES}
                        ${OPT_LIBS} )
 
 ###############################################################################
 # compiler settings
 ###############################################################################
+
+# to enable export in DLL
 add_definitions(-DDLL_EXPORTS)
+
+# for unit test to find test data
 add_definitions(-DTEST_DATA_DIR="${libpdfdoc_SOURCE_DIR}/test/testdata/")
+
+# for including header files in the project
 add_definitions(-DSRC_DIR="${libpdfdoc_SOURCE_DIR}/src/")
-add_definitions(-DXETEX )
 
 # MSVC has stupid warnings on STD
 if ( MSVC )
 	add_definitions( -D_SCL_SECURE_NO_WARNINGS )
 	add_definitions( /wd4345 )
+	add_definitions( /wd4819 )
 endif ( MSVC )
 
 ###############################################################################
@@ -447,6 +445,7 @@ include_directories( ${libpdfdoc_SOURCE_DIR}/src
                      ${libpdfdoc_SOURCE_DIR}/test
                      ${ZLIB_INCLUDE_DIR}
                      ${Boost_INCLUDE_DIRS}
+                     ${FREETYPE_INCLUDE_DIRS}
                      ${OPT_INCS} )
 
 INSTALL( TARGETS pdfdoc_static
