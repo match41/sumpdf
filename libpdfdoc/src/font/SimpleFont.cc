@@ -75,8 +75,7 @@ SimpleFont::SimpleFont( const std::string& name, FontDb *font_db )
 {
 	PDF_ASSERT( font_db != 0 ) ;
 	
-	std::vector<unsigned char> prog = font_db->FindFont( name ) ;
-	Init( prog, font_db ) ;
+	InitWithStdFont( name, font_db ) ;
 }
 
 SimpleFont::SimpleFont( DictReader& reader, FontDb *font_db )
@@ -159,12 +158,10 @@ SimpleFont::~SimpleFont( )
 
 bool SimpleFont::InitWithStdFont( const std::string& name, FontDb *font_db )
 {
-	if ( !m_base_font.empty() )
+	if ( !name.empty() )
 	{
 		PDF_ASSERT( font_db != 0 ) ;
-		std::vector<unsigned char> prog = FindStdFont(
-			m_base_font.Str(),
-			font_db ) ;
+		std::vector<unsigned char> prog = FindStdFont( name, font_db ) ;
 		Init( prog, font_db ) ;
 		return true ;
 	}
@@ -179,8 +176,7 @@ void SimpleFont::Init( std::vector<unsigned char>& prog, FontDb *font_db )
 	
 	const char *psname = ::FT_Get_Postscript_Name( m_face ) ;
 	m_base_font = (psname != 0 ? psname : "" ) ;
-
-	m_type = font::GetType( m_face ) ;
+	m_type 		= font::GetType( m_face ) ;
 	m_descriptor.reset( new FontDescriptor( m_face, prog ) ) ;
 	LoadGlyphs( ) ;
 }
@@ -190,7 +186,7 @@ std::vector<unsigned char> SimpleFont::FindStdFont(
 	FontDb				*fdb )
 {
 	std::size_t embed = base_name.find_first_of( "+" ) ;
-	std::size_t pos = base_name.find_first_of( "-" ) ;
+	std::size_t pos = base_name.find_first_of( "-," ) ;
 	
 	if ( embed != std::string::npos )
 		embed = embed + 1 ;
@@ -212,15 +208,24 @@ std::vector<unsigned char> SimpleFont::FindStdFont(
 		name = "Courier New" ;
 
 	font::Weight weight = font::normal_weight ;
-	if ( ::strcasecmp( style.c_str(), "bold" ) )
+	if ( ::strcasecmp( style.c_str(), "bold" )       == 0 ||
+		 ::strcasecmp( style.c_str(), "BoldItalic" ) == 0 )
 		weight = font::bold ;
-	
+
+	font::Slant slant = font::roman ;
+	if ( ::strcasecmp( style.c_str(), "italic" )     == 0 ||
+		 ::strcasecmp( style.c_str(), "BoldItalic" ) == 0 )
+		slant = font::italic ;
+	else if ( ::strcasecmp( style.c_str(), "Oblique" )     == 0 ||
+		 ::strcasecmp( style.c_str(), "BoldOblique" ) == 0 )
+		slant = font::oblique ;
+
 #ifndef WIN32
 	else if ( name == "Symbol" )
 		name = "Standard Symbols L" ;
 #endif
 
-	return fdb->FindFont( name, weight, font::normal_width ) ;
+	return fdb->FindFont( name, weight, slant, font::normal_width ) ;
 }
 
 /// Return the size of the EM square in font units.

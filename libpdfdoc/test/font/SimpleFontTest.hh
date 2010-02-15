@@ -45,11 +45,13 @@ public :
 	// declare suit function
 	CPPUNIT_TEST_SUITE( SimpleFontTest ) ;
 		CPPUNIT_TEST( TestLoadByName ) ;
+		CPPUNIT_TEST( TestParseBold ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
 private :
 	void TestSimple( ) ;
 	void TestLoadByName( ) ;
+	void TestParseBold( ) ;
 } ;
 
 } // end of namespace

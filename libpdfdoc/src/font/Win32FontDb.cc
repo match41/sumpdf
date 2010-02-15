@@ -69,6 +69,7 @@ Win32FontDb::Win32FontDb( )
 std::vector<unsigned char> Win32FontDb::FindFont( 
 	const std::string& base_name,
 	font::Weight		weight,
+	font::Slant			slant,
 	font::Width			width )
 {
 	PDF_ASSERT( weight >= font::thin && weight <= font::ultra_black ) ;
@@ -83,8 +84,7 @@ std::vector<unsigned char> Win32FontDb::FindFont(
 		0,						// escapement
 		0,						// orientation
 		weight_map[width],		// weight
-//		stricmp( style.c_str(), "italic" ) == 0,	// italic
-		FALSE,
+		slant != font::roman ? TRUE : FALSE,	// italic
 		FALSE,					// underline
 		FALSE,					// strikeout
 		DEFAULT_CHARSET,		// charset

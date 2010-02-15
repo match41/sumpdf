@@ -31,11 +31,14 @@
 
 #include "mock/Assert.hh"
 #include "mock/MockFile.hh"
+#include "mock/MockFontDb.hh"
 
 #include <sstream>
 #include <iostream>
 
 namespace pdfut {
+
+using namespace pdf ;
 
 SimpleFontTest::SimpleFontTest( )
 {
@@ -55,6 +58,13 @@ void SimpleFontTest::TestLoadByName( )
 	pdf::Object fdo = file.ReadObj( r ) ;
 	CPPUNIT_ASSERT( fdo.Is<pdf::Dictionary>() ) ;
 	PDFUT_ASSERT_EQUAL( fd->Family(), "" ) ; 
+}
+
+void SimpleFontTest::TestParseBold( )
+{
+	SimpleFont subject( "Helvetica-Bold", m_font_db ) ;
+	PDFUT_ASSERT_EQUAL( m_mock_fdb->LastQueryName(), "Arial" ) ;
+	PDFUT_ASSERT_EQUAL( m_mock_fdb->LastQueryWeight(), font::bold ) ;
 }
 
 } // end of namespace

@@ -52,6 +52,7 @@ public :
 	virtual std::vector<unsigned char> FindFont( 
 		const std::string&	base_name,
 		font::Weight		weight	= font::normal_weight,
+		font::Slant			slant	= font::roman,
 		font::Width			width	= font::normal_width ) = 0 ;
 	
 	virtual FT_FaceRec_* LoadFont(

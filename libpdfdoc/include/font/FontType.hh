@@ -77,6 +77,12 @@ namespace font
 		unknown_width,
 	} ;
 
+	enum Slant
+	{
+		roman,
+		italic,
+		oblique,
+	} ;
 }
 
 } // end of namespace

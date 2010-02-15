@@ -42,6 +42,7 @@ public :
 	std::vector<unsigned char> FindFont(
 		const std::string&	base_name,
 		font::Weight		weight,
+		font::Slant			slant,
 		font::Width			width ) ;
 } ;
 

@@ -25,10 +25,6 @@
 
 #include "MockFontDb.hh"
 
-// freetype headers
-#include <ft2build.h>
-#include FT_FREETYPE_H
-
 #include <fstream>
 #include <iterator>
 
@@ -40,20 +36,50 @@ using namespace pdf ;
 	
 */
 MockFontDb::MockFontDb( )
+	: m_weight( font::normal_weight ),
+	  m_width( font::normal_width ),
+	  m_slant( font::roman )
 {
 }
 
 std::vector<unsigned char> MockFontDb::FindFont(
 	const std::string&	base_name,
 	font::Weight		weight,
+	font::Slant			slant,
 	font::Width			width )
 {
+	// save the query
+	m_basename	= base_name ;
+	m_weight	= weight ;
+	m_width		= width ;
+	m_slant		= slant ;
+	
 	std::string file = std::string(TEST_DATA_DIR) +"FreeMonoBoldOblique.ttf" ;
 	
 	std::ifstream fs( file.c_str(), std::ios::binary | std::ios::in ) ;
 	return std::vector<unsigned char>(
 		(std::istreambuf_iterator<char>( fs )),
 		(std::istreambuf_iterator<char>()) ) ;
+}
+
+std::string MockFontDb::LastQueryName( ) const
+{
+	return m_basename ;
+}
+
+font::Weight MockFontDb::LastQueryWeight( ) const
+{
+	return m_weight ;
+}
+
+font::Slant MockFontDb::LastQuerySlant( ) const
+{
+	return m_slant ;
+}
+
+font::Width MockFontDb::LastQueryWidth( ) const
+{
+	return m_width ;
 }
 
 } // end of namespace

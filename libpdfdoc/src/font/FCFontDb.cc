@@ -31,10 +31,6 @@
 
 #include "util/Debug.hh"
 
-// freetype headers
-#include <ft2build.h>
-#include FT_FREETYPE_H
-
 // fontconfig headers
 #ifndef HAVE_FONTCONFIG
 	#error This file requires fontconfig to compile.
@@ -83,6 +79,13 @@ namespace
 		FC_WIDTH_EXTRAEXPANDED,		// extra_expanded,
 		FC_WIDTH_ULTRAEXPANDED,		// ultra_expanded,
 	} ;
+
+	int slant_map[] =
+	{
+		FC_SLANT_ROMAN,		// roman
+		FC_SLANT_ITALIC,	// italic
+		FC_SLANT_OBLIQUE,	// oblique
+	} ;
 }
 
 /**	constructor
@@ -95,17 +98,20 @@ FCFontDb::FCFontDb( )
 std::vector<unsigned char> FCFontDb::FindFont(
 	const std::string&	base_name,
 	font::Weight		weight,
+	font::Slant			slant,
 	font::Width			width )
 {
 	PDF_ASSERT( weight >= font::thin && weight <= font::ultra_black ) ;
 	PDF_ASSERT(
 		width >= font::ultra_condensed &&
 		width <= font::ultra_expanded ) ;
+	PDF_ASSERT( slant >= font::roman && slant <= font::oblique ) ;
 
 	FcPattern *sans = FcPatternBuild( NULL,
 		FC_FAMILY,		FcTypeString, 	base_name.c_str(),
 		FC_WEIGHT,		FcTypeInteger, 	weight_map[weight],
 		FC_WIDTH,		FcTypeInteger,	width_map[width],
+		FC_SLANT,		FcTypeInteger,	slant_map[slant],
 		FC_SCALABLE,	FcTypeBool,		true,
 	    NULL ) ;
 	if ( sans == 0 )

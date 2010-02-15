@@ -44,7 +44,19 @@ public :
 	std::vector<unsigned char> FindFont(
 		const std::string&	base_name,
 		pdf::font::Weight	weight,
+		pdf::font::Slant	slant,
 		pdf::font::Width	width ) ;
+
+	std::string LastQueryName( ) const ;
+	pdf::font::Weight LastQueryWeight( ) const ;
+	pdf::font::Slant LastQuerySlant( ) const ;
+	pdf::font::Width LastQueryWidth( ) const ;
+
+private :
+	std::string			m_basename ;
+	pdf::font::Weight	m_weight ;
+	pdf::font::Slant	m_slant ;
+	pdf::font::Width	m_width ;
 } ;
 
 } // end of namespace

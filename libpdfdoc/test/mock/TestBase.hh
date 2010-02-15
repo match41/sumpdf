@@ -35,6 +35,8 @@ namespace pdf
 
 namespace pdfut {
 
+class MockFontDb ;
+
 ///	brief description
 /**	this class represents
 */
@@ -49,6 +51,7 @@ public :
 
 protected :
 	pdf::FontDb	*m_font_db ;
+	MockFontDb	*m_mock_fdb ;
 } ;
 
 } // end of namespace

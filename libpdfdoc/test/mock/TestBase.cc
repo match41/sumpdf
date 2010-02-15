@@ -37,13 +37,14 @@ TestBase::TestBase( )
 
 void TestBase::setUp( )
 {
-	m_font_db = new MockFontDb ;
+	m_font_db = m_mock_fdb = new MockFontDb ;
 }
 
 void TestBase::tearDown( )
 {
-	delete m_font_db ;
-	m_font_db = 0 ;
+	delete m_mock_fdb ;
+	m_font_db	= 0 ;
+	m_mock_fdb	= 0 ;
 }
 
 } // end of namespace
