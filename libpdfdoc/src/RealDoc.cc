@@ -36,10 +36,6 @@
 
 #include "util/Debug.hh"
 
-// freetype headers
-#include <ft2build.h>
-#include FT_FREETYPE_H
-
 #include <sstream>
 #include <stdexcept>
 
