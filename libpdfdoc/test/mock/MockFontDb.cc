@@ -37,8 +37,8 @@ using namespace pdf ;
 */
 MockFontDb::MockFontDb( )
 	: m_weight( font::normal_weight ),
-	  m_width( font::normal_width ),
-	  m_slant( font::roman )
+	  m_slant( font::roman ),
+	  m_width( font::normal_width )
 {
 }
 

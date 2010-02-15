@@ -28,6 +28,8 @@
 #include "FontException.hh"
 #include "util/Util.hh"
 
+#include <cstring>
+
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_XFREE86_H
@@ -59,6 +61,26 @@ Type GetType( FT_FaceRec_ *face )
 	
 	else
 		throw FontException( "unknown font type: " + std::string(format) ) ;
+}
+
+Weight ParseWeight( const char *str )
+{
+	Weight weight = font::normal_weight ;
+	if ( ::strstr( str, "Bold" ) != 0 )
+		weight = font::bold ;
+	
+	return weight ;
+}
+
+Slant ParseSlant( const char *str )
+{
+	Slant slant = font::roman ;
+	if ( ::strstr( str, "Italic" ) != 0 )
+		slant = font::italic ;
+	else if ( ::strstr( str, "Oblique" ) != 0 )
+		slant = font::oblique ;
+	
+	return slant ;
 }
 
 } } // end of namespace

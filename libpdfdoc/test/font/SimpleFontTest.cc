@@ -65,6 +65,10 @@ void SimpleFontTest::TestParseBold( )
 	SimpleFont subject( "Helvetica-Bold", m_font_db ) ;
 	PDFUT_ASSERT_EQUAL( m_mock_fdb->LastQueryName(), "Arial" ) ;
 	PDFUT_ASSERT_EQUAL( m_mock_fdb->LastQueryWeight(), font::bold ) ;
+
+	SimpleFont subject2( "Helvetica-BoldOblique", m_font_db ) ;
+	PDFUT_ASSERT_EQUAL( m_mock_fdb->LastQueryName(), "Arial" ) ;
+	PDFUT_ASSERT_EQUAL( m_mock_fdb->LastQueryWeight(), font::bold ) ;
 }
 
 } // end of namespace

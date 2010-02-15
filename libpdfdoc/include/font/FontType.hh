@@ -61,6 +61,8 @@ namespace font
 		ultra_black,
 	} ;
 	
+	Weight ParseWeight( const char *str ) ;
+	
 	enum Width
 	{
 		padding,	///< to match the OS/2 table in truetype font enum
@@ -83,6 +85,8 @@ namespace font
 		italic,
 		oblique,
 	} ;
+	
+	Slant ParseSlant( const char *str ) ;
 }
 
 } // end of namespace

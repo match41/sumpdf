@@ -207,23 +207,12 @@ std::vector<unsigned char> SimpleFont::FindStdFont(
 	else if ( name == "Courier" )
 		name = "Courier New" ;
 
-	font::Weight weight = font::normal_weight ;
-	if ( ::strcasecmp( style.c_str(), "bold" )       == 0 ||
-		 ::strcasecmp( style.c_str(), "BoldItalic" ) == 0 )
-		weight = font::bold ;
-
-	font::Slant slant = font::roman ;
-	if ( ::strcasecmp( style.c_str(), "italic" )     == 0 ||
-		 ::strcasecmp( style.c_str(), "BoldItalic" ) == 0 )
-		slant = font::italic ;
-	else if ( ::strcasecmp( style.c_str(), "Oblique" )     == 0 ||
-		 ::strcasecmp( style.c_str(), "BoldOblique" ) == 0 )
-		slant = font::oblique ;
-
 #ifndef WIN32
 	else if ( name == "Symbol" )
 		name = "Standard Symbols L" ;
 #endif
+	font::Weight	weight	= font::ParseWeight( style.c_str() ) ;
+	font::Slant		slant	= font::ParseSlant( style.c_str() ) ;
 
 	return fdb->FindFont( name, weight, slant, font::normal_width ) ;
 }
@@ -251,10 +240,8 @@ void SimpleFont::LoadGlyphs( )
 	unsigned long 	char_code = FT_Get_First_Char( m_face, &gindex ) ;
 	int first_char = static_cast<int>( char_code ), last_char = -1 ;
 
-//std::cout << "font: " << BaseName() << std::endl ;
 	while ( gindex != 0 && char_code < 256 )
 	{
-//std::cout << "gindex = " << gindex << " char code = " << char_code << std::endl ;
 		// load the glyph to the glyph slot in the face
 		// we want to do the scaling in double instead of inside freetype
 		// in small font we don't have hinting
