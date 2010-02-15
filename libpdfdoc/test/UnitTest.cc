@@ -55,7 +55,6 @@
 
 #include "file/RealFileTest.hh"
 #include "file/CatalogTest.hh"
-#include "file/RefObjMapTest.hh"
 #include "file/NameTreeTest.hh"
 #include "file/ElementPoolTest.hh"
 #include "font/SimpleFontTest.hh"
@@ -83,14 +82,13 @@ int main( int argc, char **argv )
 	runner.addTest( StreamTest::suite( ) ) ;
 	runner.addTest( RealFileTest::suite( ) ) ;
 	runner.addTest( CatalogTest::suite( ) ) ;
-	runner.addTest( RefObjMapTest::suite( ) ) ;
+	runner.addTest( ElementPoolTest::suite( ) ) ;
 	runner.addTest( PageNodeTest::suite( ) ) ;
 	runner.addTest( TextStateTest::suite( ) ) ;
 	runner.addTest( RealTextTest::suite( ) ) ;
 	runner.addTest( RealContentTest::suite( ) ) ;
 	runner.addTest( TextLineTest::suite( ) ) ;
 	runner.addTest( NameTreeTest::suite( ) ) ;
-	runner.addTest( ElementPoolTest::suite( ) ) ;
 	runner.addTest( FontDbTest::suite( ) ) ;
 	
 // freetype library is optional

@@ -29,6 +29,8 @@
 
 #include <boost/format.hpp>
 
+#include "util/Debug.hh"
+
 // freetype headers
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -45,6 +47,44 @@
 
 namespace pdf {
 
+namespace
+{
+	int weight_map[] =
+	{
+		FC_WEIGHT_THIN,	 		// thin,
+		FC_WEIGHT_EXTRALIGHT,	// extra_light,
+		FC_WEIGHT_ULTRALIGHT,	// ultra_light,
+		FC_WEIGHT_LIGHT,	 	// light,
+		FC_WEIGHT_BOOK,	 		// book,
+		FC_WEIGHT_REGULAR,	 	// regular_weight,
+		FC_WEIGHT_NORMAL,	 	// normal_weight,
+		FC_WEIGHT_MEDIUM,	 	// medium_weight,
+		FC_WEIGHT_DEMIBOLD,	 	// demi_bold,
+		FC_WEIGHT_SEMIBOLD,	 	// semi_bold,
+		FC_WEIGHT_BOLD,	 		// bold,
+		FC_WEIGHT_EXTRABOLD,	// extra_bold,
+		FC_WEIGHT_ULTRABOLD,	// ultra_bold,
+		FC_WEIGHT_BLACK,	 	// black,
+		FC_WEIGHT_HEAVY,	 	// heavy,
+		FC_WEIGHT_EXTRABLACK,	// extra_black,
+		FC_WEIGHT_ULTRABLACK,	// ultra_black,
+	} ;
+
+	int width_map[] =
+	{
+		0,							// padding,
+		FC_WIDTH_ULTRACONDENSED,	// ultra_condensed,
+		FC_WIDTH_EXTRACONDENSED,	// extra_condensed,
+		FC_WIDTH_CONDENSED,	 		// condensed,
+		FC_WIDTH_SEMICONDENSED,		// semi_condensed,
+		FC_WIDTH_NORMAL,	 		// normal_width,
+		FC_WIDTH_SEMIEXPANDED,	 	// semi_expanded,
+		FC_WIDTH_EXPANDED,			// expanded,
+		FC_WIDTH_EXTRAEXPANDED,		// extra_expanded,
+		FC_WIDTH_ULTRAEXPANDED,		// ultra_expanded,
+	} ;
+}
+
 /**	constructor
 	
 */
@@ -53,14 +93,19 @@ FCFontDb::FCFontDb( )
 }
 
 std::vector<unsigned char> FCFontDb::FindFont(
-	const std::string& base_name,
-	const std::string& style )
+	const std::string&	base_name,
+	font::Weight		weight,
+	font::Width			width )
 {
+	PDF_ASSERT( weight >= font::thin && weight <= font::ultra_black ) ;
+	PDF_ASSERT(
+		width >= font::ultra_condensed &&
+		width <= font::ultra_expanded ) ;
+
 	FcPattern *sans = FcPatternBuild( NULL,
 		FC_FAMILY,		FcTypeString, 	base_name.c_str(),
-		FC_WEIGHT,		FcTypeInteger, 	FC_WEIGHT_NORMAL,
-		FC_STYLE,		FcTypeString, 	style.c_str(),
-		FC_WIDTH,		FcTypeInteger,	FC_WIDTH_NORMAL,
+		FC_WEIGHT,		FcTypeInteger, 	weight_map[weight],
+		FC_WIDTH,		FcTypeInteger,	width_map[width],
 		FC_SCALABLE,	FcTypeBool,		true,
 	    NULL ) ;
 	if ( sans == 0 )

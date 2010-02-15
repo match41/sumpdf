@@ -27,11 +27,37 @@
 
 #include "FontException.hh"
 
-#include <windows.h>
+#include "util/Debug.hh"
 
 #include <cstring>
 
+#include <windows.h>
+
 namespace pdf {
+
+namespace
+{
+	int weight_map[] =
+	{
+		FW_THIN,	 	// thin,
+		FW_EXTRALIGHT,	// extra_light,
+		FW_ULTRALIGHT,	// ultra_light,
+		FW_LIGHT,	 	// light,
+		FW_LIGHT,	 	// book,
+		FW_REGULAR,	 	// regular_weight,
+		FW_NORMAL,	 	// normal_weight,
+		FW_MEDIUM,	 	// medium_weight,
+		FW_DEMIBOLD,	// demi_bold,
+		FW_SEMIBOLD,	// semi_bold,
+		FW_BOLD,	 	// bold,
+		FW_EXTRABOLD,	// extra_bold,
+		FW_ULTRABOLD,	// ultra_bold,
+		FW_BLACK,	 	// black,
+		FW_HEAVY,	 	// heavy,
+		FW_BLACK,		// extra_black,
+		FW_BLACK,		// ultra_black,
+	} ;
+}
 
 /**	constructor
 	
@@ -42,18 +68,25 @@ Win32FontDb::Win32FontDb( )
 
 std::vector<unsigned char> Win32FontDb::FindFont( 
 	const std::string& base_name,
-	const std::string& style )
+	font::Weight		weight,
+	font::Width			width )
 {
+	PDF_ASSERT( weight >= font::thin && weight <= font::ultra_black ) ;
+	PDF_ASSERT(
+		width >= font::ultra_condensed &&
+		width <= font::ultra_expanded ) ;
+
 	HDC hdc = CreateCompatibleDC( NULL ) ;
 	HFONT hfont = CreateFont(
-		0,				// height
-		0,				// width,
-		0,				// escapement
-		0,				// orientation
-		FW_REGULAR,		// weight
-		stricmp( style.c_str(), "italic" ) == 0,	// italic
-		FALSE,			// underline
-		FALSE,			// strikeout
+		0,						// height
+		0,						// width,
+		0,						// escapement
+		0,						// orientation
+		weight_map[width],		// weight
+//		stricmp( style.c_str(), "italic" ) == 0,	// italic
+		FALSE,
+		FALSE,					// underline
+		FALSE,					// strikeout
 		DEFAULT_CHARSET,		// charset
 		OUT_DEFAULT_PRECIS,		// match precision
 		CLIP_DEFAULT_PRECIS,	// clip precision

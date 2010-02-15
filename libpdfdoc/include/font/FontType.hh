@@ -23,8 +23,8 @@
     \author	Nestal Wan
 */
 
-#ifndef __PDF_FONTTYPE_HH_EADER_INCLUDED__
-#define __PDF_FONTTYPE_HH_EADER_INCLUDED__
+#ifndef __PDF_FONTTYPE_HEADER_INCLUDED__
+#define __PDF_FONTTYPE_HEADER_INCLUDED__
 
 struct FT_FaceRec_ ;
 
@@ -32,12 +32,51 @@ namespace pdf {
 
 namespace font
 {
-	///	brief description
+	///	font type enum
 	/**	The Type enum represents an enumeration of font types.
 	*/
 	enum Type { truetype, type1, mmtype1, type3, type0, openType, unknown } ;
 	
 	Type GetType( FT_FaceRec_ *face ) ;
+	
+	/// font weight enum
+	enum Weight
+	{
+		thin,
+		extra_light,
+		ultra_light,
+		light,
+		book,
+		regular_weight,
+		normal_weight,
+		medium_weight,
+		demi_bold,
+		semi_bold,
+		bold,
+		extra_bold,
+		ultra_bold,
+		black,
+		heavy,
+		extra_black,
+		ultra_black,
+	} ;
+	
+	enum Width
+	{
+		padding,	///< to match the OS/2 table in truetype font enum
+		
+		ultra_condensed,
+		extra_condensed,
+		condensed,
+		semi_condensed,
+		normal_width,
+		semi_expanded,
+		expanded,
+		extra_expanded,
+		ultra_expanded,
+		unknown_width,
+	} ;
+
 }
 
 } // end of namespace

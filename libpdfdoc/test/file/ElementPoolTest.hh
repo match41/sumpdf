@@ -39,7 +39,8 @@ public :
 
 	// declare suit function
 	CPPUNIT_TEST_SUITE( ElementPoolTest ) ;
-		CPPUNIT_TEST( Test ) ;
+		CPPUNIT_TEST( TestAddAcquire ) ;
+		CPPUNIT_TEST( TestAcquireFail ) ;
 	CPPUNIT_TEST_SUITE_END();
 
 public :
@@ -47,7 +48,8 @@ public :
 	void tearDown( ) ;
 
 private :
-	void Test( ) ;
+	void TestAddAcquire( ) ;
+	void TestAcquireFail( ) ;
 } ;
 
 } // end of namespace

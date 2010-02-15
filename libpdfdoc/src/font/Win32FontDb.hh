@@ -41,7 +41,8 @@ public :
 
 	std::vector<unsigned char> FindFont( 
 		const std::string& base_name,
-		const std::string& style ) ;
+		font::Weight		weight,
+		font::Width			width ) ;
 } ;
 
 } // end of namespace

@@ -26,7 +26,7 @@
 #ifndef __PDF_MOCKFONTDB_HH_EADER_INCLUDED__
 #define __PDF_MOCKFONTDB_HH_EADER_INCLUDED__
 
-#include "font/FontDb.hh"
+#include "font/BasicFontDb.hh"
 
 struct FT_LibraryRec_ ;
 
@@ -36,23 +36,15 @@ namespace pdfut {
 /**	\internal
 	The MockFontDb class represents
 */
-class MockFontDb : public pdf::FontDb
+class MockFontDb : public pdf::BasicFontDb
 {
 public :
 	MockFontDb( ) ;
 	
-	FT_LibraryRec_* Library() ;
-	
 	std::vector<unsigned char> FindFont(
-		const std::string& base_name,
-		const std::string& style ) ;
-
-	FT_FaceRec_* LoadFont(
-		const unsigned char	*data,
-		std::size_t			size ) ;
-	
-private :
-	FT_LibraryRec_* m_ft ;
+		const std::string&	base_name,
+		pdf::font::Weight	weight,
+		pdf::font::Width	width ) ;
 } ;
 
 } // end of namespace

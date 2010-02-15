@@ -28,7 +28,7 @@
 #define __PDF_REAL_FONT_HEADER_INCLUDED__
 
 #include "BaseFont.hh"
-#include "FontType.hh"
+#include "font/FontType.hh"
 
 // libpdfdoc headers
 #include "core/Array.hh"

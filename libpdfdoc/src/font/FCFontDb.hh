@@ -40,8 +40,9 @@ public :
 	FCFontDb( ) ;
 
 	std::vector<unsigned char> FindFont(
-		const std::string& base_name,
-		const std::string& style ) ;
+		const std::string&	base_name,
+		font::Weight		weight,
+		font::Width			width ) ;
 } ;
 
 } // end of namespace

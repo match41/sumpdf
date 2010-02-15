@@ -36,9 +36,16 @@ using namespace pdf ;
 
 namespace
 {
+	template <typename Tag>
 	struct TestElement : public RefCounter
 	{
 	} ;
+	
+	struct Tag1 {} ;
+	struct Tag2 {} ;
+	
+	typedef TestElement<Tag1> Telement1 ;
+	typedef TestElement<Tag2> Telement2 ;
 }
 
 ElementPoolTest::ElementPoolTest( )
@@ -53,23 +60,42 @@ void ElementPoolTest::tearDown( )
 {
 }
 
-void ElementPoolTest::Test( )
+void ElementPoolTest::TestAddAcquire( )
 {
 	ElementPool subject ;
 	
-	TestElement *rc1 = new TestElement ;
+	Telement1 *rc1 = new Telement1 ;
 	subject.Add( Ref(100,0), rc1 ) ;
 	
-	PDFUT_ASSERT_EQUAL( subject.Find<TestElement>( Ref(100,0) ), rc1 ) ;
+	PDFUT_ASSERT_EQUAL( subject.Find<Telement1>( Ref(100,0) ), rc1 ) ;
 	PDFUT_ASSERT_EQUAL( rc1->UseCount(), 1U ) ;
 	PDFUT_ASSERT_EQUAL( subject.Find( rc1 ), Ref(100,0) ) ;
 	CPPUNIT_ASSERT( subject.Has( Ref(100,0) ) ) ;
 	CPPUNIT_ASSERT( !subject.Has( Ref(101,0) ) ) ;
 	
-	TestElement *rc2 = new TestElement ;
+	Telement1 *rc2 = new Telement1 ;
 	CPPUNIT_ASSERT( subject.Acquire( Ref(100,0), rc2 ) ) ;
 	PDFUT_ASSERT_EQUAL( rc2, rc1 ) ;
 	PDFUT_ASSERT_EQUAL( rc1->UseCount(), 2U ) ;
+	
+	subject.Clear( ) ;
+	CPPUNIT_ASSERT( !subject.Has( Ref(100,0) ) ) ;
+	PDFUT_ASSERT_EQUAL( rc1->UseCount(), 2U ) ;
+	
+	rc1->Release( ) ;
+	rc1->Release( ) ;
+}
+
+void ElementPoolTest::TestAcquireFail( )
+{
+	ElementPool subject ;
+	
+	Telement1 *rc1 = new Telement1 ;
+	subject.Add( Ref(100,0), rc1 ) ;
+	
+	Telement2 *rc2 = 0 ;
+	CPPUNIT_ASSERT_THROW( subject.Acquire( Ref(100,0), rc2 ), std::bad_cast ) ;
+	CPPUNIT_ASSERT_THROW( subject.Find<Telement2>( Ref(100,0) ), std::bad_cast ) ;
 }
 
 } // end of namespace

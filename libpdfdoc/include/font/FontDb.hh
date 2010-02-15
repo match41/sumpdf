@@ -26,12 +26,14 @@
 #ifndef __PDF_FONTDB_HH_EADER_INCLUDED__
 #define __PDF_FONTDB_HH_EADER_INCLUDED__
 
-struct FT_LibraryRec_ ;
-struct FT_FaceRec_ ;
+#include "FontType.hh" 
 
 #include <memory>
 #include <string>
 #include <vector>
+
+struct FT_LibraryRec_ ;
+struct FT_FaceRec_ ;
 
 namespace pdf {
 
@@ -48,8 +50,9 @@ public :
 	virtual FT_LibraryRec_* Library() = 0 ;
 	
 	virtual std::vector<unsigned char> FindFont( 
-		const std::string& base_name,
-		const std::string& style ) = 0 ;
+		const std::string&	base_name,
+		font::Weight		weight	= font::normal_weight,
+		font::Width			width	= font::normal_width ) = 0 ;
 	
 	virtual FT_FaceRec_* LoadFont(
 		const unsigned char	*data,

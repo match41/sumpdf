@@ -106,7 +106,6 @@ set( FILE_HDRS		${FILE_DIR}/RealFile.hh
 					${FILE_DIR}/DictReader.hh
 					${FILE_DIR}/ArrayReader.hh
 					${FILE_DIR}/Catalog.hh
-					${FILE_DIR}/RefObjMap.hh
 					${FILE_DIR}/Destination.hh
 					${FILE_DIR}/NameTree.hh
 					${FILE_DIR}/ElementPool.hh )
@@ -149,7 +148,6 @@ set( FONT_HDRS		${FONT_DIR}/Types.hh
 					${FONT_DIR}/BaseFont.hh 
 					${FONT_DIR}/FontDescriptor.hh
 					${FONT_DIR}/FontException.hh
-					${FONT_DIR}/FontType.hh
 					${FONT_DIR}/RealGlyph.hh
 					${FONT_DIR}/BasicFontDb.hh )
 
@@ -165,7 +163,8 @@ set( INCLUDE_HDRS	${INCLUDE_DIR}/Doc.hh
 
 set( FONT_INC_HDRS	${INCLUDE_DIR}/font/Font.hh
 					${INCLUDE_DIR}/font/Glyph.hh
-					${INCLUDE_DIR}/font/FontDb.hh )
+					${INCLUDE_DIR}/font/FontDb.hh
+					${INCLUDE_DIR}/font/FontType.hh )
 
 set( PAGE_INC_HDRS	${INCLUDE_DIR}/page/Page.hh
                     ${INCLUDE_DIR}/page/PageContent.hh )
@@ -498,7 +497,6 @@ set( UT_SRCS	test/core/TokenTest.cc
 				
 				test/file/RealFileTest.cc
 				test/file/CatalogTest.cc
-				test/file/RefObjMapTest.cc
 				test/file/NameTreeTest.cc
 				test/file/ElementPoolTest.cc
 				

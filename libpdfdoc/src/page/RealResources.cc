@@ -29,17 +29,12 @@
 #include "core/Array.hh"
 #include "file/File.hh"
 #include "file/DictReader.hh"
-#include "file/RefObjMap.hh"
 #include "file/ElementPool.hh"
 #include "font/SimpleFont.hh"
 #include "util/Util.hh"
 #include "util/Debug.hh"
 
 #include <boost/bind.hpp>
-
-// freetype headers
-#include <ft2build.h>
-#include FT_FREETYPE_H
 
 #include <algorithm>
 #include <sstream>

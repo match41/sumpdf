@@ -52,7 +52,7 @@ void FontDbTest::tearDown( )
 void FontDbTest::Test( )
 {
 	std::auto_ptr<FontDb> subject = CreateFontDb() ;
-	std::vector<unsigned char> data = subject->FindFont( "Arial", "" ) ;
+	std::vector<unsigned char> data = subject->FindFont( "Arial" ) ;
 	CPPUNIT_ASSERT( !data.empty() ) ;
 	
 	FT_Face face = subject->LoadFont( &data[0], data.size() ) ;

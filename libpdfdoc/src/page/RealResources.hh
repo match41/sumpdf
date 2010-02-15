@@ -88,9 +88,6 @@ private :
 	> FontMap ; 
 	FontMap				m_fonts ;
 
-	typedef std::map<Name, RealImage*> ImageMap ;
-	ImageMap			m_images ;
-
 	std::vector<Name>	m_proc_set ;
 } ;
 

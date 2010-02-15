@@ -26,7 +26,7 @@
 #ifndef __PDF_FONTDESCRIPTOR_HH_EADER_INCLUDED__
 #define __PDF_FONTDESCRIPTOR_HH_EADER_INCLUDED__
 
-#include "FontType.hh"
+#include "font/FontType.hh"
 #include "core/Name.hh"
 #include "util/Rect.hh"
 

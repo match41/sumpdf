@@ -23,7 +23,7 @@
 	\author	Nestal Wan
 */
 
-#include "FontType.hh"
+#include "font/FontType.hh"
 
 #include "FontException.hh"
 #include "util/Util.hh"

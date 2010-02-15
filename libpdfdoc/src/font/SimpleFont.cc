@@ -26,7 +26,6 @@
 
 #include "SimpleFont.hh"
 
-#include "FontType.hh"
 #include "RealGlyph.hh"
 #include "FontException.hh"
 #include "FontDescriptor.hh"
@@ -76,7 +75,7 @@ SimpleFont::SimpleFont( const std::string& name, FontDb *font_db )
 {
 	PDF_ASSERT( font_db != 0 ) ;
 	
-	std::vector<unsigned char> prog = font_db->FindFont( name, "Normal" ) ;
+	std::vector<unsigned char> prog = font_db->FindFont( name ) ;
 	Init( prog, font_db ) ;
 }
 
@@ -204,32 +203,24 @@ std::vector<unsigned char> SimpleFont::FindStdFont(
 
 	// simple font mappings for the standard fonts
 	if ( name == "Helvetica" )
-//#ifndef WIN32
-//		name = "Liberation Sans" ;
-//#else
 		name = "Arial" ;
-//#endif
 
 	else if ( name == "Times" )
-//#ifndef WIN32
-//		name = "Liberation Serif" ;
-//#else
 		name = "TimesNewRoman" ;
-//#endif
 
 	else if ( name == "Courier" )
-//#ifndef WIN32
-//		name = "Liberation Mono" ;
-//#else
 		name = "Courier New" ;
-//#endif
 
+	font::Weight weight = font::normal_weight ;
+	if ( ::strcasecmp( style.c_str(), "bold" ) )
+		weight = font::bold ;
+	
 #ifndef WIN32
 	else if ( name == "Symbol" )
 		name = "Standard Symbols L" ;
 #endif
 
-	return fdb->FindFont( name, style ) ;
+	return fdb->FindFont( name, weight, font::normal_width ) ;
 }
 
 /// Return the size of the EM square in font units.

@@ -40,19 +40,13 @@ using namespace pdf ;
 	
 */
 MockFontDb::MockFontDb( )
-	: m_ft( 0 )
 {
-	::FT_Init_FreeType( &m_ft ) ;
-}
-
-FT_LibraryRec_* MockFontDb::Library()
-{
-	return m_ft ;
 }
 
 std::vector<unsigned char> MockFontDb::FindFont(
-	const std::string& base_name,
-	const std::string& style )
+	const std::string&	base_name,
+	font::Weight		weight,
+	font::Width			width )
 {
 	std::string file = std::string(TEST_DATA_DIR) +"FreeMonoBoldOblique.ttf" ;
 	
@@ -60,15 +54,6 @@ std::vector<unsigned char> MockFontDb::FindFont(
 	return std::vector<unsigned char>(
 		(std::istreambuf_iterator<char>( fs )),
 		(std::istreambuf_iterator<char>()) ) ;
-}
-
-FT_FaceRec_* MockFontDb::LoadFont(
-	const unsigned char	*data,
-	std::size_t			size )
-{
-	FT_Face face = 0 ;
-	FT_Error e = FT_New_Memory_Face( m_ft, data, size, 0, &face ) ;
-	return e == 0 ? face : 0 ;
 }
 
 } // end of namespace
