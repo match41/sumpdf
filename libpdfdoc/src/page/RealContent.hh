@@ -77,8 +77,9 @@ private :
 		const Token& 	cmd,
 		Object 			*args,
 		std::size_t 	count,
+		TextState&		tstate,
 		Graphics		*gfx,
-		Resources 		*res  ) ;
+		Resources 		*res ) ;
 
 private :
 	std::vector<Graphics*> m_gfx ;

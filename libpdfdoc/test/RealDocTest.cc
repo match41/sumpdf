@@ -29,6 +29,12 @@
 #include "RealDoc.hh"
 #include "DocInfo.hh"
 
+#include "mock/Assert.hh"
+
+namespace pdfut {
+
+using namespace pdf ;
+
 RealDocTest::RealDocTest( )
 {
 }
@@ -40,6 +46,12 @@ void RealDocTest::TestRead( )
 	
 	pdf::DocInfo *info = doc.Info( ) ;
 	CPPUNIT_ASSERT( info != 0 ) ;
-	CPPUNIT_ASSERT( info->Producer() == "nestal" ) ;
-	CPPUNIT_ASSERT( info->Creator() == "D:20080410074227" ) ;
+	PDFUT_ASSERT_EQUAL( info->Producer(),	"nestal" ) ;
+	PDFUT_ASSERT_EQUAL( info->Creator(),	"D:20080410074227" ) ;
+	
+	CPPUNIT_ASSERT( doc.PageCount() > 0 ) ;
+	
+	Page *page1 = doc.GetPage(0) ;
 }
+
+} // end of namespace

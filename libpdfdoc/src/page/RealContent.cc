@@ -30,6 +30,7 @@
 #include "core/TokenSrc.hh"
 #include "graphics/GraphicsVisitor.hh"
 #include "graphics/RealText.hh"
+#include "graphics/TextState.hh"
 #include "stream/Stream.hh"
 
 #include <boost/bind.hpp>
@@ -72,6 +73,8 @@ void RealContent::Load( Stream& str, Resources *res )
 	TokenSrc src( s ) ;
 	std::vector<Object> args ;
 
+	TextState	tstate ;
+
 	Graphics *current = 0 ;
 
 	while ( true )
@@ -101,8 +104,9 @@ std::cout << std::endl ;
 					cmd,
 					args.empty() ? 0 : &args[0],	// don't touch args[0]
 					args.size(),					// if empty.
+					tstate,
 					current,
-					res) ;
+					res ) ;
 
 				args.clear( ) ;
 			}
@@ -116,6 +120,7 @@ Graphics* RealContent::ProcessCommand(
 	const Token& 	cmd,
 	Object 			*args,
 	std::size_t 	count,
+	TextState&		tstate,
 	Graphics		*gfx,
 	Resources 		*res  )
 {
@@ -124,10 +129,12 @@ Graphics* RealContent::ProcessCommand(
 
 	if ( cmd == Token("BT") && gfx == 0 )
 	{
-		gfx = new RealText ;
+		gfx = new RealText( tstate ) ;
 	}
 	else if ( cmd == Token("ET") && gfx != 0 )
 	{
+		tstate = dynamic_cast<RealText*>(gfx)->GetState( ) ;
+	
 		m_gfx.push_back( gfx ) ;
 		gfx = 0 ;
 	}
@@ -180,31 +187,7 @@ void RealContent::VisitGraphics( GraphicsVisitor *visitor )
 
 void RealContent::Write( Stream& str, const Resources *res ) const
 {
-/*
-	struct ContentWriter : public GraphicsVisitor
-	{
-		ContentWriter( std::ostream& os, const Resources *res  )
-			: m_os(os), m_res( res )
-		{
-		}
-		
-		void VisitText( Text *text )
-		{
-			text->Print( m_os, m_res ) ; 
-		}
-		
-		void VisitGraphics( Graphics *text )
-		{
-		}
-		
-		std::ostream&		m_os ;
-		const Resources	*m_res ;
-	} ;
-*/
-	
 	std::ostream os( str.OutStreamBuf() ) ;
-//	ContentWriter cw( os, res ) ;
-//	(const_cast<RealContent*>(this))->VisitGraphics( &cw ) ;
 
 	using namespace boost ;
 	std::for_each(
@@ -215,6 +198,7 @@ void RealContent::Write( Stream& str, const Resources *res ) const
 	os.flush() ;
 }
 
+/// Remove all contents.
 void RealContent::Clear( )
 {
 	m_gfx.clear( ) ;

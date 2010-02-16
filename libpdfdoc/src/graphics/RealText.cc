@@ -203,6 +203,7 @@ void RealText::OnTd( Object* args, std::size_t count, Resources* )
 	{
 		m_text_mat = m_line_mat =
 			m_line_mat * Matrix( 1, 0, 0, 1, args[0], args[1] ) ;
+		
 		AddLine( TextLine( m_state, m_line_mat ) ) ;
 	}
 }
@@ -217,6 +218,7 @@ void RealText::OnTD( Object* args, std::size_t count, Resources *res )
 		
 		m_text_mat = m_line_mat =
 			m_line_mat * Matrix( 1, 0, 0, 1, args[0], args[1] ) ;
+		
 		AddLine( TextLine( m_state, m_line_mat ) ) ;
 	}
 }
@@ -362,6 +364,11 @@ bool RealText::operator==( const RealText& rhs ) const
 bool RealText::operator!=( const RealText& rhs ) const
 {
 	return !operator==( rhs ) ;
+}
+
+const TextState& RealText::GetState() const
+{
+	return m_state ;
 }
 
 } // end of namespace

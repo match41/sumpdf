@@ -31,6 +31,8 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+namespace pdfut {
+
 ///	brief description
 /**	this class represents
 */
@@ -47,5 +49,7 @@ public:
 private :
 	void TestRead( ) ;
 } ;
+
+} // end of namespace
 
 #endif // REALDOCTEST_HH_

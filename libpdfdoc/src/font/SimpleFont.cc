@@ -76,6 +76,8 @@ SimpleFont::SimpleFont( const std::string& name, FontDb *font_db )
 	PDF_ASSERT( font_db != 0 ) ;
 	
 	InitWithStdFont( name, font_db ) ;
+	
+	PDF_ASSERT( m_face != 0 ) ;
 }
 
 SimpleFont::SimpleFont( DictReader& reader, FontDb *font_db )
@@ -142,6 +144,8 @@ SimpleFont::SimpleFont( DictReader& reader, FontDb *font_db )
 				"cannot read font:\n%1%\n"
 			    "Font Dictionary: %2%\n" ) % e.what() % *reader ) ;
 	}
+	
+	PDF_ASSERT( m_face != 0 ) ;
 }
 
 SimpleFont::~SimpleFont( )
@@ -153,6 +157,7 @@ SimpleFont::~SimpleFont( )
 		boost::bind<void>( DeletePtr(),
 			boost::bind( &GlyphMap::value_type::second, _1 ) ) ) ;
 	
+	PDF_ASSERT( m_face != 0 ) ;
 	FT_Done_Face( m_face ) ;
 }
 

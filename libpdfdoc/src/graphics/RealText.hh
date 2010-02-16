@@ -69,7 +69,6 @@ public :
 	const TextLine& back() const ;
 	const TextLine& at( std::size_t idx ) const ;
 
-
 	std::size_t Count( ) const ;
 	
 	void AddLine( const TextLine& line ) ;
@@ -79,6 +78,8 @@ public :
 
 	bool operator==( const RealText& rhs ) const ;
 	bool operator!=( const RealText& rhs ) const ;
+
+	const TextState& GetState() const ;
 
 private :
     /// command handler
