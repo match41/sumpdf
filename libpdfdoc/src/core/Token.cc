@@ -65,7 +65,6 @@ std::istream& operator>>( std::istream& is, Token& token )
 		switch ( ich )
 		{
 			case '(': Token::DecodeBracketString( is, text ) ; break ;
-//			case '<': Token::DecodeHexString( is, text ) ; break ;
 			default : Token::DecodeToken( is, text ) ; break ;
 		}
 	}

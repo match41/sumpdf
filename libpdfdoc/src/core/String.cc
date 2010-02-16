@@ -75,39 +75,56 @@ std::istream& operator>>( std::istream& is, String& b )
 TokenSrc& operator>>( TokenSrc& src, String& obj )
 {
 	Token t ;
-	
 	if ( src >> t )
 	{
-		std::istringstream is( t.Get() ) ;
+		const std::string& str = t.Get() ;
 	
-		char ch ;
-		if ( is.get(ch) )
+		if ( !str.empty() )
 		{
-			if ( ch == '(' )
-				obj.DecodeLiteralString( is ) ;
+			if ( str[0] == '(' )
+				obj.DecodeLiteralString( t.Get() ) ;
 			
-			else if ( ch == '<' )
+			else if ( str[0] == '<' )
 				obj.DecodeHexString( src ) ;
 			
 			else
-				is.setstate( std::ios::failbit ) ;
+				src.SetState( std::ios::failbit ) ;
 		}
-		
-		if ( !is )
-			src.SetState( std::ios::failbit ) ;
 	}
 	return src ;
 }
 
-void String::DecodeLiteralString( std::istream& is )
+bool String::GetChar(
+	char&							ch,
+	std::string::const_iterator&	it,
+	std::string::const_iterator		end )
+{
+	if ( it != end )
+	{
+		ch = *it ;
+		++it ;
+		return true ;
+	}
+	else
+		return false ;
+}
+
+void String::DecodeLiteralString( const std::string& token )
 {
 	// assume the first char is '('
 	int bracket_balance = 1 ;
 
 	DecodeState state = done ;
 
+	std::string::const_iterator it = token.begin() ;
+	
+	// skip the first bracket character
+	PDF_ASSERT( it	!= token.end() ) ;
+	PDF_ASSERT( *it	== '(' ) ;
+	++it ;
+	
 	char ch ;
-	while ( state == extra || is.get( ch ) )
+	while ( state == extra || GetChar( ch, it, token.end() ) )
 	{
 		state = done ;
 	
@@ -115,16 +132,15 @@ void String::DecodeLiteralString( std::istream& is )
 		switch ( ch )
 		{
 			case '\\' :
-				if ( !HandleEscapeCharacter( is, ch ) )
+				if ( !HandleEscapeCharacter( ch, it, token.end() ) )
 				{
-					state = HandleOctal( is, ch ) ;
+					state = HandleOctal( ch, it, token.end() ) ;
 					if ( state == quit )
 						break ;
 					
-					// fall through. PDF specs indicates for unknown character 
-					// after escape character '\' will ignore the escape
-					// character, i.e. the character after '\' will still be
-					// counted.
+					// PDF specs indicates for unknown character after escape
+					// character '\' will ignore the escape character, i.e.
+					// the character after '\' will still be counted.
 					continue ;
 				}
 				break ;
@@ -144,7 +160,10 @@ void String::DecodeLiteralString( std::istream& is )
 }
 
 //void String::HandleOctal( TokenSrc& is, char& ch, bool& quit, bool& used )
-String::DecodeState String::HandleOctal( std::istream& is, char& ch )
+String::DecodeState String::HandleOctal(
+	char&							ch,
+	std::string::const_iterator&	it,
+	std::string::const_iterator		end )
 {
 	DecodeState ret = extra ;
 	
@@ -157,7 +176,7 @@ String::DecodeState String::HandleOctal( std::istream& is, char& ch )
 		for ( int i = 0 ; i < 2 ; i++ )
 		{
 			// no character in input, quit
-			if ( !is.get( ch ) )
+			if ( !GetChar( ch, it, end ) )
 				return quit ;
 			
 			else if ( ch >= '0' && ch < '8' )
@@ -180,9 +199,12 @@ String::DecodeState String::HandleOctal( std::istream& is, char& ch )
 	return ret ;
 }
 
-bool String::HandleEscapeCharacter( std::istream& is, char& ch )
+bool String::HandleEscapeCharacter(
+	char&							ch,
+	std::string::const_iterator&	it,
+	std::string::const_iterator		end )
 {
-	if ( is.get( ch ) )
+	if ( GetChar( ch, it, end ) )
 	{
 		switch ( ch )
 		{

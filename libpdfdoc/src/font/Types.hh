@@ -32,7 +32,7 @@
 
 #include <boost/cstdint.hpp>
 
-namespace font {
+namespace pdf { namespace font {
 
 typedef boost::uint8_t	uint8_t ;
 typedef	boost::int8_t	int8_t ;
@@ -50,6 +50,6 @@ typedef boost::uint16_t	ufword_t ;
 typedef boost::int16_t	f2dot14_t ;
 typedef boost::int64_t	date_time_t ;
 
-} // end of namespace
+} } // end of namespace
 
 #endif
