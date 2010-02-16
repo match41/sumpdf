@@ -36,6 +36,7 @@ class GraphicsVisitor ;
 class Token ;
 class Resources ;
 class Object ;
+class GraphicsState ;
 
 /**	\defgroup	graphics Graphics
 	\brief		Graphics objects module
@@ -68,6 +69,8 @@ public :
 	virtual void Print( std::ostream& os, const Resources *res ) const = 0 ;
 
 	virtual void Visit( GraphicsVisitor *visitor ) = 0 ;
+	
+	virtual GraphicsState GetState( ) const = 0 ;
 } ;
 
 } // end of namespace

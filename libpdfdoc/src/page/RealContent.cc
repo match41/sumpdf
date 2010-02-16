@@ -28,9 +28,9 @@
 #include "core/Object.hh"
 #include "core/Token.hh"
 #include "core/TokenSrc.hh"
+#include "graphics/GraphicsState.hh"
 #include "graphics/GraphicsVisitor.hh"
 #include "graphics/RealText.hh"
-#include "graphics/TextState.hh"
 #include "stream/Stream.hh"
 
 #include <boost/bind.hpp>
@@ -133,7 +133,7 @@ Graphics* RealContent::ProcessCommand(
 	}
 	else if ( cmd == Token("ET") && gfx != 0 )
 	{
-		tstate = dynamic_cast<RealText*>(gfx)->GetState( ) ;
+		tstate = gfx->GetState( ).GetTextState() ;
 	
 		m_gfx.push_back( gfx ) ;
 		gfx = 0 ;

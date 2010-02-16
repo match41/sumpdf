@@ -26,6 +26,7 @@
 #include "RealText.hh"
 
 #include "graphics/GraphicsVisitor.hh"
+#include "graphics/GraphicsState.hh"
 
 #include "core/Array.hh"
 #include "core/Object.hh"
@@ -370,9 +371,9 @@ bool RealText::operator!=( const RealText& rhs ) const
 	return !operator==( rhs ) ;
 }
 
-const TextState& RealText::GetState() const
+GraphicsState RealText::GetState() const
 {
-	return m_state ;
+	return GraphicsState(m_state) ;
 }
 
 } // end of namespace

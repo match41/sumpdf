@@ -40,7 +40,9 @@ namespace pdf {
 class GraphicsState
 {
 public :
-	GraphicsState( ) ;
+	GraphicsState( const TextState& ts ) ;
+
+	const TextState& GetTextState() const ;
 
 private :
 	/// The current transformation matrix
@@ -51,8 +53,6 @@ private :
 	double		m_line_width ;
 	
 	int			m_line_cap ;
-	
-	
 } ;
 
 } // end of namespace

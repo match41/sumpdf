@@ -79,7 +79,7 @@ public :
 	bool operator==( const RealText& rhs ) const ;
 	bool operator!=( const RealText& rhs ) const ;
 
-	const TextState& GetState() const ;
+	GraphicsState GetState() const ;
 
 private :
     /// command handler

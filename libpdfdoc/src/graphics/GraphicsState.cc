@@ -30,8 +30,14 @@ namespace pdf {
 /**	constructor
 	
 */
-GraphicsState::GraphicsState( )
+GraphicsState::GraphicsState( const TextState& ts )
+	: m_text( ts )
 {
+}
+
+const TextState& GraphicsState::GetTextState() const
+{
+	return m_text ;
 }
 
 } // end of namespace
