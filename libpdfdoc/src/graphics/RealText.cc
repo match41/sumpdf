@@ -201,9 +201,10 @@ void RealText::OnTd( Object* args, std::size_t count, Resources* )
 {
 	if ( count >= 2 )
 	{
-		m_text_mat = m_line_mat =
-			m_line_mat * Matrix( 1, 0, 0, 1, args[0], args[1] ) ;
-		
+		m_line_mat.Dx( m_line_mat.Dx() + args[0].To<double>() ) ;
+		m_line_mat.Dy( m_line_mat.Dy() + args[1].To<double>() ) ;
+		m_text_mat = m_line_mat ;
+
 		AddLine( TextLine( m_state, m_line_mat ) ) ;
 	}
 }
@@ -216,8 +217,9 @@ void RealText::OnTD( Object* args, std::size_t count, Resources *res )
 		double	ty	= args[1] ;
 		m_state.SetLeading( -ty ) ;
 		
-		m_text_mat = m_line_mat =
-			m_line_mat * Matrix( 1, 0, 0, 1, args[0], args[1] ) ;
+		m_line_mat.Dx( m_line_mat.Dx() + args[0].To<double>() ) ;
+		m_line_mat.Dy( m_line_mat.Dy() + args[1].To<double>() ) ;
+		m_text_mat = m_line_mat ;
 		
 		AddLine( TextLine( m_state, m_line_mat ) ) ;
 	}
@@ -238,8 +240,10 @@ void RealText::OnTm( Object* args, std::size_t count, Resources* )
 
 void RealText::OnTstar( Object* , std::size_t , Resources * )
 {
-	m_text_mat = m_line_mat = m_line_mat *
-		Matrix( 1, 0, 0, 1, 0, -m_state.Leading() ) ;
+//	m_text_mat = m_line_mat = m_line_mat *
+//		Matrix( 1, 0, 0, 1, 0, -m_state.Leading() ) ;
+	m_line_mat.Dy( m_line_mat.Dy() -m_state.Leading() ) ;
+	m_text_mat = m_line_mat ;
 	
 	AddLine( TextLine( m_state, m_line_mat ) ) ;
 }

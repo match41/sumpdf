@@ -173,6 +173,7 @@ set( PAGE_INC_HDRS	${INCLUDE_DIR}/page/Page.hh
 
 set( GFX_INC_HDRS	${INCLUDE_DIR}/graphics/Graphics.hh
 					${INCLUDE_DIR}/graphics/GraphicsVisitor.hh
+					${INCLUDE_DIR}/graphics/GraphicsState.hh
 					${INCLUDE_DIR}/graphics/Text.hh
 					${INCLUDE_DIR}/graphics/TextState.hh
 					${INCLUDE_DIR}/graphics/CharVisitor.hh
@@ -199,6 +200,7 @@ set( PAGE_SRCS  	${PAGE_DIR}/RealPage.cc
 
 set( GRAPICS_SRCS	${GRAPICS_DIR}/Graphics.cc
 					${GRAPICS_DIR}/GraphicsVisitor.cc
+					${GRAPICS_DIR}/GraphicsState.cc
 					${GRAPICS_DIR}/Text.cc
 					${GRAPICS_DIR}/CharVisitor.cc
 					${GRAPICS_DIR}/RealText.cc
@@ -498,6 +500,8 @@ set( UT_SRCS	test/core/TokenTest.cc
 				test/file/CatalogTest.cc
 				test/file/NameTreeTest.cc
 				test/file/ElementPoolTest.cc
+				test/file/DictReaderTest.cc
+				test/file/ArrayReaderTest.cc
 				
 				test/util/MatrixTest.cc
 				test/font/FontDbTest.cc
