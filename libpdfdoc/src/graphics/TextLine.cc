@@ -128,8 +128,6 @@ std::ostream& TextLine::Print(
 			a.push_back( i->width ) ;
 		}
 		
-		
-		
 		return os << a << " TJ\n" ;
 	}
 }
@@ -172,8 +170,7 @@ const std::wstring& TextLine::Text() const
 	return m_text ;
 }
 
-/// Width of the text block in text space.
-///	Return the width of the string in text space unit.
+///	Returns the width of the string in text space unit.
 /**	This function calculates the width of a string in text space unit. It will
 	be further transform to actual user space units by the text matrix. To
 	convert it to glyph unit (PDF glyph space unit), multiply this value by
@@ -188,6 +185,8 @@ double TextLine::Width( ) const
 			m_space.begin(),
 			m_space.end(),
 			0.0,
+			
+			// _1 + _2.width
 			boost::bind(
 				std::plus<double>(),
 				_1,
@@ -204,7 +203,6 @@ void TextLine::VisitChars( CharVisitor *v ) const
 	
 	for ( std::size_t idx = 0 ; idx < m_text.size() ; ++idx )
 	{
-//std::cout << "char code = " << (unsigned)m_text[idx] << std::endl ;
 		// has space?
 		if ( sp != m_space.end() && idx == sp->index )
 		{

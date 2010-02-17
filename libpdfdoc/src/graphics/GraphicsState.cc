@@ -40,4 +40,12 @@ const TextState& GraphicsState::GetTextState() const
 	return m_text ;
 }
 
+std::ostream& GraphicsState::Print(
+	std::ostream&			os,
+	const Resources			*res,
+	const GraphicsState&	prev ) const
+{
+	m_text.Print( os, res, prev.m_text ) ;
+}
+
 } // end of namespace

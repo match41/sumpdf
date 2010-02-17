@@ -25,6 +25,7 @@
 
 #include "graphics/Colour.hh"
 
+#include "util/Debug.hh"
 #include "util/Util.hh"
 
 namespace pdf {
@@ -80,41 +81,49 @@ void Colour::Assign( double c, double m, double y, double k )
 
 double Colour::Red( ) const
 {
+	PDF_ASSERT( m_cs != rgb ) ;
 	return m_channel[0] ;
 }
 
 double Colour::Green( ) const
 {
+	PDF_ASSERT( m_cs != rgb ) ;
 	return m_channel[1] ;
 }
 
 double Colour::Blue( ) const
 {
+	PDF_ASSERT( m_cs != rgb ) ;
 	return m_channel[2] ;
 }
 
 double Colour::Cyan( ) const
 {
+	PDF_ASSERT( m_cs != cmyk ) ;
 	return m_channel[0] ;
 }
 
 double Colour::Magenta( ) const
 {
+	PDF_ASSERT( m_cs != cmyk ) ;
 	return m_channel[1] ;
 }
 
 double Colour::Yellow( ) const
 {
+	PDF_ASSERT( m_cs != cmyk ) ;
 	return m_channel[2] ;
 }
 
 double Colour::Black( ) const
 {
+	PDF_ASSERT( m_cs != cmyk ) ;
 	return m_channel[3] ;
 }
 
 double Colour::Gray( ) const
 {
+	PDF_ASSERT( m_cs != gray ) ;
 	return m_channel[0] ;
 }
 

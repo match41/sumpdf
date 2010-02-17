@@ -31,7 +31,11 @@
 
 #include "util/Matrix.hh"
 
+#include <iosfwd>
+
 namespace pdf {
+
+class Resources ;
 
 ///	The PDF graphics state.
 /**	\internal
@@ -41,9 +45,14 @@ namespace pdf {
 class GraphicsState
 {
 public :
-	GraphicsState( const TextState& ts ) ;
+	explicit GraphicsState( const TextState& ts = TextState() ) ;
 
 	const TextState& GetTextState() const ;
+
+	std::ostream& Print(
+		std::ostream&			os,
+		const Resources			*res,
+		const GraphicsState&	prev = GraphicsState() ) const ;
 
 private :
 	/// The current transformation matrix
