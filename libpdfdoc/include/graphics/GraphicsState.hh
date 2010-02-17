@@ -35,7 +35,9 @@
 
 namespace pdf {
 
+class Object ;
 class Resources ;
+class Token ;
 
 ///	The PDF graphics state.
 /**	\internal
@@ -53,6 +55,14 @@ public :
 		std::ostream&			os,
 		const Resources			*res,
 		const GraphicsState&	prev = GraphicsState() ) const ;
+
+	void OnCommand(
+		const Token& 	cmd,
+		Object 			*args,
+		std::size_t		count,
+		Resources		*res ) ;
+
+	static bool IsGSCommand( const Token& cmd ) ;
 
 private :
 	/// The current transformation matrix

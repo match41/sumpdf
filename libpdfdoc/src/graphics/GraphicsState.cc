@@ -25,6 +25,12 @@
 
 #include "graphics/GraphicsState.hh"
 
+#include "core/Token.hh"
+
+#include "util/Util.hh"
+
+#include <set>
+
 namespace pdf {
 
 /**	constructor
@@ -46,6 +52,28 @@ std::ostream& GraphicsState::Print(
 	const GraphicsState&	prev ) const
 {
 	m_text.Print( os, res, prev.m_text ) ;
+	return os ;
+}
+
+void GraphicsState::OnCommand(
+	const Token& 	cmd,
+	Object 			*args,
+	std::size_t		count,
+	Resources		*res )
+{
+}
+
+bool GraphicsState::IsGSCommand( const Token& cmd )
+{
+	static const std::string cmds[] =
+	{
+		"w", "J", "j", "M", "d", "ri", "i", "gs"
+		"q", "Q", "cm",
+		
+		"Tc", "Tw", "Tz", "TL", "Tf", "Tr", "Ts",
+	} ;
+	static const std::set<std::string> cmd_set( Begin(cmds), End(cmds) ) ;
+	return cmd_set.find( cmd.Get() ) != cmd_set.end() ;
 }
 
 } // end of namespace
