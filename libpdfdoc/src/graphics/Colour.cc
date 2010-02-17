@@ -17,47 +17,105 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	GraphicsState.hh
-    \brief	definition the GraphicsState class
-    \date	Feb 16, 2010
-    \author	Nestal Wan
+/**	\file	Colour.cc
+	\brief	implementation of the Colour class
+	\date	Feb 17, 2010
+	\author	Nestal Wan
 */
 
-#ifndef __PDF_GRAPHICSSTATE_HH_EADER_INCLUDED__
-#define __PDF_GRAPHICSSTATE_HH_EADER_INCLUDED__
+#include "graphics/Colour.hh"
 
-#include "Colour.hh"
-#include "TextState.hh"
-
-#include "util/Matrix.hh"
+#include "util/Util.hh"
 
 namespace pdf {
 
-///	The PDF graphics state.
-/**	\internal
-	The graphics state is a set of graphics control parameters. These
-	parameters define the way that the graphics operators execute. 
-*/
-class GraphicsState
+Colour::Colour( )
+	: m_cs( rgb )
 {
-public :
-	GraphicsState( const TextState& ts ) ;
+	std::fill( Begin(m_channel), End(m_channel), 0.0 ) ;
+}
 
-	const TextState& GetTextState() const ;
+Colour::Colour( double gray_val )
+{
+	Assign( gray_val ) ;
+}
 
-private :
-	/// The current transformation matrix
-	Matrix		m_ctm ;
-	
-	TextState	m_text ;
-	
-	Colour		m_colour ;
-	
-	double		m_line_width ;
-	
-	int			m_line_cap ;
-} ;
+Colour::Colour( double r, double g, double b )
+{
+	Assign( r, g, b ) ;
+}
+
+Colour::Colour( double c, double m, double y, double k )
+{
+	Assign( c, m, y, k ) ;
+}
+
+Colour::Space Colour::ColourSpace( ) const
+{
+	return m_cs ;
+}
+
+void Colour::Assign( double gray_val )
+{
+	m_cs = gray ;
+	m_channel[0] = gray_val ;
+}
+
+void Colour::Assign( double r, double g, double b )
+{
+	m_cs = rgb ;
+	m_channel[0] = r ;
+	m_channel[1] = g ;
+	m_channel[2] = b ;
+}
+
+void Colour::Assign( double c, double m, double y, double k )
+{
+	m_cs = cmyk ;
+	m_channel[0] = c ;
+	m_channel[1] = m ;
+	m_channel[2] = y ;
+	m_channel[3] = k ;
+}
+
+double Colour::Red( ) const
+{
+	return m_channel[0] ;
+}
+
+double Colour::Green( ) const
+{
+	return m_channel[1] ;
+}
+
+double Colour::Blue( ) const
+{
+	return m_channel[2] ;
+}
+
+double Colour::Cyan( ) const
+{
+	return m_channel[0] ;
+}
+
+double Colour::Magenta( ) const
+{
+	return m_channel[1] ;
+}
+
+double Colour::Yellow( ) const
+{
+	return m_channel[2] ;
+}
+
+double Colour::Black( ) const
+{
+	return m_channel[3] ;
+}
+
+double Colour::Gray( ) const
+{
+	return m_channel[0] ;
+}
 
 } // end of namespace
-
-#endif // GRAPHICSSTATE_HH_
