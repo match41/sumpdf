@@ -50,6 +50,7 @@ public :
 	explicit GraphicsState( const TextState& ts = TextState() ) ;
 
 	const TextState& GetTextState() const ;
+	TextState& GetTextState() ;
 
 	std::ostream& Print(
 		std::ostream&			os,

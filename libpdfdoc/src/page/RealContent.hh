@@ -37,7 +37,7 @@ class Object ;
 class Resources ;
 class Stream ;
 class Text ;
-class TextState ;
+class GraphicsState ;
 class Token ;
 
 ///	brief description
@@ -77,7 +77,7 @@ private :
 		const Token& 	cmd,
 		Object 			*args,
 		std::size_t 	count,
-		TextState&		tstate,
+		GraphicsState&	tstate,
 		Graphics		*gfx,
 		Resources 		*res ) ;
 

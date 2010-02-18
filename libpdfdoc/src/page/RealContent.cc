@@ -73,7 +73,7 @@ void RealContent::Load( Stream& str, Resources *res )
 	TokenSrc src( s ) ;
 	std::vector<Object> args ;
 
-	TextState	tstate ;
+	GraphicsState	gstate ;
 
 	Graphics *current = 0 ;
 
@@ -104,7 +104,7 @@ std::cout << std::endl ;
 					cmd,
 					args.empty() ? 0 : &args[0],	// don't touch args[0]
 					args.size(),					// if empty.
-					tstate,
+					gstate,
 					current,
 					res ) ;
 
@@ -120,7 +120,7 @@ Graphics* RealContent::ProcessCommand(
 	const Token& 	cmd,
 	Object 			*args,
 	std::size_t 	count,
-	TextState&		tstate,
+	GraphicsState&	gstate,
 	Graphics		*gfx,
 	Resources 		*res  )
 {
@@ -129,11 +129,11 @@ Graphics* RealContent::ProcessCommand(
 
 	if ( cmd == Token("BT") && gfx == 0 )
 	{
-		gfx = new RealText( tstate ) ;
+		gfx = new RealText( gstate ) ;
 	}
 	else if ( cmd == Token("ET") && gfx != 0 )
 	{
-		tstate = gfx->GetState( ).GetTextState() ;
+		gstate = gfx->GetState( ) ;
 	
 		m_gfx.push_back( gfx ) ;
 		gfx = 0 ;
@@ -164,7 +164,7 @@ const Graphics* RealContent::Item( std::size_t idx ) const
 
 Text* RealContent::AddText( const TextState& ts )
 {
-	RealText *t = new RealText( ts ) ;
+	RealText *t = new RealText( GraphicsState(ts) ) ;
 	m_gfx.push_back( t ) ;
 	return t ;
 }

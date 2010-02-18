@@ -29,7 +29,7 @@
 #include "graphics/Text.hh"
 
 #include "core/Token.hh"
-#include "graphics/TextState.hh"
+#include "graphics/GraphicsState.hh"
 #include "graphics/TextLine.hh"
 
 #include <map>
@@ -46,7 +46,8 @@ class Resources ;
 class RealText : public Text
 {
 public :
-	explicit RealText( const TextState& ts = TextState() ) ;
+	explicit RealText( const GraphicsState& ts = GraphicsState() ) ;
+	explicit RealText( const TextState& ts ) ;
 
 	void OnCommand(
 		const Token& 	cmd,
@@ -112,8 +113,8 @@ private :
 	///	Lines inside this text object
 	std::vector<TextLine>	m_lines ;
 	
-	///	Current text state
-	TextState	m_state ;
+	///	Current graphics state
+	GraphicsState	m_state ;
 	
 	///	Current text line matrix.
 	/**	This matrix is only affect by the Td/TD and Tm commands. It will be

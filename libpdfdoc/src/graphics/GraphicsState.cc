@@ -29,9 +29,16 @@
 
 #include "util/Util.hh"
 
+#include <boost/function.hpp>
+
 #include <set>
 
 namespace pdf {
+
+typedef boost::function<void *(
+	Object *,
+	std::size_t,
+	Resources)> Handler ;
 
 /**	constructor
 	
@@ -42,6 +49,11 @@ GraphicsState::GraphicsState( const TextState& ts )
 }
 
 const TextState& GraphicsState::GetTextState() const
+{
+	return m_text ;
+}
+
+TextState& GraphicsState::GetTextState()
 {
 	return m_text ;
 }
@@ -61,6 +73,10 @@ void GraphicsState::OnCommand(
 	std::size_t		count,
 	Resources		*res )
 {
+	using namespace boost ;
+	static const std::pair<Token, Handler> handlers[1] =
+	{
+	} ;
 }
 
 bool GraphicsState::IsGSCommand( const Token& cmd )

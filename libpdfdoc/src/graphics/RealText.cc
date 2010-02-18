@@ -70,9 +70,15 @@ const RealText::HandlerMap RealText::m_handler_map(
 
 /**	constructor
 */
+RealText::RealText( const GraphicsState& gs )
+	: m_lines( 1, TextLine( gs.GetTextState(), Matrix() ) ),
+	  m_state( gs )
+{
+}
+
 RealText::RealText( const TextState& ts )
 	: m_lines( 1, TextLine( ts, Matrix() ) ),
-	  m_state( ts )
+	  m_state( GraphicsState( ts ) )
 {
 }
 
@@ -152,7 +158,7 @@ void RealText::AddLine( const TextLine& line )
 
 void RealText::AddLine( double x, double y, const std::wstring& text )
 {
-	TextLine line( m_state, Matrix( 1,0,0,1, x, y ) ) ;
+	TextLine line( m_state.GetTextState(), Matrix( 1,0,0,1, x, y ) ) ;
 	line.AppendText( text ) ;
 	return AddLine( line ) ;
 }
@@ -206,7 +212,7 @@ void RealText::OnTd( Object* args, std::size_t count, Resources* )
 		m_line_mat.Dy( m_line_mat.Dy() + args[1].To<double>() ) ;
 		m_text_mat = m_line_mat ;
 
-		AddLine( TextLine( m_state, m_line_mat ) ) ;
+		AddLine( TextLine( m_state.GetTextState(), m_line_mat ) ) ;
 	}
 }
 
@@ -216,13 +222,13 @@ void RealText::OnTD( Object* args, std::size_t count, Resources *res )
 	if ( count >= 2 )
 	{
 		double	ty	= args[1] ;
-		m_state.SetLeading( -ty ) ;
+		m_state.GetTextState().SetLeading( -ty ) ;
 		
 		m_line_mat.Dx( m_line_mat.Dx() + args[0].To<double>() ) ;
 		m_line_mat.Dy( m_line_mat.Dy() + args[1].To<double>() ) ;
 		m_text_mat = m_line_mat ;
 		
-		AddLine( TextLine( m_state, m_line_mat ) ) ;
+		AddLine( TextLine( m_state.GetTextState(), m_line_mat ) ) ;
 	}
 }
 
@@ -235,7 +241,7 @@ void RealText::OnTm( Object* args, std::size_t count, Resources* )
 		m_text_mat = m_line_mat = Matrix(
 			args[0], args[1], args[2], args[3], args[4], args[5] ) ;
 		
-		AddLine( TextLine( m_state, m_line_mat ) ) ;
+		AddLine( TextLine( m_state.GetTextState(), m_line_mat ) ) ;
 	}
 }
 
@@ -243,10 +249,10 @@ void RealText::OnTstar( Object* , std::size_t , Resources * )
 {
 //	m_text_mat = m_line_mat = m_line_mat *
 //		Matrix( 1, 0, 0, 1, 0, -m_state.Leading() ) ;
-	m_line_mat.Dy( m_line_mat.Dy() -m_state.Leading() ) ;
+	m_line_mat.Dy( m_line_mat.Dy() -m_state.GetTextState().Leading() ) ;
 	m_text_mat = m_line_mat ;
 	
-	AddLine( TextLine( m_state, m_line_mat ) ) ;
+	AddLine( TextLine( m_state.GetTextState(), m_line_mat ) ) ;
 }
 
 ///	Shows a Text string
@@ -266,7 +272,7 @@ void RealText::OnTj( Object* args, std::size_t count, Resources * )
 			
 			current.AppendText( ws ) ;
 			
-			m_text_mat.Dx( m_text_mat.Dx() + m_state.Width( ws ) ) ; 
+			m_text_mat.Dx( m_text_mat.Dx() + m_state.GetTextState().Width( ws ) ) ; 
 		}
 	}
 }
@@ -298,13 +304,13 @@ void RealText::OnTJ( Object* args, std::size_t count, Resources *res )
 		{
 			std::string& s = i->As<std::string>() ;
 			std::wstring ws( s.begin(), s.end() ) ;
-			offset += m_state.Width( ws ) ;
+			offset += m_state.GetTextState().Width( ws ) ;
 
 			current.AppendText( ws ) ;
 		}
 		else if ( i->IsNumber() )
 		{
-			double disp = i->To<double>() / 1000.0 * m_state.FontSize() ;
+			double disp = i->To<double>() / 1000.0 * m_state.GetTextState().FontSize() ;
 			offset -= disp ;
 			
 			current.AppendSpace( disp ) ;
@@ -340,15 +346,15 @@ void RealText::OnTf( Object* args, std::size_t count, Resources *res )
 			TextLine& current = m_lines.back() ;
 			
 			if ( current.IsEmpty()					||
-				 m_state.FontSize()	!= font_size	||
-				 m_state.GetFont()	!= f )
+				 m_state.GetTextState().FontSize()	!= font_size	||
+				 m_state.GetTextState().GetFont()	!= f )
 			{
-				m_state.SetFont( font_size, f ) ;
+				m_state.GetTextState().SetFont( font_size, f ) ;
 
 				if ( current.IsEmpty() )
-					current.SetFormat( m_state ) ;
+					current.SetFormat( m_state.GetTextState() ) ;
 				else
-					m_lines.push_back( TextLine( m_state, m_text_mat ) ) ;
+					m_lines.push_back( TextLine( m_state.GetTextState(), m_text_mat ) ) ;
 			}
 		}
 	}
@@ -357,7 +363,7 @@ void RealText::OnTf( Object* args, std::size_t count, Resources *res )
 void RealText::OnTL( Object* args, std::size_t count, Resources *res )
 {
 	if ( count > 0 && args[0].IsNumber() )
-		m_state.SetLeading( args[0].To<double>() ) ;
+		m_state.GetTextState().SetLeading( args[0].To<double>() ) ;
 }
 
 bool RealText::operator==( const RealText& rhs ) const
@@ -373,7 +379,7 @@ bool RealText::operator!=( const RealText& rhs ) const
 
 GraphicsState RealText::GetState() const
 {
-	return GraphicsState(m_state) ;
+	return m_state ;
 }
 
 } // end of namespace
