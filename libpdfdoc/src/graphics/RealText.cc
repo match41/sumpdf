@@ -67,13 +67,13 @@ const RealText::HandlerMap RealText::m_handler_map(
 /**	constructor
 */
 RealText::RealText( const GraphicsState& gs )
-	: m_lines( 1, TextLine( gs.GetTextState(), Matrix() ) ),
+	: m_lines( 1, TextLine( gs, Matrix() ) ),
 	  m_state( gs )
 {
 }
 
 RealText::RealText( const TextState& ts )
-	: m_lines( 1, TextLine( ts, Matrix() ) ),
+	: m_lines( 1, TextLine( GraphicsState( ts ), Matrix() ) ),
 	  m_state( GraphicsState( ts ) )
 {
 }
@@ -152,7 +152,7 @@ void RealText::OnCommand(
 			if ( current.IsEmpty() )
 				current.SetFormat( m_state.GetTextState() ) ;
 			else
-				m_lines.push_back( TextLine( m_state.GetTextState(), m_text_mat ) ) ;
+				m_lines.push_back( TextLine( m_state, m_text_mat ) ) ;
 		}
 	}
 }
@@ -170,7 +170,7 @@ void RealText::AddLine( const TextLine& line )
 
 void RealText::AddLine( double x, double y, const std::wstring& text )
 {
-	TextLine line( m_state.GetTextState(), Matrix( 1,0,0,1, x, y ) ) ;
+	TextLine line( m_state, Matrix( 1,0,0,1, x, y ) ) ;
 	line.AppendText( text ) ;
 	return AddLine( line ) ;
 }
@@ -192,14 +192,14 @@ void RealText::Print( std::ostream& os, const Resources *res ) const
 	os << "BT\n" ;
 	
 	// rendering state
-	TextState	ts ;
-	Matrix		trans ;
+	GraphicsState	gs ;
+	Matrix			trans ;
 
 	using namespace boost ;
 	std::for_each(
 		m_lines.begin(),
 		m_lines.end(),
-		bind( &TextLine::Print, _1, ref(os), ref(trans), ref(ts), res ) ) ;
+		bind( &TextLine::Print, _1, ref(os), ref(trans), ref(gs), res ) ) ;
 
 	os << "ET\n" ;
 }
@@ -224,7 +224,7 @@ void RealText::OnTd( Object* args, std::size_t count, Resources* )
 		m_line_mat.Dy( m_line_mat.Dy() + args[1].To<double>() ) ;
 		m_text_mat = m_line_mat ;
 
-		AddLine( TextLine( m_state.GetTextState(), m_line_mat ) ) ;
+		AddLine( TextLine( m_state, m_line_mat ) ) ;
 	}
 }
 
@@ -240,7 +240,7 @@ void RealText::OnTD( Object* args, std::size_t count, Resources *res )
 		m_line_mat.Dy( m_line_mat.Dy() + args[1].To<double>() ) ;
 		m_text_mat = m_line_mat ;
 		
-		AddLine( TextLine( m_state.GetTextState(), m_line_mat ) ) ;
+		AddLine( TextLine( m_state, m_line_mat ) ) ;
 	}
 }
 
@@ -253,7 +253,7 @@ void RealText::OnTm( Object* args, std::size_t count, Resources* )
 		m_text_mat = m_line_mat = Matrix(
 			args[0], args[1], args[2], args[3], args[4], args[5] ) ;
 		
-		AddLine( TextLine( m_state.GetTextState(), m_line_mat ) ) ;
+		AddLine( TextLine( m_state, m_line_mat ) ) ;
 	}
 }
 
@@ -262,7 +262,7 @@ void RealText::OnTstar( Object* , std::size_t , Resources * )
 	m_line_mat.Dy( m_line_mat.Dy() -m_state.GetTextState().Leading() ) ;
 	m_text_mat = m_line_mat ;
 	
-	AddLine( TextLine( m_state.GetTextState(), m_line_mat ) ) ;
+	AddLine( TextLine( m_state, m_line_mat ) ) ;
 }
 
 ///	Shows a Text string

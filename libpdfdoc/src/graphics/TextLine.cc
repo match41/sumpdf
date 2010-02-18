@@ -54,9 +54,9 @@ namespace pdf {
 
 ///	constructor
 TextLine::TextLine(
-	const TextState& 	state,
-	const Matrix& 		transform,
-	const std::wstring&	text )
+	const GraphicsState& 	state,
+	const Matrix& 			transform,
+	const std::wstring&		text )
     : m_trans( transform ),
       m_state( state ),
       m_text( text )
@@ -88,10 +88,10 @@ void TextLine::AppendText( const std::wstring& text )
 }
 
 std::ostream& TextLine::Print(
-	std::ostream& 	os,
-	Matrix&			current,
-	TextState& 		state,
-	const Resources	*res ) const
+	std::ostream& 			os,
+	Matrix&					current,
+	const GraphicsState& 	state,
+	const Resources			*res ) const
 {
 	if ( m_trans.IsTranslate() && current.IsTranslate() )
 		os	<< (m_trans.Dx()-current.Dx()) << ' ' 
@@ -159,12 +159,12 @@ bool TextLine::operator!=( const TextLine& rhs ) const
 
 const TextState& TextLine::Format() const
 {
-	return m_state ;
+	return m_state.GetTextState() ;
 }
 
 void TextLine::SetFormat( const TextState& fmt )
 {
-	m_state = fmt ;
+	m_state.GetTextState() = fmt ;
 }
 
 const std::wstring& TextLine::Text() const
@@ -182,7 +182,7 @@ const std::wstring& TextLine::Text() const
 */
 double TextLine::Width( ) const
 {
-	return m_state.Width( m_text ) -
+	return m_state.GetTextState().Width( m_text ) -
 		std::accumulate(
 			m_space.begin(),
 			m_space.end(),
@@ -214,12 +214,14 @@ void TextLine::VisitChars( CharVisitor *v ) const
 	
 		const Glyph *glyph = font->GetGlyph( m_text[idx] ) ;
 
+		const TextState& ts = m_state.GetTextState() ;
+
 		if ( glyph != 0 && glyph->IsOutline() )
 		{
-			v->OnChar( m_text[idx], tm, glyph, m_state ) ;
+			v->OnChar( m_text[idx], tm, glyph, ts ) ;
 
 			// update X position
-			tm.Dx( tm.Dx() + glyph->AdvanceX() * m_state.ScaleFactor() ) ;
+			tm.Dx( tm.Dx() + glyph->AdvanceX() * ts.ScaleFactor() ) ;
 		}
 		else
 		{

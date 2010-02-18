@@ -53,6 +53,8 @@ public :
 	const TextState& GetTextState() const ;
 	TextState& GetTextState() ;
 
+	Font* GetFont( ) const ;
+
 	std::ostream& Print(
 		std::ostream&			os,
 		const Resources			*res,
@@ -66,6 +68,8 @@ public :
 		Resources		*res ) ;
 
 	static bool IsGSCommand( const Token& cmd ) ;
+
+	bool operator==( const GraphicsState& gs ) const ;
 
 private :
     /// command handler

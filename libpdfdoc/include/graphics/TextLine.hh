@@ -29,7 +29,7 @@
 
 #include "libpdfdoc.hh"
 
-#include "TextState.hh"
+#include "GraphicsState.hh"
 #include "util/Matrix.hh"
 
 #include <iosfwd>
@@ -54,9 +54,9 @@ class LIBPDFDOC_API TextLine
 {
 public :
 	explicit TextLine(
-		const TextState& 	state		= TextState(),		
-		const Matrix&		transform	= Matrix(),
-		const std::wstring&	text		= std::wstring() ) ;
+		const GraphicsState& 	state		= GraphicsState(),		
+		const Matrix&			transform	= Matrix(),
+		const std::wstring&		text		= std::wstring() ) ;
 
 	// uses default generated copy constructor
 
@@ -69,10 +69,10 @@ public :
 	void AppendSpace( double width ) ;
 
 	std::ostream& Print(
-		std::ostream& 	os,
-		Matrix&			current,
-		TextState& 		state,
-		const Resources	*res ) const ;
+		std::ostream& 			os,
+		Matrix&					current,
+		const GraphicsState& 	state,
+		const Resources			*res ) const ;
 
 	bool operator==( const TextLine& rhs ) const ;
 	bool operator!=( const TextLine& rhs ) const ;
@@ -103,10 +103,10 @@ private :
 
 private :
 	/// The text matrix.
-	Matrix	m_trans ;
+	Matrix			m_trans ;
 	
 	///	The text state.
-	TextState		m_state ;
+	GraphicsState	m_state ;
 	
 	///	The text string.
 	std::wstring	m_text ;

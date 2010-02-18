@@ -135,4 +135,15 @@ bool GraphicsState::OnTL( Object* args, std::size_t count, Resources *res )
 		return false ;
 }
 
+Font* GraphicsState::GetFont( ) const
+{
+	return m_text.GetFont( ) ;
+}
+
+bool GraphicsState::operator==( const GraphicsState& gs ) const
+{
+	// TODO: add more members
+	return m_text == gs.m_text ;
+}
+
 } // end of namespace

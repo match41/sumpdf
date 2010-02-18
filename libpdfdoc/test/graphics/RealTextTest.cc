@@ -80,7 +80,7 @@ void RealTextTest::TestTdCmd( )
 	PDFUT_ASSERT_EQUAL( t.front().Transform(), Matrix(1,0,0,1,400,1100) ) ;
 	
 	RealText exp( ts ) ;
-	exp.back() = TextLine( ts, Matrix(1,0,0,1,400,1100) ) ;
+	exp.back() = TextLine( (GraphicsState(ts)), (Matrix(1,0,0,1,400,1100)) ) ;
 	PDFUT_ASSERT_EQUAL( t, exp ) ;
 }
 
