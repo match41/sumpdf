@@ -32,6 +32,7 @@
 #include "util/Matrix.hh"
 
 #include <iosfwd>
+#include <map>
 
 namespace pdf {
 
@@ -57,13 +58,29 @@ public :
 		const Resources			*res,
 		const GraphicsState&	prev = GraphicsState() ) const ;
 
-	void OnCommand(
+	/// Handle PDF content operators.
+	bool OnCommand(
 		const Token& 	cmd,
 		Object 			*args,
 		std::size_t		count,
 		Resources		*res ) ;
 
 	static bool IsGSCommand( const Token& cmd ) ;
+
+private :
+    /// command handler
+	typedef bool (GraphicsState::*Handler)(
+		Object			*args,
+		std::size_t		count,
+		Resources		*res ) ;
+	typedef std::map<Token, Handler>	HandlerMap ;
+
+	static const HandlerMap::value_type	m_handler_map_values[] ;
+	static const HandlerMap				m_handler_map ;
+
+	// text state command handlers
+	bool OnTf( Object* args, std::size_t count, Resources *res ) ;
+	bool OnTL( Object* args, std::size_t count, Resources *res ) ;
 
 private :
 	/// The current transformation matrix

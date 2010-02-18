@@ -25,20 +25,31 @@
 
 #include "graphics/GraphicsState.hh"
 
+#include "core/Object.hh"
 #include "core/Token.hh"
 
+#include "font/BaseFont.hh"
+
+#include "page/Resources.hh"
+
+#include "util/Debug.hh"
 #include "util/Util.hh"
 
-#include <boost/function.hpp>
-
-#include <set>
+#include <iostream>
 
 namespace pdf {
 
-typedef boost::function<void *(
-	Object *,
-	std::size_t,
-	Resources)> Handler ;
+const GraphicsState::HandlerMap::value_type
+	GraphicsState::m_handler_map_values[] =
+{
+	// text state commands
+	std::make_pair( "Tf",	&GraphicsState::OnTf ),
+	std::make_pair( "TL",	&GraphicsState::OnTL ),
+} ;
+
+const GraphicsState::HandlerMap GraphicsState::m_handler_map(
+    Begin( GraphicsState::m_handler_map_values ),
+    End( GraphicsState::m_handler_map_values ) ) ;
 
 /**	constructor
 	
@@ -67,18 +78,20 @@ std::ostream& GraphicsState::Print(
 	return os ;
 }
 
-void GraphicsState::OnCommand(
+bool GraphicsState::OnCommand(
 	const Token& 	cmd,
 	Object 			*args,
 	std::size_t		count,
 	Resources		*res )
 {
-	using namespace boost ;
-	static const std::pair<Token, Handler> handlers[1] =
-	{
-	} ;
+	HandlerMap::const_iterator i = m_handler_map.find( cmd ) ;
+	if ( i != m_handler_map.end() )
+		return (this->*(i->second))( args, count, res ) ;
+
+	return false ;
 }
 
+/*
 bool GraphicsState::IsGSCommand( const Token& cmd )
 {
 	static const std::string cmds[] =
@@ -90,6 +103,42 @@ bool GraphicsState::IsGSCommand( const Token& cmd )
 	} ;
 	static const std::set<std::string> cmd_set( Begin(cmds), End(cmds) ) ;
 	return cmd_set.find( cmd.Get() ) != cmd_set.end() ;
+}
+*/
+
+bool GraphicsState::OnTf( Object* args, std::size_t count, Resources *res )
+{
+	PDF_ASSERT( res != 0 ) ;
+
+	if ( count >= 2 && args[0].Is<Name>() && args[1].IsNumber() )
+	{
+		BaseFont *f = res->FindFont( args[0].As<Name>() ) ;
+		if ( f == 0 )
+			std::cout << "unknown font: " << args[1] << std::endl ;
+		else
+		{
+			double font_size = args[1].To<double>() ;
+			
+			if ( m_text.FontSize()	!= font_size	||
+				 m_text.GetFont()	!= f )
+			{
+				m_text.SetFont( font_size, f ) ;
+				return true ;
+			}
+		}
+	}
+	return false ;
+}
+
+bool GraphicsState::OnTL( Object* args, std::size_t count, Resources *res )
+{
+	if ( count > 0 && args[0].IsNumber() )
+	{
+		m_text.SetLeading( args[0].To<double>() ) ;
+		return true ;
+	}
+	else
+		return false ;
 }
 
 } // end of namespace

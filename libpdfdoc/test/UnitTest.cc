@@ -35,6 +35,7 @@
 #include "core/StringTest.hh"
 #include "core/DictionaryTest.hh"
 #include "core/ArrayTest.hh"
+#include "graphics/GraphicsStateTest.hh"
 #include "graphics/TextStateTest.hh"
 #include "graphics/TextLineTest.hh"
 #include "graphics/RealTextTest.hh"
@@ -90,6 +91,7 @@ int main( int argc, char **argv )
 	runner.addTest( TextLineTest::suite( ) ) ;
 	runner.addTest( NameTreeTest::suite( ) ) ;
 	runner.addTest( FontDbTest::suite( ) ) ;
+	runner.addTest( GraphicsStateTest::suite( ) ) ;
 	
 // freetype library is optional
 #ifdef HAVE_FREETYPE
