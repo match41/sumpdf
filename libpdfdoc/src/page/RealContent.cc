@@ -143,6 +143,10 @@ Graphics* RealContent::ProcessCommand(
 		// TODO: remove dynamic_cast
 		gfx->OnCommand( cmd, args, count, res ) ;
 	}
+	else
+	{
+		gstate.OnCommand( cmd, args, count, res ) ;
+	}
 	
 	return gfx ;
 }

@@ -58,6 +58,7 @@ void GraphicsStateTest::TestTextStateCommand( )
 	Name font_name = res.AddFont( &font ) ;
 	
 	GraphicsState subject ;
+	CPPUNIT_ASSERT( GraphicsState::IsGSCommand( Token("Tf") ) ) ;
 	
 	Object args[] = { font_name, 12.0 } ;
 	CPPUNIT_ASSERT( subject.OnCommand( Token("Tf"), args, Count(args), &res ) );

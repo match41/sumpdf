@@ -43,10 +43,12 @@ public :
 	// declare suit function
 	CPPUNIT_TEST_SUITE( RealContentTest ) ;
 		CPPUNIT_TEST( TestWrite ) ;
+		CPPUNIT_TEST( TestRead ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
 private :
 	void TestWrite( ) ;
+	void TestRead( ) ;
 } ;
 
 } // end of namespace

@@ -30,8 +30,13 @@
 #include "graphics/Text.hh"
 #include "graphics/TextLine.hh"
 #include "graphics/TextState.hh"
+
+#include "mock/Assert.hh"
 #include "mock/MockFont.hh"
+
 #include "stream/Stream.hh"
+
+#include "util/Util.hh"
 
 #include <sstream>
 
@@ -70,6 +75,36 @@ void RealContentTest::TestWrite( )
 
 	Stream str ;
 	subject.Write( str, &res ) ;
+}
+
+void RealContentTest::TestRead( )
+{
+	MockFont font ;
+	MockResources res ;
+	Name fname = res.AddFont( &font ) ; 
+
+	std::ostringstream oss ;
+	oss << fname << " 14.0 Tf BT (Hello World!) Tj ET" ;
+
+	Stream str[1] = { Stream( oss.str() ) } ;
+
+	RealContent subject ;
+	subject.Load( Begin(str), End(str), &res ) ;
+	
+	PDFUT_ASSERT_EQUAL( subject.Count(), 1U ) ;
+	
+	TextState ts ;
+	ts.SetFont( 14.0, &font ) ;
+	Matrix tm( 1,0,0,1, 0, 0 ) ;
+	TextLine tl( ts, tm ) ;
+	tl.AppendText( L"Hello World!" ) ;
+	
+	const Text *text = dynamic_cast<const Text*>( subject.Item(0) ) ;
+	CPPUNIT_ASSERT( text != 0 ) ;
+	PDFUT_ASSERT_EQUAL( text->Count(), 1U ) ;
+	Text::const_iterator tit = text->begin() ;
+	CPPUNIT_ASSERT( tit != text->end() ) ;
+	PDFUT_ASSERT_EQUAL( *tit, tl ) ;
 }
 
 } // end of namespace

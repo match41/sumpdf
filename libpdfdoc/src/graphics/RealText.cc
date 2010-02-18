@@ -58,10 +58,6 @@ const RealText::HandlerMap::value_type	RealText::m_handler_map_values[] =
 	std::make_pair( "TJ",	&RealText::OnTJ ),
 	std::make_pair( "\'",	&RealText::OnSingleQuote ),
 	std::make_pair( "\"",	&RealText::OnDoubleQuote ),
-
-	// text state commands
-	std::make_pair( "Tf",	&RealText::OnTf ),
-	std::make_pair( "TL",	&RealText::OnTL ),
 } ;
 
 const RealText::HandlerMap RealText::m_handler_map(
@@ -143,6 +139,22 @@ void RealText::OnCommand(
 	HandlerMap::const_iterator i = m_handler_map.find( cmd ) ;
 	if ( i != m_handler_map.end() )
 		(this->*(i->second))( args, count, res ) ;
+	
+	else if ( GraphicsState::IsGSCommand( cmd ) )
+	{
+		TextLine& current = m_lines.back() ;
+		
+		// state changed
+		bool is_changed = m_state.OnCommand( cmd, args, count, res ) ;
+					
+		if ( current.IsEmpty() || is_changed )
+		{
+			if ( current.IsEmpty() )
+				current.SetFormat( m_state.GetTextState() ) ;
+			else
+				m_lines.push_back( TextLine( m_state.GetTextState(), m_text_mat ) ) ;
+		}
+	}
 }
 
 void RealText::AddLine( const TextLine& line )
@@ -247,8 +259,6 @@ void RealText::OnTm( Object* args, std::size_t count, Resources* )
 
 void RealText::OnTstar( Object* , std::size_t , Resources * )
 {
-//	m_text_mat = m_line_mat = m_line_mat *
-//		Matrix( 1, 0, 0, 1, 0, -m_state.Leading() ) ;
 	m_line_mat.Dy( m_line_mat.Dy() -m_state.GetTextState().Leading() ) ;
 	m_text_mat = m_line_mat ;
 	
@@ -328,42 +338,6 @@ void RealText::OnSingleQuote( Object* args, std::size_t count, Resources *res )
 
 void RealText::OnDoubleQuote( Object* args, std::size_t count, Resources *res )
 {
-}
-
-void RealText::OnTf( Object* args, std::size_t count, Resources *res )
-{
-	PDF_ASSERT( res != 0 ) ;
-
-	if ( count >= 2 && args[0].Is<Name>() && args[1].IsNumber() )
-	{
-		BaseFont *f = res->FindFont( args[0].As<Name>() ) ;
-		if ( f == 0 )
-			std::cout << "unknown font: " << args[1] << std::endl ;
-		else
-		{
-			double font_size = args[1].To<double>() ;
-			
-			TextLine& current = m_lines.back() ;
-			
-			if ( current.IsEmpty()					||
-				 m_state.GetTextState().FontSize()	!= font_size	||
-				 m_state.GetTextState().GetFont()	!= f )
-			{
-				m_state.GetTextState().SetFont( font_size, f ) ;
-
-				if ( current.IsEmpty() )
-					current.SetFormat( m_state.GetTextState() ) ;
-				else
-					m_lines.push_back( TextLine( m_state.GetTextState(), m_text_mat ) ) ;
-			}
-		}
-	}
-}
-
-void RealText::OnTL( Object* args, std::size_t count, Resources *res )
-{
-	if ( count > 0 && args[0].IsNumber() )
-		m_state.GetTextState().SetLeading( args[0].To<double>() ) ;
 }
 
 bool RealText::operator==( const RealText& rhs ) const

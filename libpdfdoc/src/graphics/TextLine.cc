@@ -105,6 +105,11 @@ std::ostream& TextLine::Print(
 	current = m_trans ;
 	
 	m_state.Print( os, res, state ) ;
+	return PrintText( os ) ;
+}
+
+std::ostream& TextLine::PrintText( std::ostream& os ) const
+{
 	if ( m_space.empty() )
 		return
 			os	<< String( std::string( m_text.begin(), m_text.end() ) )
@@ -135,10 +140,7 @@ std::ostream& TextLine::Print(
 std::ostream& operator<<( std::ostream& os, const TextLine& t )
 {
 	os << "<TextLine transform=\"" << t.Transform() << "\">\n" ;
-//	std::copy(
-//		t.begin(),
-//		t.end(), 
-//		std::ostream_iterator<TextBlock>( os, "\n" ) ) ;
+	t.PrintText( os ) ;
 	return os << "</TextLine>" ;
 }
 

@@ -95,6 +95,11 @@ public :
 					OnChar() member function will be called.
 	*/
 	void VisitChars( CharVisitor *v ) const ;
+	
+	friend std::ostream& operator<<( std::ostream& os, const TextLine& t ) ;
+
+private :
+	std::ostream& PrintText( std::ostream& os ) const ;
 
 private :
 	/// The text matrix.
@@ -122,8 +127,6 @@ private :
 	*/
 	std::vector<Space>	m_space ;
 } ;
-
-std::ostream& operator<<( std::ostream& os, const TextLine& t ) ;
 
 } // end of namespace
 

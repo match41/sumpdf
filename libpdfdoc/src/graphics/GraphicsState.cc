@@ -78,6 +78,9 @@ std::ostream& GraphicsState::Print(
 	return os ;
 }
 
+/**	Handles PDF operators in the content stream.
+	\return	\c true if the state is changed by the command. Otherwise \c false.
+*/
 bool GraphicsState::OnCommand(
 	const Token& 	cmd,
 	Object 			*args,
@@ -91,20 +94,11 @@ bool GraphicsState::OnCommand(
 	return false ;
 }
 
-/*
 bool GraphicsState::IsGSCommand( const Token& cmd )
 {
-	static const std::string cmds[] =
-	{
-		"w", "J", "j", "M", "d", "ri", "i", "gs"
-		"q", "Q", "cm",
-		
-		"Tc", "Tw", "Tz", "TL", "Tf", "Tr", "Ts",
-	} ;
-	static const std::set<std::string> cmd_set( Begin(cmds), End(cmds) ) ;
-	return cmd_set.find( cmd.Get() ) != cmd_set.end() ;
+	HandlerMap::const_iterator i = m_handler_map.find( cmd ) ;
+	return i != m_handler_map.end() ;
 }
-*/
 
 bool GraphicsState::OnTf( Object* args, std::size_t count, Resources *res )
 {
