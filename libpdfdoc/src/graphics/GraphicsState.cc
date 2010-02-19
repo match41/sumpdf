@@ -39,17 +39,30 @@
 
 namespace pdf {
 
-const GraphicsState::HandlerMap::value_type
-	GraphicsState::m_handler_map_values[] =
+struct GraphicsState::HandlerMap
+{
+	/// command handler
+	typedef bool (GraphicsState::*Handler)(
+		Object			*args,
+		std::size_t		count,
+		Resources		*res ) ;
+	typedef std::map<Token, Handler>	Map ;
+
+	static const Map::value_type	m_val[] ;
+	static const Map				m_map ;
+} ;
+
+const GraphicsState::HandlerMap::Map::value_type
+	GraphicsState::HandlerMap::m_val[] =
 {
 	// text state commands
 	std::make_pair( "Tf",	&GraphicsState::OnTf ),
 	std::make_pair( "TL",	&GraphicsState::OnTL ),
 } ;
 
-const GraphicsState::HandlerMap GraphicsState::m_handler_map(
-    Begin( GraphicsState::m_handler_map_values ),
-    End( GraphicsState::m_handler_map_values ) ) ;
+const GraphicsState::HandlerMap::Map GraphicsState::HandlerMap::m_map(
+    Begin( GraphicsState::HandlerMap::m_val ),
+    End( GraphicsState::HandlerMap::m_val ) ) ;
 
 /**	constructor
 	
@@ -87,8 +100,8 @@ bool GraphicsState::OnCommand(
 	std::size_t		count,
 	Resources		*res )
 {
-	HandlerMap::const_iterator i = m_handler_map.find( cmd ) ;
-	if ( i != m_handler_map.end() )
+	HandlerMap::Map::const_iterator i = HandlerMap::m_map.find( cmd ) ;
+	if ( i != HandlerMap::m_map.end() )
 		return (this->*(i->second))( args, count, res ) ;
 
 	return false ;
@@ -96,8 +109,8 @@ bool GraphicsState::OnCommand(
 
 bool GraphicsState::IsGSCommand( const Token& cmd )
 {
-	HandlerMap::const_iterator i = m_handler_map.find( cmd ) ;
-	return i != m_handler_map.end() ;
+	HandlerMap::Map::const_iterator i = HandlerMap::m_map.find( cmd ) ;
+	return i != HandlerMap::m_map.end() ;
 }
 
 bool GraphicsState::OnTf( Object* args, std::size_t count, Resources *res )

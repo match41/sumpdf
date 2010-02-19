@@ -72,15 +72,8 @@ public :
 	bool operator==( const GraphicsState& gs ) const ;
 
 private :
-    /// command handler
-	typedef bool (GraphicsState::*Handler)(
-		Object			*args,
-		std::size_t		count,
-		Resources		*res ) ;
-	typedef std::map<Token, Handler>	HandlerMap ;
-
-	static const HandlerMap::value_type	m_handler_map_values[] ;
-	static const HandlerMap				m_handler_map ;
+	struct HandlerMap ;
+	friend struct HandlerMap ;
 
 	// text state command handlers
 	bool OnTf( Object* args, std::size_t count, Resources *res ) ;
