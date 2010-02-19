@@ -78,8 +78,8 @@ public :
 	bool operator!=( const TextLine& rhs ) const ;
 
 	/// Returns the text state of the text line.
-	const TextState& Format() const ;
-	void SetFormat( const TextState& fmt ) ;
+	const GraphicsState& Format() const ;
+	void SetFormat( const GraphicsState& fmt ) ;
 
 	///	Returns the unicode string of the text line.
 	const std::wstring& Text() const ;

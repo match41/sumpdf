@@ -47,7 +47,6 @@ class RealText : public Text
 {
 public :
 	explicit RealText( const GraphicsState& ts = GraphicsState() ) ;
-	explicit RealText( const TextState& ts ) ;
 
 	void OnCommand(
 		const Token& 	cmd,

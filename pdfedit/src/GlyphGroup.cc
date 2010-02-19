@@ -71,7 +71,7 @@ int GlyphGroup::type( ) const
 	return Type ;
 }
 
-const TextState& GlyphGroup::Format( ) const
+const GraphicsState& GlyphGroup::Format( ) const
 {
 	return m_state ;
 }

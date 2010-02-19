@@ -72,12 +72,6 @@ RealText::RealText( const GraphicsState& gs )
 {
 }
 
-RealText::RealText( const TextState& ts )
-	: m_lines( 1, TextLine( GraphicsState( ts ), Matrix() ) ),
-	  m_state( GraphicsState( ts ) )
-{
-}
-
 RealText::iterator RealText::begin()
 {
 	return m_lines.begin( ) ;
@@ -150,7 +144,7 @@ void RealText::OnCommand(
 		if ( current.IsEmpty() || is_changed )
 		{
 			if ( current.IsEmpty() )
-				current.SetFormat( m_state.GetTextState() ) ;
+				current.SetFormat( m_state ) ;
 			else
 				m_lines.push_back( TextLine( m_state, m_text_mat ) ) ;
 		}

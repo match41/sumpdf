@@ -53,10 +53,11 @@ void RealTextTest::TestTdCmd( )
 	
 	TextState ts ;
 	ts.SetFont( 12.0, &font ) ;
+	GraphicsState gs( ts ) ;
 
-	RealText t( ts ) ;
+	RealText t( gs ) ;
 	PDFUT_ASSERT_EQUAL( t.Count(), 1U ) ;
-	PDFUT_ASSERT_EQUAL( t.front().Format(), ts ) ;
+	PDFUT_ASSERT_EQUAL( t.front().Format(), gs ) ;
 	PDFUT_ASSERT_EQUAL( t.front().Transform(), Matrix() ) ;
 
 	// action: translate to 100,200
@@ -66,7 +67,7 @@ void RealTextTest::TestTdCmd( )
 	
 	// expected: no new text line is added. current matrix translated
 	PDFUT_ASSERT_EQUAL( t.Count(), 1U ) ;
-	PDFUT_ASSERT_EQUAL( t.front().Format(), ts ) ;
+	PDFUT_ASSERT_EQUAL( t.front().Format(), gs ) ;
 	PDFUT_ASSERT_EQUAL( t.front().Transform(), Matrix(1,0,0,1,100,200) ) ;
 
 	// action: move another 300,900
@@ -76,11 +77,11 @@ void RealTextTest::TestTdCmd( )
 	
 	// expected: the two translation is combined
 	PDFUT_ASSERT_EQUAL( t.Count(), 1U ) ;
-	PDFUT_ASSERT_EQUAL( t.front().Format(), ts ) ;
+	PDFUT_ASSERT_EQUAL( t.front().Format(), gs ) ;
 	PDFUT_ASSERT_EQUAL( t.front().Transform(), Matrix(1,0,0,1,400,1100) ) ;
 	
-	RealText exp( ts ) ;
-	exp.back() = TextLine( (GraphicsState(ts)), (Matrix(1,0,0,1,400,1100)) ) ;
+	RealText exp( gs ) ;
+	exp.back() = TextLine( gs, Matrix(1,0,0,1,400,1100) ) ;
 	PDFUT_ASSERT_EQUAL( t, exp ) ;
 }
 
@@ -91,8 +92,9 @@ void RealTextTest::TestTj( )
 	Name fname = res.AddFont( &font ) ;
 	
 	TextState ts( 12.0, &font ) ;
+	GraphicsState gs( ts ) ;
 
-	RealText t( ts ) ;
+	RealText t( gs ) ;
 	
 	// action: display a string "abc"
 	Object	args[]	= { "abc" } ;
@@ -100,7 +102,7 @@ void RealTextTest::TestTj( )
 	t.OnCommand( cmd, args, Count(args), &res ) ;
 	
 	PDFUT_ASSERT_EQUAL( t.Count(), 1U ) ;
-	PDFUT_ASSERT_EQUAL( t.front().Format(), ts ) ;
+	PDFUT_ASSERT_EQUAL( t.front().Format(), gs ) ;
 	PDFUT_ASSERT_EQUAL( t.front().Transform(), Matrix() ) ;
 	CPPUNIT_ASSERT( t.front().Text() == L"abc" ) ;
 	PDFUT_ASSERT_EQUAL( t.front().Width(), 18 ) ;
@@ -112,13 +114,14 @@ void RealTextTest::TestTj( )
 	t.OnCommand( cmd2, args2, Count(args2), &res ) ;
 	
 	PDFUT_ASSERT_EQUAL( t.Count(), 1U ) ;
-	PDFUT_ASSERT_EQUAL( t.back().Format(), ts ) ;
+	PDFUT_ASSERT_EQUAL( t.back().Format(), gs ) ;
 		
 	CPPUNIT_ASSERT( t.back().Text() == L"abcabc" ) ;
 	PDFUT_ASSERT_EQUAL( t.back().Width(), 36 ) ;
 	
 	// double font size
 	TextState ts2x( 24.0, &font ) ;
+	GraphicsState gs2x( ts2x ) ;
 	Object	args3[]	= { fname, 24.0 } ;
 	Token	cmd3( "Tf" ) ;
 	t.OnCommand( cmd3, args3, Count(args3), &res ) ;
@@ -129,7 +132,7 @@ void RealTextTest::TestTj( )
 	t.OnCommand( cmd4, args4, Count(args4), &res ) ;
 
 	PDFUT_ASSERT_EQUAL( t.Count(), 2U ) ;
-	PDFUT_ASSERT_EQUAL( t.back().Format(), ts2x ) ;
+	PDFUT_ASSERT_EQUAL( t.back().Format(), gs2x ) ;
 	PDFUT_ASSERT_EQUAL( 
 		t.back().Transform(),
 		Matrix(1,0,0,1, 36.0, 0 ) ) ;
@@ -142,8 +145,9 @@ void RealTextTest::TestTJ( )
 	Name fname = res.AddFont( &font ) ;
 	
 	TextState ts( 12.0, &font ) ;
+	GraphicsState gs( ts ) ;
 
-	RealText t( ts ) ;
+	RealText t( gs ) ;
 	
 	// action: display a string "abc"
 	Object	tj_ops[] = { "abc", -2000.0, "cde" } ;
@@ -153,7 +157,7 @@ void RealTextTest::TestTJ( )
 	t.OnCommand( cmd, args, Count(args), &res ) ;
 
 	PDFUT_ASSERT_EQUAL( t.Count(), 1U ) ;
-	PDFUT_ASSERT_EQUAL( t.front().Format(), ts ) ;
+	PDFUT_ASSERT_EQUAL( t.front().Format(), gs ) ;
 	
 	const TextLine& line = t.front() ;
 	PDFUT_ASSERT_EQUAL( line.Width(), 60.0 ) ;
@@ -182,7 +186,8 @@ void RealTextTest::TestTjx2( )
 	Name fname = res.AddFont( &font ) ;
 	
 	TextState ts( 12.0, &font ) ;
-	RealText t( ts ) ;
+	GraphicsState gs( ts ) ;
+	RealText t( gs ) ;
 
 	// action: display a string "111"
 	Object	args[]	= { "111" } ;
@@ -195,7 +200,7 @@ void RealTextTest::TestTjx2( )
 	t.OnCommand( cmd2, args2, Count(args2), &res ) ;
 
 	PDFUT_ASSERT_EQUAL( t.Count(), 1U ) ;
-	PDFUT_ASSERT_EQUAL( t.front().Format(), ts ) ;
+	PDFUT_ASSERT_EQUAL( t.front().Format(), gs ) ;
 	PDFUT_ASSERT_EQUAL( t.front().Transform(), Matrix() ) ;
 	CPPUNIT_ASSERT( t.front().Text() == L"111222" ) ;
 }

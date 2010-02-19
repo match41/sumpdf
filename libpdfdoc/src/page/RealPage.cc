@@ -163,7 +163,7 @@ PageTree* RealPage::Parent( )
 	return m_pinfo.Parent( ) ;
 }
 
-PageNode* RealPage::GetLeaf( std::size_t index )
+RealPage* RealPage::GetLeaf( std::size_t index )
 {
 	// we are a leaf node. we have no children but ourselves.
 	return index == 0 ? this : 0 ;

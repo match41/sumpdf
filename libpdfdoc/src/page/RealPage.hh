@@ -64,7 +64,7 @@ public :
 	std::size_t Count( ) const ;
 	PageTree* Parent( ) ;
 	
-	PageNode* GetLeaf( std::size_t index ) ;
+	RealPage* GetLeaf( std::size_t index ) ;
 	
 	RealResources* GetResource( ) ;
 	const RealResources* GetResource( ) const ;

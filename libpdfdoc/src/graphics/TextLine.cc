@@ -157,14 +157,14 @@ bool TextLine::operator!=( const TextLine& rhs ) const
 	return !operator==( rhs ) ;
 }
 
-const TextState& TextLine::Format() const
+const GraphicsState& TextLine::Format() const
 {
-	return m_state.GetTextState() ;
+	return m_state ;
 }
 
-void TextLine::SetFormat( const TextState& fmt )
+void TextLine::SetFormat( const GraphicsState& fmt )
 {
-	m_state.GetTextState() = fmt ;
+	m_state = fmt ;
 }
 
 const std::wstring& TextLine::Text() const

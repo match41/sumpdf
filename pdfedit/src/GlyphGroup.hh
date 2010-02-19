@@ -29,7 +29,7 @@
 #include <QGraphicsItemGroup>
 #include <graphics/CharVisitor.hh>
 
-#include <graphics/TextState.hh>
+#include <graphics/GraphicsState.hh>
 
 namespace pdf {
 
@@ -54,15 +54,15 @@ public :
 
 	static const int Type = UserType + 1 ;
 
-	const TextState& Format( ) const ;
+	const GraphicsState& Format( ) const ;
 	
 	TextLine GetLine( ) const ;
 	
 	QString Text( ) const ;
 
 private :
-	QString		m_text ;
-	TextState	m_state ;
+	QString			m_text ;
+	GraphicsState	m_state ;
 } ;
 
 } // end of namespace

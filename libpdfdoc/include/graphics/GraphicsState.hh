@@ -70,6 +70,9 @@ public :
 	static bool IsGSCommand( const Token& cmd ) ;
 
 	bool operator==( const GraphicsState& gs ) const ;
+	bool operator!=( const GraphicsState& gs ) const ;
+
+	friend std::ostream& operator<<(std::ostream& os, const GraphicsState& gs) ;
 
 private :
 	struct HandlerMap ;

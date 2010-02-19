@@ -159,4 +159,14 @@ bool GraphicsState::operator==( const GraphicsState& gs ) const
 	return m_text == gs.m_text ;
 }
 
+bool GraphicsState::operator!=( const GraphicsState& gs ) const
+{
+	return !operator==( gs ) ;
+}
+
+std::ostream& operator<<( std::ostream& os, const GraphicsState& gs )
+{
+	return os << gs.m_text ;
+}
+
 } // end of namespace

@@ -44,8 +44,6 @@
 #include <QTransform>
 #include <QToolBar>
 
-#include <QGraphicsRectItem>
-
 #include <QDebug>
 
 #include "TextEdit.hh"
@@ -106,10 +104,6 @@ MainWnd::MainWnd( QWidget *parent )
 		SLOT(OnToolZoom(int)) ) ;
 	
 	m_tool_bar->addWidget( m_zoom_box ) ;
-	
-	QGraphicsRectItem *item = new QGraphicsRectItem( 100, 100, m_view->physicalDpiX(), m_view->physicalDpiX() ) ;
-	qDebug() << m_view->physicalDpiX() << " " << m_view->physicalDpiY() ;
-	m_scene->addItem( item ) ;
 }
 
 /**	destructor is for the auto_ptr	
