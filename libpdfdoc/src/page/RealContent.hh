@@ -73,6 +73,25 @@ private :
 	void Load( Stream& str, Resources *res ) ;
 
 private :
+	/// This enum denotes the state of decoding graphics objects.
+	enum OperatorState
+	{
+		/// In the page description level, all graphics states operators
+		/// are allowed.
+		page_description_level,
+		
+		/// Inside a text object only general graphics states, colour, text
+		/// states and text positioning and showing operators are allowed.
+		text_object,
+		
+		/// Only path construction operators are allowed in path objects.
+		path_object,
+		
+		
+		clipping_path_object,
+		inline_image_object,
+	} ;
+
 	Graphics* ProcessCommand(
 		const Token& 	cmd,
 		Object 			*args,

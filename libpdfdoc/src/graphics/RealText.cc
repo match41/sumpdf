@@ -295,29 +295,34 @@ void RealText::OnTj( Object* args, std::size_t count, Resources * )
 void RealText::OnTJ( Object* args, std::size_t count, Resources *res )
 {
 	PDF_ASSERT( !m_lines.empty() ) ;
-
+	
 	// current line
 	TextLine& current = m_lines.back() ;
 
 	double offset = 0.0 ;
 
-	Array& a = args[0].As<Array>() ;
-	for ( Array::iterator i = a.begin() ; i != a.end() ; ++i )
+	if ( count > 0 )
 	{
-		if ( i->Is<std::string>() )
+		Array& a = args[0].As<Array>() ;
+		for ( Array::iterator i = a.begin() ; i != a.end() ; ++i )
 		{
-			std::string& s = i->As<std::string>() ;
-			std::wstring ws( s.begin(), s.end() ) ;
-			offset += m_state.GetTextState().Width( ws ) ;
-
-			current.AppendText( ws ) ;
-		}
-		else if ( i->IsNumber() )
-		{
-			double disp = i->To<double>() / 1000.0 * m_state.GetTextState().FontSize() ;
-			offset -= disp ;
-			
-			current.AppendSpace( disp ) ;
+			if ( i->Is<std::string>() )
+			{
+				std::string& s = i->As<std::string>() ;
+				std::wstring ws( s.begin(), s.end() ) ;
+				offset += m_state.GetTextState().Width( ws ) ;
+	
+				current.AppendText( ws ) ;
+			}
+			else if ( i->IsNumber() )
+			{
+				double disp = i->To<double>() / 1000.0 *
+					m_state.GetTextState().FontSize() ;
+				
+				offset -= disp ;
+				
+				current.AppendSpace( disp ) ;
+			}
 		}
 	}
 	

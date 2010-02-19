@@ -140,9 +140,12 @@ Graphics* RealContent::ProcessCommand(
 	}
 	else if ( gfx != 0 )
 	{
-		// TODO: remove dynamic_cast
 		gfx->OnCommand( cmd, args, count, res ) ;
 	}
+	
+	// page description level. this is the only place where the special
+	// graphics state operators are allowed. these will change the current
+	// transformation matrix (CTM).
 	else
 	{
 		gstate.OnCommand( cmd, args, count, res ) ;
