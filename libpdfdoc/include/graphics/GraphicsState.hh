@@ -73,7 +73,6 @@ public :
 
 private :
 	struct HandlerMap ;
-	friend struct HandlerMap ;
 
 	// text state command handlers
 	bool OnTf( Object* args, std::size_t count, Resources *res ) ;
