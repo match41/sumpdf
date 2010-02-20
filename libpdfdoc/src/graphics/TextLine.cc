@@ -54,13 +54,26 @@ namespace pdf {
 
 ///	constructor
 TextLine::TextLine(
+	double xpos, double ypos,
 	const GraphicsState& 	state,
 	const Matrix& 			transform,
 	const std::wstring&		text )
-    : m_trans( transform ),
-      m_state( state ),
-      m_text( text )
+    : m_xpos( xpos )
+    , m_ypos( ypos )
+    , m_trans( transform )
+    , m_state( state )
+    , m_text( text )
 {
+}
+
+double TextLine::XPos( ) const
+{
+	return m_xpos ;
+}
+
+double TextLine::YPos( ) const
+{
+	return m_ypos ;
 }
 
 const Matrix& TextLine::Transform() const

@@ -54,11 +54,16 @@ class LIBPDFDOC_API TextLine
 {
 public :
 	explicit TextLine(
+		double	xpos = 0, double ypos = 0,
+		
 		const GraphicsState& 	state		= GraphicsState(),		
 		const Matrix&			transform	= Matrix(),
 		const std::wstring&		text		= std::wstring() ) ;
 
 	// uses default generated copy constructor
+
+	double XPos( ) const ;
+	double YPos( ) const ;
 
 	const Matrix& Transform() const ;
 	void SetTransform( const Matrix& t ) ;
@@ -102,6 +107,8 @@ private :
 	std::ostream& PrintText( std::ostream& os ) const ;
 
 private :
+	double	m_xpos, m_ypos ;
+
 	/// The text matrix.
 	Matrix			m_trans ;
 	

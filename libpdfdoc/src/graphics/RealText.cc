@@ -80,7 +80,7 @@ const RealText::HandlerMap::Map RealText::HandlerMap::m_map(
 /**	constructor
 */
 RealText::RealText( const GraphicsState& gs )
-	: m_lines( 1, TextLine( gs, Matrix() ) ),
+	: m_lines( 1, TextLine( 0, 0, gs, Matrix() ) ),
 	  m_state( gs )
 {
 }
@@ -159,7 +159,7 @@ void RealText::OnCommand(
 			if ( current.IsEmpty() )
 				current.SetFormat( m_state ) ;
 			else
-				m_lines.push_back( TextLine( m_state, m_text_mat ) ) ;
+				m_lines.push_back( TextLine( 0, 0, m_state, m_text_mat ) ) ;
 		}
 	}
 }
@@ -177,7 +177,7 @@ void RealText::AddLine( const TextLine& line )
 
 void RealText::AddLine( double x, double y, const std::wstring& text )
 {
-	TextLine line( m_state, Matrix( 1,0,0,1, x, y ) ) ;
+	TextLine line( 0, 0, m_state, Matrix( 1,0,0,1, x, y ) ) ;
 	line.AppendText( text ) ;
 	return AddLine( line ) ;
 }
@@ -230,7 +230,7 @@ void RealText::OnTd( Object* args, std::size_t count, const Resources* )
 		m_text_mat = m_line_mat =
 			m_line_mat * Matrix( 1, 0, 0, 1, args[0], args[1] ) ;
 
-		AddLine( TextLine( m_state, m_line_mat ) ) ;
+		AddLine( TextLine( 0, 0, m_state, m_line_mat ) ) ;
 	}
 }
 
@@ -247,7 +247,7 @@ void RealText::OnTD( Object* args, std::size_t count, const Resources *res )
 				args[0].To<double>() * m_line_mat.M11(),
 				args[1].To<double>() * m_line_mat.M22() ) ;
 		
-		AddLine( TextLine( m_state, m_line_mat ) ) ;
+		AddLine( TextLine( 0, 0, m_state, m_line_mat ) ) ;
 	}
 }
 
@@ -260,7 +260,7 @@ void RealText::OnTm( Object* args, std::size_t count, const Resources* )
 		m_text_mat = m_line_mat = Matrix(
 			args[0], args[1], args[2], args[3], args[4], args[5] ) ;
 		
-		AddLine( TextLine( m_state, m_line_mat ) ) ;
+		AddLine( TextLine( 0, 0, m_state, m_line_mat ) ) ;
 	}
 }
 
@@ -269,7 +269,7 @@ void RealText::OnTstar( Object* , std::size_t , const Resources * )
 	m_line_mat.Dy( m_line_mat.Dy() -m_state.GetTextState().Leading() ) ;
 	m_text_mat = m_line_mat ;
 	
-	AddLine( TextLine( m_state, m_line_mat ) ) ;
+	AddLine( TextLine( 0, 0, m_state, m_line_mat ) ) ;
 }
 
 ///	Shows a Text string

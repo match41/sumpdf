@@ -83,7 +83,7 @@ QString GlyphGroup::Text( ) const
 
 TextLine GlyphGroup::GetLine( ) const
 {
-	TextLine line( m_state, FromQtMatrix( sceneTransform( ) ) ) ;
+	TextLine line( 0, 0, m_state, FromQtMatrix( sceneTransform( ) ) ) ;
 	line.AppendText( ToWStr(m_text) ) ;
 	return line ; 
 }
