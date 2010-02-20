@@ -130,6 +130,7 @@ std::cout << std::endl ;
 //					gstate,
 //					current,
 //					res ) ;
+				ProcessCommand( cmd, args.empty() ? 0 : &args[0], args.size() );
 
 				args.clear( ) ;
 			}
@@ -144,17 +145,16 @@ void ContentStream::ProcessCommand(
 	Object 			*args,
 	std::size_t 	count )
 {
-	if ( m_current != 0 )
+	HandlerMap::Map::const_iterator i = HandlerMap::m_map.find( cmd ) ;
+	if ( i != HandlerMap::m_map.end() )
+	{
+		PDF_ASSERT( i->second != 0 ) ;
+		(this->*(i->second))( args, count ) ;
+	}
+	else if ( m_current != 0 )
 		m_current->OnCommand( cmd, args, count, m_res ) ;
 	else
-	{
-		HandlerMap::Map::const_iterator i = HandlerMap::m_map.find( cmd ) ;
-		if ( i != HandlerMap::m_map.end() )
-		{
-			PDF_ASSERT( i->second != 0 ) ;
-			(this->*(i->second))( args, count ) ;
-		}
-	}
+		m_state.OnCommand( cmd, args, count, m_res ) ;
 }
 
 void ContentStream::OnBT( Object *, std::size_t )
@@ -184,6 +184,11 @@ void ContentStream::OnQ( Object *args, std::size_t count )
 
 void ContentStream::Onq( Object *args, std::size_t count )
 {
+}
+
+void ContentStream::SwapGfxObj( std::vector<Graphics*>& gfxs )
+{
+	m_gfx.swap( gfxs ) ;
 }
 
 } // end of namespace

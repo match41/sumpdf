@@ -27,18 +27,15 @@
 #define __PDF_REALCONTENT_HH_EADER_INCLUDED__
 
 #include "page/PageContent.hh"
+#include "page/ContentStream.hh"
 
 #include <vector>
 
 namespace pdf {
 
 class Graphics ;
-class Object ;
 class Resources ;
 class Stream ;
-class Text ;
-class GraphicsState ;
-class Token ;
 
 ///	brief description
 /**	The RealContent class represents
@@ -61,44 +58,14 @@ public :
 	template <typename InputIt>
 	void Load( InputIt first, InputIt last, Resources *res )
 	{
-		while ( first != last )
-			Load( *first++, res ) ;
+		ContentStream cs( first, last, res ) ;
+		cs.Decode( ) ;
+		cs.SwapGfxObj( m_gfx ) ;
 	}
 
 	void Write( Stream& str, const Resources *res ) const ;
 	
 	void Clear( ) ;
-
-private :
-	void Load( Stream& str, Resources *res ) ;
-
-private :
-	/// This enum denotes the state of decoding graphics objects.
-	enum OperatorState
-	{
-		/// In the page description level, all graphics states operators
-		/// are allowed.
-		page_description_level,
-		
-		/// Inside a text object only general graphics states, colour, text
-		/// states and text positioning and showing operators are allowed.
-		text_object,
-		
-		/// Only path construction operators are allowed in path objects.
-		path_object,
-		
-		
-		clipping_path_object,
-		inline_image_object,
-	} ;
-
-	Graphics* ProcessCommand(
-		const Token& 	cmd,
-		Object 			*args,
-		std::size_t 	count,
-		GraphicsState&	tstate,
-		Graphics		*gfx,
-		Resources 		*res ) ;
 
 private :
 	std::vector<Graphics*> m_gfx ;

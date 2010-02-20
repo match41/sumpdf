@@ -53,6 +53,8 @@ public :
 
 	void Decode( ) ;
 
+	void SwapGfxObj( std::vector<Graphics*>& gfxs ) ;
+
 private :
 	struct HandlerMap ;
 	
