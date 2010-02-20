@@ -17,62 +17,70 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**
-    \file	Graphics.hh
-    \brief	definition the Graphics class
-    \date	Jan 4, 2010
+/**	\file	ContentStream.hh
+    \brief	definition the ContentStream class
+    \date	Feb 20, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_GRAPHICS_HH_EADER_INCLUDED__
-#define __PDF_GRAPHICS_HH_EADER_INCLUDED__
+#ifndef __PDF_CONTENTSTREAM_HH_EADER_INCLUDED__
+#define __PDF_CONTENTSTREAM_HH_EADER_INCLUDED__
 
-#include <iosfwd>
-#include <cstddef>
+#include "graphics/GraphicsState.hh"
+#include "stream/Stream.hh"
+
+#include <vector>
 
 namespace pdf {
 
-class GraphicsVisitor ;
-class Token ;
+class Graphics ;
 class Resources ;
-class Object ;
-class GraphicsState ;
-
-/**	\defgroup	graphics Graphics
-	\brief		Graphics objects module
-	
-	The graphics objects represent visual elements that appears in the page.
-	These classes provide access to their content.
-	
-	All graphics items in a PDF document uses the default coordinate called
-	"User Space". It is a devices independent unit. The default unit in users
-	space is point, which is 1/72 inch. In other words, the coordinate (72,72)
-	is corresponding to one inch right and inch up from the origin.
-*/
 
 ///	brief description
-/**	\ingroup graphics
-	The Graphics class represent base class for anything that appears in the
-	page.
+/**	\internal
+	The ContentStream class represents
 */
-class Graphics
+class ContentStream
 {
 public :
-	virtual ~Graphics( ) ;
+	template <typename InputIt>
+	ContentStream( InputIt first, InputIt last, const Resources *res )
+		: m_strs( first, last ),
+		  m_res( res ),
+		  m_current( 0 )
+	{
+	}
+
+	void Decode( ) ;
+
+private :
+	struct HandlerMap ;
 	
-	virtual void OnCommand(
+	void Decode( Stream& str ) ;
+
+	void ProcessCommand(
 		const Token& 	cmd,
 		Object 			*args,
-		std::size_t		count,
-		const Resources	*res ) = 0 ;
+		std::size_t 	count ) ;
 
-	virtual void Print( std::ostream& os, const Resources *res ) const = 0 ;
+	void OnBT( Object *args, std::size_t count ) ;
+	void OnET( Object *args, std::size_t count ) ;
+	void Oncm( Object *args, std::size_t count ) ;
+	void OnQ( Object *args, std::size_t count ) ;
+	void Onq( Object *args, std::size_t count ) ;
 
-	virtual void Visit( GraphicsVisitor *visitor ) = 0 ;
-	
-	virtual GraphicsState GetState( ) const = 0 ;
+private :
+	std::vector<Stream>		m_strs ;
+	std::vector<Graphics*>	m_gfx ;
+	const Resources			*m_res ;
+
+	//@{
+	/// Context information for decoding the graphics objects
+	Graphics				*m_current ;
+	GraphicsState			m_state ;
+	//@}
 } ;
 
 } // end of namespace
 
-#endif // GRAPHICS_HH_
+#endif // CONTENTSTREAM_HH_

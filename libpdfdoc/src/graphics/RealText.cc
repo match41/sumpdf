@@ -45,7 +45,20 @@
 
 namespace pdf {
 
-const RealText::HandlerMap::value_type	RealText::m_handler_map_values[] =
+struct RealText::HandlerMap
+{
+	/// command handler
+	typedef void (RealText::*Handler)(
+		Object			*args,
+		std::size_t		count,
+		const Resources	*res ) ;
+	typedef std::map<Token, Handler>	Map ;
+
+	static const Map::value_type	m_val[] ;
+	static const Map				m_map ;
+} ;
+
+const RealText::HandlerMap::Map::value_type	RealText::HandlerMap::m_val[] =
 {
 	// text positioning commands
 	std::make_pair( "Td",	&RealText::OnTd ),
@@ -60,9 +73,9 @@ const RealText::HandlerMap::value_type	RealText::m_handler_map_values[] =
 	std::make_pair( "\"",	&RealText::OnDoubleQuote ),
 } ;
 
-const RealText::HandlerMap RealText::m_handler_map(
-    Begin( RealText::m_handler_map_values ),
-    End( RealText::m_handler_map_values ) ) ;
+const RealText::HandlerMap::Map RealText::HandlerMap::m_map(
+    Begin( RealText::HandlerMap::m_val ),
+    End( RealText::HandlerMap::m_val ) ) ;
 
 /**	constructor
 */
@@ -126,12 +139,12 @@ void RealText::OnCommand(
 	const Token& 	cmd,
 	Object 			*args,
 	std::size_t		count,
-	Resources		*res )
+	const Resources	*res )
 {
 	PDF_ASSERT( !m_lines.empty() ) ;
 
-	HandlerMap::const_iterator i = m_handler_map.find( cmd ) ;
-	if ( i != m_handler_map.end() )
+	HandlerMap::Map::const_iterator i = HandlerMap::m_map.find( cmd ) ;
+	if ( i != HandlerMap::m_map.end() )
 		(this->*(i->second))( args, count, res ) ;
 	
 	else if ( GraphicsState::IsGSCommand( cmd ) )
@@ -210,7 +223,7 @@ std::ostream& operator<<( std::ostream& os, const RealText& t )
 	return os ;
 }
 
-void RealText::OnTd( Object* args, std::size_t count, Resources* )
+void RealText::OnTd( Object* args, std::size_t count, const Resources* )
 {
 	if ( count >= 2 )
 	{
@@ -222,7 +235,7 @@ void RealText::OnTd( Object* args, std::size_t count, Resources* )
 	}
 }
 
-void RealText::OnTD( Object* args, std::size_t count, Resources *res )
+void RealText::OnTD( Object* args, std::size_t count, const Resources *res )
 {
 	
 	if ( count >= 2 )
@@ -238,7 +251,7 @@ void RealText::OnTD( Object* args, std::size_t count, Resources *res )
 	}
 }
 
-void RealText::OnTm( Object* args, std::size_t count, Resources* )
+void RealText::OnTm( Object* args, std::size_t count, const Resources* )
 {
 	if ( count >= 6 )
 	{
@@ -251,7 +264,7 @@ void RealText::OnTm( Object* args, std::size_t count, Resources* )
 	}
 }
 
-void RealText::OnTstar( Object* , std::size_t , Resources * )
+void RealText::OnTstar( Object* , std::size_t , const Resources * )
 {
 	m_line_mat.Dy( m_line_mat.Dy() -m_state.GetTextState().Leading() ) ;
 	m_text_mat = m_line_mat ;
@@ -260,7 +273,7 @@ void RealText::OnTstar( Object* , std::size_t , Resources * )
 }
 
 ///	Shows a Text string
-void RealText::OnTj( Object* args, std::size_t count, Resources * )
+void RealText::OnTj( Object* args, std::size_t count, const Resources * )
 {
 	PDF_ASSERT( !m_lines.empty() ) ;
 	
@@ -292,7 +305,7 @@ void RealText::OnTj( Object* args, std::size_t count, Resources * )
 	has the effect of moving the next glyph painted either to the left or down
 	by the given amount. 
 */
-void RealText::OnTJ( Object* args, std::size_t count, Resources *res )
+void RealText::OnTJ( Object* args, std::size_t count, const Resources *res )
 {
 	PDF_ASSERT( !m_lines.empty() ) ;
 	
@@ -331,11 +344,11 @@ void RealText::OnTJ( Object* args, std::size_t count, Resources *res )
 	m_text_mat.Dx( m_text_mat.Dx() + offset ) ; 
 }
 
-void RealText::OnSingleQuote( Object* args, std::size_t count, Resources *res )
+void RealText::OnSingleQuote( Object* args, std::size_t count, const Resources *res )
 {
 }
 
-void RealText::OnDoubleQuote( Object* args, std::size_t count, Resources *res )
+void RealText::OnDoubleQuote( Object* args, std::size_t count, const Resources *res )
 {
 }
 

@@ -65,7 +65,7 @@ public :
 		const Token& 	cmd,
 		Object 			*args,
 		std::size_t		count,
-		Resources		*res ) ;
+		const Resources	*res ) ;
 
 	static bool IsGSCommand( const Token& cmd ) ;
 
@@ -78,13 +78,10 @@ private :
 	struct HandlerMap ;
 
 	// text state command handlers
-	bool OnTf( Object* args, std::size_t count, Resources *res ) ;
-	bool OnTL( Object* args, std::size_t count, Resources *res ) ;
+	bool OnTf( Object* args, std::size_t count, const Resources *res ) ;
+	bool OnTL( Object* args, std::size_t count, const Resources *res ) ;
 
 private :
-	/// The current transformation matrix
-	Matrix		m_ctm ;
-	
 	TextState	m_text ;
 	
 	Colour		m_colour ;

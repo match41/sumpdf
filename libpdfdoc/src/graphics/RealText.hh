@@ -52,7 +52,7 @@ public :
 		const Token& 	cmd,
 		Object 			*args,
 		std::size_t		count,
-		Resources		*res ) ;
+		const Resources	*res ) ;
 
 	void Print( std::ostream& os, const Resources *res ) const ;
 
@@ -83,26 +83,19 @@ public :
 
 private :
     /// command handler
-	typedef void (RealText::*Handler)(
-		Object			*args,
-		std::size_t		count,
-		Resources		*res ) ;
-	typedef std::map<Token, Handler>	HandlerMap ;
-
-	static const HandlerMap::value_type	m_handler_map_values[] ;
-	static const HandlerMap				m_handler_map ;
+	struct HandlerMap ;
 
     // position command handlers
-	void OnTd( Object* args, std::size_t count, Resources *res ) ;
-	void OnTD( Object* args, std::size_t count, Resources *res ) ;
-	void OnTm( Object* args, std::size_t count, Resources *res ) ;
-	void OnTstar( Object* args, std::size_t count, Resources *res ) ;
+	void OnTd( Object* args, std::size_t count, const Resources *res ) ;
+	void OnTD( Object* args, std::size_t count, const Resources *res ) ;
+	void OnTm( Object* args, std::size_t count, const Resources *res ) ;
+	void OnTstar( Object* args, std::size_t count, const Resources *res ) ;
 	
 	// text show command handlers
-	void OnTj( Object* args, std::size_t count, Resources *res ) ;
-	void OnTJ( Object* args, std::size_t count, Resources *res ) ;
-	void OnSingleQuote( Object* args, std::size_t count, Resources *res ) ;
-	void OnDoubleQuote( Object* args, std::size_t count, Resources *res ) ;
+	void OnTj( Object* args, std::size_t count, const Resources *res ) ;
+	void OnTJ( Object* args, std::size_t count, const Resources *res ) ;
+	void OnSingleQuote( Object* args, std::size_t count, const Resources *res ) ;
+	void OnDoubleQuote( Object* args, std::size_t count, const Resources *res ) ;
 
 private :
 	///	Lines inside this text object

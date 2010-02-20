@@ -45,7 +45,7 @@ struct GraphicsState::HandlerMap
 	typedef bool (GraphicsState::*Handler)(
 		Object			*args,
 		std::size_t		count,
-		Resources		*res ) ;
+		const Resources	*res ) ;
 	typedef std::map<Token, Handler>	Map ;
 
 	static const Map::value_type	m_val[] ;
@@ -98,7 +98,7 @@ bool GraphicsState::OnCommand(
 	const Token& 	cmd,
 	Object 			*args,
 	std::size_t		count,
-	Resources		*res )
+	const Resources	*res )
 {
 	HandlerMap::Map::const_iterator i = HandlerMap::m_map.find( cmd ) ;
 	if ( i != HandlerMap::m_map.end() )
@@ -113,7 +113,7 @@ bool GraphicsState::IsGSCommand( const Token& cmd )
 	return i != HandlerMap::m_map.end() ;
 }
 
-bool GraphicsState::OnTf( Object* args, std::size_t count, Resources *res )
+bool GraphicsState::OnTf( Object* args, std::size_t count, const Resources *res)
 {
 	PDF_ASSERT( res != 0 ) ;
 
@@ -137,7 +137,7 @@ bool GraphicsState::OnTf( Object* args, std::size_t count, Resources *res )
 	return false ;
 }
 
-bool GraphicsState::OnTL( Object* args, std::size_t count, Resources *res )
+bool GraphicsState::OnTL( Object* args, std::size_t count, const Resources *res)
 {
 	if ( count > 0 && args[0].IsNumber() )
 	{
