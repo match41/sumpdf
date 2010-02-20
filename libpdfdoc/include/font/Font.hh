@@ -60,7 +60,9 @@ public :
 	/// Return the base name of a font.
 	/**	This function returns the PostScript name of the font. For Type 1 fonts,
 		this is usually the value of the FontName entry in the font program.
-		For TrueType fonts, it is returned by the FT_Get_Postscript_Name()
+		For TrueType fonts, it is returned by the
+		<a href="http://freetype.sourceforge.net/freetype2/docs/reference/ft2-base_interface.html#FT_Get_Postscript_Name">
+		FT_Get_Postscript_Name()</a>
 		function in FreeType. It will be used for displaying the font's name
 		for client applications.
 		\return	The base name of a font.
@@ -84,7 +86,7 @@ public :
 
 		-	It is the reference used to scale the outlines to a given text
 			dimension. For example, a size of 12pt at 300x300 dpi corresponds
-			to 12*300/72 = 50 pixels. This is the size the EM square would
+			to 12x300/72 = 50 pixels. This is the size the EM square would
 			appear on the output device if it was rendered directly. In other
 			words, scaling from grid units to pixels uses the formula:
 
@@ -103,7 +105,7 @@ public :
 	
 	/// Return the width of the glyph in PDF glyph unit.
 	/**	Call this function to convert the lengths in font unit to PDF glyph
-		unit. The PDF glyph unit is 1/1000 of user space, which is 1/72 inch.
+		unit. The PDF glyph unit is 1/1000 of user space unit, which is 1/72 inch.
 		I.e. if this function returns 72000, then it is one inch. This value
 		must be further multiplied by the font size in points to get the real
 		device-independent size.

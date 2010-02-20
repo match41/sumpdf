@@ -44,10 +44,33 @@ class GraphicsState ;
 	The graphics objects represent visual elements that appears in the page.
 	These classes provide access to their content.
 	
+	\section 	gfx_coord	Coordinate Systems
+	
+	There are a number of coordinate system defined by the PDF specifications.
+	
+	\subsection	user_coord	User Space
+	
 	All graphics items in a PDF document uses the default coordinate called
 	"User Space". It is a devices independent unit. The default unit in users
 	space is point, which is 1/72 inch. In other words, the coordinate (72,72)
 	is corresponding to one inch right and inch up from the origin.
+	
+	\subsection	text_coord	Text Space
+	
+	The Text Space is the coordinate system for text rendering. The
+	transformation from user space to text space is defined a text matrix and
+	a few text states parameters. There are a number of operators to manipulate
+	the text matrix.
+	
+	\subsection	glyph_coord	Glyph Space
+	
+	Typically equals to 1/1000 units of text space, except for type 3 fonts.
+	
+	\subsection font_unit	Font Unit
+	
+	This one is not defined by the PDF specification. It is the unit used in
+	TrueType font and Type 1 fonts. Actually, the physical length of a font
+	unit depends on the font itself. Different fonts uses different units.
 */
 
 ///	brief description

@@ -35,7 +35,7 @@ namespace pdf {
 	back with the MoveTo(), LineTo() functions.
 	
 	All units are in font units. Transform font units to real units by calling
-	Font::Width(). 
+	Font::FromFontUnit().
 */
 class Outline
 {
