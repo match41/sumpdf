@@ -47,21 +47,28 @@ GlyphGroup::GlyphGroup( const TextLine& blk, QGraphicsItem *parent )
 	  m_state( blk.Format() )
 {
 	blk.VisitChars( this ) ;
+	
 	// setup flags
 	setFlags( ItemIsSelectable | ItemIsMovable ) ;
+
+	QTransform t = ToQtMatrix( blk.Transform() ) ;
+	setTransform( t ) ;
+	
+	QPointF pos( blk.XPos(), blk.YPos() ) ;
+	setPos( pos ) ;
 }
 
 void GlyphGroup::OnChar(
 	wchar_t 			ch,
-	const Matrix&		m,
+	double				offset,
 	const Glyph			*glyph,
 	const TextState&	state ) 
 {
 	GlyphGraphicsItem *item = new GlyphGraphicsItem( glyph ) ;
 
 	// scale font by their font size
-	item->setTransform( ToQtMatrix( m ) ) ;
 	item->scale( state.ScaleFactor(), state.ScaleFactor() ) ;
+	item->setPos( offset, 0 ) ;
 
 	addToGroup( item ) ;
 }

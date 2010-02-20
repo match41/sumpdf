@@ -110,7 +110,7 @@ private :
 	///	Current text matrix.
 	/**	This matrix is used to create new TextLine objects.
 	*/
-	Matrix		m_line_mat, m_text_mat ;
+	Matrix		m_text_mat ;
 } ;
 
 std::ostream& operator<<( std::ostream& os, const RealText& t ) ;

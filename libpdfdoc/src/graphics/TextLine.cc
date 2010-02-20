@@ -210,7 +210,8 @@ double TextLine::Width( ) const
 
 void TextLine::VisitChars( CharVisitor *v ) const
 {
-	Matrix tm ;
+//	Matrix tm ;
+	double	offset = 0.0 ;
 	Font *font	= m_state.GetFont( ) ; 
 	PDF_ASSERT( font != 0 ) ;
 	
@@ -221,7 +222,8 @@ void TextLine::VisitChars( CharVisitor *v ) const
 		// has space?
 		if ( sp != m_space.end() && idx == sp->index )
 		{
-			tm.Dx( tm.Dx() - sp->width ) ;
+//			tm.Dx( tm.Dx() - sp->width ) ;
+			offset -= sp->width ;
 			++sp ;
 		}
 	
@@ -231,10 +233,11 @@ void TextLine::VisitChars( CharVisitor *v ) const
 
 		if ( glyph != 0 && glyph->IsOutline() )
 		{
-			v->OnChar( m_text[idx], tm, glyph, ts ) ;
+			v->OnChar( m_text[idx], offset, glyph, ts ) ;
 
 			// update X position
-			tm.Dx( tm.Dx() + glyph->AdvanceX() * ts.ScaleFactor() ) ;
+//			tm.Dx( tm.Dx() + glyph->AdvanceX() * ts.ScaleFactor() ) ;
+			offset += glyph->AdvanceX() * ts.ScaleFactor() ;
 		}
 		else
 		{

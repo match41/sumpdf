@@ -180,7 +180,7 @@ void RealText::AddLine( const TextLine& line )
 
 void RealText::AddLine( double x, double y, const std::wstring& text )
 {
-	TextLine line( x, y, m_state ) ;
+	TextLine line( x, y, m_state, m_text_mat ) ;
 	line.AppendText( text ) ;
 	return AddLine( line ) ;
 }
@@ -230,35 +230,34 @@ void RealText::OnTd( Object* args, std::size_t count, const Resources* )
 {
 	if ( count >= 2 )
 	{
-		m_text_mat = m_line_mat =
-			m_line_mat * Matrix( 1, 0, 0, 1, args[0], args[1] ) ;
+//		m_text_mat = m_line_mat =
+//			m_line_mat * Matrix( 1, 0, 0, 1, args[0], args[1] ) ;
 		
 		m_dx += args[0].To<double>() ;
 		m_dy += args[1].To<double>() ;
 		m_offset = 0 ;
 
-		AddLine( TextLine( m_dx, m_dy, m_state, m_line_mat ) ) ;
+		AddLine( TextLine( m_dx, m_dy, m_state, m_text_mat ) ) ;
 	}
 }
 
 void RealText::OnTD( Object* args, std::size_t count, const Resources *res )
 {
-	
 	if ( count >= 2 )
 	{
 		double	ty	= args[1] ;
 		m_state.GetTextState().SetLeading( -ty ) ;
 		
-		m_text_mat = m_line_mat =
-			m_line_mat * Matrix( 1, 0, 0, 1,
-				args[0].To<double>() * m_line_mat.M11(),
-				args[1].To<double>() * m_line_mat.M22() ) ;
+//		m_text_mat = m_line_mat =
+//			m_line_mat * Matrix( 1, 0, 0, 1,
+//				args[0].To<double>() * m_line_mat.M11(),
+//				args[1].To<double>() * m_line_mat.M22() ) ;
 		
 		m_dx += args[0].To<double>() ;
 		m_dy += args[1].To<double>() ;
 		m_offset = 0 ;
 		
-		AddLine( TextLine( m_dx, m_dy, m_state, m_line_mat ) ) ;
+		AddLine( TextLine( m_dx, m_dy, m_state, m_text_mat ) ) ;
 	}
 }
 
@@ -268,24 +267,24 @@ void RealText::OnTm( Object* args, std::size_t count, const Resources* )
 	{
 		// unlike Td and TD, the Tm command will replace the current
 		// matrix.
-		m_text_mat = m_line_mat = Matrix(
+		m_text_mat = Matrix(
 			args[0], args[1], args[2], args[3], args[4], args[5] ) ;
 		
 		m_offset = m_dx = m_dy = 0.0 ;
 		
-		AddLine( TextLine( 0, 0, m_state, m_line_mat ) ) ;
+		AddLine( TextLine( 0, 0, m_state, m_text_mat ) ) ;
 	}
 }
 
 void RealText::OnTstar( Object* , std::size_t , const Resources * )
 {
-	m_line_mat.Dy( m_line_mat.Dy() -m_state.GetTextState().Leading() ) ;
-	m_text_mat = m_line_mat ;
+//	m_line_mat.Dy( m_line_mat.Dy() -m_state.GetTextState().Leading() ) ;
+//	m_text_mat = m_line_mat ;
 	
 	m_dy -= m_state.GetTextState().Leading() ;
 	m_offset = 0 ;
 	
-	AddLine( TextLine( m_dx, m_dy, m_state, m_line_mat ) ) ;
+	AddLine( TextLine( m_dx, m_dy, m_state, m_text_mat ) ) ;
 }
 
 ///	Shows a Text string
@@ -305,7 +304,7 @@ void RealText::OnTj( Object* args, std::size_t count, const Resources * )
 			
 			current.AppendText( ws ) ;
 			
-			m_text_mat.Dx( m_text_mat.Dx() + m_state.GetTextState().Width( ws ) ) ;
+//			m_text_mat.Dx( m_text_mat.Dx() + m_state.GetTextState().Width( ws ) ) ;
 			m_offset += m_state.GetTextState().Width( ws ) ;
 		}
 	}
@@ -358,7 +357,7 @@ void RealText::OnTJ( Object* args, std::size_t count, const Resources *res )
 	
 	// TODO: depend on writing mode, advance horizonal or vertical
 	// assume vertical here.
-	m_text_mat.Dx( m_text_mat.Dx() + offset ) ;
+//	m_text_mat.Dx( m_text_mat.Dx() + offset ) ;
 	m_offset += offset ;
 }
 
