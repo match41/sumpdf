@@ -243,7 +243,9 @@ void RealText::OnTD( Object* args, std::size_t count, const Resources *res )
 		m_state.GetTextState().SetLeading( -ty ) ;
 		
 		m_text_mat = m_line_mat =
-			m_line_mat * Matrix( 1, 0, 0, 1, args[0], args[1] ) ;
+			m_line_mat * Matrix( 1, 0, 0, 1,
+				args[0].To<double>() * m_line_mat.M11(),
+				args[1].To<double>() * m_line_mat.M22() ) ;
 		
 		AddLine( TextLine( m_state, m_line_mat ) ) ;
 	}
