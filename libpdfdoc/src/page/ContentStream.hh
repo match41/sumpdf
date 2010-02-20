@@ -28,7 +28,9 @@
 
 #include "graphics/GraphicsState.hh"
 #include "stream/Stream.hh"
+#include "util/Matrix.hh"
 
+#include <stack>
 #include <vector>
 
 namespace pdf {
@@ -76,10 +78,17 @@ private :
 	std::vector<Graphics*>	m_gfx ;
 	const Resources			*m_res ;
 
+	/// all graphics states
+	struct State
+	{
+		GraphicsState	gs ;
+		Matrix			ctm ;
+	} m_state ;
+
 	//@{
 	/// Context information for decoding the graphics objects
-	Graphics				*m_current ;
-	GraphicsState			m_state ;
+	Graphics			*m_current ;
+	std::stack<State>	m_state_stack ;
 	//@}
 } ;
 

@@ -227,9 +227,8 @@ void RealText::OnTd( Object* args, std::size_t count, const Resources* )
 {
 	if ( count >= 2 )
 	{
-		m_line_mat.Dx( m_line_mat.Dx() + args[0].To<double>() ) ;
-		m_line_mat.Dy( m_line_mat.Dy() + args[1].To<double>() ) ;
-		m_text_mat = m_line_mat ;
+		m_text_mat = m_line_mat =
+			m_line_mat * Matrix( 1, 0, 0, 1, args[0], args[1] ) ;
 
 		AddLine( TextLine( m_state, m_line_mat ) ) ;
 	}
@@ -243,9 +242,8 @@ void RealText::OnTD( Object* args, std::size_t count, const Resources *res )
 		double	ty	= args[1] ;
 		m_state.GetTextState().SetLeading( -ty ) ;
 		
-		m_line_mat.Dx( m_line_mat.Dx() + args[0].To<double>() ) ;
-		m_line_mat.Dy( m_line_mat.Dy() + args[1].To<double>() ) ;
-		m_text_mat = m_line_mat ;
+		m_text_mat = m_line_mat =
+			m_line_mat * Matrix( 1, 0, 0, 1, args[0], args[1] ) ;
 		
 		AddLine( TextLine( m_state, m_line_mat ) ) ;
 	}

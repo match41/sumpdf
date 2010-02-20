@@ -39,6 +39,7 @@
 #include <boost/bind.hpp>
 
 #include <algorithm>
+#include <iostream>
 
 namespace pdf {
 
@@ -89,10 +90,10 @@ void ContentStream::Decode( Stream& str )
 	// rewind to stream start for reading
 	str.Rewind( ) ;
 	
-//	std::ostringstream ss ;
-//	str.CopyData( ss.rdbuf() ) ;
-//	std::cout << ss.str() << std::endl ;
-//	str.Rewind() ;
+std::ostringstream ss ;
+str.CopyData( ss.rdbuf() ) ;
+std::cout << ss.str() << std::endl ;
+str.Rewind() ;
 	
 	std::istream s( str.InStreamBuf() ) ;
 	TokenSrc src( s ) ;
@@ -122,14 +123,6 @@ void ContentStream::Decode( Stream& str )
 std::copy( args.begin(), args.end(), std::ostream_iterator<Object>( std::cout, " " ) ) ;
 std::cout << std::endl ;
 */
-
-//				current = ProcessCommand(
-//					cmd,
-//					args.empty() ? 0 : &args[0],	// don't touch args[0]
-//					args.size(),					// if empty.
-//					gstate,
-//					current,
-//					res ) ;
 				ProcessCommand( cmd, args.empty() ? 0 : &args[0], args.size() );
 
 				args.clear( ) ;
@@ -154,20 +147,20 @@ void ContentStream::ProcessCommand(
 	else if ( m_current != 0 )
 		m_current->OnCommand( cmd, args, count, m_res ) ;
 	else
-		m_state.OnCommand( cmd, args, count, m_res ) ;
+		m_state.gs.OnCommand( cmd, args, count, m_res ) ;
 }
 
 void ContentStream::OnBT( Object *, std::size_t )
 {
 	if ( m_current == 0 )
-		m_current = new RealText( m_state ) ;
+		m_current = new RealText( m_state.gs ) ;
 }
 
 void ContentStream::OnET( Object *, std::size_t )
 {
 	if ( m_current != 0 )
 	{
-		m_state = m_current->GetState( ) ;
+		m_state.gs = m_current->GetState( ) ;
 		
 		m_gfx.push_back( m_current ) ;
 		m_current = 0 ;
@@ -176,14 +169,22 @@ void ContentStream::OnET( Object *, std::size_t )
 
 void ContentStream::Oncm( Object *args, std::size_t count )
 {
+	if ( count >= 6 )
+	{
+		m_state.ctm = Matrix(
+			args[0], args[1], args[2], args[3], args[4], args[5] ) ;
+	}
 }
 
 void ContentStream::OnQ( Object *args, std::size_t count )
 {
+	m_state = m_state_stack.top( ) ;
+	m_state_stack.pop( ) ;
 }
 
 void ContentStream::Onq( Object *args, std::size_t count )
 {
+	m_state_stack.push( m_state ) ;
 }
 
 void ContentStream::SwapGfxObj( std::vector<Graphics*>& gfxs )
