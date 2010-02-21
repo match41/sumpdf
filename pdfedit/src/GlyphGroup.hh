@@ -63,6 +63,7 @@ public :
 private :
 	QString			m_text ;
 	GraphicsState	m_state ;
+	QPointF			m_pos ;
 } ;
 
 } // end of namespace

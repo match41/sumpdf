@@ -42,9 +42,10 @@ namespace pdf {
 /**	constructor
 */
 GlyphGroup::GlyphGroup( const TextLine& blk, QGraphicsItem *parent )
-	: QGraphicsItemGroup( parent ),
-	  m_text( FromWStr(blk.Text()) ),
-	  m_state( blk.Format() )
+	: QGraphicsItemGroup( parent )
+	, m_text( FromWStr(blk.Text()) )
+	, m_state( blk.Format() )
+	, m_pos( blk.XPos(), blk.YPos() )
 {
 	blk.VisitChars( this ) ;
 	
@@ -53,9 +54,6 @@ GlyphGroup::GlyphGroup( const TextLine& blk, QGraphicsItem *parent )
 
 	QTransform t = ToQtMatrix( blk.Transform() ) ;
 	setTransform( t ) ;
-	
-	QPointF pos( blk.XPos(), blk.YPos() ) ;
-	setPos( pos ) ;
 }
 
 void GlyphGroup::OnChar(
@@ -67,8 +65,8 @@ void GlyphGroup::OnChar(
 	GlyphGraphicsItem *item = new GlyphGraphicsItem( glyph ) ;
 
 	// scale font by their font size
+	item->translate( m_pos.x() + offset, m_pos.y() ) ;
 	item->scale( state.ScaleFactor(), state.ScaleFactor() ) ;
-	item->setPos( offset, 0 ) ;
 
 	addToGroup( item ) ;
 }
