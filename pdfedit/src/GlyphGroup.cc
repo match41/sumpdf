@@ -64,8 +64,10 @@ void GlyphGroup::OnChar(
 {
 	GlyphGraphicsItem *item = new GlyphGraphicsItem( glyph ) ;
 
-	// scale font by their font size
+	// set offset
 	item->translate( m_pos.x() + offset, m_pos.y() ) ;
+	
+	// scale font by their font size
 	item->scale( state.ScaleFactor(), state.ScaleFactor() ) ;
 
 	addToGroup( item ) ;
