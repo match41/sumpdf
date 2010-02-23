@@ -78,6 +78,8 @@ public :
 	const std::vector<unsigned char>&	FontFile( ) const ;
 
 private :
+	FontDescriptor( const FontDescriptor& ) ;
+
 	static const Name m_stretch_names[] ; 
 
 	double FontUnit( double val, FT_Face face ) ;

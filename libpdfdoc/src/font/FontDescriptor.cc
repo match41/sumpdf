@@ -73,6 +73,7 @@ FontDescriptor::FontDescriptor( FT_Face face, std::vector<unsigned char>& prog )
 	: m_type( font::GetType( face ) ),
 	  m_flags( 0 )
 {
+std::cout << "construct from face " << std::endl ;
 	PDF_ASSERT( face != 0 ) ;
 	m_length1 = m_length2 = m_length3 = 0 ;
 	
@@ -175,7 +176,10 @@ void FontDescriptor::Read( font::Type type, DictReader& reader )
 	
 	int flags ;
 	if ( reader.Detach( "Flags",	flags ) )
+	{
 		m_flags = flags ;
+std::cout << (void*)this << ": flags bit = " << m_flags << std::endl ;
+	}
 	
 	Array bbox ;
 	if ( reader.Detach( "FontBBox", bbox ) )
@@ -208,7 +212,9 @@ Ref FontDescriptor::Write( File *file ) const
 	
 	if ( !m_family.empty() )
 		self["Family"]		= m_family ;
-	
+
+std::cout << (void*)this << ": write flags = " << m_flags << std::endl ;
+
 	self["Ascent"]		= m_ascent ;
 	self["Descent"]		= m_descent ;
 	self["CapHeight"]	= m_cap_height ;

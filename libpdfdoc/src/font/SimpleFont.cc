@@ -81,11 +81,10 @@ SimpleFont::SimpleFont( const std::string& name, FontDb *font_db )
 }
 
 SimpleFont::SimpleFont( DictReader& reader, FontDb *font_db )
-	: m_face( 0 ),
-	  m_type( font::unknown ),
-	  m_first_char( -1 ),
-	  m_last_char( -1 ),
-	  m_descriptor( new FontDescriptor )
+	: m_face( 0 )
+	, m_type( font::unknown )
+	, m_first_char( -1 )
+	, m_last_char( -1 )
 {
 	PDF_ASSERT( font_db != 0 ) ;
 	
@@ -97,7 +96,10 @@ SimpleFont::SimpleFont( DictReader& reader, FontDb *font_db )
 		
 		// base font is absent in type 3 fonts
 		if ( m_type != font::type3 )
-			reader.Detach( "BaseFont",	m_base_font ) ;
+		{
+			if ( !reader.Detach( "BaseFont", m_base_font ) )
+				throw FontException( "no BaseFont for font" ) ;
+		}
 		
 		reader.Detach( "FirstChar",	m_first_char ) ;
 		reader.Detach( "LastChar",	m_last_char ) ;
@@ -111,6 +113,7 @@ SimpleFont::SimpleFont( DictReader& reader, FontDb *font_db )
 		DictReader fd ;
 		if ( reader.Detach( "FontDescriptor", fd ) )
 		{
+			m_descriptor.reset( new FontDescriptor ) ;
 			m_descriptor->Read( m_type, fd ) ;
 
 			const std::vector<unsigned char>& font_file
@@ -182,7 +185,10 @@ void SimpleFont::Init( std::vector<unsigned char>& prog, FontDb *font_db )
 	const char *psname = ::FT_Get_Postscript_Name( m_face ) ;
 	m_base_font = (psname != 0 ? psname : "" ) ;
 	m_type 		= font::GetType( m_face ) ;
-	m_descriptor.reset( new FontDescriptor( m_face, prog ) ) ;
+	
+	if ( m_descriptor.get() == 0 )
+		m_descriptor.reset( new FontDescriptor( m_face, prog ) ) ;
+	
 	LoadGlyphs( ) ;
 }
 
@@ -299,7 +305,7 @@ Ref SimpleFont::Write( File *file ) const
 	dict["Subtype"]		= SubType( m_type ) ;
 	
 	// BaseFont is optional for type 3 fonts
-	if ( m_type != font::type3 )
+	if ( m_type != font::type3 && !m_base_font.empty() )
 		dict["BaseFont"]	= m_base_font ;
 	
 	dict["FirstChar"]	= m_first_char ;

@@ -40,6 +40,7 @@ class FontDb ;
 ///	brief description
 /**	\internal
 	The PageInfo class represents common properties of PageTree and RealPage.
+	It is supposed to be contained by these two
 */
 class PageInfo
 {
