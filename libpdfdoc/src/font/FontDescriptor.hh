@@ -96,6 +96,9 @@ private :
 	double		m_ascent, m_descent, m_leading, m_cap_height, m_x_height,
 				m_stemv, m_stemh, m_avg_width, m_max_width, m_miss_width ;
 
+	/// for type1 font with FontFile3 only
+	Name		m_subtype ;
+
 	// for reading type1 font only
 	int	m_length1, m_length2, m_length3 ;
 

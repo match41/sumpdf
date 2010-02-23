@@ -182,9 +182,14 @@ void SimpleFont::Init( std::vector<unsigned char>& prog, FontDb *font_db )
 	PDF_ASSERT( font_db != 0 ) ;
 	m_face = font_db->LoadFont( &prog[0], prog.size() ) ;
 	
-	const char *psname = ::FT_Get_Postscript_Name( m_face ) ;
-	m_base_font = (psname != 0 ? psname : "" ) ;
-	m_type 		= font::GetType( m_face ) ;
+	if ( m_base_font.empty() )
+	{
+		const char *psname = ::FT_Get_Postscript_Name( m_face ) ;
+		m_base_font = (psname != 0 ? psname : "" ) ;
+	}
+
+	if ( m_type == font::unknown )
+		m_type 		= font::GetType( m_face ) ;
 	
 	if ( m_descriptor.get() == 0 )
 		m_descriptor.reset( new FontDescriptor( m_face, prog ) ) ;

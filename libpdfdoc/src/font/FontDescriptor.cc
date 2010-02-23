@@ -73,7 +73,6 @@ FontDescriptor::FontDescriptor( FT_Face face, std::vector<unsigned char>& prog )
 	: m_type( font::GetType( face ) ),
 	  m_flags( 0 )
 {
-std::cout << "construct from face " << std::endl ;
 	PDF_ASSERT( face != 0 ) ;
 	m_length1 = m_length2 = m_length3 = 0 ;
 	
@@ -140,6 +139,7 @@ void FontDescriptor::Read( font::Type type, DictReader& reader )
 	
 	// font file can be in FontFile, FontFile2 or 3, depending on font type
 	Stream prog ;
+	m_subtype = Name() ;
 	if ( m_type == font::type1 )
 	{
 		// type1 font has 3 different lengths
@@ -151,6 +151,15 @@ void FontDescriptor::Read( font::Type type, DictReader& reader )
 				 !prog_reader.Detach( "Length2", m_length2 ) ||
 				 !prog_reader.Detach( "Length3", m_length3 ) )
 				throw FontException( "missing length for type 1 font" ) ; 
+		}
+		
+		// CFF type1 font uses "FontFile3"
+		else if ( reader.Detach( "FontFile3", prog ) )
+		{
+			Dictionary prog_dict = prog.Self() ;
+			DictReader prog_reader( prog_dict, reader.GetFile() ) ;
+			if ( !prog_reader.Detach( "Subtype", m_subtype ) )
+				throw FontException( "missing Subtype for FontFile3 font" ) ; 
 		}
 	}
 	else if ( m_type == font::truetype )
@@ -176,10 +185,7 @@ void FontDescriptor::Read( font::Type type, DictReader& reader )
 	
 	int flags ;
 	if ( reader.Detach( "Flags",	flags ) )
-	{
 		m_flags = flags ;
-std::cout << (void*)this << ": flags bit = " << m_flags << std::endl ;
-	}
 	
 	Array bbox ;
 	if ( reader.Detach( "FontBBox", bbox ) )
@@ -213,8 +219,6 @@ Ref FontDescriptor::Write( File *file ) const
 	if ( !m_family.empty() )
 		self["Family"]		= m_family ;
 
-std::cout << (void*)this << ": write flags = " << m_flags << std::endl ;
-
 	self["Ascent"]		= m_ascent ;
 	self["Descent"]		= m_descent ;
 	self["CapHeight"]	= m_cap_height ;
@@ -247,10 +251,18 @@ std::cout << (void*)this << ": write flags = " << m_flags << std::endl ;
 		}
 		else if ( m_type == font::type1 )
 		{
-			s.AddDictionaryEntry( "Length1", m_length1 ) ;
-			s.AddDictionaryEntry( "Length2", m_length2 ) ;
-			s.AddDictionaryEntry( "Length3", m_length3 ) ;
-			self["FontFile"]	= file->WriteObj( s ) ;
+			if ( m_subtype == Name() )
+			{
+				s.AddDictionaryEntry( "Length1", m_length1 ) ;
+				s.AddDictionaryEntry( "Length2", m_length2 ) ;
+				s.AddDictionaryEntry( "Length3", m_length3 ) ;
+				self["FontFile"]	= file->WriteObj( s ) ;
+			}
+			else
+			{
+				s.AddDictionaryEntry( "Subtype", m_subtype ) ;
+				self["FontFile3"]	= file->WriteObj( s ) ;
+			}
 		}
 		else
 			self["FontFile3"]	= file->WriteObj( s ) ;
