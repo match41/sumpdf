@@ -64,6 +64,7 @@ TextLine::TextLine(
     , m_state( state )
     , m_text( text )
 {
+std::cout << "in: x = " << m_xpos << " y = " << m_ypos << std::endl ;
 }
 
 double TextLine::XPos( ) const
@@ -103,9 +104,11 @@ void TextLine::AppendText( const std::wstring& text )
 std::ostream& TextLine::Print(
 	std::ostream& 			os,
 	Matrix&					current,
+	double&	xpos,	double&	ypos,
 	const GraphicsState& 	state,
 	const Resources			*res ) const
 {
+/*
 	if ( m_trans.IsTranslate() && current.IsTranslate() )
 		os	<< (m_trans.Dx()-current.Dx()) << ' ' 
 			<< (m_trans.Dy()-current.Dy()) << " Td\n" ;
@@ -113,9 +116,26 @@ std::ostream& TextLine::Print(
 		os	<< m_trans.M11() << ' ' << m_trans.M12() << ' '
 			<< m_trans.M21() << ' ' << m_trans.M22() << ' '
 			<< m_trans.Dx()  << ' ' << m_trans.Dy( ) << " Tm\n" ; 
-	
+*/
+	if ( m_trans != current )
+	{
+		os	<< m_trans.M11() << ' ' << m_trans.M12() << ' '
+			<< m_trans.M21() << ' ' << m_trans.M22() << ' '
+			<< m_trans.Dx()  << ' ' << m_trans.Dy( ) << " Tm\n" ; 
+		
+		xpos = ypos = 0.0 ;
+	}
+
+std::cout << "x = " << m_xpos << " y = " << m_ypos << std::endl ;
+PrintText( std::cout ) ;
+
+	if ( m_xpos != xpos || m_ypos != ypos )
+		os	<< (m_xpos - xpos) << ' ' << (m_ypos - ypos) << " Td\n" ;
+		
 	// replace current matrix
 	current = m_trans ;
+	xpos	= m_xpos ;
+	ypos	= m_ypos ;
 	
 	m_state.Print( os, res, state ) ;
 	return PrintText( os ) ;
@@ -160,8 +180,10 @@ std::ostream& operator<<( std::ostream& os, const TextLine& t )
 bool TextLine::operator==( const TextLine& rhs ) const
 {
 	return
-		m_trans == rhs.m_trans &&
-		m_state	== rhs.m_state &&
+		m_xpos	== rhs.m_xpos	&&
+		m_ypos	== rhs.m_ypos	&&
+		m_trans == rhs.m_trans	&&
+		m_state	== rhs.m_state	&&
 		m_text	== rhs.m_text ;
 }
 
@@ -210,7 +232,6 @@ double TextLine::Width( ) const
 
 void TextLine::VisitChars( CharVisitor *v ) const
 {
-//	Matrix tm ;
 	double	offset = 0.0 ;
 	Font *font	= m_state.GetFont( ) ; 
 	PDF_ASSERT( font != 0 ) ;
@@ -222,7 +243,6 @@ void TextLine::VisitChars( CharVisitor *v ) const
 		// has space?
 		if ( sp != m_space.end() && idx == sp->index )
 		{
-//			tm.Dx( tm.Dx() - sp->width ) ;
 			offset -= sp->width ;
 			++sp ;
 		}
@@ -236,7 +256,6 @@ void TextLine::VisitChars( CharVisitor *v ) const
 			v->OnChar( m_text[idx], offset, glyph, ts ) ;
 
 			// update X position
-//			tm.Dx( tm.Dx() + glyph->AdvanceX() * ts.ScaleFactor() ) ;
 			offset += glyph->AdvanceX() * ts.ScaleFactor() ;
 		}
 		else

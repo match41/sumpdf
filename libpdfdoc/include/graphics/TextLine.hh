@@ -76,6 +76,7 @@ public :
 	std::ostream& Print(
 		std::ostream& 			os,
 		Matrix&					current,
+		double&	xpos,	double&	ypos,
 		const GraphicsState& 	state,
 		const Resources			*res ) const ;
 

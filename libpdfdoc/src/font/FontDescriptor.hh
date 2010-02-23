@@ -43,6 +43,7 @@ namespace pdf {
 class DictReader ;
 class File ;
 class Ref ;
+class Stream ;
 
 /**	\internal	\brief	A font descriptor
 	The FontDescriptor class represents a font descriptor in a PDF
@@ -52,17 +53,6 @@ class Ref ;
 class FontDescriptor
 {
 public :
-	enum Stretch
-	{
-		padding,	///< to match the OS/2 table in truetype font enum
-		
-		ultra_condensed, extra_condensed, condensed, semi_condensed,
-		normal,
-		semi_expanded, expanded, extra_expanded, ultra_expanded,
-		unknown
-	} ;
-	
-public :
 	FontDescriptor( ) ;
 	explicit FontDescriptor( FT_Face face, std::vector<unsigned char>& prog ) ;
 	
@@ -71,32 +61,32 @@ public :
 	
 	std::string Family( ) const ;
 
-	Stretch GetStretch( ) const ;
+	font::Width GetStretch( ) const ;
 
 	double	ItalicAngle( ) const ;
 
 	const std::vector<unsigned char>&	FontFile( ) const ;
 
 private :
-	FontDescriptor( const FontDescriptor& ) ;
-
 	static const Name m_stretch_names[] ; 
 
 	double FontUnit( double val, FT_Face face ) ;
+
+	bool DecodeFontFile3( DictReader& reader, Stream& prog ) ;
 
 private :
 	font::Type	m_type ;
 
 	std::string	m_family ;
 	std::string	m_psname ;
-	Stretch		m_stretch ;
+	font::Width	m_stretch ;
 	int			m_weight ;
 	Rect		m_bbox ;
 	double		m_italic_angle ;
 	double		m_ascent, m_descent, m_leading, m_cap_height, m_x_height,
 				m_stemv, m_stemh, m_avg_width, m_max_width, m_miss_width ;
 
-	/// for type1 font with FontFile3 only
+	/// for FontFile3 only
 	Name		m_subtype ;
 
 	// for reading type1 font only

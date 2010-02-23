@@ -114,8 +114,8 @@ FontDescriptor::FontDescriptor( FT_Face face, std::vector<unsigned char>& prog )
 		// I don't know how to get this one
 		m_stemv		= (os2->usWeightClass/65.0) * (os2->usWeightClass/65.0)+ 50;
 		
-		// we define the Stretch enum to suit the usWidthClass field
-		m_stretch	= static_cast<Stretch>( os2->usWidthClass ) ;
+		// we define the Width enum to suit the usWidthClass field
+		m_stretch	= static_cast<font::Width>( os2->usWidthClass ) ;
 	}
 	
 	double x_min = FontUnit( face->bbox.xMin, face ) ;
@@ -130,6 +130,22 @@ FontDescriptor::FontDescriptor( FT_Face face, std::vector<unsigned char>& prog )
 	// steal the buffer. if we don't steal it, then it will be destroyed later.
 	// then the FT_Face will become invalid.
 	m_font_file.swap( prog ) ;
+}
+
+bool FontDescriptor::DecodeFontFile3( DictReader& reader, Stream& prog )
+{
+	if ( reader.Detach( "FontFile3", prog ) )
+	{
+		Dictionary prog_dict = prog.Self() ;
+		DictReader prog_reader( prog_dict, reader.GetFile() ) ;
+		
+		if ( !prog_reader.Detach( "Subtype", m_subtype ) )
+			throw FontException( "missing Subtype for FontFile3 font" ) ; 
+		
+		return true ;
+	}
+	else
+		return false ;
 }
 
 ///	Read the font descriptor from file.
@@ -154,16 +170,14 @@ void FontDescriptor::Read( font::Type type, DictReader& reader )
 		}
 		
 		// CFF type1 font uses "FontFile3"
-		else if ( reader.Detach( "FontFile3", prog ) )
-		{
-			Dictionary prog_dict = prog.Self() ;
-			DictReader prog_reader( prog_dict, reader.GetFile() ) ;
-			if ( !prog_reader.Detach( "Subtype", m_subtype ) )
-				throw FontException( "missing Subtype for FontFile3 font" ) ; 
-		}
+		else 
+			DecodeFontFile3( reader, prog ) ;
 	}
 	else if ( m_type == font::truetype )
-		reader.Detach( "FontFile2", 	prog ) ;
+	{
+		if ( !reader.Detach( "FontFile2", prog ) )
+			DecodeFontFile3( reader, prog ) ; 
+	}
 	
 	// TODO: confirm FontFile3 type
 	else if ( m_type == font::type3 )
@@ -176,7 +190,7 @@ void FontDescriptor::Read( font::Type type, DictReader& reader )
 	
 	Name stretch ;
 	if ( reader.Detach( "FontStretch", stretch ) )
-		m_stretch = static_cast<Stretch>(std::find(
+		m_stretch = static_cast<font::Width>(std::find(
 			Begin(m_stretch_names),
 			End(m_stretch_names),
 			stretch ) - Begin(m_stretch_names) ) ;
@@ -268,7 +282,8 @@ Ref FontDescriptor::Write( File *file ) const
 			self["FontFile3"]	= file->WriteObj( s ) ;
 	}
 	
-	if ( m_stretch >= ultra_condensed && m_stretch <= ultra_expanded )  
+	if ( m_stretch >= font::ultra_condensed &&
+	     m_stretch <= font::ultra_expanded )  
 		self["Stretch"]	= m_stretch_names[m_stretch] ;
 
 	return file->WriteObj( self ) ;

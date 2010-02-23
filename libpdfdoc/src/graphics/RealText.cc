@@ -204,12 +204,15 @@ void RealText::Print( std::ostream& os, const Resources *res ) const
 	// rendering state
 	GraphicsState	gs ;
 	Matrix			trans ;
+	double			xpos = 0.0, ypos = 0.0 ;
 
 	using namespace boost ;
 	std::for_each(
 		m_lines.begin(),
 		m_lines.end(),
-		bind( &TextLine::Print, _1, ref(os), ref(trans), ref(gs), res ) ) ;
+		bind(
+			&TextLine::Print, _1, 	ref(os), ref(trans),
+			ref(xpos),	ref(ypos),	ref(gs), res ) ) ;
 
 	os << "ET\n" ;
 }
@@ -230,9 +233,6 @@ void RealText::OnTd( Object* args, std::size_t count, const Resources* )
 {
 	if ( count >= 2 )
 	{
-//		m_text_mat = m_line_mat =
-//			m_line_mat * Matrix( 1, 0, 0, 1, args[0], args[1] ) ;
-		
 		m_dx += args[0].To<double>() ;
 		m_dy += args[1].To<double>() ;
 		m_offset = 0 ;
@@ -247,11 +247,6 @@ void RealText::OnTD( Object* args, std::size_t count, const Resources *res )
 	{
 		double	ty	= args[1] ;
 		m_state.GetTextState().SetLeading( -ty ) ;
-		
-//		m_text_mat = m_line_mat =
-//			m_line_mat * Matrix( 1, 0, 0, 1,
-//				args[0].To<double>() * m_line_mat.M11(),
-//				args[1].To<double>() * m_line_mat.M22() ) ;
 		
 		m_dx += args[0].To<double>() ;
 		m_dy += args[1].To<double>() ;
