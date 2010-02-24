@@ -66,6 +66,9 @@ public :
 	iterator end( ) ;
 	
 	std::size_t Count( ) const ;
+	
+	Object& operator[]( std::size_t idx ) ;
+	const Object& operator[]( std::size_t idx ) const ;
 
 	friend TokenSrc& operator>>( TokenSrc& src, ContentOp& op ) ;
 

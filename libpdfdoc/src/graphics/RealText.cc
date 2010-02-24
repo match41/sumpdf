@@ -32,6 +32,7 @@
 #include "core/Object.hh"
 #include "core/Token.hh"
 #include "font/BaseFont.hh"
+#include "page/ContentOp.hh"
 #include "page/Resources.hh"
 #include "util/Debug.hh"
 #include "util/Util.hh"
@@ -48,10 +49,7 @@ namespace pdf {
 struct RealText::HandlerMap
 {
 	/// command handler
-	typedef void (RealText::*Handler)(
-		Object			*args,
-		std::size_t		count,
-		const Resources	*res ) ;
+	typedef void (RealText::*Handler)( ContentOp& , const Resources* ) ;
 	typedef std::map<Token, Handler>	Map ;
 
 	static const Map::value_type	m_val[] ;
@@ -138,24 +136,20 @@ TextLine& RealText::at( std::size_t idx )
 	return m_lines.at(idx) ;
 }
 
-void RealText::OnCommand(
-	const Token& 	cmd,
-	Object 			*args,
-	std::size_t		count,
-	const Resources	*res )
+void RealText::OnCommand( ContentOp& op, const Resources *res )
 {
 	PDF_ASSERT( !m_lines.empty() ) ;
 
-	HandlerMap::Map::const_iterator i = HandlerMap::m_map.find( cmd ) ;
+	HandlerMap::Map::const_iterator i = HandlerMap::m_map.find( op.Operator() );
 	if ( i != HandlerMap::m_map.end() )
-		(this->*(i->second))( args, count, res ) ;
+		(this->*(i->second))( op, res ) ;
 	
-	else if ( GraphicsState::IsGSCommand( cmd ) )
+	else if ( GraphicsState::IsGSCommand( op.Operator() ) )
 	{
 		TextLine& current = m_lines.back() ;
 		
 		// state changed
-		bool is_changed = m_state.OnCommand( cmd, args, count, res ) ;
+		bool is_changed = m_state.OnCommand( op, res ) ;
 					
 		if ( current.IsEmpty() || is_changed )
 		{
@@ -229,41 +223,40 @@ std::ostream& operator<<( std::ostream& os, const RealText& t )
 	return os ;
 }
 
-void RealText::OnTd( Object* args, std::size_t count, const Resources* )
+void RealText::OnTd( ContentOp& op, const Resources * )
 {
-	if ( count >= 2 )
+	if ( op.Count() >= 2 )
 	{
-		m_dx += args[0].To<double>() ;
-		m_dy += args[1].To<double>() ;
+		m_dx += op[0].To<double>() ;
+		m_dy += op[1].To<double>() ;
 		m_offset = 0 ;
 
 		AddLine( TextLine( m_dx, m_dy, m_state, m_text_mat ) ) ;
 	}
 }
 
-void RealText::OnTD( Object* args, std::size_t count, const Resources *res )
+void RealText::OnTD( ContentOp& op, const Resources * )
 {
-	if ( count >= 2 )
+	if ( op.Count() >= 2 )
 	{
-		double	ty	= args[1] ;
+		double	ty	= op[1] ;
 		m_state.GetTextState().SetLeading( -ty ) ;
 		
-		m_dx += args[0].To<double>() ;
-		m_dy += args[1].To<double>() ;
+		m_dx += op[0].To<double>() ;
+		m_dy += op[1].To<double>() ;
 		m_offset = 0 ;
 		
 		AddLine( TextLine( m_dx, m_dy, m_state, m_text_mat ) ) ;
 	}
 }
 
-void RealText::OnTm( Object* args, std::size_t count, const Resources* )
+void RealText::OnTm( ContentOp& op, const Resources * )
 {
-	if ( count >= 6 )
+	if ( op.Count() >= 6 )
 	{
 		// unlike Td and TD, the Tm command will replace the current
 		// matrix.
-		m_text_mat = Matrix(
-			args[0], args[1], args[2], args[3], args[4], args[5] ) ;
+		m_text_mat = Matrix( op[0], op[1], op[2], op[3], op[4], op[5] ) ;
 		
 		m_offset = m_dx = m_dy = 0.0 ;
 		
@@ -271,11 +264,8 @@ void RealText::OnTm( Object* args, std::size_t count, const Resources* )
 	}
 }
 
-void RealText::OnTstar( Object* , std::size_t , const Resources * )
+void RealText::OnTstar( ContentOp& , const Resources * )
 {
-//	m_line_mat.Dy( m_line_mat.Dy() -m_state.GetTextState().Leading() ) ;
-//	m_text_mat = m_line_mat ;
-	
 	m_dy -= m_state.GetTextState().Leading() ;
 	m_offset = 0 ;
 	
@@ -283,18 +273,18 @@ void RealText::OnTstar( Object* , std::size_t , const Resources * )
 }
 
 ///	Shows a Text string
-void RealText::OnTj( Object* args, std::size_t count, const Resources * )
+void RealText::OnTj( ContentOp& op, const Resources * )
 {
 	PDF_ASSERT( !m_lines.empty() ) ;
 	
-	if ( count >= 1 )
+	if ( op.Count() >= 1 )
 	{
 		TextLine& current = m_lines.back() ;
 		
 		// must set the font properly before showing text
 		if ( current.Format().GetFont() != 0 )
 		{
-			const std::string& s = args[0].As<std::string>() ;
+			const std::string& s = op[0].As<std::string>() ;
 			std::wstring ws( s.begin(), s.end() ) ;
 			
 			current.AppendText( ws ) ;
@@ -316,7 +306,7 @@ void RealText::OnTj( Object* args, std::size_t count, const Resources * )
 	has the effect of moving the next glyph painted either to the left or down
 	by the given amount. 
 */
-void RealText::OnTJ( Object* args, std::size_t count, const Resources *res )
+void RealText::OnTJ( ContentOp& op, const Resources * )
 {
 	PDF_ASSERT( !m_lines.empty() ) ;
 	
@@ -325,14 +315,14 @@ void RealText::OnTJ( Object* args, std::size_t count, const Resources *res )
 
 	double offset = 0.0 ;
 
-	if ( count > 0 )
+	if ( op.Count() > 0 )
 	{
-		Array& a = args[0].As<Array>() ;
-		for ( Array::iterator i = a.begin() ; i != a.end() ; ++i )
+		const Array& a = op[0].As<Array>() ;
+		for ( Array::const_iterator i = a.begin() ; i != a.end() ; ++i )
 		{
 			if ( i->Is<std::string>() )
 			{
-				std::string& s = i->As<std::string>() ;
+				const std::string& s = i->As<std::string>() ;
 				std::wstring ws( s.begin(), s.end() ) ;
 				offset += m_state.GetTextState().Width( ws ) ;
 
@@ -355,11 +345,11 @@ void RealText::OnTJ( Object* args, std::size_t count, const Resources *res )
 	m_offset += offset ;
 }
 
-void RealText::OnSingleQuote( Object* args, std::size_t count, const Resources *res )
+void RealText::OnSingleQuote( ContentOp& , const Resources * )
 {
 }
 
-void RealText::OnDoubleQuote( Object* args, std::size_t count, const Resources *res )
+void RealText::OnDoubleQuote( ContentOp& , const Resources * )
 {
 }
 

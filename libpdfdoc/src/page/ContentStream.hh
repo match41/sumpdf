@@ -37,6 +37,7 @@ namespace pdf {
 
 class Graphics ;
 class Resources ;
+class ContentOp ;
 
 ///	brief description
 /**	\internal
@@ -62,16 +63,13 @@ private :
 	
 	void Decode( Stream& str ) ;
 
-	void ProcessCommand(
-		const Token& 	cmd,
-		Object 			*args,
-		std::size_t 	count ) ;
+	void ProcessCommand( ContentOp& op ) ;
 
-	void OnBT( Object *args, std::size_t count ) ;
-	void OnET( Object *args, std::size_t count ) ;
-	void Oncm( Object *args, std::size_t count ) ;
-	void OnQ( Object *args, std::size_t count ) ;
-	void Onq( Object *args, std::size_t count ) ;
+	void OnBT( const ContentOp& op ) ;
+	void OnET( const ContentOp& op ) ;
+	void Oncm( const ContentOp& op ) ;
+	void OnQ( const ContentOp& op ) ;
+	void Onq( const ContentOp& op ) ;
 
 private :
 	std::vector<Stream>		m_strs ;

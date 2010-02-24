@@ -36,7 +36,7 @@
 
 namespace pdf {
 
-class Object ;
+class ContentOp ;
 class Resources ;
 class Token ;
 
@@ -61,11 +61,7 @@ public :
 		const GraphicsState&	prev = GraphicsState() ) const ;
 
 	/// Handle PDF content operators.
-	bool OnCommand(
-		const Token& 	cmd,
-		Object 			*args,
-		std::size_t		count,
-		const Resources	*res ) ;
+	bool OnCommand( ContentOp& op, const Resources *res ) ;
 
 	static bool IsGSCommand( const Token& cmd ) ;
 
@@ -78,8 +74,8 @@ private :
 	struct HandlerMap ;
 
 	// text state command handlers
-	bool OnTf( Object* args, std::size_t count, const Resources *res ) ;
-	bool OnTL( Object* args, std::size_t count, const Resources *res ) ;
+	bool OnTf( ContentOp& op, const Resources *res ) ;
+	bool OnTL( ContentOp& op, const Resources *res ) ;
 
 private :
 	TextState	m_text ;

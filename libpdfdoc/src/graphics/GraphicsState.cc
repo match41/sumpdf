@@ -30,6 +30,7 @@
 
 #include "font/BaseFont.hh"
 
+#include "page/ContentOp.hh"
 #include "page/Resources.hh"
 
 #include "util/Debug.hh"
@@ -42,10 +43,7 @@ namespace pdf {
 struct GraphicsState::HandlerMap
 {
 	/// command handler
-	typedef bool (GraphicsState::*Handler)(
-		Object			*args,
-		std::size_t		count,
-		const Resources	*res ) ;
+	typedef bool (GraphicsState::*Handler)( ContentOp&, const Resources* ) ;
 	typedef std::map<Token, Handler>	Map ;
 
 	static const Map::value_type	m_val[] ;
@@ -94,15 +92,11 @@ std::ostream& GraphicsState::Print(
 /**	Handles PDF operators in the content stream.
 	\return	\c true if the state is changed by the command. Otherwise \c false.
 */
-bool GraphicsState::OnCommand(
-	const Token& 	cmd,
-	Object 			*args,
-	std::size_t		count,
-	const Resources	*res )
+bool GraphicsState::OnCommand( ContentOp& op, const Resources *res )
 {
-	HandlerMap::Map::const_iterator i = HandlerMap::m_map.find( cmd ) ;
+	HandlerMap::Map::const_iterator i = HandlerMap::m_map.find( op.Operator() );
 	if ( i != HandlerMap::m_map.end() )
-		return (this->*(i->second))( args, count, res ) ;
+		return (this->*(i->second))( op, res ) ;
 
 	return false ;
 }
@@ -113,18 +107,18 @@ bool GraphicsState::IsGSCommand( const Token& cmd )
 	return i != HandlerMap::m_map.end() ;
 }
 
-bool GraphicsState::OnTf( Object* args, std::size_t count, const Resources *res)
+bool GraphicsState::OnTf( ContentOp& op, const Resources *res )
 {
 	PDF_ASSERT( res != 0 ) ;
 
-	if ( count >= 2 && args[0].Is<Name>() && args[1].IsNumber() )
+	if ( op.Count() >= 2 && op[0].Is<Name>() && op[1].IsNumber() )
 	{
-		BaseFont *f = res->FindFont( args[0].As<Name>() ) ;
+		BaseFont *f = res->FindFont( op[0].As<Name>() ) ;
 		if ( f == 0 )
-			std::cout << "unknown font: " << args[1] << std::endl ;
+			std::cout << "unknown font: " << op[1] << std::endl ;
 		else
 		{
-			double font_size = args[1].To<double>() ;
+			double font_size = op[1].To<double>() ;
 			
 			if ( m_text.FontSize()	!= font_size	||
 				 m_text.GetFont()	!= f )
@@ -137,11 +131,11 @@ bool GraphicsState::OnTf( Object* args, std::size_t count, const Resources *res)
 	return false ;
 }
 
-bool GraphicsState::OnTL( Object* args, std::size_t count, const Resources *res)
+bool GraphicsState::OnTL( ContentOp& op, const Resources *res )
 {
-	if ( count > 0 && args[0].IsNumber() )
+	if ( op.Count() > 0 && op[0].IsNumber() )
 	{
-		m_text.SetLeading( args[0].To<double>() ) ;
+		m_text.SetLeading( op[0].To<double>() ) ;
 		return true ;
 	}
 	else

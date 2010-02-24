@@ -27,6 +27,7 @@
 
 #include "core/Token.hh"
 #include "core/Object.hh"
+#include "page/ContentOp.hh"
 #include "page/MockResources.hh"
 #include "graphics/GraphicsState.hh"
 
@@ -61,7 +62,9 @@ void GraphicsStateTest::TestTextStateCommand( )
 	CPPUNIT_ASSERT( GraphicsState::IsGSCommand( Token("Tf") ) ) ;
 	
 	Object args[] = { font_name, 12.0 } ;
-	CPPUNIT_ASSERT( subject.OnCommand( Token("Tf"), args, Count(args), &res ) );
+	ContentOp op( Token("Tf"), Begin(args), End(args) ) ;
+	subject.OnCommand( op, &res ) ;  
+	
 	PDFUT_ASSERT_EQUAL( subject.GetTextState().FontSize(), 12.0 ) ;
 	PDFUT_ASSERT_EQUAL( subject.GetTextState().GetFont(), &font ) ;
 }

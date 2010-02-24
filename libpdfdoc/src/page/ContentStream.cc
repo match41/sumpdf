@@ -47,9 +47,7 @@ namespace pdf {
 struct ContentStream::HandlerMap
 {
 	/// command handler
-	typedef void (ContentStream::*Handler)(
-		Object			*args,
-		std::size_t		count ) ;
+	typedef void (ContentStream::*Handler)( const ContentOp& ) ;
 	typedef std::map<Token, Handler>	Map ;
 
 	static const Map::value_type	m_val[] ;
@@ -105,60 +103,31 @@ str.Rewind() ;
 
 	while ( src >> op )
 	{
-		ProcessCommand(
-			op.Operator(),
-			op.Count() == 0 ? 0 : &*op.begin(),
-			op.Count() ) ;
-/*		Token  cmd ;
-		Object obj ;
-
-		if ( src >> obj )
-		{
-			// swapping is faster
-			args.push_back( Object() ) ;
-			obj.Swap( args.back() ) ;
-		}
-		
-		// if it is not an object, then it should be a command operator
-		else
-		{
-			src.ResetState( ) ;
-			if ( src >> cmd )
-			{
-				ProcessCommand( cmd, args.empty() ? 0 : &args[0], args.size() );
-
-				args.clear( ) ;
-			}
-			else
-				break ;
-		}*/
+		ProcessCommand( op ) ;
 	}
 }
 
-void ContentStream::ProcessCommand(
-	const Token& 	cmd,
-	Object 			*args,
-	std::size_t 	count )
+void ContentStream::ProcessCommand( ContentOp& op )
 {
-	HandlerMap::Map::const_iterator i = HandlerMap::m_map.find( cmd ) ;
+	HandlerMap::Map::const_iterator i = HandlerMap::m_map.find( op.Operator() );
 	if ( i != HandlerMap::m_map.end() )
 	{
 		PDF_ASSERT( i->second != 0 ) ;
-		(this->*(i->second))( args, count ) ;
+		(this->*(i->second))( op ) ;
 	}
 	else if ( m_current != 0 )
-		m_current->OnCommand( cmd, args, count, m_res ) ;
+		m_current->OnCommand( op, m_res ) ;
 	else
-		m_state.gs.OnCommand( cmd, args, count, m_res ) ;
+		m_state.gs.OnCommand( op, m_res ) ;
 }
 
-void ContentStream::OnBT( Object *, std::size_t )
+void ContentStream::OnBT( const ContentOp& )
 {
 	if ( m_current == 0 )
 		m_current = new RealText( m_state.gs ) ;
 }
 
-void ContentStream::OnET( Object *, std::size_t )
+void ContentStream::OnET( const ContentOp& )
 {
 	if ( m_current != 0 )
 	{
@@ -169,22 +138,19 @@ void ContentStream::OnET( Object *, std::size_t )
 	}
 }
 
-void ContentStream::Oncm( Object *args, std::size_t count )
+void ContentStream::Oncm( const ContentOp& op )
 {
-	if ( count >= 6 )
-	{
-		m_state.ctm = Matrix(
-			args[0], args[1], args[2], args[3], args[4], args[5] ) ;
-	}
+	if ( op.Count() >= 6 )
+		m_state.ctm = Matrix( op[0], op[1], op[2], op[3], op[4], op[5] ) ;
 }
 
-void ContentStream::OnQ( Object *args, std::size_t count )
+void ContentStream::OnQ( const ContentOp& )
 {
 	m_state = m_state_stack.top( ) ;
 	m_state_stack.pop( ) ;
 }
 
-void ContentStream::Onq( Object *args, std::size_t count )
+void ContentStream::Onq( const ContentOp& )
 {
 	m_state_stack.push( m_state ) ;
 }

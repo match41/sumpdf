@@ -28,6 +28,7 @@
 #include "core/Array.hh"
 #include "core/Object.hh"
 #include "graphics/RealText.hh"
+#include "page/ContentOp.hh"
 #include "page/MockResources.hh"
 #include "util/Matrix.hh"
 #include "util/Util.hh"
@@ -63,7 +64,8 @@ void RealTextTest::TestTdCmd( )
 	// action: translate to 100,200
 	Object	args[]	= { 100, 200 } ;
 	Token	cmd( "Td" ) ;
-	t.OnCommand( cmd, args, Count(args), &res ) ;  
+	ContentOp op(cmd, Begin(args), End(args) ) ;
+	t.OnCommand( op, &res ) ;  
 	
 	// expected: no new text line is added. current matrix translated
 	PDFUT_ASSERT_EQUAL( t.Count(), 1U ) ;
@@ -75,7 +77,8 @@ void RealTextTest::TestTdCmd( )
 	// action: move another 300,900
 	args[0] = 300 ;
 	args[1] = 900 ;
-	t.OnCommand( cmd, args, Count(args), &res ) ;  
+	ContentOp op2(cmd, Begin(args), End(args) ) ;
+	t.OnCommand( op2, &res ) ;  
 	
 	// expected: the two translation is combined
 	PDFUT_ASSERT_EQUAL( t.Count(), 1U ) ;
@@ -103,7 +106,8 @@ void RealTextTest::TestTj( )
 	// action: display a string "abc"
 	Object	args[]	= { "abc" } ;
 	Token	cmd( "Tj" ) ;
-	t.OnCommand( cmd, args, Count(args), &res ) ;
+	ContentOp op(cmd, Begin(args), End(args) ) ;
+	t.OnCommand( op, &res ) ;  
 	
 	PDFUT_ASSERT_EQUAL( t.Count(), 1U ) ;
 	PDFUT_ASSERT_EQUAL( t.front().Format(), gs ) ;
@@ -115,7 +119,8 @@ void RealTextTest::TestTj( )
 	// action: display another string "abc"
 	Object	args2[]	= { "abc" } ;
 	Token	cmd2( "Tj" ) ;
-	t.OnCommand( cmd2, args2, Count(args2), &res ) ;
+	ContentOp op2(cmd2, Begin(args2), End(args2) ) ;
+	t.OnCommand( op2, &res ) ;  
 	
 	PDFUT_ASSERT_EQUAL( t.Count(), 1U ) ;
 	PDFUT_ASSERT_EQUAL( t.back().Format(), gs ) ;
@@ -128,13 +133,15 @@ void RealTextTest::TestTj( )
 	GraphicsState gs2x( ts2x ) ;
 	Object	args3[]	= { fname, 24.0 } ;
 	Token	cmd3( "Tf" ) ;
-	t.OnCommand( cmd3, args3, Count(args3), &res ) ;
-	
+	ContentOp op3(cmd3, Begin(args3), End(args3) ) ;
+	t.OnCommand( op3, &res ) ;  
+
 	// add text again
 	Object	args4[]	= { "cdef" } ;
 	Token	cmd4( "Tj" ) ;
-	t.OnCommand( cmd4, args4, Count(args4), &res ) ;
-
+	ContentOp op4(cmd4, Begin(args4), End(args4) ) ;
+	t.OnCommand( op4, &res ) ;  
+	
 	PDFUT_ASSERT_EQUAL( t.Count(), 2U ) ;
 	PDFUT_ASSERT_EQUAL( t.back().Format(), gs2x ) ;
 	PDFUT_ASSERT_EQUAL( t.back().Transform(), Matrix() ) ;
@@ -158,8 +165,9 @@ void RealTextTest::TestTJ( )
 	Token	cmd( "TJ" ) ;
 	Array	tj( Begin(tj_ops), End(tj_ops) ) ;
 	Object	args[] = { tj } ;
-	t.OnCommand( cmd, args, Count(args), &res ) ;
-
+	ContentOp op(cmd, Begin(args), End(args) ) ;
+	t.OnCommand( op, &res ) ;  
+	
 	PDFUT_ASSERT_EQUAL( t.Count(), 1U ) ;
 	PDFUT_ASSERT_EQUAL( t.front().Format(), gs ) ;
 	
@@ -169,12 +177,14 @@ void RealTextTest::TestTJ( )
 	// double font size and a new TextLine object should be generated
 	Object	args3[]	= { fname, 24.0 } ;
 	Token	cmd3( "Tf" ) ;
-	t.OnCommand( cmd3, args3, Count(args3), &res ) ;
+	ContentOp op3(cmd3, Begin(args3), End(args3) ) ;
+	t.OnCommand( op3, &res ) ;  
 	
 	Object	args4[]	= { "cdef" } ;
 	Token	cmd4( "Tj" ) ;
-	t.OnCommand( cmd4, args4, Count(args4), &res ) ;
-
+	ContentOp op4(cmd4, Begin(args4), End(args4) ) ;
+	t.OnCommand( op4, &res ) ;  
+	
 	// 2 text lines in total
 	PDFUT_ASSERT_EQUAL( t.Count(), 2U ) ;
 
@@ -197,12 +207,14 @@ void RealTextTest::TestTjx2( )
 	// action: display a string "111"
 	Object	args[]	= { "111" } ;
 	Token	cmd( "Tj" ) ;
-	t.OnCommand( cmd, args, Count(args), &res ) ;
+	ContentOp op(cmd, Begin(args), End(args) ) ;
+	t.OnCommand( op, &res ) ;  
 
 	// action: display a string "222"
 	Object	args2[]	= { "222" } ;
 	Token	cmd2( "Tj" ) ;
-	t.OnCommand( cmd2, args2, Count(args2), &res ) ;
+	ContentOp op2(cmd2, Begin(args2), End(args2) ) ;
+	t.OnCommand( op2, &res ) ;  
 
 	PDFUT_ASSERT_EQUAL( t.Count(), 1U ) ;
 	PDFUT_ASSERT_EQUAL( t.front().Format(), gs ) ;
@@ -223,7 +235,8 @@ void RealTextTest::TestName( )
 	Object tj[] = { "Name:", -10072, "M", 80, "atch", -250, "man,", -250, "Jr"};
 	Object args[] = { Array(Begin(tj), End(tj)) } ;
 	Token cmd( "TJ" ) ;
-	subject.OnCommand( cmd, args, Count(args), &res ) ;
+	ContentOp op(cmd, Begin(args), End(args) ) ;
+	subject.OnCommand( op, &res ) ;  
 
 	PDFUT_ASSERT_EQUAL( subject.Count(), 1U ) ;
 	

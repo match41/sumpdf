@@ -48,11 +48,7 @@ class RealText : public Text
 public :
 	explicit RealText( const GraphicsState& ts = GraphicsState() ) ;
 
-	void OnCommand(
-		const Token& 	cmd,
-		Object 			*args,
-		std::size_t		count,
-		const Resources	*res ) ;
+	void OnCommand( ContentOp& op, const Resources *res ) ;
 
 	void Print( std::ostream& os, const Resources *res ) const ;
 
@@ -86,16 +82,16 @@ private :
 	struct HandlerMap ;
 
     // position command handlers
-	void OnTd( Object* args, std::size_t count, const Resources *res ) ;
-	void OnTD( Object* args, std::size_t count, const Resources *res ) ;
-	void OnTm( Object* args, std::size_t count, const Resources *res ) ;
-	void OnTstar( Object* args, std::size_t count, const Resources *res ) ;
+	void OnTd( ContentOp& op, const Resources *res ) ;
+	void OnTD( ContentOp& op, const Resources *res ) ;
+	void OnTm( ContentOp& op, const Resources *res ) ;
+	void OnTstar( ContentOp& op, const Resources *res ) ;
 	
 	// text show command handlers
-	void OnTj( Object* args, std::size_t count, const Resources *res ) ;
-	void OnTJ( Object* args, std::size_t count, const Resources *res ) ;
-	void OnSingleQuote( Object* args, std::size_t count, const Resources *res ) ;
-	void OnDoubleQuote( Object* args, std::size_t count, const Resources *res ) ;
+	void OnTj( ContentOp& op, const Resources *res ) ;
+	void OnTJ( ContentOp& op, const Resources *res ) ;
+	void OnSingleQuote( ContentOp& op, const Resources *res ) ;
+	void OnDoubleQuote( ContentOp& op, const Resources *res ) ;
 
 private :
 	///	Lines inside this text object

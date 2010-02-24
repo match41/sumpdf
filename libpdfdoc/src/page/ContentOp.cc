@@ -27,6 +27,8 @@
 
 #include "core/TokenSrc.hh"
 
+#include "util/Debug.hh"
+
 namespace pdf {
 
 /**	constructor
@@ -105,6 +107,18 @@ void ContentOp::Swap( ContentOp& op )
 std::size_t ContentOp::Count( ) const
 {
 	return m_operands.size( ) ;
+}
+
+Object& ContentOp::operator[]( std::size_t idx )
+{
+	PDF_ASSERT( idx < m_operands.size() ) ;
+	return m_operands[idx] ;
+}
+
+const Object& ContentOp::operator[]( std::size_t idx ) const
+{
+	PDF_ASSERT( idx < m_operands.size() ) ;
+	return m_operands[idx] ;
 }
 
 } // end of namespace

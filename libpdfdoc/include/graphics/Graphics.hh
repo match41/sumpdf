@@ -32,11 +32,10 @@
 
 namespace pdf {
 
+class ContentOp ;
 class GraphicsVisitor ;
-class Token ;
-class Resources ;
-class Object ;
 class GraphicsState ;
+class Resources ;
 
 /**	\defgroup	graphics Graphics
 	\brief		Graphics objects module
@@ -83,11 +82,7 @@ class Graphics
 public :
 	virtual ~Graphics( ) ;
 	
-	virtual void OnCommand(
-		const Token& 	cmd,
-		Object 			*args,
-		std::size_t		count,
-		const Resources	*res ) = 0 ;
+	virtual void OnCommand( ContentOp& op, const Resources *res ) = 0 ;
 
 	virtual void Print( std::ostream& os, const Resources *res ) const = 0 ;
 
