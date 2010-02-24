@@ -127,11 +127,11 @@ void PageInfo::Write( Dictionary& dict, File *file ) const
 	dict["Resources"]	= ref ;
 
     if ( (m_parent == 0 || m_media_box != m_parent->MediaBox()) &&
-	     m_media_box != Rect() )
+	     !m_media_box.IsNull() )
     	dict["MediaBox"] = Array( m_media_box.begin( ), m_media_box.end( ) ) ;
 
     if ( (m_parent == 0 || m_crop_box != m_parent->CropBox()) &&
-	     m_crop_box != Rect() )
+	     !m_crop_box.IsNull() )
     	dict["CropBox"] = Array( m_crop_box.begin( ), m_crop_box.end( ) ) ;
 
     // default value is zero, so no need to write if zero.

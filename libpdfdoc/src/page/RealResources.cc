@@ -109,6 +109,8 @@ void RealResources::ReadFontDict( DictReader& self )
 			Ref link = i->second.To<Ref>( std::nothrow ) ;
 			if ( !pool->Acquire( link, font ) )  
 			{
+				PDF_ASSERT( font == 0 ) ;
+			
 				DictReader font_dict ;
 				dict.At( i, font_dict ) ;
 				font = CreateFont( font_dict, m_font_db ) ;
@@ -135,7 +137,10 @@ Ref RealResources::WriteFontDict( File *file ) const
 	
 		Ref link = pool->Find( i->second ) ;
 		if ( link == Ref() )
+		{
 			link = i->second->Write( file ) ;
+			pool->Add( link, i->second ) ;
+		}
 		
 		font_dict.insert( std::make_pair( i->first, link ) ) ;
 	}

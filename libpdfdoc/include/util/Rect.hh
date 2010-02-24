@@ -66,6 +66,8 @@ public :
 	double Bottom( ) const ;
 	double Left( ) const ;
 	double Right( ) const ;
+	
+	bool IsNull( ) const ;
 } ;
 
 } // end of namespace

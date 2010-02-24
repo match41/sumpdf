@@ -95,4 +95,11 @@ double Rect::Right( ) const
 	return m_corner[2] ;
 }
 
+bool Rect::IsNull( ) const
+{
+	return
+		m_corner[0] == 0.0 && m_corner[1] == 0.0 &&
+		m_corner[2] == 0.0 && m_corner[3] == 0.0 ;
+}
+
 } // end of namespace
