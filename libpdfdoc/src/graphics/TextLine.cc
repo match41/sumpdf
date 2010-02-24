@@ -167,6 +167,8 @@ std::ostream& TextLine::PrintText( std::ostream& os ) const
 		{
 			if ( i->index != 0 )
 			{
+				PDF_ASSERT( i->index > idx ) ;
+				
 				a.push_back( std::string(
 					m_text.begin() + idx,
 					m_text.begin() + i->index ) ) ;

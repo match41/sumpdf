@@ -25,8 +25,9 @@
 
 #include "ContentStream.hh"
 
-#include "core/Object.hh"
-#include "core/Token.hh"
+//#include "core/Object.hh"
+//#include "core/Token.hh"
+#include "ContentOp.hh"
 #include "core/TokenSrc.hh"
 #include "graphics/GraphicsState.hh"
 #include "graphics/GraphicsVisitor.hh"
@@ -98,12 +99,17 @@ str.Rewind() ;
 	std::istream s( str.InStreamBuf() ) ;
 	TokenSrc src( s ) ;
 	std::vector<Object> args ;
-
+	
+	ContentOp		op ;
 	GraphicsState	gstate ;
 
-	while ( true )
+	while ( src >> op )
 	{
-		Token  cmd ;
+		ProcessCommand(
+			op.Operator(),
+			op.Count() == 0 ? 0 : &*op.begin(),
+			op.Count() ) ;
+/*		Token  cmd ;
 		Object obj ;
 
 		if ( src >> obj )
@@ -119,17 +125,13 @@ str.Rewind() ;
 			src.ResetState( ) ;
 			if ( src >> cmd )
 			{
-/*std::cout << cmd.Get() << " " ;
-std::copy( args.begin(), args.end(), std::ostream_iterator<Object>( std::cout, " " ) ) ;
-std::cout << std::endl ;
-*/
 				ProcessCommand( cmd, args.empty() ? 0 : &args[0], args.size() );
 
 				args.clear( ) ;
 			}
 			else
 				break ;
-		}
+		}*/
 	}
 }
 
