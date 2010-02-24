@@ -335,7 +335,7 @@ void RealText::OnTJ( Object* args, std::size_t count, const Resources *res )
 				std::string& s = i->As<std::string>() ;
 				std::wstring ws( s.begin(), s.end() ) ;
 				offset += m_state.GetTextState().Width( ws ) ;
-	
+
 				current.AppendText( ws ) ;
 			}
 			else if ( i->IsNumber() )
@@ -344,7 +344,6 @@ void RealText::OnTJ( Object* args, std::size_t count, const Resources *res )
 					m_state.GetTextState().FontSize() ;
 				
 				offset -= disp ;
-				
 				current.AppendSpace( disp ) ;
 			}
 		}

@@ -44,10 +44,12 @@ public :
 	// declare suit function
 	CPPUNIT_TEST_SUITE( TextLineTest ) ;
 		CPPUNIT_TEST( TestPrint ) ;
+		CPPUNIT_TEST( TestTJ ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
 private :
 	void TestPrint( ) ;
+	void TestTJ( ) ;
 } ;
 
 } // end of namespace

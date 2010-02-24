@@ -46,6 +46,7 @@ public :
 		CPPUNIT_TEST( TestTj ) ;
 		CPPUNIT_TEST( TestTjx2 ) ;
 		CPPUNIT_TEST( TestTJ ) ;
+		CPPUNIT_TEST( TestName ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
 private :
@@ -53,6 +54,7 @@ private :
 	void TestTj( ) ;
 	void TestTJ( ) ;
 	void TestTjx2( ) ;
+	void TestName( ) ;
 } ;
 
 #endif // REALTEXTTEST_HH_

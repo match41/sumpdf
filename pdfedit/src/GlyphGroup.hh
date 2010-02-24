@@ -29,12 +29,12 @@
 #include <QGraphicsItemGroup>
 #include <graphics/CharVisitor.hh>
 
-#include <graphics/GraphicsState.hh>
+#include <graphics/TextLine.hh>
 
 namespace pdf {
 
 class Matrix ;
-class TextLine ;
+class GraphicsState ;
 
 ///	brief description
 /**	The GlyphGroup class represents
@@ -58,12 +58,13 @@ public :
 	
 	TextLine GetLine( ) const ;
 	
-	QString Text( ) const ;
+//	QString Text( ) const ;
 
 private :
-	QString			m_text ;
-	GraphicsState	m_state ;
-	QPointF			m_pos ;
+//	QString			m_text ;
+//	GraphicsState	m_state ;
+//	QPointF			m_pos ;
+	TextLine		m_line ;
 } ;
 
 } // end of namespace

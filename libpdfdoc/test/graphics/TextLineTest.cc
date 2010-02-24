@@ -55,12 +55,21 @@ void TextLineTest::TestPrint( )
 	
 	TextState ts( 12.0, &font ) ;
 	TextLine subject( 0, 0, (GraphicsState(ts)), (Matrix()) ) ;
-	subject.AppendText( L"hello" ) ;
+	subject.AppendText( L"hello---" ) ;
 	subject.AppendSpace( 100 ) ;
-	subject.AppendText( L"world" ) ;
+	subject.AppendText( L"world???" ) ;
 	
-//	Matrix m ;
-//	subject.Print( std::cout, m, ts, &res ) ;
+	double x = 0.0, y = 0.0 ;
+	Matrix m ;
+	GraphicsState gs( ts ) ;
+	subject.Print( std::cout, m, x, y, gs, &res ) ;
+}
+
+void TextLineTest::TestTJ( )
+{
+	
+	
+	
 }
 
 } // end of namespace

@@ -67,9 +67,13 @@ std::istream& operator>>( std::istream& is, Array& array )
 TokenSrc& operator>>( TokenSrc& src, Array& array )
 {
 	Token t ;
-	if ( !(src >> t) || t.Get() != "[" )
-		throw ParseError( "bad array" ) ;
-
+	if ( !(src >> t) )
+		throw ParseError( "cannot read first token in array" ) ;
+	if ( t.Get() != "[" )
+		throw ParseError(
+			"bad token: \"" + t.Get() + "\" found in the first token of "
+			"array" ) ;
+		
 	Array temp ;
 	while ( src >> t && t.Get() != "]" )
 	{

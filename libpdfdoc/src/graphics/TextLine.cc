@@ -77,6 +77,16 @@ double TextLine::YPos( ) const
 	return m_ypos ;
 }
 
+void TextLine::XPos( double val )
+{
+	m_xpos = val ;
+}
+
+void TextLine::YPos( double val )
+{
+	m_ypos = val ;
+}
+
 const Matrix& TextLine::Transform() const
 {
 	return m_trans ;
@@ -117,7 +127,7 @@ std::ostream& TextLine::Print(
 			<< m_trans.M21() << ' ' << m_trans.M22() << ' '
 			<< m_trans.Dx()  << ' ' << m_trans.Dy( ) << " Tm\n" ; 
 */
-	if ( m_trans != current )
+//	if ( m_trans != current )
 	{
 		os	<< m_trans.M11() << ' ' << m_trans.M12() << ' '
 			<< m_trans.M21() << ' ' << m_trans.M22() << ' '
@@ -126,12 +136,13 @@ std::ostream& TextLine::Print(
 		xpos = ypos = 0.0 ;
 	}
 
-std::cout << "x = " << m_xpos << " y = " << m_ypos << std::endl ;
-PrintText( std::cout ) ;
+//std::cout << "x = " << m_xpos << " y = " << m_ypos << std::endl ;
+//PrintText( std::cout ) ;
 
-	if ( m_xpos != xpos || m_ypos != ypos )
-		os	<< (m_xpos - xpos) << ' ' << (m_ypos - ypos) << " Td\n" ;
-		
+//	if ( m_xpos != xpos || m_ypos != ypos )
+//		os	<< (m_xpos - xpos) << ' ' << (m_ypos - ypos) << " Td\n" ;
+	os	<< m_xpos << ' ' << m_ypos << " Td\n" ;
+
 	// replace current matrix
 	current = m_trans ;
 	xpos	= m_xpos ;
@@ -158,13 +169,16 @@ std::ostream& TextLine::PrintText( std::ostream& os ) const
 			{
 				a.push_back( std::string(
 					m_text.begin() + idx,
-					m_text.begin() + idx + i->index ) ) ;
+					m_text.begin() + i->index ) ) ;
 				
-				idx += i->index ;
+				idx = i->index ;
 			}
 			
-			a.push_back( i->width ) ;
+			a.push_back( i->width * 1000.0 / m_state.GetTextState().FontSize() ) ;
 		}
+		
+		if ( idx < m_text.size() )
+			a.push_back( std::string( m_text.begin() + idx, m_text.end() ) ) ;
 		
 		return os << a << " TJ\n" ;
 	}
