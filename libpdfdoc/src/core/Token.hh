@@ -51,6 +51,7 @@ public :
 	const std::string& Get( ) const ;
 
 	bool operator==( const Token& t ) const ;
+	bool operator!=( const Token& t ) const ;
 
 	bool operator<( const Token& t ) const ;
 
@@ -75,6 +76,8 @@ private :
 private :
 	std::string	m_token ;
 } ;
+
+std::ostream& operator<<( std::ostream& os, const Token& t ) ;
 
 } // end of namespace
 

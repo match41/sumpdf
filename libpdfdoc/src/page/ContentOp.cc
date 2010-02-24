@@ -29,6 +29,10 @@
 
 #include "util/Debug.hh"
 
+#include <algorithm>
+#include <iterator>
+#include <ostream>
+
 namespace pdf {
 
 /**	constructor
@@ -93,10 +97,12 @@ TokenSrc& operator>>( TokenSrc& src, ContentOp& op )
 	return src ;
 }
 
-/*std::cout << cmd.Get() << " " ;
-std::copy( args.begin(), args.end(), std::ostream_iterator<Object>( std::cout, " " ) ) ;
-std::cout << std::endl ;
-*/
+std::ostream& operator<<( std::ostream& os, const ContentOp& op )
+{
+	os << op.Operator().Get() << " " ;
+	std::copy( op.begin(), op.end(), std::ostream_iterator<Object>( os, " " ) );
+	return os << std::endl ;
+}
 
 void ContentOp::Swap( ContentOp& op )
 {
@@ -119,6 +125,18 @@ const Object& ContentOp::operator[]( std::size_t idx ) const
 {
 	PDF_ASSERT( idx < m_operands.size() ) ;
 	return m_operands[idx] ;
+}
+
+bool ContentOp::operator==( const ContentOp& rhs ) const
+{
+	return
+		m_operator == rhs.m_operator &&
+		m_operands == rhs.m_operands ;
+}
+
+bool ContentOp::operator!=( const ContentOp& rhs ) const
+{
+	return !operator==( rhs ) ;
 }
 
 } // end of namespace

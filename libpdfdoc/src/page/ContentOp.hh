@@ -29,6 +29,7 @@
 #include "core/Object.hh"
 #include "core/Token.hh"
 
+#include <iosfwd>
 #include <vector>
 
 namespace pdf {
@@ -71,6 +72,8 @@ public :
 	const Object& operator[]( std::size_t idx ) const ;
 
 	friend TokenSrc& operator>>( TokenSrc& src, ContentOp& op ) ;
+	bool operator==( const ContentOp& rhs ) const ;
+	bool operator!=( const ContentOp& rhs ) const ;
 
 	void Swap( ContentOp& op ) ;
 
@@ -78,6 +81,8 @@ private :
 	Token		m_operator ;
 	Operands	m_operands ;
 } ;
+
+std::ostream& operator<<( std::ostream& os, const ContentOp& op ) ;
 
 } // end of namespace
 

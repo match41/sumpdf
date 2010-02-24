@@ -81,6 +81,11 @@ std::istream& operator>>( std::istream& is, Token& token )
 	return is ;
 }
 
+std::ostream& operator<<( std::ostream& os, const Token& t )
+{
+	return os << t.Get() ;
+}
+
 void Token::DecodeBracketString( std::istream& is, std::string& text )
 {
 	// assume the first char is (
@@ -173,6 +178,11 @@ const std::string& Token::Get( ) const
 bool Token::operator==( const Token& t ) const
 {
 	return m_token == t.m_token ;
+}
+
+bool Token::operator!=( const Token& t ) const
+{
+	return m_token != t.m_token ;
 }
 
 bool Token::operator<( const Token& t ) const

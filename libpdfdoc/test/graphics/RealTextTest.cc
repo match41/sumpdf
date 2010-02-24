@@ -27,6 +27,7 @@
 
 #include "core/Array.hh"
 #include "core/Object.hh"
+#include "core/TokenSrc.hh"
 #include "graphics/RealText.hh"
 #include "page/ContentOp.hh"
 #include "page/MockResources.hh"
@@ -232,7 +233,10 @@ void RealTextTest::TestName( )
 	GraphicsState gs( ts ) ;
 	RealText subject( gs ) ;
 	
-	Object tj[] = { "Name:", -10072, "M", 80, "atch", -250, "man,", -250, "Jr"};
+	Object tj[] =
+	{
+		"Name:", -10072.0, "M", 80.0, "atch", -250.0, "man,", -250.0, "Jr"
+	};
 	Object args[] = { Array(Begin(tj), End(tj)) } ;
 	Token cmd( "TJ" ) ;
 	ContentOp op(cmd, Begin(args), End(args) ) ;
@@ -248,7 +252,11 @@ void RealTextTest::TestName( )
 	Matrix mat ;
 	std::stringstream ss ;
 	line.Print( ss, mat, x, y, gs, &res ) ;
-std::cout << "out = " << ss.str() << std::endl ;
+	
+	TokenSrc src( ss ) ;
+	ContentOp op2 ;
+	while ( src >> op2 && op2.Operator().Get() != "TJ" ) ;
+	PDFUT_ASSERT_EQUAL( op2, op ) ;
 }
 
 } // end of nameapce
