@@ -90,7 +90,12 @@ QString GlyphGroup::Text( ) const
 
 TextLine GlyphGroup::GetLine( ) const
 {
-	TextLine line( 0, 0, m_state, FromQtMatrix( sceneTransform( ) ) ) ;
+	TextLine line(
+		x() + m_pos.x(),
+		y() + m_pos.y(),
+		m_state,
+		FromQtMatrix( transform( ) ) ) ;
+	
 	line.AppendText( ToWStr(m_text) ) ;
 	return line ; 
 }
