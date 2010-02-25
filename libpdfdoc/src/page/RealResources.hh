@@ -28,6 +28,7 @@
 #define __PDF_RESOURCES_HEADER_INCLUDED__
 
 #include "Resources.hh"
+#include "GfxParamDict.hh"
 #include "util/RefCounter.hh"
 
 #include "core/Dictionary.hh"
@@ -89,6 +90,8 @@ private :
 	FontMap				m_fonts ;
 
 	std::vector<Name>	m_proc_set ;
+	
+	GfxParamDict		m_ext_gstate ;
 } ;
 
 } // end of namespace

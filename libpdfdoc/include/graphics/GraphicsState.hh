@@ -70,6 +70,18 @@ public :
 
 	friend std::ostream& operator<<(std::ostream& os, const GraphicsState& gs) ;
 
+	void LineWidth( double value ) ;
+	double LineWidth( ) const ;
+
+	void LineCap( int value ) ;
+	int LineCap( ) const ;
+	
+	void LineJoin( int value ) ;
+	int LineJoin( ) const ;
+	
+	void MiterLimit( double value ) ;
+	double MiterLimit( ) const ;
+
 private :
 	struct HandlerMap ;
 
@@ -83,8 +95,9 @@ private :
 	Colour		m_colour ;
 	
 	double		m_line_width ;
-	
 	int			m_line_cap ;
+	int			m_line_join ;
+	double		m_miter_limit ;
 } ;
 
 } // end of namespace

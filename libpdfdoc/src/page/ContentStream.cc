@@ -25,8 +25,6 @@
 
 #include "ContentStream.hh"
 
-//#include "core/Object.hh"
-//#include "core/Token.hh"
 #include "ContentOp.hh"
 #include "core/TokenSrc.hh"
 #include "graphics/GraphicsState.hh"
@@ -89,10 +87,10 @@ void ContentStream::Decode( Stream& str )
 	// rewind to stream start for reading
 	str.Rewind( ) ;
 	
-std::ostringstream ss ;
-str.CopyData( ss.rdbuf() ) ;
-std::cout << ss.str() << std::endl ;
-str.Rewind() ;
+//std::ostringstream ss ;
+//str.CopyData( ss.rdbuf() ) ;
+//std::cout << ss.str() << std::endl ;
+//str.Rewind() ;
 	
 	std::istream s( str.InStreamBuf() ) ;
 	TokenSrc src( s ) ;

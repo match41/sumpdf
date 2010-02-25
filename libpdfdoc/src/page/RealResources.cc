@@ -73,11 +73,13 @@ RealResources::~RealResources( )
 
 void RealResources::Read( DictReader& self )
 {
-	Dictionary ext_gstate ;
+	DictReader ext_gstate ;
+	if ( self.Detach( "ExtGState",	ext_gstate ) )
+		m_ext_gstate.Read( ext_gstate ) ;
+	
 	Array proc_set ;
-	self.Detach( "ExtGState",	ext_gstate ) ;
-	self.Detach( "ProcSet",		proc_set ) ;
-	m_proc_set.assign( proc_set.begin( ), proc_set.end( ) ) ;
+	if ( self.Detach( "ProcSet",		proc_set ) )
+		m_proc_set.assign( proc_set.begin( ), proc_set.end( ) ) ;
 
 	ReadFontDict( self ) ;
 }

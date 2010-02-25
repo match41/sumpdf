@@ -163,4 +163,44 @@ std::ostream& operator<<( std::ostream& os, const GraphicsState& gs )
 	return os << gs.m_text ;
 }
 
+void GraphicsState::LineWidth( double value )
+{
+	m_line_width = value ;
+}
+
+double GraphicsState::LineWidth( ) const
+{
+	return m_line_width ;
+}
+
+void GraphicsState::LineCap( int value )
+{
+	m_line_cap = value ;
+}
+
+int GraphicsState::LineCap( ) const
+{
+	return m_line_cap ;
+}
+
+void GraphicsState::LineJoin( int value )
+{
+	m_line_join = value ;
+}
+
+int GraphicsState::LineJoin( ) const
+{
+	return m_line_join ;
+}
+
+void GraphicsState::MiterLimit( double value )
+{
+	m_miter_limit = value ;
+}
+
+double GraphicsState::MiterLimit( ) const
+{
+	return m_miter_limit ;
+}
+
 } // end of namespace
