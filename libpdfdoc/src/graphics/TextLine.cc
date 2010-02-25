@@ -64,7 +64,6 @@ TextLine::TextLine(
     , m_state( state )
     , m_text( text )
 {
-std::cout << "in: x = " << m_xpos << " y = " << m_ypos << std::endl ;
 }
 
 double TextLine::XPos( ) const
@@ -118,32 +117,22 @@ std::ostream& TextLine::Print(
 	const GraphicsState& 	state,
 	const Resources			*res ) const
 {
-/*
-	if ( m_trans.IsTranslate() && current.IsTranslate() )
-		os	<< (m_trans.Dx()-current.Dx()) << ' ' 
-			<< (m_trans.Dy()-current.Dy()) << " Td\n" ;
-	else
-		os	<< m_trans.M11() << ' ' << m_trans.M12() << ' '
-			<< m_trans.M21() << ' ' << m_trans.M22() << ' '
-			<< m_trans.Dx()  << ' ' << m_trans.Dy( ) << " Tm\n" ; 
-*/
-//	if ( m_trans != current )
+	// print transformation if different
+	if ( m_trans != current )
 	{
 		os	<< m_trans.M11() << ' ' << m_trans.M12() << ' '
 			<< m_trans.M21() << ' ' << m_trans.M22() << ' '
 			<< m_trans.Dx()  << ' ' << m_trans.Dy( ) << " Tm\n" ; 
-		
+	
+		// after changing the transformation, the position is reset too
 		xpos = ypos = 0.0 ;
 	}
 
-//std::cout << "x = " << m_xpos << " y = " << m_ypos << std::endl ;
-//PrintText( std::cout ) ;
+	// print position if different
+	if ( m_xpos != xpos || m_ypos != ypos )
+		os	<< (m_xpos - xpos) << ' ' << (m_ypos - ypos) << " Td\n" ;
 
-//	if ( m_xpos != xpos || m_ypos != ypos )
-//		os	<< (m_xpos - xpos) << ' ' << (m_ypos - ypos) << " Td\n" ;
-	os	<< m_xpos << ' ' << m_ypos << " Td\n" ;
-
-	// replace current matrix
+	// replace current matrix and position
 	current = m_trans ;
 	xpos	= m_xpos ;
 	ypos	= m_ypos ;
