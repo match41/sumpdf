@@ -27,6 +27,7 @@
 
 #include "graphics/GraphicsVisitor.hh"
 #include "graphics/GraphicsState.hh"
+#include "graphics/TextState.hh"
 
 #include "core/Array.hh"
 #include "core/Object.hh"

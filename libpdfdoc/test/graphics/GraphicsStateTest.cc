@@ -30,6 +30,7 @@
 #include "page/ContentOp.hh"
 #include "page/MockResources.hh"
 #include "graphics/GraphicsState.hh"
+#include "graphics/TextState.hh"
 
 #include "mock/Assert.hh"
 #include "mock/MockFont.hh"

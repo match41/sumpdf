@@ -26,19 +26,17 @@
 #ifndef __PDF_GRAPHICSSTATE_HH_EADER_INCLUDED__
 #define __PDF_GRAPHICSSTATE_HH_EADER_INCLUDED__
 
-#include "Colour.hh"
-#include "TextState.hh"
-
-#include "util/Matrix.hh"
+#include <boost/shared_ptr.hpp>
 
 #include <iosfwd>
-#include <map>
 
 namespace pdf {
 
 class ContentOp ;
+class Font ;
 class Resources ;
 class Token ;
+class TextState ;
 
 ///	The PDF graphics state.
 /**	\internal
@@ -48,7 +46,9 @@ class Token ;
 class GraphicsState
 {
 public :
-	explicit GraphicsState( const TextState& ts = TextState() ) ;
+	GraphicsState( ) ;
+	explicit GraphicsState( const TextState& ts ) ;
+	~GraphicsState( ) ;
 
 	const TextState& GetTextState() const ;
 	TextState& GetTextState() ;
@@ -89,15 +89,11 @@ private :
 	bool OnTf( ContentOp& op, const Resources *res ) ;
 	bool OnTL( ContentOp& op, const Resources *res ) ;
 
+	void CopyOnWrite( ) ;
+
 private :
-	TextState	m_text ;
-	
-	Colour		m_colour ;
-	
-	double		m_line_width ;
-	int			m_line_cap ;
-	int			m_line_join ;
-	double		m_miter_limit ;
+	struct Impl ;
+	boost::shared_ptr<Impl>	m_impl ;
 } ;
 
 } // end of namespace

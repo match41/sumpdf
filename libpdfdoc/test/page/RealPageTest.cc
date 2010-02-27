@@ -35,6 +35,7 @@
 #include "font/SimpleFont.hh"
 #include "graphics/GraphicsVisitor.hh"
 #include "graphics/RealText.hh"
+#include "graphics/TextState.hh"
 #include "page/RealPage.hh"
 #include "page/PageTree.hh"
 #include "page/RealResources.hh"

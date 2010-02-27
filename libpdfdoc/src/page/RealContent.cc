@@ -31,6 +31,7 @@
 #include "graphics/GraphicsState.hh"
 #include "graphics/GraphicsVisitor.hh"
 #include "graphics/RealText.hh"
+#include "graphics/TextState.hh"
 #include "stream/Stream.hh"
 
 #include <boost/bind.hpp>

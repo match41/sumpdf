@@ -25,6 +25,9 @@
 
 #include "graphics/GraphicsState.hh"
 
+#include "graphics/Colour.hh"
+#include "graphics/TextState.hh"
+
 #include "core/Object.hh"
 #include "core/Token.hh"
 
@@ -34,8 +37,10 @@
 #include "page/Resources.hh"
 
 #include "util/Debug.hh"
+#include "util/Matrix.hh"
 #include "util/Util.hh"
 
+#include <map>
 #include <iostream>
 
 namespace pdf {
@@ -62,22 +67,56 @@ const GraphicsState::HandlerMap::Map GraphicsState::HandlerMap::m_map(
     Begin( GraphicsState::HandlerMap::m_val ),
     End( GraphicsState::HandlerMap::m_val ) ) ;
 
-/**	constructor
-	
-*/
-GraphicsState::GraphicsState( const TextState& ts )
-	: m_text( ts )
+struct GraphicsState::Impl
 {
+	TextState	m_text ;
+	
+	Colour		m_colour ;
+	
+	double		m_line_width ;
+	int			m_line_cap ;
+	int			m_line_join ;
+	double		m_miter_limit ;
+	
+	Impl( )
+	{
+	}
+	
+	Impl( const TextState& ts )
+	: m_text( ts )
+	{
+	}
+} ;
+
+GraphicsState::GraphicsState( )
+: m_impl( new Impl )
+{
+}
+
+GraphicsState::GraphicsState( const TextState& ts )
+: m_impl( new Impl( ts ) )
+{
+}
+
+GraphicsState::~GraphicsState( )
+{
+}
+
+void GraphicsState::CopyOnWrite( )
+{
+	if ( m_impl.use_count() > 1 )
+		m_impl.reset( new Impl( *m_impl ) ) ;
 }
 
 const TextState& GraphicsState::GetTextState() const
 {
-	return m_text ;
+	return m_impl->m_text ;
 }
 
 TextState& GraphicsState::GetTextState()
 {
-	return m_text ;
+	CopyOnWrite( ) ;
+	return m_impl->m_text ;
 }
 
 std::ostream& GraphicsState::Print(
@@ -85,7 +124,7 @@ std::ostream& GraphicsState::Print(
 	const Resources			*res,
 	const GraphicsState&	prev ) const
 {
-	m_text.Print( os, res, prev.m_text ) ;
+	m_impl->m_text.Print( os, res, prev.m_impl->m_text ) ;
 	return os ;
 }
 
@@ -120,10 +159,11 @@ bool GraphicsState::OnTf( ContentOp& op, const Resources *res )
 		{
 			double font_size = op[1].To<double>() ;
 			
-			if ( m_text.FontSize()	!= font_size	||
-				 m_text.GetFont()	!= f )
+			if ( m_impl->m_text.FontSize()	!= font_size	||
+				m_impl->m_text.GetFont()	!= f )
 			{
-				m_text.SetFont( font_size, f ) ;
+				CopyOnWrite( ) ;
+				m_impl->m_text.SetFont( font_size, f ) ;
 				return true ;
 			}
 		}
@@ -135,7 +175,8 @@ bool GraphicsState::OnTL( ContentOp& op, const Resources *res )
 {
 	if ( op.Count() > 0 && op[0].IsNumber() )
 	{
-		m_text.SetLeading( op[0].To<double>() ) ;
+		CopyOnWrite( ) ;
+		m_impl->m_text.SetLeading( op[0].To<double>() ) ;
 		return true ;
 	}
 	else
@@ -144,13 +185,13 @@ bool GraphicsState::OnTL( ContentOp& op, const Resources *res )
 
 Font* GraphicsState::GetFont( ) const
 {
-	return m_text.GetFont( ) ;
+	return m_impl->m_text.GetFont( ) ;
 }
 
 bool GraphicsState::operator==( const GraphicsState& gs ) const
 {
 	// TODO: add more members
-	return m_text == gs.m_text ;
+	return m_impl->m_text == gs.m_impl->m_text ;
 }
 
 bool GraphicsState::operator!=( const GraphicsState& gs ) const
@@ -160,47 +201,51 @@ bool GraphicsState::operator!=( const GraphicsState& gs ) const
 
 std::ostream& operator<<( std::ostream& os, const GraphicsState& gs )
 {
-	return os << gs.m_text ;
+	return os << gs.m_impl->m_text ;
 }
 
 void GraphicsState::LineWidth( double value )
 {
-	m_line_width = value ;
+	CopyOnWrite( ) ;
+	m_impl->m_line_width = value ;
 }
 
 double GraphicsState::LineWidth( ) const
 {
-	return m_line_width ;
+	return m_impl->m_line_width ;
 }
 
 void GraphicsState::LineCap( int value )
 {
-	m_line_cap = value ;
+	CopyOnWrite( ) ;
+	m_impl->m_line_cap = value ;
 }
 
 int GraphicsState::LineCap( ) const
 {
-	return m_line_cap ;
+	return m_impl->m_line_cap ;
 }
 
 void GraphicsState::LineJoin( int value )
 {
-	m_line_join = value ;
+	CopyOnWrite( ) ;
+	m_impl->m_line_join = value ;
 }
 
 int GraphicsState::LineJoin( ) const
 {
-	return m_line_join ;
+	return m_impl->m_line_join ;
 }
 
 void GraphicsState::MiterLimit( double value )
 {
-	m_miter_limit = value ;
+	CopyOnWrite( ) ;
+	m_impl->m_miter_limit = value ;
 }
 
 double GraphicsState::MiterLimit( ) const
 {
-	return m_miter_limit ;
+	return m_impl->m_miter_limit ;
 }
 
 } // end of namespace

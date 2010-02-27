@@ -29,6 +29,7 @@
 #include "core/Object.hh"
 #include "core/TokenSrc.hh"
 #include "graphics/RealText.hh"
+#include "graphics/TextState.hh"
 #include "page/ContentOp.hh"
 #include "page/MockResources.hh"
 #include "util/Matrix.hh"
