@@ -73,9 +73,9 @@ RealResources::~RealResources( )
 
 void RealResources::Read( DictReader& self )
 {
-	DictReader ext_gstate ;
-	if ( self.Detach( "ExtGState",	ext_gstate ) )
-		m_ext_gstate.Read( ext_gstate ) ;
+//	DictReader ext_gstate ;
+//	if ( self.Detach( "ExtGState",	ext_gstate ) )
+//		m_ext_gstate.Read( ext_gstate ) ;
 	
 	Array proc_set ;
 	if ( self.Detach( "ProcSet",		proc_set ) )

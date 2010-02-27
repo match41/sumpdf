@@ -28,7 +28,7 @@
 #define __PDF_RESOURCES_HEADER_INCLUDED__
 
 #include "Resources.hh"
-#include "GfxParamDict.hh"
+//#include "GfxParamDict.hh"
 #include "util/RefCounter.hh"
 
 #include "core/Dictionary.hh"
@@ -91,7 +91,7 @@ private :
 
 	std::vector<Name>	m_proc_set ;
 	
-	GfxParamDict		m_ext_gstate ;
+//	GfxParamDict		m_ext_gstate ;
 } ;
 
 } // end of namespace

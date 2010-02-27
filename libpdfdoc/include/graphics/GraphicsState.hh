@@ -92,6 +92,7 @@ private :
 	void CopyOnWrite( ) ;
 
 private :
+	struct Ext ;
 	struct Impl ;
 	boost::shared_ptr<Impl>	m_impl ;
 } ;
