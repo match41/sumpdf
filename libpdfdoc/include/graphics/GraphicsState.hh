@@ -33,7 +33,10 @@
 namespace pdf {
 
 class ContentOp ;
+class DictReader ;
 class Font ;
+class Name ;
+class Object ;
 class Resources ;
 class Token ;
 class TextState ;
@@ -82,6 +85,8 @@ public :
 	void MiterLimit( double value ) ;
 	double MiterLimit( ) const ;
 
+	void SetValue( const Name& name, const Object& val ) ;
+
 private :
 	struct HandlerMap ;
 
@@ -92,7 +97,6 @@ private :
 	void CopyOnWrite( ) ;
 
 private :
-	struct Ext ;
 	struct Impl ;
 	boost::shared_ptr<Impl>	m_impl ;
 } ;

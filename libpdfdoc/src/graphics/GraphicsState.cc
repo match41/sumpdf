@@ -67,14 +67,6 @@ const GraphicsState::HandlerMap::Map GraphicsState::HandlerMap::m_map(
     Begin( GraphicsState::HandlerMap::m_val ),
     End( GraphicsState::HandlerMap::m_val ) ) ;
 
-/// external state parameter dictionary.
-/**	This class contain data read from and to be written to the state parameter
-	dictionary.
-*/
-struct GraphicsState::Ext
-{
-} ;
-
 struct GraphicsState::Impl
 {
 	TextState	m_text ;
@@ -87,7 +79,7 @@ struct GraphicsState::Impl
 	double		m_miter_limit ;
 
 	// association with external states dictionaries
-	boost::shared_ptr<Ext>	m_ext ;
+	Name		m_name ;
 
 	Impl( )
 	{
@@ -257,6 +249,15 @@ void GraphicsState::MiterLimit( double value )
 double GraphicsState::MiterLimit( ) const
 {
 	return m_impl->m_miter_limit ;
+}
+
+void GraphicsState::SetValue( const Name& name, const Object& val )
+{
+	CopyOnWrite( ) ;
+	if ( name == "LW" )
+		m_impl->m_line_width = val ;
+	else if ( name == "LC" )
+		m_impl->m_line_cap = val ;
 }
 
 } // end of namespace
