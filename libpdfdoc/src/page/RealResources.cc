@@ -73,8 +73,10 @@ RealResources::~RealResources( )
 
 void RealResources::Read( DictReader& self )
 {
-//	DictReader ext_gstate ;
-//	if ( self.Detach( "ExtGState",	ext_gstate ) )
+	DictReader ext_gstate ;
+	if ( self.Detach( "ExtGState",	ext_gstate ) )
+	{
+	}
 //		m_ext_gstate.Read( ext_gstate ) ;
 	
 	Array proc_set ;
@@ -119,6 +121,7 @@ void RealResources::ReadFontDict( DictReader& self )
 				pool->Add( link, font ) ; 
 			}
 
+			PDF_ASSERT( font != 0 ) ;
 			m_fonts.insert( FontMap::value_type(i->first, font) ) ;
 		}
 	}

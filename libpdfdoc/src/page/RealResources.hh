@@ -90,8 +90,6 @@ private :
 	FontMap				m_fonts ;
 
 	std::vector<Name>	m_proc_set ;
-	
-//	GfxParamDict		m_ext_gstate ;
 } ;
 
 } // end of namespace
