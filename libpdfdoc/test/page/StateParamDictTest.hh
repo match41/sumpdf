@@ -17,63 +17,39 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	StateParamDict.cc
-	\brief	implementation of the StateParamDict class
-	\date	Feb 28, 2010
-	\author	Nestal Wan
+/**	\file	StateParamDictTest.hh
+    \brief	definition the StateParamDictTest class
+    \date	Mar 1, 2010
+    \author	Nestal Wan
 */
 
-#include "StateParamDict.hh"
+#ifndef __PDFUT_STATEPARAMDICTTEST_HH_EADER_INCLUDED__
+#define __PDFUT_STATEPARAMDICTTEST_HH_EADER_INCLUDED__
 
-#include "file/DictReader.hh"
-#include "graphics/GraphicsState.hh"
+#include <cppunit/TestFixture.h>
 
-namespace pdf {
+#include <cppunit/extensions/HelperMacros.h>
 
-/**	constructor
-	
-*/
-StateParamDict::StateParamDict( )
+namespace pdfut {
+
+class StateParamDictTest : public CppUnit::TestFixture
 {
-}
+public :
+	StateParamDictTest( ) ;
 
-void StateParamDict::Read( DictReader& dict )
-{
-	double val = 0.0 ;
-	if ( dict.Detach( "LW", val ) )
-		m_doubles.insert( std::make_pair( line_width, val ) ) ; 
+	// declare suit function
+	CPPUNIT_TEST_SUITE( StateParamDictTest ) ;
+		CPPUNIT_TEST( TestRead ) ;
+	CPPUNIT_TEST_SUITE_END();
 
-	if ( dict.Detach( "LC", val ) )
-		m_doubles.insert( std::make_pair( line_cap, val ) ) ; 
+public :
+	void setUp( ) ;
+	void tearDown( ) ;
 
-	if ( dict.Detach( "LJ", val ) )
-		m_doubles.insert( std::make_pair( line_join, val ) ) ; 
-}
-
-Ref StateParamDict::Write( File *file ) const
-{
-	Dictionary dict ;
-	std::map<Field, double>::const_iterator di = m_doubles.find( line_width ) ;
-	if ( di != m_doubles.end() )
-		dict["LW"] = di->second ;
-	
-	di = m_doubles.find( line_cap ) ;
-	if ( di != m_doubles.end() )
-		dict["LC"] = di->second ;
-
-	di = m_doubles.find( line_join ) ;
-	if ( di != m_doubles.end() )
-		dict["LJ"] = di->second ;
-
-	return Ref() ;
-}
-
-void StateParamDict::Apply( GraphicsState& gs ) const
-{
-	std::map<Field, double>::const_iterator di = m_doubles.find( line_width ) ;
-	if ( di != m_doubles.end() )
-		gs.LineWidth( di->second ) ;
-	
-}
+private :
+	void TestRead( ) ;
+} ;
 
 } // end of namespace
+
+#endif // STATEPARAMDICTTEST_HH_

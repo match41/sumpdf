@@ -36,6 +36,7 @@ namespace pdf {
 
 class DictReader ;
 class File ;
+class GraphicsState ;
 class Ref ;
 
 ///	brief description
@@ -49,6 +50,8 @@ public :
 	
 	void Read( DictReader& dict ) ;
 	Ref Write( File *file ) const ;
+
+	void Apply( GraphicsState& gs ) const ; 
 
 private :
 	enum Field

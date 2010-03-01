@@ -504,6 +504,7 @@ set( UT_SRCS	test/core/TokenTest.cc
 				test/page/RealContentTest.cc
 				test/page/PageNodeTest.cc
 				test/page/RealResourcesTest.cc
+				test/page/StateParamDictTest.cc
 				
 				test/file/RealFileTest.cc
 				test/file/CatalogTest.cc

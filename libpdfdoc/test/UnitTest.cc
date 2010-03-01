@@ -61,6 +61,7 @@
 #include "file/DictReaderTest.hh"
 #include "font/SimpleFontTest.hh"
 #include "page/PageNodeTest.hh"
+#include "page/StateParamDictTest.hh"
 #include "image/PngImageTest.hh"
 #include "image/JpegImageTest.hh"
 #include "util/MatrixTest.hh"
@@ -93,6 +94,7 @@ int main( int argc, char **argv )
 	runner.addTest( NameTreeTest::suite( ) ) ;
 	runner.addTest( FontDbTest::suite( ) ) ;
 	runner.addTest( GraphicsStateTest::suite( ) ) ;
+	runner.addTest( StateParamDictTest::suite( ) ) ;
 	
 // freetype library is optional
 #ifdef HAVE_FREETYPE

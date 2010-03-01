@@ -17,63 +17,52 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	StateParamDict.cc
-	\brief	implementation of the StateParamDict class
-	\date	Feb 28, 2010
+/**	\file	StateParamDictTest.cc
+	\brief	implementation of the StateParamDictTest class
+	\date	Mar 1, 2010
 	\author	Nestal Wan
 */
 
-#include "StateParamDict.hh"
+#include "StateParamDictTest.hh"
 
+#include "core/Dictionary.hh"
 #include "file/DictReader.hh"
 #include "graphics/GraphicsState.hh"
+#include "page/StateParamDict.hh"
 
-namespace pdf {
+#include "mock/Assert.hh"
+#include "mock/MockFile.hh"
 
-/**	constructor
+namespace pdfut {
+
+using namespace pdf ;
+
+StateParamDictTest::StateParamDictTest( )
+{
+}
+
+void StateParamDictTest::setUp( )
+{
+}
+
+void StateParamDictTest::tearDown( )
+{
+}
+
+void StateParamDictTest::TestRead( )
+{
+	StateParamDict subject ;
 	
-*/
-StateParamDict::StateParamDict( )
-{
-}
-
-void StateParamDict::Read( DictReader& dict )
-{
-	double val = 0.0 ;
-	if ( dict.Detach( "LW", val ) )
-		m_doubles.insert( std::make_pair( line_width, val ) ) ; 
-
-	if ( dict.Detach( "LC", val ) )
-		m_doubles.insert( std::make_pair( line_cap, val ) ) ; 
-
-	if ( dict.Detach( "LJ", val ) )
-		m_doubles.insert( std::make_pair( line_join, val ) ) ; 
-}
-
-Ref StateParamDict::Write( File *file ) const
-{
 	Dictionary dict ;
-	std::map<Field, double>::const_iterator di = m_doubles.find( line_width ) ;
-	if ( di != m_doubles.end() )
-		dict["LW"] = di->second ;
-	
-	di = m_doubles.find( line_cap ) ;
-	if ( di != m_doubles.end() )
-		dict["LC"] = di->second ;
-
-	di = m_doubles.find( line_join ) ;
-	if ( di != m_doubles.end() )
-		dict["LJ"] = di->second ;
-
-	return Ref() ;
-}
-
-void StateParamDict::Apply( GraphicsState& gs ) const
-{
-	std::map<Field, double>::const_iterator di = m_doubles.find( line_width ) ;
-	if ( di != m_doubles.end() )
-		gs.LineWidth( di->second ) ;
-	
+	dict["LW"] = 100 ;
+ 	
+ 	MockFile file ;
+ 	DictReader reader( dict, &file ) ;
+ 	
+ 	subject.Read( reader ) ;
+ 	GraphicsState gs ;
+ 	subject.Apply( gs ) ;
+ 	PDFUT_ASSERT_EQUAL( gs.LineWidth(), 100.0 ) ;
 }
 
 } // end of namespace
