@@ -54,7 +54,6 @@ public :
 	*/
 	virtual void OnChar(
 		wchar_t 			ch,
-//		const Matrix&		m,
 		double				offset,
 		const Glyph			*glyph,
 		const TextState&	state ) = 0 ;

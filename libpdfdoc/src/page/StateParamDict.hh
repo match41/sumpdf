@@ -28,6 +28,11 @@
 
 #include "util/RefCounter.hh"
 
+#include "core/Name.hh"
+#include "core/Object.hh"
+
+#include <map>
+
 namespace pdf {
 
 class DictReader ;
@@ -47,7 +52,7 @@ public :
 	Ref Write( File *file ) const ;
 
 private :
-	
+	std::map<Name, Object>	m_param ;
 } ;
 
 } // end of namespace

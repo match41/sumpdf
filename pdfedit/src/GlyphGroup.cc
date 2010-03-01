@@ -29,6 +29,7 @@
 #include "Util.hh"
 
 #include <graphics/TextLine.hh>
+#include <graphics/TextState.hh>
 
 #include "Util.hh"
 

@@ -60,6 +60,7 @@
 #include <page/PageContent.hh>
 #include <graphics/Text.hh>
 #include <graphics/TextLine.hh>
+#include <graphics/TextState.hh>
 
 #include <boost/bind.hpp>
 
