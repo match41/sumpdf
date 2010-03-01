@@ -28,8 +28,7 @@
 
 #include "util/RefCounter.hh"
 
-#include "core/Name.hh"
-#include "core/Object.hh"
+#include "core/Array.hh"
 
 #include <map>
 
@@ -52,7 +51,14 @@ public :
 	Ref Write( File *file ) const ;
 
 private :
-	std::map<Name, Object>	m_param ;
+	enum Field
+	{
+		line_width, line_cap, line_join, miter_limit, dash_pattern,
+		font,
+	} ;
+
+	std::map<Field, double>	m_doubles ;
+	std::map<Field, Array>	m_arrays ;
 } ;
 
 } // end of namespace

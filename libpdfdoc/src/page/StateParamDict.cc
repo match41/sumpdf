@@ -25,6 +25,8 @@
 
 #include "StateParamDict.hh"
 
+#include "file/DictReader.hh"
+
 namespace pdf {
 
 /**	constructor
@@ -32,6 +34,24 @@ namespace pdf {
 */
 StateParamDict::StateParamDict( )
 {
+}
+
+void StateParamDict::Read( DictReader& dict )
+{
+	double val = 0.0 ;
+	if ( dict.Detach( "LW", val ) )
+		m_doubles.insert( std::make_pair( line_width, val ) ) ; 
+
+	if ( dict.Detach( "LC", val ) )
+		m_doubles.insert( std::make_pair( line_cap, val ) ) ; 
+
+	if ( dict.Detach( "LJ", val ) )
+		m_doubles.insert( std::make_pair( line_join, val ) ) ; 
+}
+
+Ref StateParamDict::Write( File *file ) const
+{
+	return Ref() ;
 }
 
 } // end of namespace

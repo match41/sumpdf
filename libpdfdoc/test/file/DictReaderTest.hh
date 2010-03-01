@@ -39,7 +39,7 @@ public :
 
 	// declare suit function
 	CPPUNIT_TEST_SUITE( DictReaderTest ) ;
-		CPPUNIT_TEST( Test ) ;
+		CPPUNIT_TEST( TestIntToDouble ) ;
 	CPPUNIT_TEST_SUITE_END();
 
 public :
@@ -47,7 +47,7 @@ public :
 	void tearDown( ) ;
 
 private :
-	void Test( ) ;
+	void TestIntToDouble( ) ;
 } ;
 
 } // end of namespace

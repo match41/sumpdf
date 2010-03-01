@@ -58,6 +58,7 @@
 #include "file/CatalogTest.hh"
 #include "file/NameTreeTest.hh"
 #include "file/ElementPoolTest.hh"
+#include "file/DictReaderTest.hh"
 #include "font/SimpleFontTest.hh"
 #include "page/PageNodeTest.hh"
 #include "image/PngImageTest.hh"
@@ -105,6 +106,7 @@ int main( int argc, char **argv )
 #ifdef HAVE_JPEG
 	runner.addTest( JpegImageTest::suite( ) ) ;
 #endif
+	runner.addTest( DictReaderTest::suite( ) ) ;
 	runner.addTest( DeflateFilterTest::suite( ) ) ;
 	runner.addTest( InStreamBufAdaptorTest::suite( ) ) ;
 	runner.addTest( OutStreamBufAdaptorTest::suite( ) ) ;

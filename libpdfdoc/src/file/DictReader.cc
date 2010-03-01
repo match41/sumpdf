@@ -189,10 +189,4 @@ void DictReader::SetFile( File *file )
 	m_file = file ;
 }
 
-Dictionary DictReader::DeRef( ) const
-{
-	// TODO: how to handle recursion?
-	return Dictionary( ) ;
-}
-
 } // end of namespace

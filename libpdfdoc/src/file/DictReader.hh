@@ -114,8 +114,6 @@ public :
 	File* GetFile( ) const ;
 	void SetFile( File *file ) ;
 
-	Dictionary DeRef( ) const ;
-
 private :
 	Dictionary	m_dict ;
 	File		*m_file ;

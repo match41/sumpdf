@@ -25,7 +25,11 @@
 
 #include "DictReaderTest.hh"
 
+#include "core/Dictionary.hh"
+#include "file/DictReader.hh"
+
 #include "mock/Assert.hh"
+#include "mock/MockFile.hh"
 
 namespace pdfut {
 
@@ -43,8 +47,17 @@ void DictReaderTest::tearDown( )
 {
 }
 
-void DictReaderTest::Test( )
+void DictReaderTest::TestIntToDouble( )
 {
+	Dictionary dict ;
+	dict["Test"] = 100 ;
+	
+	MockFile file ;
+	DictReader subject( dict, &file ) ;
+	
+	double out ;
+	CPPUNIT_ASSERT( subject.Detach( "Test", out ) ) ;
+	PDFUT_ASSERT_EQUAL( out, 100.0 ) ;
 }
 
 } // end of namespace
