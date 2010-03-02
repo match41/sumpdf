@@ -81,7 +81,7 @@ public :
 		Matrix&					current,
 		double&	xpos,	double&	ypos,
 		const GraphicsState& 	state,
-		const Resources			*res ) const ;
+		const ResourcesDict			*res ) const ;
 
 	bool operator==( const TextLine& rhs ) const ;
 	bool operator!=( const TextLine& rhs ) const ;

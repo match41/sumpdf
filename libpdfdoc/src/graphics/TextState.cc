@@ -29,7 +29,7 @@
 #include "core/Name.hh"
 #include "font/BaseFont.hh"
 #include "font/Glyph.hh"
-#include "page/Resources.hh"
+#include "page/ResourcesDict.hh"
 #include "util/Debug.hh"
 
 #include <cassert>
@@ -136,7 +136,7 @@ double TextState::TextRise( ) const
 
 std::ostream& TextState::Print(
 	std::ostream& 		os,
-	const Resources		*res,
+	const ResourcesDict		*res,
 	const TextState& 	prev ) const
 {
 	PDF_ASSERT( res != 0 ) ;

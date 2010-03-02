@@ -116,7 +116,7 @@ std::ostream& TextLine::Print(
 	Matrix&					current,
 	double&	xpos,	double&	ypos,
 	const GraphicsState& 	state,
-	const Resources			*res ) const
+	const ResourcesDict			*res ) const
 {
 	// print transformation if different
 	if ( m_trans != current )

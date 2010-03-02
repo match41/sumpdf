@@ -33,7 +33,7 @@
 namespace pdf {
 
 class Font ;
-class Resources ;
+class ResourcesDict ;
 
 ///	PDF text state.
 /**	\ingroup graphics
@@ -66,7 +66,7 @@ public :
 
 	std::ostream& Print(
 		std::ostream&		os,
-		const Resources		*res,
+		const ResourcesDict		*res,
 		const TextState& 	prev = TextState() ) const ;
 
 	bool operator==( const TextState& rhs ) const ;

@@ -44,8 +44,6 @@ class FontDb ;
 class BaseFont : public RefCounter, public Font
 {
 public :
-	BaseFont( ) ;
-
 	virtual Ref Write( File *file ) const = 0 ;
 	virtual FontDescriptor* Descriptor( ) = 0 ;
 } ;

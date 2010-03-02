@@ -34,7 +34,7 @@
 #include "font/BaseFont.hh"
 
 #include "page/ContentOp.hh"
-#include "page/Resources.hh"
+#include "page/ResourcesDict.hh"
 
 #include "util/Debug.hh"
 #include "util/Matrix.hh"
@@ -48,7 +48,7 @@ namespace pdf {
 struct GraphicsState::HandlerMap
 {
 	/// command handler
-	typedef bool (GraphicsState::*Handler)( ContentOp&, const Resources* ) ;
+	typedef bool (GraphicsState::*Handler)( ContentOp&, const ResourcesDict* ) ;
 	typedef std::map<Token, Handler>	Map ;
 
 	static const Map::value_type	m_val[] ;
@@ -124,7 +124,7 @@ TextState& GraphicsState::GetTextState()
 
 std::ostream& GraphicsState::Print(
 	std::ostream&			os,
-	const Resources			*res,
+	const ResourcesDict			*res,
 	const GraphicsState&	prev ) const
 {
 	m_impl->m_text.Print( os, res, prev.m_impl->m_text ) ;
@@ -134,7 +134,7 @@ std::ostream& GraphicsState::Print(
 /**	Handles PDF operators in the content stream.
 	\return	\c true if the state is changed by the command. Otherwise \c false.
 */
-bool GraphicsState::OnCommand( ContentOp& op, const Resources *res )
+bool GraphicsState::OnCommand( ContentOp& op, const ResourcesDict *res )
 {
 	HandlerMap::Map::const_iterator i = HandlerMap::m_map.find( op.Operator() );
 	if ( i != HandlerMap::m_map.end() )
@@ -149,7 +149,7 @@ bool GraphicsState::IsGSCommand( const Token& cmd )
 	return i != HandlerMap::m_map.end() ;
 }
 
-bool GraphicsState::OnTf( ContentOp& op, const Resources *res )
+bool GraphicsState::OnTf( ContentOp& op, const ResourcesDict *res )
 {
 	PDF_ASSERT( res != 0 ) ;
 
@@ -174,7 +174,7 @@ bool GraphicsState::OnTf( ContentOp& op, const Resources *res )
 	return false ;
 }
 
-bool GraphicsState::OnTL( ContentOp& op, const Resources *res )
+bool GraphicsState::OnTL( ContentOp& op, const ResourcesDict *res )
 {
 	if ( op.Count() > 0 && op[0].IsNumber() )
 	{

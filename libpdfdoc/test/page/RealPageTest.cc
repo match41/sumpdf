@@ -109,6 +109,10 @@ void RealPageTest::TestNormal( )
 	file.AddObj( pdf::Ref( 674, 0 ), fd ) ;
 	file.AddObj( pdf::Ref( 697, 0 ), pd ) ;
 	
+	pdf::Dictionary dummy ;
+	file.AddObj( Ref( 713, 0 ), dummy ) ;
+	file.AddObj( Ref( 721, 0 ), dummy ) ;
+	
 	pdf::Object obj( d ) ;
 	pdf::RealPage *p  = new pdf::RealPage( m_root ) ;
 	

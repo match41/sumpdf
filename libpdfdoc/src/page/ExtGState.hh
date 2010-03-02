@@ -17,34 +17,53 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	Resources.hh
-    \brief	definition the Resources class
-    \date	Jan 23, 2010
+/**	\file	StateParamDict.hh
+    \brief	definition the StateParamDict class
+    \date	Feb 28, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_RESOURCES_HH_EADER_INCLUDED__
-#define __PDF_RESOURCES_HH_EADER_INCLUDED__
+#ifndef __PDF_STATEPARAMDICT_HH_EADER_INCLUDED__
+#define __PDF_STATEPARAMDICT_HH_EADER_INCLUDED__
+
+#include "util/RefCounter.hh"
+
+#include "core/Array.hh"
+
+#include <map>
 
 namespace pdf {
 
-class Name ;
-class BaseFont ;
+class DictReader ;
+class File ;
+class GraphicsState ;
+class Ref ;
 
 ///	brief description
-/**	The Resources class represents
+/**	\internal
+	The StateParamDict class represents
 */
-class Resources
+class ExtGState : public RefCounter
 {
-protected :
-	~Resources( ) ;
-
 public :
-	virtual Name AddFont( BaseFont *font ) = 0 ;
-	virtual BaseFont* FindFont( const Name& name ) const = 0 ;
-	virtual Name FindFont( const BaseFont *font ) const = 0 ;
+	ExtGState( ) ;
+	
+	void Read( DictReader& dict ) ;
+	Ref Write( File *file ) const ;
+
+	void Apply( GraphicsState& gs ) const ; 
+
+private :
+	enum Field
+	{
+		line_width, line_cap, line_join, miter_limit, dash_pattern,
+		font,
+	} ;
+
+	std::map<Field, double>	m_doubles ;
+	std::map<Field, Array>	m_arrays ;
 } ;
 
 } // end of namespace
 
-#endif // RESOURCES_HH_
+#endif // STATEPARAMDICT_HH_

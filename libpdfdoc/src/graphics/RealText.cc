@@ -34,7 +34,6 @@
 #include "core/Token.hh"
 #include "font/BaseFont.hh"
 #include "page/ContentOp.hh"
-#include "page/Resources.hh"
 #include "util/Debug.hh"
 #include "util/Util.hh"
 
@@ -50,7 +49,7 @@ namespace pdf {
 struct RealText::HandlerMap
 {
 	/// command handler
-	typedef void (RealText::*Handler)( ContentOp& , const Resources* ) ;
+	typedef void (RealText::*Handler)( ContentOp& , const ResourcesDict* ) ;
 	typedef std::map<Token, Handler>	Map ;
 
 	static const Map::value_type	m_val[] ;
@@ -137,7 +136,7 @@ TextLine& RealText::at( std::size_t idx )
 	return m_lines.at(idx) ;
 }
 
-void RealText::OnCommand( ContentOp& op, const Resources *res )
+void RealText::OnCommand( ContentOp& op, const ResourcesDict *res )
 {
 	PDF_ASSERT( !m_lines.empty() ) ;
 
@@ -192,7 +191,7 @@ std::size_t RealText::Count( ) const
 	return m_lines.size( ) ;
 }
 
-void RealText::Print( std::ostream& os, const Resources *res ) const
+void RealText::Print( std::ostream& os, const ResourcesDict *res ) const
 {
 	os << "BT\n" ;
 	
@@ -224,7 +223,7 @@ std::ostream& operator<<( std::ostream& os, const RealText& t )
 	return os ;
 }
 
-void RealText::OnTd( ContentOp& op, const Resources * )
+void RealText::OnTd( ContentOp& op, const ResourcesDict * )
 {
 	if ( op.Count() >= 2 )
 	{
@@ -236,7 +235,7 @@ void RealText::OnTd( ContentOp& op, const Resources * )
 	}
 }
 
-void RealText::OnTD( ContentOp& op, const Resources * )
+void RealText::OnTD( ContentOp& op, const ResourcesDict * )
 {
 	if ( op.Count() >= 2 )
 	{
@@ -251,7 +250,7 @@ void RealText::OnTD( ContentOp& op, const Resources * )
 	}
 }
 
-void RealText::OnTm( ContentOp& op, const Resources * )
+void RealText::OnTm( ContentOp& op, const ResourcesDict * )
 {
 	if ( op.Count() >= 6 )
 	{
@@ -265,7 +264,7 @@ void RealText::OnTm( ContentOp& op, const Resources * )
 	}
 }
 
-void RealText::OnTstar( ContentOp& , const Resources * )
+void RealText::OnTstar( ContentOp& , const ResourcesDict * )
 {
 	m_dy -= m_state.GetTextState().Leading() ;
 	m_offset = 0 ;
@@ -274,7 +273,7 @@ void RealText::OnTstar( ContentOp& , const Resources * )
 }
 
 ///	Shows a Text string
-void RealText::OnTj( ContentOp& op, const Resources * )
+void RealText::OnTj( ContentOp& op, const ResourcesDict * )
 {
 	PDF_ASSERT( !m_lines.empty() ) ;
 	
@@ -307,7 +306,7 @@ void RealText::OnTj( ContentOp& op, const Resources * )
 	has the effect of moving the next glyph painted either to the left or down
 	by the given amount. 
 */
-void RealText::OnTJ( ContentOp& op, const Resources * )
+void RealText::OnTJ( ContentOp& op, const ResourcesDict * )
 {
 	PDF_ASSERT( !m_lines.empty() ) ;
 	
@@ -346,11 +345,11 @@ void RealText::OnTJ( ContentOp& op, const Resources * )
 	m_offset += offset ;
 }
 
-void RealText::OnSingleQuote( ContentOp& , const Resources * )
+void RealText::OnSingleQuote( ContentOp& , const ResourcesDict * )
 {
 }
 
-void RealText::OnDoubleQuote( ContentOp& , const Resources * )
+void RealText::OnDoubleQuote( ContentOp& , const ResourcesDict * )
 {
 }
 

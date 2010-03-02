@@ -37,7 +37,7 @@
 namespace pdf {
 
 class Object ;
-class Resources ;
+class ResourcesDict ;
 
 ///	brief description
 /**	The RealText class represents a text object in a page. It is created for
@@ -48,9 +48,9 @@ class RealText : public Text
 public :
 	explicit RealText( const GraphicsState& ts = GraphicsState() ) ;
 
-	void OnCommand( ContentOp& op, const Resources *res ) ;
+	void OnCommand( ContentOp& op, const ResourcesDict *res ) ;
 
-	void Print( std::ostream& os, const Resources *res ) const ;
+	void Print( std::ostream& os, const ResourcesDict *res ) const ;
 
 	iterator begin() ;
 	iterator end() ;
@@ -82,16 +82,16 @@ private :
 	struct HandlerMap ;
 
     // position command handlers
-	void OnTd( ContentOp& op, const Resources *res ) ;
-	void OnTD( ContentOp& op, const Resources *res ) ;
-	void OnTm( ContentOp& op, const Resources *res ) ;
-	void OnTstar( ContentOp& op, const Resources *res ) ;
+	void OnTd( ContentOp& op, const ResourcesDict *res ) ;
+	void OnTD( ContentOp& op, const ResourcesDict *res ) ;
+	void OnTm( ContentOp& op, const ResourcesDict *res ) ;
+	void OnTstar( ContentOp& op, const ResourcesDict *res ) ;
 	
 	// text show command handlers
-	void OnTj( ContentOp& op, const Resources *res ) ;
-	void OnTJ( ContentOp& op, const Resources *res ) ;
-	void OnSingleQuote( ContentOp& op, const Resources *res ) ;
-	void OnDoubleQuote( ContentOp& op, const Resources *res ) ;
+	void OnTj( ContentOp& op, const ResourcesDict *res ) ;
+	void OnTJ( ContentOp& op, const ResourcesDict *res ) ;
+	void OnSingleQuote( ContentOp& op, const ResourcesDict *res ) ;
+	void OnDoubleQuote( ContentOp& op, const ResourcesDict *res ) ;
 
 private :
 	///	Lines inside this text object

@@ -26,7 +26,7 @@
 #ifndef __PDF_MOCKRESOURCES_HH_EADER_INCLUDED__
 #define __PDF_MOCKRESOURCES_HH_EADER_INCLUDED__
 
-#include "Resources.hh"
+#include "ResourcesDict.hh"
 
 #include "core/Name.hh"
 
@@ -39,7 +39,7 @@ class BaseFont ;
 ///	brief description
 /**	The MockResources class represents
 */
-class MockResources : public Resources
+class MockResources : public ResourcesDict
 {
 public :
 	MockResources( ) ;

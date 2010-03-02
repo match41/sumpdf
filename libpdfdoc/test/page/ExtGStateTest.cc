@@ -17,39 +17,55 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	StateParamDictTest.hh
-    \brief	definition the StateParamDictTest class
-    \date	Mar 1, 2010
-    \author	Nestal Wan
+/**	\file	StateParamDictTest.cc
+	\brief	implementation of the StateParamDictTest class
+	\date	Mar 1, 2010
+	\author	Nestal Wan
 */
 
-#ifndef __PDFUT_STATEPARAMDICTTEST_HH_EADER_INCLUDED__
-#define __PDFUT_STATEPARAMDICTTEST_HH_EADER_INCLUDED__
+#include "ExtGStateTest.hh"
 
-#include <cppunit/TestFixture.h>
+#include "core/Dictionary.hh"
+#include "file/DictReader.hh"
+#include "graphics/GraphicsState.hh"
+#include "page/ExtGState.hh"
 
-#include <cppunit/extensions/HelperMacros.h>
+#include "mock/Assert.hh"
+#include "mock/MockFile.hh"
 
 namespace pdfut {
 
-class StateParamDictTest : public CppUnit::TestFixture
+using namespace pdf ;
+
+ExtGStateTest::ExtGStateTest( )
 {
-public :
-	StateParamDictTest( ) ;
+}
 
-	// declare suit function
-	CPPUNIT_TEST_SUITE( StateParamDictTest ) ;
-		CPPUNIT_TEST( TestRead ) ;
-	CPPUNIT_TEST_SUITE_END();
+void ExtGStateTest::setUp( )
+{
+}
 
-public :
-	void setUp( ) ;
-	void tearDown( ) ;
+void ExtGStateTest::tearDown( )
+{
+}
 
-private :
-	void TestRead( ) ;
-} ;
+void ExtGStateTest::TestRead( )
+{
+	ExtGState subject ;
+	
+	Dictionary dict ;
+	dict["LW"] = 100 ;
+ 	
+ 	MockFile file ;
+ 	DictReader reader( dict, &file ) ;
+ 	
+ 	subject.Read( reader ) ;
+ 	
+ 	GraphicsState gs ;
+ 	gs.LineWidth( 301.0 ) ;
+ 	
+ 	subject.Apply( gs ) ;
+ 	PDFUT_ASSERT_EQUAL( gs.LineWidth(), 100.0 ) ;
+}
 
 } // end of namespace
-
-#endif // STATEPARAMDICTTEST_HH_

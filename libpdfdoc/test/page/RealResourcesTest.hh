@@ -46,11 +46,13 @@ public :
 	CPPUNIT_TEST_SUITE( RealResourcesTest ) ;
 		CPPUNIT_TEST( TestNormal ) ;
 		CPPUNIT_TEST( TestReadExistFont ) ;
+		CPPUNIT_TEST( TestReadExistState ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
 private :
 	void TestNormal( ) ;
 	void TestReadExistFont( ) ;
+	void TestReadExistState( ) ;
 } ;
 
 } // end of namespace

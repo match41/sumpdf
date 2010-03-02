@@ -92,7 +92,7 @@ set( INCLUDE_DIR	include/ )
 ###############################################################################
 set( PAGE_HDRS		${PAGE_DIR}/RealPage.hh
 					${PAGE_DIR}/RealContent.hh
-					${PAGE_DIR}/Resources.hh
+					${PAGE_DIR}/ResourcesDict.hh
 					${PAGE_DIR}/RealResources.hh
 					${PAGE_DIR}/MockResources.hh
 					${PAGE_DIR}/PageNode.hh
@@ -100,7 +100,7 @@ set( PAGE_HDRS		${PAGE_DIR}/RealPage.hh
 					${PAGE_DIR}/PageInfo.hh
 					${PAGE_DIR}/ContentStream.hh
 					${PAGE_DIR}/ContentOp.hh
-					${PAGE_DIR}/StateParamDict.hh )
+					${PAGE_DIR}/ExtGState.hh )
 
 set( GRAPICS_HDRS	${GRAPICS_DIR}/RealText.hh )
 
@@ -192,7 +192,7 @@ set( UTIL_INC_HDRS	${INCLUDE_DIR}/util/Exception.hh
 # source in subdirs
 ###############################################################################
 set( PAGE_SRCS  	${PAGE_DIR}/RealPage.cc
-					${PAGE_DIR}/Resources.cc
+					${PAGE_DIR}/ResourcesDict.cc
 					${PAGE_DIR}/RealResources.cc
 					${PAGE_DIR}/MockResources.cc
 					${PAGE_DIR}/Page.cc
@@ -203,7 +203,7 @@ set( PAGE_SRCS  	${PAGE_DIR}/RealPage.cc
 					${PAGE_DIR}/PageInfo.cc
 					${PAGE_DIR}/ContentStream.cc
 					${PAGE_DIR}/ContentOp.cc
-					${PAGE_DIR}/StateParamDict.cc )
+					${PAGE_DIR}/ExtGState.cc )
 
 set( GRAPICS_SRCS	${GRAPICS_DIR}/Graphics.cc
 					${GRAPICS_DIR}/GraphicsVisitor.cc
@@ -257,7 +257,6 @@ set( UTIL_SRCS  	${UTIL_DIR}/Rect.cc
 set( IMG_SRCS  		${IMG_DIR}/Image.cc )
 
 set( FONT_SRCS		${FONT_DIR}/Font.cc
-					${FONT_DIR}/BaseFont.cc
                     ${FONT_DIR}/SimpleFont.cc
                     ${FONT_DIR}/CompositeFont.cc
 					${FONT_DIR}/Glyph.cc
@@ -504,7 +503,7 @@ set( UT_SRCS	test/core/TokenTest.cc
 				test/page/RealContentTest.cc
 				test/page/PageNodeTest.cc
 				test/page/RealResourcesTest.cc
-				test/page/StateParamDictTest.cc
+				test/page/ExtGStateTest.cc
 				
 				test/file/RealFileTest.cc
 				test/file/CatalogTest.cc

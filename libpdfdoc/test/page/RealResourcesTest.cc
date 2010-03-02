@@ -97,4 +97,8 @@ void RealResourcesTest::TestReadExistFont( )
 //	PDF_ASSERT_EQUAL( f->UseCount(), 2u ) ;
 }
 
+void RealResourcesTest::TestReadExistState( )
+{
+}
+
 } // end of namespace

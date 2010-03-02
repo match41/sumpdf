@@ -27,8 +27,7 @@
 #ifndef __PDF_RESOURCES_HEADER_INCLUDED__
 #define __PDF_RESOURCES_HEADER_INCLUDED__
 
-#include "Resources.hh"
-//#include "GfxParamDict.hh"
+#include "ResourcesDict.hh"
 #include "util/RefCounter.hh"
 
 #include "core/Dictionary.hh"
@@ -51,6 +50,7 @@ class DictReader ;
 class RealImage ;
 class Object ;
 class Ref ;
+class ExtGState ;
 
 /*!	\brief	page resources
 
@@ -58,7 +58,7 @@ class Ref ;
 	streams. These objects are referred by names in the content stream. The
 	resources dictionary maps their names to the actual objects.
 */
-class RealResources : public Resources, public RefCounter
+class RealResources : public ResourcesDict, public RefCounter
 {
 public :
 	explicit RealResources( const RealResources *parent ) ;
@@ -79,6 +79,8 @@ private :
 	void ReadFontDict( DictReader& self ) ;
 	Ref WriteFontDict( File *file ) const ;
 
+	void ReadStateDict( DictReader& self ) ;
+
 private :
 	const RealResources	*m_parent ;
 	FontDb				*m_font_db ;
@@ -89,6 +91,12 @@ private :
 	> FontMap ; 
 	FontMap				m_fonts ;
 
+	typedef	boost::bimap<
+		boost::bimaps::set_of<Name>,
+		boost::bimaps::set_of<ExtGState*>
+	> StateMap ; 
+	StateMap			m_states ;
+	
 	std::vector<Name>	m_proc_set ;
 } ;
 

@@ -34,7 +34,7 @@
 namespace pdf {
 
 class Graphics ;
-class Resources ;
+class ResourcesDict ;
 class Stream ;
 
 ///	brief description
@@ -56,14 +56,14 @@ public :
 	bool IsEmpty( ) const ;
 
 	template <typename InputIt>
-	void Load( InputIt first, InputIt last, Resources *res )
+	void Load( InputIt first, InputIt last, ResourcesDict *res )
 	{
 		ContentStream cs( first, last, res ) ;
 		cs.Decode( ) ;
 		cs.SwapGfxObj( m_gfx ) ;
 	}
 
-	void Write( Stream& str, const Resources *res ) const ;
+	void Write( Stream& str, const ResourcesDict *res ) const ;
 	
 	void Clear( ) ;
 

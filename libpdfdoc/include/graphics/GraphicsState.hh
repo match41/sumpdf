@@ -37,7 +37,7 @@ class DictReader ;
 class Font ;
 class Name ;
 class Object ;
-class Resources ;
+class ResourcesDict ;
 class Token ;
 class TextState ;
 
@@ -60,11 +60,11 @@ public :
 
 	std::ostream& Print(
 		std::ostream&			os,
-		const Resources			*res,
+		const ResourcesDict			*res,
 		const GraphicsState&	prev = GraphicsState() ) const ;
 
 	/// Handle PDF content operators.
-	bool OnCommand( ContentOp& op, const Resources *res ) ;
+	bool OnCommand( ContentOp& op, const ResourcesDict *res ) ;
 
 	static bool IsGSCommand( const Token& cmd ) ;
 
@@ -91,8 +91,8 @@ private :
 	struct HandlerMap ;
 
 	// text state command handlers
-	bool OnTf( ContentOp& op, const Resources *res ) ;
-	bool OnTL( ContentOp& op, const Resources *res ) ;
+	bool OnTf( ContentOp& op, const ResourcesDict *res ) ;
+	bool OnTL( ContentOp& op, const ResourcesDict *res ) ;
 
 	void CopyOnWrite( ) ;
 

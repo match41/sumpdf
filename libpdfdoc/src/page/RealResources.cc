@@ -26,6 +26,8 @@
 
 #include "RealResources.hh"
 
+#include "ExtGState.hh"
+
 #include "core/Array.hh"
 #include "file/File.hh"
 #include "file/DictReader.hh"
@@ -73,11 +75,7 @@ RealResources::~RealResources( )
 
 void RealResources::Read( DictReader& self )
 {
-	DictReader ext_gstate ;
-	if ( self.Detach( "ExtGState",	ext_gstate ) )
-	{
-	}
-//		m_ext_gstate.Read( ext_gstate ) ;
+	ReadStateDict( self ) ;
 	
 	Array proc_set ;
 	if ( self.Detach( "ProcSet",		proc_set ) )
@@ -94,6 +92,37 @@ Ref RealResources::Write( File *file ) const
 	dict["Font"]	= WriteFontDict( file ) ;
 
     return file->WriteObj( dict ) ;
+}
+
+void RealResources::ReadStateDict( DictReader& self )
+{
+	PDF_ASSERT( self.GetFile() != 0 ) ;
+	PDF_ASSERT( self.GetFile()->Pool() != 0 ) ;
+	
+	DictReader gs ;
+	if ( self.Detach( "ExtGState",	gs ) )
+	{
+		ElementPool *pool = self.GetFile()->Pool( ) ;
+		for ( Dictionary::iterator i  = gs->begin( ) ; i != gs->end( ) ; ++i )
+		{
+			ExtGState *spd = 0 ;
+			
+			Ref link = i->second.To<Ref>( std::nothrow ) ;
+			if ( !pool->Acquire( link, spd ) )
+			{
+				PDF_ASSERT( spd == 0 ) ;
+				
+				DictReader gs_dict ;
+				gs.At( i, gs_dict ) ;
+				spd = new ExtGState ;
+				spd->Read( gs_dict ) ;
+				pool->Add( link, spd ) ;
+			}
+			
+			PDF_ASSERT( spd != 0 ) ;
+			m_states.insert( StateMap::value_type( i->first, spd ) ) ;
+		}
+	}
 }
 
 void RealResources::ReadFontDict( DictReader& self )
@@ -122,7 +151,7 @@ void RealResources::ReadFontDict( DictReader& self )
 			}
 
 			PDF_ASSERT( font != 0 ) ;
-			m_fonts.insert( FontMap::value_type(i->first, font) ) ;
+			m_fonts.insert( FontMap::value_type( i->first, font ) ) ;
 		}
 	}
 }

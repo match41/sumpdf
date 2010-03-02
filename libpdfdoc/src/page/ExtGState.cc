@@ -23,7 +23,7 @@
 	\author	Nestal Wan
 */
 
-#include "StateParamDict.hh"
+#include "ExtGState.hh"
 
 #include "file/DictReader.hh"
 #include "graphics/GraphicsState.hh"
@@ -33,11 +33,11 @@ namespace pdf {
 /**	constructor
 	
 */
-StateParamDict::StateParamDict( )
+ExtGState::ExtGState( )
 {
 }
 
-void StateParamDict::Read( DictReader& dict )
+void ExtGState::Read( DictReader& dict )
 {
 	double val = 0.0 ;
 	if ( dict.Detach( "LW", val ) )
@@ -50,7 +50,7 @@ void StateParamDict::Read( DictReader& dict )
 		m_doubles.insert( std::make_pair( line_join, val ) ) ; 
 }
 
-Ref StateParamDict::Write( File *file ) const
+Ref ExtGState::Write( File *file ) const
 {
 	Dictionary dict ;
 	std::map<Field, double>::const_iterator di = m_doubles.find( line_width ) ;
@@ -68,7 +68,7 @@ Ref StateParamDict::Write( File *file ) const
 	return Ref() ;
 }
 
-void StateParamDict::Apply( GraphicsState& gs ) const
+void ExtGState::Apply( GraphicsState& gs ) const
 {
 	std::map<Field, double>::const_iterator di = m_doubles.find( line_width ) ;
 	if ( di != m_doubles.end() )

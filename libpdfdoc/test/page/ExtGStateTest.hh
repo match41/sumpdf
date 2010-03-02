@@ -17,52 +17,39 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	StateParamDictTest.cc
-	\brief	implementation of the StateParamDictTest class
-	\date	Mar 1, 2010
-	\author	Nestal Wan
+/**	\file	StateParamDictTest.hh
+    \brief	definition the StateParamDictTest class
+    \date	Mar 1, 2010
+    \author	Nestal Wan
 */
 
-#include "StateParamDictTest.hh"
+#ifndef __PDFUT_STATEPARAMDICTTEST_HH_EADER_INCLUDED__
+#define __PDFUT_STATEPARAMDICTTEST_HH_EADER_INCLUDED__
 
-#include "core/Dictionary.hh"
-#include "file/DictReader.hh"
-#include "graphics/GraphicsState.hh"
-#include "page/StateParamDict.hh"
+#include <cppunit/TestFixture.h>
 
-#include "mock/Assert.hh"
-#include "mock/MockFile.hh"
+#include <cppunit/extensions/HelperMacros.h>
 
 namespace pdfut {
 
-using namespace pdf ;
-
-StateParamDictTest::StateParamDictTest( )
+class ExtGStateTest : public CppUnit::TestFixture
 {
-}
+public :
+	ExtGStateTest( ) ;
 
-void StateParamDictTest::setUp( )
-{
-}
+	// declare suit function
+	CPPUNIT_TEST_SUITE( ExtGStateTest ) ;
+		CPPUNIT_TEST( TestRead ) ;
+	CPPUNIT_TEST_SUITE_END();
 
-void StateParamDictTest::tearDown( )
-{
-}
+public :
+	void setUp( ) ;
+	void tearDown( ) ;
 
-void StateParamDictTest::TestRead( )
-{
-	StateParamDict subject ;
-	
-	Dictionary dict ;
-	dict["LW"] = 100 ;
- 	
- 	MockFile file ;
- 	DictReader reader( dict, &file ) ;
- 	
- 	subject.Read( reader ) ;
- 	GraphicsState gs ;
- 	subject.Apply( gs ) ;
- 	PDFUT_ASSERT_EQUAL( gs.LineWidth(), 100.0 ) ;
-}
+private :
+	void TestRead( ) ;
+} ;
 
 } // end of namespace
+
+#endif // STATEPARAMDICTTEST_HH_

@@ -36,7 +36,7 @@
 namespace pdf {
 
 class Graphics ;
-class Resources ;
+class ResourcesDict ;
 class ContentOp ;
 
 ///	brief description
@@ -47,7 +47,7 @@ class ContentStream
 {
 public :
 	template <typename InputIt>
-	ContentStream( InputIt first, InputIt last, const Resources *res )
+	ContentStream( InputIt first, InputIt last, const ResourcesDict *res )
 		: m_strs( first, last ),
 		  m_res( res ),
 		  m_current( 0 )
@@ -74,7 +74,7 @@ private :
 private :
 	std::vector<Stream>		m_strs ;
 	std::vector<Graphics*>	m_gfx ;
-	const Resources			*m_res ;
+	const ResourcesDict			*m_res ;
 
 	/// all graphics states
 	struct State

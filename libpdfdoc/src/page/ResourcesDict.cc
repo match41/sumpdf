@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2009 by Nestal Wan                                      *
+ *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,20 +17,19 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/*!
-	\file	BaseFont.cc
-	\brief	implementation the BaseFont class
-	\date	Sun Mar 8 2009
+/**	\file	ResourcesDict.cc
+	\brief	implementation of the Resources class
+	\date	Jan 23, 2010
 	\author	Nestal Wan
 */
 
-#include "BaseFont.hh"
-
-#include <boost/bind.hpp>
+#include "ResourcesDict.hh"
 
 namespace pdf {
 
-BaseFont::BaseFont( )
+/**	destructor
+*/
+ResourcesDict::~ResourcesDict( )
 {
 }
 

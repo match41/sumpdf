@@ -92,7 +92,7 @@ void RealContent::VisitGraphics( GraphicsVisitor *visitor )
 		boost::bind( &Graphics::Visit, _1, visitor ) ) ;
 }
 
-void RealContent::Write( Stream& str, const Resources *res ) const
+void RealContent::Write( Stream& str, const ResourcesDict *res ) const
 {
 	std::ostream os( str.OutStreamBuf() ) ;
 
