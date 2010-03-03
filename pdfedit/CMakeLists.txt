@@ -122,9 +122,16 @@ endif ( UNIX )
 ###############################################################################
 # win32 specific libraries
 ###############################################################################
-if ( WIN32 )
-    set( OPT_LIBS   ${OPT_LIBS}
-                    Dbghelp )
+	find_library( DBHELP_LIBRARY NAMES DbgHelp
+	PATHS
+		/usr/lib
+    	/usr/lib64
+        /usr/local/lib
+        /usr/local/lib64 )
+	
+	if ( DBHELP_LIBRARY )
+		set( OPT_LIBS   ${OPT_LIBS}	Dbghelp )
+	endif ( DBHELP_LIBRARY )
 endif ( WIN32 )
 
 ###############################################################################

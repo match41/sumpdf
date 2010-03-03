@@ -25,7 +25,10 @@
 #include <string>
 
 #include <windows.h>
+
+#ifdef HAVE_DBGHELP
 #include <Dbghelp.h>
+#endif
 
 // _ReturnAddress should be prototyped before use
 extern "C" void * _ReturnAddress(void);
@@ -38,7 +41,9 @@ struct SymbolInfo::Impl {} ;
 
 SymbolInfo::SymbolInfo( )
 {
-    ::SymInitialize( ::GetCurrentProcess(), 0, TRUE ) ;
+#ifdef HAVE_DBGHELP
+	::SymInitialize( ::GetCurrentProcess(), 0, TRUE ) ;
+#endif
 }
 
 SymbolInfo::~SymbolInfo( )
@@ -53,6 +58,7 @@ SymbolInfo* SymbolInfo::Instance( )
 
 std::size_t SymbolInfo::Backtrace( addr_t *stack, std::size_t count )
 {
+#ifdef HAVE_DBGHELP
     // Get the required values for initialization of the STACKFRAME64
     // structure to be passed to StackWalk64(). Required fields are
     // AddrPC and AddrFrame.
@@ -82,10 +88,14 @@ std::size_t SymbolInfo::Backtrace( addr_t *stack, std::size_t count )
         stack[idx] = frame.AddrPC.Offset ;
 
     return idx ;
+#else
+	return 0 ;
+#endif
 }
 
 void SymbolInfo::PrintTrace( addr_t addr, std::ostream& os, std::size_t idx )
 {
+#ifdef HAVE_DBGHELP
     static const DWORD name_length = 1024 ;
     IMAGEHLP_SYMBOL64 *sym =
     	(IMAGEHLP_SYMBOL64 *)malloc( sizeof(IMAGEHLP_SYMBOL64) + name_length );
@@ -108,6 +118,7 @@ void SymbolInfo::PrintTrace( addr_t addr, std::ostream& os, std::size_t idx )
     }
     
     free( sym ) ;
+#endif
 }
 
 } // end of namespace
