@@ -284,8 +284,12 @@ endif ( UNIX )
 # win32 specific sources
 ###############################################################################
 if ( WIN32 )
-    set( UTIL_SRCS  ${UTIL_SRCS}
-					${UTIL_DIR}/SymbolInfo32.cpp )
+	FIND_PATH( DBG_INCLUDE_DIR dbghelp.h /usr/include /usr/local/include )
+
+	if ( DBG_INCLUDE_DIR )
+	    set( UTIL_SRCS  ${UTIL_SRCS}	${UTIL_DIR}/SymbolInfo32.cpp )
+	endif ( DBG_INCLUDE_DIR )
+
     set( FONT_HDRS  ${FONT_HDRS}
 					${FONT_DIR}/Win32FontDb.hpp )
     set( FONT_SRCS  ${FONT_SRCS}
