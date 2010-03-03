@@ -26,9 +26,11 @@
 
 #include "MainWnd.hh"
 
-#include <boost/program_options/options_description.hpp>
-#include <boost/program_options/variables_map.hpp>
-#include <boost/program_options/parsers.hpp>
+#ifdef HAVE_BOOST_PROGRAM_OPTIONS
+	#include <boost/program_options/options_description.hpp>
+	#include <boost/program_options/variables_map.hpp>
+	#include <boost/program_options/parsers.hpp>
+#endif
 
 // Qt headers
 #include <QApplication>
@@ -41,6 +43,7 @@ int main( int argc, char **argv )
 
     std::string path ;
 
+#ifdef HAVE_BOOST_PROGRAM_OPTIONS
 	// Declare the supported options.
 	po::options_description desc( "Allowed options" ) ;
 	desc.add_options()
@@ -52,13 +55,16 @@ int main( int argc, char **argv )
 	po::variables_map vm;
 	po::store(po::parse_command_line( argc, argv, desc ), vm ) ;
 	po::notify(vm);
+#endif
 
     pdf::MainWnd *w = new pdf::MainWnd ;
     w->resize( 640, 480 ) ;
     w->show( ) ;
     
+#ifdef HAVE_BOOST_PROGRAM_OPTIONS
     if ( vm.count( "input" ) )
     	w->OpenFile( path.c_str() ) ;
+#endif
 
     return app.exec( ) ;
 }

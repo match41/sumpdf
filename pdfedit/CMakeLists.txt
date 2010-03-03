@@ -26,7 +26,7 @@ cmake_minimum_required(VERSION 2.6)
 ###############################################################################
 set( Boost_USE_MULTITHREAD ON )
 find_package( Qt4 REQUIRED )
-find_package( Boost COMPONENTS program_options REQUIRED )
+find_package( Boost COMPONENTS program_options )
 find_package( Freetype REQUIRED )
 
 # we don't want to let the boost header to choose the libraries for us
@@ -128,6 +128,14 @@ if ( WIN32 )
 endif ( WIN32 )
 
 ###############################################################################
+# optional boost library
+###############################################################################
+if ( Boost_PROGRAM_OPTIONS_FOUND )
+	add_definitions( -DHAVE_BOOST_PROGRAM_OPTIONS )
+    set( OPT_LIBS   ${OPT_LIBS} ${Boost_PROGRAM_OPTIONS_LIBRARY} )
+endif ( Boost_PROGRAM_OPTIONS_FOUND )
+
+###############################################################################
 # pdfdoc library
 ###############################################################################
 set( PDFDOC_PREFIX    ../libpdfdoc )
@@ -172,8 +180,7 @@ include_directories( ${QT_INCLUDE_DIR} ${pdfedit_SOURCE_DIR}/src
 
 target_link_libraries( pdfedit	${PDFDOC_LIBRARY} ${OPT_LIBS} ${QT_LIBRARIES}
 								${QT_QTMAIN_LIBRARY}
-								${FREETYPE_LIBRARIES}
-								${Boost_PROGRAM_OPTIONS_LIBRARY} )
+								${FREETYPE_LIBRARIES} )
 target_link_libraries( qtest	${QT_LIBRARIES}
 								${QT_QTMAIN_LIBRARY}
 								${FREETYPE_LIBRARIES} )
