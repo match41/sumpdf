@@ -205,6 +205,12 @@ template <> bool Object::Is<void>( ) const
 	return Type() == null ;
 }
 
+/// needless to say...
+template <> bool Object::Is<Object>( ) const
+{
+	return true ;
+}
+
 template <> unsigned Object::To() const
 {
 	return As<int>( ) ;

@@ -28,6 +28,8 @@
 #include "file/DictReader.hh"
 #include "graphics/GraphicsState.hh"
 
+#include "util/Debug.hh"
+
 namespace pdf {
 
 /**	constructor
@@ -48,10 +50,20 @@ void ExtGState::Read( DictReader& dict )
 
 	if ( dict.Detach( "LJ", val ) )
 		m_doubles.insert( std::make_pair( line_join, val ) ) ; 
+
+	Object		obj ;
+	if ( dict.Detach( "BG", obj ) )
+	{
+		Function func ;
+		func.Read( obj, dict.GetFile() ) ;
+		m_func.insert( std::make_pair( black_generation, func ) ) ;
+	}
 }
 
 Ref ExtGState::Write( File *file ) const
 {
+	PDF_ASSERT( file != 0 ) ;
+
 	Dictionary dict ;
 	std::map<Field, double>::const_iterator di = m_doubles.find( line_width ) ;
 	if ( di != m_doubles.end() )
@@ -65,7 +77,9 @@ Ref ExtGState::Write( File *file ) const
 	if ( di != m_doubles.end() )
 		dict["LJ"] = di->second ;
 
-	return Ref() ;
+	
+
+	return file->WriteObj( dict ) ;
 }
 
 void ExtGState::Apply( GraphicsState& gs ) const
@@ -73,7 +87,6 @@ void ExtGState::Apply( GraphicsState& gs ) const
 	std::map<Field, double>::const_iterator di = m_doubles.find( line_width ) ;
 	if ( di != m_doubles.end() )
 		gs.LineWidth( di->second ) ;
-	
 }
 
 } // end of namespace

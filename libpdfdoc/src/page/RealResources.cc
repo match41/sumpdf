@@ -114,6 +114,7 @@ void RealResources::ReadStateDict( DictReader& self )
 				
 				DictReader gs_dict ;
 				gs.At( i, gs_dict ) ;
+std::cout << "get ExtGState: " << *gs_dict << std::endl ;
 				spd = new ExtGState ;
 				spd->Read( gs_dict ) ;
 				pool->Add( link, spd ) ;

@@ -111,7 +111,8 @@ set( FILE_HDRS		${FILE_DIR}/RealFile.hh
 					${FILE_DIR}/Catalog.hh
 					${FILE_DIR}/Destination.hh
 					${FILE_DIR}/NameTree.hh
-					${FILE_DIR}/ElementPool.hh )
+					${FILE_DIR}/ElementPool.hh
+					${FILE_DIR}/Function.hh )
 
 set( CORE_HDRS  	${CORE_DIR}/Object.hh
 					${CORE_DIR}/Ref.hh
@@ -223,7 +224,8 @@ set( FILE_SRCS		${FILE_DIR}/RealFile.cc
 					${FILE_DIR}/Catalog.cc
 					${FILE_DIR}/Destination.cc
 					${FILE_DIR}/NameTree.cc
-					${FILE_DIR}/DocInfo.cc )
+					${FILE_DIR}/DocInfo.cc
+					${FILE_DIR}/Function.cc )
 
 set( CORE_SRCS  	${CORE_DIR}/Object.cc
 					${CORE_DIR}/Ref.cc

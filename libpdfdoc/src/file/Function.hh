@@ -17,58 +17,44 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	StateParamDict.hh
-    \brief	definition the StateParamDict class
-    \date	Feb 28, 2010
+/**	\file	Function.hh
+    \brief	definition the Function class
+    \date	Mar 4, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_STATEPARAMDICT_HH_EADER_INCLUDED__
-#define __PDF_STATEPARAMDICT_HH_EADER_INCLUDED__
+#ifndef __PDF_FUNCTION_HH_EADER_INCLUDED__
+#define __PDF_FUNCTION_HH_EADER_INCLUDED__
 
-#include "util/RefCounter.hh"
-
-#include "core/Array.hh"
-#include "file/Function.hh"
-
-#include <map>
+#include <boost/shared_ptr.hpp>
 
 namespace pdf {
 
 class DictReader ;
 class File ;
-class GraphicsState ;
-class Ref ;
+class Object ;
+class Stream ;
 
 ///	brief description
 /**	\internal
-	The StateParamDict class represents
+	The Function class represents
 */
-class ExtGState : public RefCounter
+class Function
 {
 public :
-	ExtGState( ) ;
-	
-	void Read( DictReader& dict ) ;
-	Ref Write( File *file ) const ;
+	Function( ) ;
 
-	void Apply( GraphicsState& gs ) const ; 
+	void Read( Object& obj, File *file ) ;
 
 private :
-	enum Field
-	{
-		// device independent
-		line_width, line_cap, line_join, miter_limit, dash_pattern,
-		font,
-		
-		black_generation
-	} ;
+	void ReadCommon( DictReader& dict ) ;
+	void ReadType0( DictReader& dict, Stream& data ) ;
 
-	std::map<Field, double>		m_doubles ;
-	std::map<Field, Array>		m_arrays ;
-	std::map<Field, Function>	m_func ;
+private :
+	struct Impl ;
+	const boost::shared_ptr<Impl>	m_impl ;
 } ;
 
 } // end of namespace
 
-#endif // STATEPARAMDICT_HH_
+#endif // FUNCTION_HH_

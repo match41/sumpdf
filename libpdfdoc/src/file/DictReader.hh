@@ -32,6 +32,7 @@
 #include "core/Ref.hh"
 
 #include <utility>
+#include <vector>
 
 namespace pdf {
 

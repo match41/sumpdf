@@ -122,9 +122,7 @@ bool DictReader::At<double>( Dictionary::iterator i, double& result )
 }
 
 template <>
-bool DictReader::At<DictReader>(
-	Dictionary::iterator	i,
-	DictReader& 			result )
+bool DictReader::At<DictReader>( Dictionary::iterator i, DictReader& result )
 {
 	PDF_ASSERT( i != m_dict.end( ) ) ;
 	
@@ -136,9 +134,7 @@ bool DictReader::At<DictReader>(
 }
 
 template <>
-bool DictReader::At<ArrayReader>(
-	Dictionary::iterator	i,
-	ArrayReader&			result)
+bool DictReader::At<ArrayReader>( Dictionary::iterator i, ArrayReader& result )
 {
 	PDF_ASSERT( i != m_dict.end( ) ) ;
 
@@ -147,6 +143,54 @@ bool DictReader::At<ArrayReader>(
 	result->swap( array ) ;
 	result.SetFile( m_file ) ;
 	return rtn ;
+}
+
+namespace
+{
+	template <typename T>
+	bool DictReaderAt(
+		DictReader& 			rthis,
+		Dictionary::iterator	i,
+		std::vector<T>&			result )
+	{
+		Array	array ;
+		bool rtn = rthis.At( i, array ) ;
+		if ( rtn )
+			result.assign( array.begin(), array.end() ) ;
+		return rtn ;
+	}
+}
+
+template <>
+bool DictReader::At<std::vector<double> >(
+	Dictionary::iterator	i,
+	std::vector<double>&	result )
+{
+	return DictReaderAt( *this, i, result ) ;
+}
+
+template <>
+bool DictReader::At<std::vector<int> >(
+	Dictionary::iterator	i,
+	std::vector<int>&	result )
+{
+	return DictReaderAt( *this, i, result ) ;
+}
+
+template <>
+bool DictReader::At<std::vector<Name> >(
+	Dictionary::iterator	i,
+	std::vector<Name>&	result )
+{
+	return DictReaderAt( *this, i, result ) ;
+}
+
+template <>
+bool DictReader::At<std::vector<Ref> >(
+	Dictionary::iterator	i,
+	std::vector<Ref>&	result )
+{
+	return DictReaderAt( *this, i, result ) ;
 }
 
 Dictionary* DictReader::operator->()
