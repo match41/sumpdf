@@ -96,6 +96,8 @@ void Function::Read( Object& obj, File *file )
 
 void Function::ReadType0( DictReader& dict, Stream& data )
 {
+data.PrintAsC( std::cout ) ;
+
 	Array size ;
 	if ( dict.Detach( "Size", size ) )
 		m_impl->size.assign( size.begin(), size.end() ) ;
@@ -129,6 +131,11 @@ void Function::ReadCommon( DictReader& dict )
 	if ( !dict.Detach( "Range", m_impl->range ) &&
 	     (m_impl->type == 0 || m_impl->type == 4)  )
 		throw ParseError( "unknown function range" ) ;
+}
+
+Ref Function::Write( File *file )
+{
+	return Ref() ;
 }
 
 } // end of namespace

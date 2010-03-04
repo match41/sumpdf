@@ -26,12 +26,15 @@
 #ifndef __PDF_FUNCTION_HH_EADER_INCLUDED__
 #define __PDF_FUNCTION_HH_EADER_INCLUDED__
 
+#include "util/RefCounter.hh"
+
 #include <boost/shared_ptr.hpp>
 
 namespace pdf {
 
 class DictReader ;
 class File ;
+class Ref ;
 class Object ;
 class Stream ;
 
@@ -39,12 +42,13 @@ class Stream ;
 /**	\internal
 	The Function class represents
 */
-class Function
+class Function : public RefCounter
 {
 public :
 	Function( ) ;
 
 	void Read( Object& obj, File *file ) ;
+	Ref Write( File *file ) ;
 
 private :
 	void ReadCommon( DictReader& dict ) ;

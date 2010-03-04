@@ -25,11 +25,16 @@
 
 #include "DictReaderTest.hh"
 
+#include "core/Array.hh"
 #include "core/Dictionary.hh"
 #include "file/DictReader.hh"
 
 #include "mock/Assert.hh"
 #include "mock/MockFile.hh"
+
+#include "util/Util.hh"
+
+#include <algorithm>
 
 namespace pdfut {
 
@@ -58,6 +63,22 @@ void DictReaderTest::TestIntToDouble( )
 	double out ;
 	CPPUNIT_ASSERT( subject.Detach( "Test", out ) ) ;
 	PDFUT_ASSERT_EQUAL( out, 100.0 ) ;
+}
+
+void DictReaderTest::TestDetachVec( )
+{
+	int array[] = { 1, 2, 3, 4, 5 } ;
+
+	Dictionary dict ;
+	dict["SomeArray"] = Array( Begin(array), End(array) ) ;
+	
+	MockFile file ;
+	DictReader subject( dict, &file ) ;
+	
+	std::vector<double> out ;
+	CPPUNIT_ASSERT( subject.Detach( "SomeArray", out ) ) ;
+	PDFUT_ASSERT_EQUAL( out.size(), Count(array) ) ;
+	CPPUNIT_ASSERT( std::equal( out.begin(), out.end(), Begin(array) ) ) ;
 }
 
 } // end of namespace

@@ -17,41 +17,38 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	DictReaderTest.hh
-    \brief	definition the DictReaderTest class
-    \date	Feb 16, 2010
-    \author	Nestal Wan
+/**	\file	FunctionTest.cc
+	\brief	implementation of the FunctionTest class
+	\date	Mar 4, 2010
+	\author	Nestal Wan
 */
 
-#ifndef __PDFUT_DICTREADERTEST_HH_EADER_INCLUDED__
-#define __PDFUT_DICTREADERTEST_HH_EADER_INCLUDED__
+#include "FunctionTest.hh"
 
-#include <cppunit/TestFixture.h>
+#include "file/Function.hh"
+#include "stream/Stream.hh"
 
-#include <cppunit/extensions/HelperMacros.h>
+#include "mock/Assert.hh"
 
 namespace pdfut {
 
-class DictReaderTest : public CppUnit::TestFixture
+using namespace pdf ;
+
+FunctionTest::FunctionTest( )
 {
-public :
-	DictReaderTest( ) ;
+}
 
-	// declare suit function
-	CPPUNIT_TEST_SUITE( DictReaderTest ) ;
-		CPPUNIT_TEST( TestIntToDouble ) ;
-		CPPUNIT_TEST( TestDetachVec ) ;
-	CPPUNIT_TEST_SUITE_END();
+void FunctionTest::setUp( )
+{
+}
 
-public :
-	void setUp( ) ;
-	void tearDown( ) ;
+void FunctionTest::tearDown( )
+{
+}
 
-private :
-	void TestIntToDouble( ) ;
-	void TestDetachVec( ) ;
-} ;
+void FunctionTest::Test( )
+{
+	
+}
 
 } // end of namespace
-
-#endif // DICTREADERTEST_HH_

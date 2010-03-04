@@ -46,6 +46,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <iterator>
+#include <iomanip>
 
 #include <zlib.h>
 
@@ -468,6 +469,30 @@ bool Stream::IsContentEqual( const Stream& others )
 	} while ( count > 0 ) ;
 	
 	return true ;
+}
+
+void Stream::PrintAsC( std::ostream& os ) const
+{
+	m_impl->filter->Rewind( ) ;
+	OutStreamBufAdaptor::int_type c ;
+	
+	os << "const unsigned char bytes[] =\n{\n" ;
+	
+	std::size_t count = 0 ;
+	while ( (c = m_impl->inbuf.sbumpc())
+		!= OutStreamBufAdaptor::traits_type::eof( ) )
+	{
+		if ( count % 8 == 0 )
+			os << '\t' ;
+	
+		os	<< "0x"
+			<< std::hex << std::setw( 2 ) << std::setfill('0') << c << ", " ;
+		
+		++count ;
+		if ( count % 8 == 0 )
+			os << '\n' ;
+	}
+	os << "\n}" ;
 }
 
 } // end of namespace

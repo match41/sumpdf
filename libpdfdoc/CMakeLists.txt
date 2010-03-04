@@ -527,6 +527,7 @@ set( UT_SRCS	test/core/TokenTest.cc
 				test/file/ElementPoolTest.cc
 				test/file/DictReaderTest.cc
 				test/file/ArrayReaderTest.cc
+				test/file/FunctionTest.cc
 				
 				test/util/MatrixTest.cc
 				test/font/FontDbTest.cc

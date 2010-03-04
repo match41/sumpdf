@@ -153,10 +153,11 @@ namespace
 		Dictionary::iterator	i,
 		std::vector<T>&			result )
 	{
+		PDF_ASSERT( i != rthis->end( ) ) ;
+	
 		Array	array ;
 		bool rtn = rthis.At( i, array ) ;
-		if ( rtn )
-			result.assign( array.begin(), array.end() ) ;
+		result.assign( array.begin(), array.end() ) ;
 		return rtn ;
 	}
 }
