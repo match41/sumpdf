@@ -66,6 +66,9 @@ public :
 	template <typename T>
 	bool At( Dictionary::iterator i, T& result ) ;
 
+	template <typename T>
+	bool At( Dictionary::iterator i, std::vector<T>& result ) ;
+	
 	template <typename T, typename Iterator>
 	T At( Iterator i ) const
 	{
