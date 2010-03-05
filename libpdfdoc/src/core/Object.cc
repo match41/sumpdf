@@ -130,6 +130,22 @@ Object::Object( float value )
 {
 }
 
+template <typename T>
+Object::Object( const std::vector<T>& v )
+	: m_obj( Array( v.begin(), v.end() ) )
+{
+}
+
+template Object::Object( const std::vector<int>& ) ;
+template Object::Object( const std::vector<double>& ) ;
+template Object::Object( const std::vector<std::string>& ) ;
+template Object::Object( const std::vector<Name>& ) ;
+template Object::Object( const std::vector<Stream>& ) ;
+template Object::Object( const std::vector<Ref>& ) ;
+template Object::Object( const std::vector<Array>& ) ;
+template Object::Object( const std::vector<Dictionary>& ) ;
+template Object::Object( const std::vector<Object>& ) ;
+
 /**	\brief	destructor
 	\internal
 	

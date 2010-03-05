@@ -51,8 +51,8 @@ struct Function::Impl
 	
 	// type 1 functions
 	std::vector<int>	size ;
-	int		bits_per_sample ;
-	int		order ;
+	int					bits_per_sample ;
+	int					order ;
 	std::vector<double>	encode ;
 	std::vector<double>	decode ;
 	
@@ -80,12 +80,17 @@ Function::Function( )
 void Function::Read( Object& obj, File *file )
 {
 	PDF_ASSERT( file != 0 ) ;
+	PDF_ASSERT( m_impl.get() != 0 ) ;
+
+	if ( !m_impl.unique() )
+		m_impl.reset( new Impl( *m_impl ) ) ;
 
 	if ( obj.Is<Stream>() )
 	{
 		Stream& str = obj.As<Stream>() ;
 
 		Dictionary dict = str.Self() ;
+std::cout << dict << std::endl ;
 		DictReader reader( dict, file ) ;
 		ReadCommon( reader ) ;
 	
@@ -96,7 +101,7 @@ void Function::Read( Object& obj, File *file )
 
 void Function::ReadType0( DictReader& dict, Stream& data )
 {
-data.PrintAsC( std::cout ) ;
+	PDF_ASSERT( m_impl.get() != 0 ) ;
 
 	Array size ;
 	if ( dict.Detach( "Size", size ) )
@@ -119,6 +124,7 @@ data.PrintAsC( std::cout ) ;
 
 void Function::ReadCommon( DictReader& dict )
 {
+	PDF_ASSERT( m_impl.get() != 0 ) ;
 	// type is required
 	if ( !dict.Detach( "FunctionType", m_impl->type ) )
 		throw ParseError( "unknown function type" ) ;
@@ -133,9 +139,60 @@ void Function::ReadCommon( DictReader& dict )
 		throw ParseError( "unknown function range" ) ;
 }
 
+void Function::WriteCommon( Dictionary& dict, File *file )
+{
+	PDF_ASSERT( m_impl.get() != 0 ) ;
+	dict["FunctionType"]	= m_impl->type ;
+	dict["Domain"]			= m_impl->domain ;
+	
+	if ( m_impl->type == 0 || m_impl->type == 4 )
+		dict["Range"]		= m_impl->range ;
+}
+
 Ref Function::Write( File *file )
 {
-	return Ref() ;
+	PDF_ASSERT( m_impl.get() != 0 ) ;
+	PDF_ASSERT( file != 0 ) ;
+	
+	Dictionary	dict ;
+	WriteCommon( dict, file ) ;
+	return file->WriteObj( dict ) ;
+}
+
+int Function::Type( ) const
+{
+	PDF_ASSERT( m_impl.get() != 0 ) ;
+	return m_impl->type ;
+}
+
+bool Function::operator==( const Function& rhs ) const
+{
+	PDF_ASSERT( m_impl.get() != 0 ) ;
+	PDF_ASSERT( rhs.m_impl.get() != 0 ) ;
+	
+	const Impl *i = m_impl.get(), *j = rhs.m_impl.get() ;
+	
+	if ( i->type	== j->type		||
+		 i->domain	== j->domain	||
+		 i->range	== j->range 	)
+	{
+		switch ( m_impl->type )
+		{
+			case 1 : return 
+				i->size				== j->size				&&
+				i->bits_per_sample	== j->bits_per_sample	&&
+				i->order			== j->order				&&
+				i->encode			== j->encode			&&
+				i->decode			== j->decode			&&
+				i->data.IsContentEqual( j->data ) ;
+		}
+	}
+	return false ;
+}
+
+bool Function::operator!=( const Function& rhs ) const
+{
+	return !operator==( rhs ) ;
 }
 
 } // end of namespace

@@ -39,6 +39,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <new>
+#include <vector>
 
 namespace pdf {
 
@@ -133,6 +134,9 @@ public :
 	
 	template <typename T>
 	Object( const T& v ) ;
+
+	template <typename T>
+	Object( const std::vector<T>& v ) ;
 
 	void Swap( Object& obj ) ;
 	Object& operator=( const Object& obj ) ;

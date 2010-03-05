@@ -59,6 +59,7 @@
 #include "file/NameTreeTest.hh"
 #include "file/ElementPoolTest.hh"
 #include "file/DictReaderTest.hh"
+#include "file/FunctionTest.hh"
 #include "font/SimpleFontTest.hh"
 #include "page/PageNodeTest.hh"
 #include "page/ExtGStateTest.hh"
@@ -96,6 +97,7 @@ int main( int argc, char **argv )
 	runner.addTest( GraphicsStateTest::suite( ) ) ;
 	runner.addTest( ExtGStateTest::suite( ) ) ;
 	runner.addTest( SimpleFontTest::suite( ) ) ;
+	runner.addTest( FunctionTest::suite( ) ) ;
 
 #ifdef HAVE_PNG
 	runner.addTest( PngImageTest::suite( ) ) ;

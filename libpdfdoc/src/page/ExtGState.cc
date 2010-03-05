@@ -51,7 +51,7 @@ void ExtGState::Read( DictReader& dict )
 	if ( dict.Detach( "LJ", val ) )
 		m_doubles.insert( std::make_pair( line_join, val ) ) ; 
 
-	Object		obj ;
+	Object	obj ;
 	if ( dict.Detach( "BG", obj ) )
 	{
 		Function func ;

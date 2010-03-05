@@ -97,7 +97,7 @@ public :
 	bool IsDirty( ) const ;
 
 	friend std::ostream& operator<<( std::ostream& os, const Stream& s ) ;
-	bool IsContentEqual( const Stream& others ) ;
+	bool IsContentEqual( const Stream& others ) const ;
 	void PrintAsC( std::ostream& os ) const ;
 
 private :

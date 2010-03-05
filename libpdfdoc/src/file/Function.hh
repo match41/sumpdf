@@ -32,6 +32,7 @@
 
 namespace pdf {
 
+class Dictionary ;
 class DictReader ;
 class File ;
 class Ref ;
@@ -49,14 +50,21 @@ public :
 
 	void Read( Object& obj, File *file ) ;
 	Ref Write( File *file ) ;
+	
+	int Type( ) const ;
+
+	bool operator==( const Function& rhs ) const ;
+	bool operator!=( const Function& rhs ) const ;
 
 private :
 	void ReadCommon( DictReader& dict ) ;
+	void WriteCommon( Dictionary& dict, File *file ) ;
+	
 	void ReadType0( DictReader& dict, Stream& data ) ;
 
 private :
 	struct Impl ;
-	const boost::shared_ptr<Impl>	m_impl ;
+	boost::shared_ptr<Impl>	m_impl ;
 } ;
 
 } // end of namespace

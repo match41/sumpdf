@@ -442,7 +442,7 @@ void Stream::Flush( )
 	m_impl->filter->Flush( ) ;
 }
 
-bool Stream::IsContentEqual( const Stream& others )
+bool Stream::IsContentEqual( const Stream& others ) const
 {
 	// no use to compare Length(). if the filters are different, Length()
 	// will be different but the data may be the same.
