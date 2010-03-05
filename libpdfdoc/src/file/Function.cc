@@ -122,6 +122,21 @@ void Function::ReadType0( DictReader& dict, Stream& data )
 	m_impl->data = data ;
 }
 
+void Function::WriteType0( Dictionary& dict, File *file )
+{
+	PDF_ASSERT( m_impl.get() != 0 ) ;
+	dict["Size"]			= m_impl->size ;
+	dict["BitsPerSample"]	= m_impl->bits_per_sample ;
+	
+	if ( m_impl->order != 1 )
+		dict["Order"]	= m_impl->order ;
+	
+	if ( !m_impl->encode.empty() )
+		dict["Encode"]	= m_impl->encode ;
+	if ( !m_impl->decode.empty() )
+		dict["Decode"]	= m_impl->decode ;
+}
+
 void Function::ReadCommon( DictReader& dict )
 {
 	PDF_ASSERT( m_impl.get() != 0 ) ;
@@ -156,7 +171,12 @@ Ref Function::Write( File *file )
 	
 	Dictionary	dict ;
 	WriteCommon( dict, file ) ;
-	return file->WriteObj( dict ) ;
+	
+	Object self ;
+	if ( m_impl->type == 1 )
+		WriteType0( dict, file ) ;
+		
+	return file->WriteObj( self ) ;
 }
 
 int Function::Type( ) const
