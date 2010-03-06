@@ -103,6 +103,8 @@ void FunctionTest::Test( )
 	Function subject ;
 	subject.Read( sfunc, &file ) ;
 	PDFUT_ASSERT_EQUAL( subject.Type(), 0 ) ;
+	
+		
 }
 
 } // end of namespace

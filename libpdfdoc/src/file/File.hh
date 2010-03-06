@@ -27,11 +27,17 @@
 #ifndef __PDF_FILE_HEADER_INCLUDED__
 #define __PDF_FILE_HEADER_INCLUDED__
 
+#include <string>
+
 namespace pdf {
 
+class Array ;
+class Name ;
 class Object ;
 class Ref ;
 class ElementPool ;
+class Dictionary ;
+class Stream ;
 
 /*!	\brief	PDF file interface
 
@@ -51,6 +57,18 @@ public :
 	virtual void WriteObj( const Object& obj, const Ref& link ) = 0 ;
 
 	virtual ElementPool* Pool( ) = 0 ;
+
+	// type specific read function
+	virtual void ReadType( const Ref& link, Dictionary& dict ) = 0 ;
+	virtual void ReadType( const Ref& link, Array& array ) = 0 ;
+	virtual void ReadType( const Ref& link, int& value ) = 0 ;
+	virtual void ReadType( const Ref& link, double& value ) = 0 ;
+	virtual void ReadType( const Ref& link, bool& value ) = 0 ;
+	virtual void ReadType( const Ref& link, Name& value ) = 0 ;
+	virtual void ReadType( const Ref& link, std::string& value ) = 0 ;
+	virtual void ReadType( const Ref& link, Ref& value ) = 0 ;
+	virtual void ReadType( const Ref& link, Stream& value ) = 0 ;
+	virtual void ReadType( const Ref& link, Object& obj ) = 0 ;
 } ;
 
 } // end of namespace

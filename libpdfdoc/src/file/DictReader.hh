@@ -60,7 +60,14 @@ public :
 			return true ;
 		}
 		else
+		{
+			// the PDF specification indicates that if an object is not
+			// found in a dictionary, it is treated as an null object.
+			// so it is reasonable to reset an object to its default value,
+			// which should have the same meaning as null object.
+			result = ObjType() ;
 			return false ;
+		}
 	}
 
 	template <typename T>

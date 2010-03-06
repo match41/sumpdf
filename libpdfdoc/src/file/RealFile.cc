@@ -28,6 +28,7 @@
 
 #include "core/Array.hh"
 #include "core/Object.hh"
+#include "core/String.hh"
 #include "core/Token.hh"
 #include "core/TokenSrc.hh"
 #include "core/TraverseObject.hh"
@@ -120,12 +121,12 @@ void RealFile::WriteTrailer( const Ref& catalog, const Ref& info )
 	       << "\n%%EOF\n" ;
 }
 
-Object RealFile::ReadObj( const Ref& obj )
+void RealFile::ReadType( const Ref& link, Object& obj )
 {
 	assert( m_in != 0 ) ;
 
 	// use at() because it will check bounding
-	std::size_t offset = m_objs.at( obj.ID() ) ;
+	std::size_t offset = m_objs.at( link.ID() ) ;
 	m_in->seekg( offset ) ;
 	
 	std::size_t id, gen ;
@@ -133,9 +134,9 @@ Object RealFile::ReadObj( const Ref& obj )
 	Token objstr ;
 	
 	if ( (*m_in >> id >> gen >> objstr)	&&
-	     objstr.Get()	== "obj"	&&
-	     obj.ID()		== id		&&
-	     obj.Gen()		== gen )
+		 objstr.Get()	== "obj"	&&
+	     link.ID()		== id		&&
+	     link.Gen()		== gen )
 	{
 		// from now on, we must use TokenSrc to read the PDF objects.
 		// it is because when reading the objects, some tokens may be
@@ -150,20 +151,130 @@ Object RealFile::ReadObj( const Ref& obj )
 		{
 			src >> objstr ;	// endobj or stream
 			
-			if      ( objstr.Get() == "endobj" ) return r ;
+			if ( objstr.Get() == "endobj" )
+			{
+				obj.Swap( r ) ;
+				return ;
+			}
 			else if ( objstr.Get() == "stream" )
-				return ReadStream( r.As<Dictionary>() ) ;
+			{
+				obj = ReadStream( r.As<Dictionary>() ) ;
+				return ;
+			}
 			
+			// if the objstr is neither "endobj" nor "stream", it will
+			// fall through to the following throw
+		}
+	}
+
+	std::ostringstream ss ;
+	ss << "cannot read object ID " << link
+	   << " offset: " << std::hex << offset
+	   << " current token: \"" << objstr.Get() << "\"" ;
+	throw ParseError( ss.str() ) ;
+}
+
+template <typename T>
+void RealFile::BasicRead( const Ref& link, T& result )
+{
+	assert( m_in != 0 ) ;
+
+	// use at() because it will check bounding
+	std::size_t offset = m_objs.at( link.ID() ) ;
+	m_in->seekg( offset ) ;
+	
+	std::size_t id, gen ;
+	
+	Token objstr ;
+	
+	if ( (*m_in >> id >> gen >> objstr)	&&
+		 objstr.Get()	== "obj"	&&
+	     link.ID()		== id		&&
+	     link.Gen()		== gen )
+	{
+		// from now on, we must use TokenSrc to read the PDF objects.
+		// it is because when reading the objects, some tokens may be
+		// PutBack() to the TokenSrc. if we use operator>>(std::istream&)
+		// to read the objects, it will internally construct and destruct
+		// the TokenSrc objects, and the PutBack()'ed tokens will be lost.
+		TokenSrc src( *m_in ) ;
+		
+		// read the underlying object
+		if ( src >> result )
+		{
+			src >> objstr ;	// endobj or stream
+			
+			if ( objstr.Get() == "endobj" )
+				return ;
+		
 			// if the objstr is neither "endobj" nor "stream", it will
 			// fall through to the following throw
 		}
 	}
 	
 	std::ostringstream ss ;
-	ss << "cannot read object ID " << obj
+	ss << "cannot read object ID " << link
 	   << " offset: " << std::hex << offset
 	   << " current token: \"" << objstr.Get() << "\"" ;
 	throw ParseError( ss.str() ) ;
+}
+
+void RealFile::ReadType( const Ref& link, bool& value )
+{
+	Object obj = ReadObj( link ) ;
+	std::swap( obj.As<bool>(), value ) ;
+}
+
+void RealFile::ReadType( const Ref& link, Dictionary& dict )
+{
+	BasicRead( link, dict ) ;
+}
+
+void RealFile::ReadType( const Ref& link, Array& array )
+{
+	BasicRead( link, array ) ;
+}
+
+void RealFile::ReadType( const Ref& link, int& value )
+{
+	Object obj = ReadObj( link ) ;
+	std::swap( obj.As<int>(), value ) ;
+}
+
+void RealFile::ReadType( const Ref& link, double& value )
+{
+	Object obj = ReadObj( link ) ;
+	std::swap( obj.As<double>(), value ) ;
+}
+
+void RealFile::ReadType( const Ref& link, Name& value )
+{
+	BasicRead( link, value ) ;
+}
+
+void RealFile::ReadType( const Ref& link, std::string& value )
+{
+	String s ;
+	BasicRead( link, s ) ;
+	value = s.Get() ;
+}
+
+void RealFile::ReadType( const Ref& link, Ref& value )
+{
+	BasicRead( link, value ) ;
+}
+
+void RealFile::ReadType( const Ref& link, Stream& value )
+{
+	Object obj = ReadObj( link ) ;
+	std::swap( obj.As<Stream>(), value ) ;
+}
+
+Object RealFile::ReadObj( const Ref& obj )
+{
+	Object result ;
+	ReadType( obj, result ) ;
+	return result ;
 }
 
 Stream RealFile::ReadStream( Dictionary& dict )

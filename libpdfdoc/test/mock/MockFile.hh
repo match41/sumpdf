@@ -36,6 +36,10 @@
 
 #include <map>
 
+namespace pdfut {
+
+using namespace pdf ;
+
 /*!	\brief	brief description
 	
 	this class represents
@@ -61,6 +65,20 @@ public :
 	pdf::Ref AllocLink( ) ;
 	void WriteObj( const pdf::Object& obj, const pdf::Ref& link ) ;
 	pdf::ElementPool* Pool( ) ;
+
+	// type specific read function
+	void ReadType( const Ref& link, Dictionary& dict ) ;
+	void ReadType( const Ref& link, Array& array ) ;
+	void ReadType( const Ref& link, int& value ) ;
+	void ReadType( const Ref& link, double& value ) ;
+	void ReadType( const Ref& link, bool& value ) ;
+	void ReadType( const Ref& link, Name& value ) ;
+	void ReadType( const Ref& link, std::string& value ) ;
+	void ReadType( const Ref& link, Ref& value ) ;
+	void ReadType( const Ref& link, Stream& value ) ;
+	void ReadType( const Ref& link, Object& obj ) ;
 } ;
+
+} // end of namespace
 
 #endif

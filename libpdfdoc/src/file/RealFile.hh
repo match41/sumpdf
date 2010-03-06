@@ -63,12 +63,28 @@ public :
 
 	// override from IFile
 	Object ReadObj( const Ref& obj ) ;
+	
 	Ref WriteObj( const Object& obj ) ;	
 	Ref AllocLink( ) ;
 	void WriteObj( const Object& obj, const Ref& link ) ;
 	ElementPool* Pool( ) ;
 	
+	// type specific read function
+	void ReadType( const Ref& link, Dictionary& dict ) ;
+	void ReadType( const Ref& link, Array& value ) ;
+	void ReadType( const Ref& link, int& value ) ;
+	void ReadType( const Ref& link, double& value ) ;
+	void ReadType( const Ref& link, bool& value ) ;
+	void ReadType( const Ref& link, Name& value ) ;
+	void ReadType( const Ref& link, std::string& value ) ;
+	void ReadType( const Ref& link, Ref& value ) ;
+	void ReadType( const Ref& link, Stream& value ) ;
+	void ReadType( const Ref& link, Object& obj ) ;
+
 private :
+	template <typename T>
+	void BasicRead( const Ref& link, T& result ) ;
+
 	void ReadXRef( std::size_t offset, Dictionary& trailer ) ;
 	std::size_t ReadXRefOffset( ) ;
 

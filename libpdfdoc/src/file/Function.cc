@@ -128,6 +128,7 @@ void Function::WriteType0( Dictionary& dict, File *file )
 	dict["Size"]			= m_impl->size ;
 	dict["BitsPerSample"]	= m_impl->bits_per_sample ;
 	
+	// 1 is default value
 	if ( m_impl->order != 1 )
 		dict["Order"]	= m_impl->order ;
 	

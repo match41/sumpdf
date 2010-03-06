@@ -76,7 +76,7 @@ bool DictReader::SwapAt( Dictionary::iterator i, T& result )
 	
 	bool is_ref = obj.Is<Ref>() ; 
 	if ( is_ref )
-		result = m_file->ReadObj( obj ).As<T>() ;
+		m_file->ReadType( obj, result ) ;
 	else
 		std::swap( obj.As<T>(), result ) ;
 	return is_ref ;

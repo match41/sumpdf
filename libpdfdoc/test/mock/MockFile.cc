@@ -26,6 +26,15 @@
 
 #include "MockFile.hh"
 
+#include "core/Array.hh"
+#include "core/Dictionary.hh"
+#include "core/Ref.hh"
+#include "stream/Stream.hh"
+
+namespace pdfut {
+
+using namespace pdf ;
+
 MockFile::MockFile( )
 	: m_counter( 0 )
 {
@@ -73,3 +82,55 @@ void MockFile::ClearPool( )
 {
 	m_pool.Clear() ;
 }
+
+void MockFile::ReadType( const Ref& link, Dictionary& value )
+{
+	value = m_map[link] ;
+}
+
+void MockFile::ReadType( const Ref& link, Array& value )
+{
+	value = m_map[link] ;
+}
+
+void MockFile::ReadType( const Ref& link, int& value )
+{
+	value = m_map[link] ;
+}
+
+void MockFile::ReadType( const Ref& link, double& value )
+{
+	value = m_map[link] ;
+}
+
+void MockFile::ReadType( const Ref& link, bool& value )
+{
+	value = m_map[link] ;
+}
+
+void MockFile::ReadType( const Ref& link, Name& value )
+{
+	value = m_map[link] ;
+}
+
+void MockFile::ReadType( const Ref& link, std::string& value )
+{
+	value = m_map[link].As<std::string>() ;
+}
+
+void MockFile::ReadType( const Ref& link, Ref& value )
+{
+	value = m_map[link] ;
+}
+
+void MockFile::ReadType( const Ref& link, Stream& value )
+{
+	value = m_map[link] ;
+}
+
+void MockFile::ReadType( const Ref& link, Object& obj )
+{
+	obj = m_map[link] ;
+}
+
+} // end of namespace
