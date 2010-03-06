@@ -108,7 +108,7 @@ Catalog::Catalog( const Ref& link, File *file, FontDb *fontdb )
 		for ( Dictionary::iterator i = dest->begin() ; i != dest->end() ; ++i )
 		{
 			Array darray ;
-			self.At( i->second, darray ) ; 
+			self.SwapAt( i->second, darray ) ; 
 			
 			Destination d ;
 			d.Read( darray, self.GetFile() ) ;

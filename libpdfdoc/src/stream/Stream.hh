@@ -58,6 +58,8 @@ public :
 
 public :
 	explicit Stream( Filter f = none ) ;
+	explicit Stream( const Object& obj ) ;
+	explicit Stream( const char *str ) ;
 	explicit Stream( const std::string& str ) ;
 	Stream( std::vector<unsigned char>& data, const Object& filter ) ;
 	Stream( std::streambuf *file, std::streamoff offset,

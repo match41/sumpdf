@@ -113,7 +113,7 @@ void RealResources::ReadStateDict( DictReader& self )
 				PDF_ASSERT( spd == 0 ) ;
 				
 				DictReader gs_dict ;
-				gs.At( i, gs_dict ) ;
+				gs.SwapAt( i, gs_dict ) ;
 std::cout << "get ExtGState: " << *gs_dict << std::endl ;
 				spd = new ExtGState ;
 				spd->Read( gs_dict ) ;
@@ -146,7 +146,7 @@ void RealResources::ReadFontDict( DictReader& self )
 				PDF_ASSERT( font == 0 ) ;
 			
 				DictReader font_dict ;
-				dict.At( i, font_dict ) ;
+				dict.SwapAt( i, font_dict ) ;
 				font = CreateFont( font_dict, m_font_db ) ;
 				pool->Add( link, font ) ; 
 			}

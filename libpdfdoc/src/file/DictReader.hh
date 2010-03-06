@@ -55,7 +55,7 @@ public :
 		Dictionary::iterator i = m_dict.find( name ) ;
 		if ( i != m_dict.end() )
 		{
-			At( i, result ) ;
+			SwapAt( i, result ) ;
 			m_dict.erase( i ) ;
 			return true ;
 		}
@@ -64,10 +64,10 @@ public :
 	}
 
 	template <typename T>
-	bool At( Dictionary::iterator i, T& result ) ;
+	bool SwapAt( Dictionary::iterator i, T& result ) ;
 
 	template <typename T>
-	bool At( Dictionary::iterator i, std::vector<T>& result ) ;
+	bool SwapAt( Dictionary::iterator i, std::vector<T>& result ) ;
 	
 	template <typename T, typename Iterator>
 	T At( Iterator i ) const

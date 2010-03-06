@@ -33,6 +33,8 @@
 
 #include "util/Debug.hh"
 
+#include <boost/bind.hpp>
+
 namespace pdf {
 
 DictReader::DictReader( )
@@ -66,7 +68,7 @@ void DictReader::Swap( DictReader& dict )
 }
 
 template <typename T>
-bool DictReader::At( Dictionary::iterator i, T& result )
+bool DictReader::SwapAt( Dictionary::iterator i, T& result )
 {
 	PDF_ASSERT( i != m_dict.end( ) ) ;
 	
@@ -80,14 +82,14 @@ bool DictReader::At( Dictionary::iterator i, T& result )
 	return is_ref ;
 }
 
-template bool DictReader::At( Dictionary::iterator, Dictionary& ) ;
-template bool DictReader::At( Dictionary::iterator, Array& ) ;
-template bool DictReader::At( Dictionary::iterator, Name& ) ;
-template bool DictReader::At( Dictionary::iterator, std::string& ) ;
-template bool DictReader::At( Dictionary::iterator, bool& ) ;
-template bool DictReader::At( Dictionary::iterator, Stream& ) ;
-template bool DictReader::At( Dictionary::iterator, Ref& ) ;
-template bool DictReader::At( Dictionary::iterator, Object& ) ;
+template bool DictReader::SwapAt( Dictionary::iterator, Dictionary& ) ;
+template bool DictReader::SwapAt( Dictionary::iterator, Array& ) ;
+template bool DictReader::SwapAt( Dictionary::iterator, std::string& ) ;
+template bool DictReader::SwapAt( Dictionary::iterator, bool& ) ;
+template bool DictReader::SwapAt( Dictionary::iterator, Stream& ) ;
+template bool DictReader::SwapAt( Dictionary::iterator, Ref& ) ;
+template bool DictReader::SwapAt( Dictionary::iterator, Object& ) ;
+template bool DictReader::SwapAt( Dictionary::iterator, Name& ) ;
 
 namespace
 {
@@ -110,104 +112,69 @@ namespace
 }
 
 template <>
-bool DictReader::At<int>( Dictionary::iterator i, int& result )
+bool DictReader::SwapAt<int>( Dictionary::iterator i, int& result )
 {
 	return DetachTo( m_file, m_dict, i, result ) ;
 }
 
 template <>
-bool DictReader::At<double>( Dictionary::iterator i, double& result )
+bool DictReader::SwapAt<double>( Dictionary::iterator i, double& result )
 {
 	return DetachTo( m_file, m_dict, i, result ) ;
 }
 
 template <>
-bool DictReader::At<DictReader>( Dictionary::iterator i, DictReader& result )
+bool DictReader::SwapAt<DictReader>( Dictionary::iterator i, DictReader& result )
 {
 	PDF_ASSERT( i != m_dict.end( ) ) ;
 	
 	Dictionary dict ;
-	bool rtn = At( i, dict ) ;
+	bool rtn = SwapAt( i, dict ) ;
 	result.m_dict.swap( dict ) ;
 	result.m_file = m_file ;
 	return rtn ;
 }
 
 template <>
-bool DictReader::At<ArrayReader>( Dictionary::iterator i, ArrayReader& result )
+bool DictReader::SwapAt<ArrayReader>( Dictionary::iterator i, ArrayReader& result )
 {
 	PDF_ASSERT( i != m_dict.end( ) ) ;
 
 	Array array ;
-	bool rtn = At( i, array ) ;
+	bool rtn = SwapAt( i, array ) ;
 	result->swap( array ) ;
 	result.SetFile( m_file ) ;
 	return rtn ;
 }
-/*
-namespace
-{
-	template <typename T>
-	bool DictReaderAt(
-		DictReader& 			rthis,
-		Dictionary::iterator	i,
-		std::vector<T>&			result )
-	{
-		PDF_ASSERT( i != rthis->end( ) ) ;
-	
-		Array	array ;
-		bool rtn = rthis.At( i, array ) ;
-		result.assign( array.begin(), array.end() ) ;
-		return rtn ;
-	}
-}
-*/
+
 template <typename T>
-bool DictReader::At( Dictionary::iterator i, std::vector<T>& result )
+bool DictReader::SwapAt( Dictionary::iterator i, std::vector<T>& result )
 {
 	PDF_ASSERT( i != m_dict.end( ) ) ;
 
-	Array	array ;
-	bool rtn = At( i, array ) ;
-	result.assign( array.begin(), array.end() ) ;
+	ArrayReader	array ;
+	bool rtn = SwapAt( i, array ) ;
+	
+	result.resize( array->size() ) ;
+	for ( std::size_t i = 0 ; i < array->size() ; ++i )
+		array.Detach( i, result[i] ) ;
+	
 	return rtn ;
 }
 
-template bool DictReader::At( Dictionary::iterator, std::vector<double>& ) ;
-template bool DictReader::At( Dictionary::iterator, std::vector<int>& ) ;
+template bool DictReader::SwapAt( Dictionary::iterator, std::vector<double>& ) ;
+template bool DictReader::SwapAt( Dictionary::iterator, std::vector<int>& ) ;
+template bool DictReader::SwapAt( Dictionary::iterator, std::vector<Name>& ) ;
+template bool DictReader::SwapAt(
+	Dictionary::iterator,
+	std::vector<Dictionary>& ) ;
+template bool DictReader::SwapAt( Dictionary::iterator, std::vector<Stream>& ) ;
+template bool DictReader::SwapAt(
+	Dictionary::iterator,
+	std::vector<std::string>& );
+template bool DictReader::SwapAt( Dictionary::iterator, std::vector<Ref>& ) ;
+template bool DictReader::SwapAt( Dictionary::iterator, std::vector<Object>& ) ;
 
-/*template <>
-bool DictReader::At<std::vector<double> >(
-	Dictionary::iterator	i,
-	std::vector<double>&	result )
-{
-	return DictReaderAt( *this, i, result ) ;
-}
-
-template <>
-bool DictReader::At<std::vector<int> >(
-	Dictionary::iterator	i,
-	std::vector<int>&	result )
-{
-	return DictReaderAt( *this, i, result ) ;
-}
-
-template <>
-bool DictReader::At<std::vector<Name> >(
-	Dictionary::iterator	i,
-	std::vector<Name>&	result )
-{
-	return DictReaderAt( *this, i, result ) ;
-}
-
-template <>
-bool DictReader::At<std::vector<Ref> >(
-	Dictionary::iterator	i,
-	std::vector<Ref>&	result )
-{
-	return DictReaderAt( *this, i, result ) ;
-}
-*/
 Dictionary* DictReader::operator->()
 {
 	return &m_dict ;

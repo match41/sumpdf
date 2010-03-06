@@ -93,6 +93,21 @@ Stream::Stream( const std::string& str )
 	InitFilter( ) ;
 }
 
+Stream::Stream( const char *str )
+: m_impl( new Impl )
+{
+	// in memory stream
+	m_impl->dirty = true ;
+	
+	m_impl->filter.reset( new BufferedFilter( str ) ) ;
+	InitFilter( ) ;
+}
+
+Stream::Stream( const Object& obj )
+	: m_impl( obj.As<Stream>().m_impl )
+{
+}
+
 /*!	constructor for streams from file. This constructor will create a stream
 	whose content is about to be read from file. Data will be actually read
 	on-demand. Therefore, this function will actually read nothing but just

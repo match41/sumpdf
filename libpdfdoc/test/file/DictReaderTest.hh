@@ -41,6 +41,7 @@ public :
 	CPPUNIT_TEST_SUITE( DictReaderTest ) ;
 		CPPUNIT_TEST( TestIntToDouble ) ;
 		CPPUNIT_TEST( TestDetachVec ) ;
+		CPPUNIT_TEST( TestDetachIndirectVec ) ;
 	CPPUNIT_TEST_SUITE_END();
 
 public :
@@ -50,6 +51,7 @@ public :
 private :
 	void TestIntToDouble( ) ;
 	void TestDetachVec( ) ;
+	void TestDetachIndirectVec( ) ;
 } ;
 
 } // end of namespace

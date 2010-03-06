@@ -81,4 +81,22 @@ void DictReaderTest::TestDetachVec( )
 	CPPUNIT_ASSERT( std::equal( out.begin(), out.end(), Begin(array) ) ) ;
 }
 
+void DictReaderTest::TestDetachIndirectVec( )
+{
+	Object array[] = { "1", "2", "3", "4", Ref( 1, 0 ) } ;
+	
+	Dictionary dict ;
+	dict["SomeIndirectArray"] = Array( Begin(array), End(array) ) ;
+
+	MockFile file ;
+	file.AddObj( Ref(1,0), Object( "indirect" ) ) ;
+	
+	DictReader subject( dict, &file ) ;
+	
+	std::vector<std::string> out ;
+	CPPUNIT_ASSERT( subject.Detach( "SomeIndirectArray", out ) ) ;
+	PDFUT_ASSERT_EQUAL( out.size(), Count(array) ) ;
+	PDFUT_ASSERT_EQUAL( out.back(), "indirect" ) ;
+}
+
 } // end of namespace
