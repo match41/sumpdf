@@ -106,6 +106,13 @@ std::pair<Dictionary::iterator, bool> Dictionary::insert( const value_type& v )
 		return r ;
 }
 
+std::pair<Dictionary::iterator,bool> Dictionary::insert(
+	const Name& key,
+	const Object& value )
+{
+	return insert( std::make_pair( key, value ) ) ;
+}
+
 /// Returns the number of entries in this dictionary.
 /**	Unlike some containers in STL, this function is not constant time. It needs
 	to search the map to exclude any null objects accidentally being added. Use

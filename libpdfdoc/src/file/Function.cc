@@ -95,7 +95,7 @@ void Function::Read( Object& obj, File *file )
 	{
 		Stream& str = obj.As<Stream>() ;
 
-		Dictionary dict = str.Self() ;
+		Dictionary dict = str.Dict() ;
 
 		DictReader reader( dict, file ) ;
 		ReadCommon( reader ) ;
@@ -124,7 +124,7 @@ void Function::ReadType0( DictReader& dict, Stream& data )
 	dict.Detach( "Encode", m_impl->encode ) ;
 	dict.Detach( "Decode", m_impl->decode ) ;
 	
-	data.ClearDictionary() ;
+	data.Dict().clear() ;
 	m_impl->data = data ;
 }
 

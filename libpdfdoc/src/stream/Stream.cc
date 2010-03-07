@@ -212,7 +212,7 @@ void Stream::ApplyFilter( const Object& filter )
 	after modifying the stream.
 	\return	The stream dictionary.
 */
-Dictionary Stream::Self( ) const
+Dictionary Stream::GetRawDict( ) const
 {
 	PDF_ASSERT( m_data.get() != 0 ) ;
 	PDF_ASSERT( m_self.find( "Length" ) == m_self.end() ) ;
@@ -227,14 +227,18 @@ Dictionary Stream::Self( ) const
 	return dict ;
 }
 
-void Stream::AddDictionaryEntry( const Name& key, const Object& val )
+const Dictionary& Stream::Dict( ) const
 {
-	m_self[key] = val ;
+	PDF_ASSERT( m_self.find( "Length" ) == m_self.end() ) ;
+	PDF_ASSERT( m_self.find( "Filter" ) == m_self.end() ) ;
+	return m_self ;
 }
 
-void Stream::ClearDictionary( )
+Dictionary& Stream::Dict( )
 {
-	m_self.clear() ;
+	PDF_ASSERT( m_self.find( "Length" ) == m_self.end() ) ;
+	PDF_ASSERT( m_self.find( "Filter" ) == m_self.end() ) ;
+	return m_self ;
 }
 
 /**	\brief	get raw length of the stream.
@@ -391,14 +395,17 @@ std::ostream& operator<<( std::ostream& os, const Stream& s )
 {
 	PDF_ASSERT( s.m_data.get() != 0 ) ;
 	PDF_ASSERT( s.m_data->filter.get() != 0 ) ;
+	PDF_ASSERT( s.m_self.find( "Length" ) == s.m_self.end() ) ;
+	PDF_ASSERT( s.m_self.find( "Filter" ) == s.m_self.end() ) ;
 
 	// first flush all buffered data inside the filters
 	s.m_data->filter->Flush( ) ;
-	os 	<< s.Self( ) << "\nstream\n" ;
+	
+	os 	<< s.GetRawDict() << "\nstream\n" ;
 	
 	std::size_t length = s.CopyRawData( os.rdbuf() ) ;
 
-	PDF_ASSERT_EQUAL( length, s.Self( )["Length"].To<std::size_t>() ) ;
+	PDF_ASSERT_EQUAL( length, s.GetRawDict()["Length"].To<std::size_t>() ) ;
 	PDF_ASSERT_EQUAL( length, s.Length() ) ;
 	
 	return os << "\nendstream" ;

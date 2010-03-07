@@ -135,7 +135,7 @@ bool FontDescriptor::DecodeFontFile3( DictReader& reader, Stream& prog )
 {
 	if ( reader.Detach( "FontFile3", prog ) )
 	{
-		Dictionary prog_dict = prog.Self() ;
+		Dictionary prog_dict = prog.Dict() ;
 		DictReader prog_reader( prog_dict, reader.GetFile() ) ;
 		
 		if ( !prog_reader.Detach( "Subtype", m_subtype ) )
@@ -160,7 +160,7 @@ void FontDescriptor::Read( font::Type type, DictReader& reader )
 		// type1 font has 3 different lengths
 		if ( reader.Detach( "FontFile", 	prog ) )
 		{
-			Dictionary prog_dict = prog.Self() ;
+			Dictionary prog_dict = prog.Dict() ;
 			DictReader prog_reader( prog_dict, reader.GetFile() ) ;
 			if ( !prog_reader.Detach( "Length1", m_length1 ) ||
 				 !prog_reader.Detach( "Length2", m_length2 ) ||
@@ -257,23 +257,25 @@ Ref FontDescriptor::Write( File *file ) const
 		// we add it anyway
 //		s.AddDictionaryEntry( "Subtype", Name("OpenType" ) ) ;
 		
+		Dictionary& sdict = s.Dict() ;
+		
 		if ( m_type == font::truetype )
 		{
-			s.AddDictionaryEntry( "Length1", m_font_file.size() ) ;
+			sdict.insert( std::make_pair( "Length1", m_font_file.size() ) ) ;
 			self["FontFile2"]	= file->WriteObj( s ) ;
 		}
 		else if ( m_type == font::type1 )
 		{
 			if ( m_subtype == Name() )
 			{
-				s.AddDictionaryEntry( "Length1", m_length1 ) ;
-				s.AddDictionaryEntry( "Length2", m_length2 ) ;
-				s.AddDictionaryEntry( "Length3", m_length3 ) ;
+				sdict.insert( std::make_pair( "Length1", m_length1 ) ) ;
+				sdict.insert( std::make_pair( "Length2", m_length2 ) ) ;
+				sdict.insert( std::make_pair( "Length3", m_length3 ) ) ;
 				self["FontFile"]	= file->WriteObj( s ) ;
 			}
 			else
 			{
-				s.AddDictionaryEntry( "Subtype", m_subtype ) ;
+				sdict.insert( std::make_pair( "Subtype", m_subtype ) ) ;
 				self["FontFile3"]	= file->WriteObj( s ) ;
 			}
 		}

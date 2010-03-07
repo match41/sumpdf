@@ -80,6 +80,7 @@ public :
 	const_iterator find( const Name& name ) const ;
 
 	std::pair<iterator,bool> insert( const value_type& v ) ;
+	std::pair<iterator,bool> insert( const Name& key, const Object& value ) ;
 	void erase( iterator pos ) ;
 	void erase( const Name& name ) ;
 
