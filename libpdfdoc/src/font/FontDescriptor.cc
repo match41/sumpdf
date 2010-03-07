@@ -135,7 +135,7 @@ bool FontDescriptor::DecodeFontFile3( DictReader& reader, Stream& prog )
 {
 	if ( reader.Detach( "FontFile3", prog ) )
 	{
-		Dictionary prog_dict = prog.Dict() ;
+		Dictionary prog_dict = prog.Self() ;
 		DictReader prog_reader( prog_dict, reader.GetFile() ) ;
 		
 		if ( !prog_reader.Detach( "Subtype", m_subtype ) )
@@ -160,7 +160,7 @@ void FontDescriptor::Read( font::Type type, DictReader& reader )
 		// type1 font has 3 different lengths
 		if ( reader.Detach( "FontFile", 	prog ) )
 		{
-			Dictionary prog_dict = prog.Dict() ;
+			Dictionary prog_dict = prog.Self() ;
 			DictReader prog_reader( prog_dict, reader.GetFile() ) ;
 			if ( !prog_reader.Detach( "Length1", m_length1 ) ||
 				 !prog_reader.Detach( "Length2", m_length2 ) ||
@@ -257,7 +257,7 @@ Ref FontDescriptor::Write( File *file ) const
 		// we add it anyway
 //		s.AddDictionaryEntry( "Subtype", Name("OpenType" ) ) ;
 		
-		Dictionary& sdict = s.Dict() ;
+		Dictionary& sdict = s.Self() ;
 		
 		if ( m_type == font::truetype )
 		{

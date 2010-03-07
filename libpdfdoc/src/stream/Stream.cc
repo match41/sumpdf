@@ -227,14 +227,14 @@ Dictionary Stream::GetRawDict( ) const
 	return dict ;
 }
 
-const Dictionary& Stream::Dict( ) const
+const Dictionary& Stream::Self( ) const
 {
 	PDF_ASSERT( m_self.find( "Length" ) == m_self.end() ) ;
 	PDF_ASSERT( m_self.find( "Filter" ) == m_self.end() ) ;
 	return m_self ;
 }
 
-Dictionary& Stream::Dict( )
+Dictionary& Stream::Self( )
 {
 	PDF_ASSERT( m_self.find( "Length" ) == m_self.end() ) ;
 	PDF_ASSERT( m_self.find( "Filter" ) == m_self.end() ) ;
@@ -421,6 +421,8 @@ std::streambuf* Stream::OutStreamBuf( )
 {
 	PDF_ASSERT( m_data.get() != 0 ) ;
 	PDF_ASSERT( m_data->dirty ) ;
+	
+	CopyOnWrite( ) ;
 	return &m_data->outbuf ;
 }
 
@@ -445,7 +447,8 @@ std::size_t Stream::Append( const unsigned char *buf, std::size_t size )
 	PDF_ASSERT( m_data.get() != 0 ) ;
 	PDF_ASSERT( m_data->filter.get() != 0 ) ;
 	PDF_ASSERT( m_data->dirty ) ;
-	
+
+	CopyOnWrite( ) ;
 	return m_data->filter->Write( buf, size ) ;
 }
 
@@ -466,6 +469,8 @@ void Stream::Flush( )
 	PDF_ASSERT( m_data.get() != 0 ) ;
 	PDF_ASSERT( m_data->filter.get() != 0 ) ;
 	PDF_ASSERT( m_data->dirty ) ;
+	
+	CopyOnWrite( ) ;
 	
 	m_data->filter->Flush( ) ;
 }

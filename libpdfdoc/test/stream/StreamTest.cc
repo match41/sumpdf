@@ -173,7 +173,7 @@ void StreamTest::TestClone( )
 	pdf::Stream cloned = subject.Clone( ) ;
 	CPPUNIT_ASSERT( subject != cloned ) ;
 	CPPUNIT_ASSERT( subject.IsContentEqual( cloned ) ) ;
-	CPPUNIT_ASSERT( cloned.Dict()["Filter"] == pdf::Object::NullObj() ) ;
+	CPPUNIT_ASSERT( cloned.Self()["Filter"] == pdf::Object::NullObj() ) ;
 }
 
 void StreamTest::TestWriteOstream( )
@@ -288,14 +288,14 @@ void StreamTest::TestSwap( )
 	unsigned char text[] = "abc" ;
 	s1.Append( text, sizeof(text) ) ;
 	s1.Flush() ;
-	s1.Dict().insert( std::make_pair( "MySelf", Name( "Matchman" ) ) ) ;
+	s1.Self().insert( std::make_pair( "MySelf", Name( "Matchman" ) ) ) ;
 
 	const char str[] = "0 12 TD (string string) Tj" ;
 	pdf::Stream s2( str ) ;
 	
 	s1.Swap( s2 ) ;
 	
-	PDFUT_ASSERT_EQUAL( s2.Dict()["MySelf"].As<Name>(), Name( "Matchman" ) ) ;
+	PDFUT_ASSERT_EQUAL( s2.Self()["MySelf"].As<Name>(), Name( "Matchman" ) ) ;
 }
 
 } // end of namespace

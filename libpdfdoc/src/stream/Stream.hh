@@ -74,8 +74,8 @@ public :
 	bool operator==( const Stream& str ) const ;
 	bool operator!=( const Stream& str ) const ;
 
-	const Dictionary& Dict( ) const ;
-	Dictionary& Dict( ) ;
+	const Dictionary& Self( ) const ;
+	Dictionary& Self( ) ;
 	Dictionary GetRawDict( ) const ;
 	
     std::size_t CopyData( std::streambuf *buf ) const ;
