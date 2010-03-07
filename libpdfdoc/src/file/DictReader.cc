@@ -174,6 +174,9 @@ template bool DictReader::SwapAt(
 	std::vector<std::string>& );
 template bool DictReader::SwapAt( Dictionary::iterator, std::vector<Ref>& ) ;
 template bool DictReader::SwapAt( Dictionary::iterator, std::vector<Object>& ) ;
+template bool DictReader::SwapAt(
+	Dictionary::iterator,
+	std::vector<DictReader>& ) ;
 
 Dictionary* DictReader::operator->()
 {

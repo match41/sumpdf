@@ -17,59 +17,61 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	StateParamDict.hh
-    \brief	definition the StateParamDict class
-    \date	Feb 28, 2010
+/**	\file	ElementFactory.hh
+    \brief	definition the ElementFactory class
+    \date	Mar 7, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_STATEPARAMDICT_HH_EADER_INCLUDED__
-#define __PDF_STATEPARAMDICT_HH_EADER_INCLUDED__
+#ifndef __PDF_DICTREADERIMPL_HH_EADER_INCLUDED__
+#define __PDF_DICTREADERIMPL_HH_EADER_INCLUDED__
 
-#include "util/RefCounter.hh"
-
-#include "core/Array.hh"
-#include "file/Function.hh"
-
-#include <map>
+#include "DictReader.hh"
+#include "ElementPool.hh"
+#include "File.hh"
 
 namespace pdf {
 
-class DictReader ;
-class File ;
-class GraphicsState ;
-class Ref ;
-
-///	brief description
-/**	\internal
-	The StateParamDict class represents
-*/
-class ExtGState : public RefCounter
+template <typename T=DictReader>
+class ElementFactory
 {
 public :
-	ExtGState( ) ;
-	explicit ExtGState( DictReader& dict ) ;
-	
-	void Read( DictReader& dict ) ;
-	Ref Write( File *file ) const ;
+	explicit ElementFactory( DictReader& dict )
+	: m_dict( dict )
+	{
+	}
 
-	void Apply( GraphicsState& gs ) const ; 
+	template <typename Element, typename Factory>
+	Element* Create( const Name& name, Factory func )
+	{
+		ElementPool *pool = m_dict.GetFile()->Pool() ;
+		Dictionary::iterator i = m_dict->find( name ) ;
+		
+		Element *result = 0 ;
+		
+		// it's good if it's a reference to something already in the pool
+		if ( i != m_dict->end() && i->second.Is<Ref>() &&
+		     pool->Acquire( i->second, result ) )
+			return result ;
+
+		// otherwise we need to create it and maybe add it in the pool
+		if ( i != m_dict->end() )
+		{
+			T temp ;
+			m_dict.SwapAt( i, temp ) ;
+			result = func( temp ) ;
+
+			if ( i->second.Is<Ref>() )
+				pool->Add( i->second, result ) ;
+		}
+	
+		return result ;
+	}
 
 private :
-	enum Field
-	{
-		// device independent
-		line_width, line_cap, line_join, miter_limit, dash_pattern,
-		font,
-		
-		black_generation
-	} ;
-
-	std::map<Field, double>		m_doubles ;
-	std::map<Field, Array>		m_arrays ;
-	std::map<Field, Function>	m_func ;
+	DictReader m_dict ;
 } ;
 
 } // end of namespace
 
-#endif // STATEPARAMDICT_HH_
+#endif // DICTREADERIMPL_HH_

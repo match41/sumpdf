@@ -53,6 +53,7 @@ public :
 	CPPUNIT_TEST_SUITE( RealFileTest ) ;
 		CPPUNIT_TEST( TestSimple ) ;
 		CPPUNIT_TEST( TestReadStream ) ;
+		CPPUNIT_TEST( TestReadType ) ;
 	CPPUNIT_TEST_SUITE_END();
 
 public :
@@ -62,6 +63,7 @@ public :
 private :
 	void TestSimple( ) ;
 	void TestReadStream( ) ;
+	void TestReadType( ) ;
 
 private :
 	pdf::Dictionary	*m_page ;

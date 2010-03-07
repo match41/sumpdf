@@ -32,6 +32,7 @@
 #include "file/File.hh"
 #include "file/DictReader.hh"
 #include "file/ElementPool.hh"
+#include "file/ElementFactory.hh"
 #include "font/SimpleFont.hh"
 #include "util/Util.hh"
 #include "util/Debug.hh"
@@ -94,6 +95,11 @@ Ref RealResources::Write( File *file ) const
     return file->WriteObj( dict ) ;
 }
 
+ExtGState* NewState( DictReader& d )
+{
+	return new ExtGState( d ) ;
+}
+
 void RealResources::ReadStateDict( DictReader& self )
 {
 	PDF_ASSERT( self.GetFile() != 0 ) ;
@@ -102,29 +108,33 @@ void RealResources::ReadStateDict( DictReader& self )
 	DictReader gs ;
 	if ( self.Detach( "ExtGState",	gs ) )
 	{
-		ElementPool *pool = self.GetFile()->Pool( ) ;
+//		ElementPool *pool = self.GetFile()->Pool( ) ;
 		for ( Dictionary::iterator i  = gs->begin( ) ; i != gs->end( ) ; ++i )
 		{
 			ExtGState *spd = 0 ;
 			
-			Ref link = i->second.To<Ref>( std::nothrow ) ;
+/*			Ref link = i->second.To<Ref>( std::nothrow ) ;
 			if ( !pool->Acquire( link, spd ) )
 			{
 				PDF_ASSERT( spd == 0 ) ;
 				
 				DictReader gs_dict ;
 				gs.SwapAt( i, gs_dict ) ;
-std::cout << "get ExtGState: " << *gs_dict << std::endl ;
 				spd = new ExtGState ;
 				spd->Read( gs_dict ) ;
 				pool->Add( link, spd ) ;
 			}
+*/
+			ElementFactory<> factory( gs ) ;
 			
+			spd = factory.Create<ExtGState>( i->first, NewPtr<ExtGState>() ) ;
 			PDF_ASSERT( spd != 0 ) ;
 			m_states.insert( StateMap::value_type( i->first, spd ) ) ;
 		}
 	}
 }
+
+
 
 void RealResources::ReadFontDict( DictReader& self )
 {

@@ -125,6 +125,9 @@ public :
 	File* GetFile( ) const ;
 	void SetFile( File *file ) ;
 
+	template <typename Element, typename ObjType>
+	bool Acquire( const Name& name, Element* &element, ObjType& object ) ;
+
 private :
 	Dictionary	m_dict ;
 	File		*m_file ;

@@ -30,6 +30,8 @@
 
 #include "util/Debug.hh"
 
+#include <iostream>
+
 namespace pdf {
 
 /**	constructor
@@ -37,6 +39,13 @@ namespace pdf {
 */
 ExtGState::ExtGState( )
 {
+}
+
+ExtGState::ExtGState( DictReader& dict )
+{
+std::cout << "get ExtGState: " << *dict << std::endl ;
+
+	Read( dict ) ;
 }
 
 void ExtGState::Read( DictReader& dict )

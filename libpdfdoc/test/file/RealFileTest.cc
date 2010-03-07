@@ -171,4 +171,13 @@ void RealFileTest::TestReadStream( )
 	PDFUT_ASSERT_EQUAL( output.str(), exp.str() ) ;
 }
 
+void RealFileTest::TestReadType( )
+{
+	// open expected file to compare and verify
+	std::ifstream file( (std::string(TEST_DATA_DIR) +
+	                    "FileTestSimple.pdf").c_str( ),
+	                    std::ios::in | std::ios::binary ) ;
+
+}
+
 } // end of namespace
