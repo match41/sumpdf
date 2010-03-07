@@ -30,6 +30,8 @@
 #include "ElementPool.hh"
 #include "File.hh"
 
+#include <limits>
+
 namespace pdf {
 
 template <typename T=DictReader>
@@ -42,11 +44,9 @@ public :
 	}
 
 	template <typename Element, typename Factory>
-	Element* Create( const Name& name, Factory func )
+	Element* Create( Dictionary::iterator i, Factory func )
 	{
 		ElementPool *pool = m_dict.GetFile()->Pool() ;
-		Dictionary::iterator i = m_dict->find( name ) ;
-		
 		Element *result = 0 ;
 		
 		// it's good if it's a reference to something already in the pool
@@ -66,6 +66,28 @@ public :
 		}
 	
 		return result ;
+	}
+	
+	template <typename Element, typename Factory>
+	Element* Create( const Name& name, Factory func )
+	{
+		Dictionary::iterator i = m_dict->find( name ) ;
+		Element *e = Create<Element>( i, func ) ;
+		if ( e != 0 )
+			m_dict->erase( i ) ;
+		
+		return e ;
+	}
+	
+	template <typename Element, typename Factory, typename OutIt>
+	void Create( Factory func, OutIt out,
+		std::size_t count = std::numeric_limits<std::size_t>::max() )
+	{
+		std::map<Name, Element*> result ;
+		for ( Dictionary::iterator i = m_dict->begin(); i != m_dict->end(); ++i)
+		{
+			*out++ = std::make_pair( i->first, Create<Element>( i, func ) ) ;
+		}
 	}
 
 private :
