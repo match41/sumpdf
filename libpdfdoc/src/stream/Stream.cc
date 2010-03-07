@@ -52,9 +52,8 @@
 
 namespace pdf {
 
-struct Stream::Impl
+struct Stream::Data
 {
-	Dictionary					self ;
 	std::auto_ptr<StreamFilter>	filter ;
 	InStreamBufAdaptor			inbuf ;		///< for reading
 	OutStreamBufAdaptor			outbuf ;	///< for writing
@@ -63,48 +62,55 @@ struct Stream::Impl
 	/// if true, the stream has to be rewritten to disk.
 	bool	dirty ;
 	
-	Impl( ) : dirty( false )
+	Data( ) : dirty( false )
 	{
+	}
+	
+	Data( const Data& data )
+	: filter( data.filter->Clone() )
+	{
+		inbuf.Set( filter.get() ) ;
+		outbuf.Set( filter.get() ) ;
 	}
 } ;
 
 Stream::Stream( Filter f )
-	: m_impl( new Impl )
+	: m_data( new Data )
 {
 	// in memory stream
-	m_impl->dirty = true ;
+	m_data->dirty = true ;
 
 	StreamFilter *filter = new BufferedFilter ; 
 
 	if ( f == deflate )
 		filter = new DeflateFilter( std::auto_ptr<StreamFilter>(filter) ) ;
 
-	m_impl->filter.reset( filter ) ;
+	m_data->filter.reset( filter ) ;
 	InitFilter( ) ;
 }
 
 Stream::Stream( const std::string& str )
-	: m_impl( new Impl )
+	: m_data( new Data )
 {
 	// in memory stream
-	m_impl->dirty = true ;
+	m_data->dirty = true ;
 
-	m_impl->filter.reset( new BufferedFilter(str.begin(), str.end() ) ) ;
+	m_data->filter.reset( new BufferedFilter(str.begin(), str.end() ) ) ;
 	InitFilter( ) ;
 }
 
 Stream::Stream( const char *str )
-: m_impl( new Impl )
+: m_data( new Data )
 {
 	// in memory stream
-	m_impl->dirty = true ;
+	m_data->dirty = true ;
 	
-	m_impl->filter.reset( new BufferedFilter( str ) ) ;
+	m_data->filter.reset( new BufferedFilter( str ) ) ;
 	InitFilter( ) ;
 }
 
 Stream::Stream( const Object& obj )
-	: m_impl( obj.As<Stream>().m_impl )
+	: m_data( obj.As<Stream>().m_data )
 {
 }
 
@@ -119,24 +125,24 @@ Stream::Stream( const Object& obj )
 */
 Stream::Stream( std::streambuf *file, std::streamoff offset,
 	            const Dictionary& dict )
-	: m_impl( new Impl )
+: m_self( dict )
+, m_data( new Data )
 {
 	PDF_ASSERT( file != 0 ) ;
-	PDF_ASSERT( dict.find( "Length" ) != dict.end() ) ;
-	PDF_ASSERT( dict["Length"].Is<int>() ) ;
-
-	m_impl->self = dict ;
-	m_impl->filter.reset( new RawFilter( file, offset, dict["Length"] ) ) ;
+	PDF_ASSERT( m_self.find( "Length" ) != m_self.end() ) ;
+	PDF_ASSERT( m_self["Length"].Is<int>() ) ;
+	
+	m_data->filter.reset( new RawFilter( file, offset, m_self["Length"] ) ) ;
 
 	ApplyFilter( dict["Filter"] ) ;
 
-	PDF_ASSERT( m_impl->filter->GetInner()->Length() == dict["Length"] ) ;
-	PDF_ASSERT( dict["Filter"].Is<Array>() ||
-		dict["Filter"] == m_impl->filter->GetFilterName() ) ;
+	PDF_ASSERT( m_data->filter->GetInner()->Length() == m_self["Length"] ) ;
+	PDF_ASSERT( m_self["Filter"].Is<Array>() ||
+		m_self["Filter"] == m_data->filter->GetFilterName() ) ;
 	InitFilter( ) ;
 	
-	m_impl->self.erase( "Length" ) ;
-	m_impl->self.erase( "Filter" ) ;
+	m_self.erase( "Length" ) ;
+	m_self.erase( "Filter" ) ;
 }
 	
 /**	Constructor to initialize with an existing buffer without memory copying.
@@ -146,16 +152,16 @@ Stream::Stream( std::streambuf *file, std::streamoff offset,
 					a single PDF name of filter; or null object if no filter.
 */
 Stream::Stream( std::vector<unsigned char>& data, const Object& filter )
-	: m_impl( new Impl )
+	: m_data( new Data )
 {
 	// in memory stream
-	m_impl->dirty = true ;
+	m_data->dirty = true ;
 
-	m_impl->filter.reset( new BufferedFilter( data ) ) ;
+	m_data->filter.reset( new BufferedFilter( data ) ) ;
 	ApplyFilter( filter ) ;
 	InitFilter( ) ;
 	
-	PDF_ASSERT( filter == m_impl->filter->GetFilterName() ) ;
+	PDF_ASSERT( filter == m_data->filter->GetFilterName() ) ;
 }
 
 /**	empty destructor is required for shared_ptr.
@@ -166,8 +172,8 @@ Stream::~Stream( )
 
 void Stream::InitFilter( )
 {
-	m_impl->inbuf.Set( m_impl->filter.get() ) ;
-	m_impl->outbuf.Set( m_impl->filter.get() ) ;
+	m_data->inbuf.Set( m_data->filter.get() ) ;
+	m_data->outbuf.Set( m_data->filter.get() ) ;
 }
 
 /*!	create the filters and chain them together. This function will chain up
@@ -184,7 +190,7 @@ void Stream::InitFilter( )
 */
 void Stream::ApplyFilter( const Object& filter )
 {
-	PDF_ASSERT( m_impl->filter.get() != 0 ) ;
+	PDF_ASSERT( m_data->filter.get() != 0 ) ;
 
 	if ( filter.Is<Array>() )
 	{
@@ -208,13 +214,13 @@ void Stream::ApplyFilter( const Object& filter )
 */
 Dictionary Stream::Self( ) const
 {
-	PDF_ASSERT( m_impl.get() != 0 ) ;
-	PDF_ASSERT( m_impl->self.find( "Length" ) == m_impl->self.end() ) ;
-	PDF_ASSERT( m_impl->self.find( "Filter" ) == m_impl->self.end() ) ;
+	PDF_ASSERT( m_data.get() != 0 ) ;
+	PDF_ASSERT( m_self.find( "Length" ) == m_self.end() ) ;
+	PDF_ASSERT( m_self.find( "Filter" ) == m_self.end() ) ;
 	
-	Dictionary dict = m_impl->self ;
+	Dictionary dict = m_self ;
 	dict["Length"]	= Length( ) ;
-	Object filter	= m_impl->filter->GetFilterName( ) ;
+	Object filter	= m_data->filter->GetFilterName( ) ;
 	if ( !filter.Is<void>() )
 		dict["Filter"]	= filter ;
 		
@@ -223,12 +229,12 @@ Dictionary Stream::Self( ) const
 
 void Stream::AddDictionaryEntry( const Name& key, const Object& val )
 {
-	m_impl->self[key] = val ;
+	m_self[key] = val ;
 }
 
 void Stream::ClearDictionary( )
 {
-	m_impl->self.clear() ;
+	m_self.clear() ;
 }
 
 /**	\brief	get raw length of the stream.
@@ -240,9 +246,9 @@ void Stream::ClearDictionary( )
 */
 std::size_t Stream::Length( ) const
 {
-	PDF_ASSERT( m_impl.get() != 0 ) ;
+	PDF_ASSERT( m_data.get() != 0 ) ;
 
-	return m_impl->filter->Length( ) ;
+	return m_data->filter->Length( ) ;
 }
 
 /**	\brief	swap two streams	
@@ -252,21 +258,23 @@ std::size_t Stream::Length( ) const
 */
 void Stream::Swap( Stream& str )
 {
-	std::swap( m_impl, str.m_impl ) ;
+	std::swap( m_self, str.m_self ) ;
+	std::swap( m_data, str.m_data ) ;
 }
 
 void Stream::CreateFilter( const Name& filter )
 {
 	if ( filter == Name( "FlateDecode" ) )
-		m_impl->filter.reset( new DeflateFilter( m_impl->filter ) ) ;
+		m_data->filter.reset( new DeflateFilter( m_data->filter ) ) ;
 	else
-		m_impl->filter.reset( new MockStreamFilter( m_impl->filter, filter ) ) ;
+		m_data->filter.reset( new MockStreamFilter( m_data->filter, filter ) ) ;
 }
 
+/// copy data only, without the dictionary
 Stream Stream::Clone( ) const
 {
-	PDF_ASSERT( m_impl.get( ) != 0 ) ;
-	PDF_ASSERT( m_impl->filter.get() != 0 ) ;
+	PDF_ASSERT( m_data.get( ) != 0 ) ;
+	PDF_ASSERT( m_data->filter.get() != 0 ) ;
 
 	std::vector<unsigned char> buf ;
 	CopyData( buf ) ;
@@ -275,10 +283,10 @@ Stream Stream::Clone( ) const
 
 bool Stream::operator==( const Stream& str ) const
 {
-	PDF_ASSERT( m_impl.get( ) != 0 ) ;
-	PDF_ASSERT( str.m_impl.get( ) != 0 ) ;
+	PDF_ASSERT( m_data.get( ) != 0 ) ;
+	PDF_ASSERT( str.m_data.get( ) != 0 ) ;
 	
-	return m_impl.get() == str.m_impl.get() ;
+	return m_data.get() == str.m_data.get() ;
 }
 
 bool Stream::operator!=( const Stream& str ) const
@@ -295,30 +303,30 @@ bool Stream::operator!=( const Stream& str ) const
 std::size_t Stream::CopyData( std::streambuf *buf ) const
 {
     PDF_ASSERT( buf != 0 ) ;
-	PDF_ASSERT( m_impl.get() != 0 ) ;
-	PDF_ASSERT( m_impl->filter.get() != 0 ) ;
+	PDF_ASSERT( m_data.get() != 0 ) ;
+	PDF_ASSERT( m_data->filter.get() != 0 ) ;
 
 	// first reset to the start of the stream
-	m_impl->filter->Rewind( ) ;
+	m_data->filter->Rewind( ) ;
 
-	return CopyFromFilter( m_impl->filter.get(), buf ) ;
+	return CopyFromFilter( m_data->filter.get(), buf ) ;
 }
 
 std::size_t Stream::CopyData( unsigned char *buf, std::size_t size ) const
 {
     PDF_ASSERT( buf != 0 ) ;
-	PDF_ASSERT( m_impl.get() != 0 ) ;
-	PDF_ASSERT( m_impl->filter.get() != 0 ) ;
+	PDF_ASSERT( m_data.get() != 0 ) ;
+	PDF_ASSERT( m_data->filter.get() != 0 ) ;
 
 	// first reset to the start of the stream
-	m_impl->filter->Rewind( ) ;
+	m_data->filter->Rewind( ) ;
 
-	return m_impl->filter->Read( buf, size ) ;
+	return m_data->filter->Read( buf, size ) ;
 }
 
 void Stream::CopyData( std::vector<unsigned char>& buf ) const
 {
-	StreamFilter *f = m_impl->filter.get() ;
+	StreamFilter *f = m_data->filter.get() ;
 	PDF_ASSERT( f != 0 ) ;
 	
 	// rewind to the start of the stream
@@ -345,13 +353,13 @@ void Stream::CopyData( std::vector<unsigned char>& buf ) const
 std::size_t Stream::CopyRawData( std::streambuf *buf ) const
 {
     PDF_ASSERT( buf != 0 ) ;
-	PDF_ASSERT( m_impl.get() != 0 ) ;
-	PDF_ASSERT( m_impl->filter.get() != 0 ) ;
+	PDF_ASSERT( m_data.get() != 0 ) ;
+	PDF_ASSERT( m_data->filter.get() != 0 ) ;
 
 	// first reset to the start of the stream
-	m_impl->filter->Rewind( ) ;
+	m_data->filter->Rewind( ) ;
 
-	return CopyFromFilter( m_impl->filter->GetInner(), buf ) ;
+	return CopyFromFilter( m_data->filter->GetInner(), buf ) ;
 }
 
 std::size_t Stream::CopyFromFilter( StreamFilter *f, std::streambuf *buf )
@@ -381,11 +389,11 @@ std::size_t Stream::CopyFromFilter( StreamFilter *f, std::streambuf *buf )
 */
 std::ostream& operator<<( std::ostream& os, const Stream& s )
 {
-	PDF_ASSERT( s.m_impl.get() != 0 ) ;
-	PDF_ASSERT( s.m_impl->filter.get() != 0 ) ;
+	PDF_ASSERT( s.m_data.get() != 0 ) ;
+	PDF_ASSERT( s.m_data->filter.get() != 0 ) ;
 
 	// first flush all buffered data inside the filters
-	s.m_impl->filter->Flush( ) ;
+	s.m_data->filter->Flush( ) ;
 	os 	<< s.Self( ) << "\nstream\n" ;
 	
 	std::size_t length = s.CopyRawData( os.rdbuf() ) ;
@@ -398,42 +406,40 @@ std::ostream& operator<<( std::ostream& os, const Stream& s )
 
 std::streambuf* Stream::InStreamBuf( )
 {
-	PDF_ASSERT( m_impl.get() != 0 ) ;
-	return &m_impl->inbuf ;
+	PDF_ASSERT( m_data.get() != 0 ) ;
+	return &m_data->inbuf ;
 }
 
 std::streambuf* Stream::OutStreamBuf( )
 {
-	PDF_ASSERT( m_impl.get() != 0 ) ;
-	PDF_ASSERT( m_impl->dirty ) ;
-	return &m_impl->outbuf ;
+	PDF_ASSERT( m_data.get() != 0 ) ;
+	PDF_ASSERT( m_data->dirty ) ;
+	return &m_data->outbuf ;
 }
 
 void Stream::Rewind( ) const
 {
-	PDF_ASSERT( m_impl.get() != 0 ) ;
-	m_impl->filter->Rewind( ) ;
+	PDF_ASSERT( m_data.get() != 0 ) ;
+	m_data->filter->Rewind( ) ;
 }
 
 Name Stream::Type( ) const
 {
-	PDF_ASSERT( m_impl.get() != 0 ) ;
-	return m_impl->self["Type"] ;
+	return m_self["Type"] ;
 }
 
 Name Stream::Subtype( ) const
 {
-	PDF_ASSERT( m_impl.get() != 0 ) ;
-	return m_impl->self["Subtype"] ;
+	return m_self["Subtype"] ;
 }
 
 std::size_t Stream::Append( const unsigned char *buf, std::size_t size )
 {
-	PDF_ASSERT( m_impl.get() != 0 ) ;
-	PDF_ASSERT( m_impl->filter.get() != 0 ) ;
-	PDF_ASSERT( m_impl->dirty ) ;
+	PDF_ASSERT( m_data.get() != 0 ) ;
+	PDF_ASSERT( m_data->filter.get() != 0 ) ;
+	PDF_ASSERT( m_data->dirty ) ;
 	
-	return m_impl->filter->Write( buf, size ) ;
+	return m_data->filter->Write( buf, size ) ;
 }
 
 std::size_t Stream::Append( const char *str )
@@ -444,17 +450,17 @@ std::size_t Stream::Append( const char *str )
 
 bool Stream::IsDirty( ) const
 {
-	PDF_ASSERT( m_impl.get() != 0 ) ;
-	return m_impl->dirty ;
+	PDF_ASSERT( m_data.get() != 0 ) ;
+	return m_data->dirty ;
 }
 
 void Stream::Flush( )
 {
-	PDF_ASSERT( m_impl.get() != 0 ) ;
-	PDF_ASSERT( m_impl->filter.get() != 0 ) ;
-	PDF_ASSERT( m_impl->dirty ) ;
+	PDF_ASSERT( m_data.get() != 0 ) ;
+	PDF_ASSERT( m_data->filter.get() != 0 ) ;
+	PDF_ASSERT( m_data->dirty ) ;
 	
-	m_impl->filter->Flush( ) ;
+	m_data->filter->Flush( ) ;
 }
 
 bool Stream::IsContentEqual( const Stream& others ) const
@@ -462,8 +468,8 @@ bool Stream::IsContentEqual( const Stream& others ) const
 	// no use to compare Length(). if the filters are different, Length()
 	// will be different but the data may be the same.
 
-	StreamFilter *f		= m_impl->filter.get() ;
-	StreamFilter *f2	= others.m_impl->filter.get() ;
+	StreamFilter *f		= m_data->filter.get() ;
+	StreamFilter *f2	= others.m_data->filter.get() ;
 	
 	// rewind to the start of the stream
 	f->Rewind( ) ;
@@ -488,13 +494,13 @@ bool Stream::IsContentEqual( const Stream& others ) const
 
 void Stream::PrintAsC( std::ostream& os ) const
 {
-	m_impl->filter->Rewind( ) ;
+	m_data->filter->Rewind( ) ;
 	OutStreamBufAdaptor::int_type c ;
 	
 	os << "const unsigned char bytes[] =\n{\n" ;
 	
 	std::size_t count = 0 ;
-	while ( (c = m_impl->inbuf.sbumpc())
+	while ( (c = m_data->inbuf.sbumpc())
 		!= OutStreamBufAdaptor::traits_type::eof( ) )
 	{
 		if ( count % 8 == 0 )
@@ -508,6 +514,12 @@ void Stream::PrintAsC( std::ostream& os ) const
 			os << '\n' ;
 	}
 	os << "\n}" ;
+}
+
+void Stream::CopyOnWrite( )
+{
+	if ( !m_data.unique() )
+		m_data.reset( new Data( *m_data ) ) ;
 }
 
 } // end of namespace

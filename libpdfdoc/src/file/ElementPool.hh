@@ -87,6 +87,8 @@ public :
 	
 	void Clear( ) ;
 
+	std::size_t Size( ) const ;
+
 private :
 	typedef	boost::bimap<
 		boost::bimaps::set_of<Ref>,

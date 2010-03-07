@@ -47,6 +47,7 @@ class Function : public RefCounter
 {
 public :
 	Function( ) ;
+	Function( Object& obj, File *file ) ;
 
 	void Read( Object& obj, File *file ) ;
 	Ref Write( File *file ) ;
@@ -61,7 +62,7 @@ private :
 	void WriteCommon( Dictionary& dict, File *file ) ;
 	
 	void ReadType0( DictReader& dict, Stream& data ) ;
-	void WriteType0( Dictionary& dict, File *file ) ;
+	Ref WriteType0( File *file ) ;
 
 private :
 	struct Impl ;

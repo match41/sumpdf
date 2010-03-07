@@ -77,6 +77,12 @@ Function::Function( )
 {
 }
 
+Function::Function( Object& obj, File *file )
+: m_impl( new Impl )
+{
+	Read( obj, file ) ;
+}
+
 void Function::Read( Object& obj, File *file )
 {
 	PDF_ASSERT( file != 0 ) ;
@@ -90,7 +96,7 @@ void Function::Read( Object& obj, File *file )
 		Stream& str = obj.As<Stream>() ;
 
 		Dictionary dict = str.Self() ;
-std::cout << dict << std::endl ;
+
 		DictReader reader( dict, file ) ;
 		ReadCommon( reader ) ;
 	
@@ -122,9 +128,14 @@ void Function::ReadType0( DictReader& dict, Stream& data )
 	m_impl->data = data ;
 }
 
-void Function::WriteType0( Dictionary& dict, File *file )
+Ref Function::WriteType0( File *file )
 {
 	PDF_ASSERT( m_impl.get() != 0 ) ;
+	PDF_ASSERT( file != 0 ) ;
+	
+	Dictionary dict ;
+	WriteCommon( dict, file ) ;
+	
 	dict["Size"]			= m_impl->size ;
 	dict["BitsPerSample"]	= m_impl->bits_per_sample ;
 	
@@ -136,11 +147,14 @@ void Function::WriteType0( Dictionary& dict, File *file )
 		dict["Encode"]	= m_impl->encode ;
 	if ( !m_impl->decode.empty() )
 		dict["Decode"]	= m_impl->decode ;
+
+	return file->WriteObj( dict ) ;
 }
 
 void Function::ReadCommon( DictReader& dict )
 {
 	PDF_ASSERT( m_impl.get() != 0 ) ;
+	
 	// type is required
 	if ( !dict.Detach( "FunctionType", m_impl->type ) )
 		throw ParseError( "unknown function type" ) ;
@@ -170,14 +184,10 @@ Ref Function::Write( File *file )
 	PDF_ASSERT( m_impl.get() != 0 ) ;
 	PDF_ASSERT( file != 0 ) ;
 	
-	Dictionary	dict ;
-	WriteCommon( dict, file ) ;
-	
-	Object self ;
 	if ( m_impl->type == 1 )
-		WriteType0( dict, file ) ;
-		
-	return file->WriteObj( self ) ;
+		return WriteType0( file ) ;
+	else
+		return Ref( ) ;
 }
 
 int Function::Type( ) const

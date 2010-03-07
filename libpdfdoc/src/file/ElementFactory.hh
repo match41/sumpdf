@@ -80,14 +80,11 @@ public :
 	}
 	
 	template <typename Element, typename Factory, typename OutIt>
-	void Create( Factory func, OutIt out,
+	void MassProduce( Factory func, OutIt out,
 		std::size_t count = std::numeric_limits<std::size_t>::max() )
 	{
-		std::map<Name, Element*> result ;
 		for ( Dictionary::iterator i = m_dict->begin(); i != m_dict->end(); ++i)
-		{
 			*out++ = std::make_pair( i->first, Create<Element>( i, func ) ) ;
-		}
 	}
 
 private :

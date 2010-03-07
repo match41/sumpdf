@@ -78,6 +78,8 @@ private :
 	
 	void UpdateCount( ) const ;
 
+	PageNode* CreateChild( DictReader& dict ) ;
+
 private :
 	PageInfo				m_pinfo ;
 

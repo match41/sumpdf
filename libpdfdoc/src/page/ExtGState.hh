@@ -67,7 +67,7 @@ private :
 
 	std::map<Field, double>		m_doubles ;
 	std::map<Field, Array>		m_arrays ;
-	std::map<Field, Function>	m_func ;
+	std::map<Field, Function*>	m_func ;
 } ;
 
 } // end of namespace

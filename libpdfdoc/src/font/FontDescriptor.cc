@@ -84,7 +84,6 @@ FontDescriptor::FontDescriptor( FT_Face face, std::vector<unsigned char>& prog )
 	
 	const char *psname = FT_Get_Postscript_Name( face ) ;
 	m_psname		= psname ? psname : "" ;
-//	PDF_ASSERT( !m_psname.empty() ) ;
 
 	m_ascent 		= FontUnit(face->ascender,	face) ;
 	m_descent		= FontUnit(face->descender,	face) ;

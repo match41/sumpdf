@@ -238,13 +238,13 @@ void RealFile::ReadType( const Ref& link, Array& array )
 void RealFile::ReadType( const Ref& link, int& value )
 {
 	Object obj = ReadObj( link ) ;
-	std::swap( obj.As<int>(), value ) ;
+	value = obj.To<int>( ) ;
 }
 
 void RealFile::ReadType( const Ref& link, double& value )
 {
 	Object obj = ReadObj( link ) ;
-	std::swap( obj.As<double>(), value ) ;
+	value = obj.To<double>( ) ;
 }
 
 void RealFile::ReadType( const Ref& link, Name& value )

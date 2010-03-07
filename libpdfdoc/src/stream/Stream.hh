@@ -27,10 +27,12 @@
 #ifndef __PDF_STREAM_HEADER_INCLUDED__
 #define __PDF_STREAM_HEADER_INCLUDED__
 
-#include <string>
-#include <vector>
+#include "core/Dictionary.hh"
 
 #include <boost/shared_ptr.hpp>
+
+#include <string>
+#include <vector>
 #include <iosfwd>
 
 namespace pdf {
@@ -96,6 +98,7 @@ public :
 	Name Subtype( ) const ;
 	
 	Stream Clone( ) const ;
+	Stream Clone( Dictionary& dict ) const ;
 	bool IsDirty( ) const ;
 
 	friend std::ostream& operator<<( std::ostream& os, const Stream& s ) ;
@@ -103,6 +106,8 @@ public :
 	void PrintAsC( std::ostream& os ) const ;
 
 private :
+	void CopyOnWrite( ) ;
+
 	void ApplyFilter( const Object& filter ) ;
 	void CreateFilter( const Name& filter ) ;
     std::size_t CopyRawData( std::streambuf *buf ) const ;
@@ -111,11 +116,13 @@ private :
 	static std::size_t CopyFromFilter( StreamFilter *f, std::streambuf *buf ) ;
 
 private :
-	struct Impl ;
+	Dictionary				m_self ;
+
+	struct Data ;
 	
 	/// pointer to implementation. It uses shared_ptr for copy-on-write
 	///	reference counting.
-	boost::shared_ptr<Impl>	m_impl ;
+	boost::shared_ptr<Data>	m_data ;
 } ;
 
 } // end of namespace

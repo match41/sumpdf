@@ -92,7 +92,11 @@ public :
 			// note that if it is a Ref but T is really a Ref, that means the
 			// caller said she want a Ref explicit, we don't de-reference it.
 			else if ( obj.Is<Ref>() )
-				return m_file->ReadObj( obj.As<Ref>() ).To<T>() ;
+			{
+				T temp ;
+				m_file->ReadType( obj, temp ) ;
+				return temp ;
+			}
 		}
 		
 		// nothing we can do

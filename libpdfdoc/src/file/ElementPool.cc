@@ -58,4 +58,9 @@ void ElementPool::Clear( )
 	m_pool.clear() ;
 }
 
+std::size_t ElementPool::Size( ) const
+{
+	return m_pool.size( ) ;
+}
+
 } // end of namespace

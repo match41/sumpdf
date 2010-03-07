@@ -40,6 +40,10 @@
 #include <sstream>
 #include <iostream>
 
+namespace pdfut {
+
+using namespace pdf ;
+
 StreamTest::StreamTest( )
 {
 }
@@ -277,3 +281,21 @@ void StreamTest::TestFlush( )
 	s.Flush() ;
 	PDFUT_ASSERT_EQUAL( len, s.Length() ) ;
 }
+
+void StreamTest::TestSwap( )
+{
+	pdf::Stream s1( pdf::Stream::deflate ) ;
+	unsigned char text[] = "abc" ;
+	s1.Append( text, sizeof(text) ) ;
+	s1.Flush() ;
+	s1.AddDictionaryEntry( "MySelf", Name( "Matchman" ) ) ;
+
+	const char str[] = "0 12 TD (string string) Tj" ;
+	pdf::Stream s2( str ) ;
+	
+	s1.Swap( s2 ) ;
+	
+	PDFUT_ASSERT_EQUAL( s2.Self()["MySelf"].As<Name>(), Name( "Matchman" ) ) ;
+}
+
+} // end of namespace

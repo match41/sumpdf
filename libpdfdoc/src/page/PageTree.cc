@@ -72,6 +72,28 @@ PageTree::~PageTree( )
 	    boost::mem_fn( &PageNode::Release ) ) ;
 }
 
+PageNode* PageTree::CreateChild( DictReader& d )
+{
+	Name type = d.At<Name>("Type") ; 
+	
+	PageNode *p = 0 ;
+	if ( type == "Pages" )
+	{
+		p = new PageTree( this ) ;
+		p->Read( d ) ;
+	}
+	
+	else if ( type == "Page" )
+	{
+		p = new RealPage( this ) ;
+		p->Read( d ) ;
+	}
+	else
+		throw ParseError( "invalid page type" ) ;
+
+	return p ;
+}
+
 void PageTree::Read( DictReader& dict )
 {
 	File *file = dict.GetFile() ;
@@ -88,23 +110,8 @@ void PageTree::Read( DictReader& dict )
 	{
 		DictReader d ;
 		pages.Detach<DictReader>( i, d ) ;
-		Name type = d.At<Name>("Type") ; 
 		
-		PageNode *p = 0 ;
-		if ( type == "Pages" )
-		{
-			p = new PageTree( this ) ;
-			p->Read( d ) ;
-		}
-		
-		else if ( type == "Page" )
-		{
-			p = new RealPage( this ) ;
-			p->Read( d ) ;
-		}
-		else
-			throw ParseError( "invalid page type" ) ;
-		
+		PageNode *p = CreateChild( d ) ;
 		PDF_ASSERT( p != 0 ) ;
 		
 		if ( pages[i].Is<Ref>() )

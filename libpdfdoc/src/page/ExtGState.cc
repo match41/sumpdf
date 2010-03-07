@@ -26,9 +26,11 @@
 #include "ExtGState.hh"
 
 #include "file/DictReader.hh"
+#include "file/ElementFactory.hh"
 #include "graphics/GraphicsState.hh"
 
 #include "util/Debug.hh"
+#include "util/Util.hh"
 
 #include <iostream>
 
@@ -60,13 +62,11 @@ void ExtGState::Read( DictReader& dict )
 	if ( dict.Detach( "LJ", val ) )
 		m_doubles.insert( std::make_pair( line_join, val ) ) ; 
 
-	Object	obj ;
-	if ( dict.Detach( "BG", obj ) )
-	{
-		Function func ;
-		func.Read( obj, dict.GetFile() ) ;
-		m_func.insert( std::make_pair( black_generation, func ) ) ;
-	}
+	ElementFactory<Object> gs( dict ) ;
+	Function *bg = gs.Create<Function>( "GB",
+		boost::bind( NewPtr<Function>(), _1, dict.GetFile() ) ) ;
+	if ( bg != 0 )
+		m_func.insert( std::make_pair( black_generation, bg ) ) ;
 }
 
 Ref ExtGState::Write( File *file ) const

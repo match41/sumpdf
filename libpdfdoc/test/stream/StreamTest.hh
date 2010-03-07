@@ -38,6 +38,8 @@ namespace CppUnit
 	class Test ;
 }
 
+namespace pdfut {
+
 class StreamTest : public CppUnit::TestFixture
 {
 public :
@@ -58,6 +60,7 @@ public :
 		CPPUNIT_TEST( TestName ) ;
 		CPPUNIT_TEST( TestClone ) ;
 		CPPUNIT_TEST( TestFlush ) ;
+		CPPUNIT_TEST( TestSwap ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
 public :
@@ -78,9 +81,12 @@ private :
 	void TestWriteDeflate( ) ;
 	void TestEqual( ) ;
 	void TestFlush( ) ;
+	void TestSwap( ) ;
 
 private :
 	std::vector<unsigned char> m_original, m_compressed ;
 } ;
+
+} // end of namespace
 
 #endif

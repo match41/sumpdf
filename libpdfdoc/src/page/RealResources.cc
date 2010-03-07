@@ -72,6 +72,11 @@ RealResources::~RealResources( )
 	std::for_each( m_fonts.left.begin(), m_fonts.left.end(),
 		bind( &BaseFont::Release,
 			bind( &FontMap::left_value_type::second, _1 ) ) ) ;
+
+	using namespace boost ;
+	std::for_each( m_states.left.begin(), m_states.left.end(),
+		bind( &ExtGState::Release,
+			bind( &StateMap::left_value_type::second, _1 ) ) ) ;
 }
 
 void RealResources::Read( DictReader& self )
@@ -113,32 +118,12 @@ void RealResources::ReadStateDict( DictReader& self )
 		std::for_each( m_states.left.begin(), m_states.left.end(),
 			bind( &ExtGState::Release,
 				bind( &StateMap::left_value_type::second, _1 ) ) ) ;
+		m_states.clear( ) ;
 
 		ElementFactory<> factory( gs ) ;
-//		ElementPool *pool = self.GetFile()->Pool( ) ;
-//		for ( Dictionary::iterator i  = gs->begin( ) ; i != gs->end( ) ; ++i )
-//		{
-//			ExtGState *spd = 0 ;
-			
-/*			Ref link = i->second.To<Ref>( std::nothrow ) ;
-			if ( !pool->Acquire( link, spd ) )
-			{
-				PDF_ASSERT( spd == 0 ) ;
-				
-				DictReader gs_dict ;
-				gs.SwapAt( i, gs_dict ) ;
-				spd = new ExtGState ;
-				spd->Read( gs_dict ) ;
-				pool->Add( link, spd ) ;
-			}
-*/
-			
-//			spd = factory.Create<ExtGState>( i, NewPtr<ExtGState>() ) ;
-//			PDF_ASSERT( spd != 0 ) ;
-//			m_states.insert( StateMap::value_type( i->first, spd ) ) ;
-//		}
-		
-		factory.Create<ExtGState>( NewPtr<ExtGState>(), std::inserter( m_states.left, m_states.left.end() ) ) ;
+		factory.MassProduce<ExtGState>(
+			NewPtr<ExtGState>(),
+			std::inserter( m_states.left, m_states.left.end() ) ) ;
 	}
 }
 
@@ -153,29 +138,16 @@ void RealResources::ReadFontDict( DictReader& self )
 	DictReader dict ;
 	if ( self.Detach( "Font", dict ) )
 	{
+		using namespace boost ;
+		std::for_each( m_fonts.left.begin(), m_fonts.left.end(),
+			bind( &BaseFont::Release,
+				bind( &FontMap::left_value_type::second, _1 ) ) ) ;
+		m_fonts.clear( ) ;
+
 		ElementFactory<> factory( dict ) ;
-		factory.Create<BaseFont>(
-			boost::bind( &CreateFont, _1, m_font_db ),
+		factory.MassProduce<BaseFont>(
+			bind( &CreateFont, _1, m_font_db ),
 			std::inserter( m_fonts.left, m_fonts.left.end() ) ) ;
-		
-//		ElementPool *pool = self.GetFile()->Pool( ) ;
-//		for ( Dictionary::iterator i  = dict->begin( ) ; i != dict->end( ) ; ++i )
-//		{
-//			BaseFont *font = 0 ;
-//			Ref link = i->second.To<Ref>( std::nothrow ) ;
-//			if ( !pool->Acquire( link, font ) )  
-//			{
-//				PDF_ASSERT( font == 0 ) ;
-//			
-//				DictReader font_dict ;
-//				dict.SwapAt( i, font_dict ) ;
-//				font = CreateFont( font_dict, m_font_db ) ;
-//				pool->Add( link, font ) ; 
-//			}
-//
-//			PDF_ASSERT( font != 0 ) ;
-//			m_fonts.left.insert( FontMap::left_value_type( i->first, font ) ) ;
-//		}
 	}
 }
 
