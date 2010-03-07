@@ -69,7 +69,6 @@ qt4_wrap_ui( UIH ${UIS})
 qt4_wrap_cpp( MOC_SRCS ${MOC_HDRS})
 
 add_executable( pdfedit WIN32 ${SRCS} ${UIH} ${MOC_SRCS} )
-add_executable( qtest WIN32 src/test.cc )
 
 ###############################################################################
 # finding optional fontconfig library
@@ -187,9 +186,6 @@ include_directories( ${QT_INCLUDE_DIR} ${pdfedit_SOURCE_DIR}/src
                                        ${OPT_INCS} )
 
 target_link_libraries( pdfedit	${PDFDOC_LIBRARY} ${OPT_LIBS} ${QT_LIBRARIES}
-								${QT_QTMAIN_LIBRARY}
-								${FREETYPE_LIBRARIES} )
-target_link_libraries( qtest	${QT_LIBRARIES}
 								${QT_QTMAIN_LIBRARY}
 								${FREETYPE_LIBRARIES} )
 								
