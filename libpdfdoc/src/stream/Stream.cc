@@ -170,6 +170,11 @@ Stream::~Stream( )
 {
 }
 
+long Stream::UseCount( ) const
+{
+	return m_data.use_count() ;
+}
+
 void Stream::InitFilter( )
 {
 	m_data->inbuf.Set( m_data->filter.get() ) ;
@@ -290,7 +295,7 @@ bool Stream::operator==( const Stream& str ) const
 	PDF_ASSERT( m_data.get( ) != 0 ) ;
 	PDF_ASSERT( str.m_data.get( ) != 0 ) ;
 	
-	return m_data.get() == str.m_data.get() ;
+	return m_self == str.m_self && m_data.get() == str.m_data.get() ;
 }
 
 bool Stream::operator!=( const Stream& str ) const

@@ -173,7 +173,9 @@ void StreamTest::TestClone( )
 	pdf::Stream cloned = subject.Clone( ) ;
 	CPPUNIT_ASSERT( subject != cloned ) ;
 	CPPUNIT_ASSERT( subject.IsContentEqual( cloned ) ) ;
-	CPPUNIT_ASSERT( cloned.Self()["Filter"] == pdf::Object::NullObj() ) ;
+	CPPUNIT_ASSERT( cloned.Self()["Filter"].Is<void>() ) ;
+	PDFUT_ASSERT_EQUAL( subject.UseCount(), 1 ) ;
+	PDFUT_ASSERT_EQUAL( cloned.UseCount(), 1 ) ;
 }
 
 void StreamTest::TestWriteOstream( )
@@ -296,6 +298,54 @@ void StreamTest::TestSwap( )
 	s1.Swap( s2 ) ;
 	
 	PDFUT_ASSERT_EQUAL( s2.Self()["MySelf"].As<Name>(), Name( "Matchman" ) ) ;
+}
+
+void StreamTest::TestCopy( )
+{
+	pdf::Stream s1( pdf::Stream::deflate ) ;
+	unsigned char text[] = "abc" ;
+	s1.Append( text, sizeof(text) ) ;
+
+	pdf::Stream s2( s1 ) ;
+	PDFUT_ASSERT_EQUAL( s1, s2 ) ;
+	PDFUT_ASSERT_EQUAL( s1.UseCount(), 2 ) ;
+	PDFUT_ASSERT_EQUAL( s2.UseCount(), 2 ) ;
+}
+
+void StreamTest::TestCopy2( )
+{
+	pdf::Stream s1( pdf::Stream::deflate ) ;
+	unsigned char text[] = "abc" ;
+	s1.Append( text, sizeof(text) ) ;
+	s1.Flush( ) ;
+	s1.Self()["Haha"] = "Hehe" ;
+	
+	pdf::Stream s2( s1 ) ;
+	PDFUT_ASSERT_EQUAL( s2.Self()["Haha"].As<std::string>(), "Hehe" ) ;
+	PDFUT_ASSERT_EQUAL( s2.UseCount(), 2 ) ;
+	
+	s2.Self()["Haha"] = "wahaha" ;
+	PDFUT_ASSERT_EQUAL( s2.UseCount(), 2 ) ;
+	PDFUT_ASSERT_EQUAL( s1.UseCount(), 2 ) ;
+	PDFUT_ASSERT_EQUAL( s1.Self()["Haha"].As<std::string>(), "Hehe" ) ;
+	PDFUT_ASSERT_EQUAL( s2.Self()["Haha"].As<std::string>(), "wahaha" ) ;
+	
+}
+
+void StreamTest::TestCopyOnWrite( )
+{
+	pdf::Stream s1( pdf::Stream::deflate ) ;
+	unsigned char text[] = "abc" ;
+	s1.Append( text, sizeof(text) ) ;
+	s1.Flush( ) ;
+	
+	pdf::Stream s2( s1 ) ;
+	PDFUT_ASSERT_EQUAL( s2.UseCount(), 2 ) ;
+	PDFUT_ASSERT_EQUAL( s1.UseCount(), 2 ) ;
+	
+	s2.Append( text, sizeof(text) ) ;
+	PDFUT_ASSERT_EQUAL( s2.UseCount(), 1 ) ;
+	PDFUT_ASSERT_EQUAL( s1.UseCount(), 1 ) ;
 }
 
 } // end of namespace

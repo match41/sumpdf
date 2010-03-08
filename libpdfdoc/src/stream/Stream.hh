@@ -71,6 +71,8 @@ public :
 	// default generated copy constructor and assignment operator are fine
 	// because of boost::shared_ptr
 
+	long UseCount( ) const ;
+
 	bool operator==( const Stream& str ) const ;
 	bool operator!=( const Stream& str ) const ;
 
@@ -98,7 +100,6 @@ public :
 	Name Subtype( ) const ;
 	
 	Stream Clone( ) const ;
-	Stream Clone( Dictionary& dict ) const ;
 	bool IsDirty( ) const ;
 
 	friend std::ostream& operator<<( std::ostream& os, const Stream& s ) ;

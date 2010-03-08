@@ -61,6 +61,9 @@ public :
 		CPPUNIT_TEST( TestClone ) ;
 		CPPUNIT_TEST( TestFlush ) ;
 		CPPUNIT_TEST( TestSwap ) ;
+		CPPUNIT_TEST( TestCopy ) ;
+		CPPUNIT_TEST( TestCopy2 ) ;
+		CPPUNIT_TEST( TestCopyOnWrite ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
 public :
@@ -82,6 +85,9 @@ private :
 	void TestEqual( ) ;
 	void TestFlush( ) ;
 	void TestSwap( ) ;
+	void TestCopy( ) ;
+	void TestCopy2( ) ;
+	void TestCopyOnWrite( ) ;
 
 private :
 	std::vector<unsigned char> m_original, m_compressed ;
