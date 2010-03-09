@@ -97,8 +97,8 @@ private :
 	QToolBar		*m_tool_bar ;
 	QComboBox 		*m_zoom_box ;
 
-	QPushButton		*m_btn_nextPg;
-	QPushButton		*m_btn_previousPg;
+	QPushButton		*m_btn_next_pg;
+	QPushButton		*m_btn_previous_pg;
 	QLabel			*m_label;
 	QTextEdit		*m_text;
 } ;
