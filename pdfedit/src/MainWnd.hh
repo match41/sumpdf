@@ -40,6 +40,10 @@ class QTransform ;
 class QToolBar ;
 class QComboBox ;
 
+class QPushButton;
+class QLabel;
+class QTextEdit;
+
 namespace pdf {
 
 // widgets
@@ -71,7 +75,14 @@ public slots :
 	void OnSaveAs( ) ;
 	void OnToolZoom( int choice ) ;
 	void OnEditFont( ) ;
+
+	void OnNextPage( ) ;
+	void OnPreviousPage( ) ;
+
+private:
 	
+	std::size_t currentPage;	// currently viewed document page
+
 private :
 	void StorePage( QGraphicsScene *scene, Doc *doc, Page *page ) ;
 	void VisitText( Text *text ) ;
@@ -84,7 +95,12 @@ private :
 	QGraphicsScene	*m_scene ;
 	PageView		*m_view ;
 	QToolBar		*m_tool_bar ;
-	QComboBox 		*m_zoom_box ; 
+	QComboBox 		*m_zoom_box ;
+
+	QPushButton		*m_btn_nextPg;
+	QPushButton		*m_btn_previousPg;
+	QLabel			*m_label;
+	QTextEdit		*m_text;
 } ;
 
 } // end of namespace

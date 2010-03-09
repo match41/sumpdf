@@ -44,6 +44,10 @@
 #include <QTransform>
 #include <QToolBar>
 
+#include <QPushButton>
+#include <QLabel>
+#include <QSizePolicy>
+
 #include <QDebug>
 
 #include "TextEdit.hh"
@@ -76,17 +80,22 @@ MainWnd::MainWnd( QWidget *parent )
 	  m_scene( new QGraphicsScene( QRectF( 0, 0, 595, 842 ), this ) ),
 	  m_view( new PageView( m_scene, this ) ),
 	  m_tool_bar( addToolBar(tr("Main") ) ),
-	  m_zoom_box( new QComboBox( m_tool_bar ) )
+	  m_zoom_box( new QComboBox( m_tool_bar ) ),
+	  m_btn_previousPg( new QPushButton( "<=", m_tool_bar ) ),
+	  m_btn_nextPg( new QPushButton( "=>",m_tool_bar ) ),
+	  m_label( new QLabel( tr(" page:    ") ) )
 {
 	setupUi( this ) ;
 	setCentralWidget( m_view ) ;
-	
+
 	connect( m_action_about,	SIGNAL(triggered()), this, SLOT(OnAbout()));
 	connect( m_action_prop,		SIGNAL(triggered()), this, SLOT(OnProperties()));
 	connect( m_action_open,		SIGNAL(triggered()), this, SLOT(OnOpen()) );
 	connect( m_action_save_as,	SIGNAL(triggered()), this, SLOT(OnSaveAs()) );
 	connect( m_action_font, 	SIGNAL(triggered()), this, SLOT(OnEditFont()) );
 	connect( m_action_exit, 	SIGNAL(triggered()), qApp, SLOT(quit()) );
+	connect( m_btn_previousPg, 	SIGNAL(clicked()),	this, SLOT(OnPreviousPage()) );
+	connect( m_btn_nextPg, 	SIGNAL(clicked()),	this, SLOT(OnNextPage()) );
 
 	// initialize tool bar
 	m_tool_bar->addAction( m_action_open ) ;
@@ -105,6 +114,13 @@ MainWnd::MainWnd( QWidget *parent )
 		SLOT(OnToolZoom(int)) ) ;
 	
 	m_tool_bar->addWidget( m_zoom_box ) ;
+
+	m_tool_bar->addWidget( m_btn_previousPg );
+	m_tool_bar->addWidget( m_btn_nextPg );
+	m_tool_bar->addWidget( m_label );
+
+	m_btn_nextPg->setEnabled(FALSE);
+	m_btn_previousPg->setEnabled(FALSE);
 }
 
 /**	destructor is for the auto_ptr	
@@ -167,11 +183,16 @@ void MainWnd::OpenFile( const QString& file )
 		{
 			// only load page 0 for now
 			Page *p = m_doc->GetPage( 0 ) ;
+			currentPage = 0;	// the page number of the currently viewed page
 			Rect r = p->MediaBox( ) ;
 			m_scene->setSceneRect( r.Left(), r.Bottom(), r.Width(), r.Height());
 			
 			PageContent *c = p->GetContent( ) ;
 			c->VisitGraphics( this ) ;
+
+			m_label->setText(QString(tr(" page: "))+QString::number(currentPage+1)
+				+QString(tr(" / "))+QString::number(m_doc->PageCount()));
+			m_btn_nextPg->setEnabled(TRUE);
 		}
 	}
 	catch ( std::exception& e )
@@ -260,6 +281,69 @@ void MainWnd::StorePage( QGraphicsScene *scene, Doc *doc, Page *page )
 		{
 			PDF_ASSERT( text->Format().GetFont() != 0 ) ;
 			t->AddLine( text->GetLine() ) ;
+		}
+	}
+}
+
+void MainWnd::OnNextPage( )
+{
+	if ( m_doc.get() )
+	{
+		try
+		{
+			if ( currentPage < m_doc->PageCount()-1 )
+			{
+				// go to next page and display
+				m_scene->clear( ) ;
+				++currentPage;		// the page number of the currently viewed page
+				Page *p = m_doc->GetPage( currentPage ) ;
+				
+				PageContent *c = p->GetContent( ) ;
+				c->VisitGraphics( this ) ;
+
+				m_label->setText(QString(tr(" page: "))+QString::number(currentPage+1)
+					+QString(tr(" / "))+QString::number(m_doc->PageCount()));
+				// enable/disable page buttons
+				m_btn_previousPg->setEnabled(TRUE);
+				if (currentPage >= m_doc->PageCount() ) m_btn_nextPg->setEnabled(FALSE);
+			}
+		}
+		catch ( std::exception& e )
+		{
+			ExceptionDlg dlg( e.what(), this ) ;
+			dlg.exec() ;
+		}
+
+	}
+}
+
+void MainWnd::OnPreviousPage( )
+{
+	if ( m_doc.get() )
+	{
+		try
+		{
+			if ( currentPage > 0 )
+			{
+				// go to previous page and display
+				m_scene->clear( ) ;
+				--currentPage;		// the page number of the currently viewed page
+				Page *p = m_doc->GetPage( currentPage ) ;
+				
+				PageContent *c = p->GetContent( ) ;
+				c->VisitGraphics( this ) ;
+
+				m_label->setText(QString(tr(" page: "))+QString::number(currentPage+1)
+					+QString(tr(" / "))+QString::number(m_doc->PageCount()));
+				// enable/disable page buttons
+				m_btn_nextPg->setEnabled(TRUE);
+				if (currentPage <= 0 ) m_btn_previousPg->setEnabled(FALSE);
+			}
+		}
+		catch ( std::exception& e )
+		{
+			ExceptionDlg dlg( e.what(), this ) ;
+			dlg.exec() ;
 		}
 	}
 }
