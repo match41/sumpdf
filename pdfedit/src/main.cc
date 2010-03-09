@@ -41,15 +41,18 @@ int main( int argc, char **argv )
 {
     QApplication app(argc, argv);
 
-    std::string path ;
-
 #ifdef HAVE_BOOST_PROGRAM_OPTIONS
+    std::string path ;
+    std::size_t	page = 0 ;
+    
 	// Declare the supported options.
 	po::options_description desc( "Allowed options" ) ;
 	desc.add_options()
-    	( "help",		"produce help message")
-    	( "input,i",	po::value<std::string>(&path),
-    	  "open input file" )
+    	(	"help",		"produce help message")
+    	(	"input,i",	po::value<std::string>(&path),
+    		"open input file" )
+    	(	"page,p",	po::value<std::size_t>(&page),
+    		"page number to open" )
 	;
 
 	po::variables_map vm;
@@ -64,6 +67,10 @@ int main( int argc, char **argv )
 #ifdef HAVE_BOOST_PROGRAM_OPTIONS
     if ( vm.count( "input" ) )
     	w->OpenFile( path.c_str() ) ;
+    
+    // humans use one-base index; C uses zero-base
+    if ( vm.count( "page" ) )
+    	w->GoToPage( page - 1 ) ;
 #endif
 
     return app.exec( ) ;

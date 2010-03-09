@@ -162,22 +162,25 @@ void MainWnd::OpenFile( const QString& file )
 
 void MainWnd::GoToPage( std::size_t page )
 {
-	m_current_page = page ;
-
-	// go to next page and display
-	m_scene->clear( ) ;
-	Page *p = m_doc->GetPage( m_current_page ) ;
+	if ( page >= 0 && page < m_doc->PageCount() )
+	{
+		m_current_page = page ;
 	
-	PageContent *c = p->GetContent( ) ;
-	c->VisitGraphics( this ) ;
-
-	m_label->setText( QString( tr(" page: %1 / %2") ).
-		arg( m_current_page + 1 ).
-		arg( m_doc->PageCount() ) ) ;
-
-	// enable/disable page buttons
-	m_btn_next_pg->setEnabled( m_current_page + 1 < m_doc->PageCount() ) ;
-	m_btn_previous_pg->setEnabled( m_current_page > 0 ) ;
+		// go to next page and display
+		m_scene->clear( ) ;
+		Page *p = m_doc->GetPage( m_current_page ) ;
+		
+		PageContent *c = p->GetContent( ) ;
+		c->VisitGraphics( this ) ;
+	
+		m_label->setText( QString( tr(" page: %1 / %2") ).
+			arg( m_current_page + 1 ).
+			arg( m_doc->PageCount() ) ) ;
+	
+		// enable/disable page buttons
+		m_btn_next_pg->setEnabled( m_current_page + 1 < m_doc->PageCount() ) ;
+		m_btn_previous_pg->setEnabled( m_current_page > 0 ) ;
+	}
 }
 
 void MainWnd::VisitText( Text *text )
