@@ -74,7 +74,6 @@ public slots :
 	void OnProperties( ) ;
 	void OnSaveAs( ) ;
 	void OnToolZoom( int choice ) ;
-	void OnEditFont( ) ;
 
 	void OnNextPage( ) ;
 	void OnPreviousPage( ) ;

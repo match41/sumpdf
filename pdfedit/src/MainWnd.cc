@@ -92,7 +92,6 @@ MainWnd::MainWnd( QWidget *parent )
 	connect( m_action_prop,		SIGNAL(triggered()), this, SLOT(OnProperties()));
 	connect( m_action_open,		SIGNAL(triggered()), this, SLOT(OnOpen()) );
 	connect( m_action_save_as,	SIGNAL(triggered()), this, SLOT(OnSaveAs()) );
-	connect( m_action_font, 	SIGNAL(triggered()), this, SLOT(OnEditFont()) );
 	connect( m_action_exit, 	SIGNAL(triggered()), qApp, SLOT(quit()) );
 	connect( m_btn_previous_pg,	SIGNAL(clicked()),	this, SLOT(OnPreviousPage()) );
 	connect( m_btn_next_pg, 	SIGNAL(clicked()),	this, SLOT(OnNextPage()) );
@@ -127,37 +126,6 @@ MainWnd::MainWnd( QWidget *parent )
 */
 MainWnd::~MainWnd( )
 {
-}
-
-void MainWnd::OnEditFont( )
-{
-/*	bool ok = true ;
-	QFont f = QFontDialog::getFont( &ok, this ) ;
-	if ( ok )
-	{
-		FT_Face face = f.freetypeFace() ;
-
-		FcChar8 abc[] = "abc", *f2 ;
-
-		FcBlanks *b = FcBlanksCreate() ;
-		FcPattern *p = FcFreeTypeQueryFace( face, abc, 0, b ) ;
-		if (FcPatternGetString( p, FC_FILE, 0, &f2) == FcResultMatch)
-			std::cout << "oops: " << f2 << std::endl ;
-
-		FcChar8 *filename2 ;
-		FcResult result ;
-		FcPattern *matched = FcFontMatch( 0, p, &result);
-		
-		if (FcPatternGetString (matched, FC_FILE, 0, &filename2) != FcResultMatch)
-			std::cout << "oops" << std::endl ;
-
-		int id ;
-		if (FcPatternGetInteger (matched, FC_INDEX, 0, &id) != FcResultMatch)
-			std::cout << "oops2" << std::endl ;
-		  
-		std::cout << "file is " << filename2 << " " << id << std::endl ; 
-
-	}*/
 }
 
 void MainWnd::OnToolZoom( int choice )
