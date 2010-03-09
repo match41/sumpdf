@@ -77,10 +77,8 @@ public slots :
 
 	void OnNextPage( ) ;
 	void OnPreviousPage( ) ;
-
-private:
 	
-	std::size_t currentPage;	// currently viewed document page
+	void GoToPage( std::size_t index ) ;
 
 private :
 	void StorePage( QGraphicsScene *scene, Doc *doc, Page *page ) ;
@@ -100,6 +98,7 @@ private :
 	QPushButton		*m_btn_previous_pg;
 	QLabel			*m_label;
 	QTextEdit		*m_text;
+	std::size_t		m_current_page;	// currently viewed document page
 } ;
 
 } // end of namespace

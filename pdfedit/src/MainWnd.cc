@@ -76,14 +76,15 @@
 namespace pdf {
 
 MainWnd::MainWnd( QWidget *parent )
-	: QMainWindow( parent ),
-	  m_scene( new QGraphicsScene( QRectF( 0, 0, 595, 842 ), this ) ),
-	  m_view( new PageView( m_scene, this ) ),
-	  m_tool_bar( addToolBar(tr("Main") ) ),
-	  m_zoom_box( new QComboBox( m_tool_bar ) ),
-	  m_btn_next_pg( new QPushButton( "=>",m_tool_bar ) ),
-	  m_btn_previous_pg( new QPushButton( "<=", m_tool_bar ) ),
-	  m_label( new QLabel( tr(" page:    ") ) )
+	: QMainWindow( parent )
+	, m_scene( new QGraphicsScene( QRectF( 0, 0, 595, 842 ), this ) )
+	, m_view( new PageView( m_scene, this ) )
+	, m_tool_bar( addToolBar(tr("Main") ) )
+	, m_zoom_box( new QComboBox( m_tool_bar ) )
+	, m_btn_next_pg( new QPushButton( "=>",m_tool_bar ) )
+	, m_btn_previous_pg( new QPushButton( "<=", m_tool_bar ) )
+	, m_label( new QLabel( tr(" page:    ") ) )
+	, m_current_page( 0 )
 {
 	setupUi( this ) ;
 	setCentralWidget( m_view ) ;
@@ -149,18 +150,7 @@ void MainWnd::OpenFile( const QString& file )
 		
 		if ( m_doc->PageCount() > 0 )
 		{
-			// only load page 0 for now
-			Page *p = m_doc->GetPage( 0 ) ;
-			currentPage = 0;	// the page number of the currently viewed page
-			Rect r = p->MediaBox( ) ;
-			m_scene->setSceneRect( r.Left(), r.Bottom(), r.Width(), r.Height());
-			
-			PageContent *c = p->GetContent( ) ;
-			c->VisitGraphics( this ) ;
-
-			m_label->setText(QString(tr(" page: "))+QString::number(currentPage+1)
-				+QString(tr(" / "))+QString::number(m_doc->PageCount()));
-			m_btn_next_pg->setEnabled(TRUE);
+			GoToPage( 0 ) ;
 		}
 	}
 	catch ( std::exception& e )
@@ -168,6 +158,26 @@ void MainWnd::OpenFile( const QString& file )
 		ExceptionDlg dlg( e.what(), this ) ;
 		dlg.exec() ;
 	}
+}
+
+void MainWnd::GoToPage( std::size_t page )
+{
+	m_current_page = page ;
+
+	// go to next page and display
+	m_scene->clear( ) ;
+	Page *p = m_doc->GetPage( m_current_page ) ;
+	
+	PageContent *c = p->GetContent( ) ;
+	c->VisitGraphics( this ) ;
+
+	m_label->setText( QString( tr(" page: %1 / %2") ).
+		arg( m_current_page + 1 ).
+		arg( m_doc->PageCount() ) ) ;
+
+	// enable/disable page buttons
+	m_btn_next_pg->setEnabled( m_current_page + 1 < m_doc->PageCount() ) ;
+	m_btn_previous_pg->setEnabled( m_current_page > 0 ) ;
 }
 
 void MainWnd::VisitText( Text *text )
@@ -259,21 +269,10 @@ void MainWnd::OnNextPage( )
 	{
 		try
 		{
-			if ( currentPage < m_doc->PageCount()-1 )
+			if ( m_current_page < m_doc->PageCount()-1 )
 			{
 				// go to next page and display
-				m_scene->clear( ) ;
-				++currentPage;		// the page number of the currently viewed page
-				Page *p = m_doc->GetPage( currentPage ) ;
-				
-				PageContent *c = p->GetContent( ) ;
-				c->VisitGraphics( this ) ;
-
-				m_label->setText(QString(tr(" page: "))+QString::number(currentPage+1)
-					+QString(tr(" / "))+QString::number(m_doc->PageCount()));
-				// enable/disable page buttons
-				m_btn_previous_pg->setEnabled(TRUE);
-				if (currentPage >= m_doc->PageCount() ) m_btn_next_pg->setEnabled(FALSE);
+				GoToPage( m_current_page + 1 ) ;
 			}
 		}
 		catch ( std::exception& e )
@@ -291,21 +290,10 @@ void MainWnd::OnPreviousPage( )
 	{
 		try
 		{
-			if ( currentPage > 0 )
+			if ( m_current_page > 0 )
 			{
 				// go to previous page and display
-				m_scene->clear( ) ;
-				--currentPage;		// the page number of the currently viewed page
-				Page *p = m_doc->GetPage( currentPage ) ;
-				
-				PageContent *c = p->GetContent( ) ;
-				c->VisitGraphics( this ) ;
-
-				m_label->setText(QString(tr(" page: "))+QString::number(currentPage+1)
-					+QString(tr(" / "))+QString::number(m_doc->PageCount()));
-				// enable/disable page buttons
-				m_btn_next_pg->setEnabled(TRUE);
-				if (currentPage <= 0 ) m_btn_previous_pg->setEnabled(FALSE);
+				GoToPage( m_current_page - 1 ) ;
 			}
 		}
 		catch ( std::exception& e )
