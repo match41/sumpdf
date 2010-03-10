@@ -88,6 +88,7 @@ public :
 	void push_back( const Object& obj ) ;
 
 	bool operator==( const Array& array ) const ;
+	bool operator!=( const Array& array ) const ;
 
 	/// converts the array to an STL container
 	template <template <typename> class Tem, typename T>

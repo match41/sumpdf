@@ -29,6 +29,8 @@
 #include "core/Token.hh"
 #include "util/Util.hh"
 
+#include "mock/Assert.hh"
+
 #include <algorithm>
 #include <iterator>
 #include <sstream>
@@ -127,8 +129,8 @@ void TokenTest::TestExt14TJ( )
 		"\\(sub-)19.4(div)12.5(i)-3(ded or )]TJ" ) ;
 
 	Token t ;
-	while ( ss >> t )
-		std::cout << "token = " << t.Get() << std::endl ;
+	while ( ss >> t ) ;
+	PDFUT_ASSERT_EQUAL( t.Get(), "TJ" ) ;
 }
 
 

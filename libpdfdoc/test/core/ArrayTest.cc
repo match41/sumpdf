@@ -127,12 +127,30 @@ void ArrayTest::TestBracketTJ( )
 {
 	std::istringstream ss(
 		"[(the line siz)10.8(e)-0.1( is 128 by)12.5(tes "
-		"\(sub-)19.4(div)12.5(i)-3(ded or )]TJ" ) ;
+		"\\(sub-)19.4(div)12.5(i)-3(ded or )]TJ" ) ;
 	TokenSrc src( ss ) ;
 	Array sub ;
 	CPPUNIT_ASSERT( src >> sub ) ;
 	
-	std::cout << sub ;
+	Object exp[] =
+	{
+		"the line siz",
+		10.8,
+		"e",
+		-0.1,
+		" is 128 by",
+		12.5,
+		"tes (sub-",
+		19.4,
+		"div",
+		12.5,
+		"i",
+		-3,
+		"ded or "
+	} ;
+	
+	Array exp_array( Begin(exp), End(exp) ) ;
+	PDFUT_ASSERT_EQUAL( sub, exp_array ) ;
 }
 
 

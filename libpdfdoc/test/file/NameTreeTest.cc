@@ -76,8 +76,12 @@ void NameTreeTest::TestWrite( )
 	
 	Ref r = subject.Write( &file ) ; 
 	Dictionary dict = file.Find( r ).As<Dictionary>() ;
-	PDFUT_ASSERT_EQUAL( dict["Limits"], Array(Begin(limit), End(limit) ) ) ; 
-	PDFUT_ASSERT_EQUAL( dict["Names"],  Array(Begin(names), End(names) ) ) ; 
+	PDFUT_ASSERT_EQUAL(
+		dict["Limits"].As<Array>(),
+		Array(Begin(limit), End(limit) ) ) ; 
+	PDFUT_ASSERT_EQUAL(
+		dict["Names"].As<Array>(),
+		Array(Begin(names), End(names) ) ) ; 
 }
 
 } // end of namespace
