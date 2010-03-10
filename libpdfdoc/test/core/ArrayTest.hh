@@ -46,6 +46,7 @@ public :
 		CPPUNIT_TEST( TestString ) ;
 		CPPUNIT_TEST( TestTJ ) ;
 		CPPUNIT_TEST( TestGsTJ ) ;
+		CPPUNIT_TEST( TestBracketTJ ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
 private :
@@ -55,6 +56,7 @@ private :
 	void TestTJ( ) ;
 	void TestString( ) ;
 	void TestGsTJ( ) ;
+	void TestBracketTJ( ) ;
 } ;
 
 } // end of namespace

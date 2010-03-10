@@ -40,6 +40,8 @@
 #include <sstream>
 #include <vector>
 
+#include <iostream>
+
 namespace pdfut {
 
 using namespace pdf ;
@@ -120,5 +122,18 @@ void ArrayTest::TestGsTJ( )
 	PDFUT_ASSERT_EQUAL( sub[2], "\x9" ) ;
 	PDFUT_ASSERT_EQUAL( sub[3], 95.0775 ) ;
 }
+
+void ArrayTest::TestBracketTJ( )
+{
+	std::istringstream ss(
+		"[(the line siz)10.8(e)-0.1( is 128 by)12.5(tes "
+		"\(sub-)19.4(div)12.5(i)-3(ded or )]TJ" ) ;
+	TokenSrc src( ss ) ;
+	Array sub ;
+	CPPUNIT_ASSERT( src >> sub ) ;
+	
+	std::cout << sub ;
+}
+
 
 } // end of namespace

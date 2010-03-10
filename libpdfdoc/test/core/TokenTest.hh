@@ -39,16 +39,18 @@ public :
 	TokenTest( ) ;
 
 	// declare suit function
-	CPPUNIT_TEST_SUITE( TokenTest );
-		CPPUNIT_TEST( TestAllNumbers );
-		CPPUNIT_TEST( TestAllDelimitor );
-		CPPUNIT_TEST( TestMixChar );
+	CPPUNIT_TEST_SUITE( TokenTest ) ;
+		CPPUNIT_TEST( TestAllNumbers ) ;
+		CPPUNIT_TEST( TestAllDelimitor ) ;
+		CPPUNIT_TEST( TestMixChar ) ;
+		CPPUNIT_TEST( TestExt14TJ ) ;
 	CPPUNIT_TEST_SUITE_END();
 
 private :
 	void TestAllNumbers( ) ;
 	void TestAllDelimitor( ) ;
 	void TestMixChar( ) ;
+	void TestExt14TJ( ) ;
 } ;
 
 } // end of namespace

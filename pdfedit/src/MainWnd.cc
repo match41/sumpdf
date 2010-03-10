@@ -119,8 +119,8 @@ MainWnd::MainWnd( QWidget *parent )
 	m_tool_bar->addWidget( m_btn_next_pg );
 	m_tool_bar->addWidget( m_label );
 
-	m_btn_next_pg->setEnabled(FALSE);
-	m_btn_previous_pg->setEnabled(FALSE);
+	m_btn_next_pg->setEnabled( false ) ;
+	m_btn_previous_pg->setEnabled( false ) ;
 }
 
 /**	destructor is for the auto_ptr	

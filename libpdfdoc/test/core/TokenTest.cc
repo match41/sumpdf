@@ -120,4 +120,16 @@ void TokenTest::TestMixChar( )
 	CPPUNIT_ASSERT( std::equal( vec.begin( ), vec.end( ), result ) ) ;
 }
 
+void TokenTest::TestExt14TJ( )
+{
+	std::istringstream ss(
+		"[(the line siz)10.8(e)-0.1( is 128 by)12.5(tes "
+		"\\(sub-)19.4(div)12.5(i)-3(ded or )]TJ" ) ;
+
+	Token t ;
+	while ( ss >> t )
+		std::cout << "token = " << t.Get() << std::endl ;
+}
+
+
 } // end of namespace

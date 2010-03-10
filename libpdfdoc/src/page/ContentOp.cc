@@ -31,7 +31,7 @@
 
 #include <algorithm>
 #include <iterator>
-#include <ostream>
+#include <iostream>
 
 namespace pdf {
 
@@ -94,6 +94,7 @@ TokenSrc& operator>>( TokenSrc& src, ContentOp& op )
 			break ;
 		}
 	}
+//std::cout << op << std::endl;
 	return src ;
 }
 

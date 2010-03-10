@@ -100,6 +100,12 @@ void Token::DecodeBracketString( std::istream& is, std::string& text )
 			bracket++ ;
 		else if ( ch == ')' )
 			bracket-- ;
+		else if ( ch == '\\' )
+		{
+			text.push_back( ch ) ;
+			if ( !is.get(ch) )
+				break ;
+		}
 	
 		text.push_back( ch ) ;
 	}
