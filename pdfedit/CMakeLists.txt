@@ -68,7 +68,9 @@ set( UIS 		ui/MainWnd.ui
 qt4_wrap_ui( UIH ${UIS})
 qt4_wrap_cpp( MOC_SRCS ${MOC_HDRS})
 
-add_executable( pdfedit WIN32 ${SRCS} ${UIH} ${MOC_SRCS} )
+qt4_add_resources( RCC_SRCS ui/pdfedit.qrc )
+
+add_executable( pdfedit WIN32 ${SRCS} ${UIH} ${MOC_SRCS} ${RCC_SRCS} )
 
 ###############################################################################
 # finding optional fontconfig library
