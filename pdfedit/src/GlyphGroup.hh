@@ -58,12 +58,7 @@ public :
 	
 	TextLine GetLine( ) const ;
 	
-//	QString Text( ) const ;
-
 private :
-//	QString			m_text ;
-//	GraphicsState	m_state ;
-//	QPointF			m_pos ;
 	TextLine		m_line ;
 } ;
 

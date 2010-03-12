@@ -63,7 +63,7 @@ int main( int argc, char **argv )
 #endif
 
     pdf::MainWnd *w = new pdf::MainWnd ;
-    w->resize( 640, 480 ) ;
+    w->resize( 800, 600 ) ;
     w->show( ) ;
     
 #ifdef HAVE_BOOST_PROGRAM_OPTIONS

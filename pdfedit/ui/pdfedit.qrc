@@ -1,7 +1,7 @@
-<!DOCTYPE RCC>
-<RCC version="1.0">
-<qresource>
-	<file>images/arrow-left.png</file>
-	<file>images/arrow-right.png</file>
-</qresource>
+<RCC>
+  <qresource>
+    <file>images/arrow-left-double.png</file>
+    <file>images/arrow-left.png</file>
+    <file>images/arrow-right.png</file>
+  </qresource>
 </RCC>

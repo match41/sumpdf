@@ -45,9 +45,6 @@ namespace pdf {
 GlyphGroup::GlyphGroup( const TextLine& blk, QGraphicsItem *parent )
 	: QGraphicsItemGroup( parent )
 	, m_line( blk )
-//	, m_text( FromWStr(blk.Text()) )
-//	, m_state( blk.Format() )
-//	, m_pos( blk.XPos(), blk.YPos() )
 {
 	m_line.VisitChars( this ) ;
 	
@@ -67,7 +64,7 @@ void GlyphGroup::OnChar(
 	GlyphGraphicsItem *item = new GlyphGraphicsItem( glyph ) ;
 
 	// set offset
-	item->translate( m_line.XPos() + offset, m_line.YPos() ) ;
+	item->setPos( m_line.XPos() + offset, m_line.YPos() ) ;
 	
 	// scale font by their font size
 	item->scale( state.ScaleFactor(), state.ScaleFactor() ) ;
@@ -84,13 +81,6 @@ const GraphicsState& GlyphGroup::Format( ) const
 {
 	return m_line.Format() ;
 }
-
-/*
-QString GlyphGroup::Text( ) const
-{
-	return m_text ;
-}
-*/
 
 TextLine GlyphGroup::GetLine( ) const
 {
