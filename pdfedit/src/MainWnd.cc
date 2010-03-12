@@ -144,10 +144,6 @@ void MainWnd::OpenFile( const QString& file )
 		m_doc.reset( CreateDoc( ) ) ;
 		m_doc->Read( file.toStdString() ) ;
 		
-		// it should have thrown exception when error.
-		// can now clear the screen.
-		m_scene->clear( ) ;
-		
 		if ( m_doc->PageCount() > 0 )
 		{
 			GoToPage( 0 ) ;
@@ -168,10 +164,12 @@ void MainWnd::GoToPage( std::size_t page )
 	
 		// go to next page and display
 		m_scene->clear( ) ;
+		
 		Page *p = m_doc->GetPage( m_current_page ) ;
 		
 		PageContent *c = p->GetContent( ) ;
 		c->VisitGraphics( this ) ;
+		m_scene->invalidate() ;
 	
 		m_label->setText( QString( tr(" page: %1 / %2") ).
 			arg( m_current_page + 1 ).
