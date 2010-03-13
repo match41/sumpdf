@@ -33,22 +33,20 @@
 // Qt headers
 #include <QApplication>
 #include <QComboBox>
+#include <QDebug>
 #include <QFileDialog>
-#include <QGraphicsItemGroup>
-#include <QGraphicsScene>
 #include <QFont>
 #include <QFontDialog>
+#include <QGraphicsItemGroup>
+#include <QGraphicsScene>
+#include <QLabel>
 #include <QList>
 #include <QMessageBox>
 #include <QPointF>
+#include <QPushButton>
+#include <QSizePolicy>
 #include <QTransform>
 #include <QToolBar>
-
-#include <QPushButton>
-#include <QLabel>
-#include <QSizePolicy>
-
-#include <QDebug>
 
 #include "TextEdit.hh"
 #include "GlyphGroup.hh"
@@ -70,7 +68,6 @@
 
 #include <algorithm>
 #include <cassert>
-#include <iostream>
 #include <sstream>
 
 namespace pdf {

@@ -28,18 +28,29 @@
 
 #include "TextEdit.hh"
 
+#include <util/Debug.hh>
+
 #include <QGraphicsItem>
 #include <QDebug>
+#include <QMainWindow>
 #include <QMouseEvent>
+#include <QStatusBar>
 
 namespace pdf {
 
-PageView::PageView( QGraphicsScene *scene, QWidget *parent )
+PageView::PageView(
+	QGraphicsScene	*scene,
+	QMainWindow		*parent )
 	: QGraphicsView( scene, parent )
+	, m_parent( parent )
 {
+	PDF_ASSERT( parent != 0 ) ;
+
 	// default zoom is 100%
 	Zoom( 1.0 ) ;
 	setRenderHint( QPainter::Antialiasing ) ;
+	
+	setMouseTracking( true ) ;
 }
 
 void PageView::Zoom( double factor )
@@ -68,6 +79,12 @@ void PageView::mousePressEvent( QMouseEvent *event )
 	
 
 	QGraphicsView::mousePressEvent( event ) ;
+}
+
+void PageView::mouseMoveEvent( QMouseEvent *event )
+{
+	QPointF pos = mapToScene( event->pos() ) ;
+	m_parent->statusBar()->showMessage( QString("%1,%2").arg( pos.x() ).arg( pos.y() ) ) ;
 }
 
 } // end of namespace

@@ -29,6 +29,7 @@
 
 #include <QGraphicsView>
 
+class QMainWindow ;
 class QPainter ;
 
 namespace pdf {
@@ -40,15 +41,19 @@ class PageView : public QGraphicsView
 	Q_OBJECT
 
 public:
-	explicit PageView( QGraphicsScene *scene, QWidget *parent ) ;
+	explicit PageView(
+		QGraphicsScene	*scene,
+		QMainWindow		*parent ) ;
 
 	void Zoom( double factor ) ;
 
 protected :
 	void mousePressEvent( QMouseEvent *event ) ;
+	void mouseMoveEvent( QMouseEvent *event ) ;
 
 private :
 	class LineEdit ;
+	QMainWindow	*m_parent ;
 } ;
 
 } // end of namespace
