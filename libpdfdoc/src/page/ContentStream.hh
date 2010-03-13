@@ -35,9 +35,10 @@
 
 namespace pdf {
 
-class Graphics ;
-class ResourcesDict ;
 class ContentOp ;
+class Graphics ;
+class GraphicsVisitor ;
+class ResourcesDict ;
 
 ///	brief description
 /**	\internal
@@ -47,16 +48,19 @@ class ContentStream
 {
 public :
 	template <typename InputIt>
-	ContentStream( InputIt first, InputIt last, const ResourcesDict *res )
-		: m_strs( first, last ),
-		  m_res( res ),
-		  m_current( 0 )
+	ContentStream( InputIt first, InputIt last,
+		const ResourcesDict	*res,
+		GraphicsVisitor		*visitor )
+		: m_strs( first, last )
+		, m_visitor( visitor )
+		, m_res( res )
+		, m_current( 0 )
 	{
 	}
 
 	void Decode( ) ;
 
-	void SwapGfxObj( std::vector<Graphics*>& gfxs ) ;
+//	void SwapGfxObj( std::vector<Graphics*>& gfxs ) ;
 
 private :
 	struct HandlerMap ;
@@ -73,8 +77,8 @@ private :
 
 private :
 	std::vector<Stream>		m_strs ;
-	std::vector<Graphics*>	m_gfx ;
-	const ResourcesDict			*m_res ;
+	GraphicsVisitor 		*m_visitor ; 
+	const ResourcesDict		*m_res ;
 
 	/// all graphics states
 	struct State

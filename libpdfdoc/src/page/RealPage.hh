@@ -70,7 +70,7 @@ public :
 
 	int Rotation( ) const ;
 	
-	void VisitGraphics( GraphicsVisitor *v ) ;
+	void VisitGraphics( GraphicsVisitor *visitor ) ;
 
 private :
 	void ReadContent( const Object& str_obj, File *file ) ;
