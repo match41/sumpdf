@@ -79,6 +79,7 @@ public slots :
 	void OnPreviousPage( ) ;
 	
 	void GoToPage( std::size_t index ) ;
+	void OnSelectionChanged( ) ;
 
 private :
 	void StorePage( QGraphicsScene *scene, Doc *doc, Page *page ) ;

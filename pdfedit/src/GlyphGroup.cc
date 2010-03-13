@@ -90,4 +90,20 @@ TextLine GlyphGroup::GetLine( ) const
 	return line ; 
 }
 
+
+int GlyphGroup::rowCount( const QModelIndex& parent ) const
+{
+	return 2 ;
+}
+
+int GlyphGroup::columnCount( const QModelIndex& parent ) const
+{
+	return 2 ;
+}
+
+QVariant GlyphGroup::data( const QModelIndex& index, int role ) const
+{
+	return "haha" ;
+}
+
 } // end of namespace

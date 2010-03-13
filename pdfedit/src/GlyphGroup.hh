@@ -27,6 +27,8 @@
 #define __PDF_GLYPHGROUP_HH_EADER_INCLUDED__
 
 #include <QGraphicsItemGroup>
+#include <QAbstractTableModel>
+
 #include <graphics/CharVisitor.hh>
 
 #include <graphics/TextLine.hh>
@@ -39,7 +41,10 @@ class GraphicsState ;
 ///	brief description
 /**	The GlyphGroup class represents
 */
-class GlyphGroup : public QGraphicsItemGroup, private CharVisitor
+class GlyphGroup :
+	public QGraphicsItemGroup,
+	public QAbstractTableModel,
+	private CharVisitor
 {
 public :
 	explicit GlyphGroup( const TextLine& blk, QGraphicsItem *parent = 0 ) ;
@@ -57,6 +62,11 @@ public :
 	const GraphicsState& Format( ) const ;
 	
 	TextLine GetLine( ) const ;
+
+	int rowCount( const QModelIndex& parent ) const ;
+	int columnCount( const QModelIndex& parent ) const ;
+	
+	QVariant data( const QModelIndex& index, int role ) const ;
 	
 private :
 	TextLine		m_line ;

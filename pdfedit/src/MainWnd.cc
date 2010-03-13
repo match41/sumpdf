@@ -93,6 +93,7 @@ MainWnd::MainWnd( QWidget *parent )
 	connect( m_action_exit, 	SIGNAL(triggered()), qApp, SLOT(quit()) );
 	connect( m_btn_previous_pg,	SIGNAL(clicked()),	this, SLOT(OnPreviousPage()) );
 	connect( m_btn_next_pg, 	SIGNAL(clicked()),	this, SLOT(OnNextPage()) );
+	connect( m_scene, 	SIGNAL(selectionChanged()),	this, SLOT(OnSelectionChanged()) );
 
 	// initialize tool bar
 	m_tool_bar->addAction( m_action_open ) ;
@@ -124,6 +125,16 @@ MainWnd::MainWnd( QWidget *parent )
 */
 MainWnd::~MainWnd( )
 {
+}
+
+void MainWnd::OnSelectionChanged( )
+{
+	QList<QGraphicsItem*> items = m_scene->selectedItems() ;
+	if ( !items.empty() )
+	{
+		GlyphGroup *text = qgraphicsitem_cast<GlyphGroup*>( items.front() ) ;
+		m_item_prop->setModel( text ) ;
+	}
 }
 
 void MainWnd::OnToolZoom( int choice )

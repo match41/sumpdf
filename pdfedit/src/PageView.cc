@@ -37,6 +37,7 @@
 #include <QStatusBar>
 #include <QMessageBox>
 #include <QTransform>
+#include <QVariant>
 
 namespace pdf {
 

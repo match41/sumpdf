@@ -41,7 +41,7 @@ class PageView : public QGraphicsView
 	Q_OBJECT
 
 public:
-	explicit PageView(
+	PageView(
 		QGraphicsScene	*scene,
 		QMainWindow		*parent ) ;
 
