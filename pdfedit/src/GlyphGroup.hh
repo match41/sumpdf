@@ -62,15 +62,18 @@ public :
 	const GraphicsState& Format( ) const ;
 	
 	TextLine GetLine( ) const ;
+	
+	QVariant itemChange( GraphicsItemChange change, const QVariant& value ) ;
 
+	//@{
+	/// abstract table model members
 	int rowCount( const QModelIndex& parent ) const ;
 	int columnCount( const QModelIndex& parent ) const ;
 	
 	QVariant data( const QModelIndex& index, int role ) const ;
 	QVariant headerData( int sect, Qt::Orientation or, int role ) const ;
-	
-	QVariant itemChange( GraphicsItemChange change, const QVariant& value ) ;
-	
+	//@}
+
 private :
 	TextLine		m_line ;
 } ;
