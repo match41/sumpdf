@@ -86,8 +86,8 @@ const GraphicsState& GlyphGroup::Format( ) const
 TextLine GlyphGroup::GetLine( ) const
 {
 	TextLine line( m_line ) ;
-//	line.XPos( m_line.XPos() + x() ) ;
-//	line.YPos( m_line.YPos() + y() ) ;
+	line.XPos( m_line.XPos() + x() ) ;
+	line.YPos( m_line.YPos() + y() ) ;
 	return line ; 
 }
 
