@@ -126,24 +126,21 @@ void RealPageTest::TestWrite( )
 {
 	pdf::RealPage *p  = new pdf::RealPage( m_root ) ;
 	pdf::SimpleFont *f = new pdf::SimpleFont( "TimesNewRoman", m_font_db ) ;
-//	p->DrawText( 120, 300, f, "This is a line" ) ;
-//	p->DrawText( 120, 400, f, "This is another line" ) ;
-//	p->Finish( ) ;
 
 	pdf::TextState ts ;
 	ts.SetFont( 12.0, f ) ;
 	p->GetResource()->AddFont( f ) ;
 
-	pdf::PageContent *c = p->GetContent( ) ;
-	pdf::Text *t = c->AddText( ts ) ;
-	
-	pdf::TextLine line1( 0, 0, (GraphicsState(ts)), pdf::Matrix(1,0,0,1, 120, 300) ) ;
-	line1.AppendText( L"This is a line" ) ;
-	t->AddLine( line1 ) ;
-
-	pdf::TextLine line2( 0, 0, (GraphicsState(ts)), pdf::Matrix(1,0,0,1, 120, 400) ) ;
-	line2.AppendText( L"This is another line" ) ;
-	t->AddLine( line2 ) ;
+//	pdf::PageContent *c = p->GetContent( ) ;
+//	pdf::Text *t = c->AddText( ts ) ;
+//	
+//	pdf::TextLine line1( 0, 0, (GraphicsState(ts)), pdf::Matrix(1,0,0,1, 120, 300) ) ;
+//	line1.AppendText( L"This is a line" ) ;
+//	t->AddLine( line1 ) ;
+//
+//	pdf::TextLine line2( 0, 0, (GraphicsState(ts)), pdf::Matrix(1,0,0,1, 120, 400) ) ;
+//	line2.AppendText( L"This is another line" ) ;
+//	t->AddLine( line2 ) ;
 
 	MockFile file ;
 	pdf::Ref link = file.AllocLink( ) ;
@@ -173,16 +170,16 @@ void RealPageTest::TestDecode( )
 	ts.SetFont( 12.0, f ) ;
 	p->GetResource()->AddFont( f ) ;
 
-	pdf::PageContent *c = p->GetContent( ) ;
-	pdf::Text *t = c->AddText( ts ) ;
-	
-	pdf::TextLine line1( 0, 0, (GraphicsState(ts)), pdf::Matrix(1,0,0,1, 120, 300) ) ;
-	line1.AppendText( L"This is a line" ) ;
-	t->AddLine( line1 ) ;
-
-	pdf::TextLine line2( 0, 0, (GraphicsState(ts)), pdf::Matrix(1,0,0,1, 120, 400) ) ;
-	line2.AppendText( L"This is another line" ) ;
-	t->AddLine( line2 ) ;
+//	pdf::PageContent *c = p->GetContent( ) ;
+//	pdf::Text *t = c->AddText( ts ) ;
+//	
+//	pdf::TextLine line1( 0, 0, (GraphicsState(ts)), pdf::Matrix(1,0,0,1, 120, 300) ) ;
+//	line1.AppendText( L"This is a line" ) ;
+//	t->AddLine( line1 ) ;
+//
+//	pdf::TextLine line2( 0, 0, (GraphicsState(ts)), pdf::Matrix(1,0,0,1, 120, 400) ) ;
+//	line2.AppendText( L"This is another line" ) ;
+//	t->AddLine( line2 ) ;
 	
 	// visitor
 	struct V : public pdf::GraphicsVisitor
@@ -214,7 +211,7 @@ void RealPageTest::TestDecode( )
 		}
 	} v ;
 	
-	c->VisitGraphics( &v ) ;
+	p->VisitGraphics( &v ) ;
 }
 
 } // end of namespace

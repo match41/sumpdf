@@ -59,7 +59,6 @@
 #include <page/Page.hh>
 #include <util/Rect.hh>
 #include <util/Debug.hh>
-#include <page/PageContent.hh>
 #include <graphics/Text.hh>
 #include <graphics/TextLine.hh>
 #include <graphics/TextState.hh>
@@ -261,23 +260,23 @@ void MainWnd::StorePage( QGraphicsScene *scene, Doc *doc, Page *page )
 	assert( doc != 0 ) ;
 	assert( page != 0 ) ;
 	
-	PageContent *c = page->GetContent( ) ;
+//	PageContent *c = page->GetContent( ) ;
 //	c->Clear( ) ;
 	
-	Text *t = c->AddText( TextState() ) ;
-	
-	QList<QGraphicsItem *> items = scene->items() ;
-	for ( QList<QGraphicsItem*>::iterator i  = items.begin() ;
-	                                      i != items.end() ; ++i )
-	{
-		GlyphGroup *text = qgraphicsitem_cast<GlyphGroup*>( *i ) ;
-		
-		if ( text != 0 )
-		{
-			PDF_ASSERT( text->Format().GetFont() != 0 ) ;
-			t->AddLine( text->GetLine() ) ;
-		}
-	}
+//	Text *t = c->AddText( TextState() ) ;
+//	
+//	QList<QGraphicsItem *> items = scene->items() ;
+//	for ( QList<QGraphicsItem*>::iterator i  = items.begin() ;
+//	                                      i != items.end() ; ++i )
+//	{
+//		GlyphGroup *text = qgraphicsitem_cast<GlyphGroup*>( *i ) ;
+//		
+//		if ( text != 0 )
+//		{
+//			PDF_ASSERT( text->Format().GetFont() != 0 ) ;
+//			t->AddLine( text->GetLine() ) ;
+//		}
+//	}
 }
 
 void MainWnd::OnNextPage( )

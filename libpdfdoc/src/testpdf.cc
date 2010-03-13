@@ -24,7 +24,6 @@
 #include "graphics/Text.hh"
 #include "graphics/TextLine.hh"
 #include "page/Page.hh"
-#include "page/PageContent.hh"
 
 #include "util/Exception.hh"
 
@@ -47,9 +46,9 @@ int main( int argc, char **argv )
 	pdf::Page *p = doc->AppendPage( ) ;
 	pdf::Font *f = doc->CreateSimpleFont( "Arial" ) ;
 	
-	pdf::PageContent *c = p->GetContent( ) ;
-	pdf::Text *t = c->AddText( 12.0, f ) ;
-	t->AddLine( 100, 100, L"Hello world!" ) ;
+//	pdf::PageContent *c = p->GetContent( ) ;
+//	pdf::Text *t = c->AddText( 12.0, f ) ;
+//	t->AddLine( 100, 100, L"Hello world!" ) ;
 
 	doc->Write( "test.pdf" ) ;
 	delete doc ;

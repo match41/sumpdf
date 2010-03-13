@@ -26,6 +26,7 @@
 
 #include "RealPage.hh"
 
+#include "ContentStream.hh"
 #include "PageTree.hh"
 #include "RealResources.hh"
 
@@ -130,7 +131,7 @@ Object RealPage::WriteContent( File *file ) const
 	if ( m_cstrs.empty() )
 	{
 		Stream s ;
-		m_content.Write( s, m_pinfo.GetResource() ) ;
+//		m_content.Write( s, m_pinfo.GetResource() ) ;
 		return file->WriteObj( s ) ;
 	}
 	
@@ -178,25 +179,6 @@ RealResources* RealPage::GetResource( )
 const RealResources* RealPage::GetResource( ) const
 {
 	return m_pinfo.GetResource() ;
-}
-
-///	Get the contents of a page
-/**	This function will decode the page content when called. Decoding page
-	content takes some time, so unless the user calls this function, the
-	content won't be decode when creating the page object.
-*/
-RealContent* RealPage::GetContent( )
-{
-	if ( m_content.IsEmpty() )
-	{
-		// decode the graphics commands
-		m_content.Load( m_cstrs.begin(), m_cstrs.end(), m_pinfo.GetResource());
-		
-		// destroy the streams
-		m_cstrs.clear( ) ;
-	}
-	
-	return &m_content ;
 }
 
 int RealPage::Rotation( ) const
