@@ -34,6 +34,7 @@ namespace pdf {
 class Rect ;
 class Font ;
 class PageContent ;
+class GraphicsVisitor ;
 
 /**	\defgroup	page	Page and Content Related Classes
 	These classes are used to manipulate pages in a PDF document and their
@@ -64,6 +65,8 @@ public :
 	virtual PageContent* GetContent( ) = 0 ;
 	
 	virtual int Rotation( ) const = 0 ;
+	
+	virtual void VisitGraphics( GraphicsVisitor *visitor ) = 0 ;
 } ;
 
 } // end of namespace

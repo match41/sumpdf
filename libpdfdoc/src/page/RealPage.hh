@@ -71,6 +71,8 @@ public :
 
 	RealContent* GetContent( ) ;
 	int Rotation( ) const ;
+	
+	void VisitGraphics( GraphicsVisitor *v ) ;
 
 private :
 	void ReadContent( const Object& str_obj, File *file ) ;

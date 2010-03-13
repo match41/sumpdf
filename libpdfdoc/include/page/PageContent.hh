@@ -49,17 +49,17 @@ protected :
 
 public :
 	///	Returns the number of graphics elements.
-	virtual std::size_t Count( ) const = 0 ;
+//	virtual std::size_t Count( ) const = 0 ;
 	
 	///	Returns the specific graphics element given by an index.
-	virtual const Graphics* Item( std::size_t idx ) const = 0 ;
+//	virtual const Graphics* Item( std::size_t idx ) const = 0 ;
 	
 	virtual Text* AddText( const TextState& ts ) = 0 ;
 	virtual Text* AddText( double size, Font *font ) = 0 ;
 	
 	virtual void VisitGraphics( GraphicsVisitor *visitor ) = 0 ;
 	
-	virtual void Clear( ) = 0 ;
+//	virtual void Clear( ) = 0 ;
 } ;
 
 } // end of namespace

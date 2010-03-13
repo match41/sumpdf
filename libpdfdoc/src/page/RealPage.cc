@@ -38,6 +38,7 @@
 #include "file/File.hh"
 #include "file/DictReader.hh"
 #include "file/ElementPool.hh"
+#include "graphics/Graphics.hh"
 #include "util/Debug.hh"
 #include "util/Rect.hh"
 #include "util/Util.hh"
@@ -201,6 +202,18 @@ RealContent* RealPage::GetContent( )
 int RealPage::Rotation( ) const
 {
 	return m_pinfo.Rotation( ) ;
+}
+
+void RealPage::VisitGraphics( GraphicsVisitor *v )
+{
+	std::vector<Graphics*>	gfx ;
+
+	ContentStream cs( m_cstrs.begin(), m_cstrs.end(), m_pinfo.GetResource() ) ;
+	cs.Decode( ) ;
+	cs.SwapGfxObj( gfx ) ;
+	
+	using namespace boost ;
+	std::for_each( gfx.begin(), gfx.end(), bind( &Graphics::Visit, _1, v ) ) ;
 }
 
 } // end of namespace

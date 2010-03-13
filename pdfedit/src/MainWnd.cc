@@ -183,8 +183,8 @@ void MainWnd::GoToPage( std::size_t page )
 		
 		Page *p = m_doc->GetPage( m_current_page ) ;
 		
-		PageContent *c = p->GetContent( ) ;
-		c->VisitGraphics( this ) ;
+//		PageContent *c = p->GetContent( ) ;
+		p->VisitGraphics( this ) ;
 		m_scene->invalidate() ;
 	
 		m_label->setText( QString( tr(" page: %1 / %2") ).
@@ -262,7 +262,7 @@ void MainWnd::StorePage( QGraphicsScene *scene, Doc *doc, Page *page )
 	assert( page != 0 ) ;
 	
 	PageContent *c = page->GetContent( ) ;
-	c->Clear( ) ;
+//	c->Clear( ) ;
 	
 	Text *t = c->AddText( TextState() ) ;
 	
