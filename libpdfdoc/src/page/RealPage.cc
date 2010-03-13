@@ -186,7 +186,7 @@ int RealPage::Rotation( ) const
 	return m_pinfo.Rotation( ) ;
 }
 
-void RealPage::VisitGraphics( GraphicsVisitor *visitor )
+void RealPage::VisitGraphics( GraphicsVisitor *visitor ) const
 {
 	ContentStream cs(
 		m_cstrs.begin(),
@@ -194,6 +194,23 @@ void RealPage::VisitGraphics( GraphicsVisitor *visitor )
 		m_pinfo.GetResource(),
 		visitor ) ;
 	cs.Decode( ) ;
+}
+
+void RealPage::SetContent( const std::vector<Graphics*>& gfx )
+{
+	Stream str ;
+	std::ostream os( str.OutStreamBuf() ) ;
+
+	using namespace boost ;
+	std::for_each(
+		gfx.begin(),
+		gfx.end(),
+		bind( &Graphics::Print, _1, ref(os), m_pinfo.GetResource() ) ) ;
+
+	os.flush() ;
+	
+	m_cstrs.clear( ) ;
+	m_cstrs.push_back( str ) ;
 }
 
 } // end of namespace

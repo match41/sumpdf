@@ -70,7 +70,8 @@ public :
 
 	int Rotation( ) const ;
 	
-	void VisitGraphics( GraphicsVisitor *visitor ) ;
+	void VisitGraphics( GraphicsVisitor *visitor ) const ;
+	void SetContent( const std::vector<Graphics*>& gfx ) ;
 
 private :
 	void ReadContent( const Object& str_obj, File *file ) ;

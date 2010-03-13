@@ -144,7 +144,7 @@ Ref Catalog::Write( File *file ) const
 
 	self["Pages"] 	    = tree ;
 	self["Type"]	    = Name( "Catalog" ) ;
-	self["Version"]	= m_version ;
+	self["Version"]		= m_version ;
 	self["PageLayout"]	= m_page_layout ;
 	self["PageMode"]	= m_page_mode ;
 

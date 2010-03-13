@@ -28,11 +28,13 @@
 #define __PDF_PAGE_HEADER_INCLUDED__
 
 #include <string>
+#include <vector>
 
 namespace pdf {
 
 class Rect ;
 class Font ;
+class Graphics ;
 class GraphicsVisitor ;
 
 /**	\defgroup	page	Page and Content Related Classes
@@ -63,7 +65,9 @@ public :
 
 	virtual int Rotation( ) const = 0 ;
 	
-	virtual void VisitGraphics( GraphicsVisitor *visitor ) = 0 ;
+	virtual void VisitGraphics( GraphicsVisitor *visitor ) const = 0 ;
+	
+	virtual void SetContent( const std::vector<Graphics*>& gfx ) = 0 ;
 } ;
 
 } // end of namespace

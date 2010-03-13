@@ -131,7 +131,6 @@ void ContentStream::OnET( const ContentOp& )
 	{
 		m_state.gs = m_current->GetState( ) ;
 		
-//		m_gfx.push_back( m_current ) ;
 		m_current->Visit( m_visitor ) ;
 		delete m_current ;
 		m_current = 0 ;
