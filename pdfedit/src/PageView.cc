@@ -35,6 +35,8 @@
 #include <QMainWindow>
 #include <QMouseEvent>
 #include <QStatusBar>
+#include <QMessageBox>
+#include <QTransform>
 
 namespace pdf {
 
@@ -62,14 +64,28 @@ void PageView::Zoom( double factor )
 	setMatrix( m ) ;
 }
 
+template <typename T>
+QString operator%( QString s, T t )
+{
+	return s.arg( t ) ;
+}
+
 void PageView::mousePressEvent( QMouseEvent *event )
 {
 	QPointF pos = mapToScene( event->pos() ) ;
 	
+	QGraphicsItem *item = scene()->itemAt( pos ) ;
+	
 	// add text box if the user clicks empty space
-	if ( QGraphicsItem *item = scene()->itemAt( pos ) )
+	if ( event->button() == Qt::RightButton &&
+	     item != 0  )
 	{
-		qDebug() << item->mapFromParent( pos ) ;
+		QTransform t = item->transform( ) ;		
+		QMessageBox::information(
+			this,
+			"Item",
+			QString( "%1 %2 %3 %4 %5 %6" )
+			% t.m11() % t.m12() % t.m21() % t.m22() % t.m31() % t.m32() ) ;
 	}
 	
 	// click at empty space
@@ -85,6 +101,8 @@ void PageView::mouseMoveEvent( QMouseEvent *event )
 {
 	QPointF pos = mapToScene( event->pos() ) ;
 	m_parent->statusBar()->showMessage( QString("%1,%2").arg( pos.x() ).arg( pos.y() ) ) ;
+
+	QGraphicsView::mouseMoveEvent( event ) ;
 }
 
 } // end of namespace
