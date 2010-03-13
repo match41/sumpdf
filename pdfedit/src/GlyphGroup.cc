@@ -36,6 +36,7 @@
 #include <util/Debug.hh>
 #include <util/Matrix.hh>
 
+#include <QMessageBox>
 #include <QDebug>
 
 namespace pdf {
@@ -49,7 +50,7 @@ GlyphGroup::GlyphGroup( const TextLine& blk, QGraphicsItem *parent )
 	m_line.VisitChars( this ) ;
 	
 	// setup flags
-	setFlags( ItemIsSelectable | ItemIsMovable ) ;
+	setFlags( ItemIsSelectable | ItemIsMovable | ItemSendsGeometryChanges ) ;
 
 	QTransform t = ToQtMatrix( m_line.Transform() ) ;
 	setTransform( t ) ;
@@ -103,7 +104,54 @@ int GlyphGroup::columnCount( const QModelIndex& parent ) const
 
 QVariant GlyphGroup::data( const QModelIndex& index, int role ) const
 {
-	return "haha" ;
+	if ( role == Qt::DisplayRole )
+	{
+		if ( index.column() == 0 )
+		{
+			switch ( index.row() )
+			{
+			case 0: return tr( "Transform" ) ;
+			case 1: return tr( "Position" ) ;
+			}
+		}
+		else
+		{
+			QTransform t = transform() ;
+			switch ( index.row() )
+			{
+			case 0: return QString( "%1 %2 %3 %4 %5 %6" )
+				% t.m11() % t.m12() % t.m21() % t.m22() % t.m31() % t.m32() ;
+
+			case 1: return QString( "%1, %2" ) % pos().x() % pos().y() ;
+			}
+		}
+	}
+	return QVariant( ) ;
+}
+
+QVariant GlyphGroup::headerData( int sect, Qt::Orientation or, int role ) const
+{
+	if ( or == Qt::Horizontal && role == Qt::DisplayRole )
+	{
+		switch ( sect )
+		{
+		case 0: return tr( "Property" ) ;
+		case 1: return tr( "Value" ) ;
+		}
+	}
+	else if ( or == Qt::Vertical )
+	{
+	}
+	return QVariant( ) ;
+}
+
+QVariant GlyphGroup::itemChange( GraphicsItemChange change, const QVariant& value )
+{
+	if ( change == ItemPositionChange || change == ItemMatrixChange )
+	{
+		emit dataChanged( index( 0, 1 ), index( 1, 1 ) ) ;
+	}
+	return QGraphicsItemGroup::itemChange( change, value ) ;
 }
 
 } // end of namespace

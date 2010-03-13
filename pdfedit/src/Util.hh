@@ -26,10 +26,11 @@
 #ifndef __PDF_UTIL_HH_EADER_INCLUDED__
 #define __PDF_UTIL_HH_EADER_INCLUDED__
 
+#include <QString>
+
 #include <string>
 
 class QTransform ;
-class QString ;
 
 namespace pdf
 {
@@ -40,6 +41,13 @@ namespace pdf
 
 	std::wstring ToWStr( const QString& str ) ;
 	QString FromWStr( const std::wstring& str ) ;
+
+
+	template <typename T>
+	QString operator%( QString s, T t )
+	{
+		return s.arg( t ) ;
+	}
 
 } // end of namespace
 

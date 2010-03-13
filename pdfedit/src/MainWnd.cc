@@ -119,12 +119,20 @@ MainWnd::MainWnd( QWidget *parent )
 
 	m_btn_next_pg->setEnabled( false ) ;
 	m_btn_previous_pg->setEnabled( false ) ;
+	
+	m_item_prop->verticalHeader()->hide() ;
+	m_item_prop->horizontalHeader()->setStretchLastSection( true ) ;
 }
 
 /**	destructor is for the auto_ptr	
 */
 MainWnd::~MainWnd( )
 {
+}
+
+void MainWnd::OnChanged( const QList<QRectF>& region )
+{
+	OnSelectionChanged( ) ;
 }
 
 void MainWnd::OnSelectionChanged( )

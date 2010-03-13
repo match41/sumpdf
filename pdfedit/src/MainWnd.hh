@@ -80,6 +80,7 @@ public slots :
 	
 	void GoToPage( std::size_t index ) ;
 	void OnSelectionChanged( ) ;
+	void OnChanged( const QList<QRectF>& ) ;
 
 private :
 	void StorePage( QGraphicsScene *scene, Doc *doc, Page *page ) ;

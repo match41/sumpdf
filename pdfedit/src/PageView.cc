@@ -28,6 +28,8 @@
 
 #include "TextEdit.hh"
 
+#include "Util.hh"
+
 #include <util/Debug.hh>
 
 #include <QGraphicsItem>
@@ -63,12 +65,6 @@ void PageView::Zoom( double factor )
 	QMatrix m ;
 	m.scale( factor * physical, -factor * physical ) ;
 	setMatrix( m ) ;
-}
-
-template <typename T>
-QString operator%( QString s, T t )
-{
-	return s.arg( t ) ;
 }
 
 void PageView::mousePressEvent( QMouseEvent *event )
