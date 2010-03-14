@@ -50,7 +50,7 @@ public :
 
 	void OnCommand( ContentOp& op, const ResourcesDict *res ) ;
 
-	void Print( std::ostream& os, const ResourcesDict *res ) const ;
+	void Print( std::ostream& os, ResourcesDict *res ) const ;
 
 	iterator begin() ;
 	iterator end() ;

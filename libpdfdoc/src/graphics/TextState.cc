@@ -40,8 +40,8 @@ namespace pdf {
 /**	Constructor.
 */
 TextState::TextState( double size, Font *font )
-	: m_font_size( size ),
-	  m_font( font )
+	: m_font_size( size )
+	, m_font( font )
 {
 	m_char_space = m_word_space = m_hori_scale = m_leading = 
 	m_text_rise  = 0 ;
@@ -136,7 +136,7 @@ double TextState::TextRise( ) const
 
 std::ostream& TextState::Print(
 	std::ostream& 		os,
-	const ResourcesDict		*res,
+	ResourcesDict		*res,
 	const TextState& 	prev ) const
 {
 	PDF_ASSERT( res != 0 ) ;
@@ -145,7 +145,7 @@ std::ostream& TextState::Print(
 	if ( m_font_size	!= prev.m_font_size ||
 		 m_font			!= prev.m_font )
 	{
-		Name fname = res->FindFont( static_cast<const BaseFont*>(m_font) ) ;
+		Name fname = res->AddFont( static_cast<const BaseFont*>(m_font) ) ;
 		PDF_ASSERT( !fname.empty( ) ) ;
 		
 		os	<< fname << ' ' << m_font_size << " Tf\n" ;

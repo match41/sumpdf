@@ -92,12 +92,12 @@ struct GraphicsState::Impl
 } ;
 
 GraphicsState::GraphicsState( )
-: m_impl( new Impl )
+	: m_impl( new Impl )
 {
 }
 
 GraphicsState::GraphicsState( const TextState& ts )
-: m_impl( new Impl( ts ) )
+	: m_impl( new Impl( ts ) )
 {
 }
 
@@ -124,7 +124,7 @@ TextState& GraphicsState::GetTextState()
 
 std::ostream& GraphicsState::Print(
 	std::ostream&			os,
-	const ResourcesDict			*res,
+	ResourcesDict			*res,
 	const GraphicsState&	prev ) const
 {
 	m_impl->m_text.Print( os, res, prev.m_impl->m_text ) ;

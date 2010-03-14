@@ -60,20 +60,20 @@ struct Catalog::NameDict
 } ;
 
 Catalog::Catalog( FontDb *fontdb )
-	: m_version		( "1.4" ),
-	  m_page_layout	( "SinglePage" ),
-	  m_page_mode	( "UseNode" ),
-	  m_tree		( new PageTree( fontdb ) ),
-	  m_name_dict	( new NameDict )
+	: m_version		( "1.4" )
+	, m_page_layout	( "SinglePage" )
+	, m_page_mode	( "UseNode" )
+	, m_tree		( new PageTree( fontdb ) )
+	, m_name_dict	( new NameDict )
 {
 }
 
 Catalog::Catalog( const Ref& link, File *file, FontDb *fontdb )
-	: m_version		( "1.4" ),
-	  m_page_layout	( "SinglePage" ),
-	  m_page_mode	( "UseNode" ),
-	  m_tree		( 0 ),
-	  m_name_dict	( new NameDict )
+	: m_version		( "1.4" )
+	, m_page_layout	( "SinglePage" )
+	, m_page_mode	( "UseNode" )
+	, m_tree		( 0 )
+	, m_name_dict	( new NameDict )
 {
 	PDF_ASSERT( file != 0 ) ;
 	Dictionary d = file->ReadObj( link ).As<Dictionary>() ;
@@ -187,12 +187,6 @@ Page* Catalog::GetPage( std::size_t index )
 	PDF_ASSERT( typeid(*p) == typeid(RealPage) ) ;
 
 	return static_cast<RealPage*>( p ) ;
-}
-
-Font* Catalog::CreateSimpleFont( const std::string& name )
-{
-	PDF_ASSERT( m_tree != 0 ) ;
-	return m_tree->CreateSimpleFont( name ) ;
 }
 
 } // end of namespace

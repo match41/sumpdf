@@ -263,20 +263,23 @@ void MainWnd::StorePage( QGraphicsScene *scene, Doc *doc, Page *page )
 //	PageContent *c = page->GetContent( ) ;
 //	c->Clear( ) ;
 	
-//	Text *t = c->AddText( TextState() ) ;
-//	
-//	QList<QGraphicsItem *> items = scene->items() ;
-//	for ( QList<QGraphicsItem*>::iterator i  = items.begin() ;
-//	                                      i != items.end() ; ++i )
-//	{
-//		GlyphGroup *text = qgraphicsitem_cast<GlyphGroup*>( *i ) ;
-//		
-//		if ( text != 0 )
-//		{
-//			PDF_ASSERT( text->Format().GetFont() != 0 ) ;
-//			t->AddLine( text->GetLine() ) ;
-//		}
-//	}
+	Text *t = CreateText( GraphicsState() ) ;
+	
+	QList<QGraphicsItem *> items = scene->items() ;
+	for ( QList<QGraphicsItem*>::iterator i  = items.begin() ;
+	                                      i != items.end() ; ++i )
+	{
+		GlyphGroup *text = qgraphicsitem_cast<GlyphGroup*>( *i ) ;
+		
+		if ( text != 0 )
+		{
+			PDF_ASSERT( text->Format().GetFont() != 0 ) ;
+			t->AddLine( text->GetLine() ) ;
+		}
+	}
+	
+	std::vector<Graphics*> gfx( 1, t ) ;
+	page->SetContent( gfx ) ;
 }
 
 void MainWnd::OnNextPage( )

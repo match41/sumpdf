@@ -60,7 +60,7 @@ public :
 
 	std::ostream& Print(
 		std::ostream&			os,
-		const ResourcesDict			*res,
+		ResourcesDict			*res,
 		const GraphicsState&	prev = GraphicsState() ) const ;
 
 	/// Handle PDF content operators.

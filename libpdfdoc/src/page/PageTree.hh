@@ -68,8 +68,6 @@ public :
 	Rect MediaBox( ) const ;
 	Rect CropBox( ) const ;
 
-	Font* CreateSimpleFont( const std::string& name ) ;
-
 	int Rotation( ) const ;
 
 private :

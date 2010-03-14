@@ -33,7 +33,7 @@
 #include "file/DictReader.hh"
 #include "file/ElementPool.hh"
 #include "file/ElementFactory.hh"
-#include "font/SimpleFont.hh"
+#include "font/BaseFont.hh"
 #include "util/Util.hh"
 #include "util/Debug.hh"
 
@@ -127,8 +127,6 @@ void RealResources::ReadStateDict( DictReader& self )
 	}
 }
 
-
-
 void RealResources::ReadFontDict( DictReader& self )
 {
 	PDF_ASSERT( self.GetFile() != 0 ) ;
@@ -215,11 +213,11 @@ Name RealResources::FindFont( const BaseFont *font ) const
 		( m_parent != 0 ? m_parent->FindFont( font ) : Name() ) ; 
 }
 
-Font* RealResources::CreateSimpleFont( const std::string& name )
+/// Throw everything away and start over.
+void RealResources::Clear( )
 {
-	SimpleFont *f = new SimpleFont( name, m_font_db ) ;
-	AddFont( f ) ;
-	return f ;
+	m_fonts.clear( ) ;
+	m_states.clear( ) ;
 }
 
 } // end of namespace

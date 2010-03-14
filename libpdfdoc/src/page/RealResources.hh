@@ -73,7 +73,7 @@ public :
 	BaseFont* FindFont( const Name& name ) const ;
 	Name FindFont( const BaseFont *font ) const ;
 
-	Font* CreateSimpleFont( const std::string& name ) ;
+	void Clear( ) ;
 
 private :
 	void ReadFontDict( DictReader& self ) ;

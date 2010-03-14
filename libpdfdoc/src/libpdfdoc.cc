@@ -27,6 +27,7 @@
 #include "libpdfdoc.hh"
 
 #include "RealDoc.hh"
+#include "graphics/RealText.hh"
 
 namespace pdf {
 
@@ -48,6 +49,11 @@ const char* Version( )
 {
 	static const char version[] = VERSION ;
 	return version ;
+}
+
+Text* CreateText( const GraphicsState& ts )
+{
+	return new RealText( ts ) ;
 }
 
 } // end of namespace
