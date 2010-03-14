@@ -78,8 +78,6 @@ MainWnd::MainWnd( QWidget *parent )
 	, m_view( new PageView( m_scene, this ) )
 	, m_tool_bar( addToolBar(tr("Main") ) )
 	, m_zoom_box( new QComboBox( m_tool_bar ) )
-	, m_btn_next_pg( new QPushButton( "=>",m_tool_bar ) )
-	, m_btn_previous_pg( new QPushButton( "<=", m_tool_bar ) )
 	, m_label( new QLabel( tr(" page:    ") ) )
 	, m_current_page( 0 )
 {
@@ -91,8 +89,10 @@ MainWnd::MainWnd( QWidget *parent )
 	connect( m_action_open,		SIGNAL(triggered()), this, SLOT(OnOpen()) );
 	connect( m_action_save_as,	SIGNAL(triggered()), this, SLOT(OnSaveAs()) );
 	connect( m_action_exit, 	SIGNAL(triggered()), qApp, SLOT(quit()) );
-	connect( m_btn_previous_pg,	SIGNAL(clicked()),	this, SLOT(OnPreviousPage()) );
-	connect( m_btn_next_pg, 	SIGNAL(clicked()),	this, SLOT(OnNextPage()) );
+	connect( m_action_previous_pg,	SIGNAL(triggered()),	this, SLOT(OnPreviousPage()) );
+	connect( m_action_next_pg, 	SIGNAL(triggered()),	this, SLOT(OnNextPage()) );
+	connect( m_action_first_pg,	SIGNAL(triggered()),	this, SLOT(OnFirstPage()) );
+	connect( m_action_last_pg, 	SIGNAL(triggered()),	this, SLOT(OnLastPage()) );
 	connect( m_scene, 	SIGNAL(selectionChanged()),	this, SLOT(OnSelectionChanged()) );
 
 	// initialize tool bar
@@ -113,12 +113,12 @@ MainWnd::MainWnd( QWidget *parent )
 	
 	m_tool_bar->addWidget( m_zoom_box ) ;
 
-	m_tool_bar->addWidget( m_btn_previous_pg );
-	m_tool_bar->addWidget( m_btn_next_pg );
 	m_tool_bar->addWidget( m_label );
 
-	m_btn_next_pg->setEnabled( false ) ;
-	m_btn_previous_pg->setEnabled( false ) ;
+	m_action_next_pg->setEnabled( false ) ;
+	m_action_previous_pg->setEnabled( false ) ;
+	m_action_first_pg->setEnabled( false ) ;
+	m_action_last_pg->setEnabled( false ) ;
 	
 	m_item_prop->verticalHeader()->hide() ;
 	m_item_prop->horizontalHeader()->setStretchLastSection( true ) ;
@@ -192,8 +192,10 @@ void MainWnd::GoToPage( std::size_t page )
 			arg( m_doc->PageCount() ) ) ;
 	
 		// enable/disable page buttons
-		m_btn_next_pg->setEnabled( m_current_page + 1 < m_doc->PageCount() ) ;
-		m_btn_previous_pg->setEnabled( m_current_page > 0 ) ;
+		m_action_next_pg->setEnabled( m_current_page + 1 < m_doc->PageCount() ) ;
+		m_action_last_pg->setEnabled( m_current_page + 1 < m_doc->PageCount() ) ;
+		m_action_previous_pg->setEnabled( m_current_page > 0 ) ;
+		m_action_first_pg->setEnabled( m_current_page > 0 ) ;
 	}
 }
 
@@ -312,6 +314,40 @@ void MainWnd::OnPreviousPage( )
 				// go to previous page and display
 				GoToPage( m_current_page - 1 ) ;
 			}
+		}
+		catch ( std::exception& e )
+		{
+			ExceptionDlg dlg( e.what(), this ) ;
+			dlg.exec() ;
+		}
+	}
+}
+
+void MainWnd::OnFirstPage( )
+{
+	if ( m_doc.get() )
+	{
+		try
+		{
+			// go to first page and display
+			GoToPage( 0 ) ;
+		}
+		catch ( std::exception& e )
+		{
+			ExceptionDlg dlg( e.what(), this ) ;
+			dlg.exec() ;
+		}
+	}
+}
+
+void MainWnd::OnLastPage( )
+{
+	if ( m_doc.get() )
+	{
+		try
+		{
+			// go to last page and display
+			GoToPage( m_doc->PageCount() - 1 ) ;
 		}
 		catch ( std::exception& e )
 		{

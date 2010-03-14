@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="m_menu_file">
@@ -54,6 +54,9 @@
   </widget>
   <widget class="QStatusBar" name="m_statusbar"/>
   <widget class="QDockWidget" name="dockWidget">
+   <property name="windowTitle">
+    <string>Text Properties</string>
+   </property>
    <attribute name="dockWidgetArea">
     <number>2</number>
    </attribute>
@@ -71,6 +74,21 @@
      </item>
     </layout>
    </widget>
+  </widget>
+  <widget class="QToolBar" name="m_toolbar_navigation">
+   <property name="windowTitle">
+    <string>Navigation Toolbar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="m_action_first_pg"/>
+   <addaction name="m_action_previous_pg"/>
+   <addaction name="m_action_next_pg"/>
+   <addaction name="m_action_last_pg"/>
   </widget>
   <action name="m_action_new">
    <property name="text">
@@ -110,6 +128,54 @@
   <action name="m_action_font">
    <property name="text">
     <string>&amp;Font...</string>
+   </property>
+  </action>
+  <action name="m_action_next_pg">
+   <property name="icon">
+    <iconset resource="pdfedit.qrc">
+     <normaloff>:/images/arrow-right.png</normaloff>:/images/arrow-right.png</iconset>
+   </property>
+   <property name="text">
+    <string>Next Page</string>
+   </property>
+  </action>
+  <action name="m_action_previous_pg">
+   <property name="icon">
+    <iconset resource="pdfedit.qrc">
+     <normaloff>:/images/arrow-left.png</normaloff>:/images/arrow-left.png</iconset>
+   </property>
+   <property name="text">
+    <string>Previous Page</string>
+   </property>
+  </action>
+  <action name="m_action_last_pg">
+   <property name="icon">
+    <iconset resource="pdfedit.qrc">
+     <normaloff>:/images/arrow-right-end.png</normaloff>:/images/arrow-right-end.png</iconset>
+   </property>
+   <property name="text">
+    <string>Last Page</string>
+   </property>
+   <property name="toolTip">
+    <string>Last Page</string>
+   </property>
+  </action>
+  <action name="m_action_first_pg">
+   <property name="icon">
+    <iconset resource="pdfedit.qrc">
+     <normaloff>:/images/arrow-left-end.png</normaloff>:/images/arrow-left-end.png</iconset>
+   </property>
+   <property name="text">
+    <string>First Page</string>
+   </property>
+  </action>
+  <action name="m_action_open_2">
+   <property name="icon">
+    <iconset resource="pdfedit.qrc">
+     <normaloff>:/images/directory_open.png</normaloff>:/images/directory_open.png</iconset>
+   </property>
+   <property name="text">
+    <string>Open File</string>
    </property>
   </action>
  </widget>

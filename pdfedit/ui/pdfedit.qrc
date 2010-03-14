@@ -1,5 +1,8 @@
 <RCC>
   <qresource>
+    <file>images/directory_open.png</file>
+    <file>images/arrow-left-end.png</file>
+    <file>images/arrow-right-end.png</file>
     <file>images/arrow-left-double.png</file>
     <file>images/arrow-left.png</file>
     <file>images/arrow-right.png</file>
