@@ -153,7 +153,7 @@ bool Array::operator==( const Array& array ) const
 
 bool Array::operator!=( const Array& array ) const
 {
-	return !(m_array == array.m_array ) ;
+	return !operator==( array ) ;
 }
 
 Object& Array::operator[]( std::size_t index )
