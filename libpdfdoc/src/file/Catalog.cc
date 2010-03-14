@@ -144,9 +144,15 @@ Ref Catalog::Write( File *file ) const
 
 	self["Pages"] 	    = tree ;
 	self["Type"]	    = Name( "Catalog" ) ;
-	self["Version"]		= m_version ;
-	self["PageLayout"]	= m_page_layout ;
-	self["PageMode"]	= m_page_mode ;
+	
+	if ( !m_version.empty() )
+		self["Version"]		= m_version ;
+	
+	if ( !m_page_layout.empty() )
+		self["PageLayout"]	= m_page_layout ;
+	
+	if ( !m_page_mode.empty() )
+		self["PageMode"]	= m_page_mode ;
 
 	// write destinations
 	Dictionary dest ;
