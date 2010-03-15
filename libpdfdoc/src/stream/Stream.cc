@@ -224,10 +224,10 @@ Dictionary Stream::GetRawDict( ) const
 	PDF_ASSERT( m_self.find( "Filter" ) == m_self.end() ) ;
 	
 	Dictionary dict = m_self ;
-	dict["Length"]	= Length( ) ;
+	dict.insert( "Length", Length( ) ) ;
 	Object filter	= m_data->filter->GetFilterName( ) ;
 	if ( !filter.Is<void>() )
-		dict["Filter"]	= filter ;
+		dict.insert( "Filter", filter ) ;
 		
 	return dict ;
 }

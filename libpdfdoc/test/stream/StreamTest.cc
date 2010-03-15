@@ -84,7 +84,7 @@ void StreamTest::TestRead( )
 void StreamTest::TestRead2( )
 {
 	pdf::Dictionary d ;
-	d["Length"] = 5 ;
+	d.insert( "Length", 5 ) ;
 	std::istringstream iss( "hello" ) ;
 	pdf::Stream subject( iss.rdbuf(), 0, d ) ;
 	pdf::Token t ;
@@ -318,13 +318,13 @@ void StreamTest::TestCopy2( )
 	unsigned char text[] = "abc" ;
 	s1.Append( text, sizeof(text) ) ;
 	s1.Flush( ) ;
-	s1.Self()["Haha"] = "Hehe" ;
+	s1.Self().Set( "Haha", "Hehe" ) ;
 	
 	pdf::Stream s2( s1 ) ;
 	PDFUT_ASSERT_EQUAL( s2.Self()["Haha"].As<std::string>(), "Hehe" ) ;
 	PDFUT_ASSERT_EQUAL( s2.UseCount(), 2 ) ;
 	
-	s2.Self()["Haha"] = "wahaha" ;
+	s2.Self().Set( "Haha", "wahaha" ) ;
 	PDFUT_ASSERT_EQUAL( s2.UseCount(), 2 ) ;
 	PDFUT_ASSERT_EQUAL( s1.UseCount(), 2 ) ;
 	PDFUT_ASSERT_EQUAL( s1.Self()["Haha"].As<std::string>(), "Hehe" ) ;

@@ -45,14 +45,14 @@ void DictionaryTest::TestNormal( )
 	CPPUNIT_ASSERT( ss >> d ) ;
 	
 	pdf::Dictionary::iterator i = d.begin( ) ;
-	CPPUNIT_ASSERT( d.size() == 3 ) ;
-	CPPUNIT_ASSERT( i->first == "Name" ) ;
-	CPPUNIT_ASSERT( i->second.As<std::string>( ) == "Me" );
+	PDFUT_ASSERT_EQUAL( d.size(), 3U ) ;
+	PDFUT_ASSERT_EQUAL( i->first, "Name" ) ;
+	PDFUT_ASSERT_EQUAL( i->second.As<std::string>( ), "Me" );
 
 	++i ;
 
-	CPPUNIT_ASSERT( i->first == "Not" ) ;
-	CPPUNIT_ASSERT( i->second == 1234.6 ) ;
+	PDFUT_ASSERT_EQUAL( i->first,	"Not" ) ;
+	PDFUT_ASSERT_EQUAL( i->second,	1234.6 ) ;
 
 	++i ;
 
@@ -63,8 +63,8 @@ void DictionaryTest::TestNormal( )
 void DictionaryTest::TestRead( )
 {
 	pdf::Dictionary d ;
-	d.Add( pdf::Name( "Name" ), "Me" ) ;
-	d.Add( pdf::Name( "Not" ), 1234.6 ) ;
+	d.Set( pdf::Name( "Name" ), "Me" ) ;
+	d.Set( pdf::Name( "Not" ), 1234.6 ) ;
 
 	std::stringstream ss ;
 	CPPUNIT_ASSERT( ss << d ) ;
@@ -160,8 +160,8 @@ void DictionaryTest::TestImage( )
 void DictionaryTest::TestSwap( )
 {
 	pdf::Dictionary s1, s2 ;
-	s1["AAA"] = "bbb" ;
-	s2["bbb"] = "AAA" ;
+	s1.insert( "AAA", "bbb" ) ;
+	s2.insert( "bbb", "AAA" ) ;
 	
 	s1.swap( s2 ) ;
 	
@@ -176,7 +176,7 @@ void DictionaryTest::TestNull( )
 	PDFUT_ASSERT_EQUAL( s.size(), 0U ) ; 
 	CPPUNIT_ASSERT( s.empty() ) ;
 	
-	s["haha"] = pdf::Object() ;
+	s.insert( "haha", pdf::Object() ) ;
 	CPPUNIT_ASSERT( s.find( "haha" ) == s.end() ) ;
 	PDFUT_ASSERT_EQUAL( s.size(), 0U ) ;
 	CPPUNIT_ASSERT( s.empty() ) ;
@@ -185,10 +185,10 @@ void DictionaryTest::TestNull( )
 void DictionaryTest::TestErase( )
 {
 	pdf::Dictionary s ;
-	s["???"] = "haha" ;
+	s.insert( "???", "haha" ) ;
 	PDFUT_ASSERT_EQUAL( s.size(), 1U ) ;
 	
-	s["!!!"] = "hehe" ;
+	s.insert( "!!!", "hehe" ) ;
 	PDFUT_ASSERT_EQUAL( s.size(), 2U ) ;
 	
 	s.erase( "???" ) ;
@@ -201,13 +201,13 @@ void DictionaryTest::TestErase( )
 void DictionaryTest::TestEraseByAddNull( )
 {
 	pdf::Dictionary s ;
-	s["???"] = "haha" ;
+	s.insert( "???", "haha" ) ;
 	PDFUT_ASSERT_EQUAL( s.size(), 1U ) ;
 	
-	s["!!!"] = "hehe" ;
+	s.insert( "!!!", "hehe" ) ;
 	PDFUT_ASSERT_EQUAL( s.size(), 2U ) ;
 	
-	s.Add( "???", pdf::Object() ) ;
+	s.Set( "???", pdf::Object() ) ;
 	PDFUT_ASSERT_EQUAL( s.size(), 1U ) ;
 	CPPUNIT_ASSERT( s["???"].Is<void>() ) ;
 	CPPUNIT_ASSERT( s.find( "haha" ) == s.end() ) ;

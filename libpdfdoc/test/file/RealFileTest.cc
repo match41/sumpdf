@@ -52,10 +52,10 @@ RealFileTest::RealFileTest( )
 void RealFileTest::setUp( )
 {
 	m_page = new Dictionary ;
-	(*m_page)["Type"]		= Name( "Page" ) ;
-	(*m_page)["Parent"]		= Ref( 1, 0 ) ;
-	(*m_page)["Resources"]	= Ref( 2, 0 ) ;
-	(*m_page)["Contents"]	= Ref( 4, 0 ) ;
+	m_page->insert( "Type",		Name( "Page" ) ) ;
+	m_page->insert( "Parent",	Ref( 1, 0 ) ) ;
+	m_page->insert( "Resources",Ref( 2, 0 ) ) ;
+	m_page->insert( "Contents",	Ref( 4, 0 ) ) ;
 	
 	m_content = new Stream(
 		"2 J\n0.57 w\nBT /F1 16.00 Tf ET\n"
@@ -64,35 +64,35 @@ void RealFileTest::setUp( )
 	Ref pages[] = { Ref( 3, 0 ) } ;
 	double mbox[] = { 0, 0, 595.28, 841.89 } ;
 	m_page_tree = new Dictionary ;
-	(*m_page_tree)["Type"]		= Name( "Pages" ) ;
-	(*m_page_tree)["Kids"]		= Array( Begin(pages), End(pages) ) ;
-	(*m_page_tree)["Count"]		= 1 ;
-	(*m_page_tree)["MediaBox"]	= Array( Begin(mbox), End(mbox) ) ;
+	m_page_tree->insert( "Type",		Name( "Pages" ) ) ;
+	m_page_tree->insert( "Kids",		Array( Begin(pages), End(pages) ) ) ;
+	m_page_tree->insert( "Count",		1 ) ;
+	m_page_tree->insert( "MediaBox",	Array( Begin(mbox), End(mbox) ) ) ;
 
 	m_font = new Dictionary ;
-	(*m_font)["Type"]		= Name( "Font" ) ;
-	(*m_font)["BaseFont"]	= Name( "Helvetica-Bold" ) ;
-	(*m_font)["Subtype"]	= Name( "Type1" ) ;
-	(*m_font)["Encoding"]	= Name( "WinAnsiEncoding" ) ;
+	m_font->insert( "Type",		Name( "Font" ) ) ;
+	m_font->insert( "BaseFont",	Name( "Helvetica-Bold" ) ) ;
+	m_font->insert( "Subtype",	Name( "Type1" ) ) ;
+	m_font->insert( "Encoding",	Name( "WinAnsiEncoding" ) ) ;
 
 	m_res = new Dictionary ;
 	Name pset[] = { Name("PDF"), Name("Text") } ;
 	
 	// resources
-	(*m_res)["ProcSet"] = Array( pset, pset+2 ) ;
+	m_res->insert( "ProcSet", Array( pset, pset+2 ) ) ;
 	Dictionary font ;
-	font["F1"]  = Ref( 5, 0 ) ;
-	(*m_res)["Font"] = font ;
+	font.insert( "F1",		Ref( 5, 0 ) ) ;
+	m_res->insert( "Font",	font ) ;
 
 	// document info
 	m_doc_info = new Dictionary ;
-	(*m_doc_info)["Producer"] = "nestal" ;
-	(*m_doc_info)["Creator"] = "D:20080410074227" ;
+	m_doc_info->insert( "Producer", "nestal" ) ;
+	m_doc_info->insert( "Creator", "D:20080410074227" ) ;
 	
 	// catalog
 	m_catalog = new Dictionary ;
-	(*m_catalog)["Type"] = Name( "Catalog" ) ;
-	(*m_catalog)["Pages"] = Ref( 1, 0 ) ;
+	m_catalog->insert( "Type", Name( "Catalog" ) ) ;
+	m_catalog->insert( "Pages", Ref( 1, 0 ) ) ;
 }
 
 void RealFileTest::tearDown( )

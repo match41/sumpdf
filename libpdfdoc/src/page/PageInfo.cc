@@ -124,19 +124,19 @@ void PageInfo::Write( Dictionary& dict, File *file ) const
 	
 	// write resources as an indirect reference
 	PDF_ASSERT( ref != Ref() ) ;
-	dict["Resources"]	= ref ;
+	dict.insert( "Resources", ref ) ;
 
     if ( (m_parent == 0 || m_media_box != m_parent->MediaBox()) &&
 	     !m_media_box.IsNull() )
-    	dict["MediaBox"] = Array( m_media_box.begin( ), m_media_box.end( ) ) ;
+    	dict.insert( "MediaBox", Array( m_media_box.begin( ), m_media_box.end( ) ) ) ;
 
     if ( (m_parent == 0 || m_crop_box != m_parent->CropBox()) &&
 	     !m_crop_box.IsNull() )
-    	dict["CropBox"] = Array( m_crop_box.begin( ), m_crop_box.end( ) ) ;
+    	dict.insert( "CropBox", Array( m_crop_box.begin( ), m_crop_box.end( ) ) ) ;
 
     // default value is zero, so no need to write if zero.
     if ( m_rotate != 0 )
-    	dict["Rotate"]	= m_rotate ;
+    	dict.insert( "Rotate", m_rotate ) ;
 }
 
 RealResources* PageInfo::GetResource( )

@@ -55,7 +55,7 @@ void NameTreeTest::TestSimple( )
 	Object name[] = { "v1", 100, "v2", 101.0 } ;
 
 	DictReader self ;
-	self["Names"] = Array( Begin(name), End(name) ) ;
+	self->insert( "Names", Array( Begin(name), End(name) ) ) ;
 
 	NameTree subject;
 	subject.Read( self, &file ) ;

@@ -123,7 +123,7 @@ public :
 	const Dictionary& operator*() const ;
 
 	// wrapper for operator[]
-	Object& operator[]( const Name& name ) ;
+//	Object& operator[]( const Name& name ) ;
 	const Object& operator[]( const Name& name ) const ;
 
 	File* GetFile( ) const ;

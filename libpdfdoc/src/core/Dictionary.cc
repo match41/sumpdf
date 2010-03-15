@@ -33,6 +33,7 @@
 #include "util/Debug.hh"
 
 #include <boost/bind.hpp>
+#include <boost/format.hpp>
 
 #include <istream>
 
@@ -97,7 +98,7 @@ Dictionary::const_iterator Dictionary::find( const Name& name ) const
 std::pair<Dictionary::iterator, bool> Dictionary::insert( const value_type& v )
 {
 	std::pair<iterator, bool> r = m_map.insert( v ) ;
-	if ( v.second.Is<void>() )
+	if ( !IsGoodObject( v.second ) )
 	{
 		m_map.erase( r.first ) ;
 		return std::make_pair( m_map.end(), false ) ;
@@ -122,11 +123,14 @@ std::pair<Dictionary::iterator,bool> Dictionary::insert(
 */
 std::size_t Dictionary::size( ) const
 {
-	return std::count_if(
+	PDF_ASSERT( std::count_if(
 		m_map.begin(),
 		m_map.end(),
-		!boost::bind( &Object::Is<void>,
-			boost::bind( &value_type::second, _1 ) ) ) ;  
+		boost::bind( &Dictionary::IsGoodObject,
+			boost::bind( &value_type::second, _1 ) ) ) ==
+		static_cast<long>( m_map.size() ) ) ;  
+	
+	return m_map.size() ;
 }
 
 /// Returns true if the dictionary is empty.
@@ -140,11 +144,12 @@ std::size_t Dictionary::size( ) const
 */
 bool Dictionary::empty( ) const
 {
-	return std::find_if(
+	PDF_ASSERT( std::find_if(
 		m_map.begin(),
 		m_map.end(),
-		!boost::bind( &Object::Is<void>,
-			boost::bind( &value_type::second, _1 ) ) ) == m_map.end() ;  
+		!boost::bind( &Dictionary::IsGoodObject,
+			boost::bind( &value_type::second, _1 ) ) ) == m_map.end() ) ;  
+	return m_map.empty() ;
 }
 
 ///	Erase all entries in the dictionary.
@@ -161,11 +166,15 @@ void Dictionary::clear( )
 					function will do nothing.
 	\sa insert()
 */
-void Dictionary::Add( const Name& key, const Object& value )
+bool Dictionary::Set( const Name& key, const Object& value )
 {
 	PDF_ASSERT( !value.Is<Stream>() ) ;
 
-	insert( std::make_pair( key, value ) ) ;
+	std::pair<iterator,bool> r = insert( std::make_pair( key, value ) ) ;
+	if ( !r.second && r.first != m_map.end() )
+		r.first->second = value ;
+	
+	return r.second ;
 }
 
 std::istream& operator>>( std::istream& is, Dictionary& dict )
@@ -176,10 +185,12 @@ std::istream& operator>>( std::istream& is, Dictionary& dict )
 
 TokenSrc& operator>>( TokenSrc& src, Dictionary& dict )
 {
+	using namespace boost ;
+
 	Token t ;
 	if ( src >> t && t.Get() != "<<" )
-		throw ParseError(
-			"dictionary not start with \"<<\" but \"" + t.Get( ) + "\"" ) ;
+		throw ParseError( format("dictionary not start with \"<<\" but \"%1%\"")
+			% t.Get( ) ) ;
 	
 	Dictionary temp ;
 	while ( src >> t && t.Get() != ">>" )
@@ -190,7 +201,7 @@ TokenSrc& operator>>( TokenSrc& src, Dictionary& dict )
 		Object	value ;
 		
 		// null value means absent entry
-		if ( src >> key >> value && !value.Is<void>( ) )
+		if ( src >> key >> value && Dictionary::IsGoodObject( value ) )
 			temp.m_map.insert( std::make_pair( key, value ) ) ;
 	}
 	
@@ -212,7 +223,7 @@ std::ostream& operator<<( std::ostream& os, const Dictionary& dict )
 		try
 		{
 			// according to PDF spec, an absent key-pair is considered null
-			if ( !i->second.Is<void>( ) )
+			if ( Dictionary::IsGoodObject( i->second ) )
 				os << i->first << ' ' << i->second << '\n' ;
 		}
 		catch ( std::exception& )
@@ -247,20 +258,19 @@ const Object& Dictionary::operator[]( const Name& key ) const
 	return i == m_map.end( ) ? Object::NullObj() : i->second ;
 }
 
-/*!	\brief	look-up the dictionary and create a value if it does not exists
-
-	This operator will search the dictionary and try to find an entry with
-	key \a key . If the entry cannot be found, it will be created with a
-	default null object as value.
-
-	\param	key	the key of the entry to be found
-	\return	a reference to the value
-	\sa	Object::Object()
+/**	Unlike the STL map version, this function will throw exception if it can't
+	find the entry with the specified key.
 */
-Object& Dictionary::operator[]( const Name& key )
-{
-	return m_map[key] ;
-}
+//Object& Dictionary::operator[]( const Name& key )
+//{
+//	using boost::format ;
+//
+//	iterator i = m_map.find( key ) ;
+//	if ( i == m_map.end( ) )
+//		throw ParseError( format( "key: \"%1%\" is not found" ) % key ) ;
+//	
+//	return i->second ;
+//}
 
 void Dictionary::erase( iterator pos )
 {
@@ -270,6 +280,11 @@ void Dictionary::erase( iterator pos )
 void Dictionary::erase( const Name& name )
 {
 	m_map.erase( name ) ;
+}
+
+bool Dictionary::IsGoodObject( const Object& obj )
+{
+	return !obj.Is<void>() && ( !obj.Is<Name>() || !obj.As<Name>().empty() ) ;
 }
 
 } // end of namespace

@@ -145,9 +145,9 @@ void PageTree::Write( const Ref& link, File *file, const Ref& ) const
 	UpdateCount( ) ;
 
 	Dictionary self ;
-	self["Type"]		= Name( "Pages" ) ;
-	self["Kids"]		= Array( kids.begin( ), kids.end( ) ) ;
-	self["Count"]		= m_count ;
+	self.insert( "Type",	Name( "Pages" ) ) ;
+	self.insert( "Kids",	kids ) ;
+	self.insert( "Count",	m_count ) ;
 	
 	m_pinfo.Write( self, file ) ;
 

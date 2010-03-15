@@ -306,18 +306,17 @@ Ref SimpleFont::Write( File *file ) const
 	PDF_ASSERT( file != 0 ) ;
 
 	Dictionary dict ;
-	dict["Type"]		= Name( "Font" ) ;
-	dict["Subtype"]		= SubType( m_type ) ;
+	dict.insert( "Type", 		Name( "Font" ) ) ;
+	dict.insert( "Subtype", 	SubType( m_type ) ) ;
 	
 	// BaseFont is optional for type 3 fonts
 	if ( m_type != font::type3 && !m_base_font.empty() )
-		dict["BaseFont"]	= m_base_font ;
+		dict.insert( "BaseFont", 	m_base_font ) ;
 	
-	dict["FirstChar"]	= m_first_char ;
-	dict["LastChar"]	= m_last_char ;
+	dict.insert( "FirstChar", 	m_first_char ) ;
+	dict.insert( "LastChar", 	m_last_char ) ;
 	
-	if ( !m_encoding.Is<void>() )
-		dict["Encoding"]		= m_encoding ;
+	dict.insert( "Encoding", 	m_encoding ) ;
 	
 	if ( m_widths.empty() )
 	{
@@ -330,15 +329,15 @@ Ref SimpleFont::Write( File *file ) const
 					? (g->AdvanceX() * 1000.0 / m_face->units_per_EM)
 					: 0.0 ) ;
 		}
-		dict["Widths"]			= widths ;
+		dict.insert( "Widths", 		widths ) ;
 	}
 	else
-		dict["Widths"]			= m_widths ;
+		dict.insert( "Widths", 		m_widths ) ;
 
-	dict["FontDescriptor"]	= m_descriptor->Write( file ) ;
+	dict.insert( "FontDescriptor", 	m_descriptor->Write( file ) ) ;
 
 	if ( !m_to_unicode.Is<void>( ) )
-		dict["ToUnitcode"]	= file->WriteObj( m_to_unicode ) ;
+		dict.insert( "ToUnitcode", 	file->WriteObj( m_to_unicode ) ) ;
 
 	return file->WriteObj( dict ) ;
 }

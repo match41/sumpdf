@@ -136,17 +136,17 @@ Ref Function::WriteType0( File *file )
 	Dictionary dict ;
 	WriteCommon( dict, file ) ;
 	
-	dict["Size"]			= m_impl->size ;
-	dict["BitsPerSample"]	= m_impl->bits_per_sample ;
+	dict.insert( "Size", m_impl->size ) ;
+	dict.insert( "BitsPerSample", m_impl->bits_per_sample ) ;
 	
 	// 1 is default value
 	if ( m_impl->order != 1 )
-		dict["Order"]	= m_impl->order ;
+		dict.insert( "Order", m_impl->order ) ;
 	
 	if ( !m_impl->encode.empty() )
-		dict["Encode"]	= m_impl->encode ;
+		dict.insert( "Encode", m_impl->encode ) ;
 	if ( !m_impl->decode.empty() )
-		dict["Decode"]	= m_impl->decode ;
+		dict.insert( "Decode", m_impl->decode ) ;
 
 	return file->WriteObj( dict ) ;
 }
@@ -172,11 +172,11 @@ void Function::ReadCommon( DictReader& dict )
 void Function::WriteCommon( Dictionary& dict, File *file )
 {
 	PDF_ASSERT( m_impl.get() != 0 ) ;
-	dict["FunctionType"]	= m_impl->type ;
-	dict["Domain"]			= m_impl->domain ;
+	dict.insert( "FunctionType", m_impl->type ) ;
+	dict.insert( "Domain", m_impl->domain ) ;
 	
 	if ( m_impl->type == 0 || m_impl->type == 4 )
-		dict["Range"]		= m_impl->range ;
+		dict.insert( "Range", m_impl->range ) ;
 }
 
 Ref Function::Write( File *file )

@@ -196,7 +196,7 @@ void RealDoc::Info_::SetField(const Name& name, const std::string& value)
 	if ( value.empty() )
 		m_dict.erase( name ) ;
 	else
-		m_dict[name] = value ;
+		m_dict.Set( name, value ) ;
 }
 
 } // end of namespace
