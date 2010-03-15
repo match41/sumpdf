@@ -94,9 +94,10 @@ MainWnd::MainWnd( QWidget *parent )
 	connect( m_action_last_pg, 	SIGNAL(triggered()),	this, SLOT(OnLastPage()) );
 	connect( m_scene, 	SIGNAL(selectionChanged()),	this, SLOT(OnSelectionChanged()) );
 
-	// initialize tool bar
 	m_tool_bar->addAction( m_action_open ) ;
-	
+
+	m_zoom_box->addItem( "60%", 0.60 ) ;
+	m_zoom_box->addItem( "85%", 0.85 ) ;
 	m_zoom_box->addItem( "100%", 1.0 ) ;
 	m_zoom_box->addItem( "125%", 1.25 ) ;
 	m_zoom_box->addItem( "150%", 1.5 ) ;
@@ -104,6 +105,8 @@ MainWnd::MainWnd( QWidget *parent )
 	m_zoom_box->addItem( "200%", 2.0 ) ;
 	m_zoom_box->addItem( "250%", 2.5 ) ;
 	m_zoom_box->addItem( "300%", 3.0 ) ;
+	m_zoom_box->setCurrentIndex(2);
+
 	connect(
 		m_zoom_box,
 		SIGNAL(currentIndexChanged(int)),
@@ -113,7 +116,6 @@ MainWnd::MainWnd( QWidget *parent )
 	m_tool_bar->addWidget( m_zoom_box ) ;
 
 	m_tool_bar->addWidget( m_label );
-
 	m_action_next_pg->setEnabled( false ) ;
 	m_action_previous_pg->setEnabled( false ) ;
 	m_action_first_pg->setEnabled( false ) ;

@@ -91,11 +91,19 @@
    <addaction name="m_action_last_pg"/>
   </widget>
   <action name="m_action_new">
+   <property name="icon">
+    <iconset resource="pdfedit.qrc">
+     <normaloff>:/images/filenew.png</normaloff>:/images/filenew.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;New</string>
    </property>
   </action>
   <action name="m_action_open">
+   <property name="icon">
+    <iconset resource="pdfedit.qrc">
+     <normaloff>:/images/fileopen.png</normaloff>:/images/fileopen.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Open</string>
    </property>
@@ -116,6 +124,10 @@
    </property>
   </action>
   <action name="m_action_save">
+   <property name="icon">
+    <iconset resource="pdfedit.qrc">
+     <normaloff>:/images/filesave.png</normaloff>:/images/filesave.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Save</string>
    </property>
@@ -171,7 +183,7 @@
   </action>
   <action name="m_action_open_2">
    <property name="icon">
-    <iconset resource="pdfedit.qrc">
+    <iconset>
      <normaloff>:/images/directory_open.png</normaloff>:/images/directory_open.png</iconset>
    </property>
    <property name="text">
