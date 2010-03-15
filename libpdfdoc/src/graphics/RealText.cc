@@ -345,8 +345,10 @@ void RealText::OnTJ( ContentOp& op, const ResourcesDict * )
 	m_offset += offset ;
 }
 
-void RealText::OnSingleQuote( ContentOp& , const ResourcesDict * )
+void RealText::OnSingleQuote( ContentOp& op, const ResourcesDict *res )
 {
+	OnTstar( op, res ) ;
+	OnTj( op, res ) ;
 }
 
 void RealText::OnDoubleQuote( ContentOp& , const ResourcesDict * )
