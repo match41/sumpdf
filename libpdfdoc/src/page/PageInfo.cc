@@ -67,17 +67,11 @@ void PageInfo::Read( DictReader& dict )
 	PDF_ASSERT( m_res != 0 ) ;
 
 	// media box
-	Array mbox ;
-	if ( dict.Detach( "MediaBox", mbox ) )
-		m_media_box = Rect( mbox.begin( ), mbox.end( ) ) ;
-	else if ( m_parent != 0 )
+	if ( !dict.Detach( "MediaBox", m_media_box ) && m_parent != 0 )
 		m_media_box = m_parent->MediaBox() ;
 
 	// crop box
-	Array cbox ;
-	if ( dict.Detach( "CropBox", cbox ) )
-		m_crop_box = Rect( cbox.begin( ), cbox.end( ) ) ;
-	else if ( m_parent != 0 )
+	if ( !dict.Detach( "CropBox", m_crop_box ) && m_parent != 0 )
 		m_crop_box = m_parent->CropBox() ;
 
 	ElementPool *pool = dict.GetFile()->Pool( ) ;
@@ -128,11 +122,11 @@ void PageInfo::Write( Dictionary& dict, File *file ) const
 
     if ( (m_parent == 0 || m_media_box != m_parent->MediaBox()) &&
 	     !m_media_box.IsNull() )
-    	dict.insert( "MediaBox", Array( m_media_box.begin( ), m_media_box.end( ) ) ) ;
+    	dict.insert( "MediaBox", m_media_box ) ;
 
     if ( (m_parent == 0 || m_crop_box != m_parent->CropBox()) &&
 	     !m_crop_box.IsNull() )
-    	dict.insert( "CropBox", Array( m_crop_box.begin( ), m_crop_box.end( ) ) ) ;
+    	dict.insert( "CropBox", m_crop_box ) ;
 
     // default value is zero, so no need to write if zero.
     if ( m_rotate != 0 )

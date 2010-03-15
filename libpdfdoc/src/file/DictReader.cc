@@ -32,6 +32,7 @@
 #include "core/Array.hh"
 
 #include "util/Debug.hh"
+#include "util/Rect.hh"
 
 #include <boost/bind.hpp>
 
@@ -144,6 +145,17 @@ bool DictReader::SwapAt<ArrayReader>( Dictionary::iterator i, ArrayReader& resul
 	bool rtn = SwapAt( i, array ) ;
 	result->swap( array ) ;
 	result.SetFile( m_file ) ;
+	return rtn ;
+}
+
+template <>
+bool DictReader::SwapAt<Rect>( Dictionary::iterator i, Rect& result )
+{
+	PDF_ASSERT( i != m_dict.end( ) ) ;
+
+	Array array ;
+	bool rtn = SwapAt( i, array ) ;
+	result.Assign( array.begin(), array.end() ) ;
 	return rtn ;
 }
 

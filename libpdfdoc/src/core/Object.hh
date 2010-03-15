@@ -45,6 +45,7 @@ namespace pdf {
 
 class Array ;
 class Dictionary ;
+class Rect ;
 class Stream ;
 class Token ;
 class TokenSrc ;
@@ -131,6 +132,7 @@ public :
 	Object( const char *str ) ;
 	Object( std::size_t value ) ;
 	Object( float value ) ;
+	Object( const Rect& rect ) ;
 	
 	template <typename T>
 	Object( const T& v ) ;
@@ -316,6 +318,7 @@ template <> long			Object::To( ) const ;
 template <> unsigned long	Object::To( ) const ;
 template <> float			Object::To( ) const ;
 template <> double			Object::To( ) const ;
+template <> Rect 			Object::To( ) const ;
 template <> Object& Object::As( ) ;
 template <> const Object& Object::As( ) const ;
 

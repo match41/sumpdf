@@ -41,6 +41,8 @@
 #include "util/Exception.hh"
 #include "util/Util.hh"
 
+#include <boost/format.hpp>
+
 #include <iostream>
 
 namespace pdf {
@@ -83,9 +85,8 @@ Catalog::Catalog( const Ref& link, File *file, FontDb *fontdb )
 	Name type ;
 	if ( !self.Detach( "Type", type ) || type != "Catalog" )
 	{
-		std::ostringstream oss ;
-		oss << "invalid catalog type: " << type ;
-		throw ParseError( oss.str( ) ) ;
+		using boost::format ;
+		throw ParseError( format("invalid catalog type: %1%") % type ) ;
 	}
 
 	// page tree is mandatory
