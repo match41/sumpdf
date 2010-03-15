@@ -46,7 +46,9 @@ class ResourcesDict ;
 class RealText : public Text
 {
 public :
-	explicit RealText( const GraphicsState& ts = GraphicsState() ) ;
+	explicit RealText(
+		const GraphicsState&	ts	= GraphicsState(),
+		const Matrix&			ctm	= Matrix() ) ;
 
 	void OnCommand( ContentOp& op, const ResourcesDict *res ) ;
 

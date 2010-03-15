@@ -92,6 +92,7 @@ MainWnd::MainWnd( QWidget *parent )
 	connect( m_action_next_pg, 	SIGNAL(triggered()),	this, SLOT(OnNextPage()) );
 	connect( m_action_first_pg,	SIGNAL(triggered()),	this, SLOT(OnFirstPage()) );
 	connect( m_action_last_pg, 	SIGNAL(triggered()),	this, SLOT(OnLastPage()) );
+	connect( m_action_viewsrc, 	SIGNAL(triggered()),	this, SLOT(OnViewSource()) );
 	connect( m_scene, 	SIGNAL(selectionChanged()),	this, SLOT(OnSelectionChanged()) );
 
 	m_tool_bar->addAction( m_action_open ) ;
@@ -356,6 +357,24 @@ void MainWnd::OnLastPage( )
 		catch ( std::exception& e )
 		{
 			ExceptionDlg dlg( e.what(), this ) ;
+			dlg.exec() ;
+		}
+	}
+}
+
+void MainWnd::OnViewSource( )
+{
+	if ( m_doc.get() != 0 )
+	{
+		Page *p = m_doc->GetPage( m_current_page ) ;
+		if ( p != 0 )
+		{
+			std::vector<unsigned char> c ;
+			p->GetRawContent( c ) ;
+			c.push_back( '\0' ) ;
+			
+			// size() must be > 0 after push_back()
+			ExceptionDlg dlg( reinterpret_cast<char*>(&c[0]), this ) ;
 			dlg.exec() ;
 		}
 	}

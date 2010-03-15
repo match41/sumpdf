@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>20</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="m_menu_file">
@@ -47,6 +47,7 @@
      <string>&amp;Edit</string>
     </property>
     <addaction name="m_action_font"/>
+    <addaction name="m_action_viewsrc"/>
    </widget>
    <addaction name="m_menu_file"/>
    <addaction name="m_menu_edit"/>
@@ -188,6 +189,11 @@
    </property>
    <property name="text">
     <string>Open File</string>
+   </property>
+  </action>
+  <action name="m_action_viewsrc">
+   <property name="text">
+    <string>View Source</string>
    </property>
   </action>
  </widget>

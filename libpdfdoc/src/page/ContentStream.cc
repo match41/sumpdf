@@ -91,7 +91,7 @@ void ContentStream::Decode( Stream& str )
 //str.CopyData( ss.rdbuf() ) ;
 //std::cout << ss.str() << std::endl ;
 //str.Rewind() ;
-	
+
 	std::istream s( str.InStreamBuf() ) ;
 	TokenSrc src( s ) ;
 	std::vector<Object> args ;
@@ -122,7 +122,7 @@ void ContentStream::ProcessCommand( ContentOp& op )
 void ContentStream::OnBT( const ContentOp& )
 {
 	if ( m_current == 0 )
-		m_current = new RealText( m_state.gs ) ;
+		m_current = new RealText( m_state.gs, m_state.ctm ) ;
 }
 
 void ContentStream::OnET( const ContentOp& )
