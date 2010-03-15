@@ -84,7 +84,7 @@ public :
 	
 	virtual void OnCommand( ContentOp& op, const ResourcesDict *res ) = 0 ;
 
-	virtual void Print( std::ostream& os, const ResourcesDict *res ) const = 0 ;
+	virtual void Print( std::ostream& os, ResourcesDict *res ) const = 0 ;
 
 	virtual void Visit( GraphicsVisitor *visitor ) = 0 ;
 	

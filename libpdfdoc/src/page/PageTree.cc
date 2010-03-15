@@ -234,11 +234,6 @@ const RealResources* PageTree::GetResource( ) const
 	return m_pinfo.GetResource() ;
 }
 
-Font* PageTree::CreateSimpleFont( const std::string& name )
-{
-	return m_pinfo.GetResource()->CreateSimpleFont( name ) ;
-}
-
 // TODO: unimplemented
 Rect PageTree::MediaBox( ) const
 {

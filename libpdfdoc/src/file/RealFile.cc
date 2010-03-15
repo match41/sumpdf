@@ -56,7 +56,9 @@ namespace pdf {
 				std::ios::binary.
 */
 RealFile::RealFile( std::istream *is )
-	: m_objs( 1, 0 ), m_in( is ), m_out( 0 )
+	: m_objs( 1, 0 )
+	, m_in( is )
+	, m_out( 0 )
 {
 	ReadXRef( ReadXRefOffset( ), m_trailer ) ;
 
@@ -77,7 +79,9 @@ RealFile::RealFile( std::istream *is )
 				std::ios::binary.
 */
 RealFile::RealFile( std::ostream *os )
-	: m_objs( 1, 0 ), m_in( 0 ), m_out( os )
+	: m_objs( 1, 0 )
+	, m_in( 0 )
+	, m_out( os )
 {
 	assert( m_out != 0 ) ;
 	*m_out << "%PDF-1.4\n" ;

@@ -145,6 +145,9 @@ template Object::Object( const std::vector<Ref>& ) ;
 template Object::Object( const std::vector<Array>& ) ;
 template Object::Object( const std::vector<Dictionary>& ) ;
 template Object::Object( const std::vector<Object>& ) ;
+template Object::Object( const std::vector<float>& ) ;
+template Object::Object( const std::vector<std::size_t>& ) ;
+template Object::Object( const std::vector<const char*>& ) ;
 
 /**	\brief	destructor
 	\internal

@@ -66,8 +66,6 @@ public :
 
 	Page*	GetPage( std::size_t index ) ;
 
-	Font* CreateSimpleFont( const std::string& name ) ;
-
 private :
 	Name		m_version ;
 	Name		m_page_layout ;

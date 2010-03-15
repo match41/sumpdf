@@ -33,6 +33,7 @@
 #include "file/RealFile.hh"
 
 #include "font/FontDb.hh"
+#include "font/SimpleFont.hh"
 
 #include "util/Debug.hh"
 
@@ -116,7 +117,7 @@ Page* RealDoc::GetPage( std::size_t index )
 Font* RealDoc::CreateSimpleFont( const std::string& name )
 {
 	PDF_ASSERT( m_catalog.get() != 0 ) ;
-	return m_catalog->CreateSimpleFont( name ) ;
+	return new SimpleFont( name, m_font_db.get() ) ;
 }
 
 Page* RealDoc::AddPage( std::size_t index )

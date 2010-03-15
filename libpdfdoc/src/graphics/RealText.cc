@@ -191,7 +191,7 @@ std::size_t RealText::Count( ) const
 	return m_lines.size( ) ;
 }
 
-void RealText::Print( std::ostream& os, const ResourcesDict *res ) const
+void RealText::Print( std::ostream& os, ResourcesDict *res ) const
 {
 	os << "BT\n" ;
 	

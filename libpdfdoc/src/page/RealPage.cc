@@ -194,6 +194,9 @@ void RealPage::SetContent( const std::vector<Graphics*>& gfx )
 	Stream str ;
 	std::ostream os( str.OutStreamBuf() ) ;
 
+	// throw away the existing resources and start over
+	Clear( ) ;
+
 	using namespace boost ;
 	std::for_each(
 		gfx.begin(),

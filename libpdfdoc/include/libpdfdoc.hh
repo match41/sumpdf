@@ -75,10 +75,14 @@ namespace pdf {
 
 class Doc ;
 class Page ;
+class Text ;
+class GraphicsState ;
 
 LIBPDFDOC_API Doc*  CreateDoc( ) ;
 
 LIBPDFDOC_API const char* Version( ) ;
+
+LIBPDFDOC_API Text* CreateText( const GraphicsState& ts ) ;
 
 } // end of namespace
 

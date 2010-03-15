@@ -23,6 +23,7 @@
 #include "font/Font.hh"
 #include "graphics/Text.hh"
 #include "graphics/TextLine.hh"
+#include "graphics/TextState.hh"
 #include "page/Page.hh"
 
 #include "util/Exception.hh"
@@ -47,8 +48,12 @@ int main( int argc, char **argv )
 	pdf::Font *f = doc->CreateSimpleFont( "Arial" ) ;
 	
 //	pdf::PageContent *c = p->GetContent( ) ;
-//	pdf::Text *t = c->AddText( 12.0, f ) ;
-//	t->AddLine( 100, 100, L"Hello world!" ) ;
+	pdf::TextState ts ;
+	ts.SetFont( 12.0, f ) ;
+	pdf::Text *t = pdf::CreateText( pdf::GraphicsState(ts) ) ;
+	t->AddLine( 100, 100, L"Hello world!" ) ;
+	std::vector<pdf::Graphics*> gfx( 1, t ) ;
+	p->SetContent( gfx ) ;
 
 	doc->Write( "test.pdf" ) ;
 	delete doc ;
