@@ -71,7 +71,7 @@ public :
 	int columnCount( const QModelIndex& parent ) const ;
 	
 	QVariant data( const QModelIndex& index, int role ) const ;
-	QVariant headerData( int sect, Qt::Orientation or, int role ) const ;
+	QVariant headerData( int sect, Qt::Orientation ori, int role ) const ;
 	//@}
 
 private :

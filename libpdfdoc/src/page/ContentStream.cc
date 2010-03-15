@@ -87,10 +87,10 @@ void ContentStream::Decode( Stream& str )
 	// rewind to stream start for reading
 	str.Rewind( ) ;
 	
-std::ostringstream ss ;
-str.CopyData( ss.rdbuf() ) ;
-std::cout << ss.str() << std::endl ;
-str.Rewind() ;
+//std::ostringstream ss ;
+//str.CopyData( ss.rdbuf() ) ;
+//std::cout << ss.str() << std::endl ;
+//str.Rewind() ;
 	
 	std::istream s( str.InStreamBuf() ) ;
 	TokenSrc src( s ) ;
@@ -131,7 +131,8 @@ void ContentStream::OnET( const ContentOp& )
 	{
 		m_state.gs = m_current->GetState( ) ;
 		
-		m_gfx.push_back( m_current ) ;
+		m_current->Visit( m_visitor ) ;
+		delete m_current ;
 		m_current = 0 ;
 	}
 }
@@ -151,11 +152,6 @@ void ContentStream::OnQ( const ContentOp& )
 void ContentStream::Onq( const ContentOp& )
 {
 	m_state_stack.push( m_state ) ;
-}
-
-void ContentStream::SwapGfxObj( std::vector<Graphics*>& gfxs )
-{
-	m_gfx.swap( gfxs ) ;
 }
 
 } // end of namespace

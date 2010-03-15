@@ -33,7 +33,6 @@
 #include "PageInfo.hh"
 
 // other libpdfdoc headers
-#include "RealContent.hh"
 #include "stream/Stream.hh"
 
 namespace pdf {
@@ -69,8 +68,10 @@ public :
 	RealResources* GetResource( ) ;
 	const RealResources* GetResource( ) const ;
 
-	RealContent* GetContent( ) ;
 	int Rotation( ) const ;
+	
+	void VisitGraphics( GraphicsVisitor *visitor ) const ;
+	void SetContent( const std::vector<Graphics*>& gfx ) ;
 
 private :
 	void ReadContent( const Object& str_obj, File *file ) ;
@@ -78,8 +79,6 @@ private :
 
 private :
 	PageInfo			m_pinfo ;
-
-	RealContent			m_content ;
 
 	std::vector<Stream>	m_cstrs ;
 } ;

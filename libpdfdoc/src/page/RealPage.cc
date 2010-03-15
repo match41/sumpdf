@@ -26,6 +26,7 @@
 
 #include "RealPage.hh"
 
+#include "ContentStream.hh"
 #include "PageTree.hh"
 #include "RealResources.hh"
 
@@ -38,6 +39,7 @@
 #include "file/File.hh"
 #include "file/DictReader.hh"
 #include "file/ElementPool.hh"
+#include "graphics/Graphics.hh"
 #include "util/Debug.hh"
 #include "util/Rect.hh"
 #include "util/Util.hh"
@@ -129,7 +131,7 @@ Object RealPage::WriteContent( File *file ) const
 	if ( m_cstrs.empty() )
 	{
 		Stream s ;
-		m_content.Write( s, m_pinfo.GetResource() ) ;
+//		m_content.Write( s, m_pinfo.GetResource() ) ;
 		return file->WriteObj( s ) ;
 	}
 	
@@ -179,28 +181,36 @@ const RealResources* RealPage::GetResource( ) const
 	return m_pinfo.GetResource() ;
 }
 
-///	Get the contents of a page
-/**	This function will decode the page content when called. Decoding page
-	content takes some time, so unless the user calls this function, the
-	content won't be decode when creating the page object.
-*/
-RealContent* RealPage::GetContent( )
-{
-	if ( m_content.IsEmpty() )
-	{
-		// decode the graphics commands
-		m_content.Load( m_cstrs.begin(), m_cstrs.end(), m_pinfo.GetResource());
-		
-		// destroy the streams
-		m_cstrs.clear( ) ;
-	}
-	
-	return &m_content ;
-}
-
 int RealPage::Rotation( ) const
 {
 	return m_pinfo.Rotation( ) ;
+}
+
+void RealPage::VisitGraphics( GraphicsVisitor *visitor ) const
+{
+	ContentStream cs(
+		m_cstrs.begin(),
+		m_cstrs.end(),
+		m_pinfo.GetResource(),
+		visitor ) ;
+	cs.Decode( ) ;
+}
+
+void RealPage::SetContent( const std::vector<Graphics*>& gfx )
+{
+	Stream str ;
+	std::ostream os( str.OutStreamBuf() ) ;
+
+	using namespace boost ;
+	std::for_each(
+		gfx.begin(),
+		gfx.end(),
+		bind( &Graphics::Print, _1, ref(os), m_pinfo.GetResource() ) ) ;
+
+	os.flush() ;
+	
+	m_cstrs.clear( ) ;
+	m_cstrs.push_back( str ) ;
 }
 
 } // end of namespace

@@ -33,6 +33,7 @@
 
 #include "Util.hh"
 
+#include <font/Font.hh>
 #include <util/Debug.hh>
 #include <util/Matrix.hh>
 
@@ -86,15 +87,15 @@ const GraphicsState& GlyphGroup::Format( ) const
 TextLine GlyphGroup::GetLine( ) const
 {
 	TextLine line( m_line ) ;
-//	line.XPos( m_line.XPos() + x() ) ;
-//	line.YPos( m_line.YPos() + y() ) ;
+	line.XPos( m_line.XPos() + x() ) ;
+	line.YPos( m_line.YPos() + y() ) ;
 	return line ; 
 }
 
 
 int GlyphGroup::rowCount( const QModelIndex& parent ) const
 {
-	return 2 ;
+	return 4 ;
 }
 
 int GlyphGroup::columnCount( const QModelIndex& parent ) const
@@ -112,6 +113,8 @@ QVariant GlyphGroup::data( const QModelIndex& index, int role ) const
 			{
 			case 0: return tr( "Transform" ) ;
 			case 1: return tr( "Position" ) ;
+			case 2: return tr( "Font" ) ;
+			case 3: return tr( "Size" ) ;
 			}
 		}
 		else
@@ -119,19 +122,27 @@ QVariant GlyphGroup::data( const QModelIndex& index, int role ) const
 			QTransform t = transform() ;
 			switch ( index.row() )
 			{
+			// matrix
 			case 0: return QString( "%1 %2 %3 %4 %5 %6" )
 				% t.m11() % t.m12() % t.m21() % t.m22() % t.m31() % t.m32() ;
 
+			// position
 			case 1: return QString( "%1, %2" ) % pos().x() % pos().y() ;
+			
+			// font name
+			case 2: return m_line.Format().GetFont()->BaseName().c_str() ;
+			
+			// font size
+			case 3: return m_line.Format().GetTextState().FontSize( ) ;
 			}
 		}
 	}
 	return QVariant( ) ;
 }
 
-QVariant GlyphGroup::headerData( int sect, Qt::Orientation or, int role ) const
+QVariant GlyphGroup::headerData( int sect, Qt::Orientation ori, int role ) const
 {
-	if ( or == Qt::Horizontal && role == Qt::DisplayRole )
+	if ( ori == Qt::Horizontal && role == Qt::DisplayRole )
 	{
 		switch ( sect )
 		{
@@ -139,7 +150,7 @@ QVariant GlyphGroup::headerData( int sect, Qt::Orientation or, int role ) const
 		case 1: return tr( "Value" ) ;
 		}
 	}
-	else if ( or == Qt::Vertical )
+	else if ( ori == Qt::Vertical )
 	{
 	}
 	return QVariant( ) ;

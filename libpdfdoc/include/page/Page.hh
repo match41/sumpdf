@@ -28,12 +28,14 @@
 #define __PDF_PAGE_HEADER_INCLUDED__
 
 #include <string>
+#include <vector>
 
 namespace pdf {
 
 class Rect ;
 class Font ;
-class PageContent ;
+class Graphics ;
+class GraphicsVisitor ;
 
 /**	\defgroup	page	Page and Content Related Classes
 	These classes are used to manipulate pages in a PDF document and their
@@ -61,9 +63,11 @@ public :
 	
 	virtual Rect CropBox( ) const = 0 ;
 
-	virtual PageContent* GetContent( ) = 0 ;
-	
 	virtual int Rotation( ) const = 0 ;
+	
+	virtual void VisitGraphics( GraphicsVisitor *visitor ) const = 0 ;
+	
+	virtual void SetContent( const std::vector<Graphics*>& gfx ) = 0 ;
 } ;
 
 } // end of namespace

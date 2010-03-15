@@ -91,7 +91,6 @@ set( INCLUDE_DIR	include/ )
 # headers
 ###############################################################################
 set( PAGE_HDRS		${PAGE_DIR}/RealPage.hh
-					${PAGE_DIR}/RealContent.hh
 					${PAGE_DIR}/ResourcesDict.hh
 					${PAGE_DIR}/RealResources.hh
 					${PAGE_DIR}/MockResources.hh
@@ -172,8 +171,7 @@ set( FONT_INC_HDRS	${INCLUDE_DIR}/font/Font.hh
 					${INCLUDE_DIR}/font/FontDb.hh
 					${INCLUDE_DIR}/font/FontType.hh )
 
-set( PAGE_INC_HDRS	${INCLUDE_DIR}/page/Page.hh
-                    ${INCLUDE_DIR}/page/PageContent.hh )
+set( PAGE_INC_HDRS	${INCLUDE_DIR}/page/Page.hh )
 
 set( GFX_INC_HDRS	${INCLUDE_DIR}/graphics/Graphics.hh
 					${INCLUDE_DIR}/graphics/GraphicsVisitor.hh
@@ -197,8 +195,6 @@ set( PAGE_SRCS  	${PAGE_DIR}/RealPage.cc
 					${PAGE_DIR}/RealResources.cc
 					${PAGE_DIR}/MockResources.cc
 					${PAGE_DIR}/Page.cc
-					${PAGE_DIR}/PageContent.cc
-					${PAGE_DIR}/RealContent.cc
 					${PAGE_DIR}/PageNode.cc
 					${PAGE_DIR}/PageTree.cc
 					${PAGE_DIR}/PageInfo.cc
@@ -516,7 +512,7 @@ set( UT_SRCS	test/core/TokenTest.cc
 				test/stream/OutStreamBufAdaptorTest.cc
 				
 				test/page/RealPageTest.cc
-				test/page/RealContentTest.cc
+#				test/page/RealContentTest.cc
 				test/page/PageNodeTest.cc
 				test/page/RealResourcesTest.cc
 				test/page/ExtGStateTest.cc
