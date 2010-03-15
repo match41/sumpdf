@@ -320,7 +320,7 @@ Ref SimpleFont::Write( File *file ) const
 	
 	if ( m_widths.empty() )
 	{
-		Array widths ;
+		std::vector<double> widths ;
 		for ( int i = m_first_char ; i <= m_last_char ; ++i )
 		{
 			const Glyph *g = GetGlyph( i ) ;

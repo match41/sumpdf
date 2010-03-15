@@ -65,6 +65,12 @@ public :
 	{
 	}
 
+	template <typename T, std::size_t n>
+	Array( const T (&array)[n] )
+		: m_array( array, array + n )
+	{
+	}
+
 	friend std::istream& operator>>( std::istream& is, Array& array ) ;
 	friend TokenSrc& operator>>( TokenSrc& src, Array& obj ) ;
 
