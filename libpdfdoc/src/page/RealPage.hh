@@ -73,6 +73,8 @@ public :
 	void VisitGraphics( GraphicsVisitor *visitor ) const ;
 	void SetContent( const std::vector<Graphics*>& gfx ) ;
 
+	void GetRawContent( std::vector<unsigned char>& out ) const ;
+
 private :
 	void ReadContent( const Object& str_obj, File *file ) ;
 	Object WriteContent( File *file ) const ; 

@@ -128,14 +128,7 @@ Object RealPage::WriteContent( File *file ) const
 {
 	assert( file != 0 ) ;
 
-	if ( m_cstrs.empty() )
-	{
-		Stream s ;
-//		m_content.Write( s, m_pinfo.GetResource() ) ;
-		return file->WriteObj( s ) ;
-	}
-	
-	else if ( m_cstrs.size() == 1 )
+	if ( m_cstrs.size() == 1 )
 		return file->WriteObj( m_cstrs.front() ) ;
 	
 	else
@@ -211,6 +204,12 @@ void RealPage::SetContent( const std::vector<Graphics*>& gfx )
 	
 	m_cstrs.clear( ) ;
 	m_cstrs.push_back( str ) ;
+}
+
+void RealPage::GetRawContent( std::vector<unsigned char>& out ) const
+{
+	if ( m_cstrs.size() == 1 )
+		m_cstrs.front().CopyData( out ) ;
 }
 
 } // end of namespace

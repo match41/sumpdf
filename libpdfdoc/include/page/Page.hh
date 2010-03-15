@@ -65,9 +65,13 @@ public :
 
 	virtual int Rotation( ) const = 0 ;
 	
+	/// Traverse all graphics objects in the page conent with the
+	/// visitor.
 	virtual void VisitGraphics( GraphicsVisitor *visitor ) const = 0 ;
 	
 	virtual void SetContent( const std::vector<Graphics*>& gfx ) = 0 ;
+	
+	virtual void GetRawContent( std::vector<unsigned char>& out ) const = 0 ;
 } ;
 
 } // end of namespace
