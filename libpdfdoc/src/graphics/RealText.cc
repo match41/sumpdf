@@ -351,8 +351,12 @@ void RealText::OnSingleQuote( ContentOp& op, const ResourcesDict *res )
 	OnTj( op, res ) ;
 }
 
-void RealText::OnDoubleQuote( ContentOp& , const ResourcesDict * )
+void RealText::OnDoubleQuote( ContentOp& op, const ResourcesDict *res )
 {
+	if ( op.Count() >= 2 )
+	{
+//		OnTw( ContentOp( Token("Tw"), op.begin(), op.begin()+1 ), res ) ;
+	}
 }
 
 bool RealText::operator==( const RealText& rhs ) const
