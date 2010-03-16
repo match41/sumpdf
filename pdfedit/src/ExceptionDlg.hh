@@ -27,7 +27,9 @@
 #define __PDF_EXCEPTIONDLG_HH_EADER_INCLUDED__
 
 #include "ui_ExceptionDlg.h"
+
 #include <QDialog>
+#include <QString>
 
 namespace pdf {
 
@@ -45,6 +47,12 @@ class ExceptionDlg :
 
 public :
 	explicit ExceptionDlg( const Exception& e, QWidget *parent = 0 ) ;
+
+public slots :
+	void OnCopy( ) ;
+
+private :
+	QString	m_what ;
 } ;
 
 } // end of namespace

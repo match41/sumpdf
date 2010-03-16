@@ -36,7 +36,7 @@
 #include "font/SimpleFont.hh"
 
 #include "util/Debug.hh"
-//#include "util/Exception.hh"
+#include "util/Exception.hh"
 
 #include <sstream>
 #include <stdexcept>
@@ -53,7 +53,7 @@ RealDoc::RealDoc( )
 	: m_font_db( CreateFontDb() ),
 	  m_catalog( new Catalog( m_font_db.get() ) )
 {
-//	throw Exception( "wahaha" ) ;
+	throw Exception( "wahaha" ) ;
 }
 
 /**	The destructor will delete all the elements contained. It traverses the
