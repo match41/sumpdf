@@ -21,7 +21,7 @@ PROJECT( libpdfdoc )
 
 cmake_minimum_required(VERSION 2.6)
 
-set( VERSION	0.1.0 )
+set( VERSION	0.1.2 )
 add_definitions( -DVERSION="${VERSION}" )
 add_definitions( -DBOOST_ALL_NO_LIB )
 

@@ -224,7 +224,8 @@ void MainWnd::VisitGraphics( Graphics *gfx )
 void MainWnd::OnAbout( )
 {
 	std::ostringstream vs ;
-	vs	<< "PDF Editor version " << Version() << '\n'
+	vs	<< "PDF Editor version "    << VERSION      << '\n'
+		<< "libpdfdoc version "     << Version()    << '\n'
 		<< "Copyright Nestal Wan 2010\n"
 		<< "License: GPL" ;
 	QMessageBox::information( this, "About PDF Editor", vs.str().c_str() ) ;
