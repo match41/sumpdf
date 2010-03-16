@@ -202,7 +202,7 @@ public :
 		}
 		catch ( std::exception& e )
 		{
-			throw BadType( TypeID(), typeid(T), e ) ;
+			throw BadType( TypeID(), typeid(T), e.what() ) ;
 		}
 	}
 	
@@ -219,7 +219,7 @@ public :
 		}
 		catch ( std::exception& e )
 		{
-			throw BadType( TypeID(), typeid(T), e ) ;
+			throw BadType( TypeID(), typeid(T), e.what() ) ;
 		}
 	}
 	

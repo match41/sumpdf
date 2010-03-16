@@ -226,9 +226,9 @@ std::ostream& operator<<( std::ostream& os, const Dictionary& dict )
 			if ( Dictionary::IsGoodObject( i->second ) )
 				os << i->first << ' ' << i->second << '\n' ;
 		}
-		catch ( std::exception& )
+		catch ( Exception& e )
 		{
-			std::cerr << "cannot write " << i->first << std::endl ;
+			e.Add( boost::format( "cannot write \"%1%\"" ) % i->first ) ;
 			throw ;
 		}
 	}

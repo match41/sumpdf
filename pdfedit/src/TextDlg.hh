@@ -17,36 +17,35 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	ExceptionDlg.hh
-    \brief	definition the ExceptionDlg class
-    \date	Feb 2, 2010
+/**	\file	TextDlg.hh
+    \brief	definition the TextDlg class
+    \date	Mar 16, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_EXCEPTIONDLG_HH_EADER_INCLUDED__
-#define __PDF_EXCEPTIONDLG_HH_EADER_INCLUDED__
+#ifndef __PDF_TEXTDLG_HH_EADER_INCLUDED__
+#define __PDF_TEXTDLG_HH_EADER_INCLUDED__
 
-#include "ui_ExceptionDlg.h"
+#include "ui_TextDlg.h"
 #include <QDialog>
 
 namespace pdf {
 
-class Exception ;
-
 ///	brief description
 /**	\internal
-	The ExceptionDlg class represents
+	The TextDlg class represents
 */
-class ExceptionDlg :
+class TextDlg :
 	public QDialog,
-	public Ui::ExceptionDlgUI
+	public Ui::TextDlgUI
 {
+public :
 	Q_OBJECT
 
 public :
-	explicit ExceptionDlg( const Exception& e, QWidget *parent = 0 ) ;
+	explicit TextDlg( const char *msg, QWidget *parent = 0 ) ;
 } ;
 
 } // end of namespace
 
-#endif // EXCEPTIONDLG_HH_
+#endif // TEXTDLG_HH_

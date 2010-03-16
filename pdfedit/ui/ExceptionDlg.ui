@@ -17,12 +17,41 @@
    <item>
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Exception Details:</string>
+      <string>Error Message:</string>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QPlainTextEdit" name="m_msg_edit">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>1</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="font">
+      <font>
+       <family>Helvetica</family>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Backtrace:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPlainTextEdit" name="m_bt_edit">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>3</verstretch>
+      </sizepolicy>
+     </property>
      <property name="font">
       <font>
        <family>Inconsolata</family>

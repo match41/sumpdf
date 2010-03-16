@@ -66,7 +66,7 @@ void RealPage::Read( DictReader& dict )
 	// read content
 	Object contents ;
 	if ( dict.Detach( "Contents", contents ) )
-	    ReadContent( contents, dict.GetFile() ) ;
+		ReadContent( contents, dict.GetFile() ) ;
 
 	m_pinfo.Read( dict ) ;
 }
@@ -115,9 +115,9 @@ void RealPage::Write( const Ref& link, File *file, const Ref& parent ) const
 	PDF_ASSERT( file != 0 ) ;
 	
 	Dictionary self ;
-	self.insert( "Type", Name( "Page" ) ) ;
- 	self.insert( "Contents", WriteContent( file ) ) ;
-	self.insert( "Parent", parent ) ;
+	self.insert( "Type",		Name( "Page" ) ) ;
+ 	self.insert( "Contents",	WriteContent( file ) ) ;
+	self.insert( "Parent",		parent ) ;
 	
 	m_pinfo.Write( self, file ) ;
 

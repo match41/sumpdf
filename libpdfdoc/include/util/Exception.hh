@@ -32,8 +32,10 @@
 #include <boost/format/format_fwd.hpp>
 
 #include <iosfwd>
-#include <stdexcept>
 #include <typeinfo>
+#include <exception>
+
+#include <boost/shared_ptr.hpp>
 
 namespace pdf {
 
@@ -44,12 +46,25 @@ namespace pdf {
 /**	\ingroup exception
 	This class is the base class for all exception class in libpdfdoc.
 */
-class LIBPDFDOC_API Exception : public std::runtime_error
+class LIBPDFDOC_API Exception : public std::exception
 {
 public :
-	explicit Exception( const std::string& err = std::string( ),
-	                    bool backtrace = true ) ;
-	explicit Exception( boost::format fmt, bool backtrace = true ) ;
+	explicit Exception( const std::string& err ) ;
+	explicit Exception( boost::format fmt ) ;
+
+	~Exception() throw () ;
+
+	void Add( const std::string& err ) ;
+	void Add( boost::format fmt ) ;
+	
+	const char* what( ) const throw() ;
+
+	std::string ErrorMessage( ) const ;
+	std::string GetBacktrace( ) const ;
+
+private :
+	struct Impl ;
+	boost::shared_ptr<Impl>	m_impl ;
 } ;
 
 ///	Invalid type exception.
@@ -62,7 +77,7 @@ class LIBPDFDOC_API BadType : public Exception
 {
 public :
 	BadType( const std::type_info& from, const std::type_info& to,
-	         const std::exception& e ) ;
+	         const std::string& err ) ;
 } ;
 
 ///	Parse error exception.

@@ -36,7 +36,6 @@
 #include <functional>
 #include <cctype>
 #include <cstdlib>
-#include <stdexcept>
 #include <iostream>
 #include <iomanip>
 #include <iterator>

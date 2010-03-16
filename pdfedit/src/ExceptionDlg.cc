@@ -25,17 +25,20 @@
 
 #include "ExceptionDlg.hh"
 
+#include <util/Exception.hh>
+
 namespace pdf {
 
 /**	constructor
 	
 */
-ExceptionDlg::ExceptionDlg( const char *msg, QWidget *parent )
+ExceptionDlg::ExceptionDlg( const Exception& e, QWidget *parent )
 	: QDialog( parent )
 {
 	setupUi( this ) ;
 	
-	m_msg_edit->setPlainText( msg ) ;
+	m_msg_edit->setPlainText( e.ErrorMessage().c_str() ) ;
+	m_bt_edit->setPlainText( e.GetBacktrace().c_str() ) ;
 }
 
 } // end of namespace
