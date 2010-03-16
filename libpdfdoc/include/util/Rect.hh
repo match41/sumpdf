@@ -47,6 +47,12 @@ public :
 	template <typename InputIt>
 	Rect( InputIt first, InputIt last )
 	{
+		Assign( first, last ) ;
+	}
+	
+	template <typename InputIt>
+	void Assign( InputIt first, InputIt last )
+	{
 		for ( double *dest = m_corner;
 		      dest != m_corner + 4 && first != last ; ++dest, ++first )
 			*dest = *first ;

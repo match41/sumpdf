@@ -41,6 +41,8 @@
 #include "util/Exception.hh"
 #include "util/Util.hh"
 
+#include <boost/format.hpp>
+
 #include <iostream>
 
 namespace pdf {
@@ -83,9 +85,8 @@ Catalog::Catalog( const Ref& link, File *file, FontDb *fontdb )
 	Name type ;
 	if ( !self.Detach( "Type", type ) || type != "Catalog" )
 	{
-		std::ostringstream oss ;
-		oss << "invalid catalog type: " << type ;
-		throw ParseError( oss.str( ) ) ;
+		using boost::format ;
+		throw ParseError( format("invalid catalog type: %1%") % type ) ;
 	}
 
 	// page tree is mandatory
@@ -142,17 +143,12 @@ Ref Catalog::Write( File *file ) const
 	Ref tree = file->AllocLink( ) ;
 	m_tree->Write( tree, file, Ref() ) ; 
 
-	self["Pages"] 	    = tree ;
-	self["Type"]	    = Name( "Catalog" ) ;
+	self.insert( "Pages",  	tree ) ;
+	self.insert( "Type",	Name( "Catalog" ) ) ;
 	
-	if ( !m_version.empty() )
-		self["Version"]		= m_version ;
-	
-	if ( !m_page_layout.empty() )
-		self["PageLayout"]	= m_page_layout ;
-	
-	if ( !m_page_mode.empty() )
-		self["PageMode"]	= m_page_mode ;
+	self.insert( "Version",		m_version ) ;
+	self.insert( "PageLayout",	m_page_layout ) ;
+	self.insert( "PageMode",	m_page_mode ) ;
 
 	// write destinations
 	Dictionary dest ;
@@ -162,7 +158,7 @@ Ref Catalog::Write( File *file ) const
 		dest.insert( std::make_pair( i->first, i->second.Write( file ) ) ) ;
 	}
 	if ( !dest.empty() )
-		self["Dests"]		= file->WriteObj(dest) ;
+		self.insert( "Dests", file->WriteObj(dest) ) ;
 
 	return file->WriteObj( self ) ;
 }

@@ -94,8 +94,8 @@ Ref RealResources::Write( File *file ) const
 {
 	Dictionary dict ;
     
-	dict["ProcSet"]	= Array( m_proc_set.begin( ), m_proc_set.end( ) ) ;
-	dict["Font"]	= WriteFontDict( file ) ;
+	dict.insert( "ProcSet",	m_proc_set ) ;
+	dict.insert( "Font",	WriteFontDict( file ) ) ;
 
     return file->WriteObj( dict ) ;
 }

@@ -55,7 +55,7 @@ void DictReaderTest::tearDown( )
 void DictReaderTest::TestIntToDouble( )
 {
 	Dictionary dict ;
-	dict["Test"] = 100 ;
+	dict.insert( "Test", 100 ) ;
 	
 	MockFile file ;
 	DictReader subject( dict, &file ) ;
@@ -70,7 +70,7 @@ void DictReaderTest::TestDetachVec( )
 	int array[] = { 1, 2, 3, 4, 5 } ;
 
 	Dictionary dict ;
-	dict["SomeArray"] = Array( Begin(array), End(array) ) ;
+	dict.insert( "SomeArray", Array( Begin(array), End(array) ) ) ;
 	
 	MockFile file ;
 	DictReader subject( dict, &file ) ;
@@ -86,7 +86,7 @@ void DictReaderTest::TestDetachIndirectVec( )
 	Object array[] = { "1", "2", "3", "4", Ref( 1, 0 ) } ;
 	
 	Dictionary dict ;
-	dict["SomeIndirectArray"] = Array( Begin(array), End(array) ) ;
+	dict.insert( "SomeIndirectArray", Array( Begin(array), End(array) ) ) ;
 
 	MockFile file ;
 	file.AddObj( Ref(1,0), Object( "indirect" ) ) ;

@@ -102,7 +102,7 @@ private :
 	font::Type	m_type ;
 	int			m_first_char, m_last_char ;
 
-	Array 		m_widths ;
+	std::vector<double>	m_widths ;
 	
 	std::auto_ptr<FontDescriptor>	m_descriptor ;
 	Object		m_to_unicode ;

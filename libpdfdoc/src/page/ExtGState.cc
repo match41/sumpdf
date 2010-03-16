@@ -76,17 +76,15 @@ Ref ExtGState::Write( File *file ) const
 	Dictionary dict ;
 	std::map<Field, double>::const_iterator di = m_doubles.find( line_width ) ;
 	if ( di != m_doubles.end() )
-		dict["LW"] = di->second ;
+		dict.insert( "LW", di->second ) ;
 	
 	di = m_doubles.find( line_cap ) ;
 	if ( di != m_doubles.end() )
-		dict["LC"] = di->second ;
+		dict.insert( "LC", di->second ) ;
 
 	di = m_doubles.find( line_join ) ;
 	if ( di != m_doubles.end() )
-		dict["LJ"] = di->second ;
-
-	
+		dict.insert( "LJ", di->second ) ;
 
 	return file->WriteObj( dict ) ;
 }

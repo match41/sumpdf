@@ -32,6 +32,7 @@
 #include "core/Array.hh"
 
 #include "util/Debug.hh"
+#include "util/Rect.hh"
 
 #include <boost/bind.hpp>
 
@@ -147,6 +148,17 @@ bool DictReader::SwapAt<ArrayReader>( Dictionary::iterator i, ArrayReader& resul
 	return rtn ;
 }
 
+template <>
+bool DictReader::SwapAt<Rect>( Dictionary::iterator i, Rect& result )
+{
+	PDF_ASSERT( i != m_dict.end( ) ) ;
+
+	Array array ;
+	bool rtn = SwapAt( i, array ) ;
+	result.Assign( array.begin(), array.end() ) ;
+	return rtn ;
+}
+
 template <typename T>
 bool DictReader::SwapAt( Dictionary::iterator i, std::vector<T>& result )
 {
@@ -198,10 +210,10 @@ const Dictionary& DictReader::operator*() const
 	return m_dict ;
 }
 
-Object& DictReader::operator[]( const Name& name )
-{
-	return m_dict[name] ;
-}
+//Object& DictReader::operator[]( const Name& name )
+//{
+//	return m_dict[name] ;
+//}
 
 const Object& DictReader::operator[]( const Name& name ) const
 {

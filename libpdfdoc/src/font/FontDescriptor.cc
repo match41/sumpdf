@@ -199,11 +199,8 @@ void FontDescriptor::Read( font::Type type, DictReader& reader )
 	int flags ;
 	if ( reader.Detach( "Flags",	flags ) )
 		m_flags = flags ;
-	
-	Array bbox ;
-	if ( reader.Detach( "FontBBox", bbox ) )
-		m_bbox = Rect( bbox.begin(), bbox.end() ) ;
-
+		
+	reader.Detach( "FontBBox",		m_bbox ) ;
 	reader.Detach( "ItalicAngle",	m_italic_angle ) ;
 	reader.Detach( "Ascent",		m_ascent ) ;
 	reader.Detach( "Descent",		m_descent ) ;
@@ -227,24 +224,24 @@ Ref FontDescriptor::Write( File *file ) const
 
 	Dictionary self ;
 	if ( !m_psname.empty() )
-		self["FontName"]	= Name(m_psname) ;
+		self.insert( "FontName", Name(m_psname) ) ;
 	
 	if ( !m_family.empty() )
-		self["Family"]		= m_family ;
+		self.insert( "Family", m_family ) ;
 
-	self["Ascent"]		= m_ascent ;
-	self["Descent"]		= m_descent ;
-	self["CapHeight"]	= m_cap_height ;
-	self["StemV"]		= m_stemv ;
-	self["Flags"]		= static_cast<int>( m_flags.to_ulong() ) ;
-	self["Type"]		= Name("FontDescriptor") ;
-	self["ItalicAngle"]	= 0 ;
+	self.insert( "Ascent",		m_ascent ) ;
+	self.insert( "Descent",		m_descent ) ;
+	self.insert( "CapHeight",	m_cap_height ) ;
+	self.insert( "StemV",		m_stemv ) ;
+	self.insert( "Flags",		static_cast<int>( m_flags.to_ulong() ) ) ;
+	self.insert( "Type",		Name("FontDescriptor") ) ;
+	self.insert( "ItalicAngle",	0 ) ;
 	
 	if ( m_x_height != 0.0 )
-		self["XHeight"]		= m_x_height ;
+		self.insert( "XHeight", m_x_height ) ;
 	
 //	Rect bbox( m_x_min, m_y_min, m_x_max, m_y_max ) ;
-	self["FontBBox"]	= Array( m_bbox.begin(), m_bbox.end() ) ;
+	self.insert( "FontBBox",	m_bbox ) ;
 	
 	// embedded font program also needs Length1 for the size of the stream
 	if ( !m_font_file.empty() )
@@ -253,16 +250,12 @@ Ref FontDescriptor::Write( File *file ) const
 		s.Append( &m_font_file[0], m_font_file.size() ) ;
 		s.Flush( ) ;
 		
-		// it seems the OpenType can work for both truetype and type1 fonts
-		// we add it anyway
-//		s.AddDictionaryEntry( "Subtype", Name("OpenType" ) ) ;
-		
 		Dictionary& sdict = s.Self() ;
 		
 		if ( m_type == font::truetype )
 		{
 			sdict.insert( std::make_pair( "Length1", m_font_file.size() ) ) ;
-			self["FontFile2"]	= file->WriteObj( s ) ;
+			self.insert( "FontFile2", file->WriteObj( s ) ) ;
 		}
 		else if ( m_type == font::type1 )
 		{
@@ -271,21 +264,21 @@ Ref FontDescriptor::Write( File *file ) const
 				sdict.insert( std::make_pair( "Length1", m_length1 ) ) ;
 				sdict.insert( std::make_pair( "Length2", m_length2 ) ) ;
 				sdict.insert( std::make_pair( "Length3", m_length3 ) ) ;
-				self["FontFile"]	= file->WriteObj( s ) ;
+				self.insert( "FontFile", file->WriteObj( s ) ) ;
 			}
 			else
 			{
 				sdict.insert( std::make_pair( "Subtype", m_subtype ) ) ;
-				self["FontFile3"]	= file->WriteObj( s ) ;
+				self.insert( "FontFile3", file->WriteObj( s ) ) ;
 			}
 		}
 		else
-			self["FontFile3"]	= file->WriteObj( s ) ;
+			self.insert( "FontFile3", file->WriteObj( s ) ) ;
 	}
 	
 	if ( m_stretch >= font::ultra_condensed &&
 	     m_stretch <= font::ultra_expanded )  
-		self["Stretch"]	= m_stretch_names[m_stretch] ;
+		self.insert( "Stretch", m_stretch_names[m_stretch] ) ;
 
 	return file->WriteObj( self ) ;
 }

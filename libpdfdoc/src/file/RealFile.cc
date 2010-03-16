@@ -62,7 +62,7 @@ RealFile::RealFile( std::istream *is )
 {
 	ReadXRef( ReadXRefOffset( ), m_trailer ) ;
 
-	std::size_t obj_count = int( m_trailer["Size"] ) ;
+	std::size_t obj_count = m_trailer["Size"].To<int>() ;
 	if ( m_objs.size() != obj_count )
 	{
 		std::ostringstream oss ;
@@ -104,10 +104,10 @@ void RealFile::WriteTrailer( const Ref& catalog, const Ref& info )
 	assert( m_out != 0 ) ;
 
 	if ( info != Ref() )
-		m_trailer["Info"]	= info ;
+		m_trailer.Set( "Info", info ) ;
 	
-	m_trailer["Root"]	= catalog ;
-	m_trailer["Size"]	= m_objs.size( ) ;
+	m_trailer.Set( "Root", catalog ) ;
+	m_trailer.Set( "Size", m_objs.size( ) ) ;
 
 	std::streampos xref_pos = m_out->tellp( ) ;
 	*m_out << "xref\n"
@@ -297,7 +297,7 @@ Stream RealFile::ReadStream( Dictionary& dict )
 	if ( length.Is<Ref>() )
 	{
 		std::streampos pos	= m_in->tellg( ) ;
-		dict["Length"] = ReadObj( length ) ;
+		dict.Set( "Length", ReadObj( length ) ) ;
 		m_in->seekg( pos ) ;
 	}
 	

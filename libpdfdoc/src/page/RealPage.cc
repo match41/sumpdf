@@ -115,9 +115,9 @@ void RealPage::Write( const Ref& link, File *file, const Ref& parent ) const
 	PDF_ASSERT( file != 0 ) ;
 	
 	Dictionary self ;
-	self["Type"]		= Name( "Page" ) ;
- 	self["Contents"]	= WriteContent( file ) ;
-	self["Parent"]		= parent ;
+	self.insert( "Type", Name( "Page" ) ) ;
+ 	self.insert( "Contents", WriteContent( file ) ) ;
+	self.insert( "Parent", parent ) ;
 	
 	m_pinfo.Write( self, file ) ;
 

@@ -85,7 +85,7 @@ public :
 	void erase( const Name& name ) ;
 
 	const Object& operator[]( const Name& key ) const ;
-	Object& operator[]( const Name& key ) ;
+//	Object& operator[]( const Name& key ) ;
 
 	std::size_t size( ) const ;
 	bool empty( ) const ;
@@ -98,7 +98,10 @@ public :
 	
 	bool operator==( const Dictionary& dict ) const ;
 	
-	void Add( const Name& key, const Object& value ) ;
+	bool Set( const Name& key, const Object& value ) ;
+
+private :
+	static bool IsGoodObject( const Object& obj ) ;
 } ;
 
 } // end of namespace

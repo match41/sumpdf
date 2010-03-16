@@ -54,7 +54,7 @@ void ExtGStateTest::TestRead( )
 	ExtGState subject ;
 	
 	Dictionary dict ;
-	dict["LW"] = 100 ;
+	dict.insert( "LW",	100 ) ;
  	
  	MockFile file ;
  	DictReader reader( dict, &file ) ;

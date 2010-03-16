@@ -34,8 +34,9 @@
 
 #include "stream/Stream.hh"
 
-#include "util/Util.hh"
 #include "util/Debug.hh"
+#include "util/Rect.hh"
+#include "util/Util.hh"
 
 #include <boost/variant/apply_visitor.hpp>
 
@@ -130,6 +131,11 @@ Object::Object( float value )
 {
 }
 
+Object::Object( const Rect& rect )
+	: m_obj( Array( rect.begin(), rect.end() ) )
+{
+}
+
 template <typename T>
 Object::Object( const std::vector<T>& v )
 	: m_obj( Array( v.begin(), v.end() ) )
@@ -148,6 +154,7 @@ template Object::Object( const std::vector<Object>& ) ;
 template Object::Object( const std::vector<float>& ) ;
 template Object::Object( const std::vector<std::size_t>& ) ;
 template Object::Object( const std::vector<const char*>& ) ;
+template Object::Object( const std::vector<Rect>& ) ;
 
 /**	\brief	destructor
 	\internal
@@ -264,6 +271,12 @@ template <> double Object::To() const
 {
 	// the PDF specification said integers can be converted to doubles
 	return Is<int>() ? As<int>() : As<double>() ;
+}
+
+template <> Rect Object::To() const
+{
+	const Array& a = As<Array>() ;
+	return Rect( a.begin(), a.end() ) ;
 }
 
 bool operator==( const Object& obj1, const Object& obj2 )

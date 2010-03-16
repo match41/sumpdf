@@ -79,7 +79,7 @@ Ref NameTree::Write( File *file ) const
 		std::transform( m_kids.begin(), m_kids.end(), kids.begin(),
 			boost::bind( &NameTree::Write, _1, file ) ) ;
 		
-		self["Kids"] = kids ;
+		self.insert( "Kids", kids ) ;
 	}
 	if ( !m_names.empty() )
 	{
@@ -90,15 +90,15 @@ Ref NameTree::Write( File *file ) const
 			names.push_back( i->first ) ;
 			names.push_back( i->second ) ;
 		}
-		self["Names"] = names ;
+		self.insert( "Names", names ) ;
 	}
 	
 	if ( m_names.size() == 1 )
-		self["Limits"] = Array( 2, m_names.begin()->first ) ;
+		self.insert( "Limits", Array( 2, m_names.begin()->first ) ) ;
 	else if ( m_names.size() > 1 )
 	{
 		Object limits[] = { m_names.begin()->first, m_names.rbegin()->first } ;
-		self["Limits"] = Array( Begin(limits), End(limits) ) ;
+		self.insert( "Limits", Array( Begin(limits), End(limits) ) ) ;
 	}
 	
 	return file->WriteObj( self ) ;
