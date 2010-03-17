@@ -101,6 +101,10 @@ void PageTree::Read( DictReader& dict )
 	PDF_ASSERT( file != 0 ) ;
 	PDF_ASSERT( file->Pool() != 0 ) ;
 
+	// read info before reading the children because children may need the
+	// stuff in info, such as resources
+	m_pinfo.Read( dict ) ;
+
 	ArrayReader pages ;
 	if ( !dict.Detach( "Kids", pages ) )
 		throw ParseError( "no children in page tree" ) ;
@@ -121,8 +125,6 @@ void PageTree::Read( DictReader& dict )
 	// leaf count is required
 	if ( !dict.Detach( "Count", m_count ) )
 		throw ParseError( "cannot get leaf count in page node" ) ;
-
-	m_pinfo.Read( dict ) ;
 }
 
 void PageTree::Write( const Ref& link, File *file, const Ref& ) const
