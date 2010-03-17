@@ -105,9 +105,9 @@ bool TextLine::IsEmpty( ) const
 void TextLine::AppendText( const std::wstring& text )
 {
 	Font *f = m_state.GetFont() ;
-	if ( f == 0 )
-		throw Exception( "invalid font" ) ;
-	else
+	if ( f != 0 )
+//		throw Exception( "invalid font" ) ;
+//	else
 		m_text.insert( m_text.end(), text.begin(), text.end() ) ;
 }
 
@@ -240,7 +240,6 @@ void TextLine::VisitChars( CharVisitor *v ) const
 {
 	double	offset = 0.0 ;
 	Font *font	= m_state.GetFont( ) ; 
-	PDF_ASSERT( font != 0 ) ;
 	
 	std::vector<Space>::const_iterator sp = m_space.begin( ) ;
 	
@@ -253,6 +252,7 @@ void TextLine::VisitChars( CharVisitor *v ) const
 			++sp ;
 		}
 	
+		PDF_ASSERT( font != 0 ) ;
 		const Glyph *glyph = font->GetGlyph( m_text[idx] ) ;
 
 		const TextState& ts = m_state.GetTextState() ;

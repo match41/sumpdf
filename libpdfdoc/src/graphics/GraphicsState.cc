@@ -37,8 +37,11 @@
 #include "page/ResourcesDict.hh"
 
 #include "util/Debug.hh"
+#include "util/Exception.hh"
 #include "util/Matrix.hh"
 #include "util/Util.hh"
+
+#include <boost/format.hpp>
 
 #include <map>
 #include <iostream>
@@ -136,11 +139,19 @@ std::ostream& GraphicsState::Print(
 */
 bool GraphicsState::OnCommand( ContentOp& op, const ResourcesDict *res )
 {
-	HandlerMap::Map::const_iterator i = HandlerMap::m_map.find( op.Operator() );
-	if ( i != HandlerMap::m_map.end() )
-		return (this->*(i->second))( op, res ) ;
-
-	return false ;
+	try
+	{
+		HandlerMap::Map::const_iterator i = HandlerMap::m_map.find( op.Operator() );
+		if ( i != HandlerMap::m_map.end() )
+			return (this->*(i->second))( op, res ) ;
+	
+		return false ;
+	}
+	catch ( Exception& e )
+	{
+		e.Add( boost::format( "Error when parsing \"%1%\"" ) % op ) ;
+		throw ;
+	}
 }
 
 bool GraphicsState::IsGSCommand( const Token& cmd )
@@ -157,7 +168,9 @@ bool GraphicsState::OnTf( ContentOp& op, const ResourcesDict *res )
 	{
 		BaseFont *f = res->FindFont( op[0].As<Name>() ) ;
 		if ( f == 0 )
-			std::cout << "unknown font: " << op[1] << std::endl ;
+		{
+//			throw ParseError( boost::format( "unknown font: %1% " ) % op[0] ) ;
+		}
 		else
 		{
 			double font_size = op[1].To<double>() ;

@@ -100,8 +100,8 @@ TokenSrc& operator>>( TokenSrc& src, ContentOp& op )
 
 std::ostream& operator<<( std::ostream& os, const ContentOp& op )
 {
-	os << op.Operator().Get() << " " ;
 	std::copy( op.begin(), op.end(), std::ostream_iterator<Object>( os, " " ) );
+	os << " " << op.Operator().Get() ;
 	return os << std::endl ;
 }
 
