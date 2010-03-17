@@ -26,9 +26,10 @@
 
 #include "MainWnd.hh"
 
+#include "ExceptionDlg.hh"
 #include "PageView.hh"
 #include "PropertiesDlg.hh"
-#include "ExceptionDlg.hh"
+#include "TextDlg.hh"
 
 // Qt headers
 #include <QApplication>
@@ -57,6 +58,7 @@
 #include <Doc.hh>
 #include <font/Font.hh>
 #include <page/Page.hh>
+#include <util/Exception.hh>
 #include <util/Rect.hh>
 #include <util/Debug.hh>
 #include <graphics/Text.hh>
@@ -167,9 +169,9 @@ void MainWnd::OpenFile( const QString& file )
 			GoToPage( 0 ) ;
 		}
 	}
-	catch ( std::exception& e )
+	catch ( Exception& e )
 	{
-		ExceptionDlg dlg( e.what(), this ) ;
+		ExceptionDlg dlg( e, this ) ;
 		dlg.exec() ;
 	}
 }
@@ -185,7 +187,6 @@ void MainWnd::GoToPage( std::size_t page )
 		
 		Page *p = m_doc->GetPage( m_current_page ) ;
 		
-//		PageContent *c = p->GetContent( ) ;
 		p->VisitGraphics( this ) ;
 		m_scene->invalidate() ;
 	
@@ -265,9 +266,6 @@ void MainWnd::StorePage( QGraphicsScene *scene, Doc *doc, Page *page )
 	assert( doc != 0 ) ;
 	assert( page != 0 ) ;
 	
-//	PageContent *c = page->GetContent( ) ;
-//	c->Clear( ) ;
-	
 	Text *t = CreateText( GraphicsState() ) ;
 	
 	QList<QGraphicsItem *> items = scene->items() ;
@@ -299,9 +297,9 @@ void MainWnd::OnNextPage( )
 				GoToPage( m_current_page + 1 ) ;
 			}
 		}
-		catch ( std::exception& e )
+		catch ( Exception& e )
 		{
-			ExceptionDlg dlg( e.what(), this ) ;
+			ExceptionDlg dlg( e, this ) ;
 			dlg.exec() ;
 		}
 
@@ -320,9 +318,9 @@ void MainWnd::OnPreviousPage( )
 				GoToPage( m_current_page - 1 ) ;
 			}
 		}
-		catch ( std::exception& e )
+		catch ( Exception& e )
 		{
-			ExceptionDlg dlg( e.what(), this ) ;
+			ExceptionDlg dlg( e, this ) ;
 			dlg.exec() ;
 		}
 	}
@@ -337,9 +335,9 @@ void MainWnd::OnFirstPage( )
 			// go to first page and display
 			GoToPage( 0 ) ;
 		}
-		catch ( std::exception& e )
+		catch ( Exception& e )
 		{
-			ExceptionDlg dlg( e.what(), this ) ;
+			ExceptionDlg dlg( e, this ) ;
 			dlg.exec() ;
 		}
 	}
@@ -354,9 +352,9 @@ void MainWnd::OnLastPage( )
 			// go to last page and display
 			GoToPage( m_doc->PageCount() - 1 ) ;
 		}
-		catch ( std::exception& e )
+		catch ( Exception& e )
 		{
-			ExceptionDlg dlg( e.what(), this ) ;
+			ExceptionDlg dlg( e, this ) ;
 			dlg.exec() ;
 		}
 	}
@@ -374,7 +372,7 @@ void MainWnd::OnViewSource( )
 			c.push_back( '\0' ) ;
 			
 			// size() must be > 0 after push_back()
-			ExceptionDlg dlg( reinterpret_cast<char*>(&c[0]), this ) ;
+			TextDlg dlg( reinterpret_cast<char*>(&c[0]), this ) ;
 			dlg.exec() ;
 		}
 	}

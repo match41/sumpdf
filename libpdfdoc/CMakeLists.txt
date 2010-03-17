@@ -395,6 +395,8 @@ if ( WIN32 )
 	if ( DBHELP_LIBRARY )
 		message( "found dbghelp: ${DBHELP_LIBRARY}" )
 		set( OPT_LIBS   ${OPT_LIBS}	Dbghelp )
+	else ( DBHELP_LIBRARY )
+		message( "dbghelp not found" )
 	endif ( DBHELP_LIBRARY )
 endif ( WIN32 )
 

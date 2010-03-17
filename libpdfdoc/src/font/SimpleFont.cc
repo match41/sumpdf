@@ -135,17 +135,17 @@ SimpleFont::SimpleFont( DictReader& reader, FontDb *font_db )
 		else if ( m_type != font::type3 )
 		{
 			if ( !InitWithStdFont( m_base_font.Str(), font_db )  )
-				throw Exception( "no font name. can't load font" ) ;
+				throw FontException( "no font name. can't load font" ) ;
 		}
 		else
-			throw Exception( "no descriptor?" ) ;
+			throw FontException( "no descriptor?" ) ;
 	}
 	catch ( Exception& e )
 	{
-		throw FontException(
-			boost::format(
-				"cannot read font:\n%1%\n"
-			    "Font Dictionary: %2%\n" ) % e.what() % *reader ) ;
+		e.Add( boost::format(
+			"cannot read font:\n%1%\n"
+			"Font Dictionary: %2%\n" ) % e.what() % *reader ) ;
+		throw ;
 	}
 	
 	PDF_ASSERT( m_face != 0 ) ;

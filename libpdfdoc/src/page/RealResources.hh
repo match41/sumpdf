@@ -82,7 +82,7 @@ private :
 	void ReadStateDict( DictReader& self ) ;
 
 private :
-	const RealResources	*m_parent ;
+	const RealResources	*const m_parent ;
 	FontDb				*m_font_db ;
 
 	typedef	boost::bimap<

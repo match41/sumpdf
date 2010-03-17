@@ -42,7 +42,8 @@ set( BASE_SRCS		src/main.cc
 					src/PageView.cc
 					src/TextEdit.cc
 					src/PropertiesDlg.cc
-					src/ExceptionDlg.cc )
+					src/ExceptionDlg.cc
+					src/TextDlg.cc )
 
 ###############################################################################
 # all sources
@@ -60,10 +61,12 @@ set( MOC_HDRS	src/MainWnd.hh
 				src/PropertiesDlg.hh
 				src/PageView.hh
 				src/TextEdit.hh
-				src/ExceptionDlg.hh )
+				src/ExceptionDlg.hh
+				src/TextDlg.hh )
 set( UIS 		ui/MainWnd.ui
 				ui/Properties.ui
-				ui/ExceptionDlg.ui )
+				ui/ExceptionDlg.ui
+				ui/TextDlg.ui )
 
 qt4_wrap_ui( UIH ${UIS})
 qt4_wrap_cpp( MOC_SRCS ${MOC_HDRS})
@@ -132,7 +135,10 @@ if ( WIN32 )
         /usr/local/lib64 )
 	
 	if ( DBHELP_LIBRARY )
+		message( "found dbghelp: ${DBHELP_LIBRARY}" )
 		set( OPT_LIBS   ${OPT_LIBS}	Dbghelp )
+	else ( DBHELP_LIBRARY )
+		message( "dbghelp not found" )
 	endif ( DBHELP_LIBRARY )
 endif ( WIN32 )
 
