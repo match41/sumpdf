@@ -51,8 +51,9 @@ RealResources::RealResources( const RealResources *parent )
 	  m_proc_set( 1, Name( "PDF" ) )
 {
 	PDF_ASSERT( parent != 0 ) ;
+	PDF_ASSERT( parent->UseCount() > 0 ) ;
 	PDF_ASSERT( m_font_db != 0 ) ;
-	
+std::cout << "count = " << parent->UseCount() << std::endl ;
     m_proc_set.push_back( Name( "Text" ) ) ;
 }
 
@@ -198,6 +199,8 @@ Name RealResources::AddFont( BaseFont *font )
 
 BaseFont* RealResources::FindFont( const Name& name ) const
 {
+	PDF_ASSERT( UseCount() > 0 ) ;
+
 	FontMap::left_const_iterator i = m_fonts.left.find( name ) ;
 	return i != m_fonts.left.end() ? i->second :
 		( m_parent != 0 ? m_parent->FindFont( name ) : 0 ) ;

@@ -287,7 +287,8 @@ if ( WIN32 )
 	if ( DBG_INCLUDE_DIR )
 		add_definitions( -DHAVE_DBGHELP )
 	endif ( DBG_INCLUDE_DIR )
-	set( UTIL_SRCS  ${UTIL_SRCS}	${UTIL_DIR}/SymbolInfo32.cpp )
+	set( UTIL_SRCS  ${UTIL_SRCS}	${UTIL_DIR}/SymbolInfo32.cpp
+									${UTIL_DIR}/StackWalker.cpp )
 
     set( FONT_HDRS  ${FONT_HDRS}
 					${FONT_DIR}/Win32FontDb.hpp )
