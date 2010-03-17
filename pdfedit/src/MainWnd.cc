@@ -47,6 +47,7 @@
 #include <QPushButton>
 #include <QSizePolicy>
 #include <QTransform>
+#include <QtGlobal>
 #include <QToolBar>
 
 #include "TextEdit.hh"
@@ -224,10 +225,12 @@ void MainWnd::VisitGraphics( Graphics *gfx )
 void MainWnd::OnAbout( )
 {
 	std::ostringstream vs ;
-	vs	<< "PDF Editor version "    << VERSION      << '\n'
-		<< "libpdfdoc version "     << Version()    << '\n'
-		<< "Copyright Nestal Wan 2010\n"
-		<< "License: GPL" ;
+	vs	<< "About PDF Editor\n"
+		<< "version "    				<< VERSION      << '\n'
+		<< "Using libpdfdoc version "	<< Version()    << '\n'
+		<< "Qt version "				<< qVersion()	<< '\n'
+		<< "Copyright 2010 Nestal Wan\n"
+		<< "License: GNU Public License Version 2" ;
 	QMessageBox::information( this, "About PDF Editor", vs.str().c_str() ) ;
 }
 
