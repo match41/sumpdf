@@ -226,8 +226,9 @@ void MainWnd::OnAbout( )
 {
 	std::ostringstream vs ;
 	vs	<< "About PDF Editor\n"
-		<< "version "    				<< VERSION      << '\n'
-		<< "Using libpdfdoc version "	<< Version()    << '\n'
+		<< "version "    				<< VERSION		<< '\n'
+		<< __DATE__ << '\n'
+		<< "Using libpdfdoc version "	<< Version()	<< '\n'
 		<< "Qt version "				<< qVersion()	<< '\n'
 		<< "Copyright 2010 Nestal Wan\n"
 		<< "License: GNU Public License Version 2" ;
