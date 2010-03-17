@@ -59,31 +59,16 @@ SymbolInfo* SymbolInfo::Instance( )
 	return &sthis ;
 }
 
-std::size_t ExtBacktrace( addr_t *stack, std::size_t count )
+std::size_t SymbolInfo::Backtrace( addr_t *stack, std::size_t count )
 {
 #ifdef HAVE_DBGHELP
     // Get the frame pointer (aka base pointer)
 	CONTEXT	context;
-#ifndef _M_IX86
-	::RtlCaptureContext( &context );
-#else
     memset( &context, 0, sizeof( CONTEXT ) );
 
-    context.ContextFlags = CONTEXT_FULL;
-
-    //
-    // Those three registers are enough.
-    //
-    __asm
-    {
-    Label:
-      mov [context.Ebp], ebp;
-      mov [context.Esp], esp;
-      mov eax, [Label];
-      mov [context.Eip], eax;
-    }
-#endif
-    // Initialize the STACKFRAME64 structure.
+	::RtlCaptureContext( &context );
+    
+	// Initialize the STACKFRAME64 structure.
     STACKFRAME64 frame;
     memset( &frame, 0, sizeof(frame) ) ;
 #ifdef _M_IX86
@@ -109,7 +94,7 @@ std::size_t ExtBacktrace( addr_t *stack, std::size_t count )
 
     // .. use StackWalk to walk the stack ..
     std::size_t idx = 0 ;
-    while ( StackWalk64(
+    while ( idx < count && StackWalk64(
 		arch,
 		GetCurrentProcess( ),
 		GetCurrentThread( ),
@@ -117,24 +102,23 @@ std::size_t ExtBacktrace( addr_t *stack, std::size_t count )
 		&context,
 		0, SymFunctionTableAccess64, 
 		SymGetModuleBase64, 0 ) )
-		
-		stack[idx++] = frame.AddrPC.Offset ;
+	{
+		if ( frame.AddrPC.Offset == frame.AddrReturn.Offset )
+			break;
 
+		stack[idx++] = frame.AddrPC.Offset ;
+	}
+	
     return idx ;
 #else
 	return 0 ;
 #endif
 }
 
-std::size_t SymbolInfo::Backtrace( addr_t *stack, std::size_t count )
-{
-	return ExtBacktrace( stack, count ) ;
-}
-
 void SymbolInfo::PrintTrace( addr_t addr, std::ostream& os, std::size_t idx )
 {
 #ifdef HAVE_DBGHELP
-	static const DWORD name_length = 1024 ;
+	static const DWORD name_length = 2048 ;
 	IMAGEHLP_SYMBOL64 *sym =
 		(IMAGEHLP_SYMBOL64 *)malloc( sizeof(IMAGEHLP_SYMBOL64) + name_length );
 	sym->SizeOfStruct   = sizeof(IMAGEHLP_SYMBOL64) ;
@@ -143,16 +127,17 @@ void SymbolInfo::PrintTrace( addr_t addr, std::ostream& os, std::size_t idx )
 	DWORD64 offset ;
 	if ( SymGetSymFromAddr64( GetCurrentProcess(), addr, &offset, sym ) )
 	{
+		os << "#" << idx << " " << std::hex << addr << " " ;
+
 		IMAGEHLP_LINE64 line = { sizeof(IMAGEHLP_LINE64) } ;
-		SymGetLineFromAddr64( GetCurrentProcess(), addr, 0, &line ) ;
-	    
-		os << "#" << idx << " " << std::hex << addr
-		   << " "
-		   << (line.FileName != 0 ? std::string(line.FileName)
-								  : std::string() ) << ":"
-		   << line.LineNumber 
-		   << " " << sym->Name
-		   << std::endl ;
+		if ( SymGetLineFromAddr64( GetCurrentProcess(), addr, 0, &line ) )
+			os	<< (line.FileName != 0 ? std::string(line.FileName)
+									   : std::string() ) << ":"
+				<< line.LineNumber ;
+
+		
+		
+		os << " " << sym->Name << std::endl ;
 	}
 
 	free( sym ) ;
