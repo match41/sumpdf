@@ -76,6 +76,9 @@ int main( int argc, char **argv )
     // humans use one-base index; C uses zero-base
     if ( vm.count( "page" ) )
     	w->GoToPage( page - 1 ) ;
+#else
+    if ( argc > 1 )
+        w->OpenFile( argv[1] ) ;
 #endif
 
     return app.exec( ) ;

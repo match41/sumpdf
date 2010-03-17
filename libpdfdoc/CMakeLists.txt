@@ -21,7 +21,7 @@ PROJECT( libpdfdoc )
 
 cmake_minimum_required(VERSION 2.6)
 
-set( VERSION	0.1.0 )
+set( VERSION	0.1.2 )
 add_definitions( -DVERSION="${VERSION}" )
 add_definitions( -DBOOST_ALL_NO_LIB )
 
@@ -287,8 +287,7 @@ if ( WIN32 )
 	if ( DBG_INCLUDE_DIR )
 		add_definitions( -DHAVE_DBGHELP )
 	endif ( DBG_INCLUDE_DIR )
-	set( UTIL_SRCS  ${UTIL_SRCS}	${UTIL_DIR}/SymbolInfo32.cpp
-									${UTIL_DIR}/StackWalker.cpp )
+	set( UTIL_SRCS  ${UTIL_SRCS}	${UTIL_DIR}/SymbolInfo32.cpp )
 
     set( FONT_HDRS  ${FONT_HDRS}
 					${FONT_DIR}/Win32FontDb.hpp )

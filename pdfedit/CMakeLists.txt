@@ -21,6 +21,9 @@ PROJECT(pdfedit)
 
 cmake_minimum_required(VERSION 2.6)
 
+set( VERSION	0.1.2 )
+add_definitions( -DVERSION="${VERSION}" )
+
 ###############################################################################
 # required packages
 ###############################################################################
