@@ -53,7 +53,7 @@ RealResources::RealResources( const RealResources *parent )
 	PDF_ASSERT( parent != 0 ) ;
 	PDF_ASSERT( parent->UseCount() > 0 ) ;
 	PDF_ASSERT( m_font_db != 0 ) ;
-std::cout << "count = " << parent->UseCount() << std::endl ;
+
     m_proc_set.push_back( Name( "Text" ) ) ;
 }
 
