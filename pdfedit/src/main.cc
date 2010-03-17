@@ -35,6 +35,9 @@
 // Qt headers
 #include <QApplication>
 
+#include <util/Exception.hh>
+#include <iostream>
+
 #ifdef HAVE_BOOST_PROGRAM_OPTIONS
 namespace po = boost::program_options ;
 #endif

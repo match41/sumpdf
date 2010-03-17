@@ -26,7 +26,7 @@
 #include "graphics/TextState.hh"
 #include "page/Page.hh"
 
-#include "util/Exception.hh"
+#include "util/Backtrace.hh"
 
 #include "util/Util.hh"
 #include <boost/bind.hpp>
@@ -42,8 +42,17 @@ int main( int argc, char **argv )
 {
 	pdf::Doc *doc = pdf::CreateDoc( ) ;
 	if ( argc >= 2 )
-		doc->Read( argv[1] ) ;
-	
+	{
+		try
+		{
+			doc->Read( argv[1] ) ;
+		}
+		catch ( std::exception& e )
+		{
+			std::cout << e.what() ;
+			return -1 ;
+		}
+	}
 	pdf::Page *p = doc->AppendPage( ) ;
 	pdf::Font *f = doc->CreateSimpleFont( "Arial" ) ;
 	

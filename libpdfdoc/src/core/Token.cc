@@ -229,7 +229,8 @@ bool Token::IsInt( ) const
 	for ( std::string::const_iterator i = m_token.begin() ;
 	                                  i!= m_token.end() ; ++i )
 	{
-		if ( !std::isdigit( *i ) )
+		unsigned char ch = *i ;
+		if ( !std::isdigit( ch ) )
 			return false ;
 	}
 	return true ;

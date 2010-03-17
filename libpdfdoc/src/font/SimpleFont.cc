@@ -95,6 +95,9 @@ SimpleFont::SimpleFont( DictReader& reader, FontDb *font_db )
 			m_type	= SubType( subtype ) ;
 		
 		// base font is absent in type 3 fonts
+		if ( m_type == font::type0 )
+			throw FontException( "Type0 font is not supported yet" ) ;
+			
 		if ( m_type != font::type3 )
 		{
 			if ( !reader.Detach( "BaseFont", m_base_font ) )
