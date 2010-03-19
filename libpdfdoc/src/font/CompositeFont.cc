@@ -26,6 +26,9 @@
 #include "CompositeFont.hh"
 
 #include "core/Ref.hh"
+#include "file/DictReader.hh"
+
+#include <iostream>
 
 namespace pdf {
 
@@ -34,6 +37,7 @@ namespace pdf {
 */
 CompositeFont::CompositeFont( DictReader& dict, FontDb *ft )
 {
+std::cout << "wahaha:\n" << dict.Get() << std::endl ;
 }
 
 CompositeFont::CompositeFont( const std::string& name, FontDb *ft )

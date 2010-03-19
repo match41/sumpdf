@@ -35,10 +35,8 @@ namespace pdf
 
 BaseFont* CreateFont( DictReader& obj, FontDb *db )
 {
-	Name subtype ;
-	if ( !obj.Detach( "Subtype", subtype ) )
-		throw FontException( "missing subtype for font" ) ;
-
+	Name subtype = obj["Subtype"] ;
+	
 	if ( subtype == Name("Type0") )
 		return new CompositeFont( obj, db ) ;
 	

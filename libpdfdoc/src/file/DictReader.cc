@@ -210,10 +210,15 @@ const Dictionary& DictReader::operator*() const
 	return m_dict ;
 }
 
-//Object& DictReader::operator[]( const Name& name )
-//{
-//	return m_dict[name] ;
-//}
+Dictionary& DictReader::Get()
+{
+	return m_dict ;
+}
+
+const Dictionary& DictReader::Get() const
+{
+	return m_dict ;
+}
 
 const Object& DictReader::operator[]( const Name& name ) const
 {

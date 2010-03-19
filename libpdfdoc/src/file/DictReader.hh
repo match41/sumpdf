@@ -122,8 +122,10 @@ public :
 	Dictionary& operator*() ;
 	const Dictionary& operator*() const ;
 
+	Dictionary& Get() ;
+	const Dictionary& Get() const ;
+
 	// wrapper for operator[]
-//	Object& operator[]( const Name& name ) ;
 	const Object& operator[]( const Name& name ) const ;
 
 	File* GetFile( ) const ;
