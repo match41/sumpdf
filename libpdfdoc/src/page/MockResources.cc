@@ -42,6 +42,11 @@ Name MockResources::AddFont( BaseFont *font )
 	return name ;
 }
 
+void MockResources::Add( const Name& name, BaseFont *font )
+{
+	m_font_map[name] = font ;
+}
+
 BaseFont* MockResources::FindFont( const Name& name ) const
 {
 	std::map<Name,BaseFont*>::const_iterator i = m_font_map.find( name ) ;

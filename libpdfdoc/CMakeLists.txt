@@ -515,7 +515,7 @@ set( UT_SRCS	test/core/TokenTest.cc
 				test/stream/OutStreamBufAdaptorTest.cc
 				
 				test/page/RealPageTest.cc
-#				test/page/RealContentTest.cc
+				test/page/ContentStreamTest.cc
 				test/page/PageNodeTest.cc
 				test/page/RealResourcesTest.cc
 				test/page/ExtGStateTest.cc

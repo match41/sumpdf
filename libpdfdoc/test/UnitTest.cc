@@ -46,7 +46,7 @@
 #include "stream/RawFilterTest.hh"
 #include "page/RealResourcesTest.hh"
 #include "page/RealPageTest.hh"
-//#include "page/RealContentTest.hh"
+#include "page/ContentStreamTest.hh"
 #include "font/FontDbTest.hh"
 
 // freetype library is optional
@@ -90,7 +90,7 @@ int main( int argc, char **argv )
 	runner.addTest( PageNodeTest::suite( ) ) ;
 	runner.addTest( TextStateTest::suite( ) ) ;
 	runner.addTest( RealTextTest::suite( ) ) ;
-//	runner.addTest( RealContentTest::suite( ) ) ;
+	runner.addTest( ContentStreamTest::suite( ) ) ;
 	runner.addTest( TextLineTest::suite( ) ) ;
 	runner.addTest( NameTreeTest::suite( ) ) ;
 	runner.addTest( FontDbTest::suite( ) ) ;

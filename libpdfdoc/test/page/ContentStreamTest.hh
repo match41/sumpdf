@@ -17,43 +17,39 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	MockResources.hh
-    \brief	definition the MockResources class
-    \date	Jan 23, 2010
+/**	\file	ContentStreamTest.hh
+    \brief	definition the ContentStreamTest class
+    \date	Mar 19, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_MOCKRESOURCES_HH_EADER_INCLUDED__
-#define __PDF_MOCKRESOURCES_HH_EADER_INCLUDED__
+#ifndef __PDFUT_CONTENTSTREAMTEST_HH_EADER_INCLUDED__
+#define __PDFUT_CONTENTSTREAMTEST_HH_EADER_INCLUDED__
 
-#include "ResourcesDict.hh"
+#include <cppunit/TestFixture.h>
 
-#include "core/Name.hh"
+#include <cppunit/extensions/HelperMacros.h>
 
-#include <map>
+namespace pdfut {
 
-namespace pdf {
-
-class BaseFont ;
-
-///	brief description
-/**	The MockResources class represents
-*/
-class MockResources : public ResourcesDict
+class ContentStreamTest : public CppUnit::TestFixture
 {
 public :
-	MockResources( ) ;
+	ContentStreamTest( ) ;
 
-	Name AddFont( BaseFont *font ) ;
-	BaseFont* FindFont( const Name& name ) const ;
-	Name FindFont( const BaseFont *font ) const ;
+	// declare suit function
+	CPPUNIT_TEST_SUITE( ContentStreamTest ) ;
+		CPPUNIT_TEST( TestTestCID ) ;
+	CPPUNIT_TEST_SUITE_END();
 
-	void Add( const Name& name, BaseFont *font ) ;
+public :
+	void setUp( ) ;
+	void tearDown( ) ;
 
 private :
-	std::map<Name, BaseFont*>	m_font_map ;
+	void TestTestCID( ) ;
 } ;
 
 } // end of namespace
 
-#endif // MOCKRESOURCES_HH_
+#endif // CONTENTSTREAMTEST_HH_
