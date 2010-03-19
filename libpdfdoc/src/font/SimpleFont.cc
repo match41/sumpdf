@@ -380,9 +380,4 @@ FontDescriptor* SimpleFont::Descriptor( )
 	return m_descriptor.get() ;
 }
 
-BaseFont* CreateFont( DictReader& obj, FontDb *db )
-{
-	return new SimpleFont( obj, db ) ;
-}
-
 } // end of namespace

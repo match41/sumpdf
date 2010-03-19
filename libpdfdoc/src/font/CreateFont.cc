@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2006 by Nestal Wan                                      *
+ *   Copyright (C) 2009 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,39 +17,32 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	CompositeFont.cc
-	\brief	implementation of the CompositeFont class
-	\date	Feb 15, 2010
+/*!
+	\file	CreateFont.cc
+	\brief	definition the CreateFont() function
+	\date	Sun Mar 8 2009
 	\author	Nestal Wan
 */
 
+#include "SimpleFont.hh"
 #include "CompositeFont.hh"
 
-#include "core/Ref.hh"
+#include "util/Exception.hh"
 
-namespace pdf {
+namespace pdf
+{
 
-/**	constructor
+BaseFont* CreateFont( DictReader& obj, FontDb *db )
+{
+	Name subtype ;
+	if ( !obj.Detach( subtype ) )
+		throw FontException( "missing subtype for font" ) ;
+
+	if ( subtype == Name("Type0") )
+		return new CompositeFont( obj, db ) ;
 	
-*/
-CompositeFont::CompositeFont( DictReader& dict, FontDb *ft )
-{
+	else
+		return new SimpleFont( obj, db ) ;
 }
 
-CompositeFont::CompositeFont( const std::string& name, FontDb *ft )
-{
-	
 }
-
-// BaseFont virtual functions
-Ref CompositeFont::Write( File *file ) const
-{
-	return Ref() ;
-}
-
-FontDescriptor* CompositeFont::Descriptor( )
-{
-	return 0 ;
-}
-
-} // end of namespace

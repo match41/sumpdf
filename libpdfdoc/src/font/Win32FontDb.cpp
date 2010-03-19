@@ -94,6 +94,10 @@ std::vector<unsigned char> Win32FontDb::FindFont(
 		DEFAULT_PITCH,			// pitch
 		base_name.c_str() ) ;	// family name
 	
+	// TODO: should call FormatMessage() actually
+	if ( hfont == NULL )
+		throw FontException( "Win32 CreateFont() error" ) ;
+	
 	SelectObject( hdc, (HGDIOBJ)hfont ) ;
 	DWORD size = GetFontData( hdc, 0, 0, 0, 0 ) ;
 	if ( size != GDI_ERROR )

@@ -257,6 +257,7 @@ set( IMG_SRCS  		${IMG_DIR}/Image.cc )
 set( FONT_SRCS		${FONT_DIR}/Font.cc
                     ${FONT_DIR}/SimpleFont.cc
                     ${FONT_DIR}/CompositeFont.cc
+                    ${FONT_DIR}/CreateFont.cc
 					${FONT_DIR}/Glyph.cc
 					${FONT_DIR}/RealGlyph.cc
 					${FONT_DIR}/FontDescriptor.cc
