@@ -87,10 +87,10 @@ void ContentStream::Decode( Stream& str )
 	// rewind to stream start for reading
 	str.Rewind( ) ;
 	
-std::ostringstream ss ;
-str.CopyData( ss.rdbuf() ) ;
-std::cout << ss.str() << std::endl ;
-str.Rewind() ;
+//std::ostringstream ss ;
+//str.CopyData( ss.rdbuf() ) ;
+//std::cout << ss.str() << std::endl ;
+//str.Rewind() ;
 
 	std::istream s( str.InStreamBuf() ) ;
 	TokenSrc src( s ) ;

@@ -62,7 +62,7 @@ void TextLineTest::TestPrint( )
 	double x = 0.0, y = 0.0 ;
 	Matrix m ;
 	GraphicsState gs( ts ) ;
-	subject.Print( std::cout, m, x, y, gs, &res ) ;
+//	subject.Print( std::cout, m, x, y, gs, &res ) ;
 }
 
 void TextLineTest::TestTJ( )

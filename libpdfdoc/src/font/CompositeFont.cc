@@ -52,4 +52,24 @@ FontDescriptor* CompositeFont::Descriptor( )
 	return 0 ;
 }
 
+std::string CompositeFont::BaseName( ) const
+{
+	return "" ;
+}
+
+const Glyph* CompositeFont::GetGlyph( wchar_t ch ) const
+{
+	return 0 ;
+}
+
+unsigned CompositeFont::UnitsPerEM( ) const
+{
+	return 1 ;
+}
+
+double	CompositeFont::FromFontUnit( unsigned val ) const
+{
+	return val ;
+}
+
 } // end of namespace

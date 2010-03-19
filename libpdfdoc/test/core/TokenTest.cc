@@ -114,10 +114,6 @@ void TokenTest::TestMixChar( )
 		pdf::Token( "(string )" ),
 	} ;
 
-//std::cout << "number of token = " << vec.size() << std::endl ;
-//std::transform( vec.begin( ), vec.end( ), std::ostream_iterator<std::string>(std::cout, ", " ),
-//boost::mem_fn( &Token::Get ) ) ;
-
 	CPPUNIT_ASSERT_EQUAL( vec.size( ), pdf::Count( result ) ) ;
 	CPPUNIT_ASSERT( std::equal( vec.begin( ), vec.end( ), result ) ) ;
 }
