@@ -45,8 +45,6 @@ ExtGState::ExtGState( )
 
 ExtGState::ExtGState( DictReader& dict )
 {
-std::cout << "get ExtGState: " << *dict << std::endl ;
-
 	Read( dict ) ;
 }
 

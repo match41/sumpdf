@@ -26,8 +26,9 @@
 
 #include "SimpleFont.hh"
 #include "CompositeFont.hh"
+#include "FontException.hh"
 
-#include "util/Exception.hh"
+#include "file/DictReader.hh"
 
 namespace pdf
 {
@@ -35,7 +36,7 @@ namespace pdf
 BaseFont* CreateFont( DictReader& obj, FontDb *db )
 {
 	Name subtype ;
-	if ( !obj.Detach( subtype ) )
+	if ( !obj.Detach( "Subtype", subtype ) )
 		throw FontException( "missing subtype for font" ) ;
 
 	if ( subtype == Name("Type0") )

@@ -49,7 +49,10 @@ public :
 	Ref Write( File *file ) const ;
 	FontDescriptor* Descriptor( ) ;
 	
-	
+	std::string 	BaseName( ) const ;
+	const Glyph*	GetGlyph( wchar_t ch ) const ;
+	unsigned		UnitsPerEM( ) const ;
+	double			FromFontUnit( unsigned val ) const ;
 } ;
 
 } // end of namespace
