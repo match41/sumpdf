@@ -53,7 +53,7 @@ GlyphGroup::GlyphGroup( const TextLine& blk, QGraphicsItem *parent )
 	// setup flags
 	setFlags( ItemIsSelectable | ItemIsMovable | ItemSendsGeometryChanges ) ;
 
-	QTransform t = ToQtMatrix( m_line.Transform() ) ;
+	QTransform t = ToQtMatrix( Matrix(1,0,0,1,m_line.XPos(),m_line.YPos())*m_line.Transform() ) ;
 	setTransform( t ) ;
 }
 
@@ -66,7 +66,7 @@ void GlyphGroup::OnChar(
 	GlyphGraphicsItem *item = new GlyphGraphicsItem( glyph ) ;
 
 	// set offset
-	item->setPos( m_line.XPos() + offset, m_line.YPos() ) ;
+	item->setPos( /*m_line.XPos() + */offset, /*m_line.YPos()*/0 ) ;
 	
 	// scale font by their font size
 	item->scale( state.ScaleFactor(), state.ScaleFactor() ) ;
