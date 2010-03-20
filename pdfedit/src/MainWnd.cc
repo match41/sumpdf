@@ -214,7 +214,7 @@ void MainWnd::VisitText( Text *text )
 void MainWnd::LoadTextLine( const TextLine& line )
 {
 	GlyphGroup *group = new GlyphGroup( line ) ;
-	group->setTransform( ToQtMatrix( line.Transform() ) ) ;
+//	group->setTransform( ToQtMatrix( line.Transform() ) ) ;
 	m_scene->addItem( group ) ;
 }
 
