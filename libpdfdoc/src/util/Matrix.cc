@@ -58,6 +58,11 @@ Matrix::Matrix( const Matrix& m )
 	std::copy( m.begin(), m.end(), begin() ) ;
 }
 
+Matrix Matrix::Translate( double dx, double dy )
+{
+	return Matrix( 1, 0, 0, 1, dx, dy ) ;
+}
+
 Matrix::iterator Matrix::begin()
 {
 	return Begin( m_mat ) ;

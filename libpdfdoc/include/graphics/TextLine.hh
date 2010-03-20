@@ -62,13 +62,7 @@ public :
 
 	// uses default generated copy constructor
 
-	double XPos( ) const ;
-	double YPos( ) const ;
-
-	void XPos( double val ) ;
-	void YPos( double val ) ;
-
-	const Matrix& Transform() const ;
+	Matrix Transform() const ;
 	void SetTransform( const Matrix& t ) ;
 	bool IsEmpty( ) const ;
 

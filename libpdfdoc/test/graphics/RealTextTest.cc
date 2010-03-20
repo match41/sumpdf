@@ -72,9 +72,9 @@ void RealTextTest::TestTdCmd( )
 	// expected: no new text line is added. current matrix translated
 	PDFUT_ASSERT_EQUAL( t.Count(), 1U ) ;
 	PDFUT_ASSERT_EQUAL( t.front().Format(), gs ) ;
-	PDFUT_ASSERT_EQUAL( t.front().Transform(), Matrix() ) ;
-	PDFUT_ASSERT_EQUAL( t.front().XPos(), 100.0 ) ;
-	PDFUT_ASSERT_EQUAL( t.front().YPos(), 200.0 ) ;
+	PDFUT_ASSERT_EQUAL( t.front().Transform(), Matrix::Translate(100.0,200.0) ) ;
+//	PDFUT_ASSERT_EQUAL( t.front().XPos(), 100.0 ) ;
+//	PDFUT_ASSERT_EQUAL( t.front().YPos(), 200.0 ) ;
 
 	// action: move another 300,900
 	args[0] = 300 ;
@@ -85,9 +85,9 @@ void RealTextTest::TestTdCmd( )
 	// expected: the two translation is combined
 	PDFUT_ASSERT_EQUAL( t.Count(), 1U ) ;
 	PDFUT_ASSERT_EQUAL( t.front().Format(), gs ) ;
-	PDFUT_ASSERT_EQUAL( t.front().Transform(), Matrix() ) ;
-	PDFUT_ASSERT_EQUAL( t.front().XPos(), 400.0 ) ;
-	PDFUT_ASSERT_EQUAL( t.front().YPos(), 1100.0 ) ;
+	PDFUT_ASSERT_EQUAL( t.front().Transform(), Matrix::Translate(400.0,1100.0) ) ;
+//	PDFUT_ASSERT_EQUAL( t.front().XPos(), 400.0 ) ;
+//	PDFUT_ASSERT_EQUAL( t.front().YPos(), 1100.0 ) ;
 	
 	RealText exp( gs ) ;
 	exp.back() = TextLine( 400, 1100, gs, Matrix() ) ;
@@ -146,9 +146,9 @@ void RealTextTest::TestTj( )
 	
 	PDFUT_ASSERT_EQUAL( t.Count(), 2U ) ;
 	PDFUT_ASSERT_EQUAL( t.back().Format(), gs2x ) ;
-	PDFUT_ASSERT_EQUAL( t.back().Transform(), Matrix() ) ;
-	PDFUT_ASSERT_EQUAL( t.back().XPos(), 36.0 ) ;
-	PDFUT_ASSERT_EQUAL( t.back().YPos(), 0.0 ) ;
+	PDFUT_ASSERT_EQUAL( t.back().Transform(), Matrix::Translate(36.0,0.0) ) ;
+//	PDFUT_ASSERT_EQUAL( t.back().XPos(), 36.0 ) ;
+//	PDFUT_ASSERT_EQUAL( t.back().YPos(), 0.0 ) ;
 }
 
 void RealTextTest::TestTJ( )
@@ -191,9 +191,9 @@ void RealTextTest::TestTJ( )
 	PDFUT_ASSERT_EQUAL( t.Count(), 2U ) ;
 
 	// next object starts at 60.0 units further
-	PDFUT_ASSERT_EQUAL( t.back().Transform(), Matrix() ) ;
-	PDFUT_ASSERT_EQUAL( t.back().XPos(), 60.0 ) ;
-	PDFUT_ASSERT_EQUAL( t.back().YPos(), 0.0 ) ;
+	PDFUT_ASSERT_EQUAL( t.back().Transform(), Matrix::Translate(60.0,0.0) ) ;
+//	PDFUT_ASSERT_EQUAL( t.back().XPos(), 60.0 ) ;
+//	PDFUT_ASSERT_EQUAL( t.back().YPos(), 0.0 ) ;
 }
 
 void RealTextTest::TestTjx2( )

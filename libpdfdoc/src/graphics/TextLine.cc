@@ -66,30 +66,9 @@ TextLine::TextLine(
     , m_text( text )
 {
 }
-
-double TextLine::XPos( ) const
+Matrix TextLine::Transform() const
 {
-	return m_xpos ;
-}
-
-double TextLine::YPos( ) const
-{
-	return m_ypos ;
-}
-
-void TextLine::XPos( double val )
-{
-	m_xpos = val ;
-}
-
-void TextLine::YPos( double val )
-{
-	m_ypos = val ;
-}
-
-const Matrix& TextLine::Transform() const
-{
-	return m_trans ;
+	return Matrix::Translate(m_xpos, m_ypos) * m_trans ;
 }
 
 void TextLine::SetTransform( const Matrix& t )
