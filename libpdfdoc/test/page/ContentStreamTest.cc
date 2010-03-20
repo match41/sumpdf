@@ -84,6 +84,12 @@ void ContentStreamTest::TestTestCID( )
 			Text::iterator i = text->begin() ;
 			CPPUNIT_ASSERT( i != text->end() ) ;
 			PDFUT_ASSERT_EQUAL( i->Transform(), Matrix( 1,0,0,1, 72, 769.89) ) ;
+			PDFUT_ASSERT_EQUAL( i->Text(), std::wstring(L"1SectionTitle") ) ;
+			PDFUT_ASSERT_EQUAL( i->XPos(), 61.77 ) ;
+			PDFUT_ASSERT_EQUAL( i->YPos(), -63.35 ) ;
+			
+			++i ;
+			CPPUNIT_ASSERT( i != text->end() ) ;
 		}
 		
 		void VisitGraphics( Graphics *text )
