@@ -202,22 +202,8 @@ BaseFont* RealResources::FindFont( const Name& name ) const
 	PDF_ASSERT( UseCount() > 0 ) ;
 
 	FontMap::left_const_iterator i = m_fonts.left.find( name ) ;
-//	return i != m_fonts.left.end() ? i->second :
-//		( m_parent != 0 ? m_parent->FindFont( name ) : 0 ) ;
-    if ( i != m_fonts.left.end() )
-    {
-        return i->second ;
-    }
-    else
-    {
-        if ( m_parent != 0 )
-        {
-            BaseFont *f = m_parent->FindFont( name ) ;
-            return f ;
-        }
-        else
-            return 0 ;
-    }
+	return i != m_fonts.left.end() ? i->second :
+		( m_parent != 0 ? m_parent->FindFont( name ) : 0 ) ;
 }
 
 Name RealResources::FindFont( const BaseFont *font ) const

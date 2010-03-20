@@ -83,6 +83,7 @@ RealText::RealText( const GraphicsState& gs, const Matrix& ctm )
 	, m_dx( 0 )
 	, m_dy( 0 )
 	, m_offset( 0 )
+	, m_text_mat( ctm )
 {
 }
 
@@ -156,7 +157,8 @@ void RealText::OnCommand( ContentOp& op, const ResourcesDict *res )
 			if ( current.IsEmpty() )
 				current.SetFormat( m_state ) ;
 			else
-				m_lines.push_back( TextLine( m_dx + m_offset, m_dy, m_state, m_text_mat ) ) ;
+				m_lines.push_back( TextLine( m_dx + m_offset,
+					m_dy, m_state, m_text_mat ) ) ;
 		}
 	}
 }
@@ -289,7 +291,6 @@ void RealText::OnTj( ContentOp& op, const ResourcesDict * )
 			
 			current.AppendText( ws ) ;
 			
-//			m_text_mat.Dx( m_text_mat.Dx() + m_state.GetTextState().Width( ws ) ) ;
 			m_offset += m_state.GetTextState().Width( ws ) ;
 		}
 	}

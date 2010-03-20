@@ -106,8 +106,6 @@ void TextLine::AppendText( const std::wstring& text )
 {
 	Font *f = m_state.GetFont() ;
 	if ( f != 0 )
-//		throw Exception( "invalid font" ) ;
-//	else
 		m_text.insert( m_text.end(), text.begin(), text.end() ) ;
 }
 

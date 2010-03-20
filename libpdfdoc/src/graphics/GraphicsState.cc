@@ -170,6 +170,7 @@ bool GraphicsState::OnTf( ContentOp& op, const ResourcesDict *res )
 		if ( f == 0 )
 		{
 //			throw ParseError( boost::format( "unknown font: %1% " ) % op[0] ) ;
+			std::cerr << "unknown font: " << op[0] << std::endl ;
 		}
 		else
 		{
