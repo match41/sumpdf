@@ -17,20 +17,38 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	CodeMap.hh
-    \brief	definition the CodeMap class
-    \date	Mar 21, 2010
-    \author	Nestal Wan
+/**	\file	CodeMapTest.cc
+	\brief	implementation of the CodeMapTest class
+	\date	Mar 21, 2010
+	\author	Nestal Wan
 */
 
-#ifndef __PDF_CODEMAP_HH_EADER_INCLUDED__
-#define __PDF_CODEMAP_HH_EADER_INCLUDED__
+#include "CodeMapTest.hh"
 
-namespace pdf {
+#include "font/CodeMap.hh"
 
-const char*	UnicodeToName( wchar_t ch ) ;
-wchar_t		NameToUnicode( const char *name ) ;
+#include "mock/Assert.hh"
+
+namespace pdfut {
+
+using namespace pdf ;
+
+CodeMapTest::CodeMapTest( )
+{
+}
+
+void CodeMapTest::setUp( )
+{
+}
+
+void CodeMapTest::tearDown( )
+{
+}
+
+void CodeMapTest::Test( )
+{
+	PDFUT_ASSERT_EQUAL( NameToUnicode( "bullet" ), 8226 ) ;
+	PDFUT_ASSERT_EQUAL( UnicodeToName( 8226 ), std::string("bullet") ) ;
+}
 
 } // end of namespace
-
-#endif // CODEMAP_HH_

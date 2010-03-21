@@ -17,20 +17,21 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	CodeMap.hh
-    \brief	definition the CodeMap class
-    \date	Mar 21, 2010
-    \author	Nestal Wan
+/**	\file	FontEncoding.cc
+	\brief	implementation of the FontEncoding class
+	\date	Mar 21, 2010
+	\author	Nestal Wan
 */
 
-#ifndef __PDF_CODEMAP_HH_EADER_INCLUDED__
-#define __PDF_CODEMAP_HH_EADER_INCLUDED__
+#include "FontEncoding.hh"
 
 namespace pdf {
 
-const char*	UnicodeToName( wchar_t ch ) ;
-wchar_t		NameToUnicode( const char *name ) ;
+/**	constructor
+	
+*/
+FontEncoding::FontEncoding( DictReader& self )
+{
+}
 
 } // end of namespace
-
-#endif // CODEMAP_HH_

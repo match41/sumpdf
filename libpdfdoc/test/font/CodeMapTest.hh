@@ -17,20 +17,39 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	CodeMap.hh
-    \brief	definition the CodeMap class
+/**	\file	CodeMapTest.hh
+    \brief	definition the CodeMapTest class
     \date	Mar 21, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_CODEMAP_HH_EADER_INCLUDED__
-#define __PDF_CODEMAP_HH_EADER_INCLUDED__
+#ifndef __PDFUT_CODEMAPTEST_HH_EADER_INCLUDED__
+#define __PDFUT_CODEMAPTEST_HH_EADER_INCLUDED__
 
-namespace pdf {
+#include <cppunit/TestFixture.h>
 
-const char*	UnicodeToName( wchar_t ch ) ;
-wchar_t		NameToUnicode( const char *name ) ;
+#include <cppunit/extensions/HelperMacros.h>
+
+namespace pdfut {
+
+class CodeMapTest : public CppUnit::TestFixture
+{
+public :
+	CodeMapTest( ) ;
+
+	// declare suit function
+	CPPUNIT_TEST_SUITE( CodeMapTest ) ;
+		CPPUNIT_TEST( Test ) ;
+	CPPUNIT_TEST_SUITE_END();
+
+public :
+	void setUp( ) ;
+	void tearDown( ) ;
+
+private :
+	void Test( ) ;
+} ;
 
 } // end of namespace
 
-#endif // CODEMAP_HH_
+#endif // CODEMAPTEST_HH_

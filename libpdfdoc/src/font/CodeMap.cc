@@ -1130,15 +1130,28 @@ namespace
 		UnicodeMap::value_type( 0xf730, "zerooldstyle" ),
 		UnicodeMap::value_type( 0x2070, "zerosuperior" ),
 		UnicodeMap::value_type( 0x03b6, "zeta" ),
-		UnicodeMap::value_type( 0x007b, "UnicodeMap::value_type( " ),
+		UnicodeMap::value_type( 0x007b, "{" ),
 		UnicodeMap::value_type( 0x007c, "|" ),
-		UnicodeMap::value_type( 0x007d, " )," ),
+		UnicodeMap::value_type( 0x007d, "}" ),
 		UnicodeMap::value_type( 0x007e, "~" ),
-		UnicodeMap::value_type( 0, 0  ),
+//		UnicodeMap::value_type( 0, 0  ),
 	} ;
 
 	const UnicodeMap unimap( Begin(table), End(table) ) ;
 
 } // end of local namespace
+
+const char*	UnicodeToName( wchar_t ch )
+{
+	UnicodeMap::left_const_iterator i = unimap.left.find( ch ) ;
+	return i != unimap.left.end() ? i->second : 0 ;
+}
+
+wchar_t		NameToUnicode( const char *name )
+{
+	UnicodeMap::right_const_iterator i = unimap.right.find( name ) ;
+	return i != unimap.right.end() ? i->second : 0 ;
+}
+
 
 } // end of pdf namespace
