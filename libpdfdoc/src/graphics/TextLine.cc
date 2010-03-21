@@ -55,13 +55,11 @@ namespace pdf {
 
 ///	constructor
 TextLine::TextLine(
-	double xpos, double ypos,
+//	double xpos, double ypos,
 	const GraphicsState& 	state,
 	const Matrix& 			transform,
 	const std::wstring&		text )
-//    : m_xpos( xpos )
-//    , m_ypos( ypos )
-    : m_trans( Matrix::Translate(xpos, ypos) * transform )
+    : m_trans( transform )
     , m_state( state )
     , m_text( text )
 {
@@ -92,7 +90,7 @@ void TextLine::AppendText( const std::wstring& text )
 std::ostream& TextLine::Print(
 	std::ostream& 			os,
 	Matrix&					current,
-	double&	xpos,	double&	ypos,
+//	double&	xpos,	double&	ypos,
 	const GraphicsState& 	state,
 	ResourcesDict			*res ) const
 {
@@ -104,7 +102,7 @@ std::ostream& TextLine::Print(
 			<< m_trans.Dx()  << ' ' << m_trans.Dy( ) << " Tm\n" ; 
 	
 		// after changing the transformation, the position is reset too
-		xpos = ypos = 0.0 ;
+//		xpos = ypos = 0.0 ;
 	}
 
 	// print position if different

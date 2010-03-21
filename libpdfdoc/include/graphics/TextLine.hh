@@ -54,7 +54,7 @@ class LIBPDFDOC_API TextLine
 {
 public :
 	explicit TextLine(
-		double	xpos = 0, double ypos = 0,
+//		double	xpos = 0, double ypos = 0,
 		
 		const GraphicsState& 	state		= GraphicsState(),		
 		const Matrix&			transform	= Matrix(),
@@ -73,7 +73,7 @@ public :
 	std::ostream& Print(
 		std::ostream& 			os,
 		Matrix&					current,
-		double&	xpos,	double&	ypos,
+//		double&	xpos,	double&	ypos,
 		const GraphicsState& 	state,
 		ResourcesDict			*res ) const ;
 

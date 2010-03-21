@@ -53,7 +53,8 @@ public :
 		double dx, double dy ) ;
 	Matrix( const Matrix& m ) ;
 
-	static Matrix Translate( double dx, double dy ) ;
+	static Matrix Translation( double dx, double dy ) ;
+	Matrix& Translate( double dx, double dy ) ;
 
 	Matrix& operator=( const Matrix& m ) ;
 	bool operator==( const Matrix& m ) const ;

@@ -78,10 +78,10 @@ const RealText::HandlerMap::Map RealText::HandlerMap::m_map(
 /**	constructor
 */
 RealText::RealText( const GraphicsState& gs, const Matrix& ctm )
-	: m_lines( 1, TextLine( 0, 0, gs, ctm ) )
+	: m_lines( 1, TextLine( gs, ctm ) )
 	, m_state( gs )
-	, m_dx( 0 )
-	, m_dy( 0 )
+//	, m_dx( 0 )
+//	, m_dy( 0 )
 	, m_offset( 0 )
 	, m_text_mat( ctm )
 {
@@ -157,8 +157,11 @@ void RealText::OnCommand( ContentOp& op, const ResourcesDict *res )
 			if ( current.IsEmpty() )
 				current.SetFormat( m_state ) ;
 			else
-				m_lines.push_back( TextLine( m_dx + m_offset,
-					m_dy, m_state, m_text_mat ) ) ;
+			{
+				Matrix temp = m_text_mat ;
+				m_lines.push_back( TextLine(
+					m_state, temp.Translate( m_offset, 0 ) ) ) ;
+			}
 		}
 	}
 }
@@ -176,7 +179,8 @@ void RealText::AddLine( const TextLine& line )
 
 void RealText::AddLine( double x, double y, const std::wstring& text )
 {
-	TextLine line( x, y, m_state, m_text_mat ) ;
+	Matrix temp = m_text_mat ;
+	TextLine line( m_state, temp.Translate(x,y) ) ;
 	line.AppendText( text ) ;
 	return AddLine( line ) ;
 }
@@ -200,7 +204,7 @@ void RealText::Print( std::ostream& os, ResourcesDict *res ) const
 	// rendering state
 	GraphicsState	gs ;
 	Matrix			trans ;
-	double			xpos = 0.0, ypos = 0.0 ;
+//	double			xpos = 0.0, ypos = 0.0 ;
 
 	using namespace boost ;
 	std::for_each(
@@ -208,7 +212,7 @@ void RealText::Print( std::ostream& os, ResourcesDict *res ) const
 		m_lines.end(),
 		bind(
 			&TextLine::Print, _1, 	ref(os), ref(trans),
-			ref(xpos),	ref(ypos),	ref(gs), res ) ) ;
+			/*ref(xpos),	ref(ypos),	*/ref(gs), res ) ) ;
 
 	os << "ET\n" ;
 }
@@ -229,11 +233,10 @@ void RealText::OnTd( ContentOp& op, const ResourcesDict * )
 {
 	if ( op.Count() >= 2 )
 	{
-		m_dx += op[0].To<double>() ;
-		m_dy += op[1].To<double>() ;
+		m_text_mat.Translate( op[0], op[1] ) ;
 		m_offset = 0 ;
 
-		AddLine( TextLine( m_dx, m_dy, m_state, m_text_mat ) ) ;
+		AddLine( TextLine( /*m_dx, m_dy, */m_state, m_text_mat ) ) ;
 	}
 }
 
@@ -243,12 +246,13 @@ void RealText::OnTD( ContentOp& op, const ResourcesDict * )
 	{
 		double	ty	= op[1] ;
 		m_state.GetTextState().SetLeading( -ty ) ;
-		
-		m_dx += op[0].To<double>() ;
-		m_dy += op[1].To<double>() ;
+
+		m_text_mat.Translate( op[0], ty ) ; 
+//		m_dx += op[0].To<double>() ;
+//		m_dy += op[1].To<double>() ;
 		m_offset = 0 ;
 		
-		AddLine( TextLine( m_dx, m_dy, m_state, m_text_mat ) ) ;
+		AddLine( TextLine( /*m_dx, m_dy, */m_state, m_text_mat ) ) ;
 	}
 }
 
@@ -260,18 +264,19 @@ void RealText::OnTm( ContentOp& op, const ResourcesDict * )
 		// matrix.
 		m_text_mat = Matrix( op[0], op[1], op[2], op[3], op[4], op[5] ) ;
 		
-		m_offset = m_dx = m_dy = 0.0 ;
+		m_offset = /*m_dx = m_dy = */0.0 ;
 		
-		AddLine( TextLine( 0, 0, m_state, m_text_mat ) ) ;
+		AddLine( TextLine( /*0, 0, */m_state, m_text_mat ) ) ;
 	}
 }
 
 void RealText::OnTstar( ContentOp& , const ResourcesDict * )
 {
-	m_dy -= m_state.GetTextState().Leading() ;
+//	m_dy -= m_state.GetTextState().Leading() ;
+	m_text_mat.Translate( 0, -m_state.GetTextState().Leading() ) ;
 	m_offset = 0 ;
 	
-	AddLine( TextLine( m_dx, m_dy, m_state, m_text_mat ) ) ;
+	AddLine( TextLine( /*m_dx, m_dy, */m_state, m_text_mat ) ) ;
 }
 
 ///	Shows a Text string

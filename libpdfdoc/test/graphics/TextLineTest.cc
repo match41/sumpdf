@@ -54,7 +54,7 @@ void TextLineTest::TestPrint( )
 	Name fname = res.AddFont( &font ) ;
 	
 	TextState ts( 12.0, &font ) ;
-	TextLine subject( 0, 0, (GraphicsState(ts)), (Matrix()) ) ;
+	TextLine subject( (GraphicsState(ts)), (Matrix()) ) ;
 	subject.AppendText( L"hello---" ) ;
 	subject.AppendSpace( 100 ) ;
 	subject.AppendText( L"world???" ) ;
