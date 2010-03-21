@@ -62,7 +62,7 @@ public :
 
 	// uses default generated copy constructor
 
-	Matrix Transform() const ;
+	const Matrix& Transform() const ;
 	void SetTransform( const Matrix& t ) ;
 	bool IsEmpty( ) const ;
 
@@ -105,7 +105,7 @@ private :
 	std::ostream& PrintText( std::ostream& os ) const ;
 
 private :
-	double	m_xpos, m_ypos ;
+//	double	m_xpos, m_ypos ;
 
 	/// The text matrix.
 	Matrix			m_trans ;

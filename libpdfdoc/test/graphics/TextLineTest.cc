@@ -59,7 +59,7 @@ void TextLineTest::TestPrint( )
 	subject.AppendSpace( 100 ) ;
 	subject.AppendText( L"world???" ) ;
 	
-	double x = 0.0, y = 0.0 ;
+//	double x = 0.0, y = 0.0 ;
 	Matrix m ;
 	GraphicsState gs( ts ) ;
 //	subject.Print( std::cout, m, x, y, gs, &res ) ;

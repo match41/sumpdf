@@ -59,16 +59,17 @@ TextLine::TextLine(
 	const GraphicsState& 	state,
 	const Matrix& 			transform,
 	const std::wstring&		text )
-    : m_xpos( xpos )
-    , m_ypos( ypos )
-    , m_trans( transform )
+//    : m_xpos( xpos )
+//    , m_ypos( ypos )
+    : m_trans( Matrix::Translate(xpos, ypos) * transform )
     , m_state( state )
     , m_text( text )
 {
 }
-Matrix TextLine::Transform() const
+
+const Matrix& TextLine::Transform() const
 {
-	return Matrix::Translate(m_xpos, m_ypos) * m_trans ;
+	return m_trans ;
 }
 
 void TextLine::SetTransform( const Matrix& t )
@@ -107,13 +108,13 @@ std::ostream& TextLine::Print(
 	}
 
 	// print position if different
-	if ( m_xpos != xpos || m_ypos != ypos )
-		os	<< (m_xpos - xpos) << ' ' << (m_ypos - ypos) << " Td\n" ;
+//	if ( m_xpos != xpos || m_ypos != ypos )
+//		os	<< (m_xpos - xpos) << ' ' << (m_ypos - ypos) << " Td\n" ;
 
 	// replace current matrix and position
 	current = m_trans ;
-	xpos	= m_xpos ;
-	ypos	= m_ypos ;
+//	xpos	= m_xpos ;
+//	ypos	= m_ypos ;
 	
 	m_state.Print( os, res, state ) ;
 	return PrintText( os ) ;
@@ -163,8 +164,8 @@ std::ostream& operator<<( std::ostream& os, const TextLine& t )
 bool TextLine::operator==( const TextLine& rhs ) const
 {
 	return
-		m_xpos	== rhs.m_xpos	&&
-		m_ypos	== rhs.m_ypos	&&
+//		m_xpos	== rhs.m_xpos	&&
+//		m_ypos	== rhs.m_ypos	&&
 		m_trans == rhs.m_trans	&&
 		m_state	== rhs.m_state	&&
 		m_text	== rhs.m_text ;

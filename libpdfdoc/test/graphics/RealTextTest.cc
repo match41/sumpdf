@@ -180,7 +180,7 @@ void RealTextTest::TestTJ( )
 	Object	args3[]	= { fname, 24.0 } ;
 	Token	cmd3( "Tf" ) ;
 	ContentOp op3(cmd3, Begin(args3), End(args3) ) ;
-	t.OnCommand( op3, &res ) ;  
+	t.OnCommand( op3, &res ) ;   
 	
 	Object	args4[]	= { "cdef" } ;
 	Token	cmd4( "Tj" ) ;
