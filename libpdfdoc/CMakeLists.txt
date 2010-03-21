@@ -154,7 +154,8 @@ set( FONT_HDRS		${FONT_DIR}/Types.hh
 					${FONT_DIR}/FontDescriptor.hh
 					${FONT_DIR}/FontException.hh
 					${FONT_DIR}/RealGlyph.hh
-					${FONT_DIR}/BasicFontDb.hh )
+					${FONT_DIR}/BasicFontDb.hh
+					${FONT_DIR}/CodeMap.hh )
 
 set( BASE_HDRS		src/RealDoc.hh )
 
@@ -265,7 +266,8 @@ set( FONT_SRCS		${FONT_DIR}/Font.cc
 					${FONT_DIR}/FontType.cc
 					${FONT_DIR}/Outline.cc
 					${FONT_DIR}/FontDb.cc
-					${FONT_DIR}/BasicFontDb.cc )
+					${FONT_DIR}/BasicFontDb.cc
+					${FONT_DIR}/CodeMap.cc )
 
 set( BASE_SRCS		src/Doc.cc
 					src/RealDoc.cc

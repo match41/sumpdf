@@ -255,9 +255,10 @@ void SimpleFont::LoadGlyphs( )
 		FT_Select_Charmap( m_face, m_face->charmaps[0]->encoding ) ;
 
 	// traverse all characters
-	unsigned		gindex ;
+	unsigned		gindex = 1234;
 	unsigned long 	char_code = FT_Get_First_Char( m_face, &gindex ) ;
 	int first_char = static_cast<int>( char_code ), last_char = -1 ;
+std::cerr << "loading " << BaseName() << " " << gindex << " " << char_code << std::endl ;
 
 	while ( gindex != 0 && char_code < 256 )
 	{
@@ -277,16 +278,12 @@ void SimpleFont::LoadGlyphs( )
 				boost::format( "cannot copy glyph %2% from %1%" )
 				% BaseName() % char_code ) ;
 
-//		if ( glyph->format == FT_GLYPH_FORMAT_OUTLINE )
-		{
-			m_glyphs.insert( std::make_pair(
-				static_cast<wchar_t>(char_code),
-				new RealGlyph( gindex, m_face ) ) ) ;
-		}
-//		else
-//			throw FontException(
-//				boost::format( "font %1% glyph %2% is not outline" )
-//							% BaseName() % char_code ) ;
+		if ( glyph->format != FT_GLYPH_FORMAT_OUTLINE )
+			std::cerr << "font " << BaseName() << " has a non-outline glyph" << std::endl ;
+
+		m_glyphs.insert( std::make_pair(
+			static_cast<wchar_t>(char_code),
+			new RealGlyph( gindex, m_face ) ) ) ;
 		
 		last_char = static_cast<int>( char_code ) ;
 		char_code = ::FT_Get_Next_Char( m_face, char_code, &gindex ) ;
