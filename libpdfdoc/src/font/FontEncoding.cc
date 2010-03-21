@@ -25,6 +25,13 @@
 
 #include "FontEncoding.hh"
 
+#include "core/Array.hh"
+
+#include "file/ArrayReader.hh"
+#include "file/DictReader.hh"
+
+#include "font/CodeMap.hh"
+
 namespace pdf {
 
 /**	constructor
@@ -32,6 +39,32 @@ namespace pdf {
 */
 FontEncoding::FontEncoding( DictReader& self )
 {
+	int current = 0 ;
+
+	ArrayReader diff ;
+	if ( self.Detach( "Differences", diff ) )
+	{
+		for ( Array::iterator i = diff->begin() ; i != diff->end() ; ++i )
+		{
+			if ( i->Is<int>() )
+				current = diff.At<int>( i-diff->begin() ) ;
+			
+			else if ( i->Is<Name>() )
+			{
+				wchar_t ch = NameToUnicode( i->As<Name>().Str().c_str() ) ;
+				m_charmap.insert( std::make_pair(
+					static_cast<unsigned short>( current ), ch ) ) ;
+			
+				current++ ;
+			}
+		}
+	}
+}
+
+wchar_t FontEncoding::LookUp( unsigned short char_code ) const
+{
+	CharMap::const_iterator i = m_charmap.find( char_code ) ;
+	return i != m_charmap.end() ? i->second : 0 ; 
 }
 
 } // end of namespace

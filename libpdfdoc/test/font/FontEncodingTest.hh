@@ -17,41 +17,39 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	FontEncoding.hh
-    \brief	definition the FontEncoding class
+/**	\file	FontEncodingTest.hh
+    \brief	definition the FontEncodingTest class
     \date	Mar 21, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_FONTENCODING_HH_EADER_INCLUDED__
-#define __PDF_FONTENCODING_HH_EADER_INCLUDED__
+#ifndef __PDFUT_FONTENCODINGTEST_HH_EADER_INCLUDED__
+#define __PDFUT_FONTENCODINGTEST_HH_EADER_INCLUDED__
 
-#include "util/RefCounter.hh"
+#include <cppunit/TestFixture.h>
 
-#include <map>
+#include <cppunit/extensions/HelperMacros.h>
 
-namespace pdf {
+namespace pdfut {
 
-class DictReader ;
-
-///	brief description
-/**	\internal
-	The FontEncoding class represents
-*/
-class FontEncoding : public RefCounter
+class FontEncodingTest : public CppUnit::TestFixture
 {
 public :
-	FontEncoding( DictReader& self ) ;
+	FontEncodingTest( ) ;
 
-	wchar_t LookUp( unsigned short char_code ) const ;
+	// declare suit function
+	CPPUNIT_TEST_SUITE( FontEncodingTest ) ;
+		CPPUNIT_TEST( Test ) ;
+	CPPUNIT_TEST_SUITE_END();
+
+public :
+	void setUp( ) ;
+	void tearDown( ) ;
 
 private :
-	typedef std::map<unsigned short, wchar_t> CharMap ;
-
-	/// mapping from character code to unicode
-	CharMap	m_charmap ;
+	void Test( ) ;
 } ;
 
 } // end of namespace
 
-#endif // FONTENCODING_HH_
+#endif // FONTENCODINGTEST_HH_

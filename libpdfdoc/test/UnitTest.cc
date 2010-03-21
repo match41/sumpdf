@@ -49,6 +49,7 @@
 #include "page/ContentStreamTest.hh"
 #include "font/FontDbTest.hh"
 #include "font/CodeMapTest.hh"
+#include "font/FontEncodingTest.hh"
 
 // freetype library is optional
 #ifdef HAVE_FREETYPE
@@ -100,6 +101,7 @@ int main( int argc, char **argv )
 	runner.addTest( SimpleFontTest::suite( ) ) ;
 	runner.addTest( FunctionTest::suite( ) ) ;
 	runner.addTest( CodeMapTest::suite( ) ) ;
+	runner.addTest( FontEncodingTest::suite( ) ) ;
 
 #ifdef HAVE_PNG
 	runner.addTest( PngImageTest::suite( ) ) ;

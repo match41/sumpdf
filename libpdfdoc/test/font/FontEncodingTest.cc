@@ -17,41 +17,52 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	FontEncoding.hh
-    \brief	definition the FontEncoding class
-    \date	Mar 21, 2010
-    \author	Nestal Wan
+/**	\file	FontEncodingTest.cc
+	\brief	implementation of the FontEncodingTest class
+	\date	Mar 21, 2010
+	\author	Nestal Wan
 */
 
-#ifndef __PDF_FONTENCODING_HH_EADER_INCLUDED__
-#define __PDF_FONTENCODING_HH_EADER_INCLUDED__
+#include "FontEncodingTest.hh"
 
-#include "util/RefCounter.hh"
+#include "file/DictReader.hh"
 
-#include <map>
+#include "font/FontEncoding.hh"
 
-namespace pdf {
+#include "mock/Assert.hh"
+#include "mock/MockFile.hh"
 
-class DictReader ;
+#include <sstream>
 
-///	brief description
-/**	\internal
-	The FontEncoding class represents
-*/
-class FontEncoding : public RefCounter
+namespace pdfut {
+
+using namespace pdf ;
+
+FontEncodingTest::FontEncodingTest( )
 {
-public :
-	FontEncoding( DictReader& self ) ;
+}
 
-	wchar_t LookUp( unsigned short char_code ) const ;
+void FontEncodingTest::setUp( )
+{
+}
 
-private :
-	typedef std::map<unsigned short, wchar_t> CharMap ;
+void FontEncodingTest::tearDown( )
+{
+}
 
-	/// mapping from character code to unicode
-	CharMap	m_charmap ;
-} ;
+void FontEncodingTest::Test( )
+{
+	std::istringstream ss(
+		"<</Type /Encoding/Differences [ 0 /.notdef 15/bullet 16/.notdef]>>" ) ;
+	
+	Dictionary self ;
+	CPPUNIT_ASSERT( ss >> self ) ;
+	
+	MockFile file ;
+	DictReader dr( self, &file ) ;
+
+	FontEncoding subject( dr ) ;
+	PDFUT_ASSERT_EQUAL( subject.LookUp( 15 ), 8226 ) ;
+}
 
 } // end of namespace
-
-#endif // FONTENCODING_HH_
