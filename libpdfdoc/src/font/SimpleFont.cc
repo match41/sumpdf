@@ -29,12 +29,14 @@
 #include "RealGlyph.hh"
 #include "FontException.hh"
 #include "FontDescriptor.hh"
-#include "font/FontDb.hh"
+#include "FontEncoding.hh"
 
 #include "core/Dictionary.hh"
 
+#include "font/FontDb.hh"
 #include "file/File.hh"
 #include "file/DictReader.hh"
+#include "file/ElementFactory.hh"
 
 #include "util/Util.hh"
 #include "util/Debug.hh"
@@ -68,10 +70,11 @@ const Name SimpleFont::m_font_types[] =
 } ;
 
 SimpleFont::SimpleFont( const std::string& name, FontDb *font_db )
-	: m_face( 0 ),
-	  m_type( font::unknown ),
-	  m_first_char( -1 ),
-	  m_last_char( -1 )
+	: m_face( 0 )
+	, m_type( font::unknown )
+	, m_first_char( -1 )
+	, m_last_char( -1 )
+	, m_encoding( 0 )
 {
 	PDF_ASSERT( font_db != 0 ) ;
 	
@@ -85,6 +88,7 @@ SimpleFont::SimpleFont( DictReader& reader, FontDb *font_db )
 	, m_type( font::unknown )
 	, m_first_char( -1 )
 	, m_last_char( -1 )
+	, m_encoding( 0 )
 {
 	PDF_ASSERT( font_db != 0 ) ;
 	
@@ -110,7 +114,26 @@ SimpleFont::SimpleFont( DictReader& reader, FontDb *font_db )
 		// width is optional
 		reader.Detach( "Widths", 	m_widths ) ;
 
-		reader.Detach( "Encoding",	m_encoding ) ;
+		try
+		{
+			ElementFactory<> f( reader ) ;
+			FontEncoding *enc = f.Create<FontEncoding>( "Encoding", NewPtr<FontEncoding>() ) ;
+			
+			if ( enc != 0 )
+			{
+				if ( m_encoding != 0 )
+					m_encoding->Release() ;
+				
+				m_encoding = enc ;
+			}
+		}
+		catch ( std::exception& )
+		{
+			Name name ;
+			if ( reader.Detach( "Encoding", name ) )
+				;
+		}
+		
 		reader.Detach( "ToUnicode",	m_to_unicode ) ;
 		
 		DictReader fd ;
@@ -165,6 +188,9 @@ SimpleFont::~SimpleFont( )
 	
 	PDF_ASSERT( m_face != 0 ) ;
 	FT_Done_Face( m_face ) ;
+	
+	if ( m_encoding != 0 )
+		m_encoding->Release() ;
 }
 
 bool SimpleFont::InitWithStdFont( const std::string& name, FontDb *font_db )
@@ -255,12 +281,11 @@ void SimpleFont::LoadGlyphs( )
 		FT_Select_Charmap( m_face, m_face->charmaps[0]->encoding ) ;
 
 	// traverse all characters
-	unsigned		gindex = 1234;
+	unsigned		gindex ;
 	unsigned long 	char_code = FT_Get_First_Char( m_face, &gindex ) ;
 	int first_char = static_cast<int>( char_code ), last_char = -1 ;
-std::cerr << "loading " << BaseName() << " " << gindex << " " << char_code << std::endl ;
 
-	while ( gindex != 0 && char_code < 256 )
+	while ( gindex != 0 )
 	{
 		// load the glyph to the glyph slot in the face
 		// we want to do the scaling in double instead of inside freetype
@@ -316,7 +341,8 @@ Ref SimpleFont::Write( File *file ) const
 	dict.insert( "FirstChar", 	m_first_char ) ;
 	dict.insert( "LastChar", 	m_last_char ) ;
 	
-	dict.insert( "Encoding", 	m_encoding ) ;
+	// TODO: write the font encoding
+//	dict.insert( "Encoding", 	m_encoding ) ;
 	
 	if ( m_widths.empty() )
 	{
@@ -368,6 +394,9 @@ std::string SimpleFont::BaseName( ) const
 
 const Glyph* SimpleFont::GetGlyph( wchar_t ch ) const
 {
+	if ( m_encoding != 0 )
+		ch = m_encoding->LookUp( ch ) ;
+
 	GlyphMap::const_iterator it = m_glyphs.find( ch ) ;
 	return it != m_glyphs.end() ? it->second : 0 ;
 }

@@ -48,6 +48,7 @@ namespace pdf {
 
 class DictReader ;
 class FontDb ;
+class FontEncoding ;
 class RealGlyph ;
 class Glyph ;
 
@@ -102,11 +103,11 @@ private :
 	font::Type	m_type ;
 	int			m_first_char, m_last_char ;
 
-	std::vector<double>	m_widths ;
+	std::vector<double>				m_widths ;
 	
 	std::auto_ptr<FontDescriptor>	m_descriptor ;
-	Object		m_to_unicode ;
-	Object		m_encoding ;		//!< name or dictionary
+	Object							m_to_unicode ;
+	FontEncoding					*m_encoding ;		//!< name or dictionary
 	
 	typedef std::tr1::unordered_map<wchar_t, RealGlyph*> GlyphMap ;
 	GlyphMap	m_glyphs ;

@@ -32,6 +32,8 @@
 
 #include "font/CodeMap.hh"
 
+#include <iostream>
+
 namespace pdf {
 
 /**	constructor
@@ -39,6 +41,8 @@ namespace pdf {
 */
 FontEncoding::FontEncoding( DictReader& self )
 {
+std::cout << *self << std::endl ;
+
 	int current = 0 ;
 
 	ArrayReader diff ;
