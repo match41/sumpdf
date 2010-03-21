@@ -65,7 +65,7 @@ Matrix Matrix::Translation( double dx, double dy )
 
 Matrix& Matrix::Translate( double dx, double dy )
 {
-	*this = Matrix( 1, 0, 0, 1, dx, dy ) * (*this) ;
+	*this = Translation( dx, dy ) * (*this) ;
 	return *this ;
 }
 
@@ -92,6 +92,13 @@ Matrix::const_iterator Matrix::end() const
 Matrix& Matrix::operator=( const Matrix& m )
 {
 	std::copy( m.begin(), m.end(), begin() ) ;
+	return *this ;
+}
+
+Matrix& Matrix::operator*=( const Matrix& m )
+{
+	Matrix tmp = *this * m ;
+	std::copy( tmp.begin(), tmp.end(), begin() ) ;
 	return *this ;
 }
 

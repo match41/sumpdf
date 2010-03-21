@@ -59,6 +59,7 @@ public :
 	Matrix& operator=( const Matrix& m ) ;
 	bool operator==( const Matrix& m ) const ;
 	bool operator!=( const Matrix& m ) const ;
+	Matrix& operator*=( const Matrix& m ) ;
 
 	bool IsIdentity( ) const ;
 
