@@ -332,4 +332,27 @@ bool String::IsHex( ) const
 		!boost::bind( IsPrint, _1 ) ) != m_value.end( ) ;
 }
 
+void String::Swap( std::string& val )
+{
+	m_value.swap( val ) ;
+}
+
+void String::Swap( String& val )
+{
+	m_value.swap( val.m_value ) ;
+}
+
 } // end of namespace
+
+namespace std
+{
+	void swap( pdf::String& s, std::string& val )
+	{
+		s.Swap( val ) ;
+	}
+
+	void swap( pdf::String& s1, pdf::String& s2 )
+	{
+		s1.Swap( s2 ) ;
+	}
+}

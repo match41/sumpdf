@@ -260,7 +260,7 @@ void RealFile::ReadType( const Ref& link, std::string& value )
 {
 	String s ;
 	BasicRead( link, s ) ;
-	value = s.Get() ;
+	s.Swap( value ) ;
 }
 
 void RealFile::ReadType( const Ref& link, Ref& value )

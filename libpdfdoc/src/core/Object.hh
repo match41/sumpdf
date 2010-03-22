@@ -36,8 +36,6 @@
 
 #include <string>
 #include <iosfwd>
-#include <sstream>
-#include <stdexcept>
 #include <new>
 #include <vector>
 
