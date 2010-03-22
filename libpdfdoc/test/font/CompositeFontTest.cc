@@ -17,54 +17,60 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	FontEncoding.cc
-	\brief	implementation of the FontEncoding class
-	\date	Mar 21, 2010
+/**	\file	CompositeFontTest.cc
+	\brief	implementation of the CompositeFontTest class
+	\date	Mar 22, 2010
 	\author	Nestal Wan
 */
 
-#include "FontEncoding.hh"
+#include "CompositeFontTest.hh"
 
-#include "core/Array.hh"
-
-#include "file/ArrayReader.hh"
 #include "file/DictReader.hh"
 
-#include "font/CodeMap.hh"
+#include "font/CompositeFont.hh"
 
-namespace pdf {
+#include "mock/Assert.hh"
+#include "mock/MockFile.hh"
+#include "mock/MockFontDb.hh"
 
-/**	constructor
-	
-*/
-FontEncoding::FontEncoding( DictReader& self )
+#include <sstream>
+
+namespace pdfut {
+
+using namespace pdf ;
+
+CompositeFontTest::CompositeFontTest( )
 {
-	int current = 0 ;
-
-	ArrayReader diff ;
-	if ( self.Detach( "Differences", diff ) )
-	{
-		for ( Array::iterator i = diff->begin() ; i != diff->end() ; ++i )
-		{
-			if ( i->Is<int>() )
-				current = diff.At<int>( i-diff->begin() ) ;
-			
-			else if ( i->Is<Name>() )
-			{
-				wchar_t ch = NameToUnicode( i->As<Name>().Str().c_str() ) ;
-				m_charmap.insert( std::make_pair(
-					static_cast<unsigned short>( current ), ch ) ) ;
-			
-				current++ ;
-			}
-		}
-	}
 }
 
-wchar_t FontEncoding::LookUp( unsigned short char_code ) const
+void CompositeFontTest::Test( )
 {
-	CharMap::const_iterator i = m_charmap.find( char_code ) ;
-	return i != m_charmap.end() ? i->second : 0 ; 
+	std::istringstream iss(
+		"<</BaseFont /Arial/DescendantFonts [27 0 R]/Encoding /Identity-H"
+		"/Subtype /Type0/ToUnicode 24 0 R/Type /Font>>" ) ;
+
+	Dictionary fdict ;
+	CPPUNIT_ASSERT( iss >> fdict ) ;
+
+	MockFile file ;
+	file.AddText( Ref(27,0),
+		"<< /Type /Font/Subtype /CIDFontType2/BaseFont /Arial"
+		"/CIDSystemInfo<< /Registry (Adobe)/Ordering (Identity)/Supplement 0>>"
+		"/FontDescriptor 26 0 R"
+		"/W [0 [ 750 666 333 222 556 277 556 556 222 556 277 666 500 556 277 "
+		"500 833 833 722 556 722 666 777 722 722 277 666 500 556 722 277 722 "
+		"666 610 556 500 556 556 556 556 556 556 556 277 556 666 610 722 556 "
+		"500 333 500 777 556 666 556 556 277 277 943 556 333 333 666 ]]>>" ) ;
+
+	file.AddText( Ref(26,0),
+		"<</Type /FontDescriptor /FontName /Arial /Flags 4"
+		"/FontBBox [ -664 -324 2000 1005 ]/ItalicAngle 0/Ascent 905"
+		"/Descent -211/CapHeight 1005/StemV 80/StemH 80/FontFile2 22 0 R>>" ) ;
+
+	DictReader dr( fdict, &file ) ;
+	
+	CompositeFont subject( dr, m_mock_fdb ) ;
+	PDFUT_ASSERT_EQUAL( subject.BaseName(), "Arial" ) ;
 }
 
 } // end of namespace

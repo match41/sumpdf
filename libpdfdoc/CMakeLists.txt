@@ -536,6 +536,7 @@ set( UT_SRCS	test/core/TokenTest.cc
 				test/font/FontDbTest.cc
 				test/font/CodeMapTest.cc
 				test/font/FontEncodingTest.cc
+				test/font/CompositeFontTest.cc
 			
 				test/mock/MockFile.cc
 				test/mock/MockFont.cc

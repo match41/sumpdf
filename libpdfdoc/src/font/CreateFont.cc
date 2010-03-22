@@ -35,7 +35,7 @@ namespace pdf
 
 BaseFont* CreateFont( DictReader& obj, FontDb *db )
 {
-	Name subtype = obj["Subtype"] ;
+	const Name& subtype = obj["Subtype"].As<Name>() ;
 	
 	if ( subtype == Name("Type0") )
 		return new CompositeFont( obj, db ) ;

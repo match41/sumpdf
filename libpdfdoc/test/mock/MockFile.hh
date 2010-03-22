@@ -58,6 +58,7 @@ public :
 	
 	void AddObj( const pdf::Ref& link, const pdf::Object& obj ) ;
 	const pdf::Object& Find( const pdf::Ref& link ) const ;
+	void AddText( const Ref& link, const std::string& str ) ;
 	void ClearPool( ) ;
 	
 	pdf::Object ReadObj( const pdf::Ref& obj ) ;

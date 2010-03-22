@@ -28,6 +28,8 @@
 
 #include "BaseFont.hh"
 
+#include "core/Name.hh"
+
 #include <string>
 
 namespace pdf {
@@ -53,6 +55,10 @@ public :
 	const Glyph*	GetGlyph( wchar_t ch ) const ;
 	unsigned		UnitsPerEM( ) const ;
 	double			FromFontUnit( unsigned val ) const ;
+
+private :
+	Name		m_base_font ;
+
 } ;
 
 } // end of namespace

@@ -25,8 +25,14 @@
 
 #include "CompositeFont.hh"
 
+#include "SimpleFont.hh"
+
 #include "core/Ref.hh"
+
 #include "file/DictReader.hh"
+#include "file/ArrayReader.hh"
+
+#include "font/FontException.hh"
 
 #include <iostream>
 
@@ -37,7 +43,20 @@ namespace pdf {
 */
 CompositeFont::CompositeFont( DictReader& dict, FontDb *ft )
 {
-std::cout << "wahaha:\n" << dict.Get() << std::endl ;
+	if ( !dict.Detach( "BaseFont", m_base_font ) )
+		throw FontException( "missing BaseFont in Type0 font dictionary" ) ;
+	
+	ArrayReader descendant ;
+	if ( !dict.Detach( "DescendantFonts", descendant ) ||
+		descendant->size() == 0 )
+		throw FontException("missing DescendantFonts in Type0 font dictionary");
+
+	DictReader cidfont ;
+	descendant.Detach( 0, cidfont ) ;
+	std::cout << *cidfont << std::endl ;
+	
+	// trying to reuse the code in SimpleFont
+//	SimpleFont *sfont = new SimpleFont( cidfont, ft ) ;
 }
 
 CompositeFont::CompositeFont( const std::string& name, FontDb *ft )
@@ -58,7 +77,7 @@ FontDescriptor* CompositeFont::Descriptor( )
 
 std::string CompositeFont::BaseName( ) const
 {
-	return "" ;
+	return m_base_font.Str() ;
 }
 
 const Glyph* CompositeFont::GetGlyph( wchar_t ch ) const

@@ -17,54 +17,35 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	FontEncoding.cc
-	\brief	implementation of the FontEncoding class
-	\date	Mar 21, 2010
-	\author	Nestal Wan
+/**	\file	CompositeFontTest.hh
+    \brief	definition the CompositeFontTest class
+    \date	Mar 22, 2010
+    \author	Nestal Wan
 */
 
-#include "FontEncoding.hh"
+#ifndef __PDFUT_COMPOSITEFONTTEST_HH_EADER_INCLUDED__
+#define __PDFUT_COMPOSITEFONTTEST_HH_EADER_INCLUDED__
 
-#include "core/Array.hh"
+#include "mock/TestBase.hh"
 
-#include "file/ArrayReader.hh"
-#include "file/DictReader.hh"
+#include <cppunit/extensions/HelperMacros.h>
 
-#include "font/CodeMap.hh"
+namespace pdfut {
 
-namespace pdf {
-
-/**	constructor
-	
-*/
-FontEncoding::FontEncoding( DictReader& self )
+class CompositeFontTest : public TestBase
 {
-	int current = 0 ;
+public :
+	CompositeFontTest( ) ;
 
-	ArrayReader diff ;
-	if ( self.Detach( "Differences", diff ) )
-	{
-		for ( Array::iterator i = diff->begin() ; i != diff->end() ; ++i )
-		{
-			if ( i->Is<int>() )
-				current = diff.At<int>( i-diff->begin() ) ;
-			
-			else if ( i->Is<Name>() )
-			{
-				wchar_t ch = NameToUnicode( i->As<Name>().Str().c_str() ) ;
-				m_charmap.insert( std::make_pair(
-					static_cast<unsigned short>( current ), ch ) ) ;
-			
-				current++ ;
-			}
-		}
-	}
-}
+	// declare suit function
+	CPPUNIT_TEST_SUITE( CompositeFontTest ) ;
+		CPPUNIT_TEST( Test ) ;
+	CPPUNIT_TEST_SUITE_END();
 
-wchar_t FontEncoding::LookUp( unsigned short char_code ) const
-{
-	CharMap::const_iterator i = m_charmap.find( char_code ) ;
-	return i != m_charmap.end() ? i->second : 0 ; 
-}
+private :
+	void Test( ) ;
+} ;
 
 } // end of namespace
+
+#endif // COMPOSITEFONTTEST_HH_
