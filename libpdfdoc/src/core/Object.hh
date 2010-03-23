@@ -99,6 +99,8 @@ private :
 	{
 		/// \internal all null objects are by definition equal
 		bool operator==( const Null& name ) const { return true ; }
+		bool operator!=( const Null& name ) const { return false ; }
+		bool operator<( const Null& name ) const { return false ; }
 	} ;
 	
 	friend std::istream& operator>>( std::istream& is, Null& ) ;
@@ -321,6 +323,13 @@ template <> Object& Object::As( ) ;
 template <> const Object& Object::As( ) const ;
 
 } // end of namespace
+
+extern template class boost::variant<
+	pdf::Object::Null, int, double, bool, std::string, pdf::Name,
+	boost::recursive_wrapper<pdf::Stream>, pdf::Ref,
+	boost::recursive_wrapper<pdf::Array>,
+	boost::recursive_wrapper<pdf::Dictionary>
+	> ;
 
 namespace std
 {

@@ -240,6 +240,11 @@ bool Dictionary::operator==( const Dictionary& dict ) const
 	return m_map == dict.m_map ;
 }
 
+bool Dictionary::operator<( const Dictionary& dict ) const
+{
+	return m_map < dict.m_map ;
+}
+
 /*!	\brief	look-up the dictionary
 
 	This operator will search the dictionary and try to find an entry with key
@@ -257,21 +262,6 @@ const Object& Dictionary::operator[]( const Name& key ) const
 	const_iterator i = m_map.find( key ) ;
 	return i == m_map.end( ) ? Object::NullObj() : i->second ;
 }
-
-/**	Unlike the STL map version, this function will throw exception if it can't
-	find the entry with the specified key.
-*/
-//Object& Dictionary::operator[]( const Name& key )
-//{
-//	using boost::format ;
-//
-//	iterator i = m_map.find( key ) ;
-//	if ( i == m_map.end( ) )
-//		throw ParseError( format( "key: \"%1%\" is not found" ) % key ) ;
-//	
-//	return i->second ;
-//}
-
 void Dictionary::erase( iterator pos )
 {
 	m_map.erase( pos ) ;

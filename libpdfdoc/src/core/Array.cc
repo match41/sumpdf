@@ -156,6 +156,11 @@ bool Array::operator!=( const Array& array ) const
 	return !operator==( array ) ;
 }
 
+bool Array::operator<( const Array& array ) const
+{
+	return m_array < array.m_array ;
+}
+
 Object& Array::operator[]( std::size_t index )
 {
 	PDF_ASSERT( !m_array.at(index).Is<Stream>() ) ;

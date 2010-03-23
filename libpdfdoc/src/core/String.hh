@@ -60,6 +60,7 @@ public :
 	operator std::string( ) const ;
 
 	bool operator==( const String& str ) const ;
+	bool operator<( const String& str ) const ;
 
 	bool IsHex( ) const ;
 	

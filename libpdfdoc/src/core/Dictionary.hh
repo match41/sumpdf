@@ -85,7 +85,6 @@ public :
 	void erase( const Name& name ) ;
 
 	const Object& operator[]( const Name& key ) const ;
-//	Object& operator[]( const Name& key ) ;
 
 	std::size_t size( ) const ;
 	bool empty( ) const ;
@@ -97,6 +96,7 @@ public :
 	friend TokenSrc& operator>>( TokenSrc& src, Dictionary& dict ) ;
 	
 	bool operator==( const Dictionary& dict ) const ;
+	bool operator<( const Dictionary& dict ) const ;
 	
 	bool Set( const Name& key, const Object& value ) ;
 
