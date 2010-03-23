@@ -29,6 +29,7 @@
 
 #include <boost/bimap.hpp>
 #include <boost/bimap/set_of.hpp>
+#include <boost/bimap/multiset_of.hpp>
 
 #include <cstring>
 
@@ -45,7 +46,7 @@ namespace
 	} ;
 
 	typedef	boost::bimap<
-		boost::bimaps::set_of<wchar_t>,
+		boost::bimaps::multiset_of<wchar_t>,
 		boost::bimaps::set_of<const char*, StrComp>
 	> UnicodeMap ; 
 	

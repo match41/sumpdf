@@ -48,6 +48,7 @@ void CodeMapTest::tearDown( )
 void CodeMapTest::Test( )
 {
 	PDFUT_ASSERT_EQUAL( NameToUnicode( "bullet" ), 8226 ) ;
+	PDFUT_ASSERT_EQUAL( NameToUnicode( "three" ), 0x33 ) ;
 	PDFUT_ASSERT_EQUAL( UnicodeToName( 8226 ), std::string("bullet") ) ;
 }
 
