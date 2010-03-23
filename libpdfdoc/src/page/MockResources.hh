@@ -48,6 +48,8 @@ public :
 	BaseFont* FindFont( const Name& name ) const ;
 	Name FindFont( const BaseFont *font ) const ;
 
+	void Add( const Name& name, BaseFont *font ) ;
+
 private :
 	std::map<Name, BaseFont*>	m_font_map ;
 } ;

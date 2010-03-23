@@ -48,6 +48,19 @@ namespace pdf {
 		}
 	}
 
+	inline void AssertEquals(
+		const std::wstring&		expected,
+		const std::wstring& 	actual,
+		CPPUNIT_NS::SourceLine	sourceLine,
+		const std::string&		message )
+	{
+		AssertEquals(
+			std::string(expected.begin(), expected.end() ),
+			std::string(actual.begin(), actual.end() ),
+			sourceLine,
+			message ) ;
+	}
+	
 } // end of namespace
 
 #define PDFUT_ASSERT_EQUAL(actual, expected)          \

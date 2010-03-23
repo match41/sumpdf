@@ -55,36 +55,14 @@ namespace pdf {
 
 ///	constructor
 TextLine::TextLine(
-	double xpos, double ypos,
+//	double xpos, double ypos,
 	const GraphicsState& 	state,
 	const Matrix& 			transform,
 	const std::wstring&		text )
-    : m_xpos( xpos )
-    , m_ypos( ypos )
-    , m_trans( transform )
+    : m_trans( transform )
     , m_state( state )
     , m_text( text )
 {
-}
-
-double TextLine::XPos( ) const
-{
-	return m_xpos ;
-}
-
-double TextLine::YPos( ) const
-{
-	return m_ypos ;
-}
-
-void TextLine::XPos( double val )
-{
-	m_xpos = val ;
-}
-
-void TextLine::YPos( double val )
-{
-	m_ypos = val ;
 }
 
 const Matrix& TextLine::Transform() const
@@ -106,15 +84,13 @@ void TextLine::AppendText( const std::wstring& text )
 {
 	Font *f = m_state.GetFont() ;
 	if ( f != 0 )
-//		throw Exception( "invalid font" ) ;
-//	else
 		m_text.insert( m_text.end(), text.begin(), text.end() ) ;
 }
 
 std::ostream& TextLine::Print(
 	std::ostream& 			os,
 	Matrix&					current,
-	double&	xpos,	double&	ypos,
+//	double&	xpos,	double&	ypos,
 	const GraphicsState& 	state,
 	ResourcesDict			*res ) const
 {
@@ -126,17 +102,17 @@ std::ostream& TextLine::Print(
 			<< m_trans.Dx()  << ' ' << m_trans.Dy( ) << " Tm\n" ; 
 	
 		// after changing the transformation, the position is reset too
-		xpos = ypos = 0.0 ;
+//		xpos = ypos = 0.0 ;
 	}
 
 	// print position if different
-	if ( m_xpos != xpos || m_ypos != ypos )
-		os	<< (m_xpos - xpos) << ' ' << (m_ypos - ypos) << " Td\n" ;
+//	if ( m_xpos != xpos || m_ypos != ypos )
+//		os	<< (m_xpos - xpos) << ' ' << (m_ypos - ypos) << " Td\n" ;
 
 	// replace current matrix and position
 	current = m_trans ;
-	xpos	= m_xpos ;
-	ypos	= m_ypos ;
+//	xpos	= m_xpos ;
+//	ypos	= m_ypos ;
 	
 	m_state.Print( os, res, state ) ;
 	return PrintText( os ) ;
@@ -186,8 +162,8 @@ std::ostream& operator<<( std::ostream& os, const TextLine& t )
 bool TextLine::operator==( const TextLine& rhs ) const
 {
 	return
-		m_xpos	== rhs.m_xpos	&&
-		m_ypos	== rhs.m_ypos	&&
+//		m_xpos	== rhs.m_xpos	&&
+//		m_ypos	== rhs.m_ypos	&&
 		m_trans == rhs.m_trans	&&
 		m_state	== rhs.m_state	&&
 		m_text	== rhs.m_text ;

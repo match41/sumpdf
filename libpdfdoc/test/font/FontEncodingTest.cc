@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2009 by Nestal Wan                                      *
+ *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,30 +17,52 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/*!
-	\file	CreateFont.cc
-	\brief	definition the CreateFont() function
-	\date	Sun Mar 8 2009
+/**	\file	FontEncodingTest.cc
+	\brief	implementation of the FontEncodingTest class
+	\date	Mar 21, 2010
 	\author	Nestal Wan
 */
 
-#include "SimpleFont.hh"
-#include "CompositeFont.hh"
-#include "FontException.hh"
+#include "FontEncodingTest.hh"
 
 #include "file/DictReader.hh"
 
-namespace pdf
-{
+#include "font/FontEncoding.hh"
 
-BaseFont* CreateFont( DictReader& obj, FontDb *db )
+#include "mock/Assert.hh"
+#include "mock/MockFile.hh"
+
+#include <sstream>
+
+namespace pdfut {
+
+using namespace pdf ;
+
+FontEncodingTest::FontEncodingTest( )
 {
-	const Name& subtype = obj["Subtype"].As<Name>() ;
-	if ( subtype == Name("Type0") )
-		return new CompositeFont( obj, db ) ;
+}
+
+void FontEncodingTest::setUp( )
+{
+}
+
+void FontEncodingTest::tearDown( )
+{
+}
+
+void FontEncodingTest::Test( )
+{
+	std::istringstream ss(
+		"<</Type /Encoding/Differences [ 0 /.notdef 15/bullet 16/.notdef]>>" ) ;
 	
-	else
-		return new SimpleFont( obj, db ) ;
+	Dictionary self ;
+	CPPUNIT_ASSERT( ss >> self ) ;
+	
+	MockFile file ;
+	DictReader dr( self, &file ) ;
+
+	FontEncoding subject( dr ) ;
+	PDFUT_ASSERT_EQUAL( subject.LookUp( 15 ), 8226 ) ;
 }
 
-}
+} // end of namespace

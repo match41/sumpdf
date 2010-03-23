@@ -17,82 +17,60 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	CompositeFont.cc
-	\brief	implementation of the CompositeFont class
-	\date	Feb 15, 2010
+/**	\file	CompositeFontTest.cc
+	\brief	implementation of the CompositeFontTest class
+	\date	Mar 22, 2010
 	\author	Nestal Wan
 */
 
-#include "CompositeFont.hh"
-
-#include "SimpleFont.hh"
-
-#include "core/Ref.hh"
+#include "CompositeFontTest.hh"
 
 #include "file/DictReader.hh"
-#include "file/ArrayReader.hh"
 
-#include "font/FontException.hh"
+#include "font/CompositeFont.hh"
 
-#include <iostream>
+#include "mock/Assert.hh"
+#include "mock/MockFile.hh"
+#include "mock/MockFontDb.hh"
 
-namespace pdf {
+#include <sstream>
 
-/**	constructor
+namespace pdfut {
+
+using namespace pdf ;
+
+CompositeFontTest::CompositeFontTest( )
+{
+}
+
+void CompositeFontTest::Test( )
+{
+	std::istringstream iss(
+		"<</BaseFont /Arial/DescendantFonts [27 0 R]/Encoding /Identity-H"
+		"/Subtype /Type0/ToUnicode 24 0 R/Type /Font>>" ) ;
+
+	Dictionary fdict ;
+	CPPUNIT_ASSERT( iss >> fdict ) ;
+
+	MockFile file ;
+	file.AddText( Ref(27,0),
+		"<< /Type /Font/Subtype /CIDFontType2/BaseFont /Arial"
+		"/CIDSystemInfo<< /Registry (Adobe)/Ordering (Identity)/Supplement 0>>"
+		"/FontDescriptor 26 0 R"
+		"/W [0 [ 750 666 333 222 556 277 556 556 222 556 277 666 500 556 277 "
+		"500 833 833 722 556 722 666 777 722 722 277 666 500 556 722 277 722 "
+		"666 610 556 500 556 556 556 556 556 556 556 277 556 666 610 722 556 "
+		"500 333 500 777 556 666 556 556 277 277 943 556 333 333 666 ]]>>" ) ;
+
+	file.AddText( Ref(26,0),
+		"<</Type /FontDescriptor /FontName /Arial /Flags 4"
+		"/FontBBox [ -664 -324 2000 1005 ]/ItalicAngle 0/Ascent 905"
+		"/Descent -211/CapHeight 1005/StemV 80/StemH 80/FontFile2 22 0 R>>" ) ;
+
+	DictReader dr( fdict, &file ) ;
 	
-*/
-CompositeFont::CompositeFont( DictReader& dict, FontDb *ft )
-{
-	if ( !dict.Detach( "BaseFont", m_base_font ) )
-		throw FontException( "missing BaseFont in Type0 font dictionary" ) ;
-	
-	ArrayReader descendant ;
-	if ( !dict.Detach( "DescendantFonts", descendant ) ||
-		descendant->size() == 0 )
-		throw FontException("missing DescendantFonts in Type0 font dictionary");
-
-	DictReader cidfont ;
-	descendant.Detach( 0, cidfont ) ;
-	std::cout << *cidfont << std::endl ;
-	
-	// trying to reuse the code in SimpleFont
-//	SimpleFont *sfont = new SimpleFont( cidfont, ft ) ;
-}
-
-CompositeFont::CompositeFont( const std::string& name, FontDb *ft )
-{
-	
-}
-
-// BaseFont virtual functions
-Ref CompositeFont::Write( File *file ) const
-{
-	return Ref() ;
-}
-
-FontDescriptor* CompositeFont::Descriptor( )
-{
-	return 0 ;
-}
-
-std::string CompositeFont::BaseName( ) const
-{
-	return m_base_font.Str() ;
-}
-
-const Glyph* CompositeFont::GetGlyph( wchar_t ch ) const
-{
-	return 0 ;
-}
-
-unsigned CompositeFont::UnitsPerEM( ) const
-{
-	return 1 ;
-}
-
-double	CompositeFont::FromFontUnit( unsigned val ) const
-{
-	return val ;
+	CompositeFont subject( dr, m_mock_fdb ) ;
+	PDFUT_ASSERT_EQUAL( subject.BaseName(), "Arial" ) ;
 }
 
 } // end of namespace

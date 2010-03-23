@@ -103,7 +103,7 @@ private :
 	GraphicsState	m_state ;
 	
 	///	Current text line matrix.
-	double		m_dx, m_dy, m_offset ;
+	double		/*m_dx, m_dy, */m_offset ;
 	
 	///	Current text matrix.
 	/**	This matrix is used to create new TextLine objects.

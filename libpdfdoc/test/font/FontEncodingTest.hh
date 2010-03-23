@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2009 by Nestal Wan                                      *
+ *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,30 +17,39 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/*!
-	\file	CreateFont.cc
-	\brief	definition the CreateFont() function
-	\date	Sun Mar 8 2009
-	\author	Nestal Wan
+/**	\file	FontEncodingTest.hh
+    \brief	definition the FontEncodingTest class
+    \date	Mar 21, 2010
+    \author	Nestal Wan
 */
 
-#include "SimpleFont.hh"
-#include "CompositeFont.hh"
-#include "FontException.hh"
+#ifndef __PDFUT_FONTENCODINGTEST_HH_EADER_INCLUDED__
+#define __PDFUT_FONTENCODINGTEST_HH_EADER_INCLUDED__
 
-#include "file/DictReader.hh"
+#include <cppunit/TestFixture.h>
 
-namespace pdf
+#include <cppunit/extensions/HelperMacros.h>
+
+namespace pdfut {
+
+class FontEncodingTest : public CppUnit::TestFixture
 {
+public :
+	FontEncodingTest( ) ;
 
-BaseFont* CreateFont( DictReader& obj, FontDb *db )
-{
-	const Name& subtype = obj["Subtype"].As<Name>() ;
-	if ( subtype == Name("Type0") )
-		return new CompositeFont( obj, db ) ;
-	
-	else
-		return new SimpleFont( obj, db ) ;
-}
+	// declare suit function
+	CPPUNIT_TEST_SUITE( FontEncodingTest ) ;
+		CPPUNIT_TEST( Test ) ;
+	CPPUNIT_TEST_SUITE_END();
 
-}
+public :
+	void setUp( ) ;
+	void tearDown( ) ;
+
+private :
+	void Test( ) ;
+} ;
+
+} // end of namespace
+
+#endif // FONTENCODINGTEST_HH_

@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2009 by Nestal Wan                                      *
+ *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,30 +17,39 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/*!
-	\file	CreateFont.cc
-	\brief	definition the CreateFont() function
-	\date	Sun Mar 8 2009
-	\author	Nestal Wan
+/**	\file	ContentStreamTest.hh
+    \brief	definition the ContentStreamTest class
+    \date	Mar 19, 2010
+    \author	Nestal Wan
 */
 
-#include "SimpleFont.hh"
-#include "CompositeFont.hh"
-#include "FontException.hh"
+#ifndef __PDFUT_CONTENTSTREAMTEST_HH_EADER_INCLUDED__
+#define __PDFUT_CONTENTSTREAMTEST_HH_EADER_INCLUDED__
 
-#include "file/DictReader.hh"
+#include <cppunit/TestFixture.h>
 
-namespace pdf
+#include <cppunit/extensions/HelperMacros.h>
+
+namespace pdfut {
+
+class ContentStreamTest : public CppUnit::TestFixture
 {
+public :
+	ContentStreamTest( ) ;
 
-BaseFont* CreateFont( DictReader& obj, FontDb *db )
-{
-	const Name& subtype = obj["Subtype"].As<Name>() ;
-	if ( subtype == Name("Type0") )
-		return new CompositeFont( obj, db ) ;
-	
-	else
-		return new SimpleFont( obj, db ) ;
-}
+	// declare suit function
+	CPPUNIT_TEST_SUITE( ContentStreamTest ) ;
+		CPPUNIT_TEST( TestTestCID ) ;
+	CPPUNIT_TEST_SUITE_END();
 
-}
+public :
+	void setUp( ) ;
+	void tearDown( ) ;
+
+private :
+	void TestTestCID( ) ;
+} ;
+
+} // end of namespace
+
+#endif // CONTENTSTREAMTEST_HH_

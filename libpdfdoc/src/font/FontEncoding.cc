@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2009 by Nestal Wan                                      *
+ *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,30 +17,54 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/*!
-	\file	CreateFont.cc
-	\brief	definition the CreateFont() function
-	\date	Sun Mar 8 2009
+/**	\file	FontEncoding.cc
+	\brief	implementation of the FontEncoding class
+	\date	Mar 21, 2010
 	\author	Nestal Wan
 */
 
-#include "SimpleFont.hh"
-#include "CompositeFont.hh"
-#include "FontException.hh"
+#include "FontEncoding.hh"
 
+#include "core/Array.hh"
+
+#include "file/ArrayReader.hh"
 #include "file/DictReader.hh"
 
-namespace pdf
-{
+#include "font/CodeMap.hh"
 
-BaseFont* CreateFont( DictReader& obj, FontDb *db )
-{
-	const Name& subtype = obj["Subtype"].As<Name>() ;
-	if ( subtype == Name("Type0") )
-		return new CompositeFont( obj, db ) ;
+namespace pdf {
+
+/**	constructor
 	
-	else
-		return new SimpleFont( obj, db ) ;
+*/
+FontEncoding::FontEncoding( DictReader& self )
+{
+	int current = 0 ;
+
+	ArrayReader diff ;
+	if ( self.Detach( "Differences", diff ) )
+	{
+		for ( Array::iterator i = diff->begin() ; i != diff->end() ; ++i )
+		{
+			if ( i->Is<int>() )
+				current = diff.At<int>( i-diff->begin() ) ;
+			
+			else if ( i->Is<Name>() )
+			{
+				wchar_t ch = NameToUnicode( i->As<Name>().Str().c_str() ) ;
+				m_charmap.insert( std::make_pair(
+					static_cast<unsigned short>( current ), ch ) ) ;
+			
+				current++ ;
+			}
+		}
+	}
 }
 
+wchar_t FontEncoding::LookUp( unsigned short char_code ) const
+{
+	CharMap::const_iterator i = m_charmap.find( char_code ) ;
+	return i != m_charmap.end() ? i->second : 0 ; 
 }
+
+} // end of namespace

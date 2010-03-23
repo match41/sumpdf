@@ -46,8 +46,11 @@
 #include "stream/RawFilterTest.hh"
 #include "page/RealResourcesTest.hh"
 #include "page/RealPageTest.hh"
-//#include "page/RealContentTest.hh"
+#include "page/ContentStreamTest.hh"
 #include "font/FontDbTest.hh"
+#include "font/CodeMapTest.hh"
+#include "font/FontEncodingTest.hh"
+#include "font/CompositeFontTest.hh"
 
 // freetype library is optional
 #ifdef HAVE_FREETYPE
@@ -90,7 +93,7 @@ int main( int argc, char **argv )
 	runner.addTest( PageNodeTest::suite( ) ) ;
 	runner.addTest( TextStateTest::suite( ) ) ;
 	runner.addTest( RealTextTest::suite( ) ) ;
-//	runner.addTest( RealContentTest::suite( ) ) ;
+	runner.addTest( ContentStreamTest::suite( ) ) ;
 	runner.addTest( TextLineTest::suite( ) ) ;
 	runner.addTest( NameTreeTest::suite( ) ) ;
 	runner.addTest( FontDbTest::suite( ) ) ;
@@ -98,6 +101,9 @@ int main( int argc, char **argv )
 	runner.addTest( ExtGStateTest::suite( ) ) ;
 	runner.addTest( SimpleFontTest::suite( ) ) ;
 	runner.addTest( FunctionTest::suite( ) ) ;
+	runner.addTest( CodeMapTest::suite( ) ) ;
+	runner.addTest( FontEncodingTest::suite( ) ) ;
+	runner.addTest( CompositeFontTest::suite( ) ) ;
 
 #ifdef HAVE_PNG
 	runner.addTest( PngImageTest::suite( ) ) ;

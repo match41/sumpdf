@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2009 by Nestal Wan                                      *
+ *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,30 +17,41 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/*!
-	\file	CreateFont.cc
-	\brief	definition the CreateFont() function
-	\date	Sun Mar 8 2009
-	\author	Nestal Wan
+/**	\file	FontEncoding.hh
+    \brief	definition the FontEncoding class
+    \date	Mar 21, 2010
+    \author	Nestal Wan
 */
 
-#include "SimpleFont.hh"
-#include "CompositeFont.hh"
-#include "FontException.hh"
+#ifndef __PDF_FONTENCODING_HH_EADER_INCLUDED__
+#define __PDF_FONTENCODING_HH_EADER_INCLUDED__
 
-#include "file/DictReader.hh"
+#include "util/RefCounter.hh"
 
-namespace pdf
+#include <map>
+
+namespace pdf {
+
+class DictReader ;
+
+///	brief description
+/**	\internal
+	The FontEncoding class represents
+*/
+class FontEncoding : public RefCounter
 {
+public :
+	FontEncoding( DictReader& self ) ;
 
-BaseFont* CreateFont( DictReader& obj, FontDb *db )
-{
-	const Name& subtype = obj["Subtype"].As<Name>() ;
-	if ( subtype == Name("Type0") )
-		return new CompositeFont( obj, db ) ;
-	
-	else
-		return new SimpleFont( obj, db ) ;
-}
+	wchar_t LookUp( unsigned short char_code ) const ;
 
-}
+private :
+	typedef std::map<unsigned short, wchar_t> CharMap ;
+
+	/// mapping from character code to unicode
+	CharMap	m_charmap ;
+} ;
+
+} // end of namespace
+
+#endif // FONTENCODING_HH_

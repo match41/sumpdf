@@ -62,6 +62,9 @@ public :
 	bool operator==( const String& str ) const ;
 
 	bool IsHex( ) const ;
+	
+	void Swap( String& val ) ;
+	void Swap( std::string& val ) ;
 
 private :
 	static TokenSrc& ReadXDigit( TokenSrc& is, char& digit ) ;
@@ -89,5 +92,11 @@ private :
 } ;
 
 } // end of namespace
+
+namespace std
+{
+	void swap( pdf::String& s, std::string& val ) ;
+	void swap( pdf::String& s1, pdf::String& s2 ) ;
+}
 
 #endif

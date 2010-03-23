@@ -31,6 +31,8 @@
 #include "core/Ref.hh"
 #include "stream/Stream.hh"
 
+#include <sstream>
+
 namespace pdfut {
 
 using namespace pdf ;
@@ -43,6 +45,14 @@ MockFile::MockFile( )
 void MockFile::AddObj( const pdf::Ref& link, const pdf::Object& obj )
 {
 	m_map[link] = obj ;
+}
+
+void MockFile::AddText( const Ref& link, const std::string& str )
+{
+	std::istringstream iss( str ) ;
+	Object tmp ;
+	if ( iss >> tmp )
+		AddObj( link, tmp ) ;
 }
 
 pdf::Object MockFile::ReadObj( const pdf::Ref& obj )

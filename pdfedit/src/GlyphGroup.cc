@@ -66,7 +66,7 @@ void GlyphGroup::OnChar(
 	GlyphGraphicsItem *item = new GlyphGraphicsItem( glyph ) ;
 
 	// set offset
-	item->setPos( m_line.XPos() + offset, m_line.YPos() ) ;
+	item->setPos( offset, 0 ) ;
 	
 	// scale font by their font size
 	item->scale( state.ScaleFactor(), state.ScaleFactor() ) ;
@@ -87,8 +87,8 @@ const GraphicsState& GlyphGroup::Format( ) const
 TextLine GlyphGroup::GetLine( ) const
 {
 	TextLine line( m_line ) ;
-	line.XPos( m_line.XPos() + x() ) ;
-	line.YPos( m_line.YPos() + y() ) ;
+//	line.XPos( m_line.XPos() + x() ) ;
+//	line.YPos( m_line.YPos() + y() ) ;
 	return line ; 
 }
 

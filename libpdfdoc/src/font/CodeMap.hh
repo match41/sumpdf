@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2009 by Nestal Wan                                      *
+ *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,30 +17,20 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/*!
-	\file	CreateFont.cc
-	\brief	definition the CreateFont() function
-	\date	Sun Mar 8 2009
-	\author	Nestal Wan
+/**	\file	CodeMap.hh
+    \brief	definition the CodeMap class
+    \date	Mar 21, 2010
+    \author	Nestal Wan
 */
 
-#include "SimpleFont.hh"
-#include "CompositeFont.hh"
-#include "FontException.hh"
+#ifndef __PDF_CODEMAP_HH_EADER_INCLUDED__
+#define __PDF_CODEMAP_HH_EADER_INCLUDED__
 
-#include "file/DictReader.hh"
+namespace pdf {
 
-namespace pdf
-{
+const char*	UnicodeToName( wchar_t ch ) ;
+wchar_t		NameToUnicode( const char *name ) ;
 
-BaseFont* CreateFont( DictReader& obj, FontDb *db )
-{
-	const Name& subtype = obj["Subtype"].As<Name>() ;
-	if ( subtype == Name("Type0") )
-		return new CompositeFont( obj, db ) ;
-	
-	else
-		return new SimpleFont( obj, db ) ;
-}
+} // end of namespace
 
-}
+#endif // CODEMAP_HH_

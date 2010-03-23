@@ -87,11 +87,6 @@ void ContentStream::Decode( Stream& str )
 	// rewind to stream start for reading
 	str.Rewind( ) ;
 	
-//std::ostringstream ss ;
-//str.CopyData( ss.rdbuf() ) ;
-//std::cout << ss.str() << std::endl ;
-//str.Rewind() ;
-
 	std::istream s( str.InStreamBuf() ) ;
 	TokenSrc src( s ) ;
 	std::vector<Object> args ;
@@ -140,7 +135,7 @@ void ContentStream::OnET( const ContentOp& )
 void ContentStream::Oncm( const ContentOp& op )
 {
 	if ( op.Count() >= 6 )
-		m_state.ctm = Matrix( op[0], op[1], op[2], op[3], op[4], op[5] ) ;
+		m_state.ctm = Matrix( op[0], op[1], op[2], op[3], op[4], op[5] ) * m_state.ctm ;
 }
 
 void ContentStream::OnQ( const ContentOp& )
