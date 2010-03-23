@@ -30,15 +30,6 @@
 #include "BaseFont.hh"
 #include "font/FontType.hh"
 
-// libpdfdoc headers
-#include "core/Array.hh"
-#include "core/Name.hh"
-#include "core/Object.hh"
-//#include "file/CompleteObj.hh"
-
-// boost library
-#include <boost/tr1/unordered_map.hpp>
-
 #include <vector>
 #include <memory>
 
@@ -51,6 +42,7 @@ class FontDb ;
 class FontEncoding ;
 class RealGlyph ;
 class Glyph ;
+class Name ;
 
 ///	general font for PDF files
 /**	\internal
@@ -96,21 +88,11 @@ private :
 	
 	bool InitWithStdFont( const std::string& name, FontDb *fontdb ) ;
 
+	bool LoadDescriptor( DictReader& reader, FontDb *font_db ) ;
+
 private :
-	FT_FaceRec_	*m_face ;
-
-	Name		m_base_font ;
-	font::Type	m_type ;
-	int			m_first_char, m_last_char ;
-
-	std::vector<double>				m_widths ;
-	
-	std::auto_ptr<FontDescriptor>	m_descriptor ;
-	Object							m_to_unicode ;
-	FontEncoding					*m_encoding ;		//!< name or dictionary
-	
-	typedef std::tr1::unordered_map<wchar_t, RealGlyph*> GlyphMap ;
-	GlyphMap	m_glyphs ;
+	struct Impl ;
+	std::auto_ptr<Impl>	m_impl ;
 } ;
 
 } // end of namespace

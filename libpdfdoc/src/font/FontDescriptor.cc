@@ -69,6 +69,13 @@ FontDescriptor::FontDescriptor( )
 	m_italic_angle = m_ascent = m_descent = m_leading = 0.0 ;
 }
 
+FontDescriptor::FontDescriptor( font::Type type, DictReader& self )
+	: m_type( type ),
+	  m_flags( 0 )
+{
+	Read( type, self ) ;
+}
+
 FontDescriptor::FontDescriptor( FT_Face face, std::vector<unsigned char>& prog )
 	: m_type( font::GetType( face ) ),
 	  m_flags( 0 )
