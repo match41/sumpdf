@@ -303,6 +303,12 @@ bool Stream::operator!=( const Stream& str ) const
 	return !operator==( str ) ;
 }
 
+// just kidding
+bool Stream::operator<( const Stream& str ) const
+{
+	return m_self < str.m_self ;
+}
+
 /*! write filtered stream data to a streambuf. This function will read all data
     from the stream and write them to the streambuf \a buf.
     \param  buf     the streambuf that will get all the stream data.

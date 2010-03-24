@@ -52,6 +52,7 @@ FontEncoding::FontEncoding( DictReader& self )
 			else if ( i->Is<Name>() )
 			{
 				wchar_t ch = NameToUnicode( i->As<Name>().Str().c_str() ) ;
+
 				m_charmap.insert( std::make_pair(
 					static_cast<unsigned short>( current ), ch ) ) ;
 			

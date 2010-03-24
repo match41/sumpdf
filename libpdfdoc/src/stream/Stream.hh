@@ -75,6 +75,7 @@ public :
 
 	bool operator==( const Stream& str ) const ;
 	bool operator!=( const Stream& str ) const ;
+	bool operator<( const Stream& str ) const ;
 
 	const Dictionary& Self( ) const ;
 	Dictionary& Self( ) ;

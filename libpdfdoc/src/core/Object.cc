@@ -50,6 +50,13 @@
 
 #include <iostream>
 
+template class boost::variant<
+	pdf::Object::Null, int, double, bool, std::string, pdf::Name,
+	boost::recursive_wrapper<pdf::Stream>, pdf::Ref,
+	boost::recursive_wrapper<pdf::Array>,
+	boost::recursive_wrapper<pdf::Dictionary>
+	> ;
+	
 namespace pdf {
 
 struct Bool

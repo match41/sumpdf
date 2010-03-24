@@ -26,6 +26,8 @@
 #ifndef __PDF_FONTDESCRIPTOR_HH_EADER_INCLUDED__
 #define __PDF_FONTDESCRIPTOR_HH_EADER_INCLUDED__
 
+#include "util/RefCounter.hh"
+
 #include "font/FontType.hh"
 #include "core/Name.hh"
 #include "util/Rect.hh"
@@ -50,11 +52,12 @@ class Stream ;
 	file. It contains information about a font face. It is used to guess the
 	appearance of a font without knowing its font program.
 */
-class FontDescriptor
+class FontDescriptor : public RefCounter
 {
 public :
 	FontDescriptor( ) ;
-	explicit FontDescriptor( FT_Face face, std::vector<unsigned char>& prog ) ;
+	FontDescriptor( font::Type type, DictReader& self ) ;
+	FontDescriptor( FT_Face face, std::vector<unsigned char>& prog ) ;
 	
 	void Read( font::Type type, DictReader& self ) ;
 	Ref Write( File *file ) const ;
