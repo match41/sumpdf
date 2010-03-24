@@ -194,34 +194,14 @@ public :
 						expected and actual type.
 	*/
 	template <typename T>
-	const T& As( ) const
-	{
-		try
-		{
-			return boost::get<T>( m_obj ) ;
-		}
-		catch ( std::exception& e )
-		{
-			throw BadType( TypeID(), typeid(T), e.what() ) ;
-		}
-	}
+	const T& As( ) const ;
 	
 	/*!	\brief	non-constant version of As()
 		\internal
 		\sa	As()
 	*/
 	template <typename T>
-	T& As( )
-	{
-		try
-		{
-			return boost::get<T>( m_obj ) ;
-		}
-		catch ( std::exception& e )
-		{
-			throw BadType( TypeID(), typeid(T), e.what() ) ;
-		}
-	}
+	T& As( ) ;
 	
 	///	Conversion operator to arbitrary types
 	/**	This function calls To(). It is useful to automatically converts
@@ -234,23 +214,10 @@ public :
 		\sa As(), To()
 	*/
 	template <typename T>
-	operator T() const
-	{
-		return To<T>( ) ;
-	}
+	operator T() const ;
 
 	template <typename T>
-	T To( std::nothrow_t ) const
-	{
-		try
-		{
-			return As<T>() ;
-		}
-		catch ( BadType& )
-		{
-			return T() ;
-		}
-	}
+	T To( std::nothrow_t ) const ;
 
 	///	Conversion function to arbitrary types
 	/**	This function is similar to As(), except it returns the result
@@ -267,10 +234,7 @@ public :
 		\sa As()
 	*/
 	template <typename T>
-	T To( ) const
-	{
-		return As<T>() ;
-	}
+	T To( ) const ;
 	
 	template <typename F>
 	void Visit( F func ) const
@@ -324,12 +288,17 @@ template <> const Object& Object::As( ) const ;
 
 } // end of namespace
 
+#ifdef __GNUC__
+// extern template is a gcc extension that prevents the compiler from
+// automatically instantiating a template to save time. the template will be
+// explicitly instantiated in the .cc file instead.
 extern template class boost::variant<
 	pdf::Object::Null, int, double, bool, std::string, pdf::Name,
 	boost::recursive_wrapper<pdf::Stream>, pdf::Ref,
 	boost::recursive_wrapper<pdf::Array>,
 	boost::recursive_wrapper<pdf::Dictionary>
 	> ;
+#endif
 
 namespace std
 {

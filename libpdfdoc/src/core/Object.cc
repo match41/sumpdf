@@ -50,13 +50,15 @@
 
 #include <iostream>
 
+#ifdef __GNUC__
 template class boost::variant<
 	pdf::Object::Null, int, double, bool, std::string, pdf::Name,
 	boost::recursive_wrapper<pdf::Stream>, pdf::Ref,
 	boost::recursive_wrapper<pdf::Array>,
 	boost::recursive_wrapper<pdf::Dictionary>
 	> ;
-	
+#endif
+
 namespace pdf {
 
 struct Bool
@@ -243,6 +245,126 @@ template <> bool Object::Is<Object>( ) const
 {
 	return true ;
 }
+
+template <typename T>
+const T& Object::As( ) const
+{
+	try
+	{
+		return boost::get<T>( m_obj ) ;
+	}
+	catch ( std::exception& e )
+	{
+		throw BadType( TypeID(), typeid(T), e.what() ) ;
+	}
+}
+
+/*!	\brief	non-constant version of As()
+	\internal
+	\sa	As()
+*/
+template <typename T>
+T& Object::As( )
+{
+	try
+	{
+		return boost::get<T>( m_obj ) ;
+	}
+	catch ( std::exception& e )
+	{
+		throw BadType( TypeID(), typeid(T), e.what() ) ;
+	}
+}
+
+template int& Object::As() ;
+template const int& Object::As() const ;
+template double& Object::As() ;
+template const double& Object::As() const ;
+template Ref& Object::As() ;
+template const Ref& Object::As() const ;
+template Name& Object::As() ;
+template const Name& Object::As() const ;
+template std::string& Object::As() ;
+template const std::string& Object::As() const ;
+template bool& Object::As() ;
+template const bool& Object::As() const ;
+template Stream& Object::As() ;
+template const Stream& Object::As() const ;
+template Array& Object::As() ;
+template const Array& Object::As() const ;
+template Dictionary& Object::As() ;
+template const Dictionary& Object::As() const ;
+
+template <typename T>
+Object::operator T() const
+{
+	return To<T>( ) ;
+}
+
+template Object::operator int() const ;
+template Object::operator bool() const ;
+template Object::operator double() const ;
+template Object::operator Ref() const ;
+template Object::operator Name() const ;
+template Object::operator std::string() const ;
+template Object::operator Stream() const ;
+template Object::operator Array() const ;
+template Object::operator Dictionary() const ;
+
+template Object::operator unsigned() const ;
+template Object::operator unsigned short() const ;
+template Object::operator short() const ;
+template Object::operator unsigned long() const ;
+template Object::operator long() const ;
+template Object::operator float() const ;
+template Object::operator Rect() const ;
+
+template <typename T>
+T Object::To( std::nothrow_t ) const
+{
+	try
+	{
+		return To<T>() ;
+	}
+	catch ( BadType& )
+	{
+		return T() ;
+	}
+}
+
+template int Object::To( std::nothrow_t ) const ;
+template bool Object::To( std::nothrow_t ) const ;
+template double Object::To( std::nothrow_t ) const ;
+template Ref Object::To( std::nothrow_t ) const ;
+template Name Object::To( std::nothrow_t ) const ;
+template std::string Object::To( std::nothrow_t ) const ;
+template Stream Object::To( std::nothrow_t ) const ;
+template Array Object::To( std::nothrow_t ) const ;
+template Dictionary Object::To( std::nothrow_t ) const ;
+
+template unsigned Object::To( std::nothrow_t ) const ;
+template unsigned short Object::To( std::nothrow_t ) const ;
+template unsigned long Object::To( std::nothrow_t ) const ;
+template short Object::To( std::nothrow_t ) const ;
+template long Object::To( std::nothrow_t ) const ;
+template float Object::To( std::nothrow_t ) const ;
+template Rect Object::To( std::nothrow_t ) const ;
+
+template <typename T>
+T Object::To( ) const
+{
+	return As<T>() ;
+}
+
+template int Object::To( ) const ;
+template bool Object::To( ) const ;
+template double Object::To( ) const ;
+template Ref Object::To( ) const ;
+template Name Object::To( ) const ;
+template std::string Object::To( ) const ;
+template Stream Object::To( ) const ;
+template Array Object::To( ) const ;
+template Dictionary Object::To( ) const ;
 
 template <> unsigned Object::To() const
 {
