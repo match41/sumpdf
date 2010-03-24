@@ -161,6 +161,7 @@ public :
 
 	friend bool operator==( const Object& obj1, const Object& obj2 ) ;
 	friend bool operator!=( const Object& obj1, const Object& obj2 ) ;
+	friend bool operator<( const Object& obj1, const Object& obj2 ) ;
 
 	friend std::istream& operator>>( std::istream& is, Object& obj ) ;
 	friend std::ostream& operator<<( std::ostream& os, const Object& obj ) ;
@@ -323,13 +324,6 @@ template <> Object& Object::As( ) ;
 template <> const Object& Object::As( ) const ;
 
 } // end of namespace
-
-extern template class boost::variant<
-	pdf::Object::Null, int, double, bool, std::string, pdf::Name,
-	boost::recursive_wrapper<pdf::Stream>, pdf::Ref,
-	boost::recursive_wrapper<pdf::Array>,
-	boost::recursive_wrapper<pdf::Dictionary>
-	> ;
 
 namespace std
 {

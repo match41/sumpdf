@@ -49,13 +49,6 @@
 #include <stdexcept>
 
 #include <iostream>
-
-template class boost::variant<
-	pdf::Object::Null, int, double, bool, std::string, pdf::Name,
-	boost::recursive_wrapper<pdf::Stream>, pdf::Ref,
-	boost::recursive_wrapper<pdf::Array>,
-	boost::recursive_wrapper<pdf::Dictionary>
-	> ;
 	
 namespace pdf {
 
@@ -535,6 +528,11 @@ std::ostream& operator<<( std::ostream& os, const Bool& b )
 bool operator!=( const Object& obj1, const Object& obj2 )
 {
 	return !operator==( obj1, obj2 ) ;
+}
+
+bool operator<( const Object& obj1, const Object& obj2 )
+{
+	return obj1.m_obj < obj2.m_obj ;
 }
 
 } // end of namespace
