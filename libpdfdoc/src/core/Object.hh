@@ -161,6 +161,7 @@ public :
 
 	friend bool operator==( const Object& obj1, const Object& obj2 ) ;
 	friend bool operator!=( const Object& obj1, const Object& obj2 ) ;
+	friend bool operator<( const Object& obj1, const Object& obj2 ) ;
 
 	friend std::istream& operator>>( std::istream& is, Object& obj ) ;
 	friend std::ostream& operator<<( std::ostream& os, const Object& obj ) ;

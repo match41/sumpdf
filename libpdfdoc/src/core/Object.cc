@@ -358,7 +358,6 @@ T Object::To( ) const
 
 template int Object::To( ) const ;
 template bool Object::To( ) const ;
-template double Object::To( ) const ;
 template Ref Object::To( ) const ;
 template Name Object::To( ) const ;
 template std::string Object::To( ) const ;
@@ -657,6 +656,11 @@ std::ostream& operator<<( std::ostream& os, const Bool& b )
 bool operator!=( const Object& obj1, const Object& obj2 )
 {
 	return !operator==( obj1, obj2 ) ;
+}
+
+bool operator<( const Object& obj1, const Object& obj2 )
+{
+	return obj1.m_obj < obj2.m_obj ;
 }
 
 } // end of namespace
