@@ -39,9 +39,7 @@ class Exception ;
 /**	\internal
 	The ExceptionDlg class represents
 */
-class ExceptionDlg :
-	public QDialog,
-	public Ui::ExceptionDlgUI
+class ExceptionDlg : public QDialog, private Ui::ExceptionDlgUI
 {
 	Q_OBJECT
 

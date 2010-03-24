@@ -35,9 +35,7 @@ namespace pdf {
 /**	\internal
 	The TextDlg class represents
 */
-class TextDlg :
-	public QDialog,
-	public Ui::TextDlgUI
+class TextDlg : public QDialog, private Ui::TextDlgUI
 {
 public :
 	Q_OBJECT
