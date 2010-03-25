@@ -43,6 +43,8 @@ class QComboBox ;
 class QPushButton;
 class QLabel;
 class QTextEdit;
+class QFontComboBox;
+
 
 namespace pdf {
 
@@ -54,6 +56,7 @@ class Doc ;
 class Page ;
 class Matrix ;
 class TextLine ;
+class InsertTextDlg;
 
 class MainWnd :
 	public QMainWindow,
@@ -85,11 +88,16 @@ public slots :
 	void OnChanged( const QList<QRectF>& ) ;
 	void OnViewSource( ) ;
 
+	void OnInsertDlg( );
+	void OnInsertTextNow( );
+	void OnInsertBtnUp( );
+
 private :
 	void StorePage( QGraphicsScene *scene, Doc *doc, Page *page ) ;
 	void VisitText( Text *text ) ;
 	void VisitGraphics( Graphics *gfx ) ;
 	void LoadTextLine( const TextLine& line ) ;
+	void CreateTextInsertToolbar( );
 
 private :
 	std::auto_ptr<Doc>	m_doc ;
@@ -102,6 +110,15 @@ private :
 	QLabel			*m_label;
 	QTextEdit		*m_text;
 	std::size_t		m_current_page;	// currently viewed document page
+
+	// text editing
+	QPushButton		*m_insert_text;
+	QFontComboBox	*m_insert_text_font;
+	QComboBox		*m_insert_text_font_size;
+
+	QTextEdit		*m_text_edit;
+	InsertTextDlg	*m_insert_dlg;
+
 } ;
 
 } // end of namespace

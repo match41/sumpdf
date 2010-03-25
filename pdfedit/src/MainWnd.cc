@@ -30,6 +30,7 @@
 #include "PageView.hh"
 #include "PropertiesDlg.hh"
 #include "TextDlg.hh"
+#include "InsertTextDlg.hh"
 
 // Qt headers
 #include <QApplication>
@@ -49,6 +50,7 @@
 #include <QTransform>
 #include <QtGlobal>
 #include <QToolBar>
+#include <QFontComboBox>
 
 #include "TextEdit.hh"
 #include "GlyphGroup.hh"
@@ -82,6 +84,8 @@ MainWnd::MainWnd( QWidget *parent )
 	, m_zoom_box( new QComboBox( m_tool_bar ) )
 	, m_label( new QLabel( tr(" page:    ") ) )
 	, m_current_page( 0 )
+	, m_insert_text(new QPushButton( tr("&Insert Text") ) )
+	, m_insert_dlg(new InsertTextDlg(this) )
 {
 	setupUi( this ) ;
 	setCentralWidget( m_view ) ;
@@ -127,6 +131,8 @@ MainWnd::MainWnd( QWidget *parent )
 	
 	m_item_prop->verticalHeader()->hide() ;
 	m_item_prop->horizontalHeader()->setStretchLastSection( true ) ;
+
+	CreateTextInsertToolbar();	// insert text feature
 }
 
 /**	destructor is for the auto_ptr	
@@ -381,4 +387,102 @@ void MainWnd::OnViewSource( )
 	}
 }
 
+void MainWnd::OnInsertDlg( )
+{
+	m_insert_dlg->show();
+}
+
+void MainWnd::CreateTextInsertToolbar( )
+{
+	m_toolbar_text->addWidget( m_insert_text );	// insert text push btn
+	m_insert_text->setCheckable( true );
+
+	m_insert_text_font = new QFontComboBox();	// font combo box
+    m_insert_text_font_size = new QComboBox();	// font size combo box
+
+    m_insert_text_font_size->setEditable(true);
+    for (int i = 8; i < 30; i += 2)
+        m_insert_text_font_size->addItem( QString().setNum( i ) );
+    QIntValidator *validator = new QIntValidator( 2, 64, this );
+    m_insert_text_font_size->setValidator( validator );
+
+	m_toolbar_text->addWidget( m_insert_text_font );
+	m_toolbar_text->addWidget( m_insert_text_font_size );
+
+
+	connect( m_insert_text,		SIGNAL( clicked() ),	this, SLOT(OnInsertDlg() ) );
+
+	// connect the font and size selection between MainWnd and dialog (both ways)
+	connect(
+		m_insert_text_font,
+		SIGNAL( currentFontChanged( QFont ) ),
+		m_insert_dlg,
+		SLOT( SetFontChanged( QFont ) ) );
+	connect(
+		m_insert_dlg,
+		SIGNAL( FontPropertiesChanged( QFont ) ),
+		m_insert_text_font, 
+		SLOT( setCurrentFont( QFont ) ) );
+
+	connect(
+		m_insert_text_font_size, 
+		SIGNAL( currentIndexChanged( int ) ),
+		m_insert_dlg, 
+		SLOT( SetFontChanged( int ) ) );
+	connect(
+		m_insert_dlg, 
+		SIGNAL( FontPropertiesChanged( int ) ),
+		m_insert_text_font_size, 
+		SLOT( setCurrentIndex( int ) ) );
+/*	connect(
+		m_insert_dlg->m_fontsize, 
+		SIGNAL( currentIndexChanged( int ) ),
+		m_insert_text_font_size, 
+		SLOT( setCurrentIndex( int ) ) );
+*/
+	connect( 	// mouse position -> dlg
+		m_view, 
+		SIGNAL( mousePositionSet( QPointF ) ), 
+		m_insert_dlg, 
+		SLOT( OnMousePositionSet( QPointF ) ) );
+
+	connect(	// Insert text into current scene
+		m_insert_dlg, 
+		SIGNAL( OnInsertClicked( ) ),	
+		this, 
+		SLOT( OnInsertTextNow( ) ) );
+	connect(	// close Insert Dialog
+		m_insert_dlg, 
+		SIGNAL( OnDlgClosed( ) ),	
+		this, 
+		SLOT( OnInsertBtnUp( ) ) );
+
+}
+
+void MainWnd::OnInsertTextNow( )
+{
+	QTextEdit *text=m_insert_dlg->GetText( );
+	QPointF pos=m_insert_dlg->GetPosition( );
+
+	if ( m_doc.get() != 0 )
+	{
+		std::string font_name =
+			text->currentFont().family().toStdString() ;
+		Font *f = m_doc->CreateSimpleFont( font_name ) ;
+
+		TextState ts ;
+		ts.SetFont( m_insert_dlg->GetFontSize().toInt(), f ) ;
+		
+		TextLine line( GraphicsState(ts),
+			Matrix::Translation( pos.x(), pos.y() ),
+				text->toPlainText().toStdWString() ) ;
+		
+		LoadTextLine( line ) ;
+	} 
+}
+
+void MainWnd::OnInsertBtnUp( )
+{
+	m_insert_text->setChecked( false );
+}
 } // end of namespace

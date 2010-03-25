@@ -88,6 +88,7 @@ void PageView::mousePressEvent( QMouseEvent *event )
 	// click at empty space
 	else
 	{
+		emit mousePositionSet(pos);	// mouse position at empty space
 	}
 	
 

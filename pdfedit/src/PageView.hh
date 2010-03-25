@@ -28,9 +28,11 @@
 #define __PDF_PAGEVIEW_HEADER_INCLUDED__
 
 #include <QGraphicsView>
+#include <QPointF>
 
 class QMainWindow ;
 class QPainter ;
+class QPointF ;
 
 namespace pdf {
 
@@ -50,6 +52,9 @@ public:
 protected :
 	void mousePressEvent( QMouseEvent *event ) ;
 	void mouseMoveEvent( QMouseEvent *event ) ;
+
+signals:
+	void mousePositionSet( QPointF pos );	// mouse position at empty space
 
 private :
 	class LineEdit ;
