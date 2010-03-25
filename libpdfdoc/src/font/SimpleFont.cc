@@ -159,7 +159,8 @@ SimpleFont::SimpleFont( DictReader& reader, FontDb *font_db )
 		{
 			Name name ;
 			if ( reader.Detach( "Encoding", name ) )
-				;
+			{
+			}
 		}
 		
 		reader.Detach( "ToUnicode",	m_impl->to_unicode ) ;

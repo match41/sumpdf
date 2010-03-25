@@ -54,10 +54,10 @@ struct Catalog::NameDict
 
 	void Read( Dictionary& self, File *file )
 	{
-		DictReader reader( self, file ), dests ;
-		
-		if ( reader.Detach( "Dests", dests ) )
-			m_dests.Read( dests, file ) ;
+//		DictReader reader( self, file ), dests ;
+//		
+//		if ( reader.Detach( "Dests", dests ) )
+//			m_dests.Read( dests, file ) ;
 	}
 } ;
 
@@ -109,7 +109,7 @@ Catalog::Catalog( const Ref& link, File *file, FontDb *fontdb )
 		for ( Dictionary::iterator i = dest->begin() ; i != dest->end() ; ++i )
 		{
 			Array darray ;
-			self.SwapAt( i->second, darray ) ; 
+			self.SwapAt( i, darray ) ; 
 			
 			Destination d ;
 			d.Read( darray, self.GetFile() ) ;

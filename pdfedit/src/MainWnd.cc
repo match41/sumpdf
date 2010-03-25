@@ -473,9 +473,11 @@ void MainWnd::OnInsertTextNow( )
 		TextState ts ;
 		ts.SetFont( m_insert_dlg->GetFontSize().toInt(), f ) ;
 		
+		std::string s = text->toPlainText().toStdString() ;
+		
 		TextLine line( GraphicsState(ts),
 			Matrix::Translation( pos.x(), pos.y() ),
-				text->toPlainText().toStdWString() ) ;
+				std::wstring(s.begin(), s.end()) ) ;
 		
 		LoadTextLine( line ) ;
 	} 
