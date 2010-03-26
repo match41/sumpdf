@@ -26,7 +26,7 @@
 
 #include "util/Exception.hh"
 
-#include "Util.hh"
+#include "util/Util.hh"
 #include "Backtrace.hh"
 
 #include <boost/format.hpp>

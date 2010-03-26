@@ -135,9 +135,7 @@ set( STRM_HDRS		${STRM_DIR}/Stream.hh
 					${STRM_DIR}/InStreamBufAdaptor.hh
 					${STRM_DIR}/OutStreamBufAdaptor.hh )
 
-set( UTIL_HDRS  	${UTIL_DIR}/Rect.hh
-					${UTIL_DIR}/Export.hh
-					${UTIL_DIR}/Util.hh
+set( UTIL_HDRS  	${UTIL_DIR}/Export.hh
 					${UTIL_DIR}/SymbolInfo.hh
 					${UTIL_DIR}/Backtrace.hh
 					${UTIL_DIR}/RefCounter.hh
@@ -171,7 +169,8 @@ set( INCLUDE_HDRS	${INCLUDE_DIR}/Doc.hh
 set( FONT_INC_HDRS	${INCLUDE_DIR}/font/Font.hh
 					${INCLUDE_DIR}/font/Glyph.hh
 					${INCLUDE_DIR}/font/FontDb.hh
-					${INCLUDE_DIR}/font/FontType.hh )
+					${INCLUDE_DIR}/font/FontType.hh
+					${INCLUDE_DIR}/font/Outline.hh )
 
 set( PAGE_INC_HDRS	${INCLUDE_DIR}/page/Page.hh )
 
@@ -187,7 +186,8 @@ set( GFX_INC_HDRS	${INCLUDE_DIR}/graphics/Graphics.hh
 set( UTIL_INC_HDRS	${INCLUDE_DIR}/util/Exception.hh
 					${INCLUDE_DIR}/util/Debug.hh
 					${INCLUDE_DIR}/util/Rect.hh
-					${INCLUDE_DIR}/util/Matrix.hh )
+					${INCLUDE_DIR}/util/Matrix.hh
+					${INCLUDE_DIR}/util/Util.hh )
 
 ###############################################################################
 # source in subdirs
