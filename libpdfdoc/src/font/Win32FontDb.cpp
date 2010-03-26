@@ -29,6 +29,8 @@
 
 #include "util/Debug.hh"
 
+#include <boost/format.hpp>
+
 #include <cstring>
 
 #include <windows.h>
@@ -106,8 +108,9 @@ std::vector<unsigned char> Win32FontDb::FindFont(
 		GetFontData( hdc, 0, 0, &result[0], size ) ;
 		return result ;
 	}
-	
-    throw FontException( "cannot GetFontData()" ) ;
+	DWORD e = GetLastError() ;
+    throw FontException( boost::format( "cannot GetFontData(): %1%" )
+        % e ) ;
 }
 
 } // end of namespace

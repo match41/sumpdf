@@ -483,23 +483,28 @@ void MainWnd::OnInsertTextNow( )
 	QTextEdit *text=m_insert_dlg->GetText( );
 	QPointF pos=m_insert_dlg->GetPosition( );
 
-	if ( m_doc.get() != 0 )
+	try
 	{
-		std::string font_name = ToStr( text->currentFont().family() ) ;
-		Font *f = m_doc->CreateSimpleFont( font_name ) ;
+		PDF_ASSERT( m_doc.get() != 0 ) ;
 
-		if ( f != 0 )
-		{
-			TextState ts ;
-			ts.SetFont( m_insert_dlg->GetFontSize().toInt(), f ) ;
-			
-			TextLine line( GraphicsState(ts),
-				Matrix::Translation( pos.x(), pos.y() ), 
-				ToWStr( text->toPlainText() ) ) ;
-			
-			CurrentScene()->addItem( new GlyphGroup( line ) ) ;
-		}
-	} 
+		QFont font = text->currentFont() ;
+		Font *f = m_doc->CreateSimpleFont( ToStr( font.family() ) ) ;
+		PDF_ASSERT( f != 0 ) ;
+
+		TextState ts ;
+		ts.SetFont( m_insert_dlg->GetFontSize().toInt(), f ) ;
+
+		TextLine line( GraphicsState(ts),
+			Matrix::Translation( pos.x(), pos.y() ), 
+			ToWStr( text->toPlainText() ) ) ;
+
+		CurrentScene()->addItem( new GlyphGroup( line ) ) ;
+	}
+	catch ( Exception& e )
+	{
+		ExceptionDlg dlg( e, this ) ;
+		dlg.exec() ;
+	}
 }
 
 void MainWnd::OnInsertBtnUp( )
