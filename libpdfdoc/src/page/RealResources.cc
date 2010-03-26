@@ -184,13 +184,16 @@ Name RealResources::AddFont( BaseFont *font )
 	if ( it != m_fonts.right.end( ) )
 		return it->second ;
 
+	std::size_t idx = m_fonts.size( ) ;
+
 	// create a new name
 	Name name ;
 	do
 	{
 		std::ostringstream oss ;
-		oss << "F" << m_fonts.size( ) ;
+		oss << "F" << idx++ ;
 		name = Name( oss.str() ) ;
+
 	} while ( m_fonts.left.find( name ) != m_fonts.left.end( ) ) ;
 
 	m_fonts.insert( FontMap::value_type( name, font ) ) ;
