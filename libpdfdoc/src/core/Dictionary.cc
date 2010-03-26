@@ -39,6 +39,10 @@
 
 #include <iostream>
 
+#ifdef __GNUC__
+template class std::map<pdf::Name, pdf::Object> ;
+#endif
+
 namespace pdf {
 
 Dictionary::Dictionary( )
