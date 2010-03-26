@@ -52,6 +52,7 @@ RealDoc::RealDoc( )
 	: m_font_db( CreateFontDb() ),
 	  m_catalog( new Catalog( m_font_db.get() ) )
 {
+	AppendPage( ) ;
 }
 
 /**	The destructor will delete all the elements contained. It traverses the

@@ -78,6 +78,7 @@ namespace pdf {
 
 MainWnd::MainWnd( QWidget *parent )
 	: QMainWindow( parent )
+	, m_doc( CreateDoc() )
 	, m_scene( new QGraphicsScene( QRectF( 0, 0, 595, 842 ), this ) )
 	, m_view( new PageView( m_scene, this ) )
 	, m_tool_bar( addToolBar(tr("Main") ) )
