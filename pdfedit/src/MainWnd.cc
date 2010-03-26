@@ -54,6 +54,7 @@
 
 #include "TextEdit.hh"
 #include "GlyphGroup.hh"
+#include "PageLoader.hh"
 #include "Util.hh"
 
 // libpdfdoc headers
@@ -64,6 +65,7 @@
 #include <util/Exception.hh>
 #include <util/Rect.hh>
 #include <util/Debug.hh>
+#include <util/Util.hh>
 #include <graphics/Text.hh>
 #include <graphics/TextLine.hh>
 #include <graphics/TextState.hh>
@@ -79,8 +81,7 @@ namespace pdf {
 MainWnd::MainWnd( QWidget *parent )
 	: QMainWindow( parent )
 	, m_doc( CreateDoc() )
-	, m_scene( new QGraphicsScene( QRectF( 0, 0, 595, 842 ), this ) )
-	, m_view( new PageView( m_scene, this ) )
+	, m_view( new PageView( this ) )
 	, m_tool_bar( addToolBar(tr("Main") ) )
 	, m_zoom_box( new QComboBox( m_tool_bar ) )
 	, m_label( new QLabel( tr(" page:    ") ) )
@@ -101,7 +102,6 @@ MainWnd::MainWnd( QWidget *parent )
 	connect( m_action_first_pg,	SIGNAL(triggered()),	this, SLOT(OnFirstPage()) );
 	connect( m_action_last_pg, 	SIGNAL(triggered()),	this, SLOT(OnLastPage()) );
 	connect( m_action_viewsrc, 	SIGNAL(triggered()),	this, SLOT(OnViewSource()) );
-	connect( m_scene, 	SIGNAL(selectionChanged()),	this, SLOT(OnSelectionChanged()) );
 
 	m_tool_bar->addAction( m_action_open ) ;
 
@@ -134,6 +134,9 @@ MainWnd::MainWnd( QWidget *parent )
 	m_item_prop->horizontalHeader()->setStretchLastSection( true ) ;
 
 	CreateTextInsertToolbar();	// insert text feature
+	
+	// setup the scene and view
+	GoToPage( 0 ) ;
 }
 
 /**	destructor is for the auto_ptr	
@@ -149,7 +152,7 @@ void MainWnd::OnChanged( const QList<QRectF>& region )
 
 void MainWnd::OnSelectionChanged( )
 {
-	QList<QGraphicsItem*> items = m_scene->selectedItems() ;
+	QList<QGraphicsItem*> items = CurrentScene()->selectedItems() ;
 	if ( !items.empty() )
 	{
 		GlyphGroup *text = qgraphicsitem_cast<GlyphGroup*>( items.front() ) ;
@@ -169,13 +172,24 @@ void MainWnd::OpenFile( const QString& file )
 {
 	try
 	{
-		m_doc.reset( CreateDoc( ) ) ;
-		m_doc->Read( file.toStdString() ) ;
+		// try to read the new PDF file. will throw exception in case of
+		// any errors.
+		Doc *new_doc = CreateDoc( ) ;
+		new_doc->Read( ToStr( file ) ) ;
+		PDF_ASSERT( new_doc->PageCount() > 0 ) ;
 		
-		if ( m_doc->PageCount() > 0 )
-		{
-			GoToPage( 0 ) ;
-		}
+		// now the new file is read successfully, we destroy the data from
+		// previous file and load the new stuff
+		
+		// destroy all pages from previous document
+		std::for_each( m_pages.begin(), m_pages.end(),
+			boost::bind( DeletePtr(),
+				boost::bind( &PageMap::value_type::second, _1 ) ) ) ;
+		m_pages.clear() ;
+	
+		// load the new stuff
+		m_doc.reset( new_doc ) ;
+		GoToPage( 0 ) ;
 	}
 	catch ( Exception& e )
 	{
@@ -191,12 +205,29 @@ void MainWnd::GoToPage( std::size_t page )
 		m_current_page = page ;
 	
 		// go to next page and display
-		m_scene->clear( ) ;
+		PageMap::iterator it = m_pages.find( m_current_page ) ;
+		QGraphicsScene *scene = 0 ;
+		if ( it != m_pages.end() )
+			scene = it->second ;
+		else
+		{
+			scene = new QGraphicsScene( QRectF( 0, 0, 595, 842 ), this ) ;
+			
+			Page *p = m_doc->GetPage( m_current_page ) ;
+			
+			PageLoader loader( scene ) ;
+			p->VisitGraphics( &loader ) ;
+
+			connect(
+				scene, 
+				SIGNAL( selectionChanged() ),
+				this,
+				SLOT( OnSelectionChanged() ) ) ;
+			m_pages.insert( std::make_pair( m_current_page, scene ) ) ;
+		}
 		
-		Page *p = m_doc->GetPage( m_current_page ) ;
-		
-		p->VisitGraphics( this ) ;
-		m_scene->invalidate() ;
+		scene->invalidate() ;
+		m_view->setScene( scene ) ;
 	
 		m_label->setText( QString( tr(" page: %1 / %2") ).
 			arg( m_current_page + 1 ).
@@ -210,21 +241,12 @@ void MainWnd::GoToPage( std::size_t page )
 	}
 }
 
-void MainWnd::VisitText( Text *text )
+QGraphicsScene* MainWnd::CurrentScene()
 {
-	assert( text != 0 ) ;
-
-	std::for_each( text->begin(), text->end(),
-		boost::bind( &MainWnd::LoadTextLine, this, _1 ) ) ;
-}
-
-void MainWnd::LoadTextLine( const TextLine& line )
-{
-	m_scene->addItem( new GlyphGroup( line ) ) ;
-}
-
-void MainWnd::VisitGraphics( Graphics *gfx )
-{
+	PageMap::iterator it = m_pages.find( m_current_page ) ;
+	PDF_ASSERT( it != m_pages.end() ) ;
+	PDF_ASSERT( it->second != 0 ) ;
+	return it->second ;
 }
 
 void MainWnd::OnAbout( )
@@ -261,12 +283,14 @@ void MainWnd::OnSaveAs( )
 	QString fname = QFileDialog::getSaveFileName( this, "Open", ".", "*.pdf" ) ;
 	if ( !fname.isEmpty( ) )
 	{
-		// we shouldn't do like this. we shouldn't create another doc.
-		// we should re-use m_doc.
-		Page *p = m_doc->GetPage( 0 ) ;
-		StorePage( m_scene, m_doc.get(), p ) ;
+		for ( PageMap::const_iterator i = m_pages.begin() ;
+			i != m_pages.end() ; ++i )
+		{
+			Page *p = m_doc->GetPage( i->first ) ;
+			StorePage( i->second, m_doc.get(), p ) ;
+		}
 		
-		m_doc->Write( fname.toStdString() ) ;
+		m_doc->Write( ToStr( fname)  ) ;
 	}
 }
 
@@ -461,20 +485,20 @@ void MainWnd::OnInsertTextNow( )
 
 	if ( m_doc.get() != 0 )
 	{
-		std::string font_name =
-			text->currentFont().family().toStdString() ;
+		std::string font_name = ToStr( text->currentFont().family() ) ;
 		Font *f = m_doc->CreateSimpleFont( font_name ) ;
 
-		TextState ts ;
-		ts.SetFont( m_insert_dlg->GetFontSize().toInt(), f ) ;
-		
-		std::string s = text->toPlainText().toStdString() ;
-		
-		TextLine line( GraphicsState(ts),
-			Matrix::Translation( pos.x(), pos.y() ),
-				std::wstring(s.begin(), s.end()) ) ;
-		
-		LoadTextLine( line ) ;
+		if ( f != 0 )
+		{
+			TextState ts ;
+			ts.SetFont( m_insert_dlg->GetFontSize().toInt(), f ) ;
+			
+			TextLine line( GraphicsState(ts),
+				Matrix::Translation( pos.x(), pos.y() ), 
+				ToWStr( text->toPlainText() ) ) ;
+			
+			CurrentScene()->addItem( new GlyphGroup( line ) ) ;
+		}
 	} 
 }
 

@@ -17,52 +17,54 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	Util.cc
-	\brief	implementation of the Util class
-	\date	Jan 24, 2010
+/**	\file	PageLoader.cc
+	\brief	implementation of the PageLoader class
+	\date	Mar 26, 2010
 	\author	Nestal Wan
 */
 
-#include "Util.hh"
+#include "PageLoader.hh"
 
-#include <util/Matrix.hh>
+// local headers
+#include "GlyphGroup.hh"
 
-#include <QString>
-#include <QTransform>
+// libpdfdoc headers
+#include <graphics/Text.hh>
+#include <util/Debug.hh>
+
+// Qt headers
+#include <QGraphicsScene>
+
+// boost headers
+#include <boost/bind.hpp>
 
 namespace pdf {
 
-QTransform ToQtMatrix( const Matrix& m )
+/**	constructor
+	
+*/
+PageLoader::PageLoader( QGraphicsScene *scene )
+	: m_scene( scene )
 {
-	return QTransform( m.M11(), m.M12(), m.M21(), m.M22(), m.Dx(), m.Dy() ) ;
+	PDF_ASSERT( m_scene != 0 ) ;
 }
 
-Matrix FromQtMatrix( const QTransform& m )
+void PageLoader::VisitText( Text *text )
 {
-	return Matrix( m.m11(), m.m12(), m.m21(), m.m22(), m.dx(), m.dy() ) ;
+	PDF_ASSERT( text != 0 ) ;
+
+	std::for_each( text->begin(), text->end(),
+		boost::bind( &PageLoader::LoadTextLine, this, _1 ) ) ;
 }
 
-QString FromWStr( const std::wstring& s )
+void PageLoader::LoadTextLine( const TextLine& line )
 {
-	return QString::fromWCharArray( s.c_str(), s.size() ) ;
+	PDF_ASSERT( m_scene != 0 ) ;
+	m_scene->addItem( new GlyphGroup( line ) ) ;
 }
 
-std::wstring ToWStr( const QString& s )
+void PageLoader::VisitGraphics( Graphics *gfx )
 {
-	std::wstring ws( ' ', s.length() ) ;
-	s.toWCharArray( &ws[0] ) ;
-	return ws ;
-}
-
-std::string ToStr( const QString& str )
-{
-	QByteArray qba = str.toUtf8() ;
-	return std::string( qba.constData(), qba.size() ) ;
-}
-
-QString FromStr( const std::string& str )
-{
-	return QString::fromUtf8( str.c_str(), str.size() ) ;
 }
 
 } // end of namespace

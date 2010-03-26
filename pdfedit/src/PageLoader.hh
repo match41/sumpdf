@@ -17,52 +17,42 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	Util.cc
-	\brief	implementation of the Util class
-	\date	Jan 24, 2010
-	\author	Nestal Wan
+/**	\file	PageLoader.hh
+    \brief	definition the PageLoader class
+    \date	Mar 26, 2010
+    \author	Nestal Wan
 */
 
-#include "Util.hh"
+#ifndef __PDF_PAGELOADER_HH_EADER_INCLUDED__
+#define __PDF_PAGELOADER_HH_EADER_INCLUDED__
 
-#include <util/Matrix.hh>
+#include <graphics/GraphicsVisitor.hh>
 
-#include <QString>
-#include <QTransform>
+class QGraphicsScene ;
 
 namespace pdf {
 
-QTransform ToQtMatrix( const Matrix& m )
-{
-	return QTransform( m.M11(), m.M12(), m.M21(), m.M22(), m.Dx(), m.Dy() ) ;
-}
+class TextLine ;
 
-Matrix FromQtMatrix( const QTransform& m )
+///	brief description
+/**	\internal
+	The PageLoader class represents
+*/
+class PageLoader : public GraphicsVisitor
 {
-	return Matrix( m.m11(), m.m12(), m.m21(), m.m22(), m.dx(), m.dy() ) ;
-}
+public :
+	PageLoader( QGraphicsScene *scene ) ;
 
-QString FromWStr( const std::wstring& s )
-{
-	return QString::fromWCharArray( s.c_str(), s.size() ) ;
-}
+	void VisitText( Text *text ) ;
+	void VisitGraphics( Graphics *gfx ) ;
 
-std::wstring ToWStr( const QString& s )
-{
-	std::wstring ws( ' ', s.length() ) ;
-	s.toWCharArray( &ws[0] ) ;
-	return ws ;
-}
+private :
+	void LoadTextLine( const TextLine& line ) ;
 
-std::string ToStr( const QString& str )
-{
-	QByteArray qba = str.toUtf8() ;
-	return std::string( qba.constData(), qba.size() ) ;
-}
-
-QString FromStr( const std::string& str )
-{
-	return QString::fromUtf8( str.c_str(), str.size() ) ;
-}
+private :
+	QGraphicsScene *m_scene ;
+} ;
 
 } // end of namespace
+
+#endif // PAGELOADER_HH_

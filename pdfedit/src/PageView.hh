@@ -43,9 +43,7 @@ class PageView : public QGraphicsView
 	Q_OBJECT
 
 public:
-	PageView(
-		QGraphicsScene	*scene,
-		QMainWindow		*parent ) ;
+	PageView( QMainWindow *parent ) ;
 
 	void Zoom( double factor ) ;
 

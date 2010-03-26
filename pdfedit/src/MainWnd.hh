@@ -29,7 +29,6 @@
 
 #include <QMainWindow>
 #include "ui_MainWnd.h"
-#include <graphics/GraphicsVisitor.hh>
 
 #include <QString>
 
@@ -60,8 +59,7 @@ class InsertTextDlg;
 
 class MainWnd :
 	public QMainWindow,
-	private Ui::MainWndUI,
-	private GraphicsVisitor
+	private Ui::MainWndUI
 {
 	Q_OBJECT
 
@@ -94,15 +92,17 @@ public slots :
 
 private :
 	void StorePage( QGraphicsScene *scene, Doc *doc, Page *page ) ;
-	void VisitText( Text *text ) ;
-	void VisitGraphics( Graphics *gfx ) ;
 	void LoadTextLine( const TextLine& line ) ;
 	void CreateTextInsertToolbar( );
+
+	QGraphicsScene* CurrentScene() ;
 
 private :
 	std::auto_ptr<Doc>	m_doc ;
 	
-	QGraphicsScene	*m_scene ;
+	typedef std::map<std::size_t, QGraphicsScene*> PageMap ;
+	PageMap			m_pages ;
+	
 	PageView		*m_view ;
 	QToolBar		*m_tool_bar ;
 	QComboBox 		*m_zoom_box ;

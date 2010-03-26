@@ -42,6 +42,7 @@ set( BASE_SRCS		src/main.cc
                     src/GlyphGroup.cc
                     src/Util.cc
 					src/MainWnd.cc
+					src/PageLoader.cc
 					src/PageView.cc
 					src/TextEdit.cc
 					src/PropertiesDlg.cc
