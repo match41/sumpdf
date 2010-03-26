@@ -44,14 +44,12 @@ Matrix FromQtMatrix( const QTransform& m )
 
 QString FromWStr( const std::wstring& s )
 {
-	return QString::fromWCharArray( s.c_str(), s.size() ) ;
+	return QString::fromStdWString( s ) ;
 }
 
 std::wstring ToWStr( const QString& s )
 {
-	std::wstring ws( ' ', s.length() ) ;
-	s.toWCharArray( &ws[0] ) ;
-	return ws ;
+    return s.toStdWString( ) ;
 }
 
 std::string ToStr( const QString& str )
