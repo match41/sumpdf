@@ -150,6 +150,13 @@ if ( WIN32 )
 	endif ( DBHELP_LIBRARY )
 endif ( WIN32 )
 
+# MSVC has stupid warnings on STD
+if ( MSVC )
+	add_definitions( -D_SCL_SECURE_NO_WARNINGS )
+	set_target_properties( pdfedit
+		PROPERTIES COMPILE_FLAGS "/wd4345 /wd4819 /Zc:wchar_t-" )
+endif ( MSVC )
+
 ###############################################################################
 # optional boost library
 ###############################################################################

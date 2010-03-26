@@ -429,8 +429,8 @@ add_definitions(-DSRC_DIR="${libpdfdoc_SOURCE_DIR}/src/")
 # MSVC has stupid warnings on STD
 if ( MSVC )
 	add_definitions( -D_SCL_SECURE_NO_WARNINGS )
-	add_definitions( /wd4345 )
-	add_definitions( /wd4819 )
+	set_target_properties( pdfdoc_static
+		PROPERTIES COMPILE_FLAGS "/wd4345 /wd4819 /Zc:wchar_t-" )
 endif ( MSVC )
 
 ###############################################################################
