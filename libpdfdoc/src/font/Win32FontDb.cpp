@@ -17,7 +17,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	Win32FontDb.cc
+/**	\file	Win32FontDb.cpp
 	\brief	implementation of the Win32FontDb class
 	\date	Feb 14, 2010
 	\author	Nestal Wan
@@ -107,7 +107,6 @@ std::vector<unsigned char> Win32FontDb::FindFont(
 		return result ;
 	}
 	
-//	return std::vector<unsigned char>( ) ;	
     throw FontException( "cannot GetFontData()" ) ;
 }
 

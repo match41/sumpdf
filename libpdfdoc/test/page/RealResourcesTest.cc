@@ -27,12 +27,12 @@
 #include "RealResourcesTest.hh"
 
 #include "mock/MockFile.hh"
+#include "mock/MockFont.hh"
 
 #include "core/Ref.hh"
 #include "core/Dictionary.hh"
 #include "core/Ref.hh"
 #include "file/DictReader.hh"
-#include "font/SimpleFont.hh"
 #include "page/RealResources.hh"
 #include "util/Rect.hh"
 
@@ -74,6 +74,10 @@ void RealResourcesTest::TestNormal( )
 	
 	DictReader reader( rdict, &file ) ;
 	subject.Read( reader ) ;
+	
+	BaseFont* f = subject.FindFont( Name("F0") ) ;
+	CPPUNIT_ASSERT( f != 0 ) ;
+	PDFUT_ASSERT_EQUAL( f->BaseName(), "Helvetica-Bold" ) ;
 }
 
 void RealResourcesTest::TestReadExistFont( )
@@ -83,18 +87,27 @@ void RealResourcesTest::TestReadExistFont( )
 	pdf::Dictionary rdict ;
 	CPPUNIT_ASSERT( iss >> rdict ) ;
 
-	pdf::SimpleFont *f = new pdf::SimpleFont( "Times-Roman", m_font_db ) ;
+	MockFont *f = new MockFont ;
 	PDFUT_ASSERT_EQUAL( f->UseCount(), 1u ) ;
 
 	MockFile file ;
 	file.AddObj( pdf::Ref(1,0),  rdict ) ;
+	file.Pool()->Add( pdf::Ref(18, 0 ), f ) ;
+	
+	DictReader reader( rdict, &file ) ;
 
-//	file.Pool()->fonts.Add( pdf::Ref(18, 0 ), f ) ;
-
-//	pdf::Object obj( rdict ) ;
-//	pdf::RealResources subject( m_ft ) ;
-//	subject.Read( rdict, &file ) ;
-//	PDF_ASSERT_EQUAL( f->UseCount(), 2u ) ;
+	RealResources subject( m_font_db ) ;
+	subject.Read( reader ) ;
+	
+	PDFUT_ASSERT_EQUAL( f->UseCount(), 2u ) ;
+	PDFUT_ASSERT_EQUAL( subject.FindFont( Name("F0") ), f ) ;
+	PDFUT_ASSERT_EQUAL( subject.FindFont( f ), Name( "F0" ) ) ;
+	
+	MockFont *f2 = new MockFont ;
+	Name name = subject.AddFont( f2 ) ;
+	CPPUNIT_ASSERT( name != Name("F0") ) ;
+	
+	f->Release() ;
 }
 
 void RealResourcesTest::TestReadExistState( )

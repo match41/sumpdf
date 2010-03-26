@@ -57,12 +57,6 @@ set( SRCS	${BASE_SRCS} )
 
 qt4_automoc( ${SRCS} )
 
-set( MOC_SRCS	src/MainWnd.cc
-				src/PropertiesDlg.cc
-				src/PageView.cc
-				src/TextEdit.cc
-				src/ExceptionDlg.cc 
-				src/InsertTextDlg.cc )
 set( MOC_HDRS	src/MainWnd.hh
 				src/PropertiesDlg.hh
 				src/PageView.hh

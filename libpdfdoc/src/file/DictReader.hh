@@ -50,25 +50,7 @@ public :
 	void Swap( DictReader& dict ) ;
 	
 	template <typename ObjType>
-	bool Detach( const Name& name, ObjType& result )
-	{
-		Dictionary::iterator i = m_dict.find( name ) ;
-		if ( i != m_dict.end() )
-		{
-			SwapAt( i, result ) ;
-			m_dict.erase( i ) ;
-			return true ;
-		}
-		else
-		{
-			// the PDF specification indicates that if an object is not
-			// found in a dictionary, it is treated as an null object.
-			// so it is reasonable to reset an object to its default value,
-			// which should have the same meaning as null object.
-			result = ObjType() ;
-			return false ;
-		}
-	}
+	bool Detach( const Name& name, ObjType& result ) ;
 
 	template <typename T>
 	bool SwapAt( Dictionary::iterator i, T& result ) ;

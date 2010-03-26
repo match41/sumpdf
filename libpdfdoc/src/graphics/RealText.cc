@@ -204,15 +204,12 @@ void RealText::Print( std::ostream& os, ResourcesDict *res ) const
 	// rendering state
 	GraphicsState	gs ;
 	Matrix			trans ;
-//	double			xpos = 0.0, ypos = 0.0 ;
 
 	using namespace boost ;
 	std::for_each(
 		m_lines.begin(),
 		m_lines.end(),
-		bind(
-			&TextLine::Print, _1, 	ref(os), ref(trans),
-			/*ref(xpos),	ref(ypos),	*/ref(gs), res ) ) ;
+		bind( &TextLine::Print, _1, ref(os), ref(trans), ref(gs), res ) ) ;
 
 	os << "ET\n" ;
 }

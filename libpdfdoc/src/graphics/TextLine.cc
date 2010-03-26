@@ -90,7 +90,6 @@ void TextLine::AppendText( const std::wstring& text )
 std::ostream& TextLine::Print(
 	std::ostream& 			os,
 	Matrix&					current,
-//	double&	xpos,	double&	ypos,
 	const GraphicsState& 	state,
 	ResourcesDict			*res ) const
 {
@@ -100,19 +99,10 @@ std::ostream& TextLine::Print(
 		os	<< m_trans.M11() << ' ' << m_trans.M12() << ' '
 			<< m_trans.M21() << ' ' << m_trans.M22() << ' '
 			<< m_trans.Dx()  << ' ' << m_trans.Dy( ) << " Tm\n" ; 
-	
-		// after changing the transformation, the position is reset too
-//		xpos = ypos = 0.0 ;
 	}
-
-	// print position if different
-//	if ( m_xpos != xpos || m_ypos != ypos )
-//		os	<< (m_xpos - xpos) << ' ' << (m_ypos - ypos) << " Td\n" ;
 
 	// replace current matrix and position
 	current = m_trans ;
-//	xpos	= m_xpos ;
-//	ypos	= m_ypos ;
 	
 	m_state.Print( os, res, state ) ;
 	return PrintText( os ) ;
