@@ -106,7 +106,9 @@ std::vector<unsigned char> Win32FontDb::FindFont(
 		GetFontData( hdc, 0, 0, &result[0], size ) ;
 		return result ;
 	}
-	return std::vector<unsigned char>( ) ;	
+	
+//	return std::vector<unsigned char>( ) ;	
+    throw FontException( "cannot GetFontData()" ) ;
 }
 
 } // end of namespace
