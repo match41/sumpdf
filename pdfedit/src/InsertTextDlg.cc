@@ -46,16 +46,6 @@ InsertTextDlg::InsertTextDlg( QWidget *parent )
 		SIGNAL( currentIndexChanged( int ) ),
 		this ,
 		SLOT( EmitFontChanged( int ) ) );
-	connect(
-		this,
-		SIGNAL( ReceiveFontChanged( QFont ) ),
-		m_font ,
-		SLOT( setCurrentFont( QFont ) ) );
-	connect(
-		this,
-		SIGNAL( ReceiveFontChanged( int ) ),
-		m_fontsize ,
-		SLOT( setCurrentIndex( int ) ) );
 
 	connect(
 		m_font,
@@ -127,12 +117,12 @@ void InsertTextDlg::EmitFontChanged( int i )
 
 void InsertTextDlg::SetFontChanged( QFont f)
 {
-	emit ReceiveFontChanged( f );
+	m_font->setCurrentFont( f );
 }
 
 void InsertTextDlg::SetFontChanged( int i )
 {
-	emit ReceiveFontChanged( i );
+	m_fontsize->setCurrentIndex( i );
 }
 
 void InsertTextDlg::closeEvent( QCloseEvent *e )

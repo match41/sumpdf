@@ -412,8 +412,7 @@ void MainWnd::CreateTextInsertToolbar( )
 
 	connect( m_insert_text,		SIGNAL( clicked() ),	this, SLOT(OnInsertDlg() ) );
 
-	// connect the font and size selection between MainWnd and dialog (both ways)
-	connect(
+	connect(	// connect font selection between MainWnd and dialog (both ways)
 		m_insert_text_font,
 		SIGNAL( currentFontChanged( QFont ) ),
 		m_insert_dlg,
@@ -424,7 +423,7 @@ void MainWnd::CreateTextInsertToolbar( )
 		m_insert_text_font, 
 		SLOT( setCurrentFont( QFont ) ) );
 
-	connect(
+	connect(	// connect size selection between MainWnd and dialog (both ways)
 		m_insert_text_font_size, 
 		SIGNAL( currentIndexChanged( int ) ),
 		m_insert_dlg, 
@@ -434,12 +433,7 @@ void MainWnd::CreateTextInsertToolbar( )
 		SIGNAL( FontPropertiesChanged( int ) ),
 		m_insert_text_font_size, 
 		SLOT( setCurrentIndex( int ) ) );
-/*	connect(
-		m_insert_dlg->m_fontsize, 
-		SIGNAL( currentIndexChanged( int ) ),
-		m_insert_text_font_size, 
-		SLOT( setCurrentIndex( int ) ) );
-*/
+
 	connect( 	// mouse position -> dlg
 		m_view, 
 		SIGNAL( mousePositionSet( QPointF ) ), 

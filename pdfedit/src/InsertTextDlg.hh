@@ -54,8 +54,6 @@ signals:
 	void OnInsertClicked( );
 	void FontPropertiesChanged( QFont );
 	void FontPropertiesChanged( int );
-	void ReceiveFontChanged( QFont );
-	void ReceiveFontChanged( int );
 
 private slots:
 	void OnFontChanged( ) ;		// apply font selection to QTextEdit
