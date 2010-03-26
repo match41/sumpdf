@@ -564,12 +564,12 @@ endif ( FREETYPE_FOUND )
 add_executable( unittest ${UT_SRCS} test/UnitTest.cc )
 target_link_libraries( unittest pdfdoc_static ${CPPUNIT_LIBRARY} )
 
-else ( CPPUNIT_FOUND )
-	message( STATUS "skip building unittest" )
-endif ( CPPUNIT_FOUND )
-
 # MSVC has stupid warnings on STD
 if ( MSVC )
 	set_target_properties( unittest
 		PROPERTIES COMPILE_FLAGS "/wd4345 /wd4819 /Zc:wchar_t-" )
 endif ( MSVC )
+
+else ( CPPUNIT_FOUND )
+	message( STATUS "skip building unittest" )
+endif ( CPPUNIT_FOUND )
