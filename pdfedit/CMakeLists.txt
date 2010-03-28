@@ -48,7 +48,8 @@ set( BASE_SRCS		src/main.cc
 					src/PropertiesDlg.cc
 					src/ExceptionDlg.cc
 					src/TextDlg.cc
-					src/InsertTextDlg.cc )
+					src/InsertTextDlg.cc
+					src/DocModel.cc )
 
 ###############################################################################
 # all sources
@@ -63,7 +64,8 @@ set( MOC_HDRS	src/MainWnd.hh
 				src/TextEdit.hh
 				src/ExceptionDlg.hh
 				src/TextDlg.hh 
-				src/InsertTextDlg.hh )
+				src/InsertTextDlg.hh
+				src/DocModel.hh )
 set( UIS 		ui/MainWnd.ui
 				ui/Properties.ui
 				ui/ExceptionDlg.ui
