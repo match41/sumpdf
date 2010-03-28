@@ -29,6 +29,7 @@
 
 #include <QString>
 #include <QTransform>
+#include <QTextCodec>
 
 namespace pdf {
 
@@ -44,12 +45,23 @@ Matrix FromQtMatrix( const QTransform& m )
 
 QString FromWStr( const std::wstring& s )
 {
+#if defined __GNUC__ && !defined QT_NO_STL
+	// gcc wchar_t has no problems
 	return QString::fromStdWString( s ) ;
+#elif defined MSVC
+	// msvc may not have the /Zc:wchar_t- option used, which Qt expects
+	// avoid using wchar_t related functions
+	return QString::fromStdWString( s ) ;
+#endif
 }
 
 std::wstring ToWStr( const QString& s )
 {
+#if defined __GNUC__ && !defined QT_NO_STL
     return s.toStdWString( ) ;
+#elif defined MSVC
+    return s.toStdWString( ) ;
+#endif
 }
 
 std::string ToStr( const QString& str )
