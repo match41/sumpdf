@@ -50,6 +50,7 @@ public :
 	// BaseFont virtual functions
 	Ref Write( File *file ) const ;
 	FontDescriptor* Descriptor( ) ;
+	FontEncoding* Encoding( ) ;
 	
 	std::string 	BaseName( ) const ;
 	const Glyph*	GetGlyph( wchar_t ch ) const ;

@@ -356,10 +356,19 @@ void SimpleFont::LoadGlyphs( )
 		if ( glyph->format != FT_GLYPH_FORMAT_OUTLINE )
 			std::cerr << "font " << BaseName() << " has a non-outline glyph" << std::endl ;
 
+		// use encoding to lookup the character code to unicode.
+		// if the selected charmap for the font is unicode, then char_code is
+		// already unicode, no need to lookup.
+		wchar_t unicode =
+			m_impl->encoding != 0                                  &&
+			m_impl->face->charmap->encoding != FT_ENCODING_UNICODE ?
+				m_impl->encoding->LookUp( char_code ) :
+				static_cast<wchar_t>( char_code ) ;
+
 		m_impl->glyphs.insert( std::make_pair(
-			static_cast<wchar_t>(char_code),
+			unicode,
 			new RealGlyph( gindex, m_impl->face ) ) ) ;
-		
+
 		last_char = static_cast<int>( char_code ) ;
 		char_code = ::FT_Get_Next_Char( m_impl->face, char_code, &gindex ) ;
 	}
@@ -444,11 +453,19 @@ std::string SimpleFont::BaseName( ) const
 
 const Glyph* SimpleFont::GetGlyph( wchar_t ch ) const
 {
-	if ( m_impl->encoding != 0 &&
-		m_impl->face->charmap->encoding == FT_ENCODING_UNICODE )
-		ch = m_impl->encoding->LookUp( ch ) ;
-//		std::cout << "char " << ch << "\'" << (char)ch << "\' mapped to " << m_impl->encoding->LookUp( ch ) << std::endl ;
-
+//	char encbuf[] = {
+//		(char)(m_impl->face->charmap->encoding>>24),
+//		(char)(m_impl->face->charmap->encoding>>16),
+//		(char)(m_impl->face->charmap->encoding>>8),
+//		(char)(m_impl->face->charmap->encoding),
+//		0
+//	} ;
+//	
+//	std::cout << BaseName() << " " << encbuf << " char " << ch << "\'" << (char)ch << "\' mapped to " << (char)m_impl->encoding->LookUp( ch ) << std::endl ;
+	
+//	if ( m_impl->encoding != 0 )
+//		ch = m_impl->encoding->LookUp( ch ) ;
+	
 	Impl::GlyphMap::const_iterator it = m_impl->glyphs.find( ch ) ;
 	return it != m_impl->glyphs.end() ? it->second : 0 ;
 }
@@ -456,6 +473,11 @@ const Glyph* SimpleFont::GetGlyph( wchar_t ch ) const
 FontDescriptor* SimpleFont::Descriptor( )
 {
 	return m_impl->descriptor ;
+}
+
+FontEncoding* SimpleFont::Encoding( )
+{
+	return m_impl->encoding ;
 }
 
 } // end of namespace

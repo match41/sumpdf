@@ -50,6 +50,11 @@ pdf::FontDescriptor* MockFont::Descriptor( )
 	return 0 ;
 }
 
+pdf::FontEncoding* MockFont::Encoding( )
+{
+	return 0 ;
+}
+
 double MockFont::FromFontUnit( unsigned val ) const
 {
 	return val * 1000.0 / UnitsPerEM() ;

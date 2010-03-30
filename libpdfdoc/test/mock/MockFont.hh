@@ -48,6 +48,7 @@ public :
 	std::string BaseName( ) const ;
 	pdf::Ref Write( pdf::File *file ) const ;
 	pdf::FontDescriptor* Descriptor( ) ;
+	pdf::FontEncoding* Encoding( ) ;
 	const pdf::Glyph*	GetGlyph( wchar_t ch ) const ;
 	double FromFontUnit( unsigned val ) const ; 
 	unsigned UnitsPerEM() const ;

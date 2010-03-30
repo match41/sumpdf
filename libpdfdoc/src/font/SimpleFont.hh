@@ -63,6 +63,7 @@ public :
 	const Glyph*	GetGlyph( wchar_t ch ) const ;
 	
 	FontDescriptor* Descriptor( ) ;
+	FontEncoding* Encoding( ) ;
 
 	unsigned UnitsPerEM( ) const ;
 	double FromFontUnit( unsigned val ) const ;
