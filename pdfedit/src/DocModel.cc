@@ -53,6 +53,7 @@ namespace pdf {
 DocModel::DocModel( QObject *parent )
 	: QObject( parent )
 	, m_doc( CreateDoc() )
+	, m_pages( 1, static_cast<QGraphicsScene*>(0) )
 	, m_current_page( 0 )
 {
 	GoToPage( 0 ) ;
@@ -102,22 +103,25 @@ std::size_t DocModel::CurrentPage( ) const
 	return m_current_page ;
 }
 
+std::size_t DocModel::PageCount( ) const
+{
+	return m_doc->PageCount() ;
+}
+
+Page* DocModel::GetPage( std::size_t idx )
+{
+	return m_doc->GetPage( idx ) ;
+}
+
 QGraphicsScene* DocModel::GoToPage( std::size_t page )
 {
+	PDF_ASSERT( page < m_doc->PageCount() ) ;
 	PDF_ASSERT( m_current_page < m_pages.size() ) ;
 	PDF_ASSERT( m_doc->PageCount() == m_pages.size() ) ;
 	PDF_ASSERT( m_doc.get() != 0 ) ;
 	
-	// check array out of bound
-	if ( page >= m_doc->PageCount() )
-		return 0 ;
-	
-	// no change in page
-	if ( m_current_page == page )
-		return 0 ;
-		
 	m_current_page = page ;
-
+	
 	QGraphicsScene *scene = 0 ;
 	if ( m_pages[m_current_page] != 0 )
 		scene = m_pages[m_current_page] ;
@@ -138,8 +142,6 @@ QGraphicsScene* DocModel::GoToPage( std::size_t page )
 		
 		m_pages[m_current_page] = scene ;
 	}
-	
-	PDF_ASSERT( scene != 0 ) ;
 	
 	scene->invalidate() ;
 	return scene ;

@@ -59,6 +59,9 @@ public :
 
 	Doc* Document( ) ;
 	std::size_t CurrentPage( ) const ;
+	std::size_t PageCount( ) const ;
+		
+	Page* GetPage( std::size_t idx ) ;
 
 signals :
 	void SelectionChanged() ;

@@ -56,6 +56,7 @@ class Page ;
 class Matrix ;
 class TextLine ;
 class InsertTextDlg;
+class DocModel ;
 
 class MainWnd :
 	public QMainWindow,
@@ -91,17 +92,11 @@ public slots :
 	void OnInsertBtnUp( );
 
 private :
-	void StorePage( QGraphicsScene *scene, Doc *doc, Page *page ) ;
 	void LoadTextLine( const TextLine& line ) ;
 	void CreateTextInsertToolbar( );
 
-	QGraphicsScene* CurrentScene() ;
-
 private :
-	std::auto_ptr<Doc>	m_doc ;
-	
-	typedef std::map<std::size_t, QGraphicsScene*> PageMap ;
-	PageMap			m_pages ;
+	DocModel		*m_doc ;
 	
 	PageView		*m_view ;
 	QToolBar		*m_tool_bar ;
@@ -109,7 +104,6 @@ private :
 
 	QLabel			*m_label;
 	QTextEdit		*m_text;
-	std::size_t		m_current_page;	// currently viewed document page
 
 	// text editing
 	QPushButton		*m_insert_text;

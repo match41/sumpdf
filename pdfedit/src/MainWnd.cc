@@ -26,6 +26,7 @@
 
 #include "MainWnd.hh"
 
+#include "DocModel.hh"
 #include "ExceptionDlg.hh"
 #include "PageView.hh"
 #include "PropertiesDlg.hh"
@@ -80,12 +81,11 @@ namespace pdf {
 
 MainWnd::MainWnd( QWidget *parent )
 	: QMainWindow( parent )
-	, m_doc( CreateDoc() )
+	, m_doc( new DocModel( this ) )
 	, m_view( new PageView( this ) )
 	, m_tool_bar( addToolBar(tr("Main") ) )
 	, m_zoom_box( new QComboBox( m_tool_bar ) )
 	, m_label( new QLabel( tr(" page:    ") ) )
-	, m_current_page( 0 )
 	, m_insert_text(new QPushButton( tr("&Insert Text") ) )
 	, m_insert_dlg(new InsertTextDlg(this) )
 {
@@ -102,6 +102,12 @@ MainWnd::MainWnd( QWidget *parent )
 	connect( m_action_first_pg,	SIGNAL(triggered()),	this, SLOT(OnFirstPage()) );
 	connect( m_action_last_pg, 	SIGNAL(triggered()),	this, SLOT(OnLastPage()) );
 	connect( m_action_viewsrc, 	SIGNAL(triggered()),	this, SLOT(OnViewSource()) );
+
+	connect(
+		m_doc,
+		SIGNAL( SelectionChanged() ),
+		this,
+		SLOT( OnSelectionChanged() ) ) ;
 
 	m_tool_bar->addAction( m_action_open ) ;
 
@@ -152,7 +158,7 @@ void MainWnd::OnChanged( const QList<QRectF>& region )
 
 void MainWnd::OnSelectionChanged( )
 {
-	QList<QGraphicsItem*> items = CurrentScene()->selectedItems() ;
+	QList<QGraphicsItem*> items = m_doc->CurrentScene()->selectedItems() ;
 	if ( !items.empty() )
 	{
 		GlyphGroup *text = qgraphicsitem_cast<GlyphGroup*>( items.front() ) ;
@@ -172,23 +178,7 @@ void MainWnd::OpenFile( const QString& file )
 {
 	try
 	{
-		// try to read the new PDF file. will throw exception in case of
-		// any errors.
-		Doc *new_doc = CreateDoc( ) ;
-		new_doc->Read( ToStr( file ) ) ;
-		PDF_ASSERT( new_doc->PageCount() > 0 ) ;
-		
-		// now the new file is read successfully, we destroy the data from
-		// previous file and load the new stuff
-		
-		// destroy all pages from previous document
-		std::for_each( m_pages.begin(), m_pages.end(),
-			boost::bind( DeletePtr(),
-				boost::bind( &PageMap::value_type::second, _1 ) ) ) ;
-		m_pages.clear() ;
-	
-		// load the new stuff
-		m_doc.reset( new_doc ) ;
+		m_doc->OpenFile( file ) ;
 		GoToPage( 0 ) ;
 	}
 	catch ( Exception& e )
@@ -200,53 +190,20 @@ void MainWnd::OpenFile( const QString& file )
 
 void MainWnd::GoToPage( std::size_t page )
 {
-	if ( page >= 0 && page < m_doc->PageCount() )
-	{
-		m_current_page = page ;
-	
-		// go to next page and display
-		PageMap::iterator it = m_pages.find( m_current_page ) ;
-		QGraphicsScene *scene = 0 ;
-		if ( it != m_pages.end() )
-			scene = it->second ;
-		else
-		{
-			scene = new QGraphicsScene( QRectF( 0, 0, 595, 842 ), this ) ;
-			
-			Page *p = m_doc->GetPage( m_current_page ) ;
-			
-			PageLoader loader( scene ) ;
-			p->VisitGraphics( &loader ) ;
+	QGraphicsScene *scene = m_doc->GoToPage( page ) ;
+qDebug() << page << " " << m_doc->CurrentPage() << " " << scene ;
+	PDF_ASSERT( scene != 0 ) ;
+	m_view->setScene( scene ) ;
 
-			connect(
-				scene, 
-				SIGNAL( selectionChanged() ),
-				this,
-				SLOT( OnSelectionChanged() ) ) ;
-			m_pages.insert( std::make_pair( m_current_page, scene ) ) ;
-		}
-		
-		scene->invalidate() ;
-		m_view->setScene( scene ) ;
-	
-		m_label->setText( QString( tr(" page: %1 / %2") ).
-			arg( m_current_page + 1 ).
-			arg( m_doc->PageCount() ) ) ;
-	
-		// enable/disable page buttons
-		m_action_next_pg->setEnabled( m_current_page + 1 < m_doc->PageCount() ) ;
-		m_action_last_pg->setEnabled( m_current_page + 1 < m_doc->PageCount() ) ;
-		m_action_previous_pg->setEnabled( m_current_page > 0 ) ;
-		m_action_first_pg->setEnabled( m_current_page > 0 ) ;
-	}
-}
+	m_label->setText( QString( tr(" page: %1 / %2") ).
+		arg( m_doc->CurrentPage() + 1 ).
+		arg( m_doc->PageCount() ) ) ;
 
-QGraphicsScene* MainWnd::CurrentScene()
-{
-	PageMap::iterator it = m_pages.find( m_current_page ) ;
-	PDF_ASSERT( it != m_pages.end() ) ;
-	PDF_ASSERT( it->second != 0 ) ;
-	return it->second ;
+	// enable/disable page buttons
+	m_action_next_pg->setEnabled( m_doc->CurrentPage() + 1 < m_doc->PageCount() ) ;
+	m_action_last_pg->setEnabled( m_doc->CurrentPage() + 1 < m_doc->PageCount() ) ;
+	m_action_previous_pg->setEnabled( m_doc->CurrentPage() > 0 ) ;
+	m_action_first_pg->setEnabled( m_doc->CurrentPage() > 0 ) ;
 }
 
 void MainWnd::OnAbout( )
@@ -264,11 +221,8 @@ void MainWnd::OnAbout( )
 
 void MainWnd::OnProperties( )
 {
-	if ( m_doc.get() )
-	{
-		PropertiesDlg dlg( m_doc.get(), this ) ;
-		dlg.exec( ) ;
-	}
+	PropertiesDlg dlg( m_doc->Document(), this ) ;
+	dlg.exec( ) ;
 }
 
 void MainWnd::OnOpen( )
@@ -283,132 +237,84 @@ void MainWnd::OnSaveAs( )
 	QString fname = QFileDialog::getSaveFileName( this, "Open", ".", "*.pdf" ) ;
 	if ( !fname.isEmpty( ) )
 	{
-		for ( PageMap::const_iterator i = m_pages.begin() ;
-			i != m_pages.end() ; ++i )
-		{
-			Page *p = m_doc->GetPage( i->first ) ;
-			StorePage( i->second, m_doc.get(), p ) ;
-		}
-		
-		m_doc->Write( ToStr( fname)  ) ;
+		m_doc->SaveFile( fname ) ;
 	}
-}
-
-void MainWnd::StorePage( QGraphicsScene *scene, Doc *doc, Page *page )
-{
-	assert( scene != 0 ) ;
-	assert( doc != 0 ) ;
-	assert( page != 0 ) ;
-	
-	Text *t = CreateText( GraphicsState() ) ;
-	
-	QList<QGraphicsItem *> items = scene->items() ;
-	for ( QList<QGraphicsItem*>::iterator i  = items.begin() ;
-	                                      i != items.end() ; ++i )
-	{
-		GlyphGroup *text = qgraphicsitem_cast<GlyphGroup*>( *i ) ;
-		
-		if ( text != 0 )
-		{
-			PDF_ASSERT( text->Format().GetFont() != 0 ) ;
-			t->AddLine( text->GetLine() ) ;
-		}
-	}
-	
-	std::vector<Graphics*> gfx( 1, t ) ;
-	page->SetContent( gfx ) ;
 }
 
 void MainWnd::OnNextPage( )
 {
-	if ( m_doc.get() )
+	try
 	{
-		try
+		if ( m_doc->CurrentPage() < m_doc->PageCount()-1 )
 		{
-			if ( m_current_page < m_doc->PageCount()-1 )
-			{
-				// go to next page and display
-				GoToPage( m_current_page + 1 ) ;
-			}
+			// go to next page and display
+			GoToPage( m_doc->CurrentPage() + 1 ) ;
 		}
-		catch ( Exception& e )
-		{
-			ExceptionDlg dlg( e, this ) ;
-			dlg.exec() ;
-		}
-
+	}
+	catch ( Exception& e )
+	{
+		ExceptionDlg dlg( e, this ) ;
+		dlg.exec() ;
 	}
 }
 
 void MainWnd::OnPreviousPage( )
 {
-	if ( m_doc.get() )
+	try
 	{
-		try
+		if ( m_doc->CurrentPage() > 0 )
 		{
-			if ( m_current_page > 0 )
-			{
-				// go to previous page and display
-				GoToPage( m_current_page - 1 ) ;
-			}
+			// go to previous page and display
+			GoToPage( m_doc->CurrentPage() - 1 ) ;
 		}
-		catch ( Exception& e )
-		{
-			ExceptionDlg dlg( e, this ) ;
-			dlg.exec() ;
-		}
+	}
+	catch ( Exception& e )
+	{
+		ExceptionDlg dlg( e, this ) ;
+		dlg.exec() ;
 	}
 }
 
 void MainWnd::OnFirstPage( )
 {
-	if ( m_doc.get() )
+	try
 	{
-		try
-		{
-			// go to first page and display
-			GoToPage( 0 ) ;
-		}
-		catch ( Exception& e )
-		{
-			ExceptionDlg dlg( e, this ) ;
-			dlg.exec() ;
-		}
+		// go to first page and display
+		GoToPage( 0 ) ;
+	}
+	catch ( Exception& e )
+	{
+		ExceptionDlg dlg( e, this ) ;
+		dlg.exec() ;
 	}
 }
 
 void MainWnd::OnLastPage( )
 {
-	if ( m_doc.get() )
+	try
 	{
-		try
-		{
-			// go to last page and display
-			GoToPage( m_doc->PageCount() - 1 ) ;
-		}
-		catch ( Exception& e )
-		{
-			ExceptionDlg dlg( e, this ) ;
-			dlg.exec() ;
-		}
+		// go to last page and display
+		GoToPage( m_doc->PageCount() - 1 ) ;
+	}
+	catch ( Exception& e )
+	{
+		ExceptionDlg dlg( e, this ) ;
+		dlg.exec() ;
 	}
 }
 
 void MainWnd::OnViewSource( )
 {
-	if ( m_doc.get() != 0 )
+	Page *p = m_doc->GetPage( m_doc->CurrentPage() ) ;
+	if ( p != 0 )
 	{
-		Page *p = m_doc->GetPage( m_current_page ) ;
-		if ( p != 0 )
-		{
-			std::vector<unsigned char> c ;
-			p->GetRawContent( c ) ;
-			c.push_back( '\0' ) ;
-			
-			// size() must be > 0 after push_back()
-			TextDlg dlg( reinterpret_cast<char*>(&c[0]), this ) ;
-			dlg.exec() ;
-		}
+		std::vector<unsigned char> c ;
+		p->GetRawContent( c ) ;
+		c.push_back( '\0' ) ;
+		
+		// size() must be > 0 after push_back()
+		TextDlg dlg( reinterpret_cast<char*>(&c[0]), this ) ;
+		dlg.exec() ;
 	}
 }
 
@@ -485,10 +391,10 @@ void MainWnd::OnInsertTextNow( )
 
 	try
 	{
-		PDF_ASSERT( m_doc.get() != 0 ) ;
+		PDF_ASSERT( m_doc != 0 ) ;
 
 		QFont font = text->currentFont() ;
-		Font *f = m_doc->CreateSimpleFont( ToStr( font.family() ) ) ;
+		Font *f = m_doc->Document()->CreateSimpleFont( ToStr( font.family() ) ) ;
 		PDF_ASSERT( f != 0 ) ;
 
 		TextState ts ;
@@ -498,7 +404,7 @@ void MainWnd::OnInsertTextNow( )
 			Matrix::Translation( pos.x(), pos.y() ), 
 			ToWStr( text->toPlainText() ) ) ;
 
-		CurrentScene()->addItem( new GlyphGroup( line ) ) ;
+		m_doc->CurrentScene()->addItem( new GlyphGroup( line ) ) ;
 	}
 	catch ( Exception& e )
 	{
