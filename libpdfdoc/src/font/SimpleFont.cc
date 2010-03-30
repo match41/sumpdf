@@ -444,7 +444,8 @@ std::string SimpleFont::BaseName( ) const
 
 const Glyph* SimpleFont::GetGlyph( wchar_t ch ) const
 {
-	if ( m_impl->encoding != 0 )
+	if ( m_impl->encoding != 0 &&
+		m_impl->face->charmap->encoding == FT_ENCODING_UNICODE )
 		ch = m_impl->encoding->LookUp( ch ) ;
 //		std::cout << "char " << ch << "\'" << (char)ch << "\' mapped to " << m_impl->encoding->LookUp( ch ) << std::endl ;
 
