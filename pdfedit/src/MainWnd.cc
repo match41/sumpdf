@@ -38,9 +38,7 @@
 #include <QComboBox>
 #include <QDebug>
 #include <QFileDialog>
-#include <QFont>
 #include <QFontDialog>
-#include <QGraphicsItemGroup>
 #include <QGraphicsScene>
 #include <QLabel>
 #include <QList>
@@ -55,21 +53,16 @@
 
 #include "TextEdit.hh"
 #include "GlyphGroup.hh"
-#include "PageLoader.hh"
 #include "Util.hh"
 
 // libpdfdoc headers
 #include <libpdfdoc.hh>
 #include <Doc.hh>
-#include <font/Font.hh>
 #include <page/Page.hh>
 #include <util/Exception.hh>
 #include <util/Rect.hh>
 #include <util/Debug.hh>
 #include <util/Util.hh>
-#include <graphics/Text.hh>
-#include <graphics/TextLine.hh>
-#include <graphics/TextState.hh>
 
 #include <boost/bind.hpp>
 
@@ -191,7 +184,7 @@ void MainWnd::OpenFile( const QString& file )
 void MainWnd::GoToPage( std::size_t page )
 {
 	QGraphicsScene *scene = m_doc->GoToPage( page ) ;
-qDebug() << page << " " << m_doc->CurrentPage() << " " << scene ;
+
 	PDF_ASSERT( scene != 0 ) ;
 	m_view->setScene( scene ) ;
 
@@ -386,25 +379,17 @@ void MainWnd::CreateTextInsertToolbar( )
 
 void MainWnd::OnInsertTextNow( )
 {
-	QTextEdit *text=m_insert_dlg->GetText( );
-	QPointF pos=m_insert_dlg->GetPosition( );
-
 	try
 	{
+		QTextEdit *text=m_insert_dlg->GetText( );
+		
 		PDF_ASSERT( m_doc != 0 ) ;
 
-		QFont font = text->currentFont() ;
-		Font *f = m_doc->Document()->CreateSimpleFont( ToStr( font.family() ) ) ;
-		PDF_ASSERT( f != 0 ) ;
-
-		TextState ts ;
-		ts.SetFont( m_insert_dlg->GetFontSize().toInt(), f ) ;
-
-		TextLine line( GraphicsState(ts),
-			Matrix::Translation( pos.x(), pos.y() ), 
-			ToWStr( text->toPlainText() ) ) ;
-
-		m_doc->CurrentScene()->addItem( new GlyphGroup( line ) ) ;
+		m_doc->AddText(
+			text->currentFont(),
+			m_insert_dlg->GetFontSize().toDouble(),
+			m_insert_dlg->GetPosition(),
+			text->toPlainText() ) ;
 	}
 	catch ( Exception& e )
 	{

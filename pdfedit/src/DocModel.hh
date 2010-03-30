@@ -31,7 +31,9 @@
 #include <memory>
 #include <vector>
 
+class QFont ;
 class QString ;
+class QPointF ;
 class QGraphicsScene ;
 
 namespace pdf {
@@ -62,6 +64,8 @@ public :
 	std::size_t PageCount( ) const ;
 		
 	Page* GetPage( std::size_t idx ) ;
+	void AddText( const QFont& font, double size, const QPointF& pos,
+		const QString& text ) ;
 
 signals :
 	void SelectionChanged() ;

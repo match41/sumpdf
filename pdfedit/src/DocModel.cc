@@ -32,11 +32,15 @@
 // libpdfdoc headers
 #include <Doc.hh>
 #include <libpdfdoc.hh>
+#include <font/Font.hh>
 #include <graphics/GraphicsState.hh>
+#include <graphics/TextLine.hh>
+#include <graphics/TextState.hh>
 #include <graphics/Text.hh>
 #include <page/Page.hh>
 #include <util/Debug.hh>
 #include <util/Util.hh>
+#include <util/Matrix.hh>
 
 // Qt headers
 #include <QGraphicsScene>
@@ -194,6 +198,25 @@ void DocModel::StorePage( QGraphicsScene *scene, Page *page )
 	std::vector<Graphics*> gfx( 1, t ) ;
 	page->SetContent( gfx ) ;
 	
+}
+
+void DocModel::AddText(
+	const QFont&	font,
+	double			size,
+	const QPointF&	pos,
+	const QString&	text )
+{
+	Font *f = m_doc->CreateSimpleFont( ToStr( font.family() ) ) ;
+	PDF_ASSERT( f != 0 ) ;
+
+	TextState ts ;
+	ts.SetFont( size, f ) ;
+
+	TextLine line( GraphicsState(ts),
+		Matrix::Translation( pos.x(), pos.y() ), 
+		ToWStr( text ) ) ;
+
+	m_pages[m_current_page]->addItem( new GlyphGroup( line ) ) ;
 }
 
 } // end of namespace
