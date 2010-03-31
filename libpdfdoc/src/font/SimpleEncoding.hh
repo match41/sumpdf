@@ -19,32 +19,54 @@
 
 /**	\file	FontEncoding.hh
     \brief	definition the FontEncoding class
-    \date	Mar 31, 2010
+    \date	Mar 21, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_FONTENCODING_HEADER_INCLUDED__
-#define __PDF_FONTENCODING_HEADER_INCLUDED__
+#ifndef __PDF_SIMPLEENCODING_HEADER_INCLUDED__
+#define __PDF_SIMPLEENCODING_HEADER_INCLUDED__
+
+#include "FontEncoding.hh"
+#include "util/RefCounter.hh"
 
 #include <string>
+#include <map>
+
+#include <boost/bimap.hpp>
+#include <boost/bimap/unordered_set_of.hpp>
+
 #include <iosfwd>
 
 namespace pdf {
+
+class DictReader ;
 
 ///	brief description
 /**	\internal
 	The FontEncoding class represents
 */
-class FontEncoding
+class SimpleEncoding : public RefCounter, public FontEncoding
 {
 public :
-	virtual ~FontEncoding() ;
+	explicit SimpleEncoding( DictReader& self ) ;
 
-	virtual std::wstring Decode( const std::string& bytes ) const = 0 ;
-	virtual std::size_t Encode(
+	std::wstring Decode( const std::string& bytes ) const ;
+	std::size_t Encode(
 		std::wstring::const_iterator first,
 		std::wstring::const_iterator last,
-		std::ostream& out ) const = 0 ;
+		std::ostream& out ) const ;
+
+	wchar_t ToUnicode( unsigned short char_code ) const ;
+	unsigned short FromUnicode( wchar_t unicode ) const ;
+
+private :
+	typedef	boost::bimap<
+		boost::bimaps::unordered_set_of<unsigned short>,
+		boost::bimaps::unordered_set_of<wchar_t>
+	> CharMap ; 
+
+	/// mapping from character code to unicode
+	CharMap	m_charmap ;
 } ;
 
 } // end of namespace

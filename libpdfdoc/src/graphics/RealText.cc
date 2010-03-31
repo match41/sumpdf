@@ -33,7 +33,7 @@
 #include "core/Object.hh"
 #include "core/Token.hh"
 #include "font/BaseFont.hh"
-#include "font/FontEncoding.hh"
+#include "font/SimpleEncoding.hh"
 #include "page/ContentOp.hh"
 #include "util/Debug.hh"
 #include "util/Util.hh"

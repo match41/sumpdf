@@ -19,87 +19,19 @@
 
 /**	\file	FontEncoding.cc
 	\brief	implementation of the FontEncoding class
-	\date	Mar 21, 2010
+	\date	Mar 31, 2010
 	\author	Nestal Wan
 */
 
 #include "FontEncoding.hh"
-
-#include "core/Array.hh"
-
-#include "file/ArrayReader.hh"
-#include "file/DictReader.hh"
-
-#include "font/CodeMap.hh"
-
-#include <boost/bind.hpp>
-
-#include <algorithm>
-
-#include <iostream>
 
 namespace pdf {
 
 /**	constructor
 	
 */
-FontEncoding::FontEncoding( DictReader& self )
+FontEncoding::~FontEncoding( )
 {
-	int current = 0 ;
-
-	ArrayReader diff ;
-	if ( self.Detach( "Differences", diff ) )
-	{
-		for ( Array::iterator i = diff->begin() ; i != diff->end() ; ++i )
-		{
-			if ( i->Is<int>() )
-				current = diff.At<int>( i-diff->begin() ) ;
-			
-			else if ( i->Is<Name>() )
-			{
-				wchar_t ch = NameToUnicode( i->As<Name>().Str().c_str() ) ;
-
-				m_charmap.insert( CharMap::value_type(
-					static_cast<unsigned short>( current ), ch ) ) ;
-			
-				current++ ;
-			}
-		}
-	}
-}
-
-wchar_t FontEncoding::ToUnicode( unsigned short char_code ) const
-{
-	CharMap::left_const_iterator i = m_charmap.left.find( char_code ) ;
-	return i != m_charmap.left.end() ? i->second : 0 ; 
-}
-
-unsigned short FontEncoding::FromUnicode( wchar_t unicode ) const
-{
-	CharMap::right_const_iterator i = m_charmap.right.find( unicode ) ;
-	return i != m_charmap.right.end() ? i->second : 0 ; 
-}
-
-std::wstring FontEncoding::Decode( const std::string& bytes ) const
-{
-	std::wstring result( bytes.size(), ' ' ) ;
-	std::transform( bytes.begin(), bytes.end(), result.begin(),
-		boost::bind( &FontEncoding::ToUnicode, this, _1 ) ) ;
-	return result ;
-}
-
-std::size_t FontEncoding::Encode(
-	std::wstring::const_iterator first,
-	std::wstring::const_iterator last,
-	std::ostream& out ) const
-{
-	std::size_t count = 0 ;
-	for ( std::wstring::const_iterator i = first ; i != last ; ++i )
-	{
-		out.rdbuf()->sputc( static_cast<char>(FromUnicode(*i) ) ) ;
-		count++ ;
-	}
-	return count ;
 }
 
 } // end of namespace

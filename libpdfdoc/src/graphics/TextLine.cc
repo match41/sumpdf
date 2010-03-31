@@ -34,7 +34,7 @@
 #include "core/String.hh"
 #include "core/Token.hh"
 #include "font/BaseFont.hh"
-#include "font/FontEncoding.hh"
+#include "font/SimpleEncoding.hh"
 #include "font/Glyph.hh"
 #include "util/Debug.hh"
 #include "util/Exception.hh"

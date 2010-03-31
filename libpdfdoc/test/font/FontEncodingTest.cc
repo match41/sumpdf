@@ -27,7 +27,7 @@
 
 #include "file/DictReader.hh"
 
-#include "font/FontEncoding.hh"
+#include "font/SimpleEncoding.hh"
 
 #include "mock/Assert.hh"
 #include "mock/MockFile.hh"
@@ -61,7 +61,7 @@ void FontEncodingTest::Test( )
 	MockFile file ;
 	DictReader dr( self, &file ) ;
 
-	FontEncoding subject( dr ) ;
+	SimpleEncoding subject( dr ) ;
 	PDFUT_ASSERT_EQUAL( subject.ToUnicode( 15 ), 8226 ) ;
 }
 
@@ -86,7 +86,7 @@ void FontEncodingTest::TestRoundTrip( )
 	MockFile file ;
 	DictReader dr( self, &file ) ;
 
-	FontEncoding subject( dr ) ;
+	SimpleEncoding subject( dr ) ;
 
 	std::wstring str = L"White" ;
 	char out[] = { 2, 3, 4, 5, 6, '\0' } ;

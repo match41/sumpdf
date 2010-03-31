@@ -29,7 +29,7 @@
 #include "RealGlyph.hh"
 #include "FontException.hh"
 #include "FontDescriptor.hh"
-#include "FontEncoding.hh"
+#include "SimpleEncoding.hh"
 
 // libpdfdoc headers
 #include "core/Array.hh"
@@ -79,7 +79,7 @@ struct SimpleFont::Impl
 	
 	FontDescriptor		*descriptor ;
 	Object				to_unicode ;
-	FontEncoding		*encoding ;		//!< name or dictionary
+	SimpleEncoding		*encoding ;		//!< name or dictionary
 	
 	typedef std::tr1::unordered_map<wchar_t, RealGlyph*> GlyphMap ;
 	GlyphMap	glyphs ;
@@ -143,9 +143,9 @@ SimpleFont::SimpleFont( DictReader& reader, FontDb *font_db )
 		try
 		{
 			ElementFactory<> f( reader ) ;
-			FontEncoding *enc = f.Create<FontEncoding>(
+			SimpleEncoding *enc = f.Create<SimpleEncoding>(
 				"Encoding",
-				NewPtr<FontEncoding>() ) ;
+				NewPtr<SimpleEncoding>() ) ;
 			
 			if ( enc != 0 )
 			{
@@ -340,7 +340,11 @@ void SimpleFont::LoadGlyphs( )
 		// load the glyph to the glyph slot in the face
 		// we want to do the scaling in double instead of inside freetype
 		// in small font we don't have hinting
-		FT_Error error = FT_Load_Glyph( m_impl->face, gindex, FT_LOAD_NO_SCALE ) ;
+		FT_Error error = FT_Load_Glyph(
+			m_impl->face,
+			gindex,
+			FT_LOAD_NO_SCALE ) ;
+		
 		if ( error != 0 )
 			throw FontException(
 				boost::format( "cannot load glyph %2% from %1%" )
@@ -354,7 +358,8 @@ void SimpleFont::LoadGlyphs( )
 				% BaseName() % char_code ) ;
 
 		if ( glyph->format != FT_GLYPH_FORMAT_OUTLINE )
-			std::cerr << "font " << BaseName() << " has a non-outline glyph" << std::endl ;
+			std::cerr	<< "font " << BaseName() << " has a non-outline glyph"
+						<< std::endl ;
 
 		// use encoding to lookup the character code to unicode.
 		// if the selected charmap for the font is unicode, then char_code is
