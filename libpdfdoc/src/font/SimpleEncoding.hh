@@ -26,8 +26,8 @@
 #ifndef __PDF_SIMPLEENCODING_HEADER_INCLUDED__
 #define __PDF_SIMPLEENCODING_HEADER_INCLUDED__
 
-#include "FontEncoding.hh"
 #include "util/RefCounter.hh"
+#include "font/FontEncoding.hh"
 
 #include <string>
 #include <map>

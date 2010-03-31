@@ -23,7 +23,7 @@
 	\author	Nestal Wan
 */
 
-#include "FontEncoding.hh"
+#include "font/FontEncoding.hh"
 
 namespace pdf {
 

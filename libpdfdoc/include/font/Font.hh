@@ -32,6 +32,7 @@
 namespace pdf {
 
 class Glyph ;
+class FontEncoding ;
 
 /**	\defgroup	font Fonts
 	\brief		Font module
@@ -113,6 +114,8 @@ public :
 		\return	The converted value in glyph unit.
 	*/
 	virtual double FromFontUnit( unsigned val ) const = 0 ;
+	
+	virtual FontEncoding* Encoding( ) = 0 ;
 } ;
 
 } // end of namespace

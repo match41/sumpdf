@@ -32,8 +32,8 @@
 #include "core/Array.hh"
 #include "core/Object.hh"
 #include "core/Token.hh"
-#include "font/BaseFont.hh"
-#include "font/SimpleEncoding.hh"
+#include "font/Font.hh"
+#include "font/FontEncoding.hh"
 #include "page/ContentOp.hh"
 #include "util/Debug.hh"
 #include "util/Util.hh"
@@ -282,7 +282,7 @@ void RealText::OnTj( ContentOp& op, const ResourcesDict * )
 		TextLine& current = m_lines.back() ;
 		
 		// must set the font properly before showing text
-		BaseFont *font = static_cast<BaseFont*>( current.Format().GetFont() ) ;
+		Font *font = current.Format().GetFont() ;
 		if ( font != 0 )
 		{
 			std::wstring ws = DecodeString( op[0].As<std::string>(), font ) ;
@@ -292,7 +292,7 @@ void RealText::OnTj( ContentOp& op, const ResourcesDict * )
 	}
 }
 
-std::wstring RealText::DecodeString( const std::string& s, BaseFont *font )
+std::wstring RealText::DecodeString( const std::string& s, Font *font )
 {
 	PDF_ASSERT( font != 0 ) ;
 
@@ -324,7 +324,7 @@ void RealText::OnTJ( ContentOp& op, const ResourcesDict * )
 
 	double offset = 0.0 ;
 
-	BaseFont *font = static_cast<BaseFont*>( current.Format().GetFont() ) ;
+	Font *font = current.Format().GetFont() ;
 
 	if ( op.Count() > 0 && font != 0 )
 	{

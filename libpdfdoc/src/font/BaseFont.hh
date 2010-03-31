@@ -36,7 +36,6 @@ class File ;
 class DictReader ;
 class Ref ;
 class FontDescriptor ;
-class FontEncoding ;
 class FontDb ;
 
 ///	\internal	base class for all fonts
@@ -47,7 +46,6 @@ class BaseFont : public RefCounter, public Font
 public :
 	virtual Ref Write( File *file ) const = 0 ;
 	virtual FontDescriptor* Descriptor( ) = 0 ;
-	virtual FontEncoding* Encoding( ) = 0 ;
 } ;
 
 BaseFont* CreateFont( DictReader& obj, FontDb *ft ) ;

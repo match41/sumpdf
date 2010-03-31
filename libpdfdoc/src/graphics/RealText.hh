@@ -36,7 +36,7 @@
 
 namespace pdf {
 
-class BaseFont ;
+class Font ;
 class Object ;
 class ResourcesDict ;
 
@@ -96,7 +96,7 @@ private :
 	void OnSingleQuote( ContentOp& op, const ResourcesDict *res ) ;
 	void OnDoubleQuote( ContentOp& op, const ResourcesDict *res ) ;
 	
-	std::wstring DecodeString( const std::string& s, BaseFont *font ) ;
+	std::wstring DecodeString( const std::string& s, Font *font ) ;
 
 private :
 	///	Lines inside this text object

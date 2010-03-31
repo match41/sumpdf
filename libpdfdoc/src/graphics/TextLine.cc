@@ -33,8 +33,8 @@
 #include "core/Object.hh"
 #include "core/String.hh"
 #include "core/Token.hh"
-#include "font/BaseFont.hh"
-#include "font/SimpleEncoding.hh"
+#include "font/Font.hh"
+#include "font/FontEncoding.hh"
 #include "font/Glyph.hh"
 #include "util/Debug.hh"
 #include "util/Exception.hh"
@@ -158,8 +158,7 @@ std::string TextLine::EncodeText(
 	std::wstring::const_iterator first,
 	std::wstring::const_iterator last ) const
 {
-	BaseFont *f =
-		static_cast<BaseFont*>(m_state.GetTextState().GetFont()) ;
+	Font *f = m_state.GetTextState().GetFont() ;
 	PDF_ASSERT( f != 0 ) ;
 	
 	std::ostringstream oss ;
