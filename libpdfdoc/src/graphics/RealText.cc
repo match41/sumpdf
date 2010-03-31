@@ -246,7 +246,7 @@ void RealText::OnTD( ContentOp& op, const ResourcesDict * )
 		m_text_mat.Translate( op[0], ty ) ; 
 		m_offset = 0 ;
 		
-		AddLine( TextLine( /*m_dx, m_dy, */m_state, m_text_mat ) ) ;
+		AddLine( TextLine( m_state, m_text_mat ) ) ;
 	}
 }
 

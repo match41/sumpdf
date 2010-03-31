@@ -229,9 +229,7 @@ void MainWnd::OnSaveAs( )
 {
 	QString fname = QFileDialog::getSaveFileName( this, "Open", ".", "*.pdf" ) ;
 	if ( !fname.isEmpty( ) )
-	{
 		m_doc->SaveFile( fname ) ;
-	}
 }
 
 void MainWnd::OnNextPage( )

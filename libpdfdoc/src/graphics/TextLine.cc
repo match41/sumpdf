@@ -55,7 +55,6 @@ namespace pdf {
 
 ///	constructor
 TextLine::TextLine(
-//	double xpos, double ypos,
 	const GraphicsState& 	state,
 	const Matrix& 			transform,
 	const std::wstring&		text )

@@ -86,10 +86,10 @@ const GraphicsState& GlyphGroup::Format( ) const
 
 TextLine GlyphGroup::GetLine( ) const
 {
-	TextLine line( m_line ) ;
-//	line.XPos( m_line.XPos() + x() ) ;
-//	line.YPos( m_line.YPos() + y() ) ;
-	return line ; 
+	return TextLine(
+		m_line.Format(),
+		Matrix::Translation( x(), y() ) * m_line.Transform(),
+		m_line.Text() ) ;
 }
 
 
