@@ -42,7 +42,7 @@
 
 #include <algorithm>
 #include <iterator>
-#include <iostream>
+#include <ostream>
 #include <set>
 
 namespace pdf {
@@ -294,15 +294,13 @@ void RealText::OnTj( ContentOp& op, const ResourcesDict * )
 
 std::wstring RealText::DecodeString( const std::string& s, BaseFont *font )
 {
+	PDF_ASSERT( font != 0 ) ;
+
 	std::wstring ws ;
 	if ( font->Encoding() == 0 )
 		ws.assign( s.begin(), s.end() ) ;
-
 	else
-		std::transform( s.begin(), s.end(), std::back_inserter(ws),
-			boost::bind( &FontEncoding::LookUp,
-				font->Encoding(),
-				_1 ) ) ;
+		ws = font->Encoding()->Decode( s ) ;
 	return ws ;
 }
 
@@ -337,7 +335,6 @@ void RealText::OnTJ( ContentOp& op, const ResourcesDict * )
 			{
 				std::wstring ws = DecodeString(i->As<std::string>(), font) ;
 				offset += m_state.GetTextState().Width( ws ) ;
-
 				current.AppendText( ws ) ;
 			}
 			else if ( i->IsNumber() )
@@ -350,10 +347,7 @@ void RealText::OnTJ( ContentOp& op, const ResourcesDict * )
 			}
 		}
 	}
-	
-	// TODO: depend on writing mode, advance horizonal or vertical
-	// assume vertical here.
-//	m_text_mat.Dx( m_text_mat.Dx() + offset ) ;
+
 	m_offset += offset ;
 }
 

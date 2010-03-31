@@ -40,6 +40,8 @@
 #include <QMessageBox>
 #include <QDebug>
 
+#include <iostream>
+
 namespace pdf {
 
 /**	constructor
@@ -86,10 +88,12 @@ const GraphicsState& GlyphGroup::Format( ) const
 
 TextLine GlyphGroup::GetLine( ) const
 {
-	return TextLine(
-		m_line.Format(),
-		Matrix::Translation( x(), y() ) * m_line.Transform(),
-		m_line.Text() ) ;
+std::wcout << "original: " << m_line.Text() << std::endl ;
+	TextLine line( m_line ) ;
+std::wcout << "copied: " << line.Text() << std::endl ;
+	line.SetTransform( Matrix::Translation( x(), y() ) * m_line.Transform() ) ;
+std::cout << line << std::endl ;
+	return line ;
 }
 
 int GlyphGroup::rowCount( const QModelIndex& parent ) const

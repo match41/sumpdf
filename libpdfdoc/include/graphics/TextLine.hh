@@ -101,6 +101,10 @@ public :
 private :
 	std::ostream& PrintText( std::ostream& os ) const ;
 
+	std::string EncodeText(
+		std::wstring::const_iterator first,
+		std::wstring::const_iterator last ) const ;
+
 private :
 	/// The text matrix.
 	Matrix			m_trans ;

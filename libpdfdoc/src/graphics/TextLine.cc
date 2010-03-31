@@ -33,7 +33,8 @@
 #include "core/Object.hh"
 #include "core/String.hh"
 #include "core/Token.hh"
-#include "font/Font.hh"
+#include "font/BaseFont.hh"
+#include "font/FontEncoding.hh"
 #include "font/Glyph.hh"
 #include "util/Debug.hh"
 #include "util/Exception.hh"
@@ -123,7 +124,7 @@ std::ostream& TextLine::PrintText( std::ostream& os ) const
 {
 	if ( m_space.empty() )
 		return
-			os	<< String( std::string( m_text.begin(), m_text.end() ) )
+			os	<< String( EncodeText( m_text.begin(), m_text.end() ) )
 				<< " Tj\n" ;
 	else
 	{
@@ -135,11 +136,11 @@ std::ostream& TextLine::PrintText( std::ostream& os ) const
 			if ( i->index != 0 )
 			{
 				PDF_ASSERT( i->index > idx ) ;
-				
-				a.push_back( std::string(
+
+				a.push_back( EncodeText(
 					m_text.begin() + idx,
 					m_text.begin() + i->index ) ) ;
-				
+
 				idx = i->index ;
 			}
 			
@@ -151,6 +152,23 @@ std::ostream& TextLine::PrintText( std::ostream& os ) const
 		
 		return os << a << " TJ\n" ;
 	}
+}
+
+std::string TextLine::EncodeText(
+	std::wstring::const_iterator first,
+	std::wstring::const_iterator last ) const
+{
+	BaseFont *f =
+		static_cast<BaseFont*>(m_state.GetTextState().GetFont()) ;
+	PDF_ASSERT( f != 0 ) ;
+	
+	std::ostringstream oss ;
+	if ( f->Encoding() != 0 )
+		f->Encoding()->Encode( first, last, oss ) ;
+	else
+		oss << std::string( first, last ) ;
+	
+	return oss.str() ;
 }
 
 std::ostream& operator<<( std::ostream& os, const TextLine& t )

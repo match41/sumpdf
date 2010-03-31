@@ -62,7 +62,41 @@ void FontEncodingTest::Test( )
 	DictReader dr( self, &file ) ;
 
 	FontEncoding subject( dr ) ;
-	PDFUT_ASSERT_EQUAL( subject.LookUp( 15 ), 8226 ) ;
+	PDFUT_ASSERT_EQUAL( subject.ToUnicode( 15 ), 8226 ) ;
+}
+
+void FontEncodingTest::TestRoundTrip( )
+{
+	std::istringstream ss(
+		"<</BaseEncoding /WinAnsiEncoding"
+		"/Differences [1 /space /W /h /i /t /e /P /a /p /r /u /b /l /s /d "
+		"/colon /A /two /zero /four /I /n /o /c /period /one /R /T /F /S /y /x "
+		"/C /v /f /m /five /six /H /D /nine /E /N /three /eight /M /g /seven"
+		" /w /O /hyphen /L /B /endash /U /Z /k /parenleft /less /greater "
+		"/parenright /V /j /slash /comma /quotedblleft /quotedblright /Y "
+		"/quotesingle /G /backslash /q /z /K /braceleft /braceright /semicolon "
+		"/numbersign /question /plus /asterisk /bar /ampersand /J /underscore "
+		"/quotedbl /quoteleft /quoteright /emdash /equal /X /Q /dagger "
+		"/daggerdbl /section /registered /asciitilde /percent /at /ydieresis "
+		"/bracketleft /bracketright]/Type /Encoding>>" ) ;
+	
+	Dictionary self ;
+	CPPUNIT_ASSERT( ss >> self ) ;
+	
+	MockFile file ;
+	DictReader dr( self, &file ) ;
+
+	FontEncoding subject( dr ) ;
+
+	std::wstring str = L"White" ;
+	char out[] = { 2, 3, 4, 5, 6, '\0' } ;
+	
+	std::ostringstream oss ;
+	subject.Encode( str.begin(), str.end(), oss ) ;
+	
+	PDFUT_ASSERT_EQUAL( oss.str(), out ) ;
+	std::wstring wout = subject.Decode( oss.str() ) ;
+	PDFUT_ASSERT_EQUAL( wout, str ) ;
 }
 
 } // end of namespace

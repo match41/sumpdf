@@ -40,6 +40,7 @@ public :
 	// declare suit function
 	CPPUNIT_TEST_SUITE( FontEncodingTest ) ;
 		CPPUNIT_TEST( Test ) ;
+		CPPUNIT_TEST( TestRoundTrip ) ;
 	CPPUNIT_TEST_SUITE_END();
 
 public :
@@ -48,6 +49,7 @@ public :
 
 private :
 	void Test( ) ;
+	void TestRoundTrip( ) ;
 } ;
 
 } // end of namespace

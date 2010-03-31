@@ -362,7 +362,7 @@ void SimpleFont::LoadGlyphs( )
 		wchar_t unicode =
 			m_impl->encoding != 0                                  &&
 			m_impl->face->charmap->encoding != FT_ENCODING_UNICODE ?
-				m_impl->encoding->LookUp( char_code ) :
+				m_impl->encoding->ToUnicode( char_code ) :
 				static_cast<wchar_t>( char_code ) ;
 
 		m_impl->glyphs.insert( std::make_pair(

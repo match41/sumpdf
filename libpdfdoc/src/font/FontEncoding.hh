@@ -28,7 +28,13 @@
 
 #include "util/RefCounter.hh"
 
+#include <string>
 #include <map>
+
+#include <boost/bimap.hpp>
+#include <boost/bimap/unordered_set_of.hpp>
+
+#include <iosfwd>
 
 namespace pdf {
 
@@ -43,10 +49,20 @@ class FontEncoding : public RefCounter
 public :
 	FontEncoding( DictReader& self ) ;
 
-	wchar_t LookUp( unsigned short char_code ) const ;
+	std::wstring Decode( const std::string& bytes ) const ;
+	std::size_t Encode(
+		std::wstring::const_iterator first,
+		std::wstring::const_iterator last,
+		std::ostream& out ) const ;
+
+	wchar_t ToUnicode( unsigned short char_code ) const ;
+	unsigned short FromUnicode( wchar_t unicode ) const ;
 
 private :
-	typedef std::map<unsigned short, wchar_t> CharMap ;
+	typedef	boost::bimap<
+		boost::bimaps::unordered_set_of<unsigned short>,
+		boost::bimaps::unordered_set_of<wchar_t>
+	> CharMap ; 
 
 	/// mapping from character code to unicode
 	CharMap	m_charmap ;

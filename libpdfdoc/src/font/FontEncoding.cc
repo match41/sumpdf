@@ -32,6 +32,12 @@
 
 #include "font/CodeMap.hh"
 
+#include <boost/bind.hpp>
+
+#include <algorithm>
+
+#include <iostream>
+
 namespace pdf {
 
 /**	constructor
@@ -53,7 +59,7 @@ FontEncoding::FontEncoding( DictReader& self )
 			{
 				wchar_t ch = NameToUnicode( i->As<Name>().Str().c_str() ) ;
 
-				m_charmap.insert( std::make_pair(
+				m_charmap.insert( CharMap::value_type(
 					static_cast<unsigned short>( current ), ch ) ) ;
 			
 				current++ ;
@@ -62,10 +68,38 @@ FontEncoding::FontEncoding( DictReader& self )
 	}
 }
 
-wchar_t FontEncoding::LookUp( unsigned short char_code ) const
+wchar_t FontEncoding::ToUnicode( unsigned short char_code ) const
 {
-	CharMap::const_iterator i = m_charmap.find( char_code ) ;
-	return i != m_charmap.end() ? i->second : 0 ; 
+	CharMap::left_const_iterator i = m_charmap.left.find( char_code ) ;
+	return i != m_charmap.left.end() ? i->second : 0 ; 
+}
+
+unsigned short FontEncoding::FromUnicode( wchar_t unicode ) const
+{
+	CharMap::right_const_iterator i = m_charmap.right.find( unicode ) ;
+	return i != m_charmap.right.end() ? i->second : 0 ; 
+}
+
+std::wstring FontEncoding::Decode( const std::string& bytes ) const
+{
+	std::wstring result( bytes.size(), ' ' ) ;
+	std::transform( bytes.begin(), bytes.end(), result.begin(),
+		boost::bind( &FontEncoding::ToUnicode, this, _1 ) ) ;
+	return result ;
+}
+
+std::size_t FontEncoding::Encode(
+	std::wstring::const_iterator first,
+	std::wstring::const_iterator last,
+	std::ostream& out ) const
+{
+	std::size_t count = 0 ;
+	for ( std::wstring::const_iterator i = first ; i != last ; ++i )
+	{
+		out.rdbuf()->sputc( static_cast<char>(FromUnicode(*i) ) ) ;
+		count++ ;
+	}
+	return count ;
 }
 
 } // end of namespace
