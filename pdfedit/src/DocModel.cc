@@ -169,7 +169,8 @@ void DocModel::SaveFile( const QString& filename )
 		Page *p = m_doc->GetPage( i ) ;
 		PDF_ASSERT( p != 0 ) ;
 		
-		StorePage( m_pages[i], p ) ;
+		if ( m_pages[i] != 0 )
+			StorePage( m_pages[i], p ) ;
 	}
 	
 	m_doc->Write( ToStr( filename )  ) ;
