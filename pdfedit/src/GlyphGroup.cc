@@ -92,7 +92,6 @@ TextLine GlyphGroup::GetLine( ) const
 		m_line.Text() ) ;
 }
 
-
 int GlyphGroup::rowCount( const QModelIndex& parent ) const
 {
 	return 4 ;

@@ -95,9 +95,21 @@ std::ostream& TextLine::Print(
 	// print transformation if different
 	if ( m_trans != current )
 	{
-		os	<< m_trans.M11() << ' ' << m_trans.M12() << ' '
-			<< m_trans.M21() << ' ' << m_trans.M22() << ' '
-			<< m_trans.Dx()  << ' ' << m_trans.Dy( ) << " Tm\n" ; 
+		// translate only
+		if ( m_trans.M11() == current.M11() &&
+			 m_trans.M12() == current.M12() &&
+			 m_trans.M21() == current.M21() &&
+			 m_trans.M22() == current.M22() && 
+			 m_trans.M11() == 1 &&
+			 m_trans.M12() == 0 &&
+			 m_trans.M21() == 0 &&
+			 m_trans.M22() == 1 )
+			os	<< (m_trans.Dx() - current.Dx()) << ' '
+				<< (m_trans.Dy() - current.Dy()) << " Td\n" ;
+		else
+			os	<< m_trans.M11() << ' ' << m_trans.M12() << ' '
+				<< m_trans.M21() << ' ' << m_trans.M22() << ' '
+				<< m_trans.Dx()  << ' ' << m_trans.Dy( ) << " Tm\n" ; 
 	}
 
 	// replace current matrix and position
@@ -151,8 +163,6 @@ std::ostream& operator<<( std::ostream& os, const TextLine& t )
 bool TextLine::operator==( const TextLine& rhs ) const
 {
 	return
-//		m_xpos	== rhs.m_xpos	&&
-//		m_ypos	== rhs.m_ypos	&&
 		m_trans == rhs.m_trans	&&
 		m_state	== rhs.m_state	&&
 		m_text	== rhs.m_text ;
