@@ -40,8 +40,6 @@
 #include <QMessageBox>
 #include <QDebug>
 
-#include <iostream>
-
 namespace pdf {
 
 /**	constructor
@@ -53,7 +51,13 @@ GlyphGroup::GlyphGroup( const TextLine& blk, QGraphicsItem *parent )
 	m_line.VisitChars( this ) ;
 	
 	// setup flags
-	setFlags( ItemIsSelectable | ItemIsMovable | ItemSendsGeometryChanges ) ;
+	setFlags( ItemIsSelectable | ItemIsMovable
+
+		// ItemSendsGeometryChanges needs Qt 4.6 or better
+#if QT_VERSION >= 0x040600
+		| ItemSendsGeometryChanges
+#endif
+	) ;
 
 	QTransform t = ToQtMatrix( m_line.Transform() ) ;
 	setTransform( t ) ;
@@ -88,11 +92,8 @@ const GraphicsState& GlyphGroup::Format( ) const
 
 TextLine GlyphGroup::GetLine( ) const
 {
-std::wcout << "original: " << m_line.Text() << std::endl ;
 	TextLine line( m_line ) ;
-std::wcout << "copied: " << line.Text() << std::endl ;
 	line.SetTransform( Matrix::Translation( x(), y() ) * m_line.Transform() ) ;
-std::cout << line << std::endl ;
 	return line ;
 }
 
