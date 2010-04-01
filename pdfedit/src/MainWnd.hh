@@ -67,7 +67,7 @@ class MainWnd :
 public:
 	explicit MainWnd( QWidget *parent = 0 ) ;
 	~MainWnd( ) ;
-	
+
 	void OpenFile( const QString& file ) ;
 
 public slots :
@@ -81,7 +81,7 @@ public slots :
 	void OnPreviousPage( ) ;
 	void OnLastPage( );
 	void OnFirstPage( );
-	
+
 	void GoToPage( std::size_t index ) ;
 	void OnSelectionChanged( ) ;
 	void OnChanged( const QList<QRectF>& ) ;
@@ -91,13 +91,15 @@ public slots :
 	void OnInsertTextNow( );
 	void OnInsertBtnUp( );
 
+	void OnFileChanged( );
+
 private :
 	void LoadTextLine( const TextLine& line ) ;
 	void CreateTextInsertToolbar( );
 
 private :
 	DocModel		*m_doc ;
-	
+
 	PageView		*m_view ;
 	QToolBar		*m_tool_bar ;
 	QComboBox 		*m_zoom_box ;
