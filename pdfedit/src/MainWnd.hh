@@ -29,7 +29,6 @@
 
 #include <QMainWindow>
 #include "ui_MainWnd.h"
-#include <graphics/GraphicsVisitor.hh>
 
 #include <QString>
 
@@ -43,6 +42,8 @@ class QComboBox ;
 class QPushButton;
 class QLabel;
 class QTextEdit;
+class QFontComboBox;
+
 
 namespace pdf {
 
@@ -54,11 +55,13 @@ class Doc ;
 class Page ;
 class Matrix ;
 class TextLine ;
+class InsertTextDlg;
+class DocModel ;
+class TextToolbar;
 
 class MainWnd :
 	public QMainWindow,
-	private Ui::MainWndUI,
-	private GraphicsVisitor
+	private Ui::MainWndUI
 {
 	Q_OBJECT
 
@@ -85,23 +88,28 @@ public slots :
 	void OnChanged( const QList<QRectF>& ) ;
 	void OnViewSource( ) ;
 
-private :
-	void StorePage( QGraphicsScene *scene, Doc *doc, Page *page ) ;
-	void VisitText( Text *text ) ;
-	void VisitGraphics( Graphics *gfx ) ;
-	void LoadTextLine( const TextLine& line ) ;
+	void OnInsertDlg( );
+	void OnInsertTextNow( );
 
 private :
-	std::auto_ptr<Doc>	m_doc ;
+	void LoadTextLine( const TextLine& line ) ;
+	void TextInsertConnect( );
+
+private :
+	DocModel		*m_doc ;
 	
-	QGraphicsScene	*m_scene ;
 	PageView		*m_view ;
 	QToolBar		*m_tool_bar ;
 	QComboBox 		*m_zoom_box ;
 
 	QLabel			*m_label;
 	QTextEdit		*m_text;
-	std::size_t		m_current_page;	// currently viewed document page
+
+	// text editing
+	QTextEdit		*m_text_edit;
+	InsertTextDlg	*m_insert_dlg;
+
+	TextToolbar		*m_texttb_items;
 } ;
 
 } // end of namespace

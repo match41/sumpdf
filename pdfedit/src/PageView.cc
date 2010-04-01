@@ -43,10 +43,8 @@
 
 namespace pdf {
 
-PageView::PageView(
-	QGraphicsScene	*scene,
-	QMainWindow		*parent )
-	: QGraphicsView( scene, parent )
+PageView::PageView( QMainWindow	*parent )
+	: QGraphicsView( parent )
 	, m_parent( parent )
 {
 	PDF_ASSERT( parent != 0 ) ;
@@ -88,6 +86,7 @@ void PageView::mousePressEvent( QMouseEvent *event )
 	// click at empty space
 	else
 	{
+		emit mousePositionSet(pos);	// mouse position at empty space
 	}
 	
 

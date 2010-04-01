@@ -68,6 +68,55 @@ void DictReader::Swap( DictReader& dict )
 	std::swap( m_file, dict.m_file ) ;
 }
 
+template <typename ObjType>
+bool DictReader::Detach( const Name& name, ObjType& result )
+{
+	Dictionary::iterator i = m_dict.find( name ) ;
+	if ( i != m_dict.end() )
+	{
+		SwapAt( i, result ) ;
+		m_dict.erase( i ) ;
+		return true ;
+	}
+	else
+	{
+		// the PDF specification indicates that if an object is not
+		// found in a dictionary, it is treated as an null object.
+		// so it is reasonable to reset an object to its default value,
+		// which should have the same meaning as null object.
+		result = ObjType() ;
+		return false ;
+	}
+}
+
+template bool DictReader::Detach( const Name&, Dictionary& ) ;
+template bool DictReader::Detach( const Name&, Array& ) ;
+template bool DictReader::Detach( const Name&, std::string& ) ;
+template bool DictReader::Detach( const Name&, bool& ) ;
+template bool DictReader::Detach( const Name&, Stream& ) ;
+template bool DictReader::Detach( const Name&, Ref& ) ;
+template bool DictReader::Detach( const Name&, Object& ) ;
+template bool DictReader::Detach( const Name&, Name& ) ;
+template bool DictReader::Detach( const Name&, int& ) ;
+template bool DictReader::Detach( const Name&, double& ) ;
+template bool DictReader::Detach( const Name&, DictReader& ) ;
+template bool DictReader::Detach( const Name&, ArrayReader& ) ;
+template bool DictReader::Detach( const Name&, Rect& ) ;
+
+// uncomment that when needed
+//template bool DictReader::Detach( const Name&, std::vector<Dictionary>& ) ;
+//template bool DictReader::Detach( const Name&, std::vector<Array>& ) ;
+template bool DictReader::Detach( const Name&, std::vector<std::string>& ) ;
+//template bool DictReader::Detach( const Name&, std::vector<Stream>& ) ;
+//template bool DictReader::Detach( const Name&, std::vector<Ref>& ) ;
+//template bool DictReader::Detach( const Name&, std::vector<Object>& ) ;
+//template bool DictReader::Detach( const Name&, std::vector<Name>& ) ;
+//template bool DictReader::Detach( const Name&, std::vector<int>& ) ;
+template bool DictReader::Detach( const Name&, std::vector<double>& ) ;
+//template bool DictReader::Detach( const Name&, std::vector<DictReader>& ) ;
+//template bool DictReader::Detach( const Name&, std::vector<ArrayReader>& ) ;
+//template bool DictReader::Detach( const Name&, std::vector<Rect>& ) ;
+
 template <typename T>
 bool DictReader::SwapAt( Dictionary::iterator i, T& result )
 {

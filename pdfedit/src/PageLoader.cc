@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2009 by Nestal Wan                                      *
+ *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,30 +17,54 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/*!
-	\file	CreateFont.cc
-	\brief	definition the CreateFont() function
-	\date	Sun Mar 8 2009
+/**	\file	PageLoader.cc
+	\brief	implementation of the PageLoader class
+	\date	Mar 26, 2010
 	\author	Nestal Wan
 */
 
-#include "SimpleFont.hh"
-#include "CompositeFont.hh"
-#include "FontException.hh"
+#include "PageLoader.hh"
 
-#include "file/DictReader.hh"
+// local headers
+#include "GlyphGroup.hh"
 
-namespace pdf
-{
+// libpdfdoc headers
+#include <graphics/Text.hh>
+#include <util/Debug.hh>
 
-BaseFont* CreateFont( DictReader& obj, FontDb *db )
-{
-	const Name& subtype = obj["Subtype"].As<Name>() ;
-	if ( subtype == Name("Type0") )
-		return new CompositeFont( obj, db ) ;
+// Qt headers
+#include <QGraphicsScene>
+
+// boost headers
+#include <boost/bind.hpp>
+
+namespace pdf {
+
+/**	constructor
 	
-	else
-		return new SimpleFont( obj, db ) ;
+*/
+PageLoader::PageLoader( QGraphicsScene *scene )
+	: m_scene( scene )
+{
+	PDF_ASSERT( m_scene != 0 ) ;
 }
 
+void PageLoader::VisitText( Text *text )
+{
+	PDF_ASSERT( text != 0 ) ;
+
+	std::for_each( text->begin(), text->end(),
+		boost::bind( &PageLoader::LoadTextLine, this, _1 ) ) ;
 }
+
+void PageLoader::LoadTextLine( const TextLine& line )
+{
+	PDF_ASSERT( m_scene != 0 ) ;
+	m_scene->addItem( new GlyphGroup( line ) ) ;
+}
+
+void PageLoader::VisitGraphics( Graphics *gfx )
+{
+}
+
+} // end of namespace

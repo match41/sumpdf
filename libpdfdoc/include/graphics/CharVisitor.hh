@@ -26,6 +26,8 @@
 #ifndef __PDF_CHARVISITOR_HH_EADER_INCLUDED__
 #define __PDF_CHARVISITOR_HH_EADER_INCLUDED__
 
+#include <wchar.h>
+
 namespace pdf {
 
 class Matrix ;

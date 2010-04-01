@@ -25,7 +25,7 @@
 */
 
 #include "SymbolInfo.hh"
-#include "Util.hh"
+#include "util/Util.hh"
 
 #include <vector>
 

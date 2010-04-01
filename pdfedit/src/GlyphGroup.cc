@@ -51,7 +51,13 @@ GlyphGroup::GlyphGroup( const TextLine& blk, QGraphicsItem *parent )
 	m_line.VisitChars( this ) ;
 	
 	// setup flags
-	setFlags( ItemIsSelectable | ItemIsMovable | ItemSendsGeometryChanges ) ;
+	setFlags( ItemIsSelectable | ItemIsMovable
+
+		// ItemSendsGeometryChanges needs Qt 4.6 or better
+#if QT_VERSION >= 0x040600
+		| ItemSendsGeometryChanges
+#endif
+	) ;
 
 	QTransform t = ToQtMatrix( m_line.Transform() ) ;
 	setTransform( t ) ;
@@ -87,11 +93,9 @@ const GraphicsState& GlyphGroup::Format( ) const
 TextLine GlyphGroup::GetLine( ) const
 {
 	TextLine line( m_line ) ;
-//	line.XPos( m_line.XPos() + x() ) ;
-//	line.YPos( m_line.YPos() + y() ) ;
-	return line ; 
+	line.SetTransform( Matrix::Translation( x(), y() ) * m_line.Transform() ) ;
+	return line ;
 }
-
 
 int GlyphGroup::rowCount( const QModelIndex& parent ) const
 {

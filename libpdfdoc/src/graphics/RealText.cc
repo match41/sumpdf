@@ -33,6 +33,7 @@
 #include "core/Object.hh"
 #include "core/Token.hh"
 #include "font/BaseFont.hh"
+#include "font/FontEncoding.hh"
 #include "page/ContentOp.hh"
 #include "util/Debug.hh"
 #include "util/Util.hh"
@@ -80,8 +81,6 @@ const RealText::HandlerMap::Map RealText::HandlerMap::m_map(
 RealText::RealText( const GraphicsState& gs, const Matrix& ctm )
 	: m_lines( 1, TextLine( gs, ctm ) )
 	, m_state( gs )
-//	, m_dx( 0 )
-//	, m_dy( 0 )
 	, m_offset( 0 )
 	, m_text_mat( ctm )
 {
@@ -204,15 +203,12 @@ void RealText::Print( std::ostream& os, ResourcesDict *res ) const
 	// rendering state
 	GraphicsState	gs ;
 	Matrix			trans ;
-//	double			xpos = 0.0, ypos = 0.0 ;
 
 	using namespace boost ;
 	std::for_each(
 		m_lines.begin(),
 		m_lines.end(),
-		bind(
-			&TextLine::Print, _1, 	ref(os), ref(trans),
-			/*ref(xpos),	ref(ypos),	*/ref(gs), res ) ) ;
+		bind( &TextLine::Print, _1, ref(os), ref(trans), ref(gs), res ) ) ;
 
 	os << "ET\n" ;
 }
@@ -236,7 +232,7 @@ void RealText::OnTd( ContentOp& op, const ResourcesDict * )
 		m_text_mat.Translate( op[0], op[1] ) ;
 		m_offset = 0 ;
 
-		AddLine( TextLine( /*m_dx, m_dy, */m_state, m_text_mat ) ) ;
+		AddLine( TextLine( m_state, m_text_mat ) ) ;
 	}
 }
 
@@ -248,8 +244,6 @@ void RealText::OnTD( ContentOp& op, const ResourcesDict * )
 		m_state.GetTextState().SetLeading( -ty ) ;
 
 		m_text_mat.Translate( op[0], ty ) ; 
-//		m_dx += op[0].To<double>() ;
-//		m_dy += op[1].To<double>() ;
 		m_offset = 0 ;
 		
 		AddLine( TextLine( /*m_dx, m_dy, */m_state, m_text_mat ) ) ;
@@ -264,19 +258,18 @@ void RealText::OnTm( ContentOp& op, const ResourcesDict * )
 		// matrix.
 		m_text_mat = Matrix( op[0], op[1], op[2], op[3], op[4], op[5] ) ;
 		
-		m_offset = /*m_dx = m_dy = */0.0 ;
+		m_offset = 0.0 ;
 		
-		AddLine( TextLine( /*0, 0, */m_state, m_text_mat ) ) ;
+		AddLine( TextLine( m_state, m_text_mat ) ) ;
 	}
 }
 
 void RealText::OnTstar( ContentOp& , const ResourcesDict * )
 {
-//	m_dy -= m_state.GetTextState().Leading() ;
 	m_text_mat.Translate( 0, -m_state.GetTextState().Leading() ) ;
 	m_offset = 0 ;
 	
-	AddLine( TextLine( /*m_dx, m_dy, */m_state, m_text_mat ) ) ;
+	AddLine( TextLine( m_state, m_text_mat ) ) ;
 }
 
 ///	Shows a Text string
@@ -289,16 +282,28 @@ void RealText::OnTj( ContentOp& op, const ResourcesDict * )
 		TextLine& current = m_lines.back() ;
 		
 		// must set the font properly before showing text
-		if ( current.Format().GetFont() != 0 )
+		BaseFont *font = static_cast<BaseFont*>( current.Format().GetFont() ) ;
+		if ( font != 0 )
 		{
-			const std::string& s = op[0].As<std::string>() ;
-			std::wstring ws( s.begin(), s.end() ) ;
-			
+			std::wstring ws = DecodeString( op[0].As<std::string>(), font ) ;
 			current.AppendText( ws ) ;
-			
 			m_offset += m_state.GetTextState().Width( ws ) ;
 		}
 	}
+}
+
+std::wstring RealText::DecodeString( const std::string& s, BaseFont *font )
+{
+	std::wstring ws ;
+	if ( font->Encoding() == 0 )
+		ws.assign( s.begin(), s.end() ) ;
+
+	else
+		std::transform( s.begin(), s.end(), std::back_inserter(ws),
+			boost::bind( &FontEncoding::LookUp,
+				font->Encoding(),
+				_1 ) ) ;
+	return ws ;
 }
 
 ///	\a array TJ
@@ -321,15 +326,16 @@ void RealText::OnTJ( ContentOp& op, const ResourcesDict * )
 
 	double offset = 0.0 ;
 
-	if ( op.Count() > 0 )
+	BaseFont *font = static_cast<BaseFont*>( current.Format().GetFont() ) ;
+
+	if ( op.Count() > 0 && font != 0 )
 	{
 		const Array& a = op[0].As<Array>() ;
 		for ( Array::const_iterator i = a.begin() ; i != a.end() ; ++i )
 		{
 			if ( i->Is<std::string>() )
 			{
-				const std::string& s = i->As<std::string>() ;
-				std::wstring ws( s.begin(), s.end() ) ;
+				std::wstring ws = DecodeString(i->As<std::string>(), font) ;
 				offset += m_state.GetTextState().Width( ws ) ;
 
 				current.AppendText( ws ) ;

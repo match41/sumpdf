@@ -42,11 +42,15 @@ set( BASE_SRCS		src/main.cc
                     src/GlyphGroup.cc
                     src/Util.cc
 					src/MainWnd.cc
+					src/PageLoader.cc
 					src/PageView.cc
 					src/TextEdit.cc
 					src/PropertiesDlg.cc
 					src/ExceptionDlg.cc
-					src/TextDlg.cc )
+					src/TextDlg.cc
+					src/InsertTextDlg.cc
+					src/TextToolbar.cc
+					src/DocModel.cc )
 
 ###############################################################################
 # all sources
@@ -55,21 +59,20 @@ set( SRCS	${BASE_SRCS} )
 
 qt4_automoc( ${SRCS} )
 
-set( MOC_SRCS	src/MainWnd.cc
-				src/PropertiesDlg.cc
-				src/PageView.cc
-				src/TextEdit.cc
-				src/ExceptionDlg.cc )
 set( MOC_HDRS	src/MainWnd.hh
 				src/PropertiesDlg.hh
 				src/PageView.hh
 				src/TextEdit.hh
 				src/ExceptionDlg.hh
-				src/TextDlg.hh )
+				src/TextDlg.hh 
+				src/InsertTextDlg.hh
+				src/TextToolbar.hh
+				src/DocModel.hh )
 set( UIS 		ui/MainWnd.ui
 				ui/Properties.ui
 				ui/ExceptionDlg.ui
-				ui/TextDlg.ui )
+				ui/TextDlg.ui 
+				ui/InsertTextDlg.ui )
 
 qt4_wrap_ui( UIH ${UIS})
 qt4_wrap_cpp( MOC_SRCS ${MOC_HDRS})
@@ -144,6 +147,13 @@ if ( WIN32 )
 		message( "dbghelp not found" )
 	endif ( DBHELP_LIBRARY )
 endif ( WIN32 )
+
+# MSVC has stupid warnings on STD
+if ( MSVC )
+	add_definitions( -D_SCL_SECURE_NO_WARNINGS )
+	set_target_properties( pdfedit
+		PROPERTIES COMPILE_FLAGS "/wd4345 /wd4819 /Zc:wchar_t-" )
+endif ( MSVC )
 
 ###############################################################################
 # optional boost library

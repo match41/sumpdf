@@ -28,6 +28,7 @@
 #include "DictReader.hh"
 
 #include "stream/Stream.hh"
+#include "util/Rect.hh"
 
 namespace pdf {
 
@@ -131,6 +132,19 @@ bool ArrayReader::Detach<ArrayReader>( std::size_t idx, ArrayReader& result )
 	{
 		result.m_array.swap( array ) ;
 		result.m_file = m_file ;
+		return true ;
+	}
+	else
+		return false ;
+}
+
+template <>
+bool ArrayReader::Detach<Rect>( std::size_t idx, Rect& result )
+{
+	Array array ;
+	if ( Detach( idx, array ) )
+	{
+		result.Assign( array.begin(), array.end() ) ;
 		return true ;
 	}
 	else

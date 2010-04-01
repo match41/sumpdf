@@ -204,7 +204,7 @@ void RealPage::SetContent( const std::vector<Graphics*>& gfx )
 		bind( &Graphics::Print, _1, ref(os), m_pinfo.GetResource() ) ) ;
 
 	os.flush() ;
-	
+
 	m_cstrs.clear( ) ;
 	m_cstrs.push_back( str ) ;
 }

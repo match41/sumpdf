@@ -52,6 +52,13 @@ void RealDocTest::TestRead( )
 	CPPUNIT_ASSERT( doc.PageCount() > 0 ) ;
 	
 	Page *page1 = doc.GetPage(0) ;
+	CPPUNIT_ASSERT( page1 != 0 ) ;
+}
+
+void RealDocTest::TestNew( )
+{
+	RealDoc doc ;
+	PDFUT_ASSERT_EQUAL( doc.PageCount(), 1u ) ;
 }
 
 } // end of namespace

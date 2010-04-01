@@ -17,57 +17,72 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	MockFont.cc
-	\brief	implementation of the MockFont class
-	\date	Jan 18, 2010
-	\author	Nestal Wan
+/**	\file	DocModel.hh
+    \brief	definition the DocModel class
+    \date	Mar 27, 2010
+    \author	Nestal Wan
 */
 
-#include "MockFont.hh"
+#ifndef __PDF_DOCMODEL_HEADER_INCLUDED__
+#define __PDF_DOCMODEL_HEADER_INCLUDED__
 
-#include "core/Ref.hh"
+#include <QObject>
 
-namespace pdfut {
+#include <memory>
+#include <vector>
 
-/**	constructor
+class QFont ;
+class QString ;
+class QPointF ;
+class QGraphicsScene ;
+
+namespace pdf {
+
+class Doc ;
+class Page ;
+
+///	brief description
+/**	\internal
+	The DocModel class represents
 */
-MockFont::MockFont( )
+class DocModel : public QObject
 {
-}
+	Q_OBJECT
 
-std::string MockFont::BaseName( ) const
-{
-	return "MockFont" ;
-}
+public :
+	explicit DocModel( QObject *parent = 0 ) ;
+	
+	void OpenFile( const QString& filename ) ;
+	void SaveFile( const QString& filename ) ;
+	void New( ) ;
 
-pdf::Ref MockFont::Write( pdf::File *file ) const
-{
-	return pdf::Ref( ) ;
-}
+	QGraphicsScene* CurrentScene() ;
+	QGraphicsScene* GoToPage( std::size_t idx ) ;
 
-pdf::FontDescriptor* MockFont::Descriptor( )
-{
-	return 0 ;
-}
+	Doc* Document( ) ;
+	std::size_t CurrentPage( ) const ;
+	std::size_t PageCount( ) const ;
+		
+	Page* GetPage( std::size_t idx ) ;
+	void AddText( const QFont& font, double size, const QPointF& pos,
+		const QString& text ) ;
 
-pdf::FontEncoding* MockFont::Encoding( )
-{
-	return 0 ;
-}
+signals :
+	void SelectionChanged() ;
 
-double MockFont::FromFontUnit( unsigned val ) const
-{
-	return val * 1000.0 / UnitsPerEM() ;
-}
+public slots :
+	void OnSelectionChanged() ;
 
-const pdf::Glyph* MockFont::GetGlyph( wchar_t ch ) const
-{
-	return &m_glyph ;
-}
+private :
+	void ReplaceDocument( Doc *doc ) ;
+	void StorePage( QGraphicsScene *scene, Page *page ) ;
 
-unsigned MockFont::UnitsPerEM() const
-{
-	return 2048 ;
-}
+private :
+	std::auto_ptr<Doc>				m_doc ;
+	std::vector<QGraphicsScene*>	m_pages ;
+	std::size_t						m_current_page ;
+} ;
 
 } // end of namespace
+
+#endif // DOCMODEL_HH_

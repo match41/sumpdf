@@ -106,6 +106,10 @@ private :
 
 } // end of namespace
 
+#ifdef __GNUC__
+extern template class std::map<pdf::Name, pdf::Object> ;
+#endif
+
 namespace std
 {
 	void swap( pdf::Dictionary& dict1, pdf::Dictionary& dict2 ) ;

@@ -29,6 +29,11 @@
 
 #include <QString>
 #include <QTransform>
+#include <QTextCodec>
+
+#include <boost/bind.hpp>
+#include <algorithm>
+#include <iterator>
 
 namespace pdf {
 
@@ -42,23 +47,55 @@ Matrix FromQtMatrix( const QTransform& m )
 	return Matrix( m.m11(), m.m12(), m.m21(), m.m22(), m.dx(), m.dy() ) ;
 }
 
-std::wstring ToWStr( const QString& str )
+QString FromWStr( const std::wstring& s )
 {
-	const unsigned short *b2 = str.utf16() ;
-	
-	std::wstring s ;
-	while ( *b2 != 0 )
-		s.push_back( *b2++ ) ;
-
-	return s ;
+	// gcc wchar_t has no problems
+	// msvc only when the /Zc:wchar_t- (i.e. _NATIVE_WCHAR_T_DEFINED is NOT defined)
+	// in these two cases we use std::wstring directly
+#if (defined __GNUC__ || (defined _MSC_VER && !defined _NATIVE_WCHAR_T_DEFINED) )
+	#ifndef QT_NO_STL
+		return QString::fromStdWString( s ) ;
+	#else
+		return QString::fromWCharArray( s.c_str(), s.size() ) ;
+	#endif
+#else
+	// msvc may not have the /Zc:wchar_t- option used, which Qt expects
+	// avoid using wchar_t related functions
+	QString result ;
+	for ( std::wstring::const_iterator i = s.begin() ; i != s.end() ; ++i )
+		result.push_back( QChar( *i ) ) ;
+	return result ;
+#endif
 }
 
-QString FromWStr( const std::wstring& str )
+std::wstring ToWStr( const QString& s )
 {
-	QString s ;
-	for ( std::wstring::const_iterator i = str.begin() ; i != str.end() ; ++i )
-		s.push_back( *i ) ;
-	return s ;
+#if (defined __GNUC__ || (defined _MSC_VER && !defined _NATIVE_WCHAR_T_DEFINED) )
+	#ifndef QT_NO_STL
+		return s.toStdWString( ) ;
+	#else
+		std::wstring result( L' ', s.length() ) ;
+		s.toWCharArray( &result[0] ) ;
+		return result ;
+	#endif
+#else
+    std::wstring result ;
+    const ushort *utf16 = s.utf16() ;
+    while ( *utf16 )
+		result.push_back( *utf16++ ) ;
+	return result ;
+#endif
+}
+
+std::string ToStr( const QString& str )
+{
+	QByteArray qba = str.toUtf8() ;
+	return std::string( qba.constData(), qba.size() ) ;
+}
+
+QString FromStr( const std::string& str )
+{
+	return QString::fromUtf8( str.c_str(), str.size() ) ;
 }
 
 } // end of namespace

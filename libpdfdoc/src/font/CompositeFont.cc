@@ -75,6 +75,11 @@ FontDescriptor* CompositeFont::Descriptor( )
 	return 0 ;
 }
 
+FontEncoding* CompositeFont::Encoding( )
+{
+	return 0 ;
+}
+
 std::string CompositeFont::BaseName( ) const
 {
 	return m_base_font.Str() ;

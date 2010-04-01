@@ -1,7 +1,4 @@
-/***************************************************************************\
- *   Copyright (C) 2006 by Nestal Wan                                      *
- *   me@nestal.net                                                         *
- *                                                                         *
+/***************************************************************************
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
  *   the Free Software Foundation; version 2.                              *
@@ -15,50 +12,58 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- \***************************************************************************/
+ ***************************************************************************/
 
 /**
-	\file	PageView.hh
-	\brief	definition the PageView class
-	\date	Dec 28, 2009
-	\author	Nestal Wan
+	\file	TextToolbar.hh
+	\brief	definition the TextToolbar class
+	\date	March 25, 2010
 */
 
-#ifndef __PDF_PAGEVIEW_HEADER_INCLUDED__
-#define __PDF_PAGEVIEW_HEADER_INCLUDED__
+#ifndef __PDF_TEXTTOOLBAR_HH_EADER_INCLUDED__
+#define __PDF_TEXTTOOLBAR_HH_EADER_INCLUDED__
 
-#include <QGraphicsView>
-#include <QPointF>
+#include <QToolBar>
+#include <QPushButton>
+#include <QMainWindow>
+#include <QFontComboBox>
+#include <QComboBox>
+#include <QWidget>
+#include <QDialog>
 
-class QMainWindow ;
-class QPainter ;
-class QPointF ;
+class QPushButton;
+class QMainWindow;
+class QFontComboBox;
+class QComboBox;
+class QWidget;
+class QDialog;
 
 namespace pdf {
 
-class Page ;
-
-class PageView : public QGraphicsView
+class TextToolbar 
+	: public QDialog
 {
 	Q_OBJECT
 
 public:
-	PageView( QMainWindow *parent ) ;
+	explicit TextToolbar( QToolBar *parent =0 , QWidget *parentWnd = 0) ;
+	~TextToolbar( ) ;
 
-	void Zoom( double factor ) ;
+public:
+	QPushButton		*m_insert_text;
+	QFontComboBox	*m_font;
+	QComboBox		*m_font_size;
 
-protected :
-	void mousePressEvent( QMouseEvent *event ) ;
-	void mouseMoveEvent( QMouseEvent *event ) ;
+// signals:
 
-signals:
-	void mousePositionSet( QPointF pos );	// mouse position at empty space
+public slots:
+	void OnInsertBtnUp( );
 
-private :
-	class LineEdit ;
-	QMainWindow	*m_parent ;
-} ;
+private:
+	void CreateTextInsertToolbar( QToolBar *parent , QWidget *parentWnd );
+
+};
 
 } // end of namespace
 
-#endif // PAGEVIEW_HH_
+#endif // TEXTTOOLBAR_HH_

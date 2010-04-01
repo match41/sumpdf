@@ -26,6 +26,8 @@
 #ifndef __PDF_CODEMAP_HH_EADER_INCLUDED__
 #define __PDF_CODEMAP_HH_EADER_INCLUDED__
 
+#include <wchar.h>
+
 namespace pdf {
 
 const char*	UnicodeToName( wchar_t ch ) ;

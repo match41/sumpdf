@@ -43,10 +43,12 @@ public:
 
 	// declare suit function
 	CPPUNIT_TEST_SUITE( RealDocTest ) ;
+		CPPUNIT_TEST( TestNew ) ;
 		CPPUNIT_TEST( TestRead ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
 private :
+	void TestNew( ) ;
 	void TestRead( ) ;
 } ;
 

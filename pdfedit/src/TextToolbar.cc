@@ -1,7 +1,4 @@
 /***************************************************************************\
- *   Copyright (C) 2006 by Nestal Wan                                      *
- *   me@nestal.net                                                         *
- *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
  *   the Free Software Foundation; version 2.                              *
@@ -18,47 +15,51 @@
  \***************************************************************************/
 
 /**
-	\file	PageView.hh
-	\brief	definition the PageView class
-	\date	Dec 28, 2009
-	\author	Nestal Wan
+	\file	TextToolbar.cc
+	\brief	definition the TextToolbar class
+	\date	March 25, 2010
 */
 
-#ifndef __PDF_PAGEVIEW_HEADER_INCLUDED__
-#define __PDF_PAGEVIEW_HEADER_INCLUDED__
-
-#include <QGraphicsView>
-#include <QPointF>
-
-class QMainWindow ;
-class QPainter ;
-class QPointF ;
+#include "TextToolbar.hh"
+#include "InsertTextDlg.hh"
+#include "MainWnd.hh"
 
 namespace pdf {
 
-class Page ;
-
-class PageView : public QGraphicsView
+TextToolbar::TextToolbar( QToolBar *parent, QWidget *parentWnd )
+	: QDialog( parentWnd )
+	, m_insert_text(new QPushButton( "&Insert Text" ) )
 {
-	Q_OBJECT
+	CreateTextInsertToolbar( parent, parentWnd );
+}
 
-public:
-	PageView( QMainWindow *parent ) ;
+TextToolbar::~TextToolbar( )
+{
+}
 
-	void Zoom( double factor ) ;
+void TextToolbar::OnInsertBtnUp( )
+{
+	m_insert_text->setChecked( false );
+}
 
-protected :
-	void mousePressEvent( QMouseEvent *event ) ;
-	void mouseMoveEvent( QMouseEvent *event ) ;
+void TextToolbar::CreateTextInsertToolbar( QToolBar *parent, QWidget *parentWnd )
+{
+	parent->addWidget( m_insert_text );	// insert text push btn
+	m_insert_text->setCheckable( true );
 
-signals:
-	void mousePositionSet( QPointF pos );	// mouse position at empty space
+	m_font = new QFontComboBox();	// font combo box
+    m_font_size = new QComboBox();	// font size combo box
 
-private :
-	class LineEdit ;
-	QMainWindow	*m_parent ;
-} ;
+    m_font_size->setEditable(true);
+    for (int i = 8; i < 30; i += 2)
+        m_font_size->addItem( QString().setNum( i ) );
+    QIntValidator *validator = new QIntValidator( 2, 64, parent );
+    m_font_size->setValidator( validator );
 
+	parent->addWidget( m_font );
+	parent->addWidget( m_font_size );
+
+	connect( m_insert_text,		SIGNAL( clicked() ),	parentWnd, SLOT(OnInsertDlg() ) );
+
+}
 } // end of namespace
-
-#endif // PAGEVIEW_HH_

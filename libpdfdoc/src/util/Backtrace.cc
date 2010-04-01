@@ -27,7 +27,7 @@
 #include "Backtrace.hh"
 
 #include "SymbolInfo.hh"
-#include "Util.hh"
+#include "util/Util.hh"
 
 #include <sstream>
 #include <algorithm>

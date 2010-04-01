@@ -17,7 +17,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	Win32FontDb.cc
+/**	\file	Win32FontDb.cpp
 	\brief	implementation of the Win32FontDb class
 	\date	Feb 14, 2010
 	\author	Nestal Wan
@@ -28,6 +28,8 @@
 #include "FontException.hh"
 
 #include "util/Debug.hh"
+
+#include <boost/format.hpp>
 
 #include <cstring>
 
@@ -106,7 +108,9 @@ std::vector<unsigned char> Win32FontDb::FindFont(
 		GetFontData( hdc, 0, 0, &result[0], size ) ;
 		return result ;
 	}
-	return std::vector<unsigned char>( ) ;	
+	DWORD e = GetLastError() ;
+    throw FontException( boost::format( "cannot GetFontData(): %1%" )
+        % e ) ;
 }
 
 } // end of namespace

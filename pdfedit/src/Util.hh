@@ -42,6 +42,8 @@ namespace pdf
 	std::wstring ToWStr( const QString& str ) ;
 	QString FromWStr( const std::wstring& str ) ;
 
+	std::string ToStr( const QString& str ) ;
+	QString FromStr( const std::string& str ) ;
 
 	template <typename T>
 	QString operator%( QString s, T t )
