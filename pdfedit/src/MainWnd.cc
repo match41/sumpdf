@@ -96,11 +96,12 @@ MainWnd::MainWnd( QWidget *parent )
 	connect( m_action_last_pg, 	SIGNAL(triggered()),	this, SLOT(OnLastPage()) );
 	connect( m_action_viewsrc, 	SIGNAL(triggered()),	this, SLOT(OnViewSource()) );
 
-	connect(
-		m_doc,
-		SIGNAL( SelectionChanged() ),
-		this,
-		SLOT( OnSelectionChanged() ) ) ;
+	connect( m_doc, SIGNAL( SelectionChanged() ),
+			 this, SLOT( OnSelectionChanged() ) );
+	connect( m_doc, SIGNAL( CurrentFileChanged() ),
+			 this, SLOT( OnFileChanged() ) );
+
+	OnFileChanged( );
 
 	m_tool_bar->addAction( m_action_open ) ;
 
@@ -229,9 +230,12 @@ void MainWnd::OnOpen( )
 
 void MainWnd::OnSaveAs( )
 {
-	QString fname = QFileDialog::getSaveFileName( this, "Open", ".", "*.pdf" ) ;
+	QString fname = QFileDialog::getSaveFileName( this, "Open",
+						m_doc->GetCurrentFile(), "*.pdf" ) ;
 	if ( !fname.isEmpty( ) )
+	{
 		m_doc->SaveFile( fname ) ;
+	}
 }
 
 void MainWnd::OnNextPage( )
@@ -378,6 +382,20 @@ void MainWnd::OnInsertTextNow( )
 		ExceptionDlg dlg( e, this ) ;
 		dlg.exec() ;
 	}
+}
+
+void MainWnd::OnFileChanged( )
+{
+	setWindowModified(false);
+	QString window_name = tr("Untitled");
+	QString current_file = m_doc->GetCurrentFile();
+
+	if ( !current_file.isEmpty() )
+		window_name = QFileInfo(current_file).fileName();
+
+	setWindowTitle( tr("%1[*] - %2")
+						.arg(window_name)
+						.arg(tr("PDF Edit")) );
 }
 
 } // end of namespace

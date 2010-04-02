@@ -51,7 +51,10 @@ class DocModel : public QObject
 
 public :
 	explicit DocModel( QObject *parent = 0 ) ;
-	
+
+	void SetCurrentFile(const QString& file);
+	QString GetCurrentFile( ) const;
+
 	void OpenFile( const QString& filename ) ;
 	void SaveFile( const QString& filename ) ;
 	void New( ) ;
@@ -62,13 +65,15 @@ public :
 	Doc* Document( ) ;
 	std::size_t CurrentPage( ) const ;
 	std::size_t PageCount( ) const ;
-		
+
 	Page* GetPage( std::size_t idx ) ;
 	void AddText( const QFont& font, double size, const QPointF& pos,
 		const QString& text ) ;
 
+
 signals :
 	void SelectionChanged() ;
+	void CurrentFileChanged() ;
 
 public slots :
 	void OnSelectionChanged() ;
@@ -80,6 +85,7 @@ private :
 private :
 	std::auto_ptr<Doc>				m_doc ;
 	std::vector<QGraphicsScene*>	m_pages ;
+	QString							m_current_file;
 	std::size_t						m_current_page ;
 } ;
 

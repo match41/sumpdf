@@ -63,6 +63,20 @@ DocModel::DocModel( QObject *parent )
 	GoToPage( 0 ) ;
 }
 
+void DocModel::SetCurrentFile( const QString& file )
+{
+	if ( m_current_file != file )
+	{
+		m_current_file = file;
+		emit CurrentFileChanged();
+	}
+}
+
+QString DocModel::GetCurrentFile( ) const
+{
+	return m_current_file;
+}
+
 void DocModel::OpenFile( const QString& filename )
 {
 	// try to read the new PDF file. will throw exception in case of
@@ -74,12 +88,14 @@ void DocModel::OpenFile( const QString& filename )
 	// now the new file is read successfully, we destroy the data from
 	// previous file and load the new stuff
 	ReplaceDocument( new_doc.release() ) ;
+	SetCurrentFile( filename );
 }
 
 void DocModel::New( )
 {
 	// replace with a brand new document
 	ReplaceDocument( CreateDoc() ) ;
+	SetCurrentFile( "" );
 }
 
 void DocModel::ReplaceDocument( Doc *doc )
@@ -169,11 +185,11 @@ void DocModel::SaveFile( const QString& filename )
 		Page *p = m_doc->GetPage( i ) ;
 		PDF_ASSERT( p != 0 ) ;
 		
-		if ( m_pages[i] != 0 )
-			StorePage( m_pages[i], p ) ;
+		StorePage( m_pages[i], p ) ;
 	}
 	
 	m_doc->Write( ToStr( filename )  ) ;
+	SetCurrentFile( filename );
 }
 
 void DocModel::StorePage( QGraphicsScene *scene, Page *page )
