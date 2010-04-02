@@ -64,6 +64,17 @@ const GraphicsState::HandlerMap::Map::value_type
 	// text state commands
 	std::make_pair( "Tf",	&GraphicsState::OnTf ),
 	std::make_pair( "TL",	&GraphicsState::OnTL ),
+
+	// colour space commands
+	std::make_pair( "CS",	&GraphicsState::OnCS ),
+	std::make_pair( "cs",	&GraphicsState::Oncs ),
+	std::make_pair( "G",	&GraphicsState::OnG ),
+	std::make_pair( "g",	&GraphicsState::Ong ),
+	std::make_pair( "RG",	&GraphicsState::OnRG ),
+	std::make_pair( "rg",	&GraphicsState::Onrg ),
+	std::make_pair( "K",	&GraphicsState::OnK ),
+	std::make_pair( "k",	&GraphicsState::Onk ),
+
 } ;
 
 const GraphicsState::HandlerMap::Map GraphicsState::HandlerMap::m_map(
@@ -74,7 +85,7 @@ struct GraphicsState::Impl
 {
 	TextState	m_text ;
 	
-	Colour		m_colour ;
+	Colour		m_strk_colour, m_non_strk_colour ;
 	
 	double		m_line_width ;
 	int			m_line_cap ;
@@ -167,12 +178,7 @@ bool GraphicsState::OnTf( ContentOp& op, const ResourcesDict *res )
 	if ( op.Count() >= 2 && op[0].Is<Name>() && op[1].IsNumber() )
 	{
 		BaseFont *f = res->FindFont( op[0].As<Name>() ) ;
-		if ( f == 0 )
-		{
-//			throw ParseError( boost::format( "unknown font: %1% " ) % op[0] ) ;
-			std::cerr << "unknown font: " << op[0] << std::endl ;
-		}
-		else
+		if ( f != 0 )
 		{
 			double font_size = op[1].To<double>() ;
 			
@@ -272,6 +278,79 @@ void GraphicsState::SetValue( const Name& name, const Object& val )
 		m_impl->m_line_width = val ;
 	else if ( name == "LC" )
 		m_impl->m_line_cap = val ;
+}
+
+const Colour& GraphicsState::StrokeColour( ) const
+{
+	return m_impl->m_strk_colour ;
+}
+
+const Colour& GraphicsState::NonStrokeColour( ) const
+{
+	return m_impl->m_non_strk_colour ;
+}
+
+bool GraphicsState::OnCS( ContentOp& op, const ResourcesDict *res )
+{
+	return op.Count() >= 1 ?
+		SetColourSpace( m_impl->m_strk_colour, op[0].As<Name>() ) :
+		false ;
+}
+
+bool GraphicsState::SetColourSpace( Colour& colour, const Name& cs )
+{
+	Colour temp ;
+	if ( cs == "DeviceGray" )
+		temp.AssignGray( 0.0 ) ;
+	else if ( cs == "DeviceRGB" )
+		temp.AssignRGB( 0.0, 0.0, 0.0 ) ;
+	else if ( cs == "DeviceCMYK" )
+		temp.AssignCMYK( 0.0, 0.0, 0.0, 0.0 ) ;
+
+	if ( temp != colour )
+	{
+		colour = temp ;
+		return true ;
+	}
+	else
+		return false ;
+}
+
+bool GraphicsState::Oncs( ContentOp& op, const ResourcesDict *res )
+{
+	return op.Count() >= 1 ?
+		SetColourSpace( m_impl->m_non_strk_colour, op[0].As<Name>() ) :
+		false ;
+}
+
+bool GraphicsState::OnG( ContentOp& op, const ResourcesDict *res )
+{
+	return false ;
+}
+
+bool GraphicsState::Ong( ContentOp& op, const ResourcesDict *res )
+{
+	return false ;
+}
+
+bool GraphicsState::OnRG( ContentOp& op, const ResourcesDict *res )
+{
+	return false ;
+}
+
+bool GraphicsState::Onrg( ContentOp& op, const ResourcesDict *res )
+{
+	return false ;
+}
+
+bool GraphicsState::OnK( ContentOp& op, const ResourcesDict *res )
+{
+	return false ;
+}
+
+bool GraphicsState::Onk( ContentOp& op, const ResourcesDict *res )
+{
+	return false ;
 }
 
 } // end of namespace

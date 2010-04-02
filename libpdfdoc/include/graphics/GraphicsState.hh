@@ -32,6 +32,7 @@
 
 namespace pdf {
 
+class Colour ;
 class ContentOp ;
 class DictReader ;
 class Font ;
@@ -86,6 +87,9 @@ public :
 	double MiterLimit( ) const ;
 
 	void SetValue( const Name& name, const Object& val ) ;
+	
+	const Colour& StrokeColour( ) const ;
+	const Colour& NonStrokeColour( ) const ;
 
 private :
 	struct HandlerMap ;
@@ -93,8 +97,18 @@ private :
 	// text state command handlers
 	bool OnTf( ContentOp& op, const ResourcesDict *res ) ;
 	bool OnTL( ContentOp& op, const ResourcesDict *res ) ;
+	bool OnCS( ContentOp& op, const ResourcesDict *res ) ;
+	bool Oncs( ContentOp& op, const ResourcesDict *res ) ;
+	bool OnG( ContentOp& op, const ResourcesDict *res ) ;
+	bool Ong( ContentOp& op, const ResourcesDict *res ) ;
+	bool OnRG( ContentOp& op, const ResourcesDict *res ) ;
+	bool Onrg( ContentOp& op, const ResourcesDict *res ) ;
+	bool OnK( ContentOp& op, const ResourcesDict *res ) ;
+	bool Onk( ContentOp& op, const ResourcesDict *res ) ;
 
 	void CopyOnWrite( ) ;
+
+	static bool SetColourSpace( Colour& colour, const Name& cs ) ;
 
 private :
 	struct Impl ;

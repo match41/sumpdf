@@ -31,24 +31,24 @@
 namespace pdf {
 
 Colour::Colour( )
-	: m_cs( rgb )
+	: m_cs( gray )
 {
 	std::fill( Begin(m_channel), End(m_channel), 0.0 ) ;
 }
 
 Colour::Colour( double gray_val )
 {
-	Assign( gray_val ) ;
+	AssignGray( gray_val ) ;
 }
 
 Colour::Colour( double r, double g, double b )
 {
-	Assign( r, g, b ) ;
+	AssignRGB( r, g, b ) ;
 }
 
 Colour::Colour( double c, double m, double y, double k )
 {
-	Assign( c, m, y, k ) ;
+	AssignCMYK( c, m, y, k ) ;
 }
 
 Colour::Space Colour::ColourSpace( ) const
@@ -56,13 +56,13 @@ Colour::Space Colour::ColourSpace( ) const
 	return m_cs ;
 }
 
-void Colour::Assign( double gray_val )
+void Colour::AssignGray( double gray_val )
 {
 	m_cs = gray ;
 	m_channel[0] = gray_val ;
 }
 
-void Colour::Assign( double r, double g, double b )
+void Colour::AssignRGB( double r, double g, double b )
 {
 	m_cs = rgb ;
 	m_channel[0] = r ;
@@ -70,7 +70,7 @@ void Colour::Assign( double r, double g, double b )
 	m_channel[2] = b ;
 }
 
-void Colour::Assign( double c, double m, double y, double k )
+void Colour::AssignCMYK( double c, double m, double y, double k )
 {
 	m_cs = cmyk ;
 	m_channel[0] = c ;
@@ -125,6 +125,28 @@ double Colour::Gray( ) const
 {
 	PDF_ASSERT( m_cs != gray ) ;
 	return m_channel[0] ;
+}
+
+std::size_t Colour::ChannelCount( ) const
+{
+	static const std::size_t count[] =
+	{
+		3, 1, 4
+	} ;
+	
+	PDF_ASSERT( m_cs >= rgb && m_cs <= cmyk ) ; 
+	return count[m_cs] ;
+}
+
+bool Colour::operator==( const Colour& rhs ) const
+{
+	return m_cs == rhs.m_cs && std::equal(
+		m_channel, m_channel + ChannelCount(), rhs.m_channel ) ; 
+}
+
+bool Colour::operator!=( const Colour& colour ) const
+{
+	return !operator==( colour ) ;
 }
 
 } // end of namespace

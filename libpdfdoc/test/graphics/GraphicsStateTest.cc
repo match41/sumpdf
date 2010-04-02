@@ -29,6 +29,7 @@
 #include "core/Object.hh"
 #include "page/ContentOp.hh"
 #include "page/MockResources.hh"
+#include "graphics/Colour.hh"
 #include "graphics/GraphicsState.hh"
 #include "graphics/TextState.hh"
 
@@ -68,6 +69,17 @@ void GraphicsStateTest::TestTextStateCommand( )
 	
 	PDFUT_ASSERT_EQUAL( subject.GetTextState().FontSize(), 12.0 ) ;
 	PDFUT_ASSERT_EQUAL( subject.GetTextState().GetFont(), &font ) ;
+}
+
+void GraphicsStateTest::TestColourCommand( )
+{
+	MockResources res ;
+	GraphicsState subject ;
+	Object args[] = { Name( "DeviceRGB" ) } ;
+	ContentOp op( Token("CS"), Begin(args), End(args) ) ;
+	subject.OnCommand( op, &res ) ;
+	
+	PDFUT_ASSERT_EQUAL( subject.StrokeColour().ColourSpace(), Colour::rgb ) ;
 }
 
 } // end of namespace

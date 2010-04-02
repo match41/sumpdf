@@ -26,6 +26,8 @@
 #ifndef __PDF_COLOUR_HEADER_INCLUDED__
 #define __PDF_COLOUR_HEADER_INCLUDED__
 
+#include <cstddef>
+
 namespace pdf {
 
 /// Class representing a colour.
@@ -43,7 +45,7 @@ public :
 	} ;
 
 public :
-	/// default colour is RGB black.
+	/// default colour is gray black.
 	Colour( ) ;
 	
 	/// grayscale
@@ -56,15 +58,17 @@ public :
 	Colour( double c, double m, double y, double k ) ;
 	
 	Space ColourSpace( ) const ;
-	
+
+	std::size_t ChannelCount( ) const ;
+
 	/// grayscale
-	void Assign( double gray ) ;
+	void AssignGray( double gray ) ;
 	
 	/// RGB colour
-	void Assign( double r, double g, double b ) ;
+	void AssignRGB( double r, double g, double b ) ;
 	
-	/// CYMK colour
-	void Assign( double c, double m, double y, double k ) ;
+	/// CMYK colour
+	void AssignCMYK( double c, double m, double y, double k ) ;
 	
 	//@{
 	/// RGB channels
@@ -83,6 +87,9 @@ public :
 	
 	/// gray channel
 	double Gray( ) const ;
+
+	bool operator==( const Colour& colour ) const ;
+	bool operator!=( const Colour& colour ) const ;
 
 private :
 	Space	m_cs ;

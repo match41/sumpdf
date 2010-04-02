@@ -40,6 +40,7 @@ public :
 	// declare suit function
 	CPPUNIT_TEST_SUITE( GraphicsStateTest ) ;
 		CPPUNIT_TEST( TestTextStateCommand ) ;
+		CPPUNIT_TEST( TestColourCommand ) ;
 	CPPUNIT_TEST_SUITE_END();
 
 public :
@@ -48,6 +49,7 @@ public :
 
 private :
 	void TestTextStateCommand( ) ;
+	void TestColourCommand( ) ;
 } ;
 
 } // end of namespace
