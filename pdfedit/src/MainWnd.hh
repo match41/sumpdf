@@ -57,6 +57,7 @@ class Matrix ;
 class TextLine ;
 class InsertTextDlg;
 class DocModel ;
+class TextToolbar;
 
 class MainWnd :
 	public QMainWindow,
@@ -89,11 +90,10 @@ public slots :
 
 	void OnInsertDlg( );
 	void OnInsertTextNow( );
-	void OnInsertBtnUp( );
 
 private :
 	void LoadTextLine( const TextLine& line ) ;
-	void CreateTextInsertToolbar( );
+	void TextInsertConnect( );
 
 private :
 	DocModel		*m_doc ;
@@ -106,13 +106,10 @@ private :
 	QTextEdit		*m_text;
 
 	// text editing
-	QPushButton		*m_insert_text;
-	QFontComboBox	*m_insert_text_font;
-	QComboBox		*m_insert_text_font_size;
-
 	QTextEdit		*m_text_edit;
 	InsertTextDlg	*m_insert_dlg;
 
+	TextToolbar		*m_texttb_items;
 } ;
 
 } // end of namespace

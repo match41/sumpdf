@@ -32,6 +32,7 @@
 #include "PropertiesDlg.hh"
 #include "TextDlg.hh"
 #include "InsertTextDlg.hh"
+#include "TextToolbar.hh"
 
 // Qt headers
 #include <QApplication>
@@ -79,7 +80,6 @@ MainWnd::MainWnd( QWidget *parent )
 	, m_tool_bar( addToolBar(tr("Main") ) )
 	, m_zoom_box( new QComboBox( m_tool_bar ) )
 	, m_label( new QLabel( tr(" page:    ") ) )
-	, m_insert_text(new QPushButton( tr("&Insert Text") ) )
 	, m_insert_dlg(new InsertTextDlg(this) )
 {
 	setupUi( this ) ;
@@ -132,7 +132,9 @@ MainWnd::MainWnd( QWidget *parent )
 	m_item_prop->verticalHeader()->hide() ;
 	m_item_prop->horizontalHeader()->setStretchLastSection( true ) ;
 
-	CreateTextInsertToolbar();	// insert text feature
+	// text insert
+	m_texttb_items = new TextToolbar( m_toolbar_text, this );
+	TextInsertConnect();
 	
 	// setup the scene and view
 	GoToPage( 0 ) ;
@@ -314,46 +316,28 @@ void MainWnd::OnInsertDlg( )
 	m_insert_dlg->show();
 }
 
-void MainWnd::CreateTextInsertToolbar( )
+void MainWnd::TextInsertConnect( )
 {
-	m_toolbar_text->addWidget( m_insert_text );	// insert text push btn
-	m_insert_text->setCheckable( true );
-
-	m_insert_text_font = new QFontComboBox();	// font combo box
-    m_insert_text_font_size = new QComboBox();	// font size combo box
-
-    m_insert_text_font_size->setEditable(true);
-    for (int i = 8; i < 30; i += 2)
-        m_insert_text_font_size->addItem( QString().setNum( i ) );
-    QIntValidator *validator = new QIntValidator( 2, 64, this );
-    m_insert_text_font_size->setValidator( validator );
-
-	m_toolbar_text->addWidget( m_insert_text_font );
-	m_toolbar_text->addWidget( m_insert_text_font_size );
-
-
-	connect( m_insert_text,		SIGNAL( clicked() ),	this, SLOT(OnInsertDlg() ) );
-
 	connect(	// connect font selection between MainWnd and dialog (both ways)
-		m_insert_text_font,
+		m_texttb_items->m_font,
 		SIGNAL( currentFontChanged( QFont ) ),
 		m_insert_dlg,
 		SLOT( SetFontChanged( QFont ) ) );
 	connect(
 		m_insert_dlg,
 		SIGNAL( FontPropertiesChanged( QFont ) ),
-		m_insert_text_font, 
+		m_texttb_items->m_font, 
 		SLOT( setCurrentFont( QFont ) ) );
 
 	connect(	// connect size selection between MainWnd and dialog (both ways)
-		m_insert_text_font_size, 
+		m_texttb_items->m_font_size, 
 		SIGNAL( currentIndexChanged( int ) ),
 		m_insert_dlg, 
 		SLOT( SetFontChanged( int ) ) );
 	connect(
 		m_insert_dlg, 
 		SIGNAL( FontPropertiesChanged( int ) ),
-		m_insert_text_font_size, 
+		m_texttb_items->m_font_size, 
 		SLOT( setCurrentIndex( int ) ) );
 
 	connect( 	// mouse position -> dlg
@@ -370,7 +354,7 @@ void MainWnd::CreateTextInsertToolbar( )
 	connect(	// close Insert Dialog
 		m_insert_dlg, 
 		SIGNAL( OnDlgClosed( ) ),	
-		this, 
+		m_texttb_items, 
 		SLOT( OnInsertBtnUp( ) ) );
 
 }
@@ -396,8 +380,4 @@ void MainWnd::OnInsertTextNow( )
 	}
 }
 
-void MainWnd::OnInsertBtnUp( )
-{
-	m_insert_text->setChecked( false );
-}
 } // end of namespace

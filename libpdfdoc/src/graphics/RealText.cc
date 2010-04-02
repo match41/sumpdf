@@ -301,6 +301,7 @@ std::wstring RealText::DecodeString( const std::string& s, Font *font )
 		ws.assign( s.begin(), s.end() ) ;
 	else
 		ws = font->Encoding()->Decode( s ) ;
+	
 	return ws ;
 }
 
