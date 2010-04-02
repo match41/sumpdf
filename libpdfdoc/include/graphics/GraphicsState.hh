@@ -109,6 +109,7 @@ private :
 	void CopyOnWrite( ) ;
 
 	static bool SetColourSpace( Colour& colour, const Name& cs ) ;
+	static bool ChangeColour( Colour& old, const Colour& new_ ) ;
 
 private :
 	struct Impl ;

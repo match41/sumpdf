@@ -27,6 +27,7 @@
 #define __PDF_COLOUR_HEADER_INCLUDED__
 
 #include <cstddef>
+#include <iosfwd>
 
 namespace pdf {
 
@@ -91,11 +92,15 @@ public :
 	bool operator==( const Colour& colour ) const ;
 	bool operator!=( const Colour& colour ) const ;
 
+	friend std::ostream& operator<<( std::ostream& os, const Colour& t ) ;
+
 private :
 	Space	m_cs ;
 	double	m_channel[4] ;
 } ;
 
 } // end of namespace
+
+
 
 #endif // COLOUR_HH_

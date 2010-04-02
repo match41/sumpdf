@@ -28,6 +28,10 @@
 #include "util/Debug.hh"
 #include "util/Util.hh"
 
+#include <ostream>
+#include <iterator>
+#include <algorithm>
+
 namespace pdf {
 
 Colour::Colour( )
@@ -147,6 +151,21 @@ bool Colour::operator==( const Colour& rhs ) const
 bool Colour::operator!=( const Colour& colour ) const
 {
 	return !operator==( colour ) ;
+}
+
+std::ostream& operator<<( std::ostream& os, const Colour& t )
+{
+	switch ( t.m_cs )
+	{
+		case Colour::rgb:	os << "RGB(" ; break ;
+		case Colour::gray:	os << "Gray(" ; break ;
+		case Colour::cmyk:	os << "CMYK(" ; break ;
+	}
+	
+	std::copy( t.m_channel, t.m_channel + t.ChannelCount(),
+		std::ostream_iterator<double>( os, ", " ) ) ;
+	
+	return os << ")" ;
 }
 
 } // end of namespace

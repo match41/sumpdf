@@ -297,6 +297,17 @@ bool GraphicsState::OnCS( ContentOp& op, const ResourcesDict *res )
 		false ;
 }
 
+bool GraphicsState::ChangeColour( Colour& old, const Colour& new_ )
+{
+	if ( old != new_ )
+	{
+		old = new_ ;
+		return true ;
+	}
+	else
+		return false ;
+}
+
 bool GraphicsState::SetColourSpace( Colour& colour, const Name& cs )
 {
 	Colour temp ;
@@ -307,13 +318,7 @@ bool GraphicsState::SetColourSpace( Colour& colour, const Name& cs )
 	else if ( cs == "DeviceCMYK" )
 		temp.AssignCMYK( 0.0, 0.0, 0.0, 0.0 ) ;
 
-	if ( temp != colour )
-	{
-		colour = temp ;
-		return true ;
-	}
-	else
-		return false ;
+	return ChangeColour( colour, temp ) ;
 }
 
 bool GraphicsState::Oncs( ContentOp& op, const ResourcesDict *res )
@@ -325,32 +330,46 @@ bool GraphicsState::Oncs( ContentOp& op, const ResourcesDict *res )
 
 bool GraphicsState::OnG( ContentOp& op, const ResourcesDict *res )
 {
-	return false ;
+	return op.Count() >= 1 ?
+		ChangeColour( m_impl->m_strk_colour, Colour( op[0].As<double>() ) ):
+		false ;
 }
 
 bool GraphicsState::Ong( ContentOp& op, const ResourcesDict *res )
 {
-	return false ;
+	return op.Count() >= 1 ?
+		ChangeColour( m_impl->m_non_strk_colour, Colour( op[0].As<double>() ) ):
+		false ;
 }
 
 bool GraphicsState::OnRG( ContentOp& op, const ResourcesDict *res )
 {
-	return false ;
+	return op.Count() >= 3 ?
+		ChangeColour( m_impl->m_strk_colour, Colour( op[0], op[1], op[2] ) ) :
+		false ;
 }
 
 bool GraphicsState::Onrg( ContentOp& op, const ResourcesDict *res )
 {
-	return false ;
+	return op.Count() >= 3 ?
+		ChangeColour( m_impl->m_non_strk_colour, Colour( op[0], op[1], op[2] )):
+		false ;
 }
 
 bool GraphicsState::OnK( ContentOp& op, const ResourcesDict *res )
 {
-	return false ;
+	return op.Count() >= 4 ?
+		ChangeColour( m_impl->m_strk_colour,
+			Colour( op[0], op[1], op[2], op[3] ) ) :
+		false ;
 }
 
 bool GraphicsState::Onk( ContentOp& op, const ResourcesDict *res )
 {
-	return false ;
+	return op.Count() >= 4 ?
+		ChangeColour( m_impl->m_non_strk_colour,
+			Colour( op[0], op[1], op[2], op[3] ) ) :
+		false ;
 }
 
 } // end of namespace
