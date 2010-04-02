@@ -131,6 +131,16 @@ double Colour::Gray( ) const
 	return m_channel[0] ;
 }
 
+Colour::iterator Colour::begin( ) const
+{
+	return m_channel ;
+}
+
+Colour::iterator Colour::end( ) const
+{
+	return m_channel + ChannelCount() ;
+}
+
 std::size_t Colour::ChannelCount( ) const
 {
 	static const std::size_t count[] =
@@ -144,8 +154,7 @@ std::size_t Colour::ChannelCount( ) const
 
 bool Colour::operator==( const Colour& rhs ) const
 {
-	return m_cs == rhs.m_cs && std::equal(
-		m_channel, m_channel + ChannelCount(), rhs.m_channel ) ; 
+	return m_cs == rhs.m_cs && std::equal( begin(), end(), rhs.begin() ) ; 
 }
 
 bool Colour::operator!=( const Colour& colour ) const
@@ -155,15 +164,14 @@ bool Colour::operator!=( const Colour& colour ) const
 
 std::ostream& operator<<( std::ostream& os, const Colour& t )
 {
-	switch ( t.m_cs )
+	switch ( t.ColourSpace() )
 	{
 		case Colour::rgb:	os << "RGB(" ; break ;
 		case Colour::gray:	os << "Gray(" ; break ;
 		case Colour::cmyk:	os << "CMYK(" ; break ;
 	}
 	
-	std::copy( t.m_channel, t.m_channel + t.ChannelCount(),
-		std::ostream_iterator<double>( os, ", " ) ) ;
+	std::copy( t.begin(), t.end(), std::ostream_iterator<double>( os, " " ) ) ;
 	
 	return os << ")" ;
 }

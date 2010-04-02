@@ -45,6 +45,8 @@ public :
 		cmyk
 	} ;
 
+	typedef const double* iterator ;
+
 public :
 	/// default colour is gray black.
 	Colour( ) ;
@@ -92,12 +94,15 @@ public :
 	bool operator==( const Colour& colour ) const ;
 	bool operator!=( const Colour& colour ) const ;
 
-	friend std::ostream& operator<<( std::ostream& os, const Colour& t ) ;
+	iterator begin( ) const ;
+	iterator end( ) const ;
 
 private :
 	Space	m_cs ;
 	double	m_channel[4] ;
 } ;
+
+std::ostream& operator<<( std::ostream& os, const Colour& t ) ;
 
 } // end of namespace
 

@@ -88,6 +88,19 @@ void GraphicsStateTest::TestColourCommand( )
 
 	PDFUT_ASSERT_EQUAL( subject.StrokeColour().ColourSpace(), Colour::rgb ) ;
 	PDFUT_ASSERT_EQUAL( subject.StrokeColour(), Colour(1.0, 0.0, 0.0) ) ;
+	
+	GraphicsState prev ;
+	std::ostringstream oss ;
+	subject.Print( oss, &res, prev ) ;
+	PDFUT_ASSERT_EQUAL( oss.str(), "1 0 0 RG\n" ) ;
+
+	Object args3[] = { 0.0, 1.0, 0.0, 0.5 } ;
+	ContentOp op3( Token("k"), Begin(args3), End(args3) ) ;
+	subject.OnCommand( op3, &res ) ;
+
+	std::ostringstream oss2 ;
+	subject.Print( oss2, &res, prev ) ;
+	PDFUT_ASSERT_EQUAL( oss2.str(), "1 0 0 RG\n0 1 0 0.5 k\n" ) ;
 }
 
 } // end of namespace

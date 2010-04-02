@@ -83,24 +83,24 @@ const GraphicsState::HandlerMap::Map GraphicsState::HandlerMap::m_map(
 
 struct GraphicsState::Impl
 {
-	TextState	m_text ;
+	TextState	text ;
 	
-	Colour		m_strk_colour, m_non_strk_colour ;
+	Colour		strk_colour, non_strk_colour ;
 	
-	double		m_line_width ;
-	int			m_line_cap ;
-	int			m_line_join ;
-	double		m_miter_limit ;
+	double		line_width ;
+	int			line_cap ;
+	int			line_join ;
+	double		miter_limit ;
 
 	// association with external states dictionaries
-	Name		m_name ;
+	Name		name ;
 
 	Impl( )
 	{
 	}
 	
 	Impl( const TextState& ts )
-	: m_text( ts )
+	: text( ts )
 	{
 	}
 } ;
@@ -127,13 +127,13 @@ void GraphicsState::CopyOnWrite( )
 
 const TextState& GraphicsState::GetTextState() const
 {
-	return m_impl->m_text ;
+	return m_impl->text ;
 }
 
 TextState& GraphicsState::GetTextState()
 {
 	CopyOnWrite( ) ;
-	return m_impl->m_text ;
+	return m_impl->text ;
 }
 
 std::ostream& GraphicsState::Print(
@@ -141,7 +141,35 @@ std::ostream& GraphicsState::Print(
 	ResourcesDict			*res,
 	const GraphicsState&	prev ) const
 {
-	m_impl->m_text.Print( os, res, prev.m_impl->m_text ) ;
+	m_impl->text.Print( os, res, prev.m_impl->text ) ;
+	if ( m_impl->strk_colour != prev.m_impl->strk_colour )
+	{
+		const Colour& strk = m_impl->strk_colour ;
+		std::copy( strk.begin(), strk.end(),
+			std::ostream_iterator<double>( os, " " ) ) ;
+		
+		switch ( strk.ColourSpace() )
+		{
+			// there will be a space after copying to ostream_iterator
+			case Colour::rgb:	os << "RG\n" ; break ;
+			case Colour::gray:	os << "G\n" ; break ;
+			case Colour::cmyk:	os << "K\n" ; break ;
+		}
+	}
+	if ( m_impl->non_strk_colour != prev.m_impl->non_strk_colour )
+	{
+		const Colour& nstrk = m_impl->non_strk_colour ;
+		std::copy( nstrk.begin(), nstrk.end(),
+			std::ostream_iterator<double>( os, " " ) ) ;
+		
+		switch ( nstrk.ColourSpace() )
+		{
+			// there will be a space after copying to ostream_iterator
+			case Colour::rgb:	os << "rg\n" ; break ;
+			case Colour::gray:	os << "g\n" ; break ;
+			case Colour::cmyk:	os << "k\n" ; break ;
+		}
+	}
 	return os ;
 }
 
@@ -182,11 +210,11 @@ bool GraphicsState::OnTf( ContentOp& op, const ResourcesDict *res )
 		{
 			double font_size = op[1].To<double>() ;
 			
-			if ( m_impl->m_text.FontSize()	!= font_size	||
-				m_impl->m_text.GetFont()	!= f )
+			if ( m_impl->text.FontSize()	!= font_size	||
+				m_impl->text.GetFont()	!= f )
 			{
 				CopyOnWrite( ) ;
-				m_impl->m_text.SetFont( font_size, f ) ;
+				m_impl->text.SetFont( font_size, f ) ;
 				return true ;
 			}
 		}
@@ -199,7 +227,7 @@ bool GraphicsState::OnTL( ContentOp& op, const ResourcesDict *res )
 	if ( op.Count() > 0 && op[0].IsNumber() )
 	{
 		CopyOnWrite( ) ;
-		m_impl->m_text.SetLeading( op[0].To<double>() ) ;
+		m_impl->text.SetLeading( op[0].To<double>() ) ;
 		return true ;
 	}
 	else
@@ -208,13 +236,13 @@ bool GraphicsState::OnTL( ContentOp& op, const ResourcesDict *res )
 
 Font* GraphicsState::GetFont( ) const
 {
-	return m_impl->m_text.GetFont( ) ;
+	return m_impl->text.GetFont( ) ;
 }
 
 bool GraphicsState::operator==( const GraphicsState& gs ) const
 {
 	// TODO: add more members
-	return m_impl->m_text == gs.m_impl->m_text ;
+	return m_impl->text == gs.m_impl->text ;
 }
 
 bool GraphicsState::operator!=( const GraphicsState& gs ) const
@@ -224,76 +252,76 @@ bool GraphicsState::operator!=( const GraphicsState& gs ) const
 
 std::ostream& operator<<( std::ostream& os, const GraphicsState& gs )
 {
-	return os << gs.m_impl->m_text ;
+	return os << gs.m_impl->text ;
 }
 
 void GraphicsState::LineWidth( double value )
 {
 	CopyOnWrite( ) ;
-	m_impl->m_line_width = value ;
+	m_impl->line_width = value ;
 }
 
 double GraphicsState::LineWidth( ) const
 {
-	return m_impl->m_line_width ;
+	return m_impl->line_width ;
 }
 
 void GraphicsState::LineCap( int value )
 {
 	CopyOnWrite( ) ;
-	m_impl->m_line_cap = value ;
+	m_impl->line_cap = value ;
 }
 
 int GraphicsState::LineCap( ) const
 {
-	return m_impl->m_line_cap ;
+	return m_impl->line_cap ;
 }
 
 void GraphicsState::LineJoin( int value )
 {
 	CopyOnWrite( ) ;
-	m_impl->m_line_join = value ;
+	m_impl->line_join = value ;
 }
 
 int GraphicsState::LineJoin( ) const
 {
-	return m_impl->m_line_join ;
+	return m_impl->line_join ;
 }
 
 void GraphicsState::MiterLimit( double value )
 {
 	CopyOnWrite( ) ;
-	m_impl->m_miter_limit = value ;
+	m_impl->miter_limit = value ;
 }
 
 double GraphicsState::MiterLimit( ) const
 {
-	return m_impl->m_miter_limit ;
+	return m_impl->miter_limit ;
 }
 
 void GraphicsState::SetValue( const Name& name, const Object& val )
 {
 	CopyOnWrite( ) ;
 	if ( name == "LW" )
-		m_impl->m_line_width = val ;
+		m_impl->line_width = val ;
 	else if ( name == "LC" )
-		m_impl->m_line_cap = val ;
+		m_impl->line_cap = val ;
 }
 
 const Colour& GraphicsState::StrokeColour( ) const
 {
-	return m_impl->m_strk_colour ;
+	return m_impl->strk_colour ;
 }
 
 const Colour& GraphicsState::NonStrokeColour( ) const
 {
-	return m_impl->m_non_strk_colour ;
+	return m_impl->non_strk_colour ;
 }
 
 bool GraphicsState::OnCS( ContentOp& op, const ResourcesDict *res )
 {
 	return op.Count() >= 1 ?
-		SetColourSpace( m_impl->m_strk_colour, op[0].As<Name>() ) :
+		SetColourSpace( m_impl->strk_colour, op[0].As<Name>() ) :
 		false ;
 }
 
@@ -324,42 +352,42 @@ bool GraphicsState::SetColourSpace( Colour& colour, const Name& cs )
 bool GraphicsState::Oncs( ContentOp& op, const ResourcesDict *res )
 {
 	return op.Count() >= 1 ?
-		SetColourSpace( m_impl->m_non_strk_colour, op[0].As<Name>() ) :
+		SetColourSpace( m_impl->non_strk_colour, op[0].As<Name>() ) :
 		false ;
 }
 
 bool GraphicsState::OnG( ContentOp& op, const ResourcesDict *res )
 {
 	return op.Count() >= 1 ?
-		ChangeColour( m_impl->m_strk_colour, Colour( op[0].As<double>() ) ):
+		ChangeColour( m_impl->strk_colour, Colour( op[0].To<double>() ) ):
 		false ;
 }
 
 bool GraphicsState::Ong( ContentOp& op, const ResourcesDict *res )
 {
 	return op.Count() >= 1 ?
-		ChangeColour( m_impl->m_non_strk_colour, Colour( op[0].As<double>() ) ):
+		ChangeColour( m_impl->non_strk_colour, Colour( op[0].To<double>() ) ):
 		false ;
 }
 
 bool GraphicsState::OnRG( ContentOp& op, const ResourcesDict *res )
 {
 	return op.Count() >= 3 ?
-		ChangeColour( m_impl->m_strk_colour, Colour( op[0], op[1], op[2] ) ) :
+		ChangeColour( m_impl->strk_colour, Colour( op[0], op[1], op[2] ) ) :
 		false ;
 }
 
 bool GraphicsState::Onrg( ContentOp& op, const ResourcesDict *res )
 {
 	return op.Count() >= 3 ?
-		ChangeColour( m_impl->m_non_strk_colour, Colour( op[0], op[1], op[2] )):
+		ChangeColour( m_impl->non_strk_colour, Colour( op[0], op[1], op[2] )):
 		false ;
 }
 
 bool GraphicsState::OnK( ContentOp& op, const ResourcesDict *res )
 {
 	return op.Count() >= 4 ?
-		ChangeColour( m_impl->m_strk_colour,
+		ChangeColour( m_impl->strk_colour,
 			Colour( op[0], op[1], op[2], op[3] ) ) :
 		false ;
 }
@@ -367,7 +395,7 @@ bool GraphicsState::OnK( ContentOp& op, const ResourcesDict *res )
 bool GraphicsState::Onk( ContentOp& op, const ResourcesDict *res )
 {
 	return op.Count() >= 4 ?
-		ChangeColour( m_impl->m_non_strk_colour,
+		ChangeColour( m_impl->non_strk_colour,
 			Colour( op[0], op[1], op[2], op[3] ) ) :
 		false ;
 }

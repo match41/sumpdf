@@ -140,7 +140,7 @@ std::ostream& TextState::Print(
 	const TextState& 	prev ) const
 {
 	PDF_ASSERT( res != 0 ) ;
-	PDF_ASSERT( dynamic_cast<BaseFont*>(m_font) != 0 ) ;
+	PDF_ASSERT( m_font == 0 || dynamic_cast<BaseFont*>(m_font) != 0 ) ;
 
 	if ( m_font_size	!= prev.m_font_size ||
 		 m_font			!= prev.m_font )
