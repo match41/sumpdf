@@ -154,7 +154,7 @@ set( FONT_HDRS		${FONT_DIR}/Types.hh
 					${FONT_DIR}/RealGlyph.hh
 					${FONT_DIR}/BasicFontDb.hh
 					${FONT_DIR}/CodeMap.hh
-					${FONT_DIR}/FontEncoding.hh )
+					${FONT_DIR}/SimpleEncoding.hh )
 
 set( BASE_HDRS		src/RealDoc.hh )
 
@@ -170,7 +170,8 @@ set( FONT_INC_HDRS	${INCLUDE_DIR}/font/Font.hh
 					${INCLUDE_DIR}/font/Glyph.hh
 					${INCLUDE_DIR}/font/FontDb.hh
 					${INCLUDE_DIR}/font/FontType.hh
-					${INCLUDE_DIR}/font/Outline.hh )
+					${INCLUDE_DIR}/font/Outline.hh
+					${INCLUDE_DIR}/font/FontEncoding.hh )
 
 set( PAGE_INC_HDRS	${INCLUDE_DIR}/page/Page.hh )
 
@@ -269,7 +270,8 @@ set( FONT_SRCS		${FONT_DIR}/Font.cc
 					${FONT_DIR}/FontDb.cc
 					${FONT_DIR}/BasicFontDb.cc
 					${FONT_DIR}/CodeMap.cc
-					${FONT_DIR}/FontEncoding.cc )
+					${FONT_DIR}/FontEncoding.cc
+					${FONT_DIR}/SimpleEncoding.cc )
 
 set( BASE_SRCS		src/Doc.cc
 					src/RealDoc.cc
