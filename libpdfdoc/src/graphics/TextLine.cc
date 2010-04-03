@@ -51,6 +51,7 @@
 
 #include <iostream>
 #include <iomanip>
+#include <sstream>
 
 namespace pdf {
 
