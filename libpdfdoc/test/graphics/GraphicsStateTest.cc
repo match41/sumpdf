@@ -29,7 +29,7 @@
 #include "core/Object.hh"
 #include "page/ContentOp.hh"
 #include "page/MockResources.hh"
-#include "graphics/Colour.hh"
+#include "graphics/Color.hh"
 #include "graphics/GraphicsState.hh"
 #include "graphics/TextState.hh"
 
@@ -79,15 +79,15 @@ void GraphicsStateTest::TestColourCommand( )
 	ContentOp op( Token("CS"), Begin(args), End(args) ) ;
 	subject.OnCommand( op, &res ) ;
 	
-	PDFUT_ASSERT_EQUAL( subject.StrokeColour().ColourSpace(), Colour::rgb ) ;
-	PDFUT_ASSERT_EQUAL( subject.StrokeColour(), Colour(0.0, 0.0, 0.0) ) ;
+	PDFUT_ASSERT_EQUAL( subject.StrokeColour().ColorSpace(), Color::rgb ) ;
+	PDFUT_ASSERT_EQUAL( subject.StrokeColour(), Color(0.0, 0.0, 0.0) ) ;
 
 	Object args2[] = { 1.0, 0.0, 0.0 } ;
 	ContentOp op2( Token("RG"), Begin(args2), End(args2) ) ;
 	subject.OnCommand( op2, &res ) ;
 
-	PDFUT_ASSERT_EQUAL( subject.StrokeColour().ColourSpace(), Colour::rgb ) ;
-	PDFUT_ASSERT_EQUAL( subject.StrokeColour(), Colour(1.0, 0.0, 0.0) ) ;
+	PDFUT_ASSERT_EQUAL( subject.StrokeColour().ColorSpace(), Color::rgb ) ;
+	PDFUT_ASSERT_EQUAL( subject.StrokeColour(), Color(1.0, 0.0, 0.0) ) ;
 	
 	GraphicsState prev ;
 	std::ostringstream oss ;

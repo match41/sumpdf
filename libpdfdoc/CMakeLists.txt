@@ -101,7 +101,8 @@ set( PAGE_HDRS		${PAGE_DIR}/RealPage.hh
 					${PAGE_DIR}/ContentOp.hh
 					${PAGE_DIR}/ExtGState.hh )
 
-set( GRAPICS_HDRS	${GRAPICS_DIR}/RealText.hh )
+set( GRAPICS_HDRS	${GRAPICS_DIR}/RealText.hh
+					${GRAPICS_DIR}/RealPath.hh )
 
 set( FILE_HDRS		${FILE_DIR}/RealFile.hh
 					${FILE_DIR}/File.hh
@@ -179,10 +180,11 @@ set( GFX_INC_HDRS	${INCLUDE_DIR}/graphics/Graphics.hh
 					${INCLUDE_DIR}/graphics/GraphicsVisitor.hh
 					${INCLUDE_DIR}/graphics/GraphicsState.hh
 					${INCLUDE_DIR}/graphics/Text.hh
+					${INCLUDE_DIR}/graphics/Path.cc
 					${INCLUDE_DIR}/graphics/TextState.hh
 					${INCLUDE_DIR}/graphics/CharVisitor.hh
 					${INCLUDE_DIR}/graphics/TextLine.hh
-					${INCLUDE_DIR}/graphics/Colour.hh )
+					${INCLUDE_DIR}/graphics/Color.hh )
 
 set( UTIL_INC_HDRS	${INCLUDE_DIR}/util/Exception.hh
 					${INCLUDE_DIR}/util/Debug.hh
@@ -209,11 +211,13 @@ set( GRAPICS_SRCS	${GRAPICS_DIR}/Graphics.cc
 					${GRAPICS_DIR}/GraphicsVisitor.cc
 					${GRAPICS_DIR}/GraphicsState.cc
 					${GRAPICS_DIR}/Text.cc
-					${GRAPICS_DIR}/CharVisitor.cc
 					${GRAPICS_DIR}/RealText.cc
+					${GRAPICS_DIR}/Path.cc
+					${GRAPICS_DIR}/RealPath.cc
+					${GRAPICS_DIR}/CharVisitor.cc
 					${GRAPICS_DIR}/TextLine.cc
 					${GRAPICS_DIR}/TextState.cc
-					${GRAPICS_DIR}/Colour.cc )
+					${GRAPICS_DIR}/Color.cc )
 
 set( FILE_SRCS		${FILE_DIR}/RealFile.cc
 					${FILE_DIR}/DictReader.cc

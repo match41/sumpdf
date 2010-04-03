@@ -17,37 +17,21 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**
-    \file	GraphicsVisitor.hh
-    \brief	definition the GraphicsVisitor class
-    \date	Jan 9, 2010
-    \author	Nestal Wan
+/**	\file	Path.cc
+	\brief	implementation of the Path class
+	\date	Apr 3, 2010
+	\author	Nestal Wan
 */
 
-#ifndef __PDF_GRAPHICSVISITOR_HEADER_INCLUDED__
-#define __PDF_GRAPHICSVISITOR_HEADER_INCLUDED__
+#include "graphics/Path.hh"
 
 namespace pdf {
 
-class Graphics ;
-class Path ;
-class Text ;
-
-///	brief description
-/**	\ingroup graphics
-	The GraphicsVisitor class represent
+/**	constructor
+	
 */
-class GraphicsVisitor
+Path::~Path( )
 {
-protected :
-	~GraphicsVisitor( ) ;
-
-public :
-	virtual void VisitText( Text *text ) = 0 ;
-	virtual void VisitGraphics( Graphics *text ) = 0 ;
-	virtual void VisitPath( Path *path ) = 0 ;
-} ;
+}
 
 } // end of namespace
-
-#endif // GRAPHICSVISITOR_HH_

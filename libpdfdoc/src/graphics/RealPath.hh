@@ -17,37 +17,62 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**
-    \file	GraphicsVisitor.hh
-    \brief	definition the GraphicsVisitor class
-    \date	Jan 9, 2010
+/**	\file	RealPath.hh
+    \brief	definition the RealPath class
+    \date	Apr 3, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_GRAPHICSVISITOR_HEADER_INCLUDED__
-#define __PDF_GRAPHICSVISITOR_HEADER_INCLUDED__
+#ifndef __PDF_REALPATH_HH_EADER_INCLUDED__
+#define __PDF_REALPATH_HH_EADER_INCLUDED__
+
+#include "graphics/Path.hh"
+
+#include "graphics/GraphicsState.hh"
+
+#include <vector>
 
 namespace pdf {
 
-class Graphics ;
-class Path ;
-class Text ;
-
 ///	brief description
-/**	\ingroup graphics
-	The GraphicsVisitor class represent
+/**	\internal
+	The RealPath class represents
 */
-class GraphicsVisitor
+class RealPath : public Path
 {
-protected :
-	~GraphicsVisitor( ) ;
-
 public :
-	virtual void VisitText( Text *text ) = 0 ;
-	virtual void VisitGraphics( Graphics *text ) = 0 ;
-	virtual void VisitPath( Path *path ) = 0 ;
+	explicit RealPath( const GraphicsState& gs ) ;
+	
+	// Graphics virtual functions
+	void OnCommand( ContentOp& op, const ResourcesDict *res ) ;
+	void Print( std::ostream& os, ResourcesDict *res ) const ;
+	void Visit( GraphicsVisitor *visitor ) ;
+	GraphicsState GetState( ) const ;
+	
+	// Path virtual functions
+	std::size_t SegmentCount( ) const ;
+	Segment GetSegment( std::size_t index ) const ;
+
+private :
+	/// command handler
+	struct HandlerMap ;
+
+	// position command handlers
+	void Onm( ContentOp& op, const ResourcesDict *res ) ;
+	void Onl( ContentOp& op, const ResourcesDict *res ) ;
+	void Onc( ContentOp& op, const ResourcesDict *res ) ;
+	void Onv( ContentOp& op, const ResourcesDict *res ) ;
+	void Ony( ContentOp& op, const ResourcesDict *res ) ;
+	void Onh( ContentOp& op, const ResourcesDict *res ) ;
+	void Onre( ContentOp& op, const ResourcesDict *res ) ;
+
+private :
+	std::vector<double>		m_points ;
+	std::vector<Segment>	m_segs ;
+	
+	GraphicsState			m_state ;
 } ;
 
 } // end of namespace
 
-#endif // GRAPHICSVISITOR_HH_
+#endif // REALPATH_HH_

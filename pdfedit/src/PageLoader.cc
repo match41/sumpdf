@@ -67,4 +67,8 @@ void PageLoader::VisitGraphics( Graphics *gfx )
 {
 }
 
+void PageLoader::VisitPath( Path *path )
+{
+}
+
 } // end of namespace

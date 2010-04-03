@@ -81,10 +81,10 @@ public :
 	GraphicsState GetState() const ;
 
 private :
-    /// command handler
+	/// command handler
 	struct HandlerMap ;
 
-    // position command handlers
+	// position command handlers
 	void OnTd( ContentOp& op, const ResourcesDict *res ) ;
 	void OnTD( ContentOp& op, const ResourcesDict *res ) ;
 	void OnTm( ContentOp& op, const ResourcesDict *res ) ;

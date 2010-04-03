@@ -17,37 +17,41 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**
-    \file	GraphicsVisitor.hh
-    \brief	definition the GraphicsVisitor class
-    \date	Jan 9, 2010
+/**	\file	Path.hh
+    \brief	definition the Path class
+    \date	Apr 3, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_GRAPHICSVISITOR_HEADER_INCLUDED__
-#define __PDF_GRAPHICSVISITOR_HEADER_INCLUDED__
+#ifndef __PDF_PATH_HH_EADER_INCLUDED__
+#define __PDF_PATH_HH_EADER_INCLUDED__
+
+#include "Graphics.hh"
+
+#include <cstddef>
 
 namespace pdf {
 
-class Graphics ;
-class Path ;
-class Text ;
-
 ///	brief description
-/**	\ingroup graphics
-	The GraphicsVisitor class represent
+/**	\internal
+	The Path class represents
 */
-class GraphicsVisitor
+class Path : public Graphics
 {
-protected :
-	~GraphicsVisitor( ) ;
+public :
+	struct Segment
+	{
+		double	*points ;
+		enum Op { move, line, cubic123, cubic23, cubic13, close } ;
+	} ;
 
 public :
-	virtual void VisitText( Text *text ) = 0 ;
-	virtual void VisitGraphics( Graphics *text ) = 0 ;
-	virtual void VisitPath( Path *path ) = 0 ;
+	virtual ~Path( ) ;
+	
+	virtual std::size_t SegmentCount( ) const = 0 ;
+	virtual Segment GetSegment( std::size_t index ) const = 0 ;
 } ;
 
 } // end of namespace
 
-#endif // GRAPHICSVISITOR_HH_
+#endif // PATH_HH_

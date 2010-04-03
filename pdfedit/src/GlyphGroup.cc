@@ -28,7 +28,7 @@
 #include "GlyphGraphicsItem.hh"
 #include "Util.hh"
 
-#include <graphics/Colour.hh>
+#include <graphics/Color.hh>
 #include <graphics/TextLine.hh>
 #include <graphics/TextState.hh>
 
@@ -79,8 +79,7 @@ void GlyphGroup::OnChar(
 
 	// fill colour
 	QColor fill_color ;
-	Colour nstrk = m_line.Format().NonStrokeColour() ;
-	fill_color.setRgbF( nstrk.Red(), nstrk.Green(), nstrk.Blue() ) ;
+	Color nstrk = m_line.Format().NonStrokeColour() ;
 	item->setBrush( QBrush( ToQColor( m_line.Format().NonStrokeColour() ) ) ) ;
 	
 	// set offset

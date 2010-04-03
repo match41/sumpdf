@@ -26,7 +26,7 @@
 #include "Util.hh"
 
 // libpdfdoc headers
-#include <graphics/Colour.hh>
+#include <graphics/Color.hh>
 #include <util/Exception.hh>
 #include <util/Matrix.hh>
 
@@ -106,9 +106,9 @@ QString FromStr( const std::string& str )
 	return QString::fromUtf8( str.c_str(), str.size() ) ;
 }
 
-Colour FromQColor( const QColor& color )
+Color FromQColor( const QColor& color )
 {
-	Colour result ;
+	Color result ;
 	QColor c = color ;
 	if ( c.spec() != QColor::Rgb && c.spec() != QColor::Cmyk )
 		c = c.convertTo( QColor::Rgb ) ;
@@ -127,18 +127,18 @@ Colour FromQColor( const QColor& color )
 	return result ;
 }
 
-QColor ToQColor( const Colour& c )
+QColor ToQColor( const Color& c )
 {
 	QColor result ;
-	switch ( c.ColourSpace() )
+	switch ( c.ColorSpace() )
 	{
-		case Colour::rgb :
+		case Color::rgb :
 			result.setRgbF( c.Red(), c.Green(), c.Blue() ) ;
 			break ;
-		case Colour::cmyk :
+		case Color::cmyk :
 			result.setCmykF( c.Cyan(), c.Magenta(), c.Yellow(), c.Black() ) ;
 			break ;
-		case Colour::gray :
+		case Color::gray :
 			result.setRgbF( c.Gray(), c.Gray(), c.Gray() ) ;
 			break ;
 		default :

@@ -97,6 +97,10 @@ void ContentStreamTest::TestTestCID( )
 		void VisitGraphics( Graphics *text )
 		{
 		}
+		
+		void VisitPath( Path *path )
+		{
+		}
 	} v ;
 
 	ContentStream subject( str, str+1, &res, &v ) ;

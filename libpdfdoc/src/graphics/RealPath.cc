@@ -17,37 +17,54 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**
-    \file	GraphicsVisitor.hh
-    \brief	definition the GraphicsVisitor class
-    \date	Jan 9, 2010
-    \author	Nestal Wan
+/**	\file	RealPath.cc
+	\brief	implementation of the RealPath class
+	\date	Apr 3, 2010
+	\author	Nestal Wan
 */
 
-#ifndef __PDF_GRAPHICSVISITOR_HEADER_INCLUDED__
-#define __PDF_GRAPHICSVISITOR_HEADER_INCLUDED__
+#include "RealPath.hh"
+
+#include "graphics/GraphicsVisitor.hh"
 
 namespace pdf {
 
-class Graphics ;
-class Path ;
-class Text ;
-
-///	brief description
-/**	\ingroup graphics
-	The GraphicsVisitor class represent
+/**	constructor
+	
 */
-class GraphicsVisitor
+RealPath::RealPath( const GraphicsState& gs )
+	: m_state( gs )
 {
-protected :
-	~GraphicsVisitor( ) ;
+}
 
-public :
-	virtual void VisitText( Text *text ) = 0 ;
-	virtual void VisitGraphics( Graphics *text ) = 0 ;
-	virtual void VisitPath( Path *path ) = 0 ;
-} ;
+// Graphics virtual functions
+void RealPath::OnCommand( ContentOp& op, const ResourcesDict *res )
+{
+}
+
+void RealPath::Print( std::ostream& os, ResourcesDict *res ) const
+{
+}
+
+void RealPath::Visit( GraphicsVisitor *visitor )
+{
+	visitor->VisitPath( this ) ;
+}
+
+GraphicsState RealPath::GetState( ) const
+{
+	return m_state ;
+}
+
+// Path virtual functions
+std::size_t RealPath::SegmentCount( ) const
+{
+	return m_segs.size() ;
+}
+
+RealPath::Segment RealPath::GetSegment( std::size_t index ) const
+{
+	return m_segs[index] ;
+}
 
 } // end of namespace
-
-#endif // GRAPHICSVISITOR_HH_

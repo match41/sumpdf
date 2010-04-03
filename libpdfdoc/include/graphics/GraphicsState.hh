@@ -32,7 +32,7 @@
 
 namespace pdf {
 
-class Colour ;
+class Color ;
 class ContentOp ;
 class DictReader ;
 class Font ;
@@ -90,8 +90,8 @@ public :
 
 	void SetValue( const Name& name, const Object& val ) ;
 	
-	const Colour& StrokeColour( ) const ;
-	const Colour& NonStrokeColour( ) const ;
+	const Color& StrokeColour( ) const ;
+	const Color& NonStrokeColour( ) const ;
 
 private :
 	struct HandlerMap ;
@@ -110,8 +110,8 @@ private :
 
 	void CopyOnWrite( ) ;
 
-	static bool SetColourSpace( Colour& colour, const Name& cs ) ;
-	static bool ChangeColour( Colour& old, const Colour& new_ ) ;
+	static bool SetColourSpace( Color& colour, const Name& cs ) ;
+	static bool ChangeColour( Color& old, const Color& new_ ) ;
 
 private :
 	struct Impl ;
