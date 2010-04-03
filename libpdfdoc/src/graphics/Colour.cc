@@ -85,37 +85,37 @@ void Colour::AssignCMYK( double c, double m, double y, double k )
 
 double Colour::Red( ) const
 {
-	PDF_ASSERT( m_cs != rgb ) ;
+	PDF_ASSERT( m_cs == rgb ) ;
 	return m_channel[0] ;
 }
 
 double Colour::Green( ) const
 {
-	PDF_ASSERT( m_cs != rgb ) ;
+	PDF_ASSERT( m_cs == rgb ) ;
 	return m_channel[1] ;
 }
 
 double Colour::Blue( ) const
 {
-	PDF_ASSERT( m_cs != rgb ) ;
+	PDF_ASSERT( m_cs == rgb ) ;
 	return m_channel[2] ;
 }
 
 double Colour::Cyan( ) const
 {
-	PDF_ASSERT( m_cs != cmyk ) ;
+	PDF_ASSERT( m_cs == cmyk ) ;
 	return m_channel[0] ;
 }
 
 double Colour::Magenta( ) const
 {
-	PDF_ASSERT( m_cs != cmyk ) ;
+	PDF_ASSERT( m_cs == cmyk ) ;
 	return m_channel[1] ;
 }
 
 double Colour::Yellow( ) const
 {
-	PDF_ASSERT( m_cs != cmyk ) ;
+	PDF_ASSERT( m_cs == cmyk ) ;
 	return m_channel[2] ;
 }
 
@@ -127,7 +127,7 @@ double Colour::Black( ) const
 
 double Colour::Gray( ) const
 {
-	PDF_ASSERT( m_cs != gray ) ;
+	PDF_ASSERT( m_cs == gray ) ;
 	return m_channel[0] ;
 }
 

@@ -54,6 +54,8 @@ public :
 	explicit GraphicsState( const TextState& ts ) ;
 	~GraphicsState( ) ;
 
+	// use default generated copy constructor
+
 	const TextState& GetTextState() const ;
 	TextState& GetTextState() ;
 

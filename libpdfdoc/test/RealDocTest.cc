@@ -29,6 +29,13 @@
 #include "RealDoc.hh"
 #include "DocInfo.hh"
 
+#include "page/Page.hh"
+#include "graphics/Colour.hh"
+#include "graphics/GraphicsState.hh"
+#include "graphics/GraphicsVisitor.hh"
+#include "graphics/Text.hh"
+#include "graphics/TextLine.hh"
+
 #include "mock/Assert.hh"
 
 namespace pdfut {
@@ -59,6 +66,42 @@ void RealDocTest::TestNew( )
 {
 	RealDoc doc ;
 	PDFUT_ASSERT_EQUAL( doc.PageCount(), 1u ) ;
+}
+
+void RealDocTest::TestReadColour( )
+{
+	RealDoc doc ;
+	doc.Read( std::string(TEST_DATA_DIR) + "Colour.pdf" ) ;
+	
+	PDFUT_ASSERT_EQUAL( doc.PageCount(), 1U ) ;
+	
+	Page *page1 = doc.GetPage(0) ;
+	CPPUNIT_ASSERT( page1 != 0 ) ;
+	
+	class Visitor : public GraphicsVisitor
+	{
+	public :
+		void VisitText( Text *text )
+		{
+			CPPUNIT_ASSERT( text != 0 ) ;
+			CPPUNIT_ASSERT( text->Count() > 0 ) ;
+
+			for ( Text::iterator i = text->begin() ; i != text->end() ; ++i )
+				m_lines.push_back( *i ) ;
+		}
+		
+		void VisitGraphics( Graphics *text )
+		{
+		}
+	
+		std::vector<TextLine> m_lines ;
+	} v ;
+	
+	page1->VisitGraphics( &v ) ;
+	
+	CPPUNIT_ASSERT( !v.m_lines.empty() ) ;
+	PDFUT_ASSERT_EQUAL( v.m_lines.front().Format().NonStrokeColour(),
+		Colour( 1,0,0 ) ) ;
 }
 
 } // end of namespace

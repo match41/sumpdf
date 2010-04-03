@@ -28,6 +28,7 @@
 #include "GlyphGraphicsItem.hh"
 #include "Util.hh"
 
+#include <graphics/Colour.hh>
 #include <graphics/TextLine.hh>
 #include <graphics/TextState.hh>
 
@@ -37,8 +38,12 @@
 #include <util/Debug.hh>
 #include <util/Matrix.hh>
 
+#include <QColor>
+#include <QBrush>
 #include <QMessageBox>
 #include <QDebug>
+
+#include <boost/format.hpp>
 
 namespace pdf {
 
@@ -61,6 +66,7 @@ GlyphGroup::GlyphGroup( const TextLine& blk, QGraphicsItem *parent )
 
 	QTransform t = ToQtMatrix( m_line.Transform() ) ;
 	setTransform( t ) ;
+	
 }
 
 void GlyphGroup::OnChar(
@@ -71,6 +77,12 @@ void GlyphGroup::OnChar(
 {
 	GlyphGraphicsItem *item = new GlyphGraphicsItem( glyph ) ;
 
+	// fill colour
+	QColor fill_color ;
+	Colour nstrk = m_line.Format().NonStrokeColour() ;
+	fill_color.setRgbF( nstrk.Red(), nstrk.Green(), nstrk.Blue() ) ;
+	item->setBrush( QBrush( fill_color ) ) ;
+	
 	// set offset
 	item->setPos( offset, 0 ) ;
 	
@@ -99,7 +111,7 @@ TextLine GlyphGroup::GetLine( ) const
 
 int GlyphGroup::rowCount( const QModelIndex& parent ) const
 {
-	return 4 ;
+	return 6 ;
 }
 
 int GlyphGroup::columnCount( const QModelIndex& parent ) const
@@ -119,10 +131,15 @@ QVariant GlyphGroup::data( const QModelIndex& index, int role ) const
 			case 1: return tr( "Position" ) ;
 			case 2: return tr( "Font" ) ;
 			case 3: return tr( "Size" ) ;
+			case 4: return tr( "Fill Colour" ) ;
+			case 5: return tr( "Stroke Colour" ) ;
 			}
 		}
 		else
 		{
+			const GraphicsState& gs = m_line.Format() ;
+			using boost::format ;
+		
 			QTransform t = transform() ;
 			switch ( index.row() )
 			{
@@ -134,10 +151,14 @@ QVariant GlyphGroup::data( const QModelIndex& index, int role ) const
 			case 1: return QString( "%1, %2" ) % pos().x() % pos().y() ;
 			
 			// font name
-			case 2: return m_line.Format().GetFont()->BaseName().c_str() ;
+			case 2: return gs.GetFont()->BaseName().c_str() ;
 			
 			// font size
-			case 3: return m_line.Format().GetTextState().FontSize( ) ;
+			case 3: return gs.GetTextState().FontSize( ) ;
+			
+			case 4: return (format("%1%") % gs.NonStrokeColour()).str().c_str();
+			
+			case 5: return (format("%1%") % gs.StrokeColour()).str().c_str();
 			}
 		}
 	}

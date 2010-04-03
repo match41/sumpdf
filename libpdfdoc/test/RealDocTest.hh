@@ -45,11 +45,13 @@ public:
 	CPPUNIT_TEST_SUITE( RealDocTest ) ;
 		CPPUNIT_TEST( TestNew ) ;
 		CPPUNIT_TEST( TestRead ) ;
+		CPPUNIT_TEST( TestReadColour ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
 private :
 	void TestNew( ) ;
 	void TestRead( ) ;
+	void TestReadColour( ) ;
 } ;
 
 } // end of namespace
