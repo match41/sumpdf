@@ -25,13 +25,21 @@
 
 #include "Util.hh"
 
+// libpdfdoc headers
+#include <graphics/Colour.hh>
+#include <util/Exception.hh>
 #include <util/Matrix.hh>
 
+// Qt headers
+#include <QColor>
 #include <QString>
 #include <QTransform>
 #include <QTextCodec>
 
+// boost headers
 #include <boost/bind.hpp>
+
+// stdc++ headers
 #include <algorithm>
 #include <iterator>
 
@@ -96,6 +104,47 @@ std::string ToStr( const QString& str )
 QString FromStr( const std::string& str )
 {
 	return QString::fromUtf8( str.c_str(), str.size() ) ;
+}
+
+Colour FromQColor( const QColor& color )
+{
+	Colour result ;
+	QColor c = color ;
+	if ( c.spec() != QColor::Rgb && c.spec() != QColor::Cmyk )
+		c = c.convertTo( QColor::Rgb ) ;
+	
+	switch ( c.spec() )
+	{
+		case QColor::Rgb:
+			result.AssignRGB( c.red(), c.green(), c.blue() ) ;
+			break;
+		case QColor::Cmyk:
+			result.AssignCMYK( c.cyan(), c.magenta(), c.yellow(), c.black() ) ;
+			break ;
+		default :
+			break ;
+	}
+	return result ;
+}
+
+QColor ToQColor( const Colour& c )
+{
+	QColor result ;
+	switch ( c.ColourSpace() )
+	{
+		case Colour::rgb :
+			result.setRgbF( c.Red(), c.Green(), c.Blue() ) ;
+			break ;
+		case Colour::cmyk :
+			result.setCmykF( c.Cyan(), c.Magenta(), c.Yellow(), c.Black() ) ;
+			break ;
+		case Colour::gray :
+			result.setRgbF( c.Gray(), c.Gray(), c.Gray() ) ;
+			break ;
+		default :
+			throw Exception( "unsupported colour space" ) ;
+	}
+	return result ;
 }
 
 } // end of namespace

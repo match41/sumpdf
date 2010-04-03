@@ -81,7 +81,7 @@ void GlyphGroup::OnChar(
 	QColor fill_color ;
 	Colour nstrk = m_line.Format().NonStrokeColour() ;
 	fill_color.setRgbF( nstrk.Red(), nstrk.Green(), nstrk.Blue() ) ;
-	item->setBrush( QBrush( fill_color ) ) ;
+	item->setBrush( QBrush( ToQColor( m_line.Format().NonStrokeColour() ) ) ) ;
 	
 	// set offset
 	item->setPos( offset, 0 ) ;
