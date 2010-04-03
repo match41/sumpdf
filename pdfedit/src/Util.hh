@@ -36,7 +36,7 @@ class QColor ;
 namespace pdf
 {
 	class Matrix ;
-	class Colour ;
+	class Color ;
 	
 	QTransform ToQtMatrix( const Matrix& m ) ;
 	Matrix FromQtMatrix( const QTransform& m ) ;
@@ -53,8 +53,8 @@ namespace pdf
 		return s.arg( t ) ;
 	}
 
-	Colour FromQColor( const QColor& c ) ;
-	QColor ToQColor( const Colour& c ) ;
+	Color FromQColor( const QColor& c ) ;
+	QColor ToQColor( const Color& c ) ;
 
 } // end of namespace
 

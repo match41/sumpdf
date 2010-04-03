@@ -35,7 +35,7 @@ namespace pdf {
 /**	\internal
 	The Colour class represents
 */
-class Colour
+class Color
 {
 public :
 	enum Space
@@ -49,18 +49,18 @@ public :
 
 public :
 	/// default colour is gray black.
-	Colour( ) ;
+	Color( ) ;
 	
 	/// grayscale
-	explicit Colour( double gray ) ;
+	explicit Color( double gray ) ;
 	
 	/// RGB colour
-	Colour( double r, double g, double b ) ;
+	Color( double r, double g, double b ) ;
 	
 	/// CMYK colour
-	Colour( double c, double m, double y, double k ) ;
+	Color( double c, double m, double y, double k ) ;
 	
-	Space ColourSpace( ) const ;
+	Space ColorSpace( ) const ;
 
 	std::size_t ChannelCount( ) const ;
 
@@ -91,8 +91,8 @@ public :
 	/// gray channel
 	double Gray( ) const ;
 
-	bool operator==( const Colour& colour ) const ;
-	bool operator!=( const Colour& colour ) const ;
+	bool operator==( const Color& colour ) const ;
+	bool operator!=( const Color& colour ) const ;
 
 	iterator begin( ) const ;
 	iterator end( ) const ;
@@ -102,7 +102,7 @@ private :
 	double	m_channel[4] ;
 } ;
 
-std::ostream& operator<<( std::ostream& os, const Colour& t ) ;
+std::ostream& operator<<( std::ostream& os, const Color& t ) ;
 
 } // end of namespace
 

@@ -30,7 +30,7 @@
 #include "DocInfo.hh"
 
 #include "page/Page.hh"
-#include "graphics/Colour.hh"
+#include "graphics/Color.hh"
 #include "graphics/GraphicsState.hh"
 #include "graphics/GraphicsVisitor.hh"
 #include "graphics/Text.hh"
@@ -71,7 +71,7 @@ void RealDocTest::TestNew( )
 void RealDocTest::TestReadColour( )
 {
 	RealDoc doc ;
-	doc.Read( std::string(TEST_DATA_DIR) + "Colour.pdf" ) ;
+	doc.Read( std::string(TEST_DATA_DIR) + "Color.pdf" ) ;
 	
 	PDFUT_ASSERT_EQUAL( doc.PageCount(), 1U ) ;
 	
@@ -101,7 +101,7 @@ void RealDocTest::TestReadColour( )
 	
 	CPPUNIT_ASSERT( !v.m_lines.empty() ) ;
 	PDFUT_ASSERT_EQUAL( v.m_lines.front().Format().NonStrokeColour(),
-		Colour( 1,0,0 ) ) ;
+		Color( 1,0,0 ) ) ;
 }
 
 } // end of namespace
