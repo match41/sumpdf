@@ -209,6 +209,9 @@ void RealPageTest::TestDecode( )
 		void VisitGraphics( pdf::Graphics * )
 		{
 		}
+		void VisitPath( Path * )
+		{
+		}
 	} v ;
 	
 	p->VisitGraphics( &v ) ;

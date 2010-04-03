@@ -101,7 +101,8 @@ set( PAGE_HDRS		${PAGE_DIR}/RealPage.hh
 					${PAGE_DIR}/ContentOp.hh
 					${PAGE_DIR}/ExtGState.hh )
 
-set( GRAPICS_HDRS	${GRAPICS_DIR}/RealText.hh )
+set( GRAPICS_HDRS	${GRAPICS_DIR}/RealText.hh
+					${GRAPICS_DIR}/RealPath.hh )
 
 set( FILE_HDRS		${FILE_DIR}/RealFile.hh
 					${FILE_DIR}/File.hh
@@ -210,9 +211,10 @@ set( GRAPICS_SRCS	${GRAPICS_DIR}/Graphics.cc
 					${GRAPICS_DIR}/GraphicsVisitor.cc
 					${GRAPICS_DIR}/GraphicsState.cc
 					${GRAPICS_DIR}/Text.cc
-					${GRAPICS_DIR}/Path.cc
-					${GRAPICS_DIR}/CharVisitor.cc
 					${GRAPICS_DIR}/RealText.cc
+					${GRAPICS_DIR}/Path.cc
+					${GRAPICS_DIR}/RealPath.cc
+					${GRAPICS_DIR}/CharVisitor.cc
 					${GRAPICS_DIR}/TextLine.cc
 					${GRAPICS_DIR}/TextState.cc
 					${GRAPICS_DIR}/Color.cc )

@@ -94,6 +94,10 @@ void RealDocTest::TestReadColour( )
 		{
 		}
 	
+		void VisitPath( Path *path )
+		{
+		}
+	
 		std::vector<TextLine> m_lines ;
 	} v ;
 	

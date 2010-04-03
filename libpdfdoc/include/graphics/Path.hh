@@ -28,6 +28,8 @@
 
 #include "Graphics.hh"
 
+#include <cstddef>
+
 namespace pdf {
 
 ///	brief description
@@ -39,12 +41,15 @@ class Path : public Graphics
 public :
 	struct Segment
 	{
-		double		*points ;
-		std::size_t	count ;
+		double	*points ;
 		enum Op { move, line, cubic123, cubic23, cubic13, close } ;
 	} ;
-	
+
+public :
 	virtual ~Path( ) ;
+	
+	virtual std::size_t SegmentCount( ) const = 0 ;
+	virtual Segment GetSegment( std::size_t index ) const = 0 ;
 } ;
 
 } // end of namespace
