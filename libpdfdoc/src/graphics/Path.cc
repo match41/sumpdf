@@ -23,14 +23,14 @@
 	\author	Nestal Wan
 */
 
-#include "Path.hh"
+#include "graphics/Path.hh"
 
 namespace pdf {
 
 /**	constructor
 	
 */
-Path::Path( )
+Path::~Path( )
 {
 }
 

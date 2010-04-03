@@ -37,8 +37,6 @@ namespace pdf {
 class Path : public Graphics
 {
 public :
-	Path( ) ;
-
 	struct Segment
 	{
 		double		*points ;
@@ -46,6 +44,7 @@ public :
 		enum Op { move, line, cubic123, cubic23, cubic13, close } ;
 	} ;
 	
+	virtual ~Path( ) ;
 } ;
 
 } // end of namespace
