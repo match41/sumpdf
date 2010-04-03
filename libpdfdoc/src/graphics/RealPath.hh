@@ -54,6 +54,19 @@ public :
 	Segment GetSegment( std::size_t index ) const ;
 
 private :
+	/// command handler
+	struct HandlerMap ;
+
+	// position command handlers
+	void Onm( ContentOp& op, const ResourcesDict *res ) ;
+	void Onl( ContentOp& op, const ResourcesDict *res ) ;
+	void Onc( ContentOp& op, const ResourcesDict *res ) ;
+	void Onv( ContentOp& op, const ResourcesDict *res ) ;
+	void Ony( ContentOp& op, const ResourcesDict *res ) ;
+	void Onh( ContentOp& op, const ResourcesDict *res ) ;
+	void Onre( ContentOp& op, const ResourcesDict *res ) ;
+
+private :
 	std::vector<double>		m_points ;
 	std::vector<Segment>	m_segs ;
 	

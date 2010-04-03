@@ -45,6 +45,7 @@ public :
 
 	void VisitText( Text *text ) ;
 	void VisitGraphics( Graphics *gfx ) ;
+	void VisitPath( Path *path ) ;
 
 private :
 	void LoadTextLine( const TextLine& line ) ;
