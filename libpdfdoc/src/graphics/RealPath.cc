@@ -31,6 +31,9 @@
 
 #include "page/ContentOp.hh"
 
+#include "util/Debug.hh"
+#include "util/Util.hh"
+
 #include <map>
 
 namespace pdf {
@@ -43,26 +46,50 @@ struct RealPath::HandlerMap
 
 	static const Map::value_type	m_val[] ;
 	static const Map				m_map ;
+
+	typedef std::map<Token, PathSegment::Op>	SegOpMap ;
+
+	static const SegOpMap::value_type	m_seg_val[] ;
+	static const SegOpMap				m_seg_map ;
 } ;
 
 const RealPath::HandlerMap::Map::value_type	RealPath::HandlerMap::m_val[] =
 {
 	// path construction commands
-	std::make_pair( "m",	&RealPath::Onm ),
-	std::make_pair( "l",	&RealPath::Onl ),
-	std::make_pair( "c",	&RealPath::Onc ),
-	std::make_pair( "v",	&RealPath::Onv ),
-	std::make_pair( "y",	&RealPath::Ony ),
-	std::make_pair( "h",	&RealPath::Onh ),
+	std::make_pair( "m",	&RealPath::OnPositionCommands ),
+	std::make_pair( "l",	&RealPath::OnPositionCommands ),
+	std::make_pair( "c",	&RealPath::OnPositionCommands ),
+	std::make_pair( "v",	&RealPath::OnPositionCommands ),
+	std::make_pair( "y",	&RealPath::OnPositionCommands ),
+	std::make_pair( "h",	&RealPath::OnPositionCommands ),
 	std::make_pair( "re",	&RealPath::Onre ),
 	
 	// path showing commands
 } ;
 
+const RealPath::HandlerMap::Map RealPath::HandlerMap::m_map(
+	Begin( RealPath::HandlerMap::m_val ),
+	End( RealPath::HandlerMap::m_val ) ) ;
+
+const RealPath::HandlerMap::SegOpMap::value_type
+	RealPath::HandlerMap::m_seg_val[] =
+{
+	std::make_pair( "m",	PathSegment::move ),
+	std::make_pair( "l",	PathSegment::line ),
+	std::make_pair( "c",	PathSegment::cubic123 ),
+	std::make_pair( "v",	PathSegment::cubic23 ),
+	std::make_pair( "y",	PathSegment::cubic13 ),
+	std::make_pair( "h",	PathSegment::close ),
+} ;
+
+const RealPath::HandlerMap::SegOpMap RealPath::HandlerMap::m_seg_map(
+	Begin( RealPath::HandlerMap::m_seg_val ),
+	End( RealPath::HandlerMap::m_seg_val ) ) ;
+
 /**	constructor
 	
 */
-RealPath::RealPath( const GraphicsState& gs )
+RealPath::RealPath( const GraphicsState& gs, const Matrix& ctm )
 	: m_state( gs )
 {
 }
@@ -92,37 +119,41 @@ GraphicsState RealPath::GetState( ) const
 // Path virtual functions
 std::size_t RealPath::Count( ) const
 {
-	return m_segs.size() ;
+	PDF_ASSERT( m_ops.size() == m_pt_index.size() ) ;
+	return m_ops.size() ;
 }
 
 PathSegment RealPath::Segment( std::size_t index ) const
 {
-	return m_segs[index] ;
+	PDF_ASSERT( m_ops.size() == m_pt_index.size() ) ;
+	PDF_ASSERT( index < m_ops.size()  ) ;
+	PDF_ASSERT( m_pt_index[index] < m_points.size() ) ;
+	
+	return PathSegment( m_ops[index], &m_points[m_pt_index[index]] ) ;
 }
 
 // position command handlers
-void RealPath::Onm( ContentOp& op, const ResourcesDict *res )
+void RealPath::OnPositionCommands( ContentOp& op, const ResourcesDict *res )
 {
-}
-
-void RealPath::Onl( ContentOp& op, const ResourcesDict *res )
-{
-}
-
-void RealPath::Onc( ContentOp& op, const ResourcesDict *res )
-{
-}
-
-void RealPath::Onv( ContentOp& op, const ResourcesDict *res )
-{
-}
-
-void RealPath::Ony( ContentOp& op, const ResourcesDict *res )
-{
-}
-
-void RealPath::Onh( ContentOp& op, const ResourcesDict *res )
-{
+	HandlerMap::SegOpMap::const_iterator i = HandlerMap::m_seg_map.find( op.Operator() ) ;
+	if ( i != HandlerMap::m_seg_map.end() )
+	{
+		std::size_t count = PathSegment::ArgCount( i->second ) ;
+		if ( op.Count() >= count )
+		{
+			double temp[PathSegment::m_max_arg_count] = {} ;
+			
+			// we have a function named Count() as well, so need to
+			// specify it's the namespace one
+			PDF_ASSERT( pdf::Count(temp) >= count ) ;
+			std::copy( op.begin(), op.begin() + count, temp ) ;
+			
+			// OK. still no throw here. commit
+			m_pt_index.push_back( m_points.size() ) ;
+			m_points.insert( m_points.end(), temp, temp + count ) ;
+			m_ops.push_back( i->second ) ;
+		}
+	}
 }
 
 void RealPath::Onre( ContentOp& op, const ResourcesDict *res )

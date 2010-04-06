@@ -27,6 +27,7 @@
 #define __PDF_PATHSEGMENT_HH_EADER_INCLUDED__
 
 #include <cstddef>
+#include <iosfwd>
 
 namespace pdf {
 
@@ -39,6 +40,10 @@ class PathSegment
 public :
 	enum Op { move, line, cubic123, cubic23, cubic13, close } ;
 
+	static const std::size_t m_max_arg_count = 6 ;
+
+	typedef const double* iterator ;
+
 public :
 	explicit PathSegment( Op op = close, const double *points = 0 ) ;
 
@@ -48,10 +53,17 @@ public :
 	std::size_t Count( ) const ;
 	Op GetOp( ) const ;
 
+	static std::size_t ArgCount( Op op ) ;
+
+	iterator begin() const ;
+	iterator end() const ;
+
 private :
 	const double	*m_points ;
 	Op				m_op ;
 } ;
+
+std::ostream& operator<<( std::ostream& os, const PathSegment& seg ) ;
 
 } // end of namespace
 

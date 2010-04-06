@@ -48,6 +48,31 @@ namespace pdf {
 		}
 	}
 
+	template <typename FwdIt1, typename FwdIt2>
+	void AssertEquals(
+		FwdIt1	actualFirst,
+		FwdIt1	actualLast,
+		FwdIt2	expectFirst,
+		CPPUNIT_NS::SourceLine	sourceLine,
+		const std::string&		message )
+	{
+		if ( !std::equal( actualFirst, actualLast, expectFirst ) )
+		{
+			std::ostringstream exp, act ;
+			while ( actualFirst != actualLast )
+			{
+				act << *actualFirst++ << " " ;
+				exp << *expectFirst++ << " " ;
+			}
+			
+			CPPUNIT_NS::Asserter::failNotEqual(
+				exp.str(),
+				act.str(),
+				sourceLine,
+				message );
+		}
+	}
+	
 	inline void AssertEquals(
 		const std::wstring&		expected,
 		const std::wstring& 	actual,
@@ -63,16 +88,23 @@ namespace pdf {
 	
 } // end of namespace
 
-#define PDFUT_ASSERT_EQUAL(actual, expected)          \
-  ( pdf::AssertEquals( (expected),              \
-                       (actual),                \
-                       CPPUNIT_SOURCELINE(),    \
+#define PDFUT_ASSERT_RANGE_EQUAL(actualFirst, actualLast, expectFirst) \
+	  ( pdf::AssertEquals( (actualFirst),			\
+	                       (actualLast),			\
+	                       (expectFirst),			\
+	                       CPPUNIT_SOURCELINE(),	\
+	                       "["#actualFirst","#actualLast") == "#expectFirst) )
+
+#define PDFUT_ASSERT_EQUAL(actual, expected)	\
+  ( pdf::AssertEquals( (expected),				\
+                       (actual),				\
+                       CPPUNIT_SOURCELINE(),	\
                        #actual" == "#expected) )
 
-#define PDFUT_ASSERT_NULL(actual)          \
-  ( pdf::AssertEquals( ((void*)0),              \
-                       (actual),                \
-                       CPPUNIT_SOURCELINE(),    \
+#define PDFUT_ASSERT_NULL(actual)				\
+  ( pdf::AssertEquals( ((void*)0),				\
+                       (actual),				\
+                       CPPUNIT_SOURCELINE(),	\
                        #actual" != 0" ) )
 
 #endif // ASSERT_HH_

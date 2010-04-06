@@ -17,61 +17,33 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	RealPath.hh
-    \brief	definition the RealPath class
-    \date	Apr 3, 2010
-    \author	Nestal Wan
+/**	\file	MockGraphicsVisitor.cc
+	\brief	implementation of the MockGraphicsVisitor class
+	\date	Apr 6, 2010
+	\author	Nestal Wan
 */
 
-#ifndef __PDF_REALPATH_HH_EADER_INCLUDED__
-#define __PDF_REALPATH_HH_EADER_INCLUDED__
-
-#include "graphics/Path.hh"
-
-#include "graphics/GraphicsState.hh"
-#include "graphics/PathSegment.hh"
-
-#include <vector>
+#include "MockGraphicsVisitor.hh"
 
 namespace pdf {
 
-class Matrix ;
-
-///	brief description
-/**	\internal
-	The RealPath class represents
+/**	constructor
+	
 */
-class RealPath : public Path
+MockGraphicsVisitor::MockGraphicsVisitor( )
 {
-public :
-	explicit RealPath( const GraphicsState& gs, const Matrix& ctm ) ;
-	
-	// Graphics virtual functions
-	void OnCommand( ContentOp& op, const ResourcesDict *res ) ;
-	void Print( std::ostream& os, ResourcesDict *res ) const ;
-	void Visit( GraphicsVisitor *visitor ) ;
-	GraphicsState GetState( ) const ;
-	
-	// Path virtual functions
-	std::size_t Count( ) const ;
-	PathSegment Segment( std::size_t index ) const ;
+}
 
-private :
-	/// command handler
-	struct HandlerMap ;
+void MockGraphicsVisitor::VisitText( Text *text )
+{
+}
 
-	// position command handlers
-	void Onre( ContentOp& op, const ResourcesDict *res ) ;
-	void OnPositionCommands( ContentOp& op, const ResourcesDict *res ) ;
- 
-private :
-	std::vector<double>				m_points ;
-	std::vector<PathSegment::Op>	m_ops ;
-	std::vector<std::size_t>		m_pt_index ;
-	
-	GraphicsState			m_state ;
-} ;
+void MockGraphicsVisitor::VisitGraphics( Graphics *text )
+{
+}
+
+void MockGraphicsVisitor::VisitPath( Path *path )
+{
+}
 
 } // end of namespace
-
-#endif // REALPATH_HH_

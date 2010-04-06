@@ -17,61 +17,39 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	RealPath.hh
-    \brief	definition the RealPath class
-    \date	Apr 3, 2010
+/**	\file	RealPathTest.hh
+    \brief	definition the RealPathTest class
+    \date	Apr 6, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_REALPATH_HH_EADER_INCLUDED__
-#define __PDF_REALPATH_HH_EADER_INCLUDED__
+#ifndef __PDFUT_REALPATHTEST_HH_EADER_INCLUDED__
+#define __PDFUT_REALPATHTEST_HH_EADER_INCLUDED__
 
-#include "graphics/Path.hh"
+#include <cppunit/TestFixture.h>
 
-#include "graphics/GraphicsState.hh"
-#include "graphics/PathSegment.hh"
+#include <cppunit/extensions/HelperMacros.h>
 
-#include <vector>
+namespace pdfut {
 
-namespace pdf {
-
-class Matrix ;
-
-///	brief description
-/**	\internal
-	The RealPath class represents
-*/
-class RealPath : public Path
+class RealPathTest : public CppUnit::TestFixture
 {
 public :
-	explicit RealPath( const GraphicsState& gs, const Matrix& ctm ) ;
-	
-	// Graphics virtual functions
-	void OnCommand( ContentOp& op, const ResourcesDict *res ) ;
-	void Print( std::ostream& os, ResourcesDict *res ) const ;
-	void Visit( GraphicsVisitor *visitor ) ;
-	GraphicsState GetState( ) const ;
-	
-	// Path virtual functions
-	std::size_t Count( ) const ;
-	PathSegment Segment( std::size_t index ) const ;
+	RealPathTest( ) ;
+
+	// declare suit function
+	CPPUNIT_TEST_SUITE( RealPathTest ) ;
+		CPPUNIT_TEST( Test ) ;
+	CPPUNIT_TEST_SUITE_END();
+
+public :
+	void setUp( ) ;
+	void tearDown( ) ;
 
 private :
-	/// command handler
-	struct HandlerMap ;
-
-	// position command handlers
-	void Onre( ContentOp& op, const ResourcesDict *res ) ;
-	void OnPositionCommands( ContentOp& op, const ResourcesDict *res ) ;
- 
-private :
-	std::vector<double>				m_points ;
-	std::vector<PathSegment::Op>	m_ops ;
-	std::vector<std::size_t>		m_pt_index ;
-	
-	GraphicsState			m_state ;
+	void Test( ) ;
 } ;
 
 } // end of namespace
 
-#endif // REALPATH_HH_
+#endif // REALPATHTEST_HH_

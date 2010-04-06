@@ -15,65 +15,47 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- \***************************************************************************/
+\***************************************************************************/
 
-/**
-	\file	RealDocTest.cc
-	\brief	definition the RealDocTest class
-	\date	Dec 27, 2009
+/**	\file	RealPathTest.cc
+	\brief	implementation of the RealPathTest class
+	\date	Apr 6, 2010
 	\author	Nestal Wan
 */
 
-#include "RealDocTest.hh"
+#include "RealPathTest.hh"
 
 #include "RealDoc.hh"
-#include "DocInfo.hh"
 
 #include "page/Page.hh"
 #include "graphics/Color.hh"
-#include "graphics/GraphicsState.hh"
-#include "graphics/Text.hh"
-#include "graphics/TextLine.hh"
+
+#include "graphics/Path.hh"
+#include "graphics/PathSegment.hh"
 
 #include "mock/Assert.hh"
 #include "mock/MockGraphicsVisitor.hh"
-
-#include <iostream>
 
 namespace pdfut {
 
 using namespace pdf ;
 
-RealDocTest::RealDocTest( )
+RealPathTest::RealPathTest( )
 {
 }
 
-void RealDocTest::TestRead( )
+void RealPathTest::setUp( )
 {
-	pdf::RealDoc doc ;
-	doc.Read( std::string(TEST_DATA_DIR) + "FileTestSimple.pdf" ) ;
-	
-	pdf::DocInfo *info = doc.Info( ) ;
-	CPPUNIT_ASSERT( info != 0 ) ;
-	PDFUT_ASSERT_EQUAL( info->Producer(),	"nestal" ) ;
-	PDFUT_ASSERT_EQUAL( info->Creator(),	"D:20080410074227" ) ;
-	
-	CPPUNIT_ASSERT( doc.PageCount() > 0 ) ;
-	
-	Page *page1 = doc.GetPage(0) ;
-	CPPUNIT_ASSERT( page1 != 0 ) ;
 }
 
-void RealDocTest::TestNew( )
+void RealPathTest::tearDown( )
+{
+}
+
+void RealPathTest::Test( )
 {
 	RealDoc doc ;
-	PDFUT_ASSERT_EQUAL( doc.PageCount(), 1u ) ;
-}
-
-void RealDocTest::TestReadColour( )
-{
-	RealDoc doc ;
-	doc.Read( std::string(TEST_DATA_DIR) + "Color.pdf" ) ;
+	doc.Read( std::string(TEST_DATA_DIR) + "Star.pdf" ) ;
 	
 	PDFUT_ASSERT_EQUAL( doc.PageCount(), 1U ) ;
 	
@@ -83,22 +65,33 @@ void RealDocTest::TestReadColour( )
 	class Visitor : public MockGraphicsVisitor
 	{
 	public :
-		void VisitText( Text *text )
+		Visitor( ) : m_index( ) {}
+		
+		void VisitPath( Path *path )
 		{
-			CPPUNIT_ASSERT( text != 0 ) ;
-			CPPUNIT_ASSERT( text->Count() > 0 ) ;
+			CPPUNIT_ASSERT( path != 0 ) ;
+			CPPUNIT_ASSERT( path->Count() > 0 ) ;
 
-			for ( Text::iterator i = text->begin() ; i != text->end() ; ++i )
-				m_lines.push_back( *i ) ;
+			if ( m_index == 0 )
+			{
+				PDFUT_ASSERT_EQUAL( path->Count(), 13U ) ;
+				
+				PathSegment p = path->Segment(0) ;
+				PDFUT_ASSERT_EQUAL( p.GetOp(), PathSegment::move ) ;
+				PDFUT_ASSERT_EQUAL( p.Count(), 2U ) ;
+				
+				double exp[] = { 96, 131.031 } ;
+				PDFUT_ASSERT_RANGE_EQUAL( p.begin(), p.end(), exp ) ;
+			}
+			
+			++m_index ;
 		}
-		std::vector<TextLine> m_lines ;
+	
+	private :
+		int m_index ;
 	} v ;
 	
 	page1->VisitGraphics( &v ) ;
-	
-	CPPUNIT_ASSERT( !v.m_lines.empty() ) ;
-	PDFUT_ASSERT_EQUAL( v.m_lines.front().Format().NonStrokeColour(),
-		Color( 1,0,0 ) ) ;
 }
 
 } // end of namespace

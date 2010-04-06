@@ -519,6 +519,7 @@ set( UT_SRCS	test/core/TokenTest.cc
 				test/graphics/TextLineTest.cc
 				test/graphics/RealTextTest.cc
 				test/graphics/GraphicsStateTest.cc
+				test/graphics/RealPathTest.cc
 				
 				test/stream/StreamTest.cc
 				test/stream/RawFilterTest.cc
@@ -551,6 +552,7 @@ set( UT_SRCS	test/core/TokenTest.cc
 				test/mock/MockGlyph.cc
 				test/mock/TestBase.cc
 				test/mock/MockFontDb.cc
+				test/mock/MockGraphicsVisitor.cc
 				test/RealDocTest.cc
 )
 

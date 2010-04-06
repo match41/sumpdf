@@ -17,85 +17,33 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	ContentStream.hh
-    \brief	definition the ContentStream class
-    \date	Feb 20, 2010
+/**	\file	MockGraphicsVisitor.hh
+    \brief	definition the MockGraphicsVisitor class
+    \date	Apr 6, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_CONTENTSTREAM_HH_EADER_INCLUDED__
-#define __PDF_CONTENTSTREAM_HH_EADER_INCLUDED__
+#ifndef __PDF_MOCKGRAPHICSVISITOR_HH_EADER_INCLUDED__
+#define __PDF_MOCKGRAPHICSVISITOR_HH_EADER_INCLUDED__
 
-#include "graphics/GraphicsState.hh"
-#include "stream/Stream.hh"
-#include "util/Matrix.hh"
-
-#include <stack>
-#include <vector>
+#include "graphics/GraphicsVisitor.hh"
 
 namespace pdf {
 
-class ContentOp ;
-class Graphics ;
-class GraphicsVisitor ;
-class ResourcesDict ;
-
 ///	brief description
 /**	\internal
-	The ContentStream class represents
+	The MockGraphicsVisitor class represents
 */
-class ContentStream
+class MockGraphicsVisitor : public GraphicsVisitor
 {
 public :
-	template <typename InputIt>
-	ContentStream( InputIt first, InputIt last,
-		const ResourcesDict	*res,
-		GraphicsVisitor		*visitor )
-		: m_strs( first, last )
-		, m_visitor( visitor )
-		, m_res( res )
-		, m_current( 0 )
-	{
-	}
+	MockGraphicsVisitor( ) ;
 
-	void Decode( ) ;
-
-//	void SwapGfxObj( std::vector<Graphics*>& gfxs ) ;
-
-private :
-	struct HandlerMap ;
-	
-	void Decode( Stream& str ) ;
-
-	void ProcessCommand( ContentOp& op ) ;
-
-	void OnBT( ContentOp& op ) ;
-	void OnEndObject( ContentOp& op ) ;
-	void Oncm( ContentOp& op ) ;
-	void OnQ( ContentOp& op ) ;
-	void Onq( ContentOp& op ) ;
-	void Onm( ContentOp& op ) ;
-	void OnPaintPath( ContentOp& op ) ;
-
-private :
-	std::vector<Stream>		m_strs ;
-	GraphicsVisitor 		*m_visitor ; 
-	const ResourcesDict		*m_res ;
-
-	/// all graphics states
-	struct State
-	{
-		GraphicsState	gs ;
-		Matrix			ctm ;
-	} m_state ;
-
-	//@{
-	/// Context information for decoding the graphics objects
-	Graphics			*m_current ;
-	std::stack<State>	m_state_stack ;
-	//@}
+	void VisitText( Text *text ) ;
+	void VisitGraphics( Graphics *text ) ;
+	void VisitPath( Path *path ) ;
 } ;
 
 } // end of namespace
 
-#endif // CONTENTSTREAM_HH_
+#endif // MOCKGRAPHICSVISITOR_HH_
