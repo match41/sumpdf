@@ -58,6 +58,8 @@ public :
 	iterator begin() const ;
 	iterator end() const ;
 
+	double operator[]( std::size_t i ) const ;
+
 private :
 	const double	*m_points ;
 	Op				m_op ;

@@ -83,6 +83,12 @@ PathSegment::iterator PathSegment::end() const
 	return m_points + Count() ;
 }
 
+double PathSegment::operator[]( std::size_t i ) const
+{
+	PDF_ASSERT( i < Count() ) ;
+	return m_points[i] ;
+}
+
 std::ostream& operator<<( std::ostream& os, const PathSegment& seg )
 {
 	PathSegment::Op op = seg.GetOp() ;
