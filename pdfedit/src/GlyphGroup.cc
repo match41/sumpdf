@@ -82,7 +82,7 @@ void GlyphGroup::OnChar(
 	Color nstrk = m_line.Format().NonStrokeColour() ;
 	item->setBrush( QBrush( ToQColor( m_line.Format().NonStrokeColour() ) ) ) ;
 	
-	// set offset
+	// set glyph offset
 	item->setPos( offset, 0 ) ;
 	
 	// scale font by their font size
