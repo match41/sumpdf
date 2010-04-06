@@ -127,9 +127,12 @@ PathSegment RealPath::Segment( std::size_t index ) const
 {
 	PDF_ASSERT( m_ops.size() == m_pt_index.size() ) ;
 	PDF_ASSERT( index < m_ops.size()  ) ;
-	PDF_ASSERT( m_pt_index[index] < m_points.size() ) ;
+	PDF_ASSERT( m_pt_index[index] < m_points.size() ||
+		PathSegment::ArgCount(m_ops[index]) == 0 ) ;
 	
-	return PathSegment( m_ops[index], &m_points[m_pt_index[index]] ) ;
+	return PathSegment( m_ops[index],
+		PathSegment::ArgCount(m_ops[index]) == 0 ? 0 :
+		&m_points[m_pt_index[index]] ) ;
 }
 
 // position command handlers
