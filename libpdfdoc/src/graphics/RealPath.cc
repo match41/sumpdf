@@ -27,7 +27,37 @@
 
 #include "graphics/GraphicsVisitor.hh"
 
+#include "core/Token.hh"
+
+#include "page/ContentOp.hh"
+
+#include <map>
+
 namespace pdf {
+
+struct RealPath::HandlerMap
+{
+	/// command handler
+	typedef void (RealPath::*Handler)( ContentOp& , const ResourcesDict* ) ;
+	typedef std::map<Token, Handler>	Map ;
+
+	static const Map::value_type	m_val[] ;
+	static const Map				m_map ;
+} ;
+
+const RealPath::HandlerMap::Map::value_type	RealPath::HandlerMap::m_val[] =
+{
+	// path construction commands
+	std::make_pair( "m",	&RealPath::Onm ),
+	std::make_pair( "l",	&RealPath::Onl ),
+	std::make_pair( "c",	&RealPath::Onc ),
+	std::make_pair( "v",	&RealPath::Onv ),
+	std::make_pair( "y",	&RealPath::Ony ),
+	std::make_pair( "h",	&RealPath::Onh ),
+	std::make_pair( "re",	&RealPath::Onre ),
+	
+	// path showing commands
+} ;
 
 /**	constructor
 	
@@ -40,6 +70,9 @@ RealPath::RealPath( const GraphicsState& gs )
 // Graphics virtual functions
 void RealPath::OnCommand( ContentOp& op, const ResourcesDict *res )
 {
+	HandlerMap::Map::const_iterator i = HandlerMap::m_map.find( op.Operator() );
+	if ( i != HandlerMap::m_map.end() )
+		(this->*(i->second))( op, res ) ;
 }
 
 void RealPath::Print( std::ostream& os, ResourcesDict *res ) const
@@ -57,14 +90,43 @@ GraphicsState RealPath::GetState( ) const
 }
 
 // Path virtual functions
-std::size_t RealPath::SegmentCount( ) const
+std::size_t RealPath::Count( ) const
 {
 	return m_segs.size() ;
 }
 
-RealPath::Segment RealPath::GetSegment( std::size_t index ) const
+PathSegment RealPath::Segment( std::size_t index ) const
 {
 	return m_segs[index] ;
+}
+
+// position command handlers
+void RealPath::Onm( ContentOp& op, const ResourcesDict *res )
+{
+}
+
+void RealPath::Onl( ContentOp& op, const ResourcesDict *res )
+{
+}
+
+void RealPath::Onc( ContentOp& op, const ResourcesDict *res )
+{
+}
+
+void RealPath::Onv( ContentOp& op, const ResourcesDict *res )
+{
+}
+
+void RealPath::Ony( ContentOp& op, const ResourcesDict *res )
+{
+}
+
+void RealPath::Onh( ContentOp& op, const ResourcesDict *res )
+{
+}
+
+void RealPath::Onre( ContentOp& op, const ResourcesDict *res )
+{
 }
 
 } // end of namespace

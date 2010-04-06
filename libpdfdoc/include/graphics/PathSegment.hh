@@ -17,39 +17,42 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	Path.hh
-    \brief	definition the Path class
-    \date	Apr 3, 2010
+/**	\file	PathSegment.hh
+    \brief	definition the PathSegment class
+    \date	Apr 6, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_PATH_HH_EADER_INCLUDED__
-#define __PDF_PATH_HH_EADER_INCLUDED__
-
-#include "Graphics.hh"
+#ifndef __PDF_PATHSEGMENT_HH_EADER_INCLUDED__
+#define __PDF_PATHSEGMENT_HH_EADER_INCLUDED__
 
 #include <cstddef>
 
 namespace pdf {
 
-class PathSegment ;
-
 ///	brief description
 /**	\internal
-	The Path class represents
+	The PathSegment class represents
 */
-class Path : public Graphics
+class PathSegment
 {
 public :
-	virtual ~Path( ) ;
-	
-	/// Returns the number of segment in the path
-	virtual std::size_t Count( ) const = 0 ;
-	
-	/// Returns the segment for the specified index. 
-	virtual PathSegment Segment( std::size_t index ) const = 0 ;
+	enum Op { move, line, cubic123, cubic23, cubic13, close } ;
+
+public :
+	explicit PathSegment( Op op = close, const double *points = 0 ) ;
+
+	// default copy constructor is fine.
+
+	const double* Points( ) const ;
+	std::size_t Count( ) const ;
+	Op GetOp( ) const ;
+
+private :
+	const double	*m_points ;
+	Op				m_op ;
 } ;
 
 } // end of namespace
 
-#endif // PATH_HH_
+#endif // PATHSEGMENT_HH_

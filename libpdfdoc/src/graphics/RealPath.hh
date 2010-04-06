@@ -29,6 +29,7 @@
 #include "graphics/Path.hh"
 
 #include "graphics/GraphicsState.hh"
+#include "graphics/PathSegment.hh"
 
 #include <vector>
 
@@ -50,8 +51,8 @@ public :
 	GraphicsState GetState( ) const ;
 	
 	// Path virtual functions
-	std::size_t SegmentCount( ) const ;
-	Segment GetSegment( std::size_t index ) const ;
+	std::size_t Count( ) const ;
+	PathSegment Segment( std::size_t index ) const ;
 
 private :
 	/// command handler
@@ -65,10 +66,10 @@ private :
 	void Ony( ContentOp& op, const ResourcesDict *res ) ;
 	void Onh( ContentOp& op, const ResourcesDict *res ) ;
 	void Onre( ContentOp& op, const ResourcesDict *res ) ;
-
+ 
 private :
-	std::vector<double>		m_points ;
-	std::vector<Segment>	m_segs ;
+	std::vector<double>			m_points ;
+	std::vector<PathSegment>	m_segs ;
 	
 	GraphicsState			m_state ;
 } ;
