@@ -39,7 +39,6 @@ include(${QT_USE_FILE})
 
 set( BASE_SRCS		src/main.cc
                     src/GlyphGraphicsItem.cc
-                    src/TextObject.cc
                     src/Util.cc
 					src/MainWnd.cc
 					src/PageLoader.cc
@@ -51,7 +50,9 @@ set( BASE_SRCS		src/main.cc
 					src/InsertTextDlg.cc
 					src/TextToolbar.cc
 					src/DocModel.cc
-					src/PathObject.cc )
+					src/PathObject.cc
+                    src/TextObject.cc
+					src/GraphicsObject.cc )
 
 ###############################################################################
 # all sources

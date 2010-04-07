@@ -74,6 +74,7 @@ void PageLoader::VisitGraphics( Graphics *gfx )
 
 void PageLoader::VisitPath( Path *path )
 {
+	PDF_ASSERT( m_scene != 0 ) ;
 	m_scene->addItem( new PathObject( path ) ) ;
 }
 

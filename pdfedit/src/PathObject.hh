@@ -26,9 +26,11 @@
 #ifndef __PDF_PATHOBJECT_HH_EADER_INCLUDED__
 #define __PDF_PATHOBJECT_HH_EADER_INCLUDED__
 
-#include <QAbstractGraphicsShapeItem>
+#include "GraphicsObject.hh"
 
 #include <QPainterPath>
+
+#include <graphics/GraphicsState.hh>
 
 namespace pdf {
 
@@ -38,10 +40,10 @@ class Path ;
 /**	\internal
 	The PathObject class represents
 */
-class PathObject : public QAbstractGraphicsShapeItem
+class PathObject : public GraphicsObject
 {
 public :
-	PathObject( const Path *path ) ;
+	explicit PathObject( const Path *path, QGraphicsItem *parent = 0 ) ;
 
 	// virtual functions for QGraphicsItem
 	QRectF boundingRect( ) const ;
@@ -50,8 +52,11 @@ public :
 		const QStyleOptionGraphicsItem	*option,
 		QWidget 						*widget ) ; 
 
+	GraphicsState Format( ) const ;
+
 private :
 	QPainterPath	m_path ;
+	GraphicsState	m_format ;
 } ;
 
 } // end of namespace

@@ -41,8 +41,6 @@
 #include <QColor>
 #include <QBrush>
 #include <QDebug>
-#include <QPainter>
-#include <QStyleOptionGraphicsItem>
 
 #include <boost/format.hpp>
 
@@ -51,23 +49,13 @@ namespace pdf {
 /**	constructor
 */
 TextObject::TextObject( const TextLine& blk, QGraphicsItem *parent )
-	: QAbstractGraphicsShapeItem( parent )
+	: GraphicsObject( parent )
 	, m_line( blk )
 {
 	m_line.VisitChars( this ) ;
 	m_bound = childrenBoundingRect( ) ;
 	
-	// setup flags
-	setFlags( ItemIsSelectable | ItemIsMovable
-
-		// ItemSendsGeometryChanges needs Qt 4.6 or better
-#if QT_VERSION >= 0x040600
-		| ItemSendsGeometryChanges
-#endif
-	) ;
-
-	QTransform t = ToQtMatrix( m_line.Transform() ) ;
-	setTransform( t ) ;
+	setTransform( ToQtMatrix( m_line.Transform() ) ) ;
 }
 
 void TextObject::OnChar(
@@ -92,12 +80,7 @@ void TextObject::OnChar(
 //	addToGroup( item ) ;
 }
 
-int TextObject::type( ) const
-{
-	return Type ;
-}
-
-const GraphicsState& TextObject::Format( ) const
+GraphicsState TextObject::Format( ) const
 {
 	return m_line.Format() ;
 }
@@ -109,87 +92,6 @@ TextLine TextObject::GetLine( ) const
 	return line ;
 }
 
-int TextObject::rowCount( const QModelIndex& parent ) const
-{
-	return 6 ;
-}
-
-int TextObject::columnCount( const QModelIndex& parent ) const
-{
-	return 2 ;
-}
-
-QVariant TextObject::data( const QModelIndex& index, int role ) const
-{
-	if ( role == Qt::DisplayRole )
-	{
-		if ( index.column() == 0 )
-		{
-			switch ( index.row() )
-			{
-			case 0: return tr( "Transform" ) ;
-			case 1: return tr( "Position" ) ;
-			case 2: return tr( "Font" ) ;
-			case 3: return tr( "Size" ) ;
-			case 4: return tr( "Fill Colour" ) ;
-			case 5: return tr( "Stroke Colour" ) ;
-			}
-		}
-		else
-		{
-			const GraphicsState& gs = m_line.Format() ;
-			using boost::format ;
-		
-			QTransform t = transform() ;
-			switch ( index.row() )
-			{
-			// matrix
-			case 0: return QString( "%1 %2 %3 %4 %5 %6" )
-				% t.m11() % t.m12() % t.m21() % t.m22() % t.m31() % t.m32() ;
-
-			// position
-			case 1: return QString( "%1, %2" ) % pos().x() % pos().y() ;
-			
-			// font name
-			case 2: return gs.GetFont()->BaseName().c_str() ;
-			
-			// font size
-			case 3: return gs.GetTextState().FontSize( ) ;
-			
-			case 4: return (format("%1%") % gs.NonStrokeColour()).str().c_str();
-			
-			case 5: return (format("%1%") % gs.StrokeColour()).str().c_str();
-			}
-		}
-	}
-	return QVariant( ) ;
-}
-
-QVariant TextObject::headerData( int sect, Qt::Orientation ori, int role ) const
-{
-	if ( ori == Qt::Horizontal && role == Qt::DisplayRole )
-	{
-		switch ( sect )
-		{
-		case 0: return tr( "Property" ) ;
-		case 1: return tr( "Value" ) ;
-		}
-	}
-	else if ( ori == Qt::Vertical )
-	{
-	}
-	return QVariant( ) ;
-}
-
-QVariant TextObject::itemChange( GraphicsItemChange change, const QVariant& value )
-{
-	if ( change == ItemPositionChange || change == ItemMatrixChange )
-	{
-		emit dataChanged( index( 0, 1 ), index( 1, 1 ) ) ;
-	}
-	return QGraphicsItem::itemChange( change, value ) ;
-}
-
 // virtual functions for QGraphicsItem
 QRectF TextObject::boundingRect( ) const
 {
@@ -199,13 +101,9 @@ QRectF TextObject::boundingRect( ) const
 void TextObject::paint(
 	QPainter 						*painter,
 	const QStyleOptionGraphicsItem	*option,
-	QWidget 						* )
+	QWidget 						*widget )
 {
-	if ( option->state & QStyle::State_Selected )
-	{
-		painter->setBrush( Qt::NoBrush ) ;
-		painter->drawRect( m_bound ) ;
-	}
+	GraphicsObject::paint( painter, option, widget ) ;
 }
 
 } // end of namespace

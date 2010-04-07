@@ -17,60 +17,57 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	PathObject.cc
-	\brief	implementation of the PathObject class
-	\date	Apr 7, 2010
-	\author	Nestal Wan
+/**	\file	GraphicsObject.hh
+    \brief	definition the GraphicsObject class
+    \date	Apr 8, 2010
+    \author	Nestal Wan
 */
 
-#include "PathObject.hh"
+#ifndef __PDF_GRAPHICSOBJECT_HH_EADER_INCLUDED__
+#define __PDF_GRAPHICSOBJECT_HH_EADER_INCLUDED__
 
-// libpdfdoc headers
-#include <graphics/Path.hh>
-#include <graphics/PathSegment.hh>
-
-#include <QPainter>
+#include <QAbstractGraphicsShapeItem>
+#include <QAbstractTableModel>
 
 namespace pdf {
 
-/**	constructor
-	
+class GraphicsState ;
+
+///	brief description
+/**	\internal
+	The GraphicsObject class represents
 */
-PathObject::PathObject( const Path *path, QGraphicsItem *parent )
-	: GraphicsObject( parent )
-	, m_path( QPointF(0, 0) )
-	, m_format( path->GetState() )
+class GraphicsObject :
+	public QAbstractGraphicsShapeItem,
+	public QAbstractTableModel
 {
-	for ( std::size_t i = 0 ; i < path->Count() ; ++i )
-	{
-		PathSegment seg = path->Segment(i) ;
-		switch ( seg.GetOp() )
-		{
-			case PathSegment::move : m_path.moveTo( seg[0], seg[1] ) ; break ;
-			case PathSegment::line : m_path.lineTo( seg[0], seg[1] ) ; break ;
-			case PathSegment::close: m_path.closeSubpath( ) ; break ;
-			default : break ;
-		}
-	}
-}
+public :
+	explicit GraphicsObject( QGraphicsItem *parent = 0 ) ;
 
-QRectF PathObject::boundingRect( ) const
-{
-	return m_path.boundingRect() ;
-}
+	//@{
+	/// abstract graphics object pure members
+	virtual GraphicsState Format() const = 0 ;
+	//@}
+	
+	//@{
+	/// abstract table model members
+	int rowCount( const QModelIndex& parent ) const ;
+	int columnCount( const QModelIndex& parent ) const ;
+	
+	QVariant data( const QModelIndex& index, int role ) const ;
+	QVariant headerData( int sect, Qt::Orientation ori, int role ) const ;
+	//@}
 
-void PathObject::paint(
-	QPainter 						*painter,
-	const QStyleOptionGraphicsItem	*option,
-	QWidget 						*widget ) 
-{
-	GraphicsObject::paint( painter, option, widget ) ;
-	painter->drawPath( m_path ) ;
-}
+	QVariant itemChange( GraphicsItemChange change, const QVariant& value ) ;
+	int type( ) const ;
+	static const int Type = UserType + 1 ;
 
-GraphicsState PathObject::Format( ) const
-{
-	return m_format ;
-}
+	virtual void paint(
+		QPainter 						*painter,
+		const QStyleOptionGraphicsItem	*option,
+		QWidget 						*widget ) = 0 ; 
+} ;
 
 } // end of namespace
+
+#endif // GRAPHICSOBJECT_HH_
