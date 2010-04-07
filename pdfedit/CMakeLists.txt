@@ -50,7 +50,8 @@ set( BASE_SRCS		src/main.cc
 					src/TextDlg.cc
 					src/InsertTextDlg.cc
 					src/TextToolbar.cc
-					src/DocModel.cc )
+					src/DocModel.cc
+					src/PathObject.cc )
 
 ###############################################################################
 # all sources
