@@ -28,12 +28,10 @@
 #include <font/Glyph.hh>
 #include <font/Outline.hh>
 
-#include <QImage>
 #include <QPainter>
 #include <QPainterPath>
 #include <QDebug>
 #include <QPen>
-#include <QApplication>
 
 #include <util/Debug.hh>
 
@@ -66,8 +64,9 @@ struct GlyphGraphicsItem::Render : public Outline
 
 /**	constructor
 */
-GlyphGraphicsItem::GlyphGraphicsItem( const Glyph *glyph )
-	: m_glyph( glyph )
+GlyphGraphicsItem::GlyphGraphicsItem(const Glyph *glyph, QGraphicsItem *parent)
+	: QGraphicsPathItem( parent )
+	, m_glyph( glyph )
 {
 	QPainterPath path( QPointF ( 0.0, 0.0 ) ) ;
 	Render r ;

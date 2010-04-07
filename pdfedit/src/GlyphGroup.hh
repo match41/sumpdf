@@ -26,8 +26,9 @@
 #ifndef __PDF_GLYPHGROUP_HH_EADER_INCLUDED__
 #define __PDF_GLYPHGROUP_HH_EADER_INCLUDED__
 
-#include <QGraphicsItemGroup>
+#include <QAbstractGraphicsShapeItem>
 #include <QAbstractTableModel>
+#include <QRectF>
 
 #include <graphics/CharVisitor.hh>
 
@@ -42,7 +43,7 @@ class GraphicsState ;
 /**	The GlyphGroup class represents
 */
 class GlyphGroup :
-	public QGraphicsItemGroup,
+	public QAbstractGraphicsShapeItem,
 	public QAbstractTableModel,
 	private CharVisitor
 {
@@ -74,8 +75,16 @@ public :
 	QVariant headerData( int sect, Qt::Orientation ori, int role ) const ;
 	//@}
 
+	// virtual functions for QGraphicsItem
+	QRectF boundingRect( ) const ;
+	void paint(
+		QPainter 						*painter,
+		const QStyleOptionGraphicsItem	*option,
+		QWidget 						*widget ) ; 
+	
 private :
 	TextLine		m_line ;
+	QRectF			m_bound ;
 } ;
 
 } // end of namespace

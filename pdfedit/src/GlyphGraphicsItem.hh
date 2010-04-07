@@ -41,7 +41,7 @@ class Glyph ;
 class GlyphGraphicsItem : public QGraphicsPathItem
 {
 public :
-	explicit GlyphGraphicsItem( const Glyph *glyph ) ;
+	explicit GlyphGraphicsItem( const Glyph *glyph, QGraphicsItem *parent ) ;
 
 	int type( ) const ;
 

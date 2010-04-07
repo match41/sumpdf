@@ -40,8 +40,9 @@
 
 #include <QColor>
 #include <QBrush>
-#include <QMessageBox>
 #include <QDebug>
+#include <QPainter>
+#include <QStyleOptionGraphicsItem>
 
 #include <boost/format.hpp>
 
@@ -50,10 +51,11 @@ namespace pdf {
 /**	constructor
 */
 GlyphGroup::GlyphGroup( const TextLine& blk, QGraphicsItem *parent )
-	: QGraphicsItemGroup( parent )
+	: QAbstractGraphicsShapeItem( parent )
 	, m_line( blk )
 {
 	m_line.VisitChars( this ) ;
+	m_bound = childrenBoundingRect( ) ;
 	
 	// setup flags
 	setFlags( ItemIsSelectable | ItemIsMovable
@@ -66,7 +68,6 @@ GlyphGroup::GlyphGroup( const TextLine& blk, QGraphicsItem *parent )
 
 	QTransform t = ToQtMatrix( m_line.Transform() ) ;
 	setTransform( t ) ;
-	
 }
 
 void GlyphGroup::OnChar(
@@ -75,7 +76,7 @@ void GlyphGroup::OnChar(
 	const Glyph			*glyph,
 	const TextState&	state ) 
 {
-	GlyphGraphicsItem *item = new GlyphGraphicsItem( glyph ) ;
+	GlyphGraphicsItem *item = new GlyphGraphicsItem( glyph, this ) ;
 
 	// fill colour
 	QColor fill_color ;
@@ -88,7 +89,7 @@ void GlyphGroup::OnChar(
 	// scale font by their font size
 	item->scale( state.ScaleFactor(), state.ScaleFactor() ) ;
 
-	addToGroup( item ) ;
+//	addToGroup( item ) ;
 }
 
 int GlyphGroup::type( ) const
@@ -186,7 +187,25 @@ QVariant GlyphGroup::itemChange( GraphicsItemChange change, const QVariant& valu
 	{
 		emit dataChanged( index( 0, 1 ), index( 1, 1 ) ) ;
 	}
-	return QGraphicsItemGroup::itemChange( change, value ) ;
+	return QGraphicsItem::itemChange( change, value ) ;
+}
+
+// virtual functions for QGraphicsItem
+QRectF GlyphGroup::boundingRect( ) const
+{
+	return m_bound ;
+}
+
+void GlyphGroup::paint(
+	QPainter 						*painter,
+	const QStyleOptionGraphicsItem	*option,
+	QWidget 						* )
+{
+	if ( option->state & QStyle::State_Selected )
+	{
+		painter->setBrush( Qt::NoBrush ) ;
+		painter->drawRect( m_bound ) ;
+	}
 }
 
 } // end of namespace
