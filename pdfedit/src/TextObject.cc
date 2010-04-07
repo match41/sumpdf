@@ -23,7 +23,7 @@
 	\author	Nestal Wan
 */
 
-#include "GlyphGroup.hh"
+#include "TextObject.hh"
 
 #include "GlyphGraphicsItem.hh"
 #include "Util.hh"
@@ -50,7 +50,7 @@ namespace pdf {
 
 /**	constructor
 */
-GlyphGroup::GlyphGroup( const TextLine& blk, QGraphicsItem *parent )
+TextObject::TextObject( const TextLine& blk, QGraphicsItem *parent )
 	: QAbstractGraphicsShapeItem( parent )
 	, m_line( blk )
 {
@@ -70,7 +70,7 @@ GlyphGroup::GlyphGroup( const TextLine& blk, QGraphicsItem *parent )
 	setTransform( t ) ;
 }
 
-void GlyphGroup::OnChar(
+void TextObject::OnChar(
 	wchar_t 			ch,
 	double				offset,
 	const Glyph			*glyph,
@@ -92,34 +92,34 @@ void GlyphGroup::OnChar(
 //	addToGroup( item ) ;
 }
 
-int GlyphGroup::type( ) const
+int TextObject::type( ) const
 {
 	return Type ;
 }
 
-const GraphicsState& GlyphGroup::Format( ) const
+const GraphicsState& TextObject::Format( ) const
 {
 	return m_line.Format() ;
 }
 
-TextLine GlyphGroup::GetLine( ) const
+TextLine TextObject::GetLine( ) const
 {
 	TextLine line( m_line ) ;
 	line.SetTransform( Matrix::Translation( x(), y() ) * m_line.Transform() ) ;
 	return line ;
 }
 
-int GlyphGroup::rowCount( const QModelIndex& parent ) const
+int TextObject::rowCount( const QModelIndex& parent ) const
 {
 	return 6 ;
 }
 
-int GlyphGroup::columnCount( const QModelIndex& parent ) const
+int TextObject::columnCount( const QModelIndex& parent ) const
 {
 	return 2 ;
 }
 
-QVariant GlyphGroup::data( const QModelIndex& index, int role ) const
+QVariant TextObject::data( const QModelIndex& index, int role ) const
 {
 	if ( role == Qt::DisplayRole )
 	{
@@ -165,7 +165,7 @@ QVariant GlyphGroup::data( const QModelIndex& index, int role ) const
 	return QVariant( ) ;
 }
 
-QVariant GlyphGroup::headerData( int sect, Qt::Orientation ori, int role ) const
+QVariant TextObject::headerData( int sect, Qt::Orientation ori, int role ) const
 {
 	if ( ori == Qt::Horizontal && role == Qt::DisplayRole )
 	{
@@ -181,7 +181,7 @@ QVariant GlyphGroup::headerData( int sect, Qt::Orientation ori, int role ) const
 	return QVariant( ) ;
 }
 
-QVariant GlyphGroup::itemChange( GraphicsItemChange change, const QVariant& value )
+QVariant TextObject::itemChange( GraphicsItemChange change, const QVariant& value )
 {
 	if ( change == ItemPositionChange || change == ItemMatrixChange )
 	{
@@ -191,12 +191,12 @@ QVariant GlyphGroup::itemChange( GraphicsItemChange change, const QVariant& valu
 }
 
 // virtual functions for QGraphicsItem
-QRectF GlyphGroup::boundingRect( ) const
+QRectF TextObject::boundingRect( ) const
 {
 	return m_bound ;
 }
 
-void GlyphGroup::paint(
+void TextObject::paint(
 	QPainter 						*painter,
 	const QStyleOptionGraphicsItem	*option,
 	QWidget 						* )

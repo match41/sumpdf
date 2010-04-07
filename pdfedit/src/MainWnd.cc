@@ -53,7 +53,7 @@
 #include <QFontComboBox>
 
 #include "TextEdit.hh"
-#include "GlyphGroup.hh"
+#include "TextObject.hh"
 #include "Util.hh"
 
 // libpdfdoc headers
@@ -157,7 +157,7 @@ void MainWnd::OnSelectionChanged( )
 	QList<QGraphicsItem*> items = m_doc->CurrentScene()->selectedItems() ;
 	if ( !items.empty() )
 	{
-		GlyphGroup *text = qgraphicsitem_cast<GlyphGroup*>( items.front() ) ;
+		TextObject *text = qgraphicsitem_cast<TextObject*>( items.front() ) ;
 		m_item_prop->setModel( text ) ;
 	}
 }

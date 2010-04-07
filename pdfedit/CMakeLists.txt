@@ -39,7 +39,7 @@ include(${QT_USE_FILE})
 
 set( BASE_SRCS		src/main.cc
                     src/GlyphGraphicsItem.cc
-                    src/GlyphGroup.cc
+                    src/TextObject.cc
                     src/Util.cc
 					src/MainWnd.cc
 					src/PageLoader.cc

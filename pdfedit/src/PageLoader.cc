@@ -26,7 +26,7 @@
 #include "PageLoader.hh"
 
 // local headers
-#include "GlyphGroup.hh"
+#include "TextObject.hh"
 #include "PathObject.hh"
 
 // libpdfdoc headers
@@ -65,7 +65,7 @@ void PageLoader::VisitText( Text *text )
 void PageLoader::LoadTextLine( const TextLine& line )
 {
 	PDF_ASSERT( m_scene != 0 ) ;
-	m_scene->addItem( new GlyphGroup( line ) ) ;
+	m_scene->addItem( new TextObject( line ) ) ;
 }
 
 void PageLoader::VisitGraphics( Graphics *gfx )

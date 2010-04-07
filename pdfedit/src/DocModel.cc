@@ -25,7 +25,7 @@
 
 #include "DocModel.hh"
 
-#include "GlyphGroup.hh"
+#include "TextObject.hh"
 #include "PageLoader.hh"
 #include "Util.hh"
 
@@ -204,7 +204,7 @@ void DocModel::StorePage( QGraphicsScene *scene, Page *page )
 	for ( QList<QGraphicsItem*>::iterator i  = items.begin() ;
 	                                      i != items.end() ; ++i )
 	{
-		GlyphGroup *text = qgraphicsitem_cast<GlyphGroup*>( *i ) ;
+		TextObject *text = qgraphicsitem_cast<TextObject*>( *i ) ;
 		
 		if ( text != 0 )
 		{
@@ -234,7 +234,7 @@ void DocModel::AddText(
 		Matrix::Translation( pos.x(), pos.y() ), 
 		ToWStr( text ) ) ;
 
-	m_pages[m_current_page]->addItem( new GlyphGroup( line ) ) ;
+	m_pages[m_current_page]->addItem( new TextObject( line ) ) ;
 }
 
 } // end of namespace
