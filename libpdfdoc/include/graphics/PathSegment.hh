@@ -17,85 +17,56 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	ContentStream.hh
-    \brief	definition the ContentStream class
-    \date	Feb 20, 2010
+/**	\file	PathSegment.hh
+    \brief	definition the PathSegment class
+    \date	Apr 6, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_CONTENTSTREAM_HH_EADER_INCLUDED__
-#define __PDF_CONTENTSTREAM_HH_EADER_INCLUDED__
+#ifndef __PDF_PATHSEGMENT_HH_EADER_INCLUDED__
+#define __PDF_PATHSEGMENT_HH_EADER_INCLUDED__
 
-#include "graphics/GraphicsState.hh"
-#include "stream/Stream.hh"
-#include "util/Matrix.hh"
-
-#include <stack>
-#include <vector>
+#include <cstddef>
+#include <iosfwd>
 
 namespace pdf {
 
-class ContentOp ;
-class Graphics ;
-class GraphicsVisitor ;
-class ResourcesDict ;
-
 ///	brief description
 /**	\internal
-	The ContentStream class represents
+	The PathSegment class represents
 */
-class ContentStream
+class PathSegment
 {
 public :
-	template <typename InputIt>
-	ContentStream( InputIt first, InputIt last,
-		const ResourcesDict	*res,
-		GraphicsVisitor		*visitor )
-		: m_strs( first, last )
-		, m_visitor( visitor )
-		, m_res( res )
-		, m_current( 0 )
-	{
-	}
+	enum Op { move, line, cubic123, cubic23, cubic13, close } ;
 
-	void Decode( ) ;
+	static const std::size_t m_max_arg_count = 6 ;
 
-//	void SwapGfxObj( std::vector<Graphics*>& gfxs ) ;
+	typedef const double* iterator ;
 
-private :
-	struct HandlerMap ;
-	
-	void Decode( Stream& str ) ;
+public :
+	explicit PathSegment( Op op = close, const double *points = 0 ) ;
 
-	void ProcessCommand( ContentOp& op ) ;
+	// default copy constructor is fine.
 
-	void OnBT( ContentOp& op ) ;
-	void OnEndObject( ContentOp& op ) ;
-	void Oncm( ContentOp& op ) ;
-	void OnQ( ContentOp& op ) ;
-	void Onq( ContentOp& op ) ;
-	void Onm( ContentOp& op ) ;
-	void OnPaintPath( ContentOp& op ) ;
+	const double* Points( ) const ;
+	std::size_t Count( ) const ;
+	Op GetOp( ) const ;
+
+	static std::size_t ArgCount( Op op ) ;
+
+	iterator begin() const ;
+	iterator end() const ;
+
+	double operator[]( std::size_t i ) const ;
 
 private :
-	std::vector<Stream>		m_strs ;
-	GraphicsVisitor 		*m_visitor ; 
-	const ResourcesDict		*m_res ;
-
-	/// all graphics states
-	struct State
-	{
-		GraphicsState	gs ;
-		Matrix			ctm ;
-	} m_state ;
-
-	//@{
-	/// Context information for decoding the graphics objects
-	Graphics			*m_current ;
-	std::stack<State>	m_state_stack ;
-	//@}
+	const double	*m_points ;
+	Op				m_op ;
 } ;
+
+std::ostream& operator<<( std::ostream& os, const PathSegment& seg ) ;
 
 } // end of namespace
 
-#endif // CONTENTSTREAM_HH_
+#endif // PATHSEGMENT_HH_

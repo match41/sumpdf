@@ -29,11 +29,15 @@
 #include "GlyphGroup.hh"
 
 // libpdfdoc headers
+#include <graphics/Path.hh>
+#include <graphics/PathSegment.hh>
 #include <graphics/Text.hh>
 #include <util/Debug.hh>
 
 // Qt headers
+#include <QGraphicsPathItem>
 #include <QGraphicsScene>
+#include <QPainterPath>
 
 // boost headers
 #include <boost/bind.hpp>
@@ -69,6 +73,20 @@ void PageLoader::VisitGraphics( Graphics *gfx )
 
 void PageLoader::VisitPath( Path *path )
 {
+	QPainterPath qppath ;
+	for ( std::size_t i = 0 ; i < path->Count() ; ++i )
+	{
+		PathSegment seg = path->Segment(i) ;
+		switch ( seg.GetOp() )
+		{
+			case PathSegment::move : qppath.moveTo( seg[0], seg[1] ) ; break ;
+			case PathSegment::line : qppath.lineTo( seg[0], seg[1] ) ; break ;
+			case PathSegment::close: qppath.closeSubpath( ) ; break ;
+			default : break ;
+		}
+	}
+	QGraphicsPathItem *pi = new QGraphicsPathItem( qppath ) ;
+	m_scene->addItem( pi ) ;
 }
 
 } // end of namespace

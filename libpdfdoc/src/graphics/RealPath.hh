@@ -29,10 +29,13 @@
 #include "graphics/Path.hh"
 
 #include "graphics/GraphicsState.hh"
+#include "graphics/PathSegment.hh"
 
 #include <vector>
 
 namespace pdf {
+
+class Matrix ;
 
 ///	brief description
 /**	\internal
@@ -41,7 +44,7 @@ namespace pdf {
 class RealPath : public Path
 {
 public :
-	explicit RealPath( const GraphicsState& gs ) ;
+	explicit RealPath( const GraphicsState& gs, const Matrix& ctm ) ;
 	
 	// Graphics virtual functions
 	void OnCommand( ContentOp& op, const ResourcesDict *res ) ;
@@ -50,25 +53,21 @@ public :
 	GraphicsState GetState( ) const ;
 	
 	// Path virtual functions
-	std::size_t SegmentCount( ) const ;
-	Segment GetSegment( std::size_t index ) const ;
+	std::size_t Count( ) const ;
+	PathSegment Segment( std::size_t index ) const ;
 
 private :
 	/// command handler
 	struct HandlerMap ;
 
 	// position command handlers
-	void Onm( ContentOp& op, const ResourcesDict *res ) ;
-	void Onl( ContentOp& op, const ResourcesDict *res ) ;
-	void Onc( ContentOp& op, const ResourcesDict *res ) ;
-	void Onv( ContentOp& op, const ResourcesDict *res ) ;
-	void Ony( ContentOp& op, const ResourcesDict *res ) ;
-	void Onh( ContentOp& op, const ResourcesDict *res ) ;
 	void Onre( ContentOp& op, const ResourcesDict *res ) ;
-
+	void OnPositionCommands( ContentOp& op, const ResourcesDict *res ) ;
+ 
 private :
-	std::vector<double>		m_points ;
-	std::vector<Segment>	m_segs ;
+	std::vector<double>				m_points ;
+	std::vector<PathSegment::Op>	m_ops ;
+	std::vector<std::size_t>		m_pt_index ;
 	
 	GraphicsState			m_state ;
 } ;

@@ -107,6 +107,7 @@ void DocModel::ReplaceDocument( Doc *doc )
 	// load the new stuff
 	m_doc.reset( doc ) ;
 	m_pages.resize( m_doc->PageCount() ) ;
+	m_current_page = 0 ;
 	GoToPage( 0 ) ;
 }
 

@@ -17,39 +17,39 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	Path.hh
-    \brief	definition the Path class
-    \date	Apr 3, 2010
+/**	\file	RealPathTest.hh
+    \brief	definition the RealPathTest class
+    \date	Apr 6, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_PATH_HH_EADER_INCLUDED__
-#define __PDF_PATH_HH_EADER_INCLUDED__
+#ifndef __PDFUT_REALPATHTEST_HH_EADER_INCLUDED__
+#define __PDFUT_REALPATHTEST_HH_EADER_INCLUDED__
 
-#include "Graphics.hh"
+#include <cppunit/TestFixture.h>
 
-#include <cstddef>
+#include <cppunit/extensions/HelperMacros.h>
 
-namespace pdf {
+namespace pdfut {
 
-class PathSegment ;
-
-///	brief description
-/**	\internal
-	The Path class represents
-*/
-class Path : public Graphics
+class RealPathTest : public CppUnit::TestFixture
 {
 public :
-	virtual ~Path( ) ;
-	
-	/// Returns the number of segment in the path
-	virtual std::size_t Count( ) const = 0 ;
-	
-	/// Returns the segment for the specified index. 
-	virtual PathSegment Segment( std::size_t index ) const = 0 ;
+	RealPathTest( ) ;
+
+	// declare suit function
+	CPPUNIT_TEST_SUITE( RealPathTest ) ;
+		CPPUNIT_TEST( Test ) ;
+	CPPUNIT_TEST_SUITE_END();
+
+public :
+	void setUp( ) ;
+	void tearDown( ) ;
+
+private :
+	void Test( ) ;
 } ;
 
 } // end of namespace
 
-#endif // PATH_HH_
+#endif // REALPATHTEST_HH_

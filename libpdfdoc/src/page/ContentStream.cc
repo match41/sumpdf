@@ -29,6 +29,7 @@
 #include "core/TokenSrc.hh"
 #include "graphics/GraphicsState.hh"
 #include "graphics/GraphicsVisitor.hh"
+#include "graphics/RealPath.hh"
 #include "graphics/RealText.hh"
 #include "stream/Stream.hh"
 
@@ -45,7 +46,7 @@ namespace pdf {
 struct ContentStream::HandlerMap
 {
 	/// command handler
-	typedef void (ContentStream::*Handler)( const ContentOp& ) ;
+	typedef void (ContentStream::*Handler)( ContentOp& ) ;
 	typedef std::map<Token, Handler>	Map ;
 
 	static const Map::value_type	m_val[] ;
@@ -55,12 +56,27 @@ struct ContentStream::HandlerMap
 const ContentStream::HandlerMap::Map::value_type
 	ContentStream::HandlerMap::m_val[] =
 {
-	// text state commands
+	// text object commands
 	std::make_pair( "BT",	&ContentStream::OnBT ),
-	std::make_pair( "ET",	&ContentStream::OnET ),
+	std::make_pair( "ET",	&ContentStream::OnEndObject ),
+	
+	// special graphics commands
 	std::make_pair( "cm",	&ContentStream::Oncm ),
 	std::make_pair( "Q",	&ContentStream::OnQ ),
 	std::make_pair( "q",	&ContentStream::Onq ),
+	
+	// path construction & painting commands
+	std::make_pair( "m",	&ContentStream::Onm ),
+	std::make_pair( "S",	&ContentStream::OnPaintPath ),
+	std::make_pair( "s",	&ContentStream::OnPaintPath ),
+	std::make_pair( "f",	&ContentStream::OnPaintPath ),
+	std::make_pair( "F",	&ContentStream::OnPaintPath ),
+	std::make_pair( "f*",	&ContentStream::OnPaintPath ),
+	std::make_pair( "B",	&ContentStream::OnPaintPath ),
+	std::make_pair( "B*",	&ContentStream::OnPaintPath ),
+	std::make_pair( "b",	&ContentStream::OnPaintPath ),
+	std::make_pair( "b*",	&ContentStream::OnPaintPath ),
+	std::make_pair( "n",	&ContentStream::OnPaintPath ),
 } ;
 
 
@@ -114,13 +130,13 @@ void ContentStream::ProcessCommand( ContentOp& op )
 		m_state.gs.OnCommand( op, m_res ) ;
 }
 
-void ContentStream::OnBT( const ContentOp& )
+void ContentStream::OnBT( ContentOp& )
 {
 	if ( m_current == 0 )
 		m_current = new RealText( m_state.gs, m_state.ctm ) ;
 }
 
-void ContentStream::OnET( const ContentOp& )
+void ContentStream::OnEndObject( ContentOp& )
 {
 	if ( m_current != 0 )
 	{
@@ -132,21 +148,36 @@ void ContentStream::OnET( const ContentOp& )
 	}
 }
 
-void ContentStream::Oncm( const ContentOp& op )
+void ContentStream::Oncm( ContentOp& op )
 {
 	if ( op.Count() >= 6 )
 		m_state.ctm = Matrix( op[0], op[1], op[2], op[3], op[4], op[5] ) * m_state.ctm ;
 }
 
-void ContentStream::OnQ( const ContentOp& )
+void ContentStream::OnQ( ContentOp& )
 {
 	m_state = m_state_stack.top( ) ;
 	m_state_stack.pop( ) ;
 }
 
-void ContentStream::Onq( const ContentOp& )
+void ContentStream::Onq( ContentOp& )
 {
 	m_state_stack.push( m_state ) ;
+}
+
+void ContentStream::Onm( ContentOp& op )
+{
+	if ( m_current == 0 )
+		m_current = new RealPath( m_state.gs, m_state.ctm ) ;
+
+	m_current->OnCommand( op, m_res ) ;
+}
+
+void ContentStream::OnPaintPath( ContentOp& op )
+{
+	if ( m_current != 0 )
+		m_current->OnCommand( op, m_res ) ;
+	OnEndObject( op ) ;
 }
 
 } // end of namespace

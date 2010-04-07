@@ -180,7 +180,8 @@ set( GFX_INC_HDRS	${INCLUDE_DIR}/graphics/Graphics.hh
 					${INCLUDE_DIR}/graphics/GraphicsVisitor.hh
 					${INCLUDE_DIR}/graphics/GraphicsState.hh
 					${INCLUDE_DIR}/graphics/Text.hh
-					${INCLUDE_DIR}/graphics/Path.cc
+					${INCLUDE_DIR}/graphics/Path.hh
+					${INCLUDE_DIR}/graphics/PathSegment.hh
 					${INCLUDE_DIR}/graphics/TextState.hh
 					${INCLUDE_DIR}/graphics/CharVisitor.hh
 					${INCLUDE_DIR}/graphics/TextLine.hh
@@ -213,6 +214,7 @@ set( GRAPICS_SRCS	${GRAPICS_DIR}/Graphics.cc
 					${GRAPICS_DIR}/Text.cc
 					${GRAPICS_DIR}/RealText.cc
 					${GRAPICS_DIR}/Path.cc
+					${GRAPICS_DIR}/PathSegment.cc
 					${GRAPICS_DIR}/RealPath.cc
 					${GRAPICS_DIR}/CharVisitor.cc
 					${GRAPICS_DIR}/TextLine.cc
@@ -517,6 +519,7 @@ set( UT_SRCS	test/core/TokenTest.cc
 				test/graphics/TextLineTest.cc
 				test/graphics/RealTextTest.cc
 				test/graphics/GraphicsStateTest.cc
+				test/graphics/RealPathTest.cc
 				
 				test/stream/StreamTest.cc
 				test/stream/RawFilterTest.cc
@@ -549,6 +552,7 @@ set( UT_SRCS	test/core/TokenTest.cc
 				test/mock/MockGlyph.cc
 				test/mock/TestBase.cc
 				test/mock/MockFontDb.cc
+				test/mock/MockGraphicsVisitor.cc
 				test/RealDocTest.cc
 )
 
