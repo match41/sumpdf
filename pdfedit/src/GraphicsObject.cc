@@ -151,10 +151,15 @@ void GraphicsObject::paint(
 	QWidget 						* )
 {
 	if ( option->state & QStyle::State_Selected )
-	{
-		painter->setBrush( Qt::NoBrush ) ;
-		painter->drawRect( boundingRect() ) ;
-	}
+		DrawSelectedBox( painter ) ;
+}
+
+void GraphicsObject::DrawSelectedBox( QPainter *p ) const
+{
+	PDF_ASSERT( p != 0 ) ;
+
+	p->setBrush( Qt::NoBrush ) ;
+	p->drawRect( boundingRect() ) ;
 }
 
 int GraphicsObject::type( ) const

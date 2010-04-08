@@ -47,6 +47,7 @@ public :
 	//@{
 	/// abstract graphics object pure members
 	virtual GraphicsState Format() const = 0 ;
+	virtual void DrawSelectedBox( QPainter *p ) const ;
 	//@}
 	
 	//@{
