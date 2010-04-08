@@ -28,7 +28,9 @@
 // libpdfdoc headers
 #include <graphics/Path.hh>
 #include <graphics/PathSegment.hh>
+#include <util/Debug.hh>
 
+// Qt headers
 #include <QPainter>
 
 namespace pdf {
@@ -64,6 +66,8 @@ void PathObject::paint(
 	const QStyleOptionGraphicsItem	*option,
 	QWidget 						*widget ) 
 {
+	PDF_ASSERT( painter != 0 ) ;
+
 	GraphicsObject::paint( painter, option, widget ) ;
 	painter->drawPath( m_path ) ;
 }
