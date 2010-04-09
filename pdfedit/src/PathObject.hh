@@ -17,65 +17,48 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	PageLoader.cc
-	\brief	implementation of the PageLoader class
-	\date	Mar 26, 2010
-	\author	Nestal Wan
+/**	\file	PathObject.hh
+    \brief	definition the PathObject class
+    \date	Apr 7, 2010
+    \author	Nestal Wan
 */
 
-#include "PageLoader.hh"
+#ifndef __PDF_PATHOBJECT_HH_EADER_INCLUDED__
+#define __PDF_PATHOBJECT_HH_EADER_INCLUDED__
 
-// local headers
-#include "TextObject.hh"
-#include "PathObject.hh"
+#include "GraphicsObject.hh"
 
-// libpdfdoc headers
-#include <graphics/Path.hh>
-#include <graphics/PathSegment.hh>
-#include <graphics/Text.hh>
-#include <util/Debug.hh>
-
-// Qt headers
-//#include <QGraphicsPathItem>
-#include <QGraphicsScene>
 #include <QPainterPath>
 
-// boost headers
-#include <boost/bind.hpp>
+#include <graphics/GraphicsState.hh>
 
 namespace pdf {
 
-/**	constructor
-	
+class Path ;
+
+///	brief description
+/**	\internal
+	The PathObject class represents
 */
-PageLoader::PageLoader( QGraphicsScene *scene )
-	: m_scene( scene )
+class PathObject : public GraphicsObject
 {
-	PDF_ASSERT( m_scene != 0 ) ;
-}
+public :
+	explicit PathObject( const Path *path, QGraphicsItem *parent = 0 ) ;
 
-void PageLoader::VisitText( Text *text )
-{
-	PDF_ASSERT( text != 0 ) ;
+	// virtual functions for QGraphicsItem
+	QRectF boundingRect( ) const ;
+	void paint(
+		QPainter 						*painter,
+		const QStyleOptionGraphicsItem	*option,
+		QWidget 						*widget ) ; 
 
-	std::for_each( text->begin(), text->end(),
-		boost::bind( &PageLoader::LoadTextLine, this, _1 ) ) ;
-}
+	GraphicsState Format( ) const ;
 
-void PageLoader::LoadTextLine( const TextLine& line )
-{
-	PDF_ASSERT( m_scene != 0 ) ;
-	m_scene->addItem( new TextObject( line ) ) ;
-}
-
-void PageLoader::VisitGraphics( Graphics *gfx )
-{
-}
-
-void PageLoader::VisitPath( Path *path )
-{
-	PDF_ASSERT( m_scene != 0 ) ;
-	m_scene->addItem( new PathObject( path ) ) ;
-}
+private :
+	QPainterPath	m_path ;
+	GraphicsState	m_format ;
+} ;
 
 } // end of namespace
+
+#endif // PATHOBJECT_HH_

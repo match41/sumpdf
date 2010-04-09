@@ -17,65 +17,57 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	PageLoader.cc
-	\brief	implementation of the PageLoader class
-	\date	Mar 26, 2010
-	\author	Nestal Wan
+/**	\file	GraphicsObject.hh
+    \brief	definition the GraphicsObject class
+    \date	Apr 8, 2010
+    \author	Nestal Wan
 */
 
-#include "PageLoader.hh"
+#ifndef __PDF_GRAPHICSOBJECT_HH_EADER_INCLUDED__
+#define __PDF_GRAPHICSOBJECT_HH_EADER_INCLUDED__
 
-// local headers
-#include "TextObject.hh"
-#include "PathObject.hh"
-
-// libpdfdoc headers
-#include <graphics/Path.hh>
-#include <graphics/PathSegment.hh>
-#include <graphics/Text.hh>
-#include <util/Debug.hh>
-
-// Qt headers
-//#include <QGraphicsPathItem>
-#include <QGraphicsScene>
-#include <QPainterPath>
-
-// boost headers
-#include <boost/bind.hpp>
+#include <QAbstractGraphicsShapeItem>
+#include <QAbstractTableModel>
 
 namespace pdf {
 
-/**	constructor
-	
+class GraphicsState ;
+
+///	brief description
+/**	\internal
+	The GraphicsObject class represents
 */
-PageLoader::PageLoader( QGraphicsScene *scene )
-	: m_scene( scene )
+class GraphicsObject :
+	public QAbstractGraphicsShapeItem,
+	public QAbstractTableModel
 {
-	PDF_ASSERT( m_scene != 0 ) ;
-}
+public :
+	explicit GraphicsObject( QGraphicsItem *parent = 0 ) ;
 
-void PageLoader::VisitText( Text *text )
-{
-	PDF_ASSERT( text != 0 ) ;
+	//@{
+	/// abstract graphics object pure members
+	virtual GraphicsState Format() const = 0 ;
+	//@}
+	
+	//@{
+	/// abstract table model members
+	int rowCount( const QModelIndex& parent ) const ;
+	int columnCount( const QModelIndex& parent ) const ;
+	
+	QVariant data( const QModelIndex& index, int role ) const ;
+	QVariant headerData( int sect, Qt::Orientation ori, int role ) const ;
+	//@}
 
-	std::for_each( text->begin(), text->end(),
-		boost::bind( &PageLoader::LoadTextLine, this, _1 ) ) ;
-}
+	QVariant itemChange( GraphicsItemChange change, const QVariant& value ) ;
+	int type( ) const ;
+	static const int Type = UserType + 1 ;
 
-void PageLoader::LoadTextLine( const TextLine& line )
-{
-	PDF_ASSERT( m_scene != 0 ) ;
-	m_scene->addItem( new TextObject( line ) ) ;
-}
-
-void PageLoader::VisitGraphics( Graphics *gfx )
-{
-}
-
-void PageLoader::VisitPath( Path *path )
-{
-	PDF_ASSERT( m_scene != 0 ) ;
-	m_scene->addItem( new PathObject( path ) ) ;
-}
+	virtual void paint(
+		QPainter 						*painter,
+		const QStyleOptionGraphicsItem	*option,
+		QWidget 						*widget ) = 0 ; 
+} ;
 
 } // end of namespace
+
+#endif // GRAPHICSOBJECT_HH_

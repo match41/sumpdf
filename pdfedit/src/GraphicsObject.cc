@@ -17,44 +17,35 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	GlyphGroup.cc
-	\brief	implementation of the GlyphGroup class
-	\date	Jan 24, 2010
+/**	\file	GraphicsObject.cc
+	\brief	implementation of the GraphicsObject class
+	\date	Apr 8, 2010
 	\author	Nestal Wan
 */
 
-#include "GlyphGroup.hh"
-
-#include "GlyphGraphicsItem.hh"
-#include "Util.hh"
-
-#include <graphics/Color.hh>
-#include <graphics/TextLine.hh>
-#include <graphics/TextState.hh>
+#include "GraphicsObject.hh"
 
 #include "Util.hh"
 
 #include <font/Font.hh>
-#include <util/Debug.hh>
-#include <util/Matrix.hh>
+#include <graphics/GraphicsState.hh>
+#include <graphics/TextState.hh>
+#include <graphics/Color.hh>
 
-#include <QColor>
-#include <QBrush>
-#include <QMessageBox>
-#include <QDebug>
+#include <QPainter>
+#include <QStyleOptionGraphicsItem>
+#include <QTransform>
 
 #include <boost/format.hpp>
 
 namespace pdf {
 
 /**	constructor
-*/
-GlyphGroup::GlyphGroup( const TextLine& blk, QGraphicsItem *parent )
-	: QGraphicsItemGroup( parent )
-	, m_line( blk )
-{
-	m_line.VisitChars( this ) ;
 	
+*/
+GraphicsObject::GraphicsObject( QGraphicsItem *parent  )
+	: QAbstractGraphicsShapeItem( parent )
+{
 	// setup flags
 	setFlags( ItemIsSelectable | ItemIsMovable
 
@@ -64,61 +55,19 @@ GlyphGroup::GlyphGroup( const TextLine& blk, QGraphicsItem *parent )
 #endif
 	) ;
 
-	QTransform t = ToQtMatrix( m_line.Transform() ) ;
-	setTransform( t ) ;
-	
 }
 
-void GlyphGroup::OnChar(
-	wchar_t 			ch,
-	double				offset,
-	const Glyph			*glyph,
-	const TextState&	state ) 
-{
-	GlyphGraphicsItem *item = new GlyphGraphicsItem( glyph ) ;
-
-	// fill colour
-	QColor fill_color ;
-	Color nstrk = m_line.Format().NonStrokeColour() ;
-	item->setBrush( QBrush( ToQColor( m_line.Format().NonStrokeColour() ) ) ) ;
-	
-	// set glyph offset
-	item->setPos( offset, 0 ) ;
-	
-	// scale font by their font size
-	item->scale( state.ScaleFactor(), state.ScaleFactor() ) ;
-
-	addToGroup( item ) ;
-}
-
-int GlyphGroup::type( ) const
-{
-	return Type ;
-}
-
-const GraphicsState& GlyphGroup::Format( ) const
-{
-	return m_line.Format() ;
-}
-
-TextLine GlyphGroup::GetLine( ) const
-{
-	TextLine line( m_line ) ;
-	line.SetTransform( Matrix::Translation( x(), y() ) * m_line.Transform() ) ;
-	return line ;
-}
-
-int GlyphGroup::rowCount( const QModelIndex& parent ) const
+int GraphicsObject::rowCount( const QModelIndex& parent ) const
 {
 	return 6 ;
 }
 
-int GlyphGroup::columnCount( const QModelIndex& parent ) const
+int GraphicsObject::columnCount( const QModelIndex& parent ) const
 {
 	return 2 ;
 }
 
-QVariant GlyphGroup::data( const QModelIndex& index, int role ) const
+QVariant GraphicsObject::data( const QModelIndex& index, int role ) const
 {
 	if ( role == Qt::DisplayRole )
 	{
@@ -136,8 +85,10 @@ QVariant GlyphGroup::data( const QModelIndex& index, int role ) const
 		}
 		else
 		{
-			const GraphicsState& gs = m_line.Format() ;
+			GraphicsState gs = Format() ;
 			using boost::format ;
+		
+			Font *font = gs.GetFont() ;
 		
 			QTransform t = transform() ;
 			switch ( index.row() )
@@ -150,7 +101,7 @@ QVariant GlyphGroup::data( const QModelIndex& index, int role ) const
 			case 1: return QString( "%1, %2" ) % pos().x() % pos().y() ;
 			
 			// font name
-			case 2: return gs.GetFont()->BaseName().c_str() ;
+			case 2: return (font != 0 ? font->BaseName().c_str() : "") ;
 			
 			// font size
 			case 3: return gs.GetTextState().FontSize( ) ;
@@ -164,7 +115,10 @@ QVariant GlyphGroup::data( const QModelIndex& index, int role ) const
 	return QVariant( ) ;
 }
 
-QVariant GlyphGroup::headerData( int sect, Qt::Orientation ori, int role ) const
+QVariant GraphicsObject::headerData(
+	int				sect,
+	Qt::Orientation	ori,
+	int role ) const
 {
 	if ( ori == Qt::Horizontal && role == Qt::DisplayRole )
 	{
@@ -180,13 +134,32 @@ QVariant GlyphGroup::headerData( int sect, Qt::Orientation ori, int role ) const
 	return QVariant( ) ;
 }
 
-QVariant GlyphGroup::itemChange( GraphicsItemChange change, const QVariant& value )
+QVariant GraphicsObject::itemChange(
+	GraphicsItemChange	change,
+	const QVariant& 	value )
 {
 	if ( change == ItemPositionChange || change == ItemMatrixChange )
 	{
 		emit dataChanged( index( 0, 1 ), index( 1, 1 ) ) ;
 	}
-	return QGraphicsItemGroup::itemChange( change, value ) ;
+	return QAbstractGraphicsShapeItem::itemChange( change, value ) ;
+}
+
+void GraphicsObject::paint(
+	QPainter 						*painter,
+	const QStyleOptionGraphicsItem	*option,
+	QWidget 						* )
+{
+	if ( option->state & QStyle::State_Selected )
+	{
+		painter->setBrush( Qt::NoBrush ) ;
+		painter->drawRect( boundingRect() ) ;
+	}
+}
+
+int GraphicsObject::type( ) const
+{
+	return Type ;
 }
 
 } // end of namespace

@@ -17,67 +17,60 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	GlyphGroup.hh
-    \brief	definition the GlyphGroup class
-    \date	Jan 24, 2010
-    \author	Nestal Wan
+/**	\file	PathObject.cc
+	\brief	implementation of the PathObject class
+	\date	Apr 7, 2010
+	\author	Nestal Wan
 */
 
-#ifndef __PDF_GLYPHGROUP_HH_EADER_INCLUDED__
-#define __PDF_GLYPHGROUP_HH_EADER_INCLUDED__
+#include "PathObject.hh"
 
-#include <QGraphicsItemGroup>
-#include <QAbstractTableModel>
+// libpdfdoc headers
+#include <graphics/Path.hh>
+#include <graphics/PathSegment.hh>
 
-#include <graphics/CharVisitor.hh>
-
-#include <graphics/TextLine.hh>
+#include <QPainter>
 
 namespace pdf {
 
-class Matrix ;
-class GraphicsState ;
-
-///	brief description
-/**	The GlyphGroup class represents
+/**	constructor
+	
 */
-class GlyphGroup :
-	public QGraphicsItemGroup,
-	public QAbstractTableModel,
-	private CharVisitor
+PathObject::PathObject( const Path *path, QGraphicsItem *parent )
+	: GraphicsObject( parent )
+	, m_path( QPointF(0, 0) )
+	, m_format( path->GetState() )
 {
-public :
-	explicit GlyphGroup( const TextLine& blk, QGraphicsItem *parent = 0 ) ;
+	for ( std::size_t i = 0 ; i < path->Count() ; ++i )
+	{
+		PathSegment seg = path->Segment(i) ;
+		switch ( seg.GetOp() )
+		{
+			case PathSegment::move : m_path.moveTo( seg[0], seg[1] ) ; break ;
+			case PathSegment::line : m_path.lineTo( seg[0], seg[1] ) ; break ;
+			case PathSegment::close: m_path.closeSubpath( ) ; break ;
+			default : break ;
+		}
+	}
+}
 
-	void OnChar(
-		wchar_t 			ch,
-		double				offset,
-		const Glyph			*glyph,
-		const TextState&	state ) ; 
+QRectF PathObject::boundingRect( ) const
+{
+	return m_path.boundingRect() ;
+}
 
-	int type( ) const ;
+void PathObject::paint(
+	QPainter 						*painter,
+	const QStyleOptionGraphicsItem	*option,
+	QWidget 						*widget ) 
+{
+	GraphicsObject::paint( painter, option, widget ) ;
+	painter->drawPath( m_path ) ;
+}
 
-	static const int Type = UserType + 1 ;
-
-	const GraphicsState& Format( ) const ;
-	
-	TextLine GetLine( ) const ;
-	
-	QVariant itemChange( GraphicsItemChange change, const QVariant& value ) ;
-
-	//@{
-	/// abstract table model members
-	int rowCount( const QModelIndex& parent ) const ;
-	int columnCount( const QModelIndex& parent ) const ;
-	
-	QVariant data( const QModelIndex& index, int role ) const ;
-	QVariant headerData( int sect, Qt::Orientation ori, int role ) const ;
-	//@}
-
-private :
-	TextLine		m_line ;
-} ;
+GraphicsState PathObject::Format( ) const
+{
+	return m_format ;
+}
 
 } // end of namespace
-
-#endif // GLYPHGROUP_HH_

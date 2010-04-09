@@ -23,8 +23,8 @@
     \author	Nestal Wan
 */
 
-#ifndef __PDF_GRAPHICSSTATE_HH_EADER_INCLUDED__
-#define __PDF_GRAPHICSSTATE_HH_EADER_INCLUDED__
+#ifndef __PDF_GRAPHICSSTATE_HEADER_INCLUDED__
+#define __PDF_GRAPHICSSTATE_HEADER_INCLUDED__
 
 #include <boost/shared_ptr.hpp>
 

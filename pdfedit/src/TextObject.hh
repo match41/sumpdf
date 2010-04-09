@@ -17,65 +17,60 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	PageLoader.cc
-	\brief	implementation of the PageLoader class
-	\date	Mar 26, 2010
-	\author	Nestal Wan
+/**	\file	GlyphGroup.hh
+    \brief	definition the GlyphGroup class
+    \date	Jan 24, 2010
+    \author	Nestal Wan
 */
 
-#include "PageLoader.hh"
+#ifndef __PDF_GLYPHGROUP_HH_EADER_INCLUDED__
+#define __PDF_GLYPHGROUP_HH_EADER_INCLUDED__
 
-// local headers
-#include "TextObject.hh"
-#include "PathObject.hh"
+#include "GraphicsObject.hh"
 
-// libpdfdoc headers
-#include <graphics/Path.hh>
-#include <graphics/PathSegment.hh>
-#include <graphics/Text.hh>
-#include <util/Debug.hh>
+#include <QRectF>
 
-// Qt headers
-//#include <QGraphicsPathItem>
-#include <QGraphicsScene>
-#include <QPainterPath>
+#include <graphics/CharVisitor.hh>
 
-// boost headers
-#include <boost/bind.hpp>
+#include <graphics/TextLine.hh>
 
 namespace pdf {
 
-/**	constructor
-	
+class Matrix ;
+class GraphicsState ;
+
+///	brief description
+/**	The GlyphGroup class represents
 */
-PageLoader::PageLoader( QGraphicsScene *scene )
-	: m_scene( scene )
+class TextObject :
+	public GraphicsObject,
+	private CharVisitor
 {
-	PDF_ASSERT( m_scene != 0 ) ;
-}
+public :
+	explicit TextObject( const TextLine& blk, QGraphicsItem *parent = 0 ) ;
 
-void PageLoader::VisitText( Text *text )
-{
-	PDF_ASSERT( text != 0 ) ;
+	void OnChar(
+		wchar_t 			ch,
+		double				offset,
+		const Glyph			*glyph,
+		const TextState&	state ) ; 
 
-	std::for_each( text->begin(), text->end(),
-		boost::bind( &PageLoader::LoadTextLine, this, _1 ) ) ;
-}
-
-void PageLoader::LoadTextLine( const TextLine& line )
-{
-	PDF_ASSERT( m_scene != 0 ) ;
-	m_scene->addItem( new TextObject( line ) ) ;
-}
-
-void PageLoader::VisitGraphics( Graphics *gfx )
-{
-}
-
-void PageLoader::VisitPath( Path *path )
-{
-	PDF_ASSERT( m_scene != 0 ) ;
-	m_scene->addItem( new PathObject( path ) ) ;
-}
+	GraphicsState Format( ) const ;
+	
+	TextLine GetLine( ) const ;
+	
+	// virtual functions for QGraphicsItem
+	QRectF boundingRect( ) const ;
+	void paint(
+		QPainter 						*painter,
+		const QStyleOptionGraphicsItem	*option,
+		QWidget 						*widget ) ; 
+	
+private :
+	TextLine		m_line ;
+	QRectF			m_bound ;
+} ;
 
 } // end of namespace
+
+#endif // GLYPHGROUP_HH_
