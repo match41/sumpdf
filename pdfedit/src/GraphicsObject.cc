@@ -31,6 +31,7 @@
 #include <graphics/GraphicsState.hh>
 #include <graphics/TextState.hh>
 #include <graphics/Color.hh>
+#include <util/Debug.hh>
 
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
