@@ -155,7 +155,8 @@ set( FONT_HDRS		${FONT_DIR}/Types.hh
 					${FONT_DIR}/RealGlyph.hh
 					${FONT_DIR}/BasicFontDb.hh
 					${FONT_DIR}/CodeMap.hh
-					${FONT_DIR}/SimpleEncoding.hh )
+					${FONT_DIR}/SimpleEncoding.hh
+					${FONT_DIR}/subset/Sfnt.hh )
 
 set( BASE_HDRS		src/RealDoc.hh )
 
@@ -277,7 +278,8 @@ set( FONT_SRCS		${FONT_DIR}/Font.cc
 					${FONT_DIR}/BasicFontDb.cc
 					${FONT_DIR}/CodeMap.cc
 					${FONT_DIR}/FontEncoding.cc
-					${FONT_DIR}/SimpleEncoding.cc )
+					${FONT_DIR}/SimpleEncoding.cc
+					${FONT_DIR}/subset/Sfnt.cc )
 
 set( BASE_SRCS		src/Doc.cc
 					src/RealDoc.cc
@@ -546,6 +548,7 @@ set( UT_SRCS	test/core/TokenTest.cc
 				test/font/CodeMapTest.cc
 				test/font/FontEncodingTest.cc
 				test/font/CompositeFontTest.cc
+				test/font/subset/SfntTest.cc
 			
 				test/mock/MockFile.cc
 				test/mock/MockFont.cc

@@ -52,6 +52,7 @@
 #include "font/CodeMapTest.hh"
 #include "font/FontEncodingTest.hh"
 #include "font/CompositeFontTest.hh"
+#include "font/subset/SfntTest.hh"
 
 // freetype library is optional
 #ifdef HAVE_FREETYPE
@@ -106,6 +107,7 @@ int main( int argc, char **argv )
 	runner.addTest( CodeMapTest::suite( ) ) ;
 	runner.addTest( FontEncodingTest::suite( ) ) ;
 	runner.addTest( CompositeFontTest::suite( ) ) ;
+	runner.addTest( SfntTest::suite( ) ) ;
 
 #ifdef HAVE_PNG
 	runner.addTest( PngImageTest::suite( ) ) ;
