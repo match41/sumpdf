@@ -29,6 +29,7 @@
 #include <memory>
 #include <string>
 #include <wchar.h>
+#include <vector>
 
 struct FT_FaceRec_ ;
 
@@ -48,7 +49,11 @@ public :
 	void Write( const std::string& filename ) const ;
 
 private :
-	void LoadTableInfo( FT_FaceRec_ *face ) ;
+	void LoadTableInfo( ) ;
+	void LoadLocation( ) ;
+
+	/// wrapper for FT_Load_Sfnt_Table()
+	std::vector<unsigned char> LoadTable( unsigned long tag ) const ;
 
 private :
 	struct Impl ;
