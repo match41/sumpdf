@@ -26,9 +26,9 @@
 #include "Sfnt.hh"
 
 // headers in the same package
-#include "Types.hh"
 #include "ReadStream.hh"
 #include "WriteStream.hh"
+#include "Types.hh"
 
 // headers from other packages
 #include "font/FontException.hh"
@@ -97,10 +97,12 @@ namespace
 		return d0 + (d1 << 8) + (d2 << 16) + (d3 << 24);
 	}
 	
-	const unsigned long required_tables[] =
+	const unsigned long copied_tables[] =
 	{
-		TTAG_cmap, TTAG_cvt , TTAG_fpgm, TTAG_glyf, TTAG_head,
-		TTAG_hhea, TTAG_hmtx, TTAG_loca, TTAG_maxp, TTAG_prep,
+//		TTAG_glyf, TTAG_loca, 
+	
+		TTAG_cmap, TTAG_cvt , TTAG_fpgm, TTAG_head,
+		TTAG_hhea, TTAG_hmtx, TTAG_maxp, TTAG_prep,
 	};
 }
 
@@ -216,12 +218,19 @@ void Sfnt::Write(
 	const unsigned	*glyphs,
 	std::size_t 	size ) const
 {
+	bool is_subset = ( glyphs != 0 && size != 0 ) ;
+	PDF_ASSERT( is_subset || (glyphs == 0 && size == 0) ) ;
+
 	using namespace boost ;
 	static const u32 entry_selectors[] =
 	// 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20
 	{  0, 0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4};
 
-	u16 table_used = static_cast<u16>(m_impl->tables.size()) ;
+	// if subset the font, we need to copy the tables and generate
+	// the "glyf" and "loca" tables
+	u16 table_used = static_cast<u16>( is_subset ?
+		Count( copied_tables ) + 2 : m_impl->tables.size() ) ;
+	
 	if ( table_used >= Count(entry_selectors) )
 		throw FontException( "too many tables" ) ;
 	
@@ -233,8 +242,10 @@ void Sfnt::Write(
 		<< u16(selector)
 		<< u16((table_used - (1 << selector)) * 16) ;
 
-	if ( glyphs == 0 && size == 0 )
+	if ( !is_subset )
 	{
+		u32 offset = 0 ;
+	
 		// write the table directory entries for all tables
 		std::for_each( m_impl->tables.begin(), m_impl->tables.end(),
 			bind( &Sfnt::WriteTableDirEntry, this, ref(out), _1 ) ) ;
@@ -246,35 +257,38 @@ void Sfnt::Write(
 		
 		// write the tables
 		std::for_each( tables.begin(), tables.end(),
-			bind( &Sfnt::WriteTable, this, str, _1 ) ) ;
+			bind( &Sfnt::CopyTable, this, str, _1 ) ) ;
 	}
 	// only write the required tables
 	else
 	{
+		u32 offset = 0 ;
+//		GenerateTables( glyphs, size ) ;
+
 		std::for_each(
-			Begin(required_tables),
-			End(required_tables),
+			Begin(copied_tables),
+			End(copied_tables),
 			bind( &Sfnt::WriteTableDirEntry,
 				this,
 				ref(out),
 				bind( &Sfnt::FindTable, this, _1 ) ) ) ;
 		
 		std::for_each(
-			Begin(required_tables),
-			End(required_tables),
-			bind( &Sfnt::WriteTable,
+			Begin(copied_tables),
+			End(copied_tables),
+			bind( &Sfnt::CopyTable,
 				this,
 				str,
 				bind( &Sfnt::FindTable, this, _1 ) ) ) ;
 	}
 }
 
-void Sfnt::WriteTableDirEntry( WriteStream& s, const Table& tab ) const
+void Sfnt::WriteTableDirEntry( WriteStream& s, const Table& tab  ) const
 {
 	s << tab.tag << tab.checksum << tab.offset << tab.length ;
 }
 
-void Sfnt::WriteTable( std::streambuf *s, const Table& tab ) const
+void Sfnt::CopyTable( std::streambuf *s, const Table& tab ) const
 {
 	std::vector<unsigned char> data = ReadTable( tab ) ;
 	std::size_t padding = ((tab.length + 3) & (~3)) - tab.length ;
@@ -293,6 +307,16 @@ Sfnt::Table Sfnt::FindTable( unsigned long tag ) const
 		return *i->second ;
 	}
 	throw FontException( "required table not found!" ) ;
+}
+
+void Sfnt::GenerateTable(
+	const unsigned	*glyphs,
+	std::size_t 	size,
+	std::streambuf	*glyf,
+	std::streambuf	*loca ) const
+{
+	PDF_ASSERT( glyphs != 0 ) ;
+	PDF_ASSERT( size > 0 ) ;
 }
 
 } // end of namespace

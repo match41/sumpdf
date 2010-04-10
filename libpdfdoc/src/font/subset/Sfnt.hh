@@ -56,15 +56,21 @@ public :
 private :
 	void LoadTableInfo( ) ;
 	void LoadLocation( ) ;
-
+	
 	struct Table ;
+
+	std::vector<Table> GenerateTable(
+		const unsigned	*glyphs,
+		std::size_t 	size,
+		std::streambuf	*glyf,
+		std::streambuf	*loca ) const ;
 
 	/// wrapper for FT_Load_Sfnt_Table()
 	std::vector<unsigned char> ReadTable( const Table& tab ) const ;
 	Table FindTable( unsigned long tag ) const ;
 
 	void WriteTableDirEntry( WriteStream& s, const Table& tab ) const ;
-	void WriteTable( std::streambuf *s, const Table& tab ) const ;
+	void CopyTable( std::streambuf *s, const Table& tab ) const ;
 
 private :
 	struct Impl ;

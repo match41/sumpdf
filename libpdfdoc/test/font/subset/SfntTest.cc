@@ -73,16 +73,6 @@ void SfntTest::TestFull( )
 		(std::istreambuf_iterator<char>()) ) ;
 	
 	PDFUT_ASSERT_EQUAL( os.size(), exp.size() ) ;
-	
-	for ( std::size_t i = 0 ; i < os.size() ; ++i )
-	{
-		if ( os[i] != exp[i] )
-		{
-			std::cout << "byte offset " << i << " mismatch" << std::endl ;
-			break ;
-		}
-	}
-	
 	PDFUT_ASSERT_RANGE_EQUAL( os.begin(), os.end(), exp.begin() ) ;
 }
 
