@@ -17,50 +17,20 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	Sfnt.hh
-    \brief	definition the Sfnt class
-    \date	Apr 9, 2010
+/**	\file	Endian.hh
+    \brief	definition the Endian class
+    \date	Apr 10, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_SFNT_HH_EADER_INCLUDED__
-#define __PDF_SFNT_HH_EADER_INCLUDED__
+#ifndef __PDF_ENDIAN_HEADER_INCLUDED__
+#define __PDF_ENDIAN_HEADER_INCLUDED__
 
-#include <memory>
-#include <string>
-#include <wchar.h>
-#include <vector>
-#include <iosfwd>
-
-struct FT_FaceRec_ ;
-
-namespace pdf {
-
-///	brief description
-/**	\internal
-	The Sfnt class represents
-*/
-class Sfnt
+namespace pdf
 {
-public :
-	explicit Sfnt( FT_FaceRec_ *face ) ;
-	~Sfnt( ) ;
-	
-	void AddGlyph( wchar_t unicode ) ;
-	void Write( std::streambuf *out ) const ;
-
-private :
-	void LoadTableInfo( ) ;
-	void LoadLocation( ) ;
-
-	/// wrapper for FT_Load_Sfnt_Table()
-	std::vector<unsigned char> LoadTable( unsigned long tag ) const ;
-
-private :
-	struct Impl ;
-	std::auto_ptr<Impl>	m_impl ;
-} ;
+	template <typename T>
+	T SwapByte( T t ) ;
 
 } // end of namespace
 
-#endif // SFNT_HH_
+#endif // ENDIAN_HH_

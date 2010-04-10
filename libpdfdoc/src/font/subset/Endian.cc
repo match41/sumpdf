@@ -17,50 +17,49 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	Sfnt.hh
-    \brief	definition the Sfnt class
-    \date	Apr 9, 2010
+/**	\file	Endian.cc
+    \brief	definition the Endian class
+    \date	Apr 10, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_SFNT_HH_EADER_INCLUDED__
-#define __PDF_SFNT_HH_EADER_INCLUDED__
+#ifndef __PDF_ENDIAN_CC_EADER_INCLUDED__
+#define __PDF_ENDIAN_CC_EADER_INCLUDED__
 
-#include <memory>
-#include <string>
-#include <wchar.h>
-#include <vector>
-#include <iosfwd>
-
-struct FT_FaceRec_ ;
+#include "Endian.hh"
+#include "Types.hh"
 
 namespace pdf {
 
-///	brief description
-/**	\internal
-	The Sfnt class represents
-*/
-class Sfnt
+#ifdef __GNUC__
+
+template <>
+u32 SwapByte( u32 t )
 {
-public :
-	explicit Sfnt( FT_FaceRec_ *face ) ;
-	~Sfnt( ) ;
-	
-	void AddGlyph( wchar_t unicode ) ;
-	void Write( std::streambuf *out ) const ;
+	return __builtin_bswap32( t ) ;
+}
 
-private :
-	void LoadTableInfo( ) ;
-	void LoadLocation( ) ;
+// for others
+#else
 
-	/// wrapper for FT_Load_Sfnt_Table()
-	std::vector<unsigned char> LoadTable( unsigned long tag ) const ;
+template <>
+u32 SwapByte( u32 t )
+{
+	return
+		((t & 0xff)		<< 24UL ) |
+		((t & 0xff00)	<< 16UL ) |
+		((t & 0xff0000)	<< 8UL ) |
+		(t >> 8) ;
+}
 
-private :
-	struct Impl ;
-	std::auto_ptr<Impl>	m_impl ;
-} ;
+#endif
+
+template <>
+u16 SwapByte( u16 t )
+{
+	return ((t & 0xff) << 8 ) | (t >> 8) ;
+}
 
 } // end of namespace
 
-#endif // SFNT_HH_
+#endif // ENDIAN_CC_

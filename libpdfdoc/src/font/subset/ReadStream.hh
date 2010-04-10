@@ -17,50 +17,36 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	Sfnt.hh
-    \brief	definition the Sfnt class
-    \date	Apr 9, 2010
+/**	\file	ReadStream.hh
+    \brief	definition the ReadStream class
+    \date	Apr 10, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_SFNT_HH_EADER_INCLUDED__
-#define __PDF_SFNT_HH_EADER_INCLUDED__
+#ifndef __PDF_READSTREAM_HH_EADER_INCLUDED__
+#define __PDF_READSTREAM_HH_EADER_INCLUDED__
 
-#include <memory>
-#include <string>
-#include <wchar.h>
-#include <vector>
-#include <iosfwd>
-
-struct FT_FaceRec_ ;
+#include <cstddef>
 
 namespace pdf {
 
 ///	brief description
 /**	\internal
-	The Sfnt class represents
+	The ReadStream class represents
 */
-class Sfnt
+class ReadStream
 {
 public :
-	explicit Sfnt( FT_FaceRec_ *face ) ;
-	~Sfnt( ) ;
+	ReadStream( const unsigned char *p, std::size_t size ) ;
+
+	template <typename T>
+	ReadStream& operator>>( T& v ) ;
 	
-	void AddGlyph( wchar_t unicode ) ;
-	void Write( std::streambuf *out ) const ;
-
 private :
-	void LoadTableInfo( ) ;
-	void LoadLocation( ) ;
-
-	/// wrapper for FT_Load_Sfnt_Table()
-	std::vector<unsigned char> LoadTable( unsigned long tag ) const ;
-
-private :
-	struct Impl ;
-	std::auto_ptr<Impl>	m_impl ;
+	const unsigned char	*m_ptr ;
+	std::size_t			m_size ;
 } ;
 
 } // end of namespace
 
-#endif // SFNT_HH_
+#endif // READSTREAM_HH_

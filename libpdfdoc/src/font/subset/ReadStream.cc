@@ -17,50 +17,52 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	Sfnt.hh
-    \brief	definition the Sfnt class
-    \date	Apr 9, 2010
-    \author	Nestal Wan
+/**	\file	ReadStream.cc
+	\brief	implementation of the ReadStream class
+	\date	Apr 10, 2010
+	\author	Nestal Wan
 */
 
-#ifndef __PDF_SFNT_HH_EADER_INCLUDED__
-#define __PDF_SFNT_HH_EADER_INCLUDED__
+#include "ReadStream.hh"
 
-#include <memory>
-#include <string>
-#include <wchar.h>
-#include <vector>
-#include <iosfwd>
+#include "Endian.hh"
+#include "Types.hh"
 
-struct FT_FaceRec_ ;
+// boost headers
+#include <boost/detail/endian.hpp>
+
+#include <cstring>
 
 namespace pdf {
 
-///	brief description
-/**	\internal
-	The Sfnt class represents
-*/
-class Sfnt
-{
-public :
-	explicit Sfnt( FT_FaceRec_ *face ) ;
-	~Sfnt( ) ;
+/**	constructor
 	
-	void AddGlyph( wchar_t unicode ) ;
-	void Write( std::streambuf *out ) const ;
+*/
+ReadStream::ReadStream( const unsigned char *p, std::size_t size )
+	: m_ptr( p )
+	, m_size( size )
+{
+}
 
-private :
-	void LoadTableInfo( ) ;
-	void LoadLocation( ) ;
+template <typename T>
+ReadStream& ReadStream::operator>>( T& v )
+{
+	if ( m_size >= sizeof(v) )
+	{
+		std::memcpy( &v, m_ptr, sizeof(v) ) ;
 
-	/// wrapper for FT_Load_Sfnt_Table()
-	std::vector<unsigned char> LoadTable( unsigned long tag ) const ;
+#ifdef BOOST_LITTLE_ENDIAN
+		v = SwapByte( v ) ;
+#endif
+		
+		m_ptr	+= sizeof(T) ;
+		m_size	-= sizeof(T) ;
+	}
+	
+	return *this ;
+}
 
-private :
-	struct Impl ;
-	std::auto_ptr<Impl>	m_impl ;
-} ;
+template ReadStream& ReadStream::operator>>( u32& v ) ;
+template ReadStream& ReadStream::operator>>( u16& v ) ;
 
 } // end of namespace
-
-#endif // SFNT_HH_

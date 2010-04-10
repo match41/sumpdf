@@ -25,6 +25,9 @@
 
 #include "Sfnt.hh"
 
+#include "Types.hh"
+#include "ReadStream.hh"
+
 #include "font/FontException.hh"
 #include "util/Debug.hh"
 
@@ -34,71 +37,13 @@
 #include FT_TRUETYPE_TAGS_H
 #include FT_TRUETYPE_TABLES_H
 
-// boost headers
-#include <boost/detail/endian.hpp>
-#include <boost/cstdint.hpp>
-
 // stdc++ headers
 #include <cstring>
 #include <iostream>
+#include <streambuf>
 #include <map>
 
 namespace pdf {
-
-namespace
-{
-	typedef boost::uint32_t	u32 ;
-	typedef boost::uint16_t	u16 ;
-	typedef boost::uint8_t	u8 ;
-
-	template <typename T>
-	T SwapByte( T t ) ;
-	
-#ifdef __GNUC__
-	template <>
-	u32 SwapByte( u32 t )
-	{
-		return __builtin_bswap32( t ) ;
-	}
-	template <>
-	u16 SwapByte( u16 t )
-	{
-		return ((t & 0xff) << 8 ) | (t >> 8) ;
-	}
-#endif
-
-	class Stream
-	{
-	public :
-		Stream( const unsigned char *p, std::size_t size )
-		: m_ptr( p )
-		, m_size( size )
-		{
-		}
-
-		template <typename T>
-		Stream& operator>>( T& v )
-		{
-			if ( m_size >= sizeof(v) )
-			{
-				std::memcpy( &v, m_ptr, sizeof(v) ) ;
-
-#ifdef BOOST_LITTLE_ENDIAN
-				v = SwapByte( v ) ;
-#endif
-				
-				m_ptr	+= sizeof(T) ;
-				m_size	-= sizeof(T) ;
-			}
-			
-			return *this ;
-		}
-	
-	private :
-		const unsigned char	*m_ptr ;
-		std::size_t			m_size ;
-	} ;
-}
 
 struct Sfnt::Impl
 {
@@ -158,17 +103,18 @@ std::vector<unsigned char> Sfnt::LoadTable( unsigned long tag ) const
 		return std::vector<unsigned char>() ;
 }
 
+/// load the "loca" table, which gives the offset of the data for each glyph
 void Sfnt::LoadLocation( )
 {
 	std::vector<unsigned char> loca = LoadTable( TTAG_loca ) ;
-	Stream str( &loca[0], loca.size() ) ;
+	ReadStream str( &loca[0], loca.size() ) ;
 	
 	for ( long i = 0 ; i < m_impl->face->num_glyphs ; i++ )
 	{
 		// short format (16bits) of offset
 		if ( m_impl->head->Index_To_Loc_Format == 0 )
 		{
-			// needs to multiple by 2 for short format of location,
+			// needs to multiply by 2 for short format of location,
 			// according to truetype spec
 			u16 v ;
 			str >> v ;
@@ -177,6 +123,7 @@ void Sfnt::LoadLocation( )
 		// long format (32bits) of offset
 		else
 		{
+			// no need to multiply by 2
 			u32 v ;
 			str >> v ;
 			m_impl->loca.push_back( v ) ;
@@ -195,7 +142,7 @@ void Sfnt::LoadTableInfo( )
 
 	// the first 4 byte is called "scaler type", which should be 0x00010000
 	// the next 2 byte is the number of table in the file. we want this
-	Stream str( tmp, sizeof(tmp) ) ;
+	ReadStream str( tmp, sizeof(tmp) ) ;
 	u32 scaler ;
 	u16 table_count ;
 	str >> scaler >> table_count ;
@@ -210,6 +157,11 @@ void Sfnt::LoadTableInfo( )
 		
 		m_impl->table_len.insert( std::make_pair( tag, length ) ) ;
 	}
+	
+}
+
+void Sfnt::Write( std::streambuf *out ) const
+{
 	
 }
 
