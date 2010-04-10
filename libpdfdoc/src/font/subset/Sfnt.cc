@@ -124,34 +124,23 @@ Sfnt::~Sfnt( )
 {
 }
 
-std::vector<unsigned char> Sfnt::ReadTable( unsigned long tag ) const
+std::vector<unsigned char> Sfnt::ReadTable( const Table& tab ) const
 {
-	Impl::TableMap::const_iterator i = m_impl->table_map.find( tag ) ;
-	if ( i != m_impl->table_map.end() )
-	{
-		PDF_ASSERT( i->second != 0 ) ;
+	std::vector<unsigned char> table( tab.length ) ;
 	
-		std::vector<unsigned char> table( i->second->length ) ;
-		
-		unsigned long size = i->second->length ;
-		FT_Error e = FT_Load_Sfnt_Table( m_impl->face, tag, 0, &table[0],
-			&size ) ;
-		if ( e != 0 || size != i->second->length )
-			throw FontException( "cannot load table" ) ;
-		
-		return table ;
-	}
-	else
-	{
-		PDF_ASSERT( false ) ;
-		return std::vector<unsigned char>() ;
-	}
+	unsigned long size = tab.length ;
+	FT_Error e = FT_Load_Sfnt_Table( m_impl->face, tab.tag, 0, &table[0],
+		&size ) ;
+	if ( e != 0 || size != tab.length )
+		throw FontException( "cannot load table" ) ;
+	
+	return table ;
 }
 
 /// load the "loca" table, which gives the offset of the data for each glyph
 void Sfnt::LoadLocation( )
 {
-	std::vector<unsigned char> loca = ReadTable( TTAG_loca ) ;
+	std::vector<unsigned char> loca = ReadTable( FindTable( TTAG_loca ) ) ;
 	ReadStream str( &loca[0], loca.size() ) ;
 	
 	for ( long i = 0 ; i < m_impl->face->num_glyphs ; i++ )
@@ -216,7 +205,10 @@ void Sfnt::LoadTableInfo( )
 		m_impl->table_map.insert( std::make_pair( i->tag, &*i ) ) ;
 }
 
-void Sfnt::Write( std::streambuf *str ) const
+void Sfnt::Write(
+	std::streambuf	*str,
+	const unsigned	*glyphs,
+	std::size_t 	size ) const
 {
 	static const u32 entry_selectors[] =
 	// 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20
@@ -257,12 +249,23 @@ void Sfnt::WriteTableDirEntry( WriteStream& s, const Table& tab ) const
 
 void Sfnt::WriteTable( std::streambuf *s, const Table& tab ) const
 {
-	std::vector<unsigned char> data = ReadTable( tab.tag ) ;
+	std::vector<unsigned char> data = ReadTable( tab ) ;
 	std::size_t padding = ((tab.length + 3) & (~3)) - tab.length ;
 	PDF_ASSERT( padding < 4 ) ;
 	unsigned char zeros[4] = {} ;
 	data.insert( data.end(), zeros, zeros + padding ) ;
 	s->sputn( reinterpret_cast<char*>( &data[0] ), data.size() ) ;
+}
+
+Sfnt::Table Sfnt::FindTable( unsigned long tag ) const
+{
+	Impl::TableMap::const_iterator i = m_impl->table_map.find( tag ) ;
+	if ( i != m_impl->table_map.end() )
+	{
+		PDF_ASSERT( i->second != 0 ) ;
+		return *i->second ;
+	}
+	throw FontException( "required table not found!" ) ;
 }
 
 } // end of namespace

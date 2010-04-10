@@ -48,8 +48,10 @@ public :
 	explicit Sfnt( FT_FaceRec_ *face ) ;
 	~Sfnt( ) ;
 	
-	void AddGlyph( wchar_t unicode ) ;
-	void Write( std::streambuf *str ) const ;
+	void Write(
+		std::streambuf	*str,
+		const unsigned	*glyphs,
+		std::size_t 	size ) const ;
 
 private :
 	void LoadTableInfo( ) ;
@@ -58,7 +60,7 @@ private :
 	struct Table ;
 
 	/// wrapper for FT_Load_Sfnt_Table()
-	std::vector<unsigned char> ReadTable( unsigned long tag ) const ;
+	std::vector<unsigned char> ReadTable( const Table& tab ) const ;
 	Table FindTable( unsigned long tag ) const ;
 
 	void WriteTableDirEntry( WriteStream& s, const Table& tab ) const ;

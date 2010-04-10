@@ -61,7 +61,7 @@ void SfntTest::Test( )
 	Sfnt subject( m_face ) ;
 	
 	std::stringstream out ;
-	subject.Write( out.rdbuf() ) ;
+	subject.Write( out.rdbuf(), 0, 0 ) ;
 	std::string os = out.str() ;
 	CPPUNIT_ASSERT( os.size() > 0 ) ;
 	
