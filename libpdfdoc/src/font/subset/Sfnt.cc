@@ -64,9 +64,11 @@ struct Sfnt::Impl
 {
 	FT_Face		face ;
 
-	// map from tags to length
-	typedef std::map<unsigned long, Table> TableMap ;
-	TableMap 	tables ;
+	typedef std::vector<Table> TableVec ;
+	TableVec 	tables ;
+	
+	typedef std::map<unsigned long, Table*> TableMap ;
+	TableMap	table_map ;
 	
 	TT_Header	*head ;
 	
@@ -94,7 +96,6 @@ namespace
 		}
 		return d0 + (d1 << 8) + (d2 << 16) + (d3 << 24);
 	}
-
 }
 
 /**	constructor
@@ -125,21 +126,26 @@ Sfnt::~Sfnt( )
 
 std::vector<unsigned char> Sfnt::ReadTable( unsigned long tag ) const
 {
-	Impl::TableMap::const_iterator i = m_impl->tables.find( tag ) ;
-	if ( i != m_impl->tables.end() )
+	Impl::TableMap::const_iterator i = m_impl->table_map.find( tag ) ;
+	if ( i != m_impl->table_map.end() )
 	{
-		std::vector<unsigned char> table( i->second.length ) ;
+		PDF_ASSERT( i->second != 0 ) ;
+	
+		std::vector<unsigned char> table( i->second->length ) ;
 		
-		unsigned long size = i->second.length ;
+		unsigned long size = i->second->length ;
 		FT_Error e = FT_Load_Sfnt_Table( m_impl->face, tag, 0, &table[0],
 			&size ) ;
-		if ( e != 0 || size != i->second.length )
+		if ( e != 0 || size != i->second->length )
 			throw FontException( "cannot load table" ) ;
 		
 		return table ;
 	}
 	else
+	{
+		PDF_ASSERT( false ) ;
 		return std::vector<unsigned char>() ;
+	}
 }
 
 /// load the "loca" table, which gives the offset of the data for each glyph
@@ -194,19 +200,20 @@ void Sfnt::LoadTableInfo( )
 		throw FontException( "can't load truetype font" ) ;
 	ReadStream dir_str( &table_dir[0], table_dir.size() ) ;
 
+	Impl::TableVec& tables = m_impl->tables ;
+
 	// read the tag and length of each table in the font
 	for ( u16 i = 0 ; i < table_count ; i++ )
 	{
 		Table tab = {} ;
 		dir_str >> tab.tag >> tab.checksum >> tab.offset >> tab.length ;
-	
-//		unsigned long ft_length = 0, ft_tag = 0 ;
-//		e = FT_Sfnt_Table_Info( m_impl->face, i, &tag, &length ) ;
-//		if ( e != 0 )
-//			throw FontException( "can't get info for table" ) ;
 		
-		m_impl->tables.insert( std::make_pair( tab.tag, tab ) ) ;
+		tables.push_back( tab ) ;
 	}
+	
+	for ( Impl::TableVec::iterator i = tables.begin() ;
+		i != tables.end() ; ++i )
+		m_impl->table_map.insert( std::make_pair( i->tag, &*i ) ) ;
 }
 
 void Sfnt::Write( std::streambuf *str ) const
@@ -227,15 +234,35 @@ void Sfnt::Write( std::streambuf *str ) const
 		<< u16(selector)
 		<< u16((table_used - (1 << selector)) * 16) ;
 
+	// write the table directory entries for all tables
 	using namespace boost ;
 	std::for_each( m_impl->tables.begin(), m_impl->tables.end(),
-		bind( &Sfnt::WriteTableDirEntry, this, ref(out),
-			bind( &Impl::TableMap::value_type::second, _1 ) ) ) ;
+		bind( &Sfnt::WriteTableDirEntry, this, ref(out), _1 ) ) ;
+
+	// sort the table by offset to retain original order
+	Impl::TableVec tables = m_impl->tables ;
+	using namespace boost ;
+	std::sort( tables.begin(), tables.end(),
+		(bind( &Table::offset, _1 ) < bind( &Table::offset, _2 )) ) ; 
+	
+	// write the tables
+	std::for_each( tables.begin(), tables.end(),
+		bind( &Sfnt::WriteTable, this, str, _1 ) ) ;
 }
 
 void Sfnt::WriteTableDirEntry( WriteStream& s, const Table& tab ) const
 {
 	s << tab.tag << tab.checksum << tab.offset << tab.length ;
+}
+
+void Sfnt::WriteTable( std::streambuf *s, const Table& tab ) const
+{
+	std::vector<unsigned char> data = ReadTable( tab.tag ) ;
+	std::size_t padding = ((tab.length + 3) & (~3)) - tab.length ;
+	PDF_ASSERT( padding < 4 ) ;
+	unsigned char zeros[4] = {} ;
+	data.insert( data.end(), zeros, zeros + padding ) ;
+	s->sputn( reinterpret_cast<char*>( &data[0] ), data.size() ) ;
 }
 
 } // end of namespace

@@ -62,6 +62,7 @@ private :
 	Table FindTable( unsigned long tag ) const ;
 
 	void WriteTableDirEntry( WriteStream& s, const Table& tab ) const ;
+	void WriteTable( std::streambuf *s, const Table& tab ) const ;
 
 private :
 	struct Impl ;

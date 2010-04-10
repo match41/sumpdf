@@ -29,6 +29,9 @@
 
 #include "mock/Assert.hh"
 
+#include <fstream>
+#include <iterator>
+
 namespace pdfut {
 
 using namespace pdf ;
@@ -60,14 +63,27 @@ void SfntTest::Test( )
 	std::stringstream out ;
 	subject.Write( out.rdbuf() ) ;
 	std::string os = out.str() ;
+	CPPUNIT_ASSERT( os.size() > 0 ) ;
 	
-	PDFUT_ASSERT_EQUAL( os.size(), 284U ) ;
-	std::vector<char> exp( os.size() ) ;
 	std::ifstream font_file(
 		(std::string(TEST_DATA_DIR) + "FreeMonoBoldOblique.ttf").c_str(),
 		std::ios::in | std::ios::binary ) ;
 	
-	font_file.rdbuf()->sgetn( &exp[0], exp.size() ) ;
+	std::vector<char> exp(
+		(std::istreambuf_iterator<char>(font_file)),
+		(std::istreambuf_iterator<char>()) ) ;
+	
+	PDFUT_ASSERT_EQUAL( os.size(), exp.size() ) ;
+	
+	for ( std::size_t i = 0 ; i < os.size() ; ++i )
+	{
+		if ( os[i] != exp[i] )
+		{
+			std::cout << "byte offset " << i << " mismatch" << std::endl ;
+			break ;
+		}
+	}
+	
 	PDFUT_ASSERT_RANGE_EQUAL( os.begin(), os.end(), exp.begin() ) ;
 }
 
