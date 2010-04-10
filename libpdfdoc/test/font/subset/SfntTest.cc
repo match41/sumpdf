@@ -61,7 +61,7 @@ void SfntTest::Test( )
 	subject.Write( out.rdbuf() ) ;
 	std::string os = out.str() ;
 	
-	PDFUT_ASSERT_EQUAL( os.size(), 12U ) ;
+	PDFUT_ASSERT_EQUAL( os.size(), 284U ) ;
 	std::vector<char> exp( os.size() ) ;
 	std::ifstream font_file(
 		(std::string(TEST_DATA_DIR) + "FreeMonoBoldOblique.ttf").c_str(),

@@ -36,6 +36,8 @@ struct FT_FaceRec_ ;
 
 namespace pdf {
 
+class WriteStream ;
+
 ///	brief description
 /**	\internal
 	The Sfnt class represents
@@ -53,8 +55,13 @@ private :
 	void LoadTableInfo( ) ;
 	void LoadLocation( ) ;
 
+	struct Table ;
+
 	/// wrapper for FT_Load_Sfnt_Table()
-	std::vector<unsigned char> LoadTable( unsigned long tag ) const ;
+	std::vector<unsigned char> ReadTable( unsigned long tag ) const ;
+	Table FindTable( unsigned long tag ) const ;
+
+	void WriteTableDirEntry( WriteStream& s, const Table& tab ) const ;
 
 private :
 	struct Impl ;
