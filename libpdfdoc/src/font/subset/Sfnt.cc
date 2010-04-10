@@ -96,6 +96,12 @@ namespace
 		}
 		return d0 + (d1 << 8) + (d2 << 16) + (d3 << 24);
 	}
+	
+	const unsigned long required_tables[] =
+	{
+		TTAG_cmap, TTAG_cvt , TTAG_fpgm, TTAG_glyf, TTAG_head,
+		TTAG_hhea, TTAG_hmtx, TTAG_loca, TTAG_maxp, TTAG_prep,
+	};
 }
 
 /**	constructor
@@ -210,6 +216,7 @@ void Sfnt::Write(
 	const unsigned	*glyphs,
 	std::size_t 	size ) const
 {
+	using namespace boost ;
 	static const u32 entry_selectors[] =
 	// 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20
 	{  0, 0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4};
@@ -226,20 +233,40 @@ void Sfnt::Write(
 		<< u16(selector)
 		<< u16((table_used - (1 << selector)) * 16) ;
 
-	// write the table directory entries for all tables
-	using namespace boost ;
-	std::for_each( m_impl->tables.begin(), m_impl->tables.end(),
-		bind( &Sfnt::WriteTableDirEntry, this, ref(out), _1 ) ) ;
-
-	// sort the table by offset to retain original order
-	Impl::TableVec tables = m_impl->tables ;
-	using namespace boost ;
-	std::sort( tables.begin(), tables.end(),
-		(bind( &Table::offset, _1 ) < bind( &Table::offset, _2 )) ) ; 
-	
-	// write the tables
-	std::for_each( tables.begin(), tables.end(),
-		bind( &Sfnt::WriteTable, this, str, _1 ) ) ;
+	if ( glyphs == 0 && size == 0 )
+	{
+		// write the table directory entries for all tables
+		std::for_each( m_impl->tables.begin(), m_impl->tables.end(),
+			bind( &Sfnt::WriteTableDirEntry, this, ref(out), _1 ) ) ;
+		
+		// sort the table by offset to retain original order
+		Impl::TableVec tables = m_impl->tables ;
+		std::sort( tables.begin(), tables.end(),
+			(bind( &Table::offset, _1 ) < bind( &Table::offset, _2 )) ) ; 
+		
+		// write the tables
+		std::for_each( tables.begin(), tables.end(),
+			bind( &Sfnt::WriteTable, this, str, _1 ) ) ;
+	}
+	// only write the required tables
+	else
+	{
+		std::for_each(
+			Begin(required_tables),
+			End(required_tables),
+			bind( &Sfnt::WriteTableDirEntry,
+				this,
+				ref(out),
+				bind( &Sfnt::FindTable, this, _1 ) ) ) ;
+		
+		std::for_each(
+			Begin(required_tables),
+			End(required_tables),
+			bind( &Sfnt::WriteTable,
+				this,
+				str,
+				bind( &Sfnt::FindTable, this, _1 ) ) ) ;
+	}
 }
 
 void Sfnt::WriteTableDirEntry( WriteStream& s, const Table& tab ) const

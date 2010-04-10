@@ -42,7 +42,8 @@ public :
 
 	// declare suit function
 	CPPUNIT_TEST_SUITE( SfntTest ) ;
-		CPPUNIT_TEST( Test ) ;
+		CPPUNIT_TEST( TestFull ) ;
+		CPPUNIT_TEST( TestSubset ) ;
 	CPPUNIT_TEST_SUITE_END();
 
 public :
@@ -50,11 +51,14 @@ public :
 	void tearDown( ) ;
 
 private :
-	void Test( ) ;
+	void TestFull( ) ;
+	void TestSubset( ) ;
 
 private :
 	FT_Library	m_ft ;
 	FT_Face		m_face ;
+	
+	static const std::string	m_font ;
 } ;
 
 } // end of namespace

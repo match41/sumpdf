@@ -29,12 +29,17 @@
 
 #include "mock/Assert.hh"
 
+#include "util/Util.hh"
+
 #include <fstream>
 #include <iterator>
 
 namespace pdfut {
 
 using namespace pdf ;
+
+const std::string SfntTest::m_font =
+	TEST_DATA_DIR + std::string("FreeMonoBoldOblique.ttf") ;
 
 SfntTest::SfntTest( )
 {
@@ -43,11 +48,7 @@ SfntTest::SfntTest( )
 void SfntTest::setUp( )
 {
 	FT_Init_FreeType( &m_ft ) ;
-	FT_New_Face(
-		m_ft,
-		(std::string(TEST_DATA_DIR) + "FreeMonoBoldOblique.ttf").c_str(),
-		0,
-		&m_face ) ;
+	FT_New_Face( m_ft, m_font.c_str(), 0, &m_face ) ;
 }
 
 void SfntTest::tearDown( )
@@ -56,7 +57,7 @@ void SfntTest::tearDown( )
 	FT_Done_FreeType( m_ft ) ;
 }
 
-void SfntTest::Test( )
+void SfntTest::TestFull( )
 {
 	Sfnt subject( m_face ) ;
 	
@@ -65,9 +66,7 @@ void SfntTest::Test( )
 	std::string os = out.str() ;
 	CPPUNIT_ASSERT( os.size() > 0 ) ;
 	
-	std::ifstream font_file(
-		(std::string(TEST_DATA_DIR) + "FreeMonoBoldOblique.ttf").c_str(),
-		std::ios::in | std::ios::binary ) ;
+	std::ifstream font_file( m_font.c_str(), std::ios::in | std::ios::binary ) ;
 	
 	std::vector<char> exp(
 		(std::istreambuf_iterator<char>(font_file)),
@@ -85,6 +84,16 @@ void SfntTest::Test( )
 	}
 	
 	PDFUT_ASSERT_RANGE_EQUAL( os.begin(), os.end(), exp.begin() ) ;
+}
+
+void SfntTest::TestSubset( )
+{
+	Sfnt subject( m_face ) ;
+
+	unsigned glyphs[] = { 1, 2 } ;
+
+	std::stringstream out ;
+	subject.Write( out.rdbuf(), glyphs, Count(glyphs) ) ;
 }
 
 } // end of namespace
