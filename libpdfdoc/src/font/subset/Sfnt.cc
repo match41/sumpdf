@@ -25,11 +25,15 @@
 
 #include "Sfnt.hh"
 
+// headers in the same package
 #include "Types.hh"
 #include "ReadStream.hh"
+#include "WriteStream.hh"
 
+// headers from other packages
 #include "font/FontException.hh"
 #include "util/Debug.hh"
+#include "util/Util.hh"
 
 // freetype headers
 #include <ft2build.h>
@@ -157,12 +161,26 @@ void Sfnt::LoadTableInfo( )
 		
 		m_impl->table_len.insert( std::make_pair( tag, length ) ) ;
 	}
-	
 }
 
-void Sfnt::Write( std::streambuf *out ) const
+void Sfnt::Write( std::streambuf *str ) const
 {
+	static const u32 entry_selectors[] =
+	// 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20
+	{  0, 0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4};
+
+	u16 table_used = static_cast<u16>(m_impl->table_len.size()) ;
+	if ( table_used >= Count(entry_selectors) )
+		throw FontException( "too many tables" ) ;
 	
+	int selector = entry_selectors[table_used];
+
+	WriteStream out(str) ;
+	out	<< u32(0x00010000) << table_used
+		<< u16((1 << selector) * 16)
+		<< u16(selector)
+		<< u16((table_used - (1 << selector)) * 16) ;
+
 }
 
 } // end of namespace

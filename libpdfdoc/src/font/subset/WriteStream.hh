@@ -17,50 +17,35 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	Sfnt.hh
-    \brief	definition the Sfnt class
-    \date	Apr 9, 2010
+/**	\file	WriteStream.hh
+    \brief	definition the WriteStream class
+    \date	Apr 10, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_SFNT_HH_EADER_INCLUDED__
-#define __PDF_SFNT_HH_EADER_INCLUDED__
+#ifndef __PDF_WRITESTREAM_HH_EADER_INCLUDED__
+#define __PDF_WRITESTREAM_HH_EADER_INCLUDED__
 
-#include <memory>
-#include <string>
-#include <wchar.h>
-#include <vector>
-#include <iosfwd>
-
-struct FT_FaceRec_ ;
+#include <streambuf>
 
 namespace pdf {
 
 ///	brief description
 /**	\internal
-	The Sfnt class represents
+	The WriteStream class represents
 */
-class Sfnt
+class WriteStream
 {
 public :
-	explicit Sfnt( FT_FaceRec_ *face ) ;
-	~Sfnt( ) ;
+	explicit WriteStream( std::streambuf *buf ) ;
 	
-	void AddGlyph( wchar_t unicode ) ;
-	void Write( std::streambuf *str ) const ;
-
+	template <typename T>
+	WriteStream& operator<<( T v ) ;
+	
 private :
-	void LoadTableInfo( ) ;
-	void LoadLocation( ) ;
-
-	/// wrapper for FT_Load_Sfnt_Table()
-	std::vector<unsigned char> LoadTable( unsigned long tag ) const ;
-
-private :
-	struct Impl ;
-	std::auto_ptr<Impl>	m_impl ;
+	std::streambuf	*m_buf ;
 } ;
 
 } // end of namespace
 
-#endif // SFNT_HH_
+#endif // WRITESTREAM_HH_

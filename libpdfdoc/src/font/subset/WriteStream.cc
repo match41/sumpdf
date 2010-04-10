@@ -17,50 +17,42 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	Sfnt.hh
-    \brief	definition the Sfnt class
-    \date	Apr 9, 2010
-    \author	Nestal Wan
+/**	\file	WriteStream.cc
+	\brief	implementation of the WriteStream class
+	\date	Apr 10, 2010
+	\author	Nestal Wan
 */
 
-#ifndef __PDF_SFNT_HH_EADER_INCLUDED__
-#define __PDF_SFNT_HH_EADER_INCLUDED__
+#include "WriteStream.hh"
 
-#include <memory>
-#include <string>
-#include <wchar.h>
-#include <vector>
-#include <iosfwd>
+#include "Endian.hh"
+#include "Types.hh"
 
-struct FT_FaceRec_ ;
+// boost headers
+#include <boost/detail/endian.hpp>
 
 namespace pdf {
 
-///	brief description
-/**	\internal
-	The Sfnt class represents
-*/
-class Sfnt
-{
-public :
-	explicit Sfnt( FT_FaceRec_ *face ) ;
-	~Sfnt( ) ;
+/**	constructor
 	
-	void AddGlyph( wchar_t unicode ) ;
-	void Write( std::streambuf *str ) const ;
+*/
+WriteStream::WriteStream( std::streambuf *buf )
+	: m_buf( buf )
+{
+}
 
-private :
-	void LoadTableInfo( ) ;
-	void LoadLocation( ) ;
+template <typename T>
+WriteStream& WriteStream::operator<<( T v )
+{
+#ifdef BOOST_LITTLE_ENDIAN
+	v = SwapByte( v ) ;
+#endif
+	m_buf->sputn( reinterpret_cast<const char*>(&v), sizeof(v) ) ;
 
-	/// wrapper for FT_Load_Sfnt_Table()
-	std::vector<unsigned char> LoadTable( unsigned long tag ) const ;
+	return *this ;
+}
 
-private :
-	struct Impl ;
-	std::auto_ptr<Impl>	m_impl ;
-} ;
+template WriteStream& WriteStream::operator<<( u32 v ) ;
+template WriteStream& WriteStream::operator<<( u16 v ) ;
 
 } // end of namespace
-
-#endif // SFNT_HH_

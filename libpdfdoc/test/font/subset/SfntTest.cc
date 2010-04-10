@@ -56,6 +56,19 @@ void SfntTest::tearDown( )
 void SfntTest::Test( )
 {
 	Sfnt subject( m_face ) ;
+	
+	std::stringstream out ;
+	subject.Write( out.rdbuf() ) ;
+	std::string os = out.str() ;
+	
+	PDFUT_ASSERT_EQUAL( os.size(), 12U ) ;
+	std::vector<char> exp( os.size() ) ;
+	std::ifstream font_file(
+		(std::string(TEST_DATA_DIR) + "FreeMonoBoldOblique.ttf").c_str(),
+		std::ios::in | std::ios::binary ) ;
+	
+	font_file.rdbuf()->sgetn( &exp[0], exp.size() ) ;
+	PDFUT_ASSERT_RANGE_EQUAL( os.begin(), os.end(), exp.begin() ) ;
 }
 
 } // end of namespace
