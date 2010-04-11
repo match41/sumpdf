@@ -240,7 +240,6 @@ std::vector<uchar> Sfnt::CreateSubset(
 	u32 hoff = WriteSubset( oss.rdbuf(), glyphs, size ) ;
 
 	std::string file_data = oss.str() ;
-
 	if ( hoff != 0 )
 	{
 		uchar *data = reinterpret_cast<uchar*>(&file_data[0]) ;
@@ -249,6 +248,7 @@ std::vector<uchar> Sfnt::CreateSubset(
 		u32 checksum = 0xB1B0AFBA - Checksum( data, file_data.size() ) ;
 		WriteBigEndian( checksum, &data[hoff + 8] ) ;
 	}
+	
 	return std::vector<uchar>( file_data.begin(), file_data.end() );
 }
 
@@ -296,8 +296,7 @@ u32 Sfnt::WriteSubset(
 		std::for_each( tables.begin(), tables.end(),
 			bind( &Sfnt::CopyTable, this, str, _1 ) ) ;
 		
-		return 0 ;
-		// retrun FindTable( TTAG_head ).offset ;
+		return FindTable( TTAG_head ).offset ;
 	}
 	// only write the required tables
 	else
@@ -316,6 +315,16 @@ void Sfnt::WriteTableDirEntry( WriteStream& s, const Table& tab  ) const
 void Sfnt::CopyTable( std::streambuf *s, const Table& tab ) const
 {
 	std::vector<uchar> data = ReadTable( tab ) ;
+
+	if ( tab.tag == TTAG_head )
+	{
+		if ( data.size() < 8 + sizeof(u32) )
+			throw FontException( "head table too small" ) ;
+		
+		// overwrite checksum adjustmemt to zero
+		std::memset( &data[8], 0, sizeof(u32) ) ;
+	}
+
 	WriteTable( s, &data[0], data.size() ) ;
 }
 
@@ -475,7 +484,7 @@ u32 Sfnt::WriteSubsetTables(
 				reinterpret_cast<const uchar*>(&loca[0]),
 				loca.size() ) ;
 
-		else if ( *tag == TTAG_head )
+/*		else if ( *tag == TTAG_head )
 		{
 			// read the "head" table.
 			std::vector<uchar> head = ReadTable( FindTable( TTAG_head ) ) ;
@@ -487,7 +496,7 @@ u32 Sfnt::WriteSubsetTables(
 			std::memset( &head[8], 0, sizeof(u32) ) ;
 			WriteTable( dest, &head[0], head.size() ) ;
 		}
-		
+*/
 		else
 			CopyTable( dest, FindTable( *tag ) ) ;
 	}

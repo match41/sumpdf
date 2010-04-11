@@ -29,6 +29,9 @@
 #include "Endian.hh"
 #include "Types.hh"
 
+// boost headers
+#include <boost/detail/endian.hpp>
+
 #include <cstring>
 
 namespace pdf {
@@ -66,7 +69,7 @@ template <typename T>
 void WriteBigEndian( T value, unsigned char *ptr )
 {
 #ifdef BOOST_LITTLE_ENDIAN
-		value = SwapByte( value ) ;
+	value = SwapByte( value ) ;
 #endif
 	std::memcpy( ptr, &value, sizeof(value) ) ;
 }
