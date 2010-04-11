@@ -48,7 +48,9 @@ SfntTest::SfntTest( )
 void SfntTest::setUp( )
 {
 	FT_Init_FreeType( &m_ft ) ;
-	FT_New_Face( m_ft, m_font.c_str(), 0, &m_face ) ;
+	FT_Error e = FT_New_Face( m_ft, m_font.c_str(), 0, &m_face ) ;
+	if ( e != 0 )
+		throw -1 ;
 }
 
 void SfntTest::tearDown( )

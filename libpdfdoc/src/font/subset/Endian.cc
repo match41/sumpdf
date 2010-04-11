@@ -33,6 +33,11 @@
 #include <boost/detail/endian.hpp>
 
 #include <cstring>
+#include <algorithm>
+
+#ifdef _MSC_VER
+#include <intrin.h>
+#endif
 
 namespace pdf {
 
@@ -44,17 +49,24 @@ u32 SwapByte( u32 t )
 	return __builtin_bswap32( t ) ;
 }
 
+#elif _MSC_VER
+
+template <>
+u32 SwapByte( u32 t )
+{
+	return _byteswap_ulong( t ) ;
+}
+
 // for others
 #else
 
 template <>
 u32 SwapByte( u32 t )
 {
-	return
-		((t & 0xff)		<< 24UL ) |
-		((t & 0xff00)	<< 16UL ) |
-		((t & 0xff0000)	<< 8UL ) |
-		(t >> 8) ;
+	uchar *p = reinterpret_cast<uchar*>( &t ) ;
+	std::swap( p[0], p[3] ) ;
+	std::swap( p[1], p[2] ) ;
+	return t ;
 }
 
 #endif
