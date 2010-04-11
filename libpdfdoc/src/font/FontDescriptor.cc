@@ -26,6 +26,7 @@
 #include "FontDescriptor.hh"
 
 #include "FontException.hh"
+#include "FontSubsetInfo.hh"
 
 #include "core/Array.hh"
 #include "core/Dictionary.hh"
@@ -36,6 +37,9 @@
 #include "util/Util.hh"
 #include "util/Debug.hh"
 
+// freetype headers
+#include <ft2build.h>
+#include FT_FREETYPE_H
 #include FT_TRUETYPE_IDS_H
 #include FT_TRUETYPE_TABLES_H
 
@@ -225,7 +229,10 @@ void FontDescriptor::Read( font::Type type, DictReader& reader )
 		m_psname = psname.Str() ;
 }
 
-Ref FontDescriptor::Write( File *file ) const
+Ref FontDescriptor::Write(
+	File 					*file,
+	const FontSubsetInfo	*subset,
+	FT_FaceRec_ 			*face ) const
 {
 	PDF_ASSERT( file != 0 ) ;
 
@@ -247,7 +254,6 @@ Ref FontDescriptor::Write( File *file ) const
 	if ( m_x_height != 0.0 )
 		self.insert( "XHeight", m_x_height ) ;
 	
-//	Rect bbox( m_x_min, m_y_min, m_x_max, m_y_max ) ;
 	self.insert( "FontBBox",	m_bbox ) ;
 	
 	// embedded font program also needs Length1 for the size of the stream

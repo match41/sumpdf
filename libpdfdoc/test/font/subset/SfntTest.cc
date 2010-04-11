@@ -72,8 +72,8 @@ void SfntTest::TestFull( )
 		(std::istreambuf_iterator<char>(font_file)),
 		(std::istreambuf_iterator<char>()) ) ;
 	
-	std::ofstream o( "full.ttf", std::ios::out | std::ios::binary ) ;
-	o.rdbuf()->sputn( (char*)&out[0], out.size() ) ;
+//	std::ofstream o( "full.ttf", std::ios::out | std::ios::binary ) ;
+//	o.rdbuf()->sputn( (char*)&out[0], out.size() ) ;
 	
 	PDFUT_ASSERT_EQUAL( out.size(), exp.size() ) ;
 	PDFUT_ASSERT_RANGE_EQUAL( out.begin(), out.end(), exp.begin() ) ;

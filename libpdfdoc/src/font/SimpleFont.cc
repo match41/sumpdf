@@ -29,6 +29,7 @@
 #include "RealGlyph.hh"
 #include "FontException.hh"
 #include "FontDescriptor.hh"
+#include "FontSubsetInfo.hh"
 #include "SimpleEncoding.hh"
 
 // libpdfdoc headers
@@ -84,6 +85,8 @@ struct SimpleFont::Impl
 	typedef std::tr1::unordered_map<wchar_t, RealGlyph*> GlyphMap ;
 	GlyphMap	glyphs ;
 	
+	const FontSubsetInfo	*subset ;
+	
 	Impl()
 	: face( 0 )
 	, type( font::unknown )
@@ -91,6 +94,7 @@ struct SimpleFont::Impl
 	, last_char( -1 )
 	, descriptor( 0 )
 	, encoding( 0 )
+	, subset( 0 )
 	{
 	}
 } ;
@@ -437,7 +441,8 @@ Ref SimpleFont::Write( File *file ) const
 	else
 		dict.insert( "Widths", 		m_impl->widths ) ;
 
-	dict.insert( "FontDescriptor", 	m_impl->descriptor->Write( file ) ) ;
+	dict.insert( "FontDescriptor", 
+		m_impl->descriptor->Write( file, m_impl->subset, m_impl->face ) ) ;
 
 	if ( !m_impl->to_unicode.Is<void>( ) )
 		dict.insert( "ToUnitcode", 	file->WriteObj( m_impl->to_unicode ) ) ;
