@@ -74,15 +74,18 @@ void SfntTest::TestFull( )
 	
 	PDFUT_ASSERT_EQUAL( os.size(), exp.size() ) ;
 	PDFUT_ASSERT_RANGE_EQUAL( os.begin(), os.end(), exp.begin() ) ;
+	
+	std::ofstream full( "full.ttf", std::ios::out | std::ios::binary ) ;
+	subject.Write( full.rdbuf(), 0, 0 ) ;
 }
 
 void SfntTest::TestSubset( )
 {
 	Sfnt subject( m_face ) ;
 
-	unsigned glyphs[] = { 1, 2 } ;
+	long glyphs[] = { 1, 2, 30 } ;
 
-	std::stringstream out ;
+	std::ofstream out( "test.ttf", std::ios::out | std::ios::binary ) ;
 	subject.Write( out.rdbuf(), glyphs, Count(glyphs) ) ;
 }
 

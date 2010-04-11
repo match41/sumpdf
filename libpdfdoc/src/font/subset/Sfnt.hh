@@ -26,9 +26,10 @@
 #ifndef __PDF_SFNT_HH_EADER_INCLUDED__
 #define __PDF_SFNT_HH_EADER_INCLUDED__
 
+#include "Types.hh"
+
 #include <memory>
 #include <string>
-#include <wchar.h>
 #include <vector>
 #include <iosfwd>
 
@@ -50,7 +51,7 @@ public :
 	
 	void Write(
 		std::streambuf	*str,
-		const unsigned	*glyphs,
+		const long		*glyphs,
 		std::size_t 	size ) const ;
 
 private :
@@ -59,22 +60,42 @@ private :
 	
 	struct Table ;
 
-	std::vector<Table> GenerateTable(
-		const unsigned	*glyphs,
+	void GenerateTable(
+		const long		*glyphs,
 		std::size_t 	size,
 		std::streambuf	*glyf,
 		std::streambuf	*loca ) const ;
 
+	void WriteSubsetTables(
+		const std::string&	glyf,
+		const std::string&	loca,
+		std::streambuf		*dest ) const ;
+
+	Table MakeTable( u32 tag, u32 offset, const std::string& data ) const ;
+
 	/// wrapper for FT_Load_Sfnt_Table()
 	std::vector<unsigned char> ReadTable( const Table& tab ) const ;
-	Table FindTable( unsigned long tag ) const ;
+	Table FindTable( u32 tag ) const ;
 
 	void WriteTableDirEntry( WriteStream& s, const Table& tab ) const ;
 	void CopyTable( std::streambuf *s, const Table& tab ) const ;
+	void WriteTable(
+		std::streambuf		*s,
+		const unsigned char	*data,
+		std::size_t			size ) const ;
+	
+	void CopyGlyph(
+		unsigned 			glyph,
+		std::streambuf		*glyf,
+		std::streambuf 		*loca,
+		const unsigned char	*src,
+		std::size_t			size ) const ;
+	void WriteGlyphLocation( std::streambuf *loca, unsigned long value ) const ;
+	void WriteGlyphLocation( std::streambuf *loca, std::streambuf *glyf ) const ;
 
 private :
 	struct Impl ;
-	std::auto_ptr<Impl>	m_impl ;
+	const std::auto_ptr<Impl> m_impl ;
 } ;
 
 } // end of namespace
