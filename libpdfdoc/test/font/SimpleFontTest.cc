@@ -48,6 +48,7 @@ void SimpleFontTest::TestLoadByName( )
 {
 	pdf::SimpleFont subject( "FreeMonoBoldOblique", m_font_db ) ;
 	PDFUT_ASSERT_EQUAL( subject.BaseName( ), "FreeMonoBoldOblique" ) ;
+	CPPUNIT_ASSERT( !subject.IsSubset() ) ;
 	
 	pdf::FontDescriptor *fd = subject.Descriptor( ) ;
 	CPPUNIT_ASSERT( fd != 0 ) ;

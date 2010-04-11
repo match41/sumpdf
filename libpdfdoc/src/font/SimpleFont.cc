@@ -276,6 +276,18 @@ void SimpleFont::Init( std::vector<unsigned char>& prog, FontDb *font_db )
 	LoadGlyphs( ) ;
 }
 
+bool SimpleFont::IsSubset( const std::string& basename )
+{
+	return basename.size() > 7 && basename[6] == '+' &&
+		std::find_if( basename.begin(), basename.begin() + 6,
+			islower ) == basename.begin() + 6 ;
+}
+
+bool SimpleFont::IsSubset( ) const
+{
+	return IsSubset( m_impl->base_font.Str() ) ;
+}
+
 std::vector<unsigned char> SimpleFont::FindStdFont(
 	const std::string&	base_name,
 	FontDb				*fdb )

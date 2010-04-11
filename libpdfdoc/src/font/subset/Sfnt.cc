@@ -237,17 +237,16 @@ std::vector<uchar> Sfnt::CreateSubset(
 	std::size_t 	size ) const
 {
 	std::ostringstream oss ;
+	
 	u32 hoff = WriteSubset( oss.rdbuf(), glyphs, size ) ;
+	PDF_ASSERT( hoff != 0 ) ;
 
 	std::string file_data = oss.str() ;
-	if ( hoff != 0 )
-	{
-		uchar *data = reinterpret_cast<uchar*>(&file_data[0]) ;
-	
-		// update the checksum adjustment field in the "head" table
-		u32 checksum = 0xB1B0AFBA - Checksum( data, file_data.size() ) ;
-		WriteBigEndian( checksum, &data[hoff + 8] ) ;
-	}
+	uchar *data = reinterpret_cast<uchar*>(&file_data[0]) ;
+
+	// update the checksum adjustment field in the "head" table
+	u32 checksum = 0xB1B0AFBA - Checksum( data, file_data.size() ) ;
+	WriteBigEndian( checksum, &data[hoff + 8] ) ;
 	
 	return std::vector<uchar>( file_data.begin(), file_data.end() );
 }
@@ -377,14 +376,17 @@ void Sfnt::GenerateTable(
 	
 	for ( long gidx = 0 ; gidx < m_impl->face->num_glyphs ; ++gidx )
 	{
+		// copy the glyph only if it is used
 		if ( !sorted_glyphs.empty() && gidx == sorted_glyphs.back() )
 		{
 			if ( static_cast<std::size_t>(gidx + 1) < m_impl->loca.size() )
-			{
 				CopyGlyph( gidx, glyf, loca, &src_glyf[0], src_glyf.size() ) ;
-			}
+
 			sorted_glyphs.pop_back() ;
 		}
+		
+		// if the glyph is not used, write the offset of the previous
+		// glyph to indicate that the glyph has no data.
 		else
 			WriteGlyphLocation( loca, glyf ) ;
 	}
@@ -483,20 +485,7 @@ u32 Sfnt::WriteSubsetTables(
 			WriteTable( dest,
 				reinterpret_cast<const uchar*>(&loca[0]),
 				loca.size() ) ;
-
-/*		else if ( *tag == TTAG_head )
-		{
-			// read the "head" table.
-			std::vector<uchar> head = ReadTable( FindTable( TTAG_head ) ) ;
-			
-			if ( head.size() < 8 + sizeof(u32) )
-				throw FontException( "head table too small" ) ;
-			
-			// overwrite checksum adjustmemt to zero
-			std::memset( &head[8], 0, sizeof(u32) ) ;
-			WriteTable( dest, &head[0], head.size() ) ;
-		}
-*/
+		
 		else
 			CopyTable( dest, FindTable( *tag ) ) ;
 	}
