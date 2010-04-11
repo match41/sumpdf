@@ -49,8 +49,7 @@ public :
 	explicit Sfnt( FT_FaceRec_ *face ) ;
 	~Sfnt( ) ;
 	
-	void Write(
-		std::streambuf	*str,
+	std::vector<unsigned char> CreateSubset(
 		const long		*glyphs,
 		std::size_t 	size ) const ;
 

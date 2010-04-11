@@ -61,22 +61,17 @@ void SfntTest::TestFull( )
 {
 	Sfnt subject( m_face ) ;
 	
-	std::stringstream out ;
-	subject.Write( out.rdbuf(), 0, 0 ) ;
-	std::string os = out.str() ;
-	CPPUNIT_ASSERT( os.size() > 0 ) ;
+	std::vector<unsigned char> out = subject.CreateSubset( 0, 0 ) ;
+	CPPUNIT_ASSERT( out.size() > 0 ) ;
 	
 	std::ifstream font_file( m_font.c_str(), std::ios::in | std::ios::binary ) ;
 	
-	std::vector<char> exp(
+	std::vector<unsigned char> exp(
 		(std::istreambuf_iterator<char>(font_file)),
 		(std::istreambuf_iterator<char>()) ) ;
 	
-	PDFUT_ASSERT_EQUAL( os.size(), exp.size() ) ;
-	PDFUT_ASSERT_RANGE_EQUAL( os.begin(), os.end(), exp.begin() ) ;
-	
-	std::ofstream full( "full.ttf", std::ios::out | std::ios::binary ) ;
-	subject.Write( full.rdbuf(), 0, 0 ) ;
+	PDFUT_ASSERT_EQUAL( out.size(), exp.size() ) ;
+	PDFUT_ASSERT_RANGE_EQUAL( out.begin(), out.end(), exp.begin() ) ;
 }
 
 void SfntTest::TestSubset( )
@@ -87,12 +82,12 @@ void SfntTest::TestSubset( )
 		FT_Get_Char_Index( m_face, 'A' ),
 		FT_Get_Char_Index( m_face, 'Z' ) } ;
 
-	std::ofstream out( "test.ttf", std::ios::out | std::ios::binary ) ;
-	subject.Write( out.rdbuf(), glyphs, Count(glyphs) ) ;
+	std::vector<unsigned char> out = subject.CreateSubset( 
+		glyphs, Count(glyphs) ) ;
 	
 	// open the subset
 	FT_Face sub_face ;
-	FT_Error e = FT_New_Face( m_ft, "test.ttf", 0, &sub_face ) ;
+	FT_Error e = FT_New_Memory_Face( m_ft, &out[0], out.size(), 0, &sub_face ) ;
 	PDFUT_ASSERT_EQUAL( e, 0 ) ;
 	
 	// the cmap and glyph indices are the same

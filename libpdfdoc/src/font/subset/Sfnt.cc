@@ -232,8 +232,7 @@ void Sfnt::LoadTableInfo( )
 		m_impl->table_map.insert( std::make_pair( i->tag, &*i ) ) ;
 }
 
-void Sfnt::Write(
-	std::streambuf	*ostr,
+std::vector<unsigned char> Sfnt::CreateSubset(
 	const long		*glyphs,
 	std::size_t 	size ) const
 {
@@ -280,7 +279,7 @@ void Sfnt::Write(
 			bind( &Sfnt::CopyTable, this, str, _1 ) ) ;
 		
 		std::string file_data = oss.str() ;
-		ostr->sputn( &file_data[0], file_data.size() ) ;
+		return std::vector<unsigned char>( file_data.begin(), file_data.end() );
 	}
 	// only write the required tables
 	else
@@ -294,7 +293,7 @@ void Sfnt::Write(
 		u32 checksum = 0xB1B0AFBA - Checksum( (unsigned char*)&file_data[0], file_data.size() ) ;
 		WriteBigEndian( checksum, (unsigned char*)&file_data[hoff + 8] ) ;
 		
-		ostr->sputn( &file_data[0], file_data.size() ) ;
+		return std::vector<unsigned char>( file_data.begin(), file_data.end() );
 	}
 }
 
