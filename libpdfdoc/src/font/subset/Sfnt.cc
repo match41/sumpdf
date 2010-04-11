@@ -89,10 +89,17 @@ namespace
 
 		if ( rs.Size() > 0 )
 		{
-			unsigned char tmp[4] = {} ;
+			PDF_ASSERT( rs.Size() < sizeof(u32) ) ;
+		
+			// copy the remaining bytes
+			unsigned char tmp[sizeof(u32)] = {} ;
 			std::memcpy( tmp, rs.Data(), rs.Size() ) ;
+			
+			// read it as u32
 			ReadStream ts( tmp, sizeof(tmp) ) ;
 			ts >> tab ;
+			PDF_ASSERT( ts ) ;
+			
 			sum += tab ;
 		}
 		
@@ -124,18 +131,6 @@ Sfnt::Sfnt( FT_FaceRec_ *face )
 	if ( m_impl->head == 0 )
 		throw FontException( "head table not loaded yet" ) ;
 	
-	unsigned char tmp[6] ;
-	unsigned long count = sizeof(tmp) ;
-	FT_Error e = FT_Load_Sfnt_Table(m_impl->face, TTAG_maxp, 0, tmp, &count ) ;
-	if ( e == 0 )
-	{
-		ReadStream rs( tmp, 6 ) ;
-		u32 n ;
-		u16 gc ;
-		rs >> n >> gc ;
-std::cout << "maxp = " << n << " " << gc << std::endl ;
-	}
-	
 	// the value from the table should match with freetype
 	PDF_ASSERT( m_impl->head->Units_Per_EM == m_impl->face->units_per_EM ) ;
 	
@@ -164,7 +159,6 @@ void Sfnt::LoadLocation( )
 {
 	std::vector<unsigned char> loca = ReadTable( FindTable( TTAG_loca ) ) ;
 	ReadStream str( &loca[0], loca.size() ) ;
-std::cout << "glyp = " << m_impl->face->num_glyphs << std::endl ;
 
 	// according to the truetype spec, there is an extra value at the
 	// end of the loca table that indicates the end of the table
@@ -204,7 +198,7 @@ void Sfnt::LoadTableInfo( )
 	unsigned char tmp[12] ;
 	unsigned long count = sizeof(tmp) ;
 	FT_Error e = FT_Load_Sfnt_Table( m_impl->face, 0, 0, tmp, &count ) ;
-	if ( e != 0 )
+	if ( e != 0 || count != sizeof(tmp) )
 		throw FontException( "can't load truetype font" ) ;
 
 	// the first 4 byte is called "scaler type", which should be 0x00010000
@@ -214,6 +208,7 @@ void Sfnt::LoadTableInfo( )
 	u16 table_count, search_range, entry_selector, range_shift ;
 	str	>> scaler >> table_count >> search_range >> entry_selector
 		>> range_shift ;
+	PDF_ASSERT( str ) ;
 
 	std::vector<unsigned char> table_dir( table_count * sizeof(Table) ) ;
 	count = table_dir.size() ;
@@ -228,9 +223,8 @@ void Sfnt::LoadTableInfo( )
 	for ( u16 i = 0 ; i < table_count ; i++ )
 	{
 		Table tab = {} ;
-		dir_str >> tab.tag >> tab.checksum >> tab.offset >> tab.length ;
-		
-		tables.push_back( tab ) ;
+		if ( dir_str >> tab.tag >> tab.checksum >> tab.offset >> tab.length )
+			tables.push_back( tab ) ;
 	}
 	
 	for ( Impl::TableVec::iterator i = tables.begin() ;
@@ -299,7 +293,7 @@ void Sfnt::Write(
 		
 		u32 checksum = 0xB1B0AFBA - Checksum( (unsigned char*)&file_data[0], file_data.size() ) ;
 		WriteBigEndian( checksum, (unsigned char*)&file_data[hoff + 8] ) ;
-std::cout << "file checksum = " << std::hex << checksum << std::dec << std::endl ;
+		
 		ostr->sputn( &file_data[0], file_data.size() ) ;
 	}
 }
@@ -385,7 +379,6 @@ void Sfnt::WriteGlyphLocation(
 
 void Sfnt::WriteGlyphLocation( std::streambuf *loca, unsigned long value ) const
 {
-std::cout << "loca = " << value << std::endl ;
 	WriteStream ws( loca ) ;
 	
 	// short format (16bits) of offset
@@ -454,6 +447,8 @@ u32 Sfnt::WriteSubsetTables(
 	u32 offset = static_cast<u32>(dest->pubseekoff( 0, std::ios::cur, std::ios::out )) +
 		Count(required_tables) * sizeof(Table) ;
 
+	// read the "head" table, and save its offset for modifying the
+	// checksum adjustment later
 	std::vector<unsigned char> head = ReadTable( FindTable( TTAG_head ) ) ;
 	u32 head_offset = 0 ;
 
@@ -474,10 +469,7 @@ u32 Sfnt::WriteSubsetTables(
 			tab.offset = offset ;
 			
 			if ( tab.tag == TTAG_head )
-			{
 				head_offset = tab.offset ;
-				std::cout << "head offset = " << std::hex << head_offset << std::dec << std::endl ;
-			}
 		}
 		
 		WriteTableDirEntry( ws, tab ) ;
@@ -488,13 +480,15 @@ u32 Sfnt::WriteSubsetTables(
 		tag != End(required_tables) ; ++tag )
 	{
 		if ( *tag == TTAG_glyf )
-			WriteTable( dest, reinterpret_cast<const unsigned char*>(&glyf[0]), glyf.size() ) ;
+			WriteTable( dest,
+				reinterpret_cast<const unsigned char*>(&glyf[0]),
+				glyf.size() ) ;
 		
 		else if ( *tag == TTAG_loca )
-		{
-			WriteTable( dest, reinterpret_cast<const unsigned char*>(&loca[0]), loca.size() ) ;
-std::cout << loca.size() << std::endl ;
-		}
+			WriteTable( dest,
+				reinterpret_cast<const unsigned char*>(&loca[0]),
+				loca.size() ) ;
+
 		else if ( *tag == TTAG_head )
 		{
 			// overwrite checksum adjustmemt to zero

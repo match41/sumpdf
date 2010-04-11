@@ -83,16 +83,25 @@ void SfntTest::TestSubset( )
 {
 	Sfnt subject( m_face ) ;
 
-	long glyphs[] = { 0, 0x41, 0x42 } ;
+	long glyphs[] = { 0,
+		FT_Get_Char_Index( m_face, 'A' ),
+		FT_Get_Char_Index( m_face, 'Z' ) } ;
 
 	std::ofstream out( "test.ttf", std::ios::out | std::ios::binary ) ;
 	subject.Write( out.rdbuf(), glyphs, Count(glyphs) ) ;
 	
-	FT_Face test ;
-	FT_Error e = FT_New_Face( m_ft, "test.ttf", 0, &test ) ;
-	std::cout << "e = " << e << std::endl ;
+	// open the subset
+	FT_Face sub_face ;
+	FT_Error e = FT_New_Face( m_ft, "test.ttf", 0, &sub_face ) ;
+	PDFUT_ASSERT_EQUAL( e, 0 ) ;
 	
-	Sfnt oops( test ) ;
+	// the cmap and glyph indices are the same
+	PDFUT_ASSERT_EQUAL(
+		FT_Get_Char_Index( m_face,		'A' ),
+		FT_Get_Char_Index( sub_face,	'A' ) ) ;
+	PDFUT_ASSERT_EQUAL(
+		FT_Get_Char_Index( m_face,		'Z' ),
+		FT_Get_Char_Index( sub_face,	'Z' ) ) ;
 }
 
 } // end of namespace
