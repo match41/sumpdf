@@ -33,6 +33,8 @@ namespace pdf
 	typedef boost::uint32_t	u32 ;
 	typedef boost::uint16_t	u16 ;
 	typedef boost::uint8_t	u8 ;
+	
+	typedef unsigned char	uchar ;
 } // end of namespace
 
 #endif // TYPES_HH_

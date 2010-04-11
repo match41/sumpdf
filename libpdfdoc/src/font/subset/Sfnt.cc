@@ -78,7 +78,7 @@ struct Sfnt::Impl
 // non-member helpers
 namespace
 {
-	u32 Checksum( const unsigned char *d, std::size_t length )
+	u32 Checksum( const uchar *d, std::size_t length )
 	{
 		ReadStream rs( d, length ) ;
 		
@@ -92,7 +92,7 @@ namespace
 			PDF_ASSERT( rs.Size() < sizeof(u32) ) ;
 		
 			// copy the remaining bytes
-			unsigned char tmp[sizeof(u32)] = {} ;
+			uchar tmp[sizeof(u32)] = {} ;
 			std::memcpy( tmp, rs.Data(), rs.Size() ) ;
 			
 			// read it as u32
@@ -141,9 +141,9 @@ Sfnt::~Sfnt( )
 {
 }
 
-std::vector<unsigned char> Sfnt::ReadTable( const Table& tab ) const
+std::vector<uchar> Sfnt::ReadTable( const Table& tab ) const
 {
-	std::vector<unsigned char> table( tab.length ) ;
+	std::vector<uchar> table( tab.length ) ;
 	
 	unsigned long size = tab.length ;
 	FT_Error e = FT_Load_Sfnt_Table( m_impl->face, tab.tag, 0, &table[0],
@@ -157,7 +157,7 @@ std::vector<unsigned char> Sfnt::ReadTable( const Table& tab ) const
 /// load the "loca" table, which gives the offset of the data for each glyph
 void Sfnt::LoadLocation( )
 {
-	std::vector<unsigned char> loca = ReadTable( FindTable( TTAG_loca ) ) ;
+	std::vector<uchar> loca = ReadTable( FindTable( TTAG_loca ) ) ;
 	ReadStream str( &loca[0], loca.size() ) ;
 
 	// according to the truetype spec, there is an extra value at the
@@ -195,7 +195,7 @@ void Sfnt::LoadLocation( )
 void Sfnt::LoadTableInfo( )
 {
 	// load the first 12 bytes from the font file
-	unsigned char tmp[12] ;
+	uchar tmp[12] ;
 	unsigned long count = sizeof(tmp) ;
 	FT_Error e = FT_Load_Sfnt_Table( m_impl->face, 0, 0, tmp, &count ) ;
 	if ( e != 0 || count != sizeof(tmp) )
@@ -210,7 +210,7 @@ void Sfnt::LoadTableInfo( )
 		>> range_shift ;
 	PDF_ASSERT( str ) ;
 
-	std::vector<unsigned char> table_dir( table_count * sizeof(Table) ) ;
+	std::vector<uchar> table_dir( table_count * sizeof(Table) ) ;
 	count = table_dir.size() ;
 	e = FT_Load_Sfnt_Table( m_impl->face, 0, 12, &table_dir[0], &count ) ;
 	if ( e != 0 )
@@ -232,13 +232,31 @@ void Sfnt::LoadTableInfo( )
 		m_impl->table_map.insert( std::make_pair( i->tag, &*i ) ) ;
 }
 
-std::vector<unsigned char> Sfnt::CreateSubset(
+std::vector<uchar> Sfnt::CreateSubset(
 	const long		*glyphs,
 	std::size_t 	size ) const
 {
 	std::ostringstream oss ;
-	std::streambuf *str = oss.rdbuf() ;
+	u32 hoff = WriteSubset( oss.rdbuf(), glyphs, size ) ;
 
+	std::string file_data = oss.str() ;
+
+	if ( hoff != 0 )
+	{
+		uchar *data = reinterpret_cast<uchar*>(&file_data[0]) ;
+	
+		// update the checksum adjustment field in the "head" table
+		u32 checksum = 0xB1B0AFBA - Checksum( data, file_data.size() ) ;
+		WriteBigEndian( checksum, &data[hoff + 8] ) ;
+	}
+	return std::vector<uchar>( file_data.begin(), file_data.end() );
+}
+
+u32 Sfnt::WriteSubset(
+	std::streambuf	*str,
+	const long		*glyphs,
+	std::size_t 	size ) const
+{
 	bool is_subset = ( glyphs != 0 && size != 0 ) ;
 	PDF_ASSERT( is_subset || (glyphs == 0 && size == 0) ) ;
 
@@ -278,22 +296,15 @@ std::vector<unsigned char> Sfnt::CreateSubset(
 		std::for_each( tables.begin(), tables.end(),
 			bind( &Sfnt::CopyTable, this, str, _1 ) ) ;
 		
-		std::string file_data = oss.str() ;
-		return std::vector<unsigned char>( file_data.begin(), file_data.end() );
+		return 0 ;
+		// retrun FindTable( TTAG_head ).offset ;
 	}
 	// only write the required tables
 	else
 	{
 		std::ostringstream glyf, loca ;
 		GenerateTable( glyphs, size, glyf.rdbuf(), loca.rdbuf() ) ;
-		u32 hoff = WriteSubsetTables( glyf.str(), loca.str(), str ) ;
-		
-		std::string file_data = oss.str() ;
-		
-		u32 checksum = 0xB1B0AFBA - Checksum( (unsigned char*)&file_data[0], file_data.size() ) ;
-		WriteBigEndian( checksum, (unsigned char*)&file_data[hoff + 8] ) ;
-		
-		return std::vector<unsigned char>( file_data.begin(), file_data.end() );
+		return WriteSubsetTables( glyf.str(), loca.str(), str ) ;
 	}
 }
 
@@ -304,14 +315,18 @@ void Sfnt::WriteTableDirEntry( WriteStream& s, const Table& tab  ) const
 
 void Sfnt::CopyTable( std::streambuf *s, const Table& tab ) const
 {
-	std::vector<unsigned char> data = ReadTable( tab ) ;
+	std::vector<uchar> data = ReadTable( tab ) ;
 	WriteTable( s, &data[0], data.size() ) ;
 }
 
+/// write a table to output stream.
+/**	this function will take care of the 4-byte alignment required by the true
+	type specification.
+*/
 void Sfnt::WriteTable(
-	std::streambuf		*s,
-	const unsigned char	*data,
-	std::size_t			size ) const
+	std::streambuf	*s,
+	const uchar		*data,
+	std::size_t		size ) const
 {
 	std::size_t padding = ((size + 3) & (~3)) - size ;
 	PDF_ASSERT( padding < 4 ) ;
@@ -349,7 +364,7 @@ void Sfnt::GenerateTable(
 		std::greater<unsigned>() ) ;
 	
 	// the original complete glyf table
-	std::vector<unsigned char> src_glyf = ReadTable( FindTable( TTAG_glyf ) ) ;
+	std::vector<uchar> src_glyf = ReadTable( FindTable( TTAG_glyf ) ) ;
 	
 	for ( long gidx = 0 ; gidx < m_impl->face->num_glyphs ; ++gidx )
 	{
@@ -376,7 +391,7 @@ void Sfnt::WriteGlyphLocation(
 		glyf->pubseekoff( 0, std::ios::cur, std::ios::out ) ) ;
 }
 
-void Sfnt::WriteGlyphLocation( std::streambuf *loca, unsigned long value ) const
+void Sfnt::WriteGlyphLocation( std::streambuf *loca, u32 value ) const
 {
 	WriteStream ws( loca ) ;
 	
@@ -401,7 +416,7 @@ void Sfnt::CopyGlyph(
 	unsigned 			glyph,
 	std::streambuf		*glyf,
 	std::streambuf 		*loca,
-	const unsigned char	*src_glyf,
+	const uchar	*src_glyf,
 	std::size_t			src_size ) const
 {
 	unsigned long old_offset = m_impl->loca[glyph] ;
@@ -431,7 +446,7 @@ Sfnt::Table Sfnt::MakeTable( u32 tag, u32 offset, const std::string& data ) cons
 	Table tab =
 	{
 		tag,
-		Checksum( reinterpret_cast<const unsigned char*>(&data[0]), data.size()),
+		Checksum( reinterpret_cast<const uchar*>(&data[0]), data.size()),
 		offset,
 		data.size()
 	} ;
@@ -443,15 +458,59 @@ u32 Sfnt::WriteSubsetTables(
 	const std::string&	loca,
 	std::streambuf		*dest ) const
 {
-	u32 offset = static_cast<u32>(dest->pubseekoff( 0, std::ios::cur, std::ios::out )) +
+	// write the table directory
+	u32 head_offset = WriteTableDirectory( glyf, loca, dest ) ;
+
+	// write the actual tables
+	for ( const u32* tag = Begin(required_tables) ;
+		tag != End(required_tables) ; ++tag )
+	{
+		if ( *tag == TTAG_glyf )
+			WriteTable( dest,
+				reinterpret_cast<const uchar*>(&glyf[0]),
+				glyf.size() ) ;
+		
+		else if ( *tag == TTAG_loca )
+			WriteTable( dest,
+				reinterpret_cast<const uchar*>(&loca[0]),
+				loca.size() ) ;
+
+		else if ( *tag == TTAG_head )
+		{
+			// read the "head" table.
+			std::vector<uchar> head = ReadTable( FindTable( TTAG_head ) ) ;
+			
+			if ( head.size() < 8 + sizeof(u32) )
+				throw FontException( "head table too small" ) ;
+			
+			// overwrite checksum adjustmemt to zero
+			std::memset( &head[8], 0, sizeof(u32) ) ;
+			WriteTable( dest, &head[0], head.size() ) ;
+		}
+		
+		else
+			CopyTable( dest, FindTable( *tag ) ) ;
+	}
+	
+	return head_offset ;
+}
+
+u32 Sfnt::WriteTableDirectory(
+	const std::string&	glyf,
+	const std::string&	loca,
+	std::streambuf		*dest ) const
+{
+	// starting offset is the current write position plus the size of the
+	// table directory we are going to write.
+	u32 offset =
+		static_cast<u32>(dest->pubseekoff( 0, std::ios::cur, std::ios::out )) +
 		Count(required_tables) * sizeof(Table) ;
-
-	// read the "head" table, and save its offset for modifying the
-	// checksum adjustment later
-	std::vector<unsigned char> head = ReadTable( FindTable( TTAG_head ) ) ;
-	u32 head_offset = 0 ;
-
+	
 	WriteStream ws( dest ) ;
+	
+	u32 head_offset = 0 ;
+	
+	// write the table directory
 	for ( const u32* tag = Begin(required_tables) ;
 		tag != End(required_tables) ; ++tag )
 	{
@@ -467,37 +526,24 @@ u32 Sfnt::WriteSubsetTables(
 			tab = FindTable( *tag ) ;
 			tab.offset = offset ;
 			
+			// save the offset of the "head" table
 			if ( tab.tag == TTAG_head )
-				head_offset = tab.offset ;
+				head_offset = offset ;
 		}
 		
+		PDF_ASSERT( tab.offset > 0 ) ;
+		
+		// write an table directory entry
 		WriteTableDirEntry( ws, tab ) ;
+		
+		// update offset. the tab.length is not 4-byte aligned. it is required
+		// to write actual size in table directory. actual table offset will
+		// always be 4-byte aligned.
 		offset += (tab.length + 3) / 4 * 4 ;
 	}
-
-	for ( const u32* tag = Begin(required_tables) ;
-		tag != End(required_tables) ; ++tag )
-	{
-		if ( *tag == TTAG_glyf )
-			WriteTable( dest,
-				reinterpret_cast<const unsigned char*>(&glyf[0]),
-				glyf.size() ) ;
-		
-		else if ( *tag == TTAG_loca )
-			WriteTable( dest,
-				reinterpret_cast<const unsigned char*>(&loca[0]),
-				loca.size() ) ;
-
-		else if ( *tag == TTAG_head )
-		{
-			// overwrite checksum adjustmemt to zero
-			std::memset( &head[8], 0, sizeof(u32) ) ;
-			WriteTable( dest, &head[0], head.size() ) ;
-		}
-		
-		else
-			CopyTable( dest, FindTable( *tag ) ) ;
-	}
+	
+	if ( head_offset == 0 )
+		throw FontException( "missing head table" ) ;
 	
 	return head_offset ;
 }

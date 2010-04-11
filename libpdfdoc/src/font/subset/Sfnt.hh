@@ -49,13 +49,18 @@ public :
 	explicit Sfnt( FT_FaceRec_ *face ) ;
 	~Sfnt( ) ;
 	
-	std::vector<unsigned char> CreateSubset(
+	std::vector<uchar> CreateSubset(
 		const long		*glyphs,
 		std::size_t 	size ) const ;
 
 private :
 	void LoadTableInfo( ) ;
 	void LoadLocation( ) ;
+	
+	u32 WriteSubset(
+		std::streambuf	*str,
+		const long		*glyphs,
+		std::size_t 	size ) const ;
 	
 	struct Table ;
 
@@ -69,9 +74,13 @@ private :
 		const std::string&	glyf,
 		const std::string&	loca,
 		std::streambuf		*dest ) const ;
+	u32 WriteTableDirectory(
+		const std::string&	glyf,
+		const std::string&	loca,
+		std::streambuf		*dest ) const ;
 
 	Table MakeTable( u32 tag, u32 offset, const std::string& data ) const ;
-	Table MakeTable( u32 tag, u32 offset, const unsigned char *data,
+	Table MakeTable( u32 tag, u32 offset, const uchar *data,
 		std::size_t size ) const ;
 
 	/// wrapper for FT_Load_Sfnt_Table()
@@ -81,17 +90,17 @@ private :
 	void WriteTableDirEntry( WriteStream& s, const Table& tab ) const ;
 	void CopyTable( std::streambuf *s, const Table& tab ) const ;
 	void WriteTable(
-		std::streambuf		*s,
-		const unsigned char	*data,
-		std::size_t			size ) const ;
+		std::streambuf	*s,
+		const uchar		*data,
+		std::size_t		size ) const ;
 	
 	void CopyGlyph(
-		unsigned 			glyph,
-		std::streambuf		*glyf,
-		std::streambuf 		*loca,
-		const unsigned char	*src,
-		std::size_t			size ) const ;
-	void WriteGlyphLocation( std::streambuf *loca, unsigned long value ) const ;
+		unsigned 		glyph,
+		std::streambuf	*glyf,
+		std::streambuf 	*loca,
+		const uchar		*src,
+		std::size_t		size ) const ;
+	void WriteGlyphLocation( std::streambuf *loca, u32 value ) const ;
 	void WriteGlyphLocation( std::streambuf *loca, std::streambuf *glyf ) const ;
 
 private :
