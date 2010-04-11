@@ -41,13 +41,14 @@ namespace pdf {
 ReadStream::ReadStream( const unsigned char *p, std::size_t size )
 	: m_ptr( p )
 	, m_size( size )
+	, m_failed( false )
 {
 }
 
 template <typename T>
 ReadStream& ReadStream::operator>>( T& v )
 {
-	if ( m_size >= sizeof(v) )
+	if ( !m_failed && m_size >= sizeof(v) )
 	{
 		std::memcpy( &v, m_ptr, sizeof(v) ) ;
 
@@ -58,11 +59,28 @@ ReadStream& ReadStream::operator>>( T& v )
 		m_ptr	+= sizeof(T) ;
 		m_size	-= sizeof(T) ;
 	}
+	else
+		m_failed = true ;
 	
 	return *this ;
 }
 
 template ReadStream& ReadStream::operator>>( u32& v ) ;
 template ReadStream& ReadStream::operator>>( u16& v ) ;
+
+ReadStream::operator const void*() const
+{
+	return m_failed ? 0 : this ;
+}
+
+std::size_t ReadStream::Size( ) const
+{
+	return m_size ;
+}
+
+const unsigned char* ReadStream::Data( ) const
+{
+	return m_ptr ;
+}
 
 } // end of namespace

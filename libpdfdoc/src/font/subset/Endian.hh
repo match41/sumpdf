@@ -31,6 +31,9 @@ namespace pdf
 	template <typename T>
 	T SwapByte( T t ) ;
 
+	template <typename T>
+	void WriteBigEndian( T value, unsigned char *ptr ) ;
+
 } // end of namespace
 
 #endif // ENDIAN_HH_

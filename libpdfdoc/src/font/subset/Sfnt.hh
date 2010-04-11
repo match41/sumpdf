@@ -66,12 +66,14 @@ private :
 		std::streambuf	*glyf,
 		std::streambuf	*loca ) const ;
 
-	void WriteSubsetTables(
+	u32 WriteSubsetTables(
 		const std::string&	glyf,
 		const std::string&	loca,
 		std::streambuf		*dest ) const ;
 
 	Table MakeTable( u32 tag, u32 offset, const std::string& data ) const ;
+	Table MakeTable( u32 tag, u32 offset, const unsigned char *data,
+		std::size_t size ) const ;
 
 	/// wrapper for FT_Load_Sfnt_Table()
 	std::vector<unsigned char> ReadTable( const Table& tab ) const ;

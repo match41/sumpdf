@@ -29,6 +29,8 @@
 #include "Endian.hh"
 #include "Types.hh"
 
+#include <cstring>
+
 namespace pdf {
 
 #ifdef __GNUC__
@@ -59,6 +61,18 @@ u16 SwapByte( u16 t )
 {
 	return ((t & 0xff) << 8 ) | (t >> 8) ;
 }
+
+template <typename T>
+void WriteBigEndian( T value, unsigned char *ptr )
+{
+#ifdef BOOST_LITTLE_ENDIAN
+		value = SwapByte( value ) ;
+#endif
+	std::memcpy( ptr, &value, sizeof(value) ) ;
+}
+
+template void WriteBigEndian( u32 value, unsigned char *ptr ) ;
+template void WriteBigEndian( u16 value, unsigned char *ptr ) ;
 
 } // end of namespace
 

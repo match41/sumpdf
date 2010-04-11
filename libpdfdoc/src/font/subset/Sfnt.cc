@@ -26,6 +26,7 @@
 #include "Sfnt.hh"
 
 // headers in the same package
+#include "Endian.hh"
 #include "ReadStream.hh"
 #include "WriteStream.hh"
 
@@ -77,30 +78,32 @@ struct Sfnt::Impl
 // non-member helpers
 namespace
 {
-	u32 Checksum( const unsigned char *b, std::size_t length )
+	u32 Checksum( const unsigned char *d, std::size_t length )
 	{
-		std::size_t len = length / 4;
-		u32 d0 = 0;
-		u32 d1 = 0;
-		u32 d2 = 0;
-		u32 d3 = 0;
-		size_t ptr = 0;
-		size_t k;
-		for (k = 0; k < len; ++k)
+		ReadStream rs( d, length ) ;
+		
+		u32 sum	= 0 ;
+		u32 tab ;
+		while ( rs >> tab )
+			sum += tab ;
+
+		if ( rs.Size() > 0 )
 		{
-			d3 += static_cast<u32>(b[ptr++]) & 0xff;
-			d2 += static_cast<u32>(b[ptr++]) & 0xff;
-			d1 += static_cast<u32>(b[ptr++]) & 0xff;
-			d0 += static_cast<u32>(b[ptr++]) & 0xff;
+			unsigned char tmp[4] = {} ;
+			std::memcpy( tmp, rs.Data(), rs.Size() ) ;
+			ReadStream ts( tmp, sizeof(tmp) ) ;
+			ts >> tab ;
+			sum += tab ;
 		}
-		return d0 + (d1 << 8) + (d2 << 16) + (d3 << 24);
+		
+		return sum;
 	}
 	
 	const u32 required_tables[] =
 	{
-		TTAG_glyf, TTAG_loca, 
+		TTAG_head, TTAG_glyf, TTAG_loca, 
 	
-		TTAG_cmap, TTAG_cvt , TTAG_fpgm, TTAG_head,
+		TTAG_cmap, TTAG_cvt , TTAG_fpgm, 
 		TTAG_hhea, TTAG_hmtx, TTAG_maxp, TTAG_prep,
 	};
 }
@@ -120,6 +123,18 @@ Sfnt::Sfnt( FT_FaceRec_ *face )
 		FT_Get_Sfnt_Table( m_impl->face, ft_sfnt_head ) ) ;
 	if ( m_impl->head == 0 )
 		throw FontException( "head table not loaded yet" ) ;
+	
+	unsigned char tmp[6] ;
+	unsigned long count = sizeof(tmp) ;
+	FT_Error e = FT_Load_Sfnt_Table(m_impl->face, TTAG_maxp, 0, tmp, &count ) ;
+	if ( e == 0 )
+	{
+		ReadStream rs( tmp, 6 ) ;
+		u32 n ;
+		u16 gc ;
+		rs >> n >> gc ;
+std::cout << "maxp = " << n << " " << gc << std::endl ;
+	}
 	
 	// the value from the table should match with freetype
 	PDF_ASSERT( m_impl->head->Units_Per_EM == m_impl->face->units_per_EM ) ;
@@ -149,7 +164,8 @@ void Sfnt::LoadLocation( )
 {
 	std::vector<unsigned char> loca = ReadTable( FindTable( TTAG_loca ) ) ;
 	ReadStream str( &loca[0], loca.size() ) ;
-	
+std::cout << "glyp = " << m_impl->face->num_glyphs << std::endl ;
+
 	// according to the truetype spec, there is an extra value at the
 	// end of the loca table that indicates the end of the table
 	for ( long i = 0 ; i < m_impl->face->num_glyphs + 1 ; i++ )
@@ -223,10 +239,13 @@ void Sfnt::LoadTableInfo( )
 }
 
 void Sfnt::Write(
-	std::streambuf	*str,
+	std::streambuf	*ostr,
 	const long		*glyphs,
 	std::size_t 	size ) const
 {
+	std::ostringstream oss ;
+	std::streambuf *str = oss.rdbuf() ;
+
 	bool is_subset = ( glyphs != 0 && size != 0 ) ;
 	PDF_ASSERT( is_subset || (glyphs == 0 && size == 0) ) ;
 
@@ -265,13 +284,23 @@ void Sfnt::Write(
 		// write the tables
 		std::for_each( tables.begin(), tables.end(),
 			bind( &Sfnt::CopyTable, this, str, _1 ) ) ;
+		
+		std::string file_data = oss.str() ;
+		ostr->sputn( &file_data[0], file_data.size() ) ;
 	}
 	// only write the required tables
 	else
 	{
 		std::ostringstream glyf, loca ;
 		GenerateTable( glyphs, size, glyf.rdbuf(), loca.rdbuf() ) ;
-		WriteSubsetTables( glyf.str(), loca.str(), str ) ;
+		u32 hoff = WriteSubsetTables( glyf.str(), loca.str(), str ) ;
+		
+		std::string file_data = oss.str() ;
+		
+		u32 checksum = 0xB1B0AFBA - Checksum( (unsigned char*)&file_data[0], file_data.size() ) ;
+		WriteBigEndian( checksum, (unsigned char*)&file_data[hoff + 8] ) ;
+std::cout << "file checksum = " << std::hex << checksum << std::dec << std::endl ;
+		ostr->sputn( &file_data[0], file_data.size() ) ;
 	}
 }
 
@@ -356,7 +385,7 @@ void Sfnt::WriteGlyphLocation(
 
 void Sfnt::WriteGlyphLocation( std::streambuf *loca, unsigned long value ) const
 {
-//std::cout << "loca = " << value << std::endl ;
+std::cout << "loca = " << value << std::endl ;
 	WriteStream ws( loca ) ;
 	
 	// short format (16bits) of offset
@@ -400,8 +429,6 @@ void Sfnt::CopyGlyph(
 		if ( static_cast<std::size_t>( count ) != glyph_size )
 			throw FontException( "cannot write to destinationg glyf table" ) ;
 		
-//std::cout << "written = " << count << std::endl ;
-		
 		// write the glyph location to the new loca table
 		WriteGlyphLocation( loca, offset ) ;
 	}
@@ -411,7 +438,7 @@ Sfnt::Table Sfnt::MakeTable( u32 tag, u32 offset, const std::string& data ) cons
 {
 	Table tab =
 	{
-		TTAG_glyf,
+		tag,
 		Checksum( reinterpret_cast<const unsigned char*>(&data[0]), data.size()),
 		offset,
 		data.size()
@@ -419,12 +446,16 @@ Sfnt::Table Sfnt::MakeTable( u32 tag, u32 offset, const std::string& data ) cons
 	return tab ;
 }
 
-void Sfnt::WriteSubsetTables(
+u32 Sfnt::WriteSubsetTables(
 	const std::string&	glyf,
 	const std::string&	loca,
 	std::streambuf		*dest ) const
 {
-	u32 offset = 0 ;
+	u32 offset = static_cast<u32>(dest->pubseekoff( 0, std::ios::cur, std::ios::out )) +
+		Count(required_tables) * sizeof(Table) ;
+
+	std::vector<unsigned char> head = ReadTable( FindTable( TTAG_head ) ) ;
+	u32 head_offset = 0 ;
 
 	WriteStream ws( dest ) ;
 	for ( const u32* tag = Begin(required_tables) ;
@@ -433,16 +464,24 @@ void Sfnt::WriteSubsetTables(
 		Table tab ; 
 		if ( *tag == TTAG_glyf )
 			tab = MakeTable( *tag, offset, glyf ) ;
+		
 		else if ( *tag == TTAG_loca )
 			tab = MakeTable( *tag, offset, loca ) ;
+		
 		else
 		{
 			tab = FindTable( *tag ) ;
 			tab.offset = offset ;
+			
+			if ( tab.tag == TTAG_head )
+			{
+				head_offset = tab.offset ;
+				std::cout << "head offset = " << std::hex << head_offset << std::dec << std::endl ;
+			}
 		}
 		
 		WriteTableDirEntry( ws, tab ) ;
-		offset += tab.length ;
+		offset += (tab.length + 3) / 4 * 4 ;
 	}
 
 	for ( const u32* tag = Begin(required_tables) ;
@@ -450,11 +489,24 @@ void Sfnt::WriteSubsetTables(
 	{
 		if ( *tag == TTAG_glyf )
 			WriteTable( dest, reinterpret_cast<const unsigned char*>(&glyf[0]), glyf.size() ) ;
+		
 		else if ( *tag == TTAG_loca )
+		{
 			WriteTable( dest, reinterpret_cast<const unsigned char*>(&loca[0]), loca.size() ) ;
+std::cout << loca.size() << std::endl ;
+		}
+		else if ( *tag == TTAG_head )
+		{
+			// overwrite checksum adjustmemt to zero
+			std::memset( &head[8], 0, sizeof(u32) ) ;
+			WriteTable( dest, &head[0], head.size() ) ;
+		}
+		
 		else
 			CopyTable( dest, FindTable( *tag ) ) ;
 	}
+	
+	return head_offset ;
 }
 
 } // end of namespace

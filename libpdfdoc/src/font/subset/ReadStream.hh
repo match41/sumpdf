@@ -42,9 +42,16 @@ public :
 	template <typename T>
 	ReadStream& operator>>( T& v ) ;
 	
+	operator const void*() const ;
+	
+	std::size_t Size( ) const ;
+	const unsigned char* Data( ) const ;
+	
 private :
 	const unsigned char	*m_ptr ;
 	std::size_t			m_size ;
+	
+	bool				m_failed ;
 } ;
 
 } // end of namespace

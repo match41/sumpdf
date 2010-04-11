@@ -83,10 +83,16 @@ void SfntTest::TestSubset( )
 {
 	Sfnt subject( m_face ) ;
 
-	long glyphs[] = { 1, 2, 30 } ;
+	long glyphs[] = { 0, 0x41, 0x42 } ;
 
 	std::ofstream out( "test.ttf", std::ios::out | std::ios::binary ) ;
 	subject.Write( out.rdbuf(), glyphs, Count(glyphs) ) ;
+	
+	FT_Face test ;
+	FT_Error e = FT_New_Face( m_ft, "test.ttf", 0, &test ) ;
+	std::cout << "e = " << e << std::endl ;
+	
+	Sfnt oops( test ) ;
 }
 
 } // end of namespace
