@@ -32,8 +32,6 @@
 #include <graphics/TextLine.hh>
 #include <graphics/TextState.hh>
 
-#include "Util.hh"
-
 #include <font/Font.hh>
 #include <util/Debug.hh>
 #include <util/Matrix.hh>
@@ -69,7 +67,6 @@ void TextObject::OnChar(
 
 	// colors
 	item->setBrush( MakeBrush( m_line.Format() ) ) ;
-//	item->setPen( MakePen( m_line.Format() ) ) ;
 	
 	// set glyph offset
 	item->setPos( offset, 0 ) ;
