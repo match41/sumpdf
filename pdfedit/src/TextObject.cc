@@ -69,15 +69,13 @@ void TextObject::OnChar(
 
 	// colors
 	item->setBrush( MakeBrush( m_line.Format() ) ) ;
-	item->setPen( MakePen( m_line.Format() ) ) ;
+//	item->setPen( MakePen( m_line.Format() ) ) ;
 	
 	// set glyph offset
 	item->setPos( offset, 0 ) ;
 	
 	// scale font by their font size
 	item->scale( state.ScaleFactor(), state.ScaleFactor() ) ;
-
-//	addToGroup( item ) ;
 }
 
 GraphicsState TextObject::Format( ) const
