@@ -25,6 +25,8 @@
 
 #include "PathObject.hh"
 
+#include "Util.hh"
+
 // libpdfdoc headers
 #include <graphics/Path.hh>
 #include <graphics/PathSegment.hh>
@@ -69,6 +71,11 @@ void PathObject::paint(
 	PDF_ASSERT( painter != 0 ) ;
 
 	GraphicsObject::paint( painter, option, widget ) ;
+
+	// colors
+	painter->setBrush( MakeBrush( m_format ) ) ;
+	painter->setPen( MakePen( m_format ) ) ;
+
 	painter->drawPath( m_path ) ;
 }
 
