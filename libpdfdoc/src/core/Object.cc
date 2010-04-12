@@ -135,6 +135,11 @@ Object::Object( std::size_t st )
 		throw std::out_of_range( "integer out of range" ) ;
 }
 
+Object::Object( unsigned short value )
+	: m_obj( static_cast<int>( value ) )
+{
+}
+
 Object::Object( float value )
 	: m_obj( static_cast<double>( value ) )
 {
