@@ -36,7 +36,6 @@
 #include <boost/bind.hpp>
 
 #include <algorithm>
-
 #include <iostream>
 
 namespace pdf {

@@ -32,11 +32,14 @@
 
 class QTransform ;
 class QColor ;
+class QBrush ;
+class QPen ;
 
 namespace pdf
 {
-	class Matrix ;
 	class Color ;
+	class GraphicsState ;
+	class Matrix ;
 	
 	QTransform ToQtMatrix( const Matrix& m ) ;
 	Matrix FromQtMatrix( const QTransform& m ) ;
@@ -55,6 +58,9 @@ namespace pdf
 
 	Color FromQColor( const QColor& c ) ;
 	QColor ToQColor( const Color& c ) ;
+
+	QBrush MakeBrush( const GraphicsState& gs ) ;
+	QPen MakePen( const GraphicsState& gs ) ;
 
 } // end of namespace
 

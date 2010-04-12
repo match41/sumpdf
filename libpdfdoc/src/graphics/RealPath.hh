@@ -31,11 +31,11 @@
 #include "graphics/GraphicsState.hh"
 #include "graphics/PathSegment.hh"
 
+#include "util/Matrix.hh"
+
 #include <vector>
 
 namespace pdf {
-
-class Matrix ;
 
 ///	brief description
 /**	\internal
@@ -55,6 +55,7 @@ public :
 	// Path virtual functions
 	std::size_t Count( ) const ;
 	PathSegment Segment( std::size_t index ) const ;
+	Matrix Transform( ) const ;
 
 private :
 	/// command handler
@@ -69,7 +70,8 @@ private :
 	std::vector<PathSegment::Op>	m_ops ;
 	std::vector<std::size_t>		m_pt_index ;
 	
-	GraphicsState			m_state ;
+	GraphicsState	m_state ;
+	Matrix			m_ctm ;
 } ;
 
 } // end of namespace

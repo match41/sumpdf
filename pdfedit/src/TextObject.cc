@@ -32,15 +32,14 @@
 #include <graphics/TextLine.hh>
 #include <graphics/TextState.hh>
 
-#include "Util.hh"
-
 #include <font/Font.hh>
 #include <util/Debug.hh>
 #include <util/Matrix.hh>
 
-#include <QColor>
 #include <QBrush>
+#include <QColor>
 #include <QDebug>
+#include <QPen>
 
 #include <boost/format.hpp>
 
@@ -66,18 +65,14 @@ void TextObject::OnChar(
 {
 	GlyphGraphicsItem *item = new GlyphGraphicsItem( glyph, this ) ;
 
-	// fill colour
-	QColor fill_color ;
-	Color nstrk = m_line.Format().NonStrokeColour() ;
-	item->setBrush( QBrush( ToQColor( m_line.Format().NonStrokeColour() ) ) ) ;
+	// colors
+	item->setBrush( MakeBrush( m_line.Format() ) ) ;
 	
 	// set glyph offset
 	item->setPos( offset, 0 ) ;
 	
 	// scale font by their font size
 	item->scale( state.ScaleFactor(), state.ScaleFactor() ) ;
-
-//	addToGroup( item ) ;
 }
 
 GraphicsState TextObject::Format( ) const
