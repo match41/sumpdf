@@ -91,6 +91,7 @@ const RealPath::HandlerMap::SegOpMap RealPath::HandlerMap::m_seg_map(
 */
 RealPath::RealPath( const GraphicsState& gs, const Matrix& ctm )
 	: m_state( gs )
+	, m_ctm( ctm )
 {
 }
 
@@ -161,6 +162,11 @@ void RealPath::OnPositionCommands( ContentOp& op, const ResourcesDict *res )
 
 void RealPath::Onre( ContentOp& op, const ResourcesDict *res )
 {
+}
+
+Matrix RealPath::Transform( ) const
+{
+	return m_ctm ;
 }
 
 } // end of namespace

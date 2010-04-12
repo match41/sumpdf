@@ -31,6 +31,7 @@
 #include <graphics/Path.hh>
 #include <graphics/PathSegment.hh>
 #include <util/Debug.hh>
+#include <util/Matrix.hh>
 
 // Qt headers
 #include <QPainter>
@@ -56,6 +57,8 @@ PathObject::PathObject( const Path *path, QGraphicsItem *parent )
 			default : break ;
 		}
 	}
+	
+	setTransform( ToQtMatrix( path->Transform() ) ) ;
 }
 
 QRectF PathObject::boundingRect( ) const
