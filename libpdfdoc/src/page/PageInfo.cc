@@ -38,20 +38,27 @@
 
 namespace pdf {
 
+namespace
+{
+	double default_page_size[4] = { 0, 0, 595.1, 842.1 } ;
+}
+
 /**	constructor
 	
 */
 PageInfo::PageInfo( PageTree *parent )
-	: m_parent( parent ),
-	  m_res( new RealResources( parent == 0 ? 0 : parent->GetResource() ) ),
-	  m_rotate( 0 )
+	: m_parent( parent )
+	, m_res( new RealResources( parent == 0 ? 0 : parent->GetResource() ) )
+	, m_rotate( 0 )
 {
 }
 
 PageInfo::PageInfo( FontDb *fontdb )
-	: m_parent( 0 ),
-	  m_res( new RealResources( fontdb ) ),
-	  m_rotate( 0 )
+	: m_parent( 0 )
+	, m_res( new RealResources( fontdb ) )
+	, m_media_box( default_page_size )
+	, m_crop_box( m_media_box )
+	, m_rotate( 0 )
 {
 }
 
@@ -155,9 +162,12 @@ Rect PageInfo::MediaBox() const
 	return m_media_box ;
 }
 
+/** According to PDF spec, the default value of the crop box is the same as
+	the media box.
+*/
 Rect PageInfo::CropBox() const
 {
-	return m_crop_box ;
+	return m_crop_box != Rect() ? m_crop_box : m_media_box ;
 }
 
 int PageInfo::Rotation( ) const

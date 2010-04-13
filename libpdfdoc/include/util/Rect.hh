@@ -43,6 +43,7 @@ private :
 public :
 	Rect( ) ;
 	Rect( double llx, double lly, double urx, double ury ) ;
+	Rect( double (&array)[4] ) ;
 
 	template <typename InputIt>
 	Rect( InputIt first, InputIt last )

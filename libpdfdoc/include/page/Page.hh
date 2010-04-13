@@ -58,6 +58,8 @@ public :
 		expressed in default user space units, defining the boundaries of
 		the physical medium on which the page is intended to be displayed or
 		printed.
+		
+		In plain English, this is actually the page size.
 	*/
 	virtual Rect MediaBox( ) const = 0 ;
 	

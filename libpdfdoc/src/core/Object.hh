@@ -131,6 +131,7 @@ public :
 	Object( const Object& obj ) ;
 	Object( const char *str ) ;
 	Object( std::size_t value ) ;
+	Object( unsigned short value ) ;
 	Object( float value ) ;
 	Object( const Rect& rect ) ;
 	

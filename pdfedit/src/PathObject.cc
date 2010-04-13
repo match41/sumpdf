@@ -25,10 +25,15 @@
 
 #include "PathObject.hh"
 
+#include "Util.hh"
+
 // libpdfdoc headers
 #include <graphics/Path.hh>
 #include <graphics/PathSegment.hh>
+#include <util/Debug.hh>
+#include <util/Matrix.hh>
 
+// Qt headers
 #include <QPainter>
 
 namespace pdf {
@@ -52,6 +57,8 @@ PathObject::PathObject( const Path *path, QGraphicsItem *parent )
 			default : break ;
 		}
 	}
+	
+	setTransform( ToQtMatrix( path->Transform() ) ) ;
 }
 
 QRectF PathObject::boundingRect( ) const
@@ -64,7 +71,14 @@ void PathObject::paint(
 	const QStyleOptionGraphicsItem	*option,
 	QWidget 						*widget ) 
 {
+	PDF_ASSERT( painter != 0 ) ;
+
 	GraphicsObject::paint( painter, option, widget ) ;
+
+	// colors
+	painter->setBrush( MakeBrush( m_format ) ) ;
+	painter->setPen( MakePen( m_format ) ) ;
+
 	painter->drawPath( m_path ) ;
 }
 

@@ -44,6 +44,11 @@ Rect::Rect( double llx, double lly, double urx, double ury )
 	m_corner[3] = ury ;
 }
 
+Rect::Rect( double (&array)[4] )
+{
+	std::copy( array, array + 4, m_corner ) ;
+}
+
 bool operator==( const Rect& r1, const Rect& r2 )
 {
 	return std::equal( Begin(r1.m_corner), End(r1.m_corner),
