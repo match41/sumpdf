@@ -26,20 +26,24 @@
 #ifndef __PDF_SIMPLEENCODING_HEADER_INCLUDED__
 #define __PDF_SIMPLEENCODING_HEADER_INCLUDED__
 
+// base class headers
 #include "util/RefCounter.hh"
 #include "font/FontEncoding.hh"
 
-#include <string>
-#include <map>
+// other headers
+#include "core/Name.hh"
 
 #include <boost/bimap.hpp>
 #include <boost/bimap/unordered_set_of.hpp>
 
+#include <string>
 #include <iosfwd>
 
 namespace pdf {
 
 class DictReader ;
+class File ;
+class Ref ;
 
 ///	brief description
 /**	\internal
@@ -59,6 +63,8 @@ public :
 	wchar_t ToUnicode( unsigned short char_code ) const ;
 	unsigned short FromUnicode( wchar_t unicode ) const ;
 
+	Ref Write( File *file ) const ;
+
 private :
 	typedef	boost::bimap<
 		boost::bimaps::unordered_set_of<unsigned short>,
@@ -67,6 +73,8 @@ private :
 
 	/// mapping from character code to unicode
 	CharMap	m_charmap ;
+	
+	Name	m_base ;
 } ;
 
 } // end of namespace

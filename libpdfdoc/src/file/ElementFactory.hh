@@ -69,13 +69,16 @@ public :
 	}
 	
 	template <typename Element, typename Factory>
-	Element* Create( const Name& name, Factory func )
+	Element* Create( const Name& name, Factory func, Element *original = 0 )
 	{
 		Dictionary::iterator i = m_dict->find( name ) ;
 		Element *e = Create<Element>( i, func ) ;
 		if ( e != 0 )
+		{
 			m_dict->erase( i ) ;
-		
+			if ( original != 0 )
+				original->Release( ) ;
+		}
 		return e ;
 	}
 	

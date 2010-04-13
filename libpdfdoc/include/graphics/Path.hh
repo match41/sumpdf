@@ -33,6 +33,7 @@
 namespace pdf {
 
 class PathSegment ;
+class Matrix ;
 
 ///	brief description
 /**	\internal
@@ -48,6 +49,8 @@ public :
 	
 	/// Returns the segment for the specified index. 
 	virtual PathSegment Segment( std::size_t index ) const = 0 ;
+	
+	virtual Matrix Transform( ) const = 0 ;
 } ;
 
 } // end of namespace
