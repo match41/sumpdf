@@ -64,6 +64,7 @@ public :
 	std::size_t Count( ) const ;
 
 	PageNode* GetLeaf( std::size_t index ) ;
+	const PageNode* GetLeaf( std::size_t index ) const ;
 	void AppendLeaf( RealPage *child ) ;
 	void AddLeaf( std::size_t index, RealPage *child ) ;
 	RealResources* GetResource( ) ;

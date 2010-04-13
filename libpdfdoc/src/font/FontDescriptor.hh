@@ -60,9 +60,9 @@ public :
 	
 	void Read( font::Type type, DictReader& self ) ;
 	Ref Write( 
-		File 					*file,
-		const FontSubsetInfo	*subset,
-		FT_FaceRec_ 			*face ) const ;
+		File 						*file,
+		const std::vector<long>&	glyphs,
+		FT_FaceRec_ 				*face ) const ;
 	
 	std::string Family( ) const ;
 

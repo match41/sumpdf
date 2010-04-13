@@ -27,6 +27,7 @@
 
 #include "FontException.hh"
 #include "FontSubsetInfo.hh"
+#include "subset/Sfnt.hh"
 
 #include "core/Array.hh"
 #include "core/Dictionary.hh"
@@ -230,9 +231,9 @@ void FontDescriptor::Read( font::Type type, DictReader& reader )
 }
 
 Ref FontDescriptor::Write(
-	File 					*file,
-	const FontSubsetInfo	*subset,
-	FT_FaceRec_ 			*face ) const
+	File 						*file,
+	const std::vector<long>&	glyphs,
+	FT_FaceRec_ 				*face ) const
 {
 	PDF_ASSERT( file != 0 ) ;
 
@@ -259,19 +260,38 @@ Ref FontDescriptor::Write(
 	// embedded font program also needs Length1 for the size of the stream
 	if ( !m_font_file.empty() )
 	{
-		Stream s( Stream::deflate ) ;
-		s.Append( &m_font_file[0], m_font_file.size() ) ;
-		s.Flush( ) ;
-		
-		Dictionary& sdict = s.Self() ;
-		
 		if ( m_type == font::truetype )
 		{
-			sdict.insert( std::make_pair( "Length1", m_font_file.size() ) ) ;
+			Stream s( Stream::deflate ) ;
+			
+			std::size_t size = m_font_file.size() ;
+			if ( glyphs.empty() )
+				s.Append( &m_font_file[0], m_font_file.size() ) ;
+			else
+			{
+				Sfnt sfnt( face ) ;
+				std::vector<uchar> subset = sfnt.CreateSubset(
+					&glyphs[0], glyphs.size() ) ;
+				s.Append( &subset[0], subset.size() ) ;
+				
+				size = subset.size( ) ;
+std::cout << "writing subset? " << subset.size() << " " << m_font_file.size() << std::endl ;
+			}
+			s.Flush( ) ;
+			
+			Dictionary& sdict = s.Self() ;
+			
+			sdict.insert( std::make_pair( "Length1", size ) ) ;
 			self.insert( "FontFile2", file->WriteObj( s ) ) ;
 		}
 		else if ( m_type == font::type1 )
 		{
+			Stream s( Stream::deflate ) ;
+			s.Append( &m_font_file[0], m_font_file.size() ) ;
+			s.Flush( ) ;
+			
+			Dictionary& sdict = s.Self() ;
+			
 			if ( m_subtype == Name() )
 			{
 				sdict.insert( std::make_pair( "Length1", m_length1 ) ) ;
@@ -286,7 +306,13 @@ Ref FontDescriptor::Write(
 			}
 		}
 		else
+		{
+			Stream s( Stream::deflate ) ;
+			s.Append( &m_font_file[0], m_font_file.size() ) ;
+			s.Flush( ) ;
+			
 			self.insert( "FontFile3", file->WriteObj( s ) ) ;
+		}
 	}
 	
 	if ( m_stretch >= font::ultra_condensed &&

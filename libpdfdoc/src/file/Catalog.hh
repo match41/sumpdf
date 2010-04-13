@@ -65,6 +65,7 @@ public :
 	std::size_t PageCount( ) const ;
 
 	Page*	GetPage( std::size_t index ) ;
+	const Page* GetPage( std::size_t index ) const ;
 
 private :
 	Name		m_version ;

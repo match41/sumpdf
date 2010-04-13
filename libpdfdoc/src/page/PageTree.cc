@@ -219,7 +219,24 @@ PageNode* PageTree::GetLeaf( std::size_t index )
 	for ( std::vector<PageNode*>::iterator i  = m_kids.begin( ) ;
 	                                       i != m_kids.end( ) ; ++i )
 	{
-		assert( *i != 0 ) ;
+		PDF_ASSERT( *i != 0 ) ;
+	
+		if ( index < current + (*i)->Count( ) )
+			return (*i)->GetLeaf( index - current ) ;
+	
+		current += (*i)->Count( ) ;
+	}
+	
+	return 0 ;
+}
+
+const PageNode* PageTree::GetLeaf( std::size_t index ) const
+{
+	std::size_t current = 0 ;
+	for ( std::vector<PageNode*>::const_iterator i  = m_kids.begin( ) ;
+			i != m_kids.end( ) ; ++i )
+	{
+		PDF_ASSERT( *i != 0 ) ;
 	
 		if ( index < current + (*i)->Count( ) )
 			return (*i)->GetLeaf( index - current ) ;

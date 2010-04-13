@@ -40,7 +40,6 @@ namespace pdf {
 class DictReader ;
 class FontDb ;
 class FontEncoding ;
-class FontSubsetInfo ;
 class RealGlyph ;
 class Glyph ;
 class Name ;
