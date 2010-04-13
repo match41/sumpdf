@@ -144,7 +144,7 @@ void RealPageTest::TestWrite( )
 
 	MockFile file ;
 	pdf::Ref link = file.AllocLink( ) ;
-	p->Write( link, &file, file.AllocLink( ) ) ;
+	p->Write( link, &file, file.AllocLink( ), 0 ) ;
 	file.ClearPool( ) ;
 	
 	pdf::Object out = file.Find( link ) ;

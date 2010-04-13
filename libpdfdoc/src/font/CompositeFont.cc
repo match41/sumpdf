@@ -65,7 +65,7 @@ CompositeFont::CompositeFont( const std::string& name, FontDb *ft )
 }
 
 // BaseFont virtual functions
-Ref CompositeFont::Write( File *file ) const
+Ref CompositeFont::Write( File *file, const FontSubsetInfo * ) const
 {
 	return Ref() ;
 }

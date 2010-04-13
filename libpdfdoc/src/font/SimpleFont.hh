@@ -40,6 +40,7 @@ namespace pdf {
 class DictReader ;
 class FontDb ;
 class FontEncoding ;
+class FontSubsetInfo ;
 class RealGlyph ;
 class Glyph ;
 class Name ;
@@ -58,7 +59,7 @@ public :
 	~SimpleFont( ) ;
 
 	std::string BaseName( ) const ;
-	Ref Write( File *file ) const ;
+	Ref Write( File *file, const FontSubsetInfo *subset ) const ;
 
 	const Glyph*	GetGlyph( wchar_t ch ) const ;
 	

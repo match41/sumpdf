@@ -407,7 +407,7 @@ double SimpleFont::FromFontUnit( unsigned val ) const
 	return val * 1000.0 / m_impl->face->units_per_EM ;
 }
 
-Ref SimpleFont::Write( File *file ) const
+Ref SimpleFont::Write( File *file, const FontSubsetInfo * ) const
 {
 	PDF_ASSERT( file != 0 ) ;
 

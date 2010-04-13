@@ -40,7 +40,7 @@ std::string MockFont::BaseName( ) const
 	return "MockFont" ;
 }
 
-pdf::Ref MockFont::Write( pdf::File *file ) const
+pdf::Ref MockFont::Write( pdf::File *file, const pdf::FontSubsetInfo * ) const
 {
 	return pdf::Ref( ) ;
 }

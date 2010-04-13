@@ -127,7 +127,11 @@ void PageTree::Read( DictReader& dict )
 		throw ParseError( "cannot get leaf count in page node" ) ;
 }
 
-void PageTree::Write( const Ref& link, File *file, const Ref& ) const
+void PageTree::Write(
+	const Ref& 				link,
+	File 					*file,
+	const Ref& 				parent,
+	const FontSubsetInfo	*ss ) const
 {
 	PDF_ASSERT( file != 0 ) ;
 	PDF_ASSERT( file->Pool() != 0 ) ;
@@ -138,7 +142,7 @@ void PageTree::Write( const Ref& link, File *file, const Ref& ) const
 	                                             i != m_kids.end() ; ++i )
 	{
 		Ref child = file->AllocLink( ) ;
-		(*i)->Write( child, file, link ) ;
+		(*i)->Write( child, file, link, ss ) ;
 		kids.push_back( child ) ;
 		pool->Add( child, *i ) ;
 	}
@@ -151,7 +155,7 @@ void PageTree::Write( const Ref& link, File *file, const Ref& ) const
 	self.insert( "Kids",	kids ) ;
 	self.insert( "Count",	m_count ) ;
 	
-	m_pinfo.Write( self, file ) ;
+	m_pinfo.Write( self, file, ss ) ;
 
 	file->WriteObj( self, link ) ;
 }

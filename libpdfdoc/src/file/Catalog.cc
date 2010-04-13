@@ -34,6 +34,9 @@
 #include "core/Dictionary.hh"
 #include "core/Ref.hh"
 
+#include "font/FontSubsetInfo.hh"
+#include "graphics/GraphicsVisitor.hh"
+
 #include "page/RealPage.hh"
 #include "page/PageTree.hh"
 
@@ -43,6 +46,7 @@
 
 #include <boost/format.hpp>
 
+#include <set>
 #include <iostream>
 
 namespace pdf {
@@ -141,7 +145,7 @@ Ref Catalog::Write( File *file ) const
 	Dictionary self ;
 
 	Ref tree = file->AllocLink( ) ;
-	m_tree->Write( tree, file, Ref() ) ; 
+	m_tree->Write( tree, file, Ref(), 0 ) ; 
 
 	self.insert( "Pages",  	tree ) ;
 	self.insert( "Type",	Name( "Catalog" ) ) ;
@@ -189,6 +193,28 @@ Page* Catalog::GetPage( std::size_t index )
 	PDF_ASSERT( typeid(*p) == typeid(RealPage) ) ;
 
 	return static_cast<RealPage*>( p ) ;
+}
+
+class Catalog::FontSubset : public FontSubsetInfo, public GraphicsVisitor
+{
+public :
+	FontSubset( ) ;
+
+	std::vector<wchar_t> GetUsedChars( const BaseFont *f ) const ;
+
+private :
+	typedef std::set<wchar_t> CharSet ;
+	typedef std::map<const BaseFont*, CharSet> FontChars ;
+	
+	FontChars	m_used_chars ;
+} ;
+
+std::vector<wchar_t> Catalog::FontSubset::GetUsedChars(const BaseFont *f) const
+{
+	FontChars::const_iterator i = m_used_chars.find( f ) ;
+	return i != m_used_chars.end()
+		? std::vector<wchar_t>( i->second.begin(), i->second.end() )
+		: std::vector<wchar_t>( ) ;
 }
 
 } // end of namespace

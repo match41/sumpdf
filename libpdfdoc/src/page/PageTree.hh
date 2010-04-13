@@ -54,7 +54,11 @@ public :
 	~PageTree( ) ;
 
 	void Read( DictReader& dict ) ;
-	void Write( const Ref& link, File *file, const Ref& parent ) const ;
+	void Write(
+		const Ref& 				link,
+		File 					*file,
+		const Ref& 				parent,
+		const FontSubsetInfo	*ss ) const ;
 
 	PageTree* Parent( ) ;
 	std::size_t Count( ) const ;

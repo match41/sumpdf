@@ -108,7 +108,10 @@ void PageInfo::Read( DictReader& dict )
 		m_rotate = m_parent->Rotation( ) ;
 }
 
-void PageInfo::Write( Dictionary& dict, File *file ) const
+void PageInfo::Write(
+	Dictionary& 			dict,
+	File 					*file,
+	const FontSubsetInfo	*ss ) const
 {
 	PDF_ASSERT( file != 0 ) ;
 	PDF_ASSERT( m_res != 0 ) ;
@@ -119,7 +122,7 @@ void PageInfo::Write( Dictionary& dict, File *file ) const
 	Ref ref = pool->Find( m_res ) ;
 	if ( ref == Ref() )
 	{
-		ref = m_res->Write( file ) ;
+		ref = m_res->Write( file, ss ) ;
 		pool->Add( ref, m_res ) ;
 	}
 	

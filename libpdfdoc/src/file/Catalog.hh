@@ -77,6 +77,8 @@ private :
 	// name dictionary
 	struct NameDict ;
 	std::auto_ptr<NameDict>	m_name_dict ;
+	
+	class FontSubset ;
 } ;
 
 } // end of namespace
