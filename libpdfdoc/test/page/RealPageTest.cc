@@ -119,7 +119,7 @@ void RealPageTest::TestNormal( )
 	DictReader reader( d, &file ) ;
 	p->Read( reader ) ;
 
-	CPPUNIT_ASSERT( p->MediaBox() == pdf::Rect( 0, 0, 297, 419 ) ) ;
+	PDFUT_ASSERT_EQUAL( p->MediaBox(), pdf::Rect( 0, 0, 297, 419 ) ) ;
 }
 
 void RealPageTest::TestWrite( )
@@ -130,17 +130,6 @@ void RealPageTest::TestWrite( )
 	pdf::TextState ts ;
 	ts.SetFont( 12.0, f ) ;
 	p->GetResource()->AddFont( f ) ;
-
-//	pdf::PageContent *c = p->GetContent( ) ;
-//	pdf::Text *t = c->AddText( ts ) ;
-//	
-//	pdf::TextLine line1( 0, 0, (GraphicsState(ts)), pdf::Matrix(1,0,0,1, 120, 300) ) ;
-//	line1.AppendText( L"This is a line" ) ;
-//	t->AddLine( line1 ) ;
-//
-//	pdf::TextLine line2( 0, 0, (GraphicsState(ts)), pdf::Matrix(1,0,0,1, 120, 400) ) ;
-//	line2.AppendText( L"This is another line" ) ;
-//	t->AddLine( line2 ) ;
 
 	MockFile file ;
 	pdf::Ref link = file.AllocLink( ) ;
@@ -155,7 +144,7 @@ void RealPageTest::TestWrite( )
 	DictReader reader( out.As<pdf::Dictionary>(), &file ) ;
 	p->Read( reader ) ;
 	
-	CPPUNIT_ASSERT( p->MediaBox() == p2->MediaBox() ) ;
+	PDFUT_ASSERT_EQUAL( p->MediaBox(), p2->MediaBox() ) ;
 }
 
 void RealPageTest::TestDecode( )

@@ -162,7 +162,8 @@ PageTree* PageInfo::Parent( )
 
 Rect PageInfo::MediaBox() const
 {
-	return m_media_box ;
+	return m_media_box != Rect() ? m_media_box :
+		(m_parent != 0 ? m_parent->MediaBox() : m_media_box ) ;
 }
 
 /** According to PDF spec, the default value of the crop box is the same as
@@ -170,7 +171,7 @@ Rect PageInfo::MediaBox() const
 */
 Rect PageInfo::CropBox() const
 {
-	return m_crop_box != Rect() ? m_crop_box : m_media_box ;
+	return m_crop_box != Rect() ? m_crop_box : MediaBox() ;
 }
 
 int PageInfo::Rotation( ) const

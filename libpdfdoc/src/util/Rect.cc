@@ -28,6 +28,8 @@
 #include "util/Util.hh"
 
 #include <algorithm>
+#include <iterator>
+#include <ostream>
 
 namespace pdf {
 
@@ -108,3 +110,13 @@ bool Rect::IsNull( ) const
 }
 
 } // end of namespace
+
+namespace std
+{
+	ostream& operator<<( ostream& os, const pdf::Rect& rect )
+	{
+		std::copy( rect.begin(), rect.end(),
+			std::ostream_iterator<double>( os, ", " ) ) ;
+		return os ;
+	}
+}
