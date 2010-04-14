@@ -251,11 +251,11 @@ std::vector<uchar> Sfnt::CreateSubset(
 	u32 checksum = 0xB1B0AFBA - Checksum( data, file_data.size() ) ;
 	WriteBigEndian( checksum, &data[hoff + 8] ) ;
 
-#ifdef _DEBUG
+#ifndef NDEBUG
 	std::ofstream outf( "out.ttf", std::ios::out | std::ios::binary ) ;
-//	outf.rdbuf()->sputn( &file_data[0], file_data.size() ) ;
-	for ( std::size_t i = 0 ; i < size ; i++ )
-		outf << "index = " << glyphs[i] << std::endl ;
+	outf.rdbuf()->sputn( &file_data[0], file_data.size() ) ;
+//	for ( std::size_t i = 0 ; i < size ; i++ )
+//		outf << "index = " << glyphs[i] << std::endl ;
 	outf.close() ;
 /*
 	FT_Library tmp ;

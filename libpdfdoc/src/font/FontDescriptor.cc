@@ -146,7 +146,7 @@ FontDescriptor::FontDescriptor( FT_Face face, std::vector<unsigned char>& prog )
 std::bitset<32> FontDescriptor::GetFlag( FT_FaceRec_ *face )
 {
 	std::bitset<32> r ;
-//	r[nonsymbolic] = 1 ;
+	r[nonsymbolic] = 1 ;
 	return r ;
 }
 
