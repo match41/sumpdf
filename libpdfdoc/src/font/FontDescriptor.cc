@@ -141,6 +141,45 @@ FontDescriptor::FontDescriptor( FT_Face face, std::vector<unsigned char>& prog )
 	// steal the buffer. if we don't steal it, then it will be destroyed later.
 	// then the FT_Face will become invalid.
 	m_font_file.swap( prog ) ;
+	
+	if ( m_type == font::type1 )
+		InitType1Lengths( ) ;
+}
+
+void FontDescriptor::InitType1Lengths( )
+{
+	PDF_ASSERT( m_type == font::type1 ) ;
+
+	unsigned char eexec[] = "eexec" ;
+	std::size_t eexec_len = Count( eexec ) - 1 ;
+	
+	std::vector<unsigned char>::const_iterator len1 =
+		std::search(
+			m_font_file.begin(),
+			m_font_file.end(),
+			eexec,
+			eexec + eexec_len ) ;
+
+	if ( len1 != m_font_file.end() )
+		m_length1 = len1 - m_font_file.begin() + eexec_len ;
+
+	std::cout << "length1 = " << std::hex << m_length1 << std::endl ;
+
+	unsigned char cleartomark[] = "cleartomark" ;
+	std::size_t cleartomark_len = Count( cleartomark ) - 1 ;
+	
+	std::vector<unsigned char>::const_iterator len2 =
+		std::search(
+			m_font_file.begin(),
+			m_font_file.end(),
+			cleartomark,
+			cleartomark + cleartomark_len ) ;
+	
+	if ( m_length1 > 0 && len2 != m_font_file.end() )
+	{
+		m_length2 = len2 - m_font_file.begin( ) - 520 - m_length1 ;
+		m_length3 = 520 ;
+	}
 }
 
 std::bitset<32> FontDescriptor::GetFlag( FT_FaceRec_ *face )

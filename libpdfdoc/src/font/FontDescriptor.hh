@@ -81,6 +81,8 @@ private :
 
 	static std::bitset<32> GetFlag( FT_FaceRec_ *face ) ;
 
+	void InitType1Lengths( ) ;
+
 private :
 	font::Type	m_type ;
 

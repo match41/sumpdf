@@ -252,12 +252,6 @@ std::vector<uchar> Sfnt::CreateSubset(
 	WriteBigEndian( checksum, &data[hoff + 8] ) ;
 
 #ifndef NDEBUG
-	std::ofstream outf( "out.ttf", std::ios::out | std::ios::binary ) ;
-	outf.rdbuf()->sputn( &file_data[0], file_data.size() ) ;
-//	for ( std::size_t i = 0 ; i < size ; i++ )
-//		outf << "index = " << glyphs[i] << std::endl ;
-	outf.close() ;
-/*
 	FT_Library tmp ;
 	FT_Init_FreeType( &tmp ) ;
 	FT_Face sub_face ;
@@ -276,7 +270,8 @@ std::vector<uchar> Sfnt::CreateSubset(
 
 		char_code = ::FT_Get_Next_Char( sub_face, char_code, &gindex ) ;
 	}
-	FT_Done_FreeType( tmp ) ;*/
+	FT_Done_Face( sub_face ) ;
+	FT_Done_FreeType( tmp ) ;
 #endif
 	
 	return std::vector<uchar>( file_data.begin(), file_data.end() );

@@ -417,8 +417,9 @@ Ref SimpleFont::Write( File *file, const FontSubsetInfo *subset ) const
 
 	Name base_font = m_impl->base_font ;
 
+	// TODO: only truetype support subset for now
 	std::vector<long> glyphs ;
-	if ( subset != 0 && !IsSubset( ) )
+	if ( subset != 0 && !IsSubset( ) && m_impl->type == font::truetype )
 	{
 		std::vector<wchar_t> ch = subset->GetUsedChars( this ) ;
 		
