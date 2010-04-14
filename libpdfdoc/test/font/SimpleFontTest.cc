@@ -59,6 +59,8 @@ void SimpleFontTest::TestLoadByName( )
 	pdf::Object fdo = file.ReadObj( r ) ;
 	CPPUNIT_ASSERT( fdo.Is<pdf::Dictionary>() ) ;
 	PDFUT_ASSERT_EQUAL( fd->Family(), "" ) ; 
+
+std::cout << "dict = " << fdo << std::endl ;	
 }
 
 void SimpleFontTest::TestParseBold( )

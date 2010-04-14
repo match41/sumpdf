@@ -393,9 +393,9 @@ void SimpleFont::LoadGlyphs( )
 	}
 	
 	if ( m_impl->first_char == -1 )
-		m_impl->first_char = first_char ;
+		m_impl->first_char = std::min( first_char, 255 ) ;
 	if ( m_impl->last_char == -1 )
-		m_impl->last_char = last_char ;
+		m_impl->last_char = std::min( last_char, 255 ) ;
 }
 
 /// Convert Freetype font unit to PDF glyph unit
@@ -416,8 +416,28 @@ Ref SimpleFont::Write( File *file, const FontSubsetInfo *subset ) const
 	if ( m_impl->type != font::type3 && !m_impl->base_font.empty() )
 		dict.insert( "BaseFont", 	m_impl->base_font ) ;
 	
-	dict.insert( "FirstChar", 	m_impl->first_char ) ;
-	dict.insert( "LastChar", 	m_impl->last_char ) ;
+	int first_char	= m_impl->first_char ;
+	int last_char	= m_impl->last_char ;
+	
+	std::vector<long> glyphs ;
+	if ( subset != 0 && !IsSubset( ) )
+	{
+		std::vector<wchar_t> ch = subset->GetUsedChars( this ) ;
+		
+		for ( std::vector<wchar_t>::iterator i = ch.begin() ; i != ch.end() ;
+			++i )
+			glyphs.push_back( FT_Get_Char_Index( m_impl->face, *i ) ) ;
+		
+		// used chars are sorted accending
+		if ( !ch.empty() )
+		{
+			first_char	= ch.front() ;
+			last_char	= ch.back() ;
+		}
+	}
+
+	dict.insert( "FirstChar", 	first_char ) ;
+	dict.insert( "LastChar", 	last_char ) ;
 	
 	// write the font encoding
 	if ( m_impl->encoding != 0 )
@@ -426,7 +446,7 @@ Ref SimpleFont::Write( File *file, const FontSubsetInfo *subset ) const
 	if ( m_impl->widths.empty() )
 	{
 		std::vector<double> widths ;
-		for ( int i = m_impl->first_char ; i <= m_impl->last_char ; ++i )
+		for ( int i = first_char ; i <= last_char ; ++i )
 		{
 			const Glyph *g = GetGlyph( i ) ;
 			widths.push_back(
@@ -438,16 +458,6 @@ Ref SimpleFont::Write( File *file, const FontSubsetInfo *subset ) const
 	}
 	else
 		dict.insert( "Widths", 		m_impl->widths ) ;
-
-	std::vector<long> glyphs ;
-	if ( subset != 0 && !IsSubset( ) )
-	{
-		std::vector<wchar_t> ch = subset->GetUsedChars( this ) ;
-		for ( std::vector<wchar_t>::iterator i = ch.begin() ; i != ch.end() ;
-			++i )
-			glyphs.push_back( FT_Get_Char_Index( m_impl->face, *i ) ) ;
-std::cout << "writing subset? " << glyphs.size() << std::endl ;
-	}
 
 	dict.insert( "FontDescriptor", 
 		m_impl->descriptor->Write( file, glyphs, m_impl->face ) ) ;
