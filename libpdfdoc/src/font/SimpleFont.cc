@@ -412,13 +412,11 @@ Ref SimpleFont::Write( File *file, const FontSubsetInfo *subset ) const
 	dict.insert( "Type", 		Name( "Font" ) ) ;
 	dict.insert( "Subtype", 	SubType( m_impl->type ) ) ;
 	
-	// BaseFont is optional for type 3 fonts
-	if ( m_impl->type != font::type3 && !m_impl->base_font.empty() )
-		dict.insert( "BaseFont", 	m_impl->base_font ) ;
-	
 	int first_char	= m_impl->first_char ;
 	int last_char	= m_impl->last_char ;
-	
+
+	Name base_font = m_impl->base_font ;
+
 	std::vector<long> glyphs ;
 	if ( subset != 0 && !IsSubset( ) )
 	{
@@ -434,7 +432,13 @@ Ref SimpleFont::Write( File *file, const FontSubsetInfo *subset ) const
 			first_char	= ch.front() ;
 			last_char	= ch.back() ;
 		}
+		
+		base_font = Name( "AAAAAA+" + base_font.Str() ) ;
 	}
+
+	// BaseFont is optional for type 3 fonts
+	if ( m_impl->type != font::type3 && !m_impl->base_font.empty() )
+		dict.insert( "BaseFont", 	base_font ) ;
 
 	dict.insert( "FirstChar", 	first_char ) ;
 	dict.insert( "LastChar", 	last_char ) ;
