@@ -41,6 +41,8 @@
 #include FT_TRUETYPE_TAGS_H
 #include FT_TRUETYPE_TABLES_H
 
+#include FT_GLYPH_H
+
 // boost headers
 #include <boost/bind.hpp>
 
@@ -48,6 +50,7 @@
 #include <cstring>
 #include <iostream>
 #include <streambuf>
+#include <fstream>
 #include <map>
 
 namespace pdf {
@@ -247,6 +250,34 @@ std::vector<uchar> Sfnt::CreateSubset(
 	// update the checksum adjustment field in the "head" table
 	u32 checksum = 0xB1B0AFBA - Checksum( data, file_data.size() ) ;
 	WriteBigEndian( checksum, &data[hoff + 8] ) ;
+
+#ifdef _DEBUG
+	std::ofstream outf( "out.ttf", std::ios::out | std::ios::binary ) ;
+//	outf.rdbuf()->sputn( &file_data[0], file_data.size() ) ;
+	for ( std::size_t i = 0 ; i < size ; i++ )
+		outf << "index = " << glyphs[i] << std::endl ;
+	outf.close() ;
+/*
+	FT_Library tmp ;
+	FT_Init_FreeType( &tmp ) ;
+	FT_Face sub_face ;
+	FT_Error e = FT_New_Memory_Face( tmp, data, file_data.size(), 0, &sub_face ) ;
+	PDF_ASSERT_EQUAL( e, 0 ) ;
+
+	unsigned gindex = 0 ;
+	unsigned long 	char_code = FT_Get_First_Char( sub_face, &gindex ) ;
+	while ( gindex != 0 )
+	{
+		PDF_ASSERT_EQUAL( FT_Load_Glyph( sub_face, gindex,
+			FT_LOAD_NO_SCALE ), 0 ) ;
+		
+		FT_Glyph glyph ;
+		PDF_ASSERT_EQUAL( FT_Get_Glyph( sub_face->glyph, &glyph ), 0 ) ;
+
+		char_code = ::FT_Get_Next_Char( sub_face, char_code, &gindex ) ;
+	}
+	FT_Done_FreeType( tmp ) ;*/
+#endif
 	
 	return std::vector<uchar>( file_data.begin(), file_data.end() );
 }

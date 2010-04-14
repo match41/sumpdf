@@ -26,6 +26,7 @@
 #include "SfntTest.hh"
 
 #include "font/subset/Sfnt.hh"
+#include "font/FontDb.hh"
 
 #include "mock/Assert.hh"
 
@@ -33,6 +34,8 @@
 
 #include <fstream>
 #include <iterator>
+
+#include FT_GLYPH_H
 
 namespace pdfut {
 
@@ -81,7 +84,10 @@ void SfntTest::TestFull( )
 
 void SfntTest::TestSubset( )
 {
-	Sfnt subject( m_face ) ;
+	std::auto_ptr<FontDb> fdb = CreateFontDb( ) ;
+	std::vector<unsigned char> arial = fdb->FindFont( "Times New Roman" ) ;
+
+	Sfnt subject( fdb->LoadFont( &arial[0], arial.size() ) ) ;
 
 	long glyphs[] = { 0,
 		FT_Get_Char_Index( m_face, 'A' ),
@@ -102,6 +108,21 @@ void SfntTest::TestSubset( )
 	PDFUT_ASSERT_EQUAL(
 		FT_Get_Char_Index( m_face,		'Z' ),
 		FT_Get_Char_Index( sub_face,	'Z' ) ) ;
+	
+	unsigned gindex = 0 ;
+	unsigned long 	char_code = FT_Get_First_Char( m_face, &gindex ) ;
+	while ( gindex != 0 )
+	{
+		PDFUT_ASSERT_EQUAL( FT_Load_Glyph( m_face, gindex,
+			FT_LOAD_NO_SCALE ), 0 ) ;
+		
+		std::cout << "char code = " << (int)char_code << " " << gindex << std::endl ;
+
+		FT_Glyph glyph ;
+		PDFUT_ASSERT_EQUAL( FT_Get_Glyph( m_face->glyph, &glyph ), 0 ) ;
+
+		char_code = ::FT_Get_Next_Char( m_face, char_code, &gindex ) ;
+	}
 }
 
 } // end of namespace

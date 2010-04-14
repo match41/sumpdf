@@ -79,6 +79,8 @@ private :
 
 	bool DecodeFontFile3( DictReader& reader, Stream& prog ) ;
 
+	static std::bitset<32> GetFlag( FT_FaceRec_ *face ) ;
+
 private :
 	font::Type	m_type ;
 

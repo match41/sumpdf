@@ -82,8 +82,8 @@ FontDescriptor::FontDescriptor( font::Type type, DictReader& self )
 }
 
 FontDescriptor::FontDescriptor( FT_Face face, std::vector<unsigned char>& prog )
-	: m_type( font::GetType( face ) ),
-	  m_flags( 0 )
+	: m_type( font::GetType( face ) )
+	, m_flags( GetFlag( face ) )
 {
 	PDF_ASSERT( face != 0 ) ;
 	m_length1 = m_length2 = m_length3 = 0 ;
@@ -141,6 +141,13 @@ FontDescriptor::FontDescriptor( FT_Face face, std::vector<unsigned char>& prog )
 	// steal the buffer. if we don't steal it, then it will be destroyed later.
 	// then the FT_Face will become invalid.
 	m_font_file.swap( prog ) ;
+}
+
+std::bitset<32> FontDescriptor::GetFlag( FT_FaceRec_ *face )
+{
+	std::bitset<32> r ;
+//	r[nonsymbolic] = 1 ;
+	return r ;
 }
 
 bool FontDescriptor::DecodeFontFile3( DictReader& reader, Stream& prog )
@@ -260,10 +267,10 @@ Ref FontDescriptor::Write(
 	// embedded font program also needs Length1 for the size of the stream
 	if ( !m_font_file.empty() )
 	{
+		Stream s( Stream::deflate ) ;
+		
 		if ( m_type == font::truetype )
 		{
-			Stream s( Stream::deflate ) ;
-			
 			std::size_t size = m_font_file.size() ;
 			if ( glyphs.empty() )
 				s.Append( &m_font_file[0], m_font_file.size() ) ;
@@ -275,7 +282,6 @@ Ref FontDescriptor::Write(
 				s.Append( &subset[0], subset.size() ) ;
 				
 				size = subset.size( ) ;
-std::cout << "writing subset? " << subset.size() << " " << m_font_file.size() << std::endl ;
 			}
 			s.Flush( ) ;
 			
@@ -286,7 +292,6 @@ std::cout << "writing subset? " << subset.size() << " " << m_font_file.size() <<
 		}
 		else if ( m_type == font::type1 )
 		{
-			Stream s( Stream::deflate ) ;
 			s.Append( &m_font_file[0], m_font_file.size() ) ;
 			s.Flush( ) ;
 			
@@ -307,7 +312,6 @@ std::cout << "writing subset? " << subset.size() << " " << m_font_file.size() <<
 		}
 		else
 		{
-			Stream s( Stream::deflate ) ;
 			s.Append( &m_font_file[0], m_font_file.size() ) ;
 			s.Flush( ) ;
 			
