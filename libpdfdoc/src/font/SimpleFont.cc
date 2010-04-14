@@ -417,7 +417,6 @@ Ref SimpleFont::Write( File *file, const FontSubsetInfo *subset ) const
 
 	Name base_font = m_impl->base_font ;
 
-std::cout << "before" << std::endl ;
 	// TODO: only truetype support subset for now
 	std::vector<long> glyphs ;
 	if ( subset != 0 && !IsSubset( ) && m_impl->type == font::truetype )
@@ -437,7 +436,6 @@ std::cout << "before" << std::endl ;
 
 		base_font = Name( "AAAAAA+" + base_font.Str() ) ;
 	}
-std::cout << "after" << std::endl ;
 
 	// BaseFont is optional for type 3 fonts
 	if ( m_impl->type != font::type3 && !m_impl->base_font.empty() )
@@ -447,8 +445,8 @@ std::cout << "after" << std::endl ;
 	dict.insert( "LastChar", 	last_char ) ;
 	
 	// write the font encoding
-	if ( m_impl->encoding != 0 )
-		dict.insert( "Encoding", m_impl->encoding->Write( file ) ) ;
+//	if ( m_impl->encoding != 0 )
+//		dict.insert( "Encoding", m_impl->encoding->Write( file ) ) ;
 	
 	if ( m_impl->widths.empty() )
 	{

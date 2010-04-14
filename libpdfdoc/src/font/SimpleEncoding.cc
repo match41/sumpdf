@@ -33,6 +33,8 @@
 
 #include "font/CodeMap.hh"
 
+#include "util/Debug.hh"
+
 #include <boost/bind.hpp>
 
 #include <algorithm>
@@ -115,6 +117,8 @@ Ref SimpleEncoding::Write( File *file ) const
 	for ( CharMap::left_const_iterator i = m_charmap.left.begin() ;
 		i != m_charmap.left.end() ; ++i )
 	{
+		PDF_ASSERT( UnicodeToName( i->second ) != 0 ) ;
+	
 		diff.push_back( i->first ) ;
 		diff.push_back( Name( UnicodeToName( i->second ) ) ) ;
 	}

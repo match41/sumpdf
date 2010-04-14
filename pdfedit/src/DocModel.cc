@@ -191,10 +191,8 @@ void DocModel::SaveFile( const QString& filename )
 		if ( m_pages[i] != 0 )
 			StorePage( m_pages[i], p ) ;
 	}
-qDebug() << "finishes" ;
 	
 	m_doc->Write( ToStr( filename )  ) ;
-qDebug() << "write finishes" ;
 	
 	SetCurrentFile( filename );
 }
