@@ -58,7 +58,7 @@ public :
 	~SimpleFont( ) ;
 
 	std::string BaseName( ) const ;
-	Ref Write( File *file ) const ;
+	Ref Write( File *file, const FontSubsetInfo *subset ) const ;
 
 	const Glyph*	GetGlyph( wchar_t ch ) const ;
 	

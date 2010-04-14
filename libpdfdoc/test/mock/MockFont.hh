@@ -46,7 +46,7 @@ public :
 	MockFont( ) ;
 
 	std::string BaseName( ) const ;
-	pdf::Ref Write( pdf::File *file ) const ;
+	pdf::Ref Write( pdf::File *file, const pdf::FontSubsetInfo * ) const ;
 	pdf::FontDescriptor* Descriptor( ) ;
 	pdf::FontEncoding* Encoding( ) ;
 	const pdf::Glyph*	GetGlyph( wchar_t ch ) const ;

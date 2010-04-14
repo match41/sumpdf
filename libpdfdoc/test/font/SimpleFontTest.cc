@@ -54,7 +54,7 @@ void SimpleFontTest::TestLoadByName( )
 	CPPUNIT_ASSERT( fd != 0 ) ;
 	
 	MockFile file ;
-	pdf::Ref r = subject.Write( &file ) ;
+	pdf::Ref r = subject.Write( &file, 0 ) ;
 	
 	pdf::Object fdo = file.ReadObj( r ) ;
 	CPPUNIT_ASSERT( fdo.Is<pdf::Dictionary>() ) ;

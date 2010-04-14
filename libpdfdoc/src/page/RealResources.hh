@@ -46,6 +46,7 @@ class BaseFont ;
 class File ;
 class Font ;
 class FontDb ;
+class FontSubsetInfo ;
 class DictReader ;
 class RealImage ;
 class Object ;
@@ -68,7 +69,7 @@ public :
 	Name AddFont( BaseFont *font ) ;
 
 	void Read( DictReader& self ) ;
-	Ref  Write( File *file ) const ;
+	Ref  Write( File *file, const FontSubsetInfo *ss ) const ;
 
 	BaseFont* FindFont( const Name& name ) const ;
 	Name FindFont( const BaseFont *font ) const ;
@@ -77,7 +78,7 @@ public :
 
 private :
 	void ReadFontDict( DictReader& self ) ;
-	Ref WriteFontDict( File *file ) const ;
+	Ref WriteFontDict( File *file, const FontSubsetInfo *ss ) const ;
 
 	void ReadStateDict( DictReader& self ) ;
 

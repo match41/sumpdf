@@ -29,6 +29,8 @@
 
 #include "libpdfdoc.hh"
 
+#include <iosfwd>
+
 namespace pdf {
 
 /*!	\brief	brief description
@@ -78,5 +80,10 @@ public :
 } ;
 
 } // end of namespace
+
+namespace std
+{
+	ostream& operator<<( ostream& os, const pdf::Rect& rect ) ;
+}
 
 #endif

@@ -85,8 +85,6 @@ struct SimpleFont::Impl
 	typedef std::tr1::unordered_map<wchar_t, RealGlyph*> GlyphMap ;
 	GlyphMap	glyphs ;
 	
-	const FontSubsetInfo	*subset ;
-	
 	Impl()
 	: face( 0 )
 	, type( font::unknown )
@@ -94,7 +92,6 @@ struct SimpleFont::Impl
 	, last_char( -1 )
 	, descriptor( 0 )
 	, encoding( 0 )
-	, subset( 0 )
 	{
 	}
 } ;
@@ -407,7 +404,7 @@ double SimpleFont::FromFontUnit( unsigned val ) const
 	return val * 1000.0 / m_impl->face->units_per_EM ;
 }
 
-Ref SimpleFont::Write( File *file ) const
+Ref SimpleFont::Write( File *file, const FontSubsetInfo *subset ) const
 {
 	PDF_ASSERT( file != 0 ) ;
 
@@ -442,8 +439,18 @@ Ref SimpleFont::Write( File *file ) const
 	else
 		dict.insert( "Widths", 		m_impl->widths ) ;
 
+	std::vector<long> glyphs ;
+	if ( subset != 0 && !IsSubset( ) )
+	{
+		std::vector<wchar_t> ch = subset->GetUsedChars( this ) ;
+		for ( std::vector<wchar_t>::iterator i = ch.begin() ; i != ch.end() ;
+			++i )
+			glyphs.push_back( FT_Get_Char_Index( m_impl->face, *i ) ) ;
+std::cout << "writing subset? " << glyphs.size() << std::endl ;
+	}
+
 	dict.insert( "FontDescriptor", 
-		m_impl->descriptor->Write( file, m_impl->subset, m_impl->face ) ) ;
+		m_impl->descriptor->Write( file, glyphs, m_impl->face ) ) ;
 
 	if ( !m_impl->to_unicode.Is<void>( ) )
 		dict.insert( "ToUnitcode", 	file->WriteObj( m_impl->to_unicode ) ) ;

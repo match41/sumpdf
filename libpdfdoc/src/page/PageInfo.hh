@@ -33,6 +33,7 @@ namespace pdf {
 class DictReader ;
 class Dictionary ;
 class File ;
+class FontSubsetInfo ;
 class PageTree ;
 class RealResources ;
 class FontDb ;
@@ -50,7 +51,7 @@ public :
 	~PageInfo( ) ;
 
 	void Read( DictReader& dict ) ;
-	void Write( Dictionary& dict, File *file ) const ;
+	void Write( Dictionary& dict, File *file, const FontSubsetInfo *ss ) const ;
 
 	RealResources* GetResource( ) ;
 	const RealResources* GetResource( ) const ;

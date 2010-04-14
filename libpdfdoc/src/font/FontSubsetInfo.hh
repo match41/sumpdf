@@ -43,7 +43,7 @@ protected :
 	~FontSubsetInfo( ) ;
 
 public :
-	virtual std::vector<wchar_t> SearchUsedChars( const BaseFont *f ) const = 0;
+	virtual std::vector<wchar_t> GetUsedChars( const BaseFont *f ) const = 0;
 } ;
 
 } // end of namespace
