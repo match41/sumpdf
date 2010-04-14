@@ -30,6 +30,7 @@
 #include <graphics/GraphicsState.hh>
 #include <util/Exception.hh>
 #include <util/Matrix.hh>
+#include <util/Debug.hh>
 
 // Qt headers
 #include <QBrush>
@@ -101,6 +102,7 @@ std::wstring ToWStr( const QString& s )
 std::string ToStr( const QString& str )
 {
 	QByteArray qba = str.toUtf8() ;
+	PDF_ASSERT( qba.constData() != 0 ) ;
 	return std::string( qba.constData(), qba.size() ) ;
 }
 

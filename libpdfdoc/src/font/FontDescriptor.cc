@@ -163,8 +163,6 @@ void FontDescriptor::InitType1Lengths( )
 	if ( len1 != m_font_file.end() )
 		m_length1 = len1 - m_font_file.begin() + eexec_len ;
 
-	std::cout << "length1 = " << std::hex << m_length1 << std::endl ;
-
 	unsigned char cleartomark[] = "cleartomark" ;
 	std::size_t cleartomark_len = Count( cleartomark ) - 1 ;
 	

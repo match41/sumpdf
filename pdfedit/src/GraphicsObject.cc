@@ -163,9 +163,4 @@ void GraphicsObject::DrawSelectedBox( QPainter *p ) const
 	p->drawRect( boundingRect() ) ;
 }
 
-int GraphicsObject::type( ) const
-{
-	return Type ;
-}
-
 } // end of namespace
