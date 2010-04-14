@@ -429,8 +429,14 @@ void Sfnt::WriteGlyphLocation(
 	std::streambuf *loca,
 	std::streambuf *glyf ) const
 {
-	WriteGlyphLocation( loca,
-		glyf->pubseekoff( 0, std::ios::cur, std::ios::out ) ) ;
+	std::streamsize offset = glyf->pubseekoff( 0, std::ios::cur, std::ios::out ) ;
+	
+	// dirty workaround for stdc++ library in MSVC
+	// don't know why but it pubseekoff() return -1 at the beginning
+	if ( offset == -1 )
+		offset = 0 ;
+
+	WriteGlyphLocation( loca, offset ) ;
 }
 
 void Sfnt::WriteGlyphLocation( std::streambuf *loca, u32 value ) const
@@ -466,9 +472,9 @@ void Sfnt::CopyGlyph(
 	
 	if ( old_offset + glyph_size <= src_size )
 	{
-		// position of this glyph in the new glyf table. must be get
-		// before writing the glyph data
-		unsigned long offset = glyf->pubseekoff( 0, std::ios::cur, std::ios::out ) ;
+		// position of this glyph in the new glyf table. must be written to loca
+		// table before writing the glyph data
+		WriteGlyphLocation( loca, glyf ) ;
 		
 		// copy the glyph data
 		std::streamsize count =
@@ -477,9 +483,6 @@ void Sfnt::CopyGlyph(
 		
 		if ( static_cast<std::size_t>( count ) != glyph_size )
 			throw FontException( "cannot write to destinationg glyf table" ) ;
-		
-		// write the glyph location to the new loca table
-		WriteGlyphLocation( loca, offset ) ;
 	}
 }
 
