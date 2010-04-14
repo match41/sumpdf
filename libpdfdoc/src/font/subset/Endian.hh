@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2009 by Nestal Wan                                      *
+ *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,42 +17,23 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/*!
-	\file	BaseFont.hh
-	\brief	definition the BaseFont class
-	\date	Sun Mar 8 2009
-	\author	Nestal Wan
+/**	\file	Endian.hh
+    \brief	definition the Endian class
+    \date	Apr 10, 2010
+    \author	Nestal Wan
 */
 
-#ifndef __PDF_BASE_FONT_HEADER_INCLUDED__
-#define __PDF_BASE_FONT_HEADER_INCLUDED__
+#ifndef __PDF_ENDIAN_HEADER_INCLUDED__
+#define __PDF_ENDIAN_HEADER_INCLUDED__
 
-#include "font/Font.hh"
-#include "util/RefCounter.hh"
-
-namespace pdf {
-
-class File ;
-class DictReader ;
-class Ref ;
-class FontDescriptor ;
-class FontEncoding ;
-class FontDb ;
-class FontSubsetInfo ;
-
-///	\internal	base class for all fonts
-/**	This class is the base class of all font classes in libpdfdoc.
-*/
-class BaseFont : public RefCounter, public Font
+namespace pdf
 {
-public :
-	virtual Ref Write( File *file, const FontSubsetInfo *subset ) const = 0 ;
-	virtual FontDescriptor* Descriptor( ) = 0 ;
-	virtual FontEncoding* Encoding( ) = 0 ;
-} ;
+	template <typename T>
+	T SwapByte( T t ) ;
 
-BaseFont* CreateFont( DictReader& obj, FontDb *ft ) ;
+	template <typename T>
+	void WriteBigEndian( T value, unsigned char *ptr ) ;
 
 } // end of namespace
 
-#endif
+#endif // ENDIAN_HH_

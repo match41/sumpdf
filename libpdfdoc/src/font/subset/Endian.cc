@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2009 by Nestal Wan                                      *
+ *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,42 +17,78 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/*!
-	\file	BaseFont.hh
-	\brief	definition the BaseFont class
-	\date	Sun Mar 8 2009
-	\author	Nestal Wan
+/**	\file	Endian.cc
+    \brief	definition the Endian class
+    \date	Apr 10, 2010
+    \author	Nestal Wan
 */
 
-#ifndef __PDF_BASE_FONT_HEADER_INCLUDED__
-#define __PDF_BASE_FONT_HEADER_INCLUDED__
+#ifndef __PDF_ENDIAN_CC_EADER_INCLUDED__
+#define __PDF_ENDIAN_CC_EADER_INCLUDED__
 
-#include "font/Font.hh"
-#include "util/RefCounter.hh"
+#include "Endian.hh"
+#include "Types.hh"
+
+// boost headers
+#include <boost/detail/endian.hpp>
+
+#include <cstring>
+#include <algorithm>
+
+#ifdef _MSC_VER
+#include <intrin.h>
+#endif
 
 namespace pdf {
 
-class File ;
-class DictReader ;
-class Ref ;
-class FontDescriptor ;
-class FontEncoding ;
-class FontDb ;
-class FontSubsetInfo ;
+#ifdef __GNUC__
 
-///	\internal	base class for all fonts
-/**	This class is the base class of all font classes in libpdfdoc.
-*/
-class BaseFont : public RefCounter, public Font
+template <>
+u32 SwapByte( u32 t )
 {
-public :
-	virtual Ref Write( File *file, const FontSubsetInfo *subset ) const = 0 ;
-	virtual FontDescriptor* Descriptor( ) = 0 ;
-	virtual FontEncoding* Encoding( ) = 0 ;
-} ;
+	return __builtin_bswap32( t ) ;
+}
 
-BaseFont* CreateFont( DictReader& obj, FontDb *ft ) ;
+#elif _MSC_VER
+
+template <>
+u32 SwapByte( u32 t )
+{
+	return _byteswap_ulong( t ) ;
+}
+
+// for others
+#else
+
+template <>
+u32 SwapByte( u32 t )
+{
+	uchar *p = reinterpret_cast<uchar*>( &t ) ;
+	std::swap( p[0], p[3] ) ;
+	std::swap( p[1], p[2] ) ;
+	return t ;
+}
+
+#endif
+
+template <>
+u16 SwapByte( u16 t )
+{
+	return ((t & 0xff) << 8 ) | (t >> 8) ;
+}
+
+template <typename T>
+void WriteBigEndian( T value, unsigned char *ptr )
+{
+#ifdef BOOST_LITTLE_ENDIAN
+	value = SwapByte( value ) ;
+#endif
+	std::memcpy( ptr, &value, sizeof(value) ) ;
+}
+
+template void WriteBigEndian( u32 value, unsigned char *ptr ) ;
+template void WriteBigEndian( u16 value, unsigned char *ptr ) ;
 
 } // end of namespace
 
-#endif
+#endif // ENDIAN_CC_

@@ -60,8 +60,6 @@ public :
 	//@}
 
 	QVariant itemChange( GraphicsItemChange change, const QVariant& value ) ;
-	int type( ) const ;
-	static const int Type = UserType + 1 ;
 
 	virtual void paint(
 		QPainter 						*painter,

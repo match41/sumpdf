@@ -54,12 +54,17 @@ public :
 	~PageTree( ) ;
 
 	void Read( DictReader& dict ) ;
-	void Write( const Ref& link, File *file, const Ref& parent ) const ;
+	void Write(
+		const Ref& 				link,
+		File 					*file,
+		const Ref& 				parent,
+		const FontSubsetInfo	*ss ) const ;
 
 	PageTree* Parent( ) ;
 	std::size_t Count( ) const ;
 
 	PageNode* GetLeaf( std::size_t index ) ;
+	const PageNode* GetLeaf( std::size_t index ) const ;
 	void AppendLeaf( RealPage *child ) ;
 	void AddLeaf( std::size_t index, RealPage *child ) ;
 	RealResources* GetResource( ) ;

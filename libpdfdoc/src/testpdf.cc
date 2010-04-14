@@ -54,7 +54,7 @@ int main( int argc, char **argv )
 		}
 	}
 	pdf::Page *p = doc->AppendPage( ) ;
-	pdf::Font *f = doc->CreateSimpleFont( "Arial" ) ;
+	pdf::Font *f = doc->CreateSimpleFont( "ArialMT" ) ;
 	
 //	pdf::PageContent *c = p->GetContent( ) ;
 	pdf::TextState ts ;

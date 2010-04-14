@@ -110,7 +110,11 @@ void RealPage::ReadContent( const Object& str_obj, File *src )
 		throw std::runtime_error( "invalid page content" ) ;
 }
 
-void RealPage::Write( const Ref& link, File *file, const Ref& parent ) const
+void RealPage::Write(
+	const Ref& 				link,
+	File 					*file,
+	const Ref& 				parent,
+	const FontSubsetInfo	*ss ) const
 {
 	PDF_ASSERT( file != 0 ) ;
 	
@@ -119,7 +123,7 @@ void RealPage::Write( const Ref& link, File *file, const Ref& parent ) const
  	self.insert( "Contents",	WriteContent( file ) ) ;
 	self.insert( "Parent",		parent ) ;
 	
-	m_pinfo.Write( self, file ) ;
+	m_pinfo.Write( self, file, ss ) ;
 
 	file->WriteObj( self, link ) ;
 }

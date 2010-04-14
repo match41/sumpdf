@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2009 by Nestal Wan                                      *
+ *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,42 +17,35 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/*!
-	\file	BaseFont.hh
-	\brief	definition the BaseFont class
-	\date	Sun Mar 8 2009
-	\author	Nestal Wan
+/**	\file	FontSubsetInfo.hh
+    \brief	definition the FontSubsetInfo class
+    \date	Apr 12, 2010
+    \author	Nestal Wan
 */
 
-#ifndef __PDF_BASE_FONT_HEADER_INCLUDED__
-#define __PDF_BASE_FONT_HEADER_INCLUDED__
+#ifndef __PDF_FONTSUBSETINFO_HH_EADER_INCLUDED__
+#define __PDF_FONTSUBSETINFO_HH_EADER_INCLUDED__
 
-#include "font/Font.hh"
-#include "util/RefCounter.hh"
+#include <vector>
+#include <wchar.h>
 
 namespace pdf {
 
-class File ;
-class DictReader ;
-class Ref ;
-class FontDescriptor ;
-class FontEncoding ;
-class FontDb ;
-class FontSubsetInfo ;
+class BaseFont ;
 
-///	\internal	base class for all fonts
-/**	This class is the base class of all font classes in libpdfdoc.
+///	brief description
+/**	\internal
+	The FontSubsetInfo class represents
 */
-class BaseFont : public RefCounter, public Font
+class FontSubsetInfo
 {
-public :
-	virtual Ref Write( File *file, const FontSubsetInfo *subset ) const = 0 ;
-	virtual FontDescriptor* Descriptor( ) = 0 ;
-	virtual FontEncoding* Encoding( ) = 0 ;
-} ;
+protected :
+	~FontSubsetInfo( ) ;
 
-BaseFont* CreateFont( DictReader& obj, FontDb *ft ) ;
+public :
+	virtual std::vector<wchar_t> GetUsedChars( const BaseFont *f ) const = 0;
+} ;
 
 } // end of namespace
 
-#endif
+#endif // FONTSUBSETINFO_HH_

@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2009 by Nestal Wan                                      *
+ *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,42 +17,70 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/*!
-	\file	BaseFont.hh
-	\brief	definition the BaseFont class
-	\date	Sun Mar 8 2009
+/**	\file	ReadStream.cc
+	\brief	implementation of the ReadStream class
+	\date	Apr 10, 2010
 	\author	Nestal Wan
 */
 
-#ifndef __PDF_BASE_FONT_HEADER_INCLUDED__
-#define __PDF_BASE_FONT_HEADER_INCLUDED__
+#include "ReadStream.hh"
 
-#include "font/Font.hh"
-#include "util/RefCounter.hh"
+#include "Endian.hh"
+#include "Types.hh"
+
+// boost headers
+#include <boost/detail/endian.hpp>
+
+#include <cstring>
 
 namespace pdf {
 
-class File ;
-class DictReader ;
-class Ref ;
-class FontDescriptor ;
-class FontEncoding ;
-class FontDb ;
-class FontSubsetInfo ;
-
-///	\internal	base class for all fonts
-/**	This class is the base class of all font classes in libpdfdoc.
+/**	constructor
+	
 */
-class BaseFont : public RefCounter, public Font
+ReadStream::ReadStream( const unsigned char *p, std::size_t size )
+	: m_ptr( p )
+	, m_size( size )
+	, m_failed( false )
 {
-public :
-	virtual Ref Write( File *file, const FontSubsetInfo *subset ) const = 0 ;
-	virtual FontDescriptor* Descriptor( ) = 0 ;
-	virtual FontEncoding* Encoding( ) = 0 ;
-} ;
+}
 
-BaseFont* CreateFont( DictReader& obj, FontDb *ft ) ;
+template <typename T>
+ReadStream& ReadStream::operator>>( T& v )
+{
+	if ( !m_failed && m_size >= sizeof(v) )
+	{
+		std::memcpy( &v, m_ptr, sizeof(v) ) ;
+
+#ifdef BOOST_LITTLE_ENDIAN
+		v = SwapByte( v ) ;
+#endif
+		
+		m_ptr	+= sizeof(T) ;
+		m_size	-= sizeof(T) ;
+	}
+	else
+		m_failed = true ;
+	
+	return *this ;
+}
+
+template ReadStream& ReadStream::operator>>( u32& v ) ;
+template ReadStream& ReadStream::operator>>( u16& v ) ;
+
+ReadStream::operator const void*() const
+{
+	return m_failed ? 0 : this ;
+}
+
+std::size_t ReadStream::Size( ) const
+{
+	return m_size ;
+}
+
+const unsigned char* ReadStream::Data( ) const
+{
+	return m_ptr ;
+}
 
 } // end of namespace
-
-#endif

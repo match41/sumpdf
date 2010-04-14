@@ -65,6 +65,7 @@ public :
 	std::size_t PageCount( ) const ;
 
 	Page*	GetPage( std::size_t index ) ;
+	const Page* GetPage( std::size_t index ) const ;
 
 private :
 	Name		m_version ;
@@ -77,6 +78,8 @@ private :
 	// name dictionary
 	struct NameDict ;
 	std::auto_ptr<NameDict>	m_name_dict ;
+	
+	class FontSubset ;
 } ;
 
 } // end of namespace
