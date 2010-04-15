@@ -29,6 +29,8 @@
 
 #include "libpdfdoc.hh"
 
+#include <iosfwd>
+
 namespace pdf {
 
 /*!	\brief	brief description
@@ -43,6 +45,7 @@ private :
 public :
 	Rect( ) ;
 	Rect( double llx, double lly, double urx, double ury ) ;
+	Rect( double (&array)[4] ) ;
 
 	template <typename InputIt>
 	Rect( InputIt first, InputIt last )
@@ -77,5 +80,10 @@ public :
 } ;
 
 } // end of namespace
+
+namespace std
+{
+	ostream& operator<<( ostream& os, const pdf::Rect& rect ) ;
+}
 
 #endif

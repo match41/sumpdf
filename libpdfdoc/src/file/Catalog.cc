@@ -34,6 +34,13 @@
 #include "core/Dictionary.hh"
 #include "core/Ref.hh"
 
+#include "font/BaseFont.hh"
+#include "font/FontSubsetInfo.hh"
+#include "graphics/GraphicsVisitor.hh"
+#include "graphics/Text.hh"
+#include "graphics/TextLine.hh"
+#include "graphics/TextState.hh"
+
 #include "page/RealPage.hh"
 #include "page/PageTree.hh"
 
@@ -43,7 +50,9 @@
 
 #include <boost/format.hpp>
 
+#include <set>
 #include <iostream>
+#include <iterator>
 
 namespace pdf {
 
@@ -59,6 +68,24 @@ struct Catalog::NameDict
 //		if ( reader.Detach( "Dests", dests ) )
 //			m_dests.Read( dests, file ) ;
 	}
+} ;
+
+class Catalog::FontSubset : public FontSubsetInfo, public GraphicsVisitor
+{
+public :
+	FontSubset( ) ;
+
+	std::vector<wchar_t> GetUsedChars( const BaseFont *f ) const ;
+
+	void VisitText( Text *text ) ;
+	void VisitGraphics( Graphics *text ) ;
+	void VisitPath( Path *path ) ;
+
+private :
+	typedef std::set<wchar_t> CharSet ;
+	typedef std::map<const BaseFont*, CharSet> FontChars ;
+	
+	FontChars	m_used_chars ;
 } ;
 
 Catalog::Catalog( FontDb *fontdb )
@@ -140,8 +167,16 @@ Ref Catalog::Write( File *file ) const
 {
 	Dictionary self ;
 
+	FontSubset subset ;
+	for ( std::size_t i = 0 ; i < PageCount() ; i++ )
+	{
+		const Page *page = GetPage( i ) ;
+		PDF_ASSERT( page != 0 ) ;
+		page->VisitGraphics( &subset ) ;
+	}
+
 	Ref tree = file->AllocLink( ) ;
-	m_tree->Write( tree, file, Ref() ) ; 
+	m_tree->Write( tree, file, Ref(), &subset ) ; 
 
 	self.insert( "Pages",  	tree ) ;
 	self.insert( "Type",	Name( "Catalog" ) ) ;
@@ -189,6 +224,53 @@ Page* Catalog::GetPage( std::size_t index )
 	PDF_ASSERT( typeid(*p) == typeid(RealPage) ) ;
 
 	return static_cast<RealPage*>( p ) ;
+}
+
+const Page* Catalog::GetPage( std::size_t index ) const
+{
+	PDF_ASSERT( m_tree != 0 ) ;
+
+	PageNode *p = m_tree->GetLeaf( index ) ;
+	PDF_ASSERT( p != 0 ) ;
+	
+	// no need to use dynamic cast as it will not be child class of RealPage
+	PDF_ASSERT( typeid(*p) == typeid(RealPage) ) ;
+
+	return static_cast<RealPage*>( p ) ;
+}
+
+Catalog::FontSubset::FontSubset( )
+{
+}
+
+std::vector<wchar_t> Catalog::FontSubset::GetUsedChars(const BaseFont *f) const
+{
+	FontChars::const_iterator i = m_used_chars.find( f ) ;
+	return i != m_used_chars.end()
+		? std::vector<wchar_t>( i->second.begin(), i->second.end() )
+		: std::vector<wchar_t>( ) ;
+}
+
+void Catalog::FontSubset::VisitText( Text *text )
+{
+	for ( Text::iterator i = text->begin() ; i != text->end() ; ++i )
+	{
+		const std::wstring& text = i->Text() ;
+		const BaseFont* font = static_cast<BaseFont*>(
+			i->Format().GetTextState().GetFont() ) ;
+		
+		CharSet& cs = m_used_chars[font] ;
+		
+		std::copy( text.begin(), text.end(), std::inserter( cs, cs.end() ) ) ;
+	}
+}
+
+void Catalog::FontSubset::VisitGraphics( Graphics *text )
+{
+}
+
+void Catalog::FontSubset::VisitPath( Path *path )
+{
 }
 
 } // end of namespace

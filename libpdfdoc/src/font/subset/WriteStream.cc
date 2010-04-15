@@ -17,42 +17,42 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	Path.hh
-    \brief	definition the Path class
-    \date	Apr 3, 2010
-    \author	Nestal Wan
+/**	\file	WriteStream.cc
+	\brief	implementation of the WriteStream class
+	\date	Apr 10, 2010
+	\author	Nestal Wan
 */
 
-#ifndef __PDF_PATH_HH_EADER_INCLUDED__
-#define __PDF_PATH_HH_EADER_INCLUDED__
+#include "WriteStream.hh"
 
-#include "Graphics.hh"
+#include "Endian.hh"
+#include "Types.hh"
 
-#include <cstddef>
+// boost headers
+#include <boost/detail/endian.hpp>
 
 namespace pdf {
 
-class PathSegment ;
-class Matrix ;
-
-///	brief description
-/**	\internal
-	The Path class represents
+/**	constructor
+	
 */
-class Path : public Graphics
+WriteStream::WriteStream( std::streambuf *buf )
+	: m_buf( buf )
 {
-public :
-	virtual ~Path( ) ;
-	
-	/// Returns the number of segment in the path
-	virtual std::size_t Count( ) const = 0 ;
-	
-	/// Returns the segment for the specified index. 
-	virtual PathSegment Segment( std::size_t index ) const = 0 ;
-	
-	virtual Matrix Transform( ) const = 0 ;
-} ;
+}
+
+template <typename T>
+WriteStream& WriteStream::operator<<( T v )
+{
+#ifdef BOOST_LITTLE_ENDIAN
+	v = SwapByte( v ) ;
+#endif
+	m_buf->sputn( reinterpret_cast<const char*>(&v), sizeof(v) ) ;
+
+	return *this ;
+}
+
+template WriteStream& WriteStream::operator<<( u32 v ) ;
+template WriteStream& WriteStream::operator<<( u16 v ) ;
 
 } // end of namespace
-
-#endif // PATH_HH_

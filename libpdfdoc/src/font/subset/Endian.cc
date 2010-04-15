@@ -17,42 +17,78 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	Path.hh
-    \brief	definition the Path class
-    \date	Apr 3, 2010
+/**	\file	Endian.cc
+    \brief	definition the Endian class
+    \date	Apr 10, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_PATH_HH_EADER_INCLUDED__
-#define __PDF_PATH_HH_EADER_INCLUDED__
+#ifndef __PDF_ENDIAN_CC_EADER_INCLUDED__
+#define __PDF_ENDIAN_CC_EADER_INCLUDED__
 
-#include "Graphics.hh"
+#include "Endian.hh"
+#include "Types.hh"
 
-#include <cstddef>
+// boost headers
+#include <boost/detail/endian.hpp>
+
+#include <cstring>
+#include <algorithm>
+
+#ifdef _MSC_VER
+#include <intrin.h>
+#endif
 
 namespace pdf {
 
-class PathSegment ;
-class Matrix ;
+#ifdef __GNUC__
 
-///	brief description
-/**	\internal
-	The Path class represents
-*/
-class Path : public Graphics
+template <>
+u32 SwapByte( u32 t )
 {
-public :
-	virtual ~Path( ) ;
-	
-	/// Returns the number of segment in the path
-	virtual std::size_t Count( ) const = 0 ;
-	
-	/// Returns the segment for the specified index. 
-	virtual PathSegment Segment( std::size_t index ) const = 0 ;
-	
-	virtual Matrix Transform( ) const = 0 ;
-} ;
+	return __builtin_bswap32( t ) ;
+}
+
+#elif _MSC_VER
+
+template <>
+u32 SwapByte( u32 t )
+{
+	return _byteswap_ulong( t ) ;
+}
+
+// for others
+#else
+
+template <>
+u32 SwapByte( u32 t )
+{
+	uchar *p = reinterpret_cast<uchar*>( &t ) ;
+	std::swap( p[0], p[3] ) ;
+	std::swap( p[1], p[2] ) ;
+	return t ;
+}
+
+#endif
+
+template <>
+u16 SwapByte( u16 t )
+{
+	return ((t & 0xff) << 8 ) | (t >> 8) ;
+}
+
+template <typename T>
+void WriteBigEndian( T value, unsigned char *ptr )
+{
+#ifdef BOOST_LITTLE_ENDIAN
+	value = SwapByte( value ) ;
+#endif
+	std::memcpy( ptr, &value, sizeof(value) ) ;
+}
+
+template void WriteBigEndian( u32 value, unsigned char *ptr ) ;
+template void WriteBigEndian( u16 value, unsigned char *ptr ) ;
 
 } // end of namespace
 
-#endif // PATH_HH_
+#endif // ENDIAN_CC_

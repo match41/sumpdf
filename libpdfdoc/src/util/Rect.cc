@@ -28,6 +28,8 @@
 #include "util/Util.hh"
 
 #include <algorithm>
+#include <iterator>
+#include <ostream>
 
 namespace pdf {
 
@@ -42,6 +44,11 @@ Rect::Rect( double llx, double lly, double urx, double ury )
 	m_corner[1] = lly ;
 	m_corner[2] = urx ;
 	m_corner[3] = ury ;
+}
+
+Rect::Rect( double (&array)[4] )
+{
+	std::copy( array, array + 4, m_corner ) ;
 }
 
 bool operator==( const Rect& r1, const Rect& r2 )
@@ -103,3 +110,13 @@ bool Rect::IsNull( ) const
 }
 
 } // end of namespace
+
+namespace std
+{
+	ostream& operator<<( ostream& os, const pdf::Rect& rect )
+	{
+		std::copy( rect.begin(), rect.end(),
+			std::ostream_iterator<double>( os, ", " ) ) ;
+		return os ;
+	}
+}

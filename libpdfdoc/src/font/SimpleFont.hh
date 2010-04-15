@@ -58,7 +58,7 @@ public :
 	~SimpleFont( ) ;
 
 	std::string BaseName( ) const ;
-	Ref Write( File *file ) const ;
+	Ref Write( File *file, const FontSubsetInfo *subset ) const ;
 
 	const Glyph*	GetGlyph( wchar_t ch ) const ;
 	
@@ -67,6 +67,8 @@ public :
 
 	unsigned UnitsPerEM( ) const ;
 	double FromFontUnit( unsigned val ) const ;
+	
+	bool IsSubset( ) const ;
 	
 private :
 	void LoadGlyphs( ) ;
@@ -90,6 +92,8 @@ private :
 	bool InitWithStdFont( const std::string& name, FontDb *fontdb ) ;
 
 	bool LoadDescriptor( DictReader& reader, FontDb *font_db ) ;
+
+	static bool IsSubset( const std::string& basename ) ;
 
 private :
 	struct Impl ;

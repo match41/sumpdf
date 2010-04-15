@@ -91,12 +91,12 @@ void RealResources::Read( DictReader& self )
 	ReadFontDict( self ) ;
 }
 
-Ref RealResources::Write( File *file ) const
+Ref RealResources::Write( File *file, const FontSubsetInfo *subset ) const
 {
 	Dictionary dict ;
     
 	dict.insert( "ProcSet",	m_proc_set ) ;
-	dict.insert( "Font",	WriteFontDict( file ) ) ;
+	dict.insert( "Font",	WriteFontDict( file, subset ) ) ;
 
     return file->WriteObj( dict ) ;
 }
@@ -150,7 +150,7 @@ void RealResources::ReadFontDict( DictReader& self )
 	}
 }
 
-Ref RealResources::WriteFontDict( File *file ) const
+Ref RealResources::WriteFontDict( File *file, const FontSubsetInfo *ss ) const
 {
 	PDF_ASSERT( file != 0 ) ;
 	PDF_ASSERT( file->Pool() != 0 ) ;
@@ -166,7 +166,7 @@ Ref RealResources::WriteFontDict( File *file ) const
 		Ref link = pool->Find( i->second ) ;
 		if ( link == Ref() )
 		{
-			link = i->second->Write( file ) ;
+			link = i->second->Write( file, ss ) ;
 			pool->Add( link, i->second ) ;
 		}
 		

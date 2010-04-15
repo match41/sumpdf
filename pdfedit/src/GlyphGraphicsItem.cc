@@ -78,9 +78,4 @@ GlyphGraphicsItem::GlyphGraphicsItem(const Glyph *glyph, QGraphicsItem *parent)
 	setPath( path ) ;
 }
 
-int GlyphGraphicsItem::type( ) const
-{
-	return Type ;
-}
-
 } // end of namespace

@@ -29,6 +29,7 @@
 #include "RealGlyph.hh"
 #include "FontException.hh"
 #include "FontDescriptor.hh"
+#include "FontSubsetInfo.hh"
 #include "SimpleEncoding.hh"
 
 // libpdfdoc headers
@@ -276,6 +277,18 @@ void SimpleFont::Init( std::vector<unsigned char>& prog, FontDb *font_db )
 	LoadGlyphs( ) ;
 }
 
+bool SimpleFont::IsSubset( const std::string& basename )
+{
+	return basename.size() > 7 && basename[6] == '+' &&
+		std::find_if( basename.begin(), basename.begin() + 6,
+			islower ) == basename.begin() + 6 ;
+}
+
+bool SimpleFont::IsSubset( ) const
+{
+	return IsSubset( m_impl->base_font.Str() ) ;
+}
+
 std::vector<unsigned char> SimpleFont::FindStdFont(
 	const std::string&	base_name,
 	FontDb				*fdb )
@@ -380,9 +393,9 @@ void SimpleFont::LoadGlyphs( )
 	}
 	
 	if ( m_impl->first_char == -1 )
-		m_impl->first_char = first_char ;
+		m_impl->first_char = std::min( first_char, 255 ) ;
 	if ( m_impl->last_char == -1 )
-		m_impl->last_char = last_char ;
+		m_impl->last_char = std::min( last_char, 255 ) ;
 }
 
 /// Convert Freetype font unit to PDF glyph unit
@@ -391,7 +404,7 @@ double SimpleFont::FromFontUnit( unsigned val ) const
 	return val * 1000.0 / m_impl->face->units_per_EM ;
 }
 
-Ref SimpleFont::Write( File *file ) const
+Ref SimpleFont::Write( File *file, const FontSubsetInfo *subset ) const
 {
 	PDF_ASSERT( file != 0 ) ;
 
@@ -399,20 +412,46 @@ Ref SimpleFont::Write( File *file ) const
 	dict.insert( "Type", 		Name( "Font" ) ) ;
 	dict.insert( "Subtype", 	SubType( m_impl->type ) ) ;
 	
+	int first_char	= m_impl->first_char ;
+	int last_char	= m_impl->last_char ;
+
+	Name base_font = m_impl->base_font ;
+
+	// TODO: only truetype support subset for now
+	std::vector<long> glyphs ;
+	if ( subset != 0 && !IsSubset( ) && m_impl->type == font::truetype )
+	{
+		std::vector<wchar_t> ch = subset->GetUsedChars( this ) ;
+		
+		for ( std::vector<wchar_t>::iterator i = ch.begin() ; i != ch.end() ;
+			++i )
+			glyphs.push_back( FT_Get_Char_Index( m_impl->face, *i ) ) ;
+		
+		// used chars are sorted accending
+		if ( !ch.empty() )
+		{
+			first_char	= ch.front() ;
+			last_char	= ch.back() ;
+		}
+
+		base_font = Name( "AAAAAA+" + base_font.Str() ) ;
+	}
+
 	// BaseFont is optional for type 3 fonts
 	if ( m_impl->type != font::type3 && !m_impl->base_font.empty() )
-		dict.insert( "BaseFont", 	m_impl->base_font ) ;
+		dict.insert( "BaseFont", 	base_font ) ;
+
+	dict.insert( "FirstChar", 	first_char ) ;
+	dict.insert( "LastChar", 	last_char ) ;
 	
-	dict.insert( "FirstChar", 	m_impl->first_char ) ;
-	dict.insert( "LastChar", 	m_impl->last_char ) ;
-	
-	// TODO: write the font encoding
-//	dict.insert( "Encoding", 	m_encoding ) ;
+	// write the font encoding
+//	if ( m_impl->encoding != 0 )
+//		dict.insert( "Encoding", m_impl->encoding->Write( file ) ) ;
 	
 	if ( m_impl->widths.empty() )
 	{
 		std::vector<double> widths ;
-		for ( int i = m_impl->first_char ; i <= m_impl->last_char ; ++i )
+		for ( int i = first_char ; i <= last_char ; ++i )
 		{
 			const Glyph *g = GetGlyph( i ) ;
 			widths.push_back(
@@ -425,7 +464,8 @@ Ref SimpleFont::Write( File *file ) const
 	else
 		dict.insert( "Widths", 		m_impl->widths ) ;
 
-	dict.insert( "FontDescriptor", 	m_impl->descriptor->Write( file ) ) ;
+	dict.insert( "FontDescriptor", 
+		m_impl->descriptor->Write( file, glyphs, m_impl->face ) ) ;
 
 	if ( !m_impl->to_unicode.Is<void>( ) )
 		dict.insert( "ToUnitcode", 	file->WriteObj( m_impl->to_unicode ) ) ;

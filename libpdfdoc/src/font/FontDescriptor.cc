@@ -26,6 +26,8 @@
 #include "FontDescriptor.hh"
 
 #include "FontException.hh"
+#include "FontSubsetInfo.hh"
+#include "subset/Sfnt.hh"
 
 #include "core/Array.hh"
 #include "core/Dictionary.hh"
@@ -36,6 +38,9 @@
 #include "util/Util.hh"
 #include "util/Debug.hh"
 
+// freetype headers
+#include <ft2build.h>
+#include FT_FREETYPE_H
 #include FT_TRUETYPE_IDS_H
 #include FT_TRUETYPE_TABLES_H
 
@@ -77,8 +82,8 @@ FontDescriptor::FontDescriptor( font::Type type, DictReader& self )
 }
 
 FontDescriptor::FontDescriptor( FT_Face face, std::vector<unsigned char>& prog )
-	: m_type( font::GetType( face ) ),
-	  m_flags( 0 )
+	: m_type( font::GetType( face ) )
+	, m_flags( GetFlag( face ) )
 {
 	PDF_ASSERT( face != 0 ) ;
 	m_length1 = m_length2 = m_length3 = 0 ;
@@ -136,6 +141,50 @@ FontDescriptor::FontDescriptor( FT_Face face, std::vector<unsigned char>& prog )
 	// steal the buffer. if we don't steal it, then it will be destroyed later.
 	// then the FT_Face will become invalid.
 	m_font_file.swap( prog ) ;
+	
+	if ( m_type == font::type1 )
+		InitType1Lengths( ) ;
+}
+
+void FontDescriptor::InitType1Lengths( )
+{
+	PDF_ASSERT( m_type == font::type1 ) ;
+
+	unsigned char eexec[] = "eexec" ;
+	std::size_t eexec_len = Count( eexec ) - 1 ;
+	
+	std::vector<unsigned char>::const_iterator len1 =
+		std::search(
+			m_font_file.begin(),
+			m_font_file.end(),
+			eexec,
+			eexec + eexec_len ) ;
+
+	if ( len1 != m_font_file.end() )
+		m_length1 = len1 - m_font_file.begin() + eexec_len ;
+
+	unsigned char cleartomark[] = "cleartomark" ;
+	std::size_t cleartomark_len = Count( cleartomark ) - 1 ;
+	
+	std::vector<unsigned char>::const_iterator len2 =
+		std::search(
+			m_font_file.begin(),
+			m_font_file.end(),
+			cleartomark,
+			cleartomark + cleartomark_len ) ;
+	
+	if ( m_length1 > 0 && len2 != m_font_file.end() )
+	{
+		m_length2 = len2 - m_font_file.begin( ) - 520 - m_length1 ;
+		m_length3 = 520 ;
+	}
+}
+
+std::bitset<32> FontDescriptor::GetFlag( FT_FaceRec_ *face )
+{
+	std::bitset<32> r ;
+	r[nonsymbolic] = 1 ;
+	return r ;
 }
 
 bool FontDescriptor::DecodeFontFile3( DictReader& reader, Stream& prog )
@@ -225,7 +274,10 @@ void FontDescriptor::Read( font::Type type, DictReader& reader )
 		m_psname = psname.Str() ;
 }
 
-Ref FontDescriptor::Write( File *file ) const
+Ref FontDescriptor::Write(
+	File 						*file,
+	const std::vector<long>&	glyphs,
+	FT_FaceRec_ 				*face ) const
 {
 	PDF_ASSERT( file != 0 ) ;
 
@@ -247,25 +299,41 @@ Ref FontDescriptor::Write( File *file ) const
 	if ( m_x_height != 0.0 )
 		self.insert( "XHeight", m_x_height ) ;
 	
-//	Rect bbox( m_x_min, m_y_min, m_x_max, m_y_max ) ;
 	self.insert( "FontBBox",	m_bbox ) ;
 	
 	// embedded font program also needs Length1 for the size of the stream
 	if ( !m_font_file.empty() )
 	{
 		Stream s( Stream::deflate ) ;
-		s.Append( &m_font_file[0], m_font_file.size() ) ;
-		s.Flush( ) ;
-		
-		Dictionary& sdict = s.Self() ;
 		
 		if ( m_type == font::truetype )
 		{
-			sdict.insert( std::make_pair( "Length1", m_font_file.size() ) ) ;
+			std::size_t size = m_font_file.size() ;
+			if ( glyphs.empty() )
+				s.Append( &m_font_file[0], m_font_file.size() ) ;
+			else
+			{
+				Sfnt sfnt( face ) ;
+				std::vector<uchar> subset = sfnt.CreateSubset(
+					&glyphs[0], glyphs.size() ) ;
+				s.Append( &subset[0], subset.size() ) ;
+				
+				size = subset.size( ) ;
+			}
+			s.Flush( ) ;
+			
+			Dictionary& sdict = s.Self() ;
+			
+			sdict.insert( std::make_pair( "Length1", size ) ) ;
 			self.insert( "FontFile2", file->WriteObj( s ) ) ;
 		}
 		else if ( m_type == font::type1 )
 		{
+			s.Append( &m_font_file[0], m_font_file.size() ) ;
+			s.Flush( ) ;
+			
+			Dictionary& sdict = s.Self() ;
+			
 			if ( m_subtype == Name() )
 			{
 				sdict.insert( std::make_pair( "Length1", m_length1 ) ) ;
@@ -280,7 +348,12 @@ Ref FontDescriptor::Write( File *file ) const
 			}
 		}
 		else
+		{
+			s.Append( &m_font_file[0], m_font_file.size() ) ;
+			s.Flush( ) ;
+			
 			self.insert( "FontFile3", file->WriteObj( s ) ) ;
+		}
 	}
 	
 	if ( m_stretch >= font::ultra_condensed &&

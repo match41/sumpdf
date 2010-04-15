@@ -48,7 +48,7 @@ public :
 	CompositeFont( const std::string& name, FontDb *ft ) ;
 
 	// BaseFont virtual functions
-	Ref Write( File *file ) const ;
+	Ref Write( File *file, const FontSubsetInfo * ) const ;
 	FontDescriptor* Descriptor( ) ;
 	FontEncoding* Encoding( ) ;
 	

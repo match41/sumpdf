@@ -17,42 +17,23 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	Path.hh
-    \brief	definition the Path class
-    \date	Apr 3, 2010
+/**	\file	Endian.hh
+    \brief	definition the Endian class
+    \date	Apr 10, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_PATH_HH_EADER_INCLUDED__
-#define __PDF_PATH_HH_EADER_INCLUDED__
+#ifndef __PDF_ENDIAN_HEADER_INCLUDED__
+#define __PDF_ENDIAN_HEADER_INCLUDED__
 
-#include "Graphics.hh"
-
-#include <cstddef>
-
-namespace pdf {
-
-class PathSegment ;
-class Matrix ;
-
-///	brief description
-/**	\internal
-	The Path class represents
-*/
-class Path : public Graphics
+namespace pdf
 {
-public :
-	virtual ~Path( ) ;
-	
-	/// Returns the number of segment in the path
-	virtual std::size_t Count( ) const = 0 ;
-	
-	/// Returns the segment for the specified index. 
-	virtual PathSegment Segment( std::size_t index ) const = 0 ;
-	
-	virtual Matrix Transform( ) const = 0 ;
-} ;
+	template <typename T>
+	T SwapByte( T t ) ;
+
+	template <typename T>
+	void WriteBigEndian( T value, unsigned char *ptr ) ;
 
 } // end of namespace
 
-#endif // PATH_HH_
+#endif // ENDIAN_HH_

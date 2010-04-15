@@ -32,18 +32,17 @@
 #include "core/Name.hh"
 #include "util/Rect.hh"
 
-// freetype headers
-#include <ft2build.h>
-#include FT_FREETYPE_H
-
 #include <string>
 #include <vector>
 #include <bitset>
+
+struct FT_FaceRec_ ;
 
 namespace pdf {
 
 class DictReader ;
 class File ;
+class FontSubsetInfo ;
 class Ref ;
 class Stream ;
 
@@ -57,10 +56,13 @@ class FontDescriptor : public RefCounter
 public :
 	FontDescriptor( ) ;
 	FontDescriptor( font::Type type, DictReader& self ) ;
-	FontDescriptor( FT_Face face, std::vector<unsigned char>& prog ) ;
+	FontDescriptor( FT_FaceRec_ *face, std::vector<unsigned char>& prog ) ;
 	
 	void Read( font::Type type, DictReader& self ) ;
-	Ref Write( File *file ) const ;
+	Ref Write( 
+		File 						*file,
+		const std::vector<long>&	glyphs,
+		FT_FaceRec_ 				*face ) const ;
 	
 	std::string Family( ) const ;
 
@@ -73,9 +75,13 @@ public :
 private :
 	static const Name m_stretch_names[] ; 
 
-	double FontUnit( double val, FT_Face face ) ;
+	double FontUnit( double val, FT_FaceRec_ *face ) ;
 
 	bool DecodeFontFile3( DictReader& reader, Stream& prog ) ;
+
+	static std::bitset<32> GetFlag( FT_FaceRec_ *face ) ;
+
+	void InitType1Lengths( ) ;
 
 private :
 	font::Type	m_type ;

@@ -157,9 +157,7 @@ void MainWnd::OnSelectionChanged( )
 	QList<QGraphicsItem*> items = m_doc->CurrentScene()->selectedItems() ;
 	if ( !items.empty() )
 	{
-		GraphicsObject *obj =
-			qgraphicsitem_cast<GraphicsObject*>( items.front() ) ;
-
+		GraphicsObject *obj = dynamic_cast<GraphicsObject*>( items.front() ) ;
 		m_item_prop->setModel( obj ) ;
 	}
 }

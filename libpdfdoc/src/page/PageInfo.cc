@@ -38,20 +38,27 @@
 
 namespace pdf {
 
+namespace
+{
+	double default_page_size[4] = { 0, 0, 595.1, 842.1 } ;
+}
+
 /**	constructor
 	
 */
 PageInfo::PageInfo( PageTree *parent )
-	: m_parent( parent ),
-	  m_res( new RealResources( parent == 0 ? 0 : parent->GetResource() ) ),
-	  m_rotate( 0 )
+	: m_parent( parent )
+	, m_res( new RealResources( parent == 0 ? 0 : parent->GetResource() ) )
+	, m_rotate( 0 )
 {
 }
 
 PageInfo::PageInfo( FontDb *fontdb )
-	: m_parent( 0 ),
-	  m_res( new RealResources( fontdb ) ),
-	  m_rotate( 0 )
+	: m_parent( 0 )
+	, m_res( new RealResources( fontdb ) )
+	, m_media_box( default_page_size )
+	, m_crop_box( m_media_box )
+	, m_rotate( 0 )
 {
 }
 
@@ -101,7 +108,10 @@ void PageInfo::Read( DictReader& dict )
 		m_rotate = m_parent->Rotation( ) ;
 }
 
-void PageInfo::Write( Dictionary& dict, File *file ) const
+void PageInfo::Write(
+	Dictionary& 			dict,
+	File 					*file,
+	const FontSubsetInfo	*ss ) const
 {
 	PDF_ASSERT( file != 0 ) ;
 	PDF_ASSERT( m_res != 0 ) ;
@@ -112,7 +122,7 @@ void PageInfo::Write( Dictionary& dict, File *file ) const
 	Ref ref = pool->Find( m_res ) ;
 	if ( ref == Ref() )
 	{
-		ref = m_res->Write( file ) ;
+		ref = m_res->Write( file, ss ) ;
 		pool->Add( ref, m_res ) ;
 	}
 	
@@ -152,12 +162,16 @@ PageTree* PageInfo::Parent( )
 
 Rect PageInfo::MediaBox() const
 {
-	return m_media_box ;
+	return m_media_box != Rect() ? m_media_box :
+		(m_parent != 0 ? m_parent->MediaBox() : m_media_box ) ;
 }
 
+/** According to PDF spec, the default value of the crop box is the same as
+	the media box.
+*/
 Rect PageInfo::CropBox() const
 {
-	return m_crop_box ;
+	return m_crop_box != Rect() ? m_crop_box : MediaBox() ;
 }
 
 int PageInfo::Rotation( ) const

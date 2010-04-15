@@ -38,6 +38,7 @@ namespace pdf {
 
 class DictReader ;
 class File ;
+class FontSubsetInfo ;
 class Ref ;
 
 /*!	\brief	brief description
@@ -52,8 +53,11 @@ public :
 	virtual ~PageNode( ) ;
 
 	virtual void Read( DictReader& dict ) = 0 ; 
-	virtual void Write( const Ref& link, File *file, const Ref& parent ) 
-		const = 0 ;
+	virtual void Write( 
+		const Ref& 				link,
+		File 					*file,
+		const Ref& 				parent,
+		const FontSubsetInfo	*ss ) const = 0 ;
 
 	virtual PageNode* Parent( ) = 0 ;
 

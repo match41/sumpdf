@@ -42,6 +42,8 @@
 #include <util/Util.hh>
 #include <util/Matrix.hh>
 
+#include <QDebug>
+
 // Qt headers
 #include <QGraphicsScene>
 #include <QString>
@@ -185,11 +187,13 @@ void DocModel::SaveFile( const QString& filename )
 	{
 		Page *p = m_doc->GetPage( i ) ;
 		PDF_ASSERT( p != 0 ) ;
-		
-		StorePage( m_pages[i], p ) ;
+
+		if ( m_pages[i] != 0 )
+			StorePage( m_pages[i], p ) ;
 	}
 	
 	m_doc->Write( ToStr( filename )  ) ;
+	
 	SetCurrentFile( filename );
 }
 
@@ -204,7 +208,7 @@ void DocModel::StorePage( QGraphicsScene *scene, Page *page )
 	for ( QList<QGraphicsItem*>::iterator i  = items.begin() ;
 	                                      i != items.end() ; ++i )
 	{
-		TextObject *text = qgraphicsitem_cast<TextObject*>( *i ) ;
+		TextObject *text = dynamic_cast<TextObject*>( *i ) ;
 		
 		if ( text != 0 )
 		{
@@ -215,7 +219,6 @@ void DocModel::StorePage( QGraphicsScene *scene, Page *page )
 	
 	std::vector<Graphics*> gfx( 1, t ) ;
 	page->SetContent( gfx ) ;
-	
 }
 
 void DocModel::AddText(

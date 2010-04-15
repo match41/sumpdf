@@ -17,42 +17,21 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	Path.hh
-    \brief	definition the Path class
-    \date	Apr 3, 2010
-    \author	Nestal Wan
+/**	\file	FontSubsetInfo.cc
+	\brief	implementation of the FontSubsetInfo class
+	\date	Apr 12, 2010
+	\author	Nestal Wan
 */
 
-#ifndef __PDF_PATH_HH_EADER_INCLUDED__
-#define __PDF_PATH_HH_EADER_INCLUDED__
-
-#include "Graphics.hh"
-
-#include <cstddef>
+#include "FontSubsetInfo.hh"
 
 namespace pdf {
 
-class PathSegment ;
-class Matrix ;
-
-///	brief description
-/**	\internal
-	The Path class represents
+/**	constructor
+	
 */
-class Path : public Graphics
+FontSubsetInfo::~FontSubsetInfo( )
 {
-public :
-	virtual ~Path( ) ;
-	
-	/// Returns the number of segment in the path
-	virtual std::size_t Count( ) const = 0 ;
-	
-	/// Returns the segment for the specified index. 
-	virtual PathSegment Segment( std::size_t index ) const = 0 ;
-	
-	virtual Matrix Transform( ) const = 0 ;
-} ;
+}
 
 } // end of namespace
-
-#endif // PATH_HH_

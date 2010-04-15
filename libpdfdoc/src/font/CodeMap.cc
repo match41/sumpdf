@@ -49,7 +49,9 @@ namespace
 		boost::bimaps::multiset_of<wchar_t>,
 		boost::bimaps::set_of<const char*, StrComp>
 	> UnicodeMap ; 
-	
+
+	const char *not_def = ".notdef" ;
+
 	const UnicodeMap::value_type table[] =
 	{
 		UnicodeMap::value_type( 0x0021, "!" ),
@@ -1145,7 +1147,7 @@ namespace
 const char*	UnicodeToName( wchar_t ch )
 {
 	UnicodeMap::left_const_iterator i = unimap.left.find( ch ) ;
-	return i != unimap.left.end() ? i->second : 0 ;
+	return i != unimap.left.end() ? i->second : not_def ;
 }
 
 wchar_t		NameToUnicode( const char *name )

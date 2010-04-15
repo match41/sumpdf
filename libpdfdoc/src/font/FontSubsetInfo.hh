@@ -17,42 +17,35 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	Path.hh
-    \brief	definition the Path class
-    \date	Apr 3, 2010
+/**	\file	FontSubsetInfo.hh
+    \brief	definition the FontSubsetInfo class
+    \date	Apr 12, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_PATH_HH_EADER_INCLUDED__
-#define __PDF_PATH_HH_EADER_INCLUDED__
+#ifndef __PDF_FONTSUBSETINFO_HH_EADER_INCLUDED__
+#define __PDF_FONTSUBSETINFO_HH_EADER_INCLUDED__
 
-#include "Graphics.hh"
-
-#include <cstddef>
+#include <vector>
+#include <wchar.h>
 
 namespace pdf {
 
-class PathSegment ;
-class Matrix ;
+class BaseFont ;
 
 ///	brief description
 /**	\internal
-	The Path class represents
+	The FontSubsetInfo class represents
 */
-class Path : public Graphics
+class FontSubsetInfo
 {
+protected :
+	~FontSubsetInfo( ) ;
+
 public :
-	virtual ~Path( ) ;
-	
-	/// Returns the number of segment in the path
-	virtual std::size_t Count( ) const = 0 ;
-	
-	/// Returns the segment for the specified index. 
-	virtual PathSegment Segment( std::size_t index ) const = 0 ;
-	
-	virtual Matrix Transform( ) const = 0 ;
+	virtual std::vector<wchar_t> GetUsedChars( const BaseFont *f ) const = 0;
 } ;
 
 } // end of namespace
 
-#endif // PATH_HH_
+#endif // FONTSUBSETINFO_HH_

@@ -48,16 +48,19 @@ void SimpleFontTest::TestLoadByName( )
 {
 	pdf::SimpleFont subject( "FreeMonoBoldOblique", m_font_db ) ;
 	PDFUT_ASSERT_EQUAL( subject.BaseName( ), "FreeMonoBoldOblique" ) ;
+	CPPUNIT_ASSERT( !subject.IsSubset() ) ;
 	
 	pdf::FontDescriptor *fd = subject.Descriptor( ) ;
 	CPPUNIT_ASSERT( fd != 0 ) ;
 	
 	MockFile file ;
-	pdf::Ref r = subject.Write( &file ) ;
+	pdf::Ref r = subject.Write( &file, 0 ) ;
 	
 	pdf::Object fdo = file.ReadObj( r ) ;
 	CPPUNIT_ASSERT( fdo.Is<pdf::Dictionary>() ) ;
 	PDFUT_ASSERT_EQUAL( fd->Family(), "" ) ; 
+
+std::cout << "dict = " << fdo << std::endl ;	
 }
 
 void SimpleFontTest::TestParseBold( )

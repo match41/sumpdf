@@ -42,10 +42,6 @@ class GlyphGraphicsItem : public QGraphicsPathItem
 {
 public :
 	explicit GlyphGraphicsItem( const Glyph *glyph, QGraphicsItem *parent ) ;
-
-	int type( ) const ;
-
-	static const int Type = UserType + 2 ;
 	
 private :
 	struct Render ;

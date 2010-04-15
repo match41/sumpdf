@@ -17,42 +17,43 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	Path.hh
-    \brief	definition the Path class
-    \date	Apr 3, 2010
+/**	\file	ReadStream.hh
+    \brief	definition the ReadStream class
+    \date	Apr 10, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_PATH_HH_EADER_INCLUDED__
-#define __PDF_PATH_HH_EADER_INCLUDED__
-
-#include "Graphics.hh"
+#ifndef __PDF_READSTREAM_HH_EADER_INCLUDED__
+#define __PDF_READSTREAM_HH_EADER_INCLUDED__
 
 #include <cstddef>
 
 namespace pdf {
 
-class PathSegment ;
-class Matrix ;
-
 ///	brief description
 /**	\internal
-	The Path class represents
+	The ReadStream class represents
 */
-class Path : public Graphics
+class ReadStream
 {
 public :
-	virtual ~Path( ) ;
+	ReadStream( const unsigned char *p, std::size_t size ) ;
+
+	template <typename T>
+	ReadStream& operator>>( T& v ) ;
 	
-	/// Returns the number of segment in the path
-	virtual std::size_t Count( ) const = 0 ;
+	operator const void*() const ;
 	
-	/// Returns the segment for the specified index. 
-	virtual PathSegment Segment( std::size_t index ) const = 0 ;
+	std::size_t Size( ) const ;
+	const unsigned char* Data( ) const ;
 	
-	virtual Matrix Transform( ) const = 0 ;
+private :
+	const unsigned char	*m_ptr ;
+	std::size_t			m_size ;
+	
+	bool				m_failed ;
 } ;
 
 } // end of namespace
 
-#endif // PATH_HH_
+#endif // READSTREAM_HH_

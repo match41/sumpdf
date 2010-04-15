@@ -17,42 +17,50 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	Path.hh
-    \brief	definition the Path class
-    \date	Apr 3, 2010
+/**	\file	SfntTest.hh
+    \brief	definition the SfntTest class
+    \date	Apr 10, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_PATH_HH_EADER_INCLUDED__
-#define __PDF_PATH_HH_EADER_INCLUDED__
+#ifndef __PDFUT_SFNTTEST_HH_EADER_INCLUDED__
+#define __PDFUT_SFNTTEST_HH_EADER_INCLUDED__
 
-#include "Graphics.hh"
+#include <cppunit/TestFixture.h>
 
-#include <cstddef>
+#include <cppunit/extensions/HelperMacros.h>
 
-namespace pdf {
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
-class PathSegment ;
-class Matrix ;
+namespace pdfut {
 
-///	brief description
-/**	\internal
-	The Path class represents
-*/
-class Path : public Graphics
+class SfntTest : public CppUnit::TestFixture
 {
 public :
-	virtual ~Path( ) ;
+	SfntTest( ) ;
+
+	// declare suit function
+	CPPUNIT_TEST_SUITE( SfntTest ) ;
+		CPPUNIT_TEST( TestFull ) ;
+		CPPUNIT_TEST( TestSubset ) ;
+	CPPUNIT_TEST_SUITE_END();
+
+public :
+	void setUp( ) ;
+	void tearDown( ) ;
+
+private :
+	void TestFull( ) ;
+	void TestSubset( ) ;
+
+private :
+	FT_Library	m_ft ;
+	FT_Face		m_face ;
 	
-	/// Returns the number of segment in the path
-	virtual std::size_t Count( ) const = 0 ;
-	
-	/// Returns the segment for the specified index. 
-	virtual PathSegment Segment( std::size_t index ) const = 0 ;
-	
-	virtual Matrix Transform( ) const = 0 ;
+	static const std::string	m_font ;
 } ;
 
 } // end of namespace
 
-#endif // PATH_HH_
+#endif // SFNTTEST_HH_

@@ -17,42 +17,24 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	Path.hh
-    \brief	definition the Path class
-    \date	Apr 3, 2010
+/**	\file	Types.hh
+    \brief	definition the Types class
+    \date	Apr 10, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_PATH_HH_EADER_INCLUDED__
-#define __PDF_PATH_HH_EADER_INCLUDED__
+#ifndef __PDF_TYPES_HH_EADER_INCLUDED__
+#define __PDF_TYPES_HH_EADER_INCLUDED__
 
-#include "Graphics.hh"
+#include <boost/cstdint.hpp>
 
-#include <cstddef>
-
-namespace pdf {
-
-class PathSegment ;
-class Matrix ;
-
-///	brief description
-/**	\internal
-	The Path class represents
-*/
-class Path : public Graphics
+namespace pdf
 {
-public :
-	virtual ~Path( ) ;
+	typedef boost::uint32_t	u32 ;
+	typedef boost::uint16_t	u16 ;
+	typedef boost::uint8_t	u8 ;
 	
-	/// Returns the number of segment in the path
-	virtual std::size_t Count( ) const = 0 ;
-	
-	/// Returns the segment for the specified index. 
-	virtual PathSegment Segment( std::size_t index ) const = 0 ;
-	
-	virtual Matrix Transform( ) const = 0 ;
-} ;
-
+	typedef unsigned char	uchar ;
 } // end of namespace
 
-#endif // PATH_HH_
+#endif // TYPES_HH_

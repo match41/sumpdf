@@ -56,6 +56,7 @@ public :
 	virtual Ref AllocLink( ) = 0 ;
 	virtual void WriteObj( const Object& obj, const Ref& link ) = 0 ;
 
+	// helper objects for the reading and writing process
 	virtual ElementPool* Pool( ) = 0 ;
 
 	// type specific read function

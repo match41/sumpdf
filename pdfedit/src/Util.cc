@@ -27,11 +27,15 @@
 
 // libpdfdoc headers
 #include <graphics/Color.hh>
+#include <graphics/GraphicsState.hh>
 #include <util/Exception.hh>
 #include <util/Matrix.hh>
+#include <util/Debug.hh>
 
 // Qt headers
+#include <QBrush>
 #include <QColor>
+#include <QPen>
 #include <QString>
 #include <QTransform>
 #include <QTextCodec>
@@ -98,6 +102,7 @@ std::wstring ToWStr( const QString& s )
 std::string ToStr( const QString& str )
 {
 	QByteArray qba = str.toUtf8() ;
+	PDF_ASSERT( qba.constData() != 0 ) ;
 	return std::string( qba.constData(), qba.size() ) ;
 }
 
@@ -145,6 +150,18 @@ QColor ToQColor( const Color& c )
 			throw Exception( "unsupported colour space" ) ;
 	}
 	return result ;
+}
+
+QBrush MakeBrush( const GraphicsState& gs )
+{
+	// fill colour
+	return QBrush( ToQColor( gs.NonStrokeColour() ) ) ;
+}
+
+QPen MakePen( const GraphicsState& gs )
+{
+	// fill colour
+	return QPen( ToQColor( gs.StrokeColour() ) ) ;
 }
 
 } // end of namespace

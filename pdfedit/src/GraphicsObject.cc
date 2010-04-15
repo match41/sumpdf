@@ -31,6 +31,7 @@
 #include <graphics/GraphicsState.hh>
 #include <graphics/TextState.hh>
 #include <graphics/Color.hh>
+#include <util/Debug.hh>
 
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
@@ -160,11 +161,6 @@ void GraphicsObject::DrawSelectedBox( QPainter *p ) const
 
 	p->setBrush( Qt::NoBrush ) ;
 	p->drawRect( boundingRect() ) ;
-}
-
-int GraphicsObject::type( ) const
-{
-	return Type ;
 }
 
 } // end of namespace

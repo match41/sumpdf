@@ -26,16 +26,18 @@
 #include "SimpleEncoding.hh"
 
 #include "core/Array.hh"
+#include "core/Ref.hh"
 
 #include "file/ArrayReader.hh"
 #include "file/DictReader.hh"
 
 #include "font/CodeMap.hh"
 
+#include "util/Debug.hh"
+
 #include <boost/bind.hpp>
 
 #include <algorithm>
-
 #include <iostream>
 
 namespace pdf {
@@ -66,6 +68,8 @@ SimpleEncoding::SimpleEncoding( DictReader& self )
 			}
 		}
 	}
+	
+	self.Detach( "BaseEncoding", m_base ) ;
 }
 
 wchar_t SimpleEncoding::ToUnicode( unsigned short char_code ) const
@@ -100,6 +104,28 @@ std::size_t SimpleEncoding::Encode(
 		count++ ;
 	}
 	return count ;
+}
+
+Ref SimpleEncoding::Write( File *file ) const
+{
+	Dictionary self ;
+	self.insert( "BaseEncoding", m_base ) ;
+	
+	Array diff ;
+	// write all glyph name pairs. it is a big waste of space.
+	// TODO: save space later
+	for ( CharMap::left_const_iterator i = m_charmap.left.begin() ;
+		i != m_charmap.left.end() ; ++i )
+	{
+		PDF_ASSERT( UnicodeToName( i->second ) != 0 ) ;
+	
+		diff.push_back( i->first ) ;
+		diff.push_back( Name( UnicodeToName( i->second ) ) ) ;
+	}
+	if ( !diff.empty() )
+		self.insert( "Differences", diff ) ;
+	
+	return file->WriteObj( self ) ;
 }
 
 } // end of namespace
