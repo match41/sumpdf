@@ -73,6 +73,7 @@ public:
 
 public slots :
 	void OnAbout( ) ;
+	void OnNew( ) ;
 	void OnOpen( ) ;
 	void OnProperties( ) ;
 	void OnSaveAs( ) ;
