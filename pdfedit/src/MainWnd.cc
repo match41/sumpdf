@@ -150,7 +150,9 @@ MainWnd::~MainWnd( )
 
 void MainWnd::OnNew( )
 {
+	m_view->setScene( 0 ) ;
 	m_doc->New( ) ;
+	m_view->setScene( m_doc->CurrentScene() ) ;
 }
 
 void MainWnd::OnChanged( const QList<QRectF>& region )
