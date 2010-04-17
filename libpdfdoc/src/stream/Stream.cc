@@ -411,6 +411,8 @@ std::ostream& operator<<( std::ostream& os, const Stream& s )
 
 	// first flush all buffered data inside the filters
 	s.m_data->filter->Flush( ) ;
+	
+	// rewind to start from the beginning
 	s.Rewind( ) ;
 	
 	os 	<< s.GetRawDict() << "\nstream\n" ;

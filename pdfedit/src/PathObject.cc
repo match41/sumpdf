@@ -40,12 +40,19 @@ namespace pdf {
 
 /**	constructor
 	
+	\param	path	the path object read from the PDF file. It may be
+					deleted by the caller after this call so this class
+					cannot store this pointer.
 */
 PathObject::PathObject( const Path *path, QGraphicsItem *parent )
 	: GraphicsObject( parent )
 	, m_path( QPointF(0, 0) )
 	, m_format( path->GetState() )
+	, m_brush( QBrush( Qt::NoBrush ) )
+, m_pen( QBrush( Qt::NoBrush ), 0 )
 {
+	PDF_ASSERT( path != 0 ) ;
+
 	for ( std::size_t i = 0 ; i < path->Count() ; ++i )
 	{
 		PathSegment seg = path->Segment(i) ;
@@ -59,6 +66,11 @@ PathObject::PathObject( const Path *path, QGraphicsItem *parent )
 	}
 	
 	setTransform( ToQtMatrix( path->Transform() ) ) ;
+	
+	if ( path->IsStroke() )
+		m_pen = MakePen( m_format ) ;
+	if ( path->IsFill() )
+		m_brush = MakeBrush( m_format ) ;
 }
 
 QRectF PathObject::boundingRect( ) const
@@ -76,8 +88,8 @@ void PathObject::paint(
 	GraphicsObject::paint( painter, option, widget ) ;
 
 	// colors
-	painter->setBrush( MakeBrush( m_format ) ) ;
-	painter->setPen( MakePen( m_format ) ) ;
+	painter->setBrush( m_brush ) ;
+	painter->setPen( m_pen ) ;
 
 	painter->drawPath( m_path ) ;
 }

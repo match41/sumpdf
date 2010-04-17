@@ -60,6 +60,9 @@ public :
 	void MoveTo( double x, double y ) ;
 	void LineTo( double x, double y ) ;
 	void CloseSubPath( ) ;
+	bool IsFill( ) const ;
+	bool IsStroke( ) const ;
+	FillMode GetFillMode( ) const ;
 	
 private :
 	/// command handler
@@ -68,11 +71,27 @@ private :
 	// position command handlers
 	void Onre( ContentOp& op, const ResourcesDict *res ) ;
 	void OnPositionCommands( ContentOp& op, const ResourcesDict *res ) ;
+	
+	void OnS( ContentOp& op, const ResourcesDict *res ) ;
+	void Ons( ContentOp& op, const ResourcesDict *res ) ;
+	void Onf( ContentOp& op, const ResourcesDict *res ) ;
+	void OnfStar( ContentOp& op, const ResourcesDict *res ) ;
+	void OnB( ContentOp& op, const ResourcesDict *res ) ;
+	void OnBStar( ContentOp& op, const ResourcesDict *res ) ;
+	void Onb( ContentOp& op, const ResourcesDict *res ) ;
+	void OnbStar( ContentOp& op, const ResourcesDict *res ) ;
+	void Onn( ContentOp& op, const ResourcesDict *res ) ;
 
 private :
+	// path construction
 	std::vector<double>				m_points ;
 	std::vector<PathSegment::Op>	m_ops ;
 	std::vector<std::size_t>		m_pt_index ;
+	
+	// path painting
+	bool		m_stroke ;
+	bool		m_fill ;
+	FillMode	m_fillMode ;
 	
 	GraphicsState	m_state ;
 	Matrix			m_ctm ;
