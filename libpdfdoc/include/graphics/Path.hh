@@ -51,6 +51,11 @@ public :
 	virtual PathSegment Segment( std::size_t index ) const = 0 ;
 	
 	virtual Matrix Transform( ) const = 0 ;
+	
+	virtual void AddSegment( const PathSegment& seg ) = 0 ;
+	virtual void MoveTo( double x, double y ) = 0 ;
+	virtual void LineTo( double x, double y ) = 0 ;
+	virtual void CloseSubPath( ) = 0 ;
 } ;
 
 } // end of namespace

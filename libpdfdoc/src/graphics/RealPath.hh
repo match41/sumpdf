@@ -56,7 +56,11 @@ public :
 	std::size_t Count( ) const ;
 	PathSegment Segment( std::size_t index ) const ;
 	Matrix Transform( ) const ;
-
+	void AddSegment( const PathSegment& seg ) ;
+	void MoveTo( double x, double y ) ;
+	void LineTo( double x, double y ) ;
+	void CloseSubPath( ) ;
+	
 private :
 	/// command handler
 	struct HandlerMap ;
@@ -64,7 +68,7 @@ private :
 	// position command handlers
 	void Onre( ContentOp& op, const ResourcesDict *res ) ;
 	void OnPositionCommands( ContentOp& op, const ResourcesDict *res ) ;
- 
+
 private :
 	std::vector<double>				m_points ;
 	std::vector<PathSegment::Op>	m_ops ;

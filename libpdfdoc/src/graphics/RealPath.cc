@@ -35,6 +35,7 @@
 #include "util/Util.hh"
 
 #include <map>
+#include <iostream>
 
 namespace pdf {
 
@@ -65,6 +66,7 @@ const RealPath::HandlerMap::Map::value_type	RealPath::HandlerMap::m_val[] =
 	std::make_pair( "re",	&RealPath::Onre ),
 	
 	// path showing commands
+	
 } ;
 
 const RealPath::HandlerMap::Map RealPath::HandlerMap::m_map(
@@ -162,6 +164,53 @@ void RealPath::OnPositionCommands( ContentOp& op, const ResourcesDict *res )
 
 void RealPath::Onre( ContentOp& op, const ResourcesDict *res )
 {
+	if ( op.Count() >= 4 )
+	{
+		double x		= op[0] ;
+		double y		= op[1] ;
+		double width 	= op[2] ;
+		double height	= op[3] ;
+
+		// draw rectangle
+		MoveTo( x,			y ) ;
+		LineTo( x+width,	y ) ;
+		LineTo( x+width,	y+height ) ;
+		LineTo( x,			y+height ) ;
+		CloseSubPath( ) ;
+	}
+}
+
+void RealPath::AddSegment( const PathSegment& seg )
+{
+	PDF_ASSERT( m_pt_index.size() == m_ops.size() ) ;
+	
+	m_pt_index.push_back( m_points.size() ) ;
+	m_points.insert( m_points.end(), seg.begin(), seg.end() ) ;
+	m_ops.push_back( seg.GetOp() ) ;
+
+	PDF_ASSERT( m_pt_index.size() == m_ops.size() ) ;
+}
+
+void RealPath::MoveTo( double x, double y )
+{
+	// move x, y
+	double ops[] = { x, y } ;
+	AddSegment( PathSegment( PathSegment::move, ops ) ) ; 
+}
+
+void RealPath::LineTo( double x, double y )
+{
+	// move x, y
+	double ops[] = { x, y } ;
+	AddSegment( PathSegment( PathSegment::line, ops ) ) ; 
+}
+
+void RealPath::CloseSubPath( )
+{
+	PDF_ASSERT( m_pt_index.size() == m_ops.size() ) ;
+	m_pt_index.push_back( m_points.size() ) ;
+	m_ops.push_back( PathSegment::close ) ;
+	PDF_ASSERT( m_pt_index.size() == m_ops.size() ) ;
 }
 
 Matrix RealPath::Transform( ) const

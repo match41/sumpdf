@@ -55,7 +55,8 @@ int main( int argc, char **argv )
 			return -1 ;
 		}*/
 	}
-	pdf::Page *p = doc->AppendPage( ) ;
+//	pdf::Page *p = doc->AppendPage( ) ;
+	pdf::Page *p = doc->GetPage( 0 ) ;
 	if ( argc >= 3 )
 	{
 		std::ifstream file( argv[2] ) ;
