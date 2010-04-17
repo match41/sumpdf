@@ -33,6 +33,7 @@
 #include <QBrush>
 #include <QPainterPath>
 #include <QPen>
+#include <QRectF>
 
 namespace pdf {
 
@@ -62,6 +63,8 @@ private :
 	
 	QBrush	m_brush ;
 	QPen	m_pen ;
+	
+	QRectF	m_bound ;
 } ;
 
 } // end of namespace

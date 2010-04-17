@@ -35,6 +35,7 @@
 
 // Qt headers
 #include <QPainter>
+#include <QPainterPathStroker>
 
 namespace pdf {
 
@@ -71,11 +72,21 @@ PathObject::PathObject( const Path *path, QGraphicsItem *parent )
 		m_pen = MakePen( m_format ) ;
 	if ( path->IsFill() )
 		m_brush = MakeBrush( m_format ) ;
+	
+	// use stroker path to calculate bounding rectangle
+	QPainterPathStroker sk ;
+	sk.setWidth( m_format.LineWidth( ) ) ;
+	sk.setJoinStyle(
+		  m_format.GetLineJoin() == GraphicsState::miter_join	? Qt::MiterJoin :
+		( m_format.GetLineJoin() == GraphicsState::round_join	? Qt::RoundJoin :
+		                                                          Qt::BevelJoin ) ) ;
+	QPainterPath sk_path = sk.createStroke( m_path ) ;
+	m_bound = sk_path.boundingRect() ;
 }
 
 QRectF PathObject::boundingRect( ) const
 {
-	return m_path.boundingRect() ;
+	return m_bound ;
 }
 
 void PathObject::paint(

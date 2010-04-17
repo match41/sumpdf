@@ -75,6 +75,12 @@ const GraphicsState::HandlerMap::Map::value_type
 	std::make_pair( "K",	&GraphicsState::OnK ),
 	std::make_pair( "k",	&GraphicsState::Onk ),
 
+	// graphics states commands
+	std::make_pair( "w",	&GraphicsState::Onw ),
+	std::make_pair( "J",	&GraphicsState::OnJ ),
+	std::make_pair( "j",	&GraphicsState::Onj ),
+	std::make_pair( "M",	&GraphicsState::OnM ),
+	std::make_pair( "d",	&GraphicsState::Ond ),
 } ;
 
 const GraphicsState::HandlerMap::Map GraphicsState::HandlerMap::m_map(
@@ -88,8 +94,8 @@ struct GraphicsState::Impl
 	Color		strk_colour, non_strk_colour ;
 	
 	double		line_width ;
-	int			line_cap ;
-	int			line_join ;
+	PenCap		pen_cap ;
+	LineJoin	line_join ;
 	double		miter_limit ;
 
 	// association with external states dictionaries
@@ -266,24 +272,24 @@ double GraphicsState::LineWidth( ) const
 	return m_impl->line_width ;
 }
 
-void GraphicsState::LineCap( int value )
+void GraphicsState::SetPenCap( PenCap value )
 {
 	CopyOnWrite( ) ;
-	m_impl->line_cap = value ;
+	m_impl->pen_cap = value ;
 }
 
-int GraphicsState::LineCap( ) const
+GraphicsState::PenCap GraphicsState::GetPenCap( ) const
 {
-	return m_impl->line_cap ;
+	return m_impl->pen_cap ;
 }
 
-void GraphicsState::LineJoin( int value )
+void GraphicsState::SetLineJoin( LineJoin value )
 {
 	CopyOnWrite( ) ;
 	m_impl->line_join = value ;
 }
 
-int GraphicsState::LineJoin( ) const
+GraphicsState::LineJoin GraphicsState::GetLineJoin( ) const
 {
 	return m_impl->line_join ;
 }
@@ -303,9 +309,9 @@ void GraphicsState::SetValue( const Name& name, const Object& val )
 {
 	CopyOnWrite( ) ;
 	if ( name == "LW" )
-		m_impl->line_width = val ;
+		m_impl->line_width = static_cast<LineJoin>(val.To<int>() )  ;
 	else if ( name == "LC" )
-		m_impl->line_cap = val ;
+		m_impl->pen_cap = static_cast<PenCap>(val.To<int>()) ;
 }
 
 const Color& GraphicsState::StrokeColour( ) const
@@ -398,6 +404,36 @@ bool GraphicsState::Onk( ContentOp& op, const ResourcesDict *res )
 		ChangeColour( m_impl->non_strk_colour,
 			Color( op[0], op[1], op[2], op[3] ) ) :
 		false ;
+}
+
+bool GraphicsState::Onw( ContentOp& op, const ResourcesDict * )
+{
+	if ( op.Count() >= 1 )
+	{
+		m_impl->line_width = op[0] ;
+		return true ;
+	}
+	return false ;
+}
+
+bool GraphicsState::OnJ( ContentOp& op, const ResourcesDict *res )
+{
+	return false ;
+}
+
+bool GraphicsState::Onj( ContentOp& op, const ResourcesDict *res )
+{
+	return false ;
+}
+
+bool GraphicsState::OnM( ContentOp& op, const ResourcesDict *res )
+{
+	return false ;
+}
+
+bool GraphicsState::Ond( ContentOp& op, const ResourcesDict *res )
+{
+	return false ;
 }
 
 } // end of namespace
