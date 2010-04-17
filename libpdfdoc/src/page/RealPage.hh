@@ -79,6 +79,8 @@ public :
 
 	void GetRawContent( std::vector<unsigned char>& out ) const ;
 
+	void SetRawContent( const unsigned char *data, std::size_t size ) ;
+
 private :
 	void ReadContent( const Object& str_obj, File *file ) ;
 	Object WriteContent( File *file ) const ; 
