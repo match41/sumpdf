@@ -1,5 +1,6 @@
 <RCC>
   <qresource>
+    <file>images/textpointer.png</file>
     <file>images/filesave.png</file>
     <file>images/filenew.png</file>
     <file>images/fileopen.png</file>

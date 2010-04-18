@@ -63,10 +63,18 @@ private slots:
 	void EmitFontChanged( int );		// emit if font size changed
 	void SetFontChanged( QFont );
 	void SetFontChanged( int );
+	void OnTextColorChanged( );
 
 private:
 	QPushButton	*m_btn;
 	QPointF		pos;			// mouse position
+	QAction*	m_text_action;
+
+private:
+	// text color
+	QIcon OnCreateColorToolButtonIcon( const QString& , QColor );
+    QMenu *OnCreateColorMenu( const char*, QColor );
+	QIcon OnCreateColorIcon( QColor );
 
 };
 
