@@ -28,7 +28,7 @@ namespace pdf {
 
 TextToolbar::TextToolbar( QToolBar *parent, QWidget *parentWnd )
 	: QDialog( parentWnd )
-	, m_insert_text(new QPushButton( "&Insert Text" ) )
+	, m_insert_text( new QPushButton )
 {
 	CreateTextInsertToolbar( parent, parentWnd );
 }
@@ -46,19 +46,10 @@ void TextToolbar::CreateTextInsertToolbar( QToolBar *parent, QWidget *parentWnd 
 {
 	parent->addWidget( m_insert_text );	// insert text push btn
 	m_insert_text->setCheckable( true );
-
-	m_font = new QFontComboBox();	// font combo box
-    m_font_size = new QComboBox();	// font size combo box
-
-    m_font_size->setEditable(true);
-    for (int i = 8; i < 30; i += 2)
-        m_font_size->addItem( QString().setNum( i ) );
-    QIntValidator *validator = new QIntValidator( 2, 64, parent );
-    m_font_size->setValidator( validator );
-
-	parent->addWidget( m_font );
-	parent->addWidget( m_font_size );
-
+    QIcon icon;
+    icon.addFile(QString::fromUtf8(":/images/inserttext.png"), QSize(), QIcon::Normal, QIcon::Off);
+	m_insert_text->setIcon(icon);
+	
 	connect( m_insert_text,		SIGNAL( clicked() ),	parentWnd, SLOT(OnInsertDlg() ) );
 
 }
