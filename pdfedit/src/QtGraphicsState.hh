@@ -17,62 +17,43 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	PathObject.hh
-    \brief	definition the PathObject class
-    \date	Apr 7, 2010
+/**	\file	QtGraphicsState.hh
+    \brief	definition the QtGraphicsState class
+    \date	Apr 18, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_PATHOBJECT_HH_EADER_INCLUDED__
-#define __PDF_PATHOBJECT_HH_EADER_INCLUDED__
+#ifndef __PDF_QTGRAPHICSSTATE_HH_EADER_INCLUDED__
+#define __PDF_QTGRAPHICSSTATE_HH_EADER_INCLUDED__
 
-#include "GraphicsObject.hh"
+#include <graphics/GraphicsState.hh>
 
-#include "QtGraphicsState.hh"
-
-#include <QBrush>
-#include <QPainterPath>
-#include <QPen>
-#include <QRectF>
+class QBrush ;
+class QPen ;
+class QPainterPathStroker ;
 
 namespace pdf {
 
-class Path ;
-
 ///	brief description
 /**	\internal
-	The PathObject class represents
+	The QtGraphicsState class represents
 */
-class PathObject : public GraphicsObject
+class QtGraphicsState
 {
 public :
-	explicit PathObject( const Path *path, QGraphicsItem *parent = 0 ) ;
+	explicit QtGraphicsState( const GraphicsState& gs = GraphicsState() ) ;
 
-	// virtual functions for QGraphicsItem
-	QRectF boundingRect( ) const ;
-	void paint(
-		QPainter 						*painter,
-		const QStyleOptionGraphicsItem	*option,
-		QWidget 						*widget ) ; 
+	const GraphicsState& Get() const ;
 
-	GraphicsState Format( ) const ;
-
-private :
-	void CalculateBounding( ) ;
-	
-	QPen Pen( ) const ;
+	QPen Pen() const ;
 	QBrush Brush( ) const ;
 
+	void InitStroker( QPainterPathStroker& qpps ) const ;
+
 private :
-	QPainterPath	m_path ;
-	QtGraphicsState	m_format ;
-	
-	QRectF	m_bound ;
-	
-	bool	m_stroke ;
-	bool	m_fill ;
+	GraphicsState	m_gs ;
 } ;
 
 } // end of namespace
 
-#endif // PATHOBJECT_HH_
+#endif // QTGRAPHICSSTATE_HH_

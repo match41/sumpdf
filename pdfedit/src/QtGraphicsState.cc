@@ -17,62 +17,65 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	PathObject.hh
-    \brief	definition the PathObject class
-    \date	Apr 7, 2010
-    \author	Nestal Wan
+/**	\file	QtGraphicsState.cc
+	\brief	implementation of the QtGraphicsState class
+	\date	Apr 18, 2010
+	\author	Nestal Wan
 */
-
-#ifndef __PDF_PATHOBJECT_HH_EADER_INCLUDED__
-#define __PDF_PATHOBJECT_HH_EADER_INCLUDED__
-
-#include "GraphicsObject.hh"
 
 #include "QtGraphicsState.hh"
 
+#include "Util.hh"
+
+#include <util/Debug.hh>
+
 #include <QBrush>
-#include <QPainterPath>
+#include <QColor>
 #include <QPen>
-#include <QRectF>
+#include <QPainterPathStroker>
 
 namespace pdf {
 
-class Path ;
-
-///	brief description
-/**	\internal
-	The PathObject class represents
+/**	constructor
+	
 */
-class PathObject : public GraphicsObject
+QtGraphicsState::QtGraphicsState( const GraphicsState& gs )
+	: m_gs( gs )
 {
-public :
-	explicit PathObject( const Path *path, QGraphicsItem *parent = 0 ) ;
+}
 
-	// virtual functions for QGraphicsItem
-	QRectF boundingRect( ) const ;
-	void paint(
-		QPainter 						*painter,
-		const QStyleOptionGraphicsItem	*option,
-		QWidget 						*widget ) ; 
+const GraphicsState& QtGraphicsState::Get() const
+{
+	return m_gs ;
+}
 
-	GraphicsState Format( ) const ;
+QPen QtGraphicsState::Pen() const
+{
+	PDF_ASSERT( m_gs.GetLineJoin() >= GraphicsState::miter_join ) ;
+	PDF_ASSERT( m_gs.GetLineJoin() <= GraphicsState::bevel_join ) ;
 
-private :
-	void CalculateBounding( ) ;
-	
-	QPen Pen( ) const ;
-	QBrush Brush( ) const ;
+	Qt::PenJoinStyle jmap[] = { Qt::MiterJoin, Qt::RoundJoin, Qt::BevelJoin } ;
 
-private :
-	QPainterPath	m_path ;
-	QtGraphicsState	m_format ;
-	
-	QRectF	m_bound ;
-	
-	bool	m_stroke ;
-	bool	m_fill ;
-} ;
+	// fill colour
+	QPen p( ToQColor( m_gs.StrokeColour() ) ) ;
+	p.setWidthF( m_gs.LineWidth( ) ) ;
+	p.setJoinStyle( jmap[m_gs.GetLineJoin()] ) ;
+	p.setMiterLimit( m_gs.MiterLimit() ) ;
+	return p ;
+}
+
+QBrush QtGraphicsState::Brush( ) const
+{
+	return QBrush( ToQColor( m_gs.NonStrokeColour() ) ) ;
+}
+
+void QtGraphicsState::InitStroker( QPainterPathStroker& qpps ) const
+{
+	QPen pen = Pen() ;
+
+	qpps.setWidth( pen.widthF() ) ;
+	qpps.setJoinStyle( pen.joinStyle() ) ;
+	qpps.setMiterLimit( pen.miterLimit() ) ;
+}
 
 } // end of namespace
-
-#endif // PATHOBJECT_HH_

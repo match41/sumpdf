@@ -52,7 +52,8 @@ set( BASE_SRCS		src/main.cc
 					src/DocModel.cc
 					src/PathObject.cc
                     src/TextObject.cc
-					src/GraphicsObject.cc )
+					src/GraphicsObject.cc
+					src/QtGraphicsState.cc )
 
 ###############################################################################
 # all sources

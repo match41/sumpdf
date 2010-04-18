@@ -49,8 +49,8 @@ PathObject::PathObject( const Path *path, QGraphicsItem *parent )
 	: GraphicsObject( parent )
 	, m_path( QPointF(0, 0) )
 	, m_format( path->GetState() )
-	, m_brush( QBrush( Qt::NoBrush ) )
-, m_pen( QBrush( Qt::NoBrush ), 0 )
+	, m_stroke( path->IsStroke( ) )
+	, m_fill( path->IsFill() )
 {
 	PDF_ASSERT( path != 0 ) ;
 
@@ -68,18 +68,15 @@ PathObject::PathObject( const Path *path, QGraphicsItem *parent )
 	
 	setTransform( ToQtMatrix( path->Transform() ) ) ;
 	
-	if ( path->IsStroke() )
-		m_pen = MakePen( m_format ) ;
-	if ( path->IsFill() )
-		m_brush = MakeBrush( m_format ) ;
-	
+	CalculateBounding( ) ;
+}
+
+void PathObject::CalculateBounding( )
+{
 	// use stroker path to calculate bounding rectangle
 	QPainterPathStroker sk ;
-	sk.setWidth( m_format.LineWidth( ) ) ;
-	sk.setJoinStyle(
-		  m_format.GetLineJoin() == GraphicsState::miter_join	? Qt::MiterJoin :
-		( m_format.GetLineJoin() == GraphicsState::round_join	? Qt::RoundJoin :
-		                                                          Qt::BevelJoin ) ) ;
+	m_format.InitStroker( sk ) ;
+	
 	QPainterPath sk_path = sk.createStroke( m_path ) ;
 	m_bound = sk_path.boundingRect() ;
 }
@@ -99,15 +96,25 @@ void PathObject::paint(
 	GraphicsObject::paint( painter, option, widget ) ;
 
 	// colors
-	painter->setBrush( m_brush ) ;
-	painter->setPen( m_pen ) ;
+	painter->setBrush( Brush() ) ;
+	painter->setPen( Pen() ) ;
 
 	painter->drawPath( m_path ) ;
 }
 
 GraphicsState PathObject::Format( ) const
 {
-	return m_format ;
+	return m_format.Get() ;
+}
+
+QPen PathObject::Pen( ) const
+{
+	return m_stroke ? m_format.Pen() : QPen( QBrush(Qt::NoBrush), 0 ) ;
+}
+
+QBrush PathObject::Brush( ) const
+{
+	return m_fill ? m_format.Brush() : QBrush( Qt::NoBrush ) ;
 }
 
 } // end of namespace
