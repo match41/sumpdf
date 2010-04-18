@@ -35,6 +35,7 @@
 #include "util/Util.hh"
 
 #include <map>
+#include <iostream>
 
 namespace pdf {
 
@@ -65,6 +66,16 @@ const RealPath::HandlerMap::Map::value_type	RealPath::HandlerMap::m_val[] =
 	std::make_pair( "re",	&RealPath::Onre ),
 	
 	// path showing commands
+	std::make_pair( "S",	&RealPath::OnS ),
+	std::make_pair( "s",	&RealPath::Ons ),
+	std::make_pair( "f",	&RealPath::Onf ),
+	std::make_pair( "F",	&RealPath::Onf ),
+	std::make_pair( "f*",	&RealPath::OnfStar ),
+	std::make_pair( "B",	&RealPath::OnB ),
+	std::make_pair( "B*",	&RealPath::OnBStar ),
+	std::make_pair( "b",	&RealPath::Onb ),
+	std::make_pair( "b*",	&RealPath::OnbStar ),
+	std::make_pair( "n",	&RealPath::Onn ),
 } ;
 
 const RealPath::HandlerMap::Map RealPath::HandlerMap::m_map(
@@ -90,7 +101,10 @@ const RealPath::HandlerMap::SegOpMap RealPath::HandlerMap::m_seg_map(
 	
 */
 RealPath::RealPath( const GraphicsState& gs, const Matrix& ctm )
-	: m_state( gs )
+	: m_stroke( false )
+	, m_fill( false )
+	, m_fillMode( winding )
+	, m_state( gs )
 	, m_ctm( ctm )
 {
 }
@@ -162,11 +176,131 @@ void RealPath::OnPositionCommands( ContentOp& op, const ResourcesDict *res )
 
 void RealPath::Onre( ContentOp& op, const ResourcesDict *res )
 {
+	if ( op.Count() >= 4 )
+	{
+		double x		= op[0] ;
+		double y		= op[1] ;
+		double width 	= op[2] ;
+		double height	= op[3] ;
+
+		// draw rectangle
+		MoveTo( x,			y ) ;
+		LineTo( x+width,	y ) ;
+		LineTo( x+width,	y+height ) ;
+		LineTo( x,			y+height ) ;
+		CloseSubPath( ) ;
+	}
+}
+
+void RealPath::AddSegment( const PathSegment& seg )
+{
+	PDF_ASSERT( m_pt_index.size() == m_ops.size() ) ;
+	
+	m_pt_index.push_back( m_points.size() ) ;
+	m_points.insert( m_points.end(), seg.begin(), seg.end() ) ;
+	m_ops.push_back( seg.GetOp() ) ;
+
+	PDF_ASSERT( m_pt_index.size() == m_ops.size() ) ;
+}
+
+void RealPath::MoveTo( double x, double y )
+{
+	// move x, y
+	double ops[] = { x, y } ;
+	AddSegment( PathSegment( PathSegment::move, ops ) ) ; 
+}
+
+void RealPath::LineTo( double x, double y )
+{
+	// move x, y
+	double ops[] = { x, y } ;
+	AddSegment( PathSegment( PathSegment::line, ops ) ) ; 
+}
+
+void RealPath::CloseSubPath( )
+{
+	PDF_ASSERT( m_pt_index.size() == m_ops.size() ) ;
+	m_pt_index.push_back( m_points.size() ) ;
+	m_ops.push_back( PathSegment::close ) ;
+	PDF_ASSERT( m_pt_index.size() == m_ops.size() ) ;
 }
 
 Matrix RealPath::Transform( ) const
 {
 	return m_ctm ;
+}
+
+void RealPath::OnS( ContentOp& op, const ResourcesDict *res )
+{
+	m_stroke	= true ;
+	m_fill		= false ;
+}
+
+void RealPath::Ons( ContentOp& op, const ResourcesDict *res )
+{
+	CloseSubPath( ) ;
+	OnS( op, res ) ;
+}
+
+void RealPath::Onf( ContentOp& , const ResourcesDict * )
+{
+	m_stroke	= false ;
+	m_fill		= true ;
+	m_fillMode	= winding ;
+}
+
+void RealPath::OnfStar( ContentOp& , const ResourcesDict * )
+{
+	m_stroke	= false ;
+	m_fill		= true ;
+	m_fillMode	= oddEven ;
+}
+
+void RealPath::OnB( ContentOp& , const ResourcesDict * )
+{
+	m_stroke	= true ;
+	m_fill		= true ;
+	m_fillMode	= winding ;
+}
+
+void RealPath::OnBStar( ContentOp& , const ResourcesDict * )
+{
+	m_stroke	= true ;
+	m_fill		= true ;
+	m_fillMode	= oddEven ;
+}
+
+void RealPath::Onb( ContentOp& op, const ResourcesDict *res )
+{
+	CloseSubPath( ) ;
+	OnB( op, res ) ;
+}
+
+void RealPath::OnbStar( ContentOp& op, const ResourcesDict *res )
+{
+	CloseSubPath( ) ;
+	Onb( op, res ) ;
+}
+
+void RealPath::Onn( ContentOp& , const ResourcesDict * )
+{
+	m_stroke	= false ;
+	m_fill		= false ;
+}
+
+bool RealPath::IsFill( ) const
+{
+	return m_fill ;
+}
+
+bool RealPath::IsStroke( ) const
+{
+	return m_stroke ;
+}
+
+RealPath::FillMode RealPath::GetFillMode( ) const
+{
+	return m_fillMode ;
 }
 
 } // end of namespace

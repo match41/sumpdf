@@ -161,7 +161,14 @@ QBrush MakeBrush( const GraphicsState& gs )
 QPen MakePen( const GraphicsState& gs )
 {
 	// fill colour
-	return QPen( ToQColor( gs.StrokeColour() ) ) ;
+	QPen p( ToQColor( gs.StrokeColour() ) ) ;
+	p.setWidthF( gs.LineWidth( ) ) ;
+	p.setJoinStyle(
+		  gs.GetLineJoin() == GraphicsState::miter_join	? Qt::MiterJoin :
+		( gs.GetLineJoin() == GraphicsState::round_join	? Qt::RoundJoin :
+		                                                  Qt::BevelJoin ) ) ;
+	p.setMiterLimit( 5 ) ;
+	return p ;
 }
 
 } // end of namespace

@@ -67,6 +67,7 @@ const ContentStream::HandlerMap::Map::value_type
 	
 	// path construction & painting commands
 	std::make_pair( "m",	&ContentStream::Onm ),
+	std::make_pair( "re",	&ContentStream::Onm ),
 	std::make_pair( "S",	&ContentStream::OnPaintPath ),
 	std::make_pair( "s",	&ContentStream::OnPaintPath ),
 	std::make_pair( "f",	&ContentStream::OnPaintPath ),

@@ -97,7 +97,7 @@ void DocModel::New( )
 {
 	// replace with a brand new document
 	ReplaceDocument( CreateDoc() ) ;
-	SetCurrentFile( "" );
+	SetCurrentFile( tr("Untitled") ) ;
 }
 
 void DocModel::ReplaceDocument( Doc *doc )

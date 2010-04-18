@@ -28,9 +28,12 @@
 
 #include "GraphicsObject.hh"
 
-#include <QPainterPath>
-
 #include <graphics/GraphicsState.hh>
+
+#include <QBrush>
+#include <QPainterPath>
+#include <QPen>
+#include <QRectF>
 
 namespace pdf {
 
@@ -57,6 +60,11 @@ public :
 private :
 	QPainterPath	m_path ;
 	GraphicsState	m_format ;
+	
+	QBrush	m_brush ;
+	QPen	m_pen ;
+	
+	QRectF	m_bound ;
 } ;
 
 } // end of namespace

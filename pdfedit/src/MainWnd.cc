@@ -88,6 +88,7 @@ MainWnd::MainWnd( QWidget *parent )
 	connect( m_action_about,	SIGNAL(triggered()), this, SLOT(OnAbout()));
 	connect( m_action_prop,		SIGNAL(triggered()), this, SLOT(OnProperties()));
 	connect( m_action_open,		SIGNAL(triggered()), this, SLOT(OnOpen()) );
+	connect( m_action_new,		SIGNAL(triggered()), this, SLOT(OnNew()) );
 	connect( m_action_save_as,	SIGNAL(triggered()), this, SLOT(OnSaveAs()) );
 	connect( m_action_exit, 	SIGNAL(triggered()), qApp, SLOT(quit()) );
 	connect( m_action_previous_pg,	SIGNAL(triggered()),	this, SLOT(OnPreviousPage()) );
@@ -145,6 +146,13 @@ MainWnd::MainWnd( QWidget *parent )
 */
 MainWnd::~MainWnd( )
 {
+}
+
+void MainWnd::OnNew( )
+{
+	m_view->setScene( 0 ) ;
+	m_doc->New( ) ;
+	m_view->setScene( m_doc->CurrentScene() ) ;
 }
 
 void MainWnd::OnChanged( const QList<QRectF>& region )

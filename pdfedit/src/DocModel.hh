@@ -70,7 +70,6 @@ public :
 	void AddText( const QFont& font, double size, const QPointF& pos,
 		const QString& text ) ;
 
-
 signals :
 	void SelectionChanged() ;
 	void CurrentFileChanged() ;

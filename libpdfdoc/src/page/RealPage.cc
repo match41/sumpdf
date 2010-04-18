@@ -198,9 +198,6 @@ void RealPage::SetContent( const std::vector<Graphics*>& gfx )
 	Stream str ;
 	std::ostream os( str.OutStreamBuf() ) ;
 
-	// throw away the existing resources and start over
-	Clear( ) ;
-
 	using namespace boost ;
 	std::for_each(
 		gfx.begin(),
@@ -209,7 +206,8 @@ void RealPage::SetContent( const std::vector<Graphics*>& gfx )
 
 	os.flush() ;
 
-	m_cstrs.clear( ) ;
+	// throw away the existing resources and start over
+	Clear( ) ;
 	m_cstrs.push_back( str ) ;
 }
 
@@ -217,6 +215,17 @@ void RealPage::GetRawContent( std::vector<unsigned char>& out ) const
 {
 	if ( m_cstrs.size() == 1 )
 		m_cstrs.front().CopyData( out ) ;
+}
+
+void RealPage::SetRawContent( const unsigned char *data, std::size_t size )
+{
+	Stream str ;
+	str.Append( data, size ) ;
+	str.Flush( ) ;
+	
+	// throw away the existing resources and start over
+	Clear( ) ;
+	m_cstrs.push_back( str ) ;
 }
 
 } // end of namespace

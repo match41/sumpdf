@@ -51,6 +51,7 @@
 #include <iostream>
 #include <streambuf>
 #include <fstream>
+#include <sstream>
 #include <map>
 
 namespace pdf {

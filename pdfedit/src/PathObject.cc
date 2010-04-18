@@ -35,17 +35,25 @@
 
 // Qt headers
 #include <QPainter>
+#include <QPainterPathStroker>
 
 namespace pdf {
 
 /**	constructor
 	
+	\param	path	the path object read from the PDF file. It may be
+					deleted by the caller after this call so this class
+					cannot store this pointer.
 */
 PathObject::PathObject( const Path *path, QGraphicsItem *parent )
 	: GraphicsObject( parent )
 	, m_path( QPointF(0, 0) )
 	, m_format( path->GetState() )
+	, m_brush( QBrush( Qt::NoBrush ) )
+, m_pen( QBrush( Qt::NoBrush ), 0 )
 {
+	PDF_ASSERT( path != 0 ) ;
+
 	for ( std::size_t i = 0 ; i < path->Count() ; ++i )
 	{
 		PathSegment seg = path->Segment(i) ;
@@ -59,11 +67,26 @@ PathObject::PathObject( const Path *path, QGraphicsItem *parent )
 	}
 	
 	setTransform( ToQtMatrix( path->Transform() ) ) ;
+	
+	if ( path->IsStroke() )
+		m_pen = MakePen( m_format ) ;
+	if ( path->IsFill() )
+		m_brush = MakeBrush( m_format ) ;
+	
+	// use stroker path to calculate bounding rectangle
+	QPainterPathStroker sk ;
+	sk.setWidth( m_format.LineWidth( ) ) ;
+	sk.setJoinStyle(
+		  m_format.GetLineJoin() == GraphicsState::miter_join	? Qt::MiterJoin :
+		( m_format.GetLineJoin() == GraphicsState::round_join	? Qt::RoundJoin :
+		                                                          Qt::BevelJoin ) ) ;
+	QPainterPath sk_path = sk.createStroke( m_path ) ;
+	m_bound = sk_path.boundingRect() ;
 }
 
 QRectF PathObject::boundingRect( ) const
 {
-	return m_path.boundingRect() ;
+	return m_bound ;
 }
 
 void PathObject::paint(
@@ -76,8 +99,8 @@ void PathObject::paint(
 	GraphicsObject::paint( painter, option, widget ) ;
 
 	// colors
-	painter->setBrush( MakeBrush( m_format ) ) ;
-	painter->setPen( MakePen( m_format ) ) ;
+	painter->setBrush( m_brush ) ;
+	painter->setPen( m_pen ) ;
 
 	painter->drawPath( m_path ) ;
 }
