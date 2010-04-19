@@ -32,6 +32,7 @@
 
 class QTransform ;
 class QColor ;
+class QRectF ;
 class QBrush ;
 class QPen ;
 
@@ -39,6 +40,7 @@ namespace pdf
 {
 	class Color ;
 	class GraphicsState ;
+	class Rect ;
 	class Matrix ;
 	
 	QTransform ToQtMatrix( const Matrix& m ) ;
@@ -58,6 +60,9 @@ namespace pdf
 
 	Color FromQColor( const QColor& c ) ;
 	QColor ToQColor( const Color& c ) ;
+
+	Rect FromQRectF( const QRectF& rect ) ;
+	QRectF ToQRectF( const Rect& rect );
 
 	QBrush MakeBrush( const GraphicsState& gs ) ;
 	QPen MakePen( const GraphicsState& gs ) ;
