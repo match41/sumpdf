@@ -41,6 +41,7 @@
 #include <util/Debug.hh>
 #include <util/Util.hh>
 #include <util/Matrix.hh>
+#include <util/Rect.hh>
 
 #include <QDebug>
 
@@ -160,6 +161,9 @@ QGraphicsScene* DocModel::GoToPage( std::size_t page )
 		Page *p = m_doc->GetPage( m_current_page ) ;
 		PDF_ASSERT( p != 0 ) ;
 		
+		Rect rect = p->MediaBox() ;
+		scene->addRect( ToQRectF( rect ) ) ;
+
 		PageLoader loader( scene ) ;
 		p->VisitGraphics( &loader ) ;
 		
