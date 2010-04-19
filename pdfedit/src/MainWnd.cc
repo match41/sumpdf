@@ -330,28 +330,6 @@ void MainWnd::OnInsertDlg( )
 
 void MainWnd::TextInsertConnect( )
 {
-/*	connect(	// connect font selection between MainWnd and dialog (both ways)
-		m_texttb_items->m_font,
-		SIGNAL( currentFontChanged( QFont ) ),
-		m_insert_dlg,
-		SLOT( SetFontChanged( QFont ) ) );
-	connect(
-		m_insert_dlg,
-		SIGNAL( FontPropertiesChanged( QFont ) ),
-		m_texttb_items->m_font, 
-		SLOT( setCurrentFont( QFont ) ) );
-
-	connect(	// connect size selection between MainWnd and dialog (both ways)
-		m_texttb_items->m_font_size, 
-		SIGNAL( currentIndexChanged( int ) ),
-		m_insert_dlg, 
-		SLOT( SetFontChanged( int ) ) );
-	connect(
-		m_insert_dlg, 
-		SIGNAL( FontPropertiesChanged( int ) ),
-		m_texttb_items->m_font_size, 
-		SLOT( setCurrentIndex( int ) ) );
-*/
 	connect( 	// mouse position -> dlg
 		m_view, 
 		SIGNAL( mousePositionSet( QPointF ) ), 
@@ -368,7 +346,6 @@ void MainWnd::TextInsertConnect( )
 		SIGNAL( OnDlgClosed( ) ),	
 		m_texttb_items, 
 		SLOT( OnInsertBtnUp( ) ) );
-
 }
 
 void MainWnd::OnInsertTextNow( )

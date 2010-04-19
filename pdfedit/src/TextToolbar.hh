@@ -51,8 +51,8 @@ public:
 
 public:
 	QPushButton		*m_insert_text;
-	QFontComboBox	*m_font;
-	QComboBox		*m_font_size;
+	// QFontComboBox	*m_font;
+	// QComboBox		*m_font_size;
 
 // signals:
 
