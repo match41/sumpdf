@@ -201,7 +201,7 @@ void DocModel::StorePage( QGraphicsScene *scene, Page *page )
 {
 	PDF_ASSERT( scene != 0 ) ;
 	PDF_ASSERT( page != 0 ) ;
-	
+/*
 	std::auto_ptr<Text> t( CreateText( GraphicsState() ) ) ;
 	
 	QList<QGraphicsItem *> items = scene->items() ;
@@ -218,7 +218,24 @@ void DocModel::StorePage( QGraphicsScene *scene, Page *page )
 	}
 	
 	std::vector<Graphics*> gfx( 1, t.get() ) ;
+*/
+	std::vector<Graphics*> gfx ;
+	QList<QGraphicsItem *> items = scene->items() ;
+	for ( QList<QGraphicsItem*>::iterator i  = items.begin() ;
+	                                      i != items.end() ; ++i )
+	{
+		GraphicsObject *gobj = dynamic_cast<GraphicsObject*>( *i ) ;
+		if ( gobj != 0 )
+		{
+			Graphics *g = gobj->Write( ) ;
+			if ( g != 0 )
+				gfx.push_back( g ) ;
+		}
+	}
+
 	page->SetContent( gfx ) ;
+	
+	std::for_each( gfx.begin(), gfx.end(), DeletePtr() ) ;
 }
 
 void DocModel::AddText(

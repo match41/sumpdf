@@ -117,4 +117,31 @@ QBrush PathObject::Brush( ) const
 	return m_fill ? m_format.Brush() : QBrush( Qt::NoBrush ) ;
 }
 
+Graphics* PathObject::Write( ) const
+{
+	Path *path = CreatePath( m_format.Get() ) ;
+	for ( int i = 0 ; i < m_path.elementCount() ; ++i )
+	{
+		QPainterPath::Element e = m_path.elementAt(i) ;
+		switch ( e.type )
+		{
+			case QPainterPath::MoveToElement :
+			{
+				double pt[] = { e.x, e.y } ;
+				path->AddSegment( PathSegment( PathSegment::move, pt ) ) ;
+				break ;
+			}
+			case QPainterPath::LineToElement :
+			{
+				double pt[] = { e.x, e.y } ;
+				path->AddSegment( PathSegment( PathSegment::line, pt ) ) ;
+				break ;
+			}
+			default :
+				break ;
+		}
+	}
+	return path ;
+}
+
 } // end of namespace

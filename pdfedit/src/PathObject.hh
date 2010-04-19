@@ -57,6 +57,8 @@ public :
 
 	GraphicsState Format( ) const ;
 
+	Graphics* Write( ) const ;
+	
 private :
 	void CalculateBounding( ) ;
 	

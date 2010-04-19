@@ -44,7 +44,7 @@ namespace pdf {
 class RealPath : public Path
 {
 public :
-	explicit RealPath( const GraphicsState& gs, const Matrix& ctm ) ;
+	explicit RealPath( const GraphicsState& gs, const Matrix& ctm = Matrix() ) ;
 	
 	// Graphics virtual functions
 	void OnCommand( ContentOp& op, const ResourcesDict *res ) ;

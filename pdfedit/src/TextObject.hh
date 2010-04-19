@@ -66,6 +66,8 @@ public :
 		const QStyleOptionGraphicsItem	*option,
 		QWidget 						*widget ) ; 
 	
+	Graphics* Write( ) const ;
+	
 private :
 	TextLine		m_line ;
 	QRectF			m_bound ;
