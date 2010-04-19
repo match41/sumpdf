@@ -30,6 +30,7 @@
 #include <graphics/GraphicsState.hh>
 #include <util/Exception.hh>
 #include <util/Matrix.hh>
+#include <util/Rect.hh>
 #include <util/Debug.hh>
 
 // Qt headers
@@ -150,6 +151,22 @@ QColor ToQColor( const Color& c )
 			throw Exception( "unsupported colour space" ) ;
 	}
 	return result ;
+}
+
+Rect FromQRectF( const QRectF& rect )
+{
+	return Rect( rect.left(),
+				rect.bottom(),
+				rect.right(),
+				rect.top() );
+}
+
+QRectF ToQRectF( const Rect& rect )
+{
+	return QRectF( rect.Left(),
+			rect.Bottom(),
+			rect.Right(),
+			rect.Top() );
 }
 
 QBrush MakeBrush( const GraphicsState& gs )
