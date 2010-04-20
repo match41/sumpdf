@@ -33,6 +33,9 @@ namespace pdf
 
 	template <typename T>
 	void WriteBigEndian( T value, unsigned char *ptr ) ;
+	
+	template <typename T>
+	T ReadBigEndian( const unsigned char *ptr ) ;
 
 } // end of namespace
 

@@ -35,17 +35,25 @@
 
 // Qt headers
 #include <QPainter>
+#include <QPainterPathStroker>
 
 namespace pdf {
 
 /**	constructor
 	
+	\param	path	the path object read from the PDF file. It may be
+					deleted by the caller after this call so this class
+					cannot store this pointer.
 */
 PathObject::PathObject( const Path *path, QGraphicsItem *parent )
 	: GraphicsObject( parent )
 	, m_path( QPointF(0, 0) )
 	, m_format( path->GetState() )
+	, m_stroke( path->IsStroke( ) )
+	, m_fill( path->IsFill() )
 {
+	PDF_ASSERT( path != 0 ) ;
+
 	for ( std::size_t i = 0 ; i < path->Count() ; ++i )
 	{
 		PathSegment seg = path->Segment(i) ;
@@ -59,11 +67,23 @@ PathObject::PathObject( const Path *path, QGraphicsItem *parent )
 	}
 	
 	setTransform( ToQtMatrix( path->Transform() ) ) ;
+	
+	CalculateBounding( ) ;
+}
+
+void PathObject::CalculateBounding( )
+{
+	// use stroker path to calculate bounding rectangle
+	QPainterPathStroker sk ;
+	m_format.InitStroker( sk ) ;
+	
+	QPainterPath sk_path = sk.createStroke( m_path ) ;
+	m_bound = sk_path.boundingRect() ;
 }
 
 QRectF PathObject::boundingRect( ) const
 {
-	return m_path.boundingRect() ;
+	return m_bound ;
 }
 
 void PathObject::paint(
@@ -76,15 +96,52 @@ void PathObject::paint(
 	GraphicsObject::paint( painter, option, widget ) ;
 
 	// colors
-	painter->setBrush( MakeBrush( m_format ) ) ;
-	painter->setPen( MakePen( m_format ) ) ;
+	painter->setBrush( Brush() ) ;
+	painter->setPen( Pen() ) ;
 
 	painter->drawPath( m_path ) ;
 }
 
 GraphicsState PathObject::Format( ) const
 {
-	return m_format ;
+	return m_format.Get() ;
+}
+
+QPen PathObject::Pen( ) const
+{
+	return m_stroke ? m_format.Pen() : QPen( QBrush(Qt::NoBrush), 0 ) ;
+}
+
+QBrush PathObject::Brush( ) const
+{
+	return m_fill ? m_format.Brush() : QBrush( Qt::NoBrush ) ;
+}
+
+Graphics* PathObject::Write( ) const
+{
+	Path *path = CreatePath( m_format.Get() ) ;
+	for ( int i = 0 ; i < m_path.elementCount() ; ++i )
+	{
+		QPainterPath::Element e = m_path.elementAt(i) ;
+		switch ( e.type )
+		{
+			case QPainterPath::MoveToElement :
+			{
+				double pt[] = { e.x, e.y } ;
+				path->AddSegment( PathSegment( PathSegment::move, pt ) ) ;
+				break ;
+			}
+			case QPainterPath::LineToElement :
+			{
+				double pt[] = { e.x, e.y } ;
+				path->AddSegment( PathSegment( PathSegment::line, pt ) ) ;
+				break ;
+			}
+			default :
+				break ;
+		}
+	}
+	return path ;
 }
 
 } // end of namespace

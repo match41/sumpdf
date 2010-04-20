@@ -85,7 +85,7 @@ void SfntTest::TestFull( )
 void SfntTest::TestSubset( )
 {
 	std::auto_ptr<FontDb> fdb = CreateFontDb( ) ;
-	std::vector<unsigned char> arial = fdb->FindFont( "Times New Roman" ) ;
+	std::vector<unsigned char> arial = fdb->FindFont( "Inconsolata" ) ;
 
 	Sfnt subject( fdb->LoadFont( &arial[0], arial.size() ) ) ;
 
@@ -116,8 +116,6 @@ void SfntTest::TestSubset( )
 		PDFUT_ASSERT_EQUAL( FT_Load_Glyph( m_face, gindex,
 			FT_LOAD_NO_SCALE ), 0 ) ;
 		
-		std::cout << "char code = " << (int)char_code << " " << gindex << std::endl ;
-
 		FT_Glyph glyph ;
 		PDFUT_ASSERT_EQUAL( FT_Get_Glyph( m_face->glyph, &glyph ), 0 ) ;
 

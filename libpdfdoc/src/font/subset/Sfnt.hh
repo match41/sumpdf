@@ -62,6 +62,8 @@ private :
 		const long		*glyphs,
 		std::size_t 	size ) const ;
 	
+	static std::string TagName( u32 tag ) ;
+	
 	struct Table ;
 
 	void GenerateTable(

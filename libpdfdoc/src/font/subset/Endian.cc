@@ -89,6 +89,18 @@ void WriteBigEndian( T value, unsigned char *ptr )
 template void WriteBigEndian( u32 value, unsigned char *ptr ) ;
 template void WriteBigEndian( u16 value, unsigned char *ptr ) ;
 
+template <typename T>
+T ReadBigEndian( const unsigned char *ptr )
+{
+	T value ;
+	std::memcpy( &value, ptr, sizeof(value) ) ;
+
+#ifdef BOOST_LITTLE_ENDIAN
+	value = SwapByte( value ) ;
+#endif
+	return value ;
+}
+
 } // end of namespace
 
 #endif // ENDIAN_CC_

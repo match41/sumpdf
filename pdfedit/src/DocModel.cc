@@ -41,10 +41,12 @@
 #include <util/Debug.hh>
 #include <util/Util.hh>
 #include <util/Matrix.hh>
+#include <util/Rect.hh>
 
 #include <QDebug>
 
 // Qt headers
+#include <QGraphicsRectItem>
 #include <QGraphicsScene>
 #include <QString>
 
@@ -150,7 +152,10 @@ QGraphicsScene* DocModel::GoToPage( std::size_t page )
 		scene = m_pages[m_current_page] ;
 	else
 	{
+		// create a new scene and set the background as gray
 		scene = new QGraphicsScene( QRectF( 0, 0, 595, 842 ), this ) ;
+		scene->setBackgroundBrush( Qt::gray ) ;
+		
 		connect(
 			scene, 
 			SIGNAL( selectionChanged() ),
@@ -160,6 +165,11 @@ QGraphicsScene* DocModel::GoToPage( std::size_t page )
 		Page *p = m_doc->GetPage( m_current_page ) ;
 		PDF_ASSERT( p != 0 ) ;
 		
+		// add a white solid box to represent the page
+		Rect rect = p->MediaBox() ;
+		QGraphicsRectItem *rect_item = scene->addRect( ToQRectF( rect ) ) ;
+		rect_item->setBrush( Qt::white ) ;
+
 		PageLoader loader( scene ) ;
 		p->VisitGraphics( &loader ) ;
 		
@@ -202,23 +212,23 @@ void DocModel::StorePage( QGraphicsScene *scene, Page *page )
 	PDF_ASSERT( scene != 0 ) ;
 	PDF_ASSERT( page != 0 ) ;
 	
-	Text *t = CreateText( GraphicsState() ) ;
-	
+	std::vector<Graphics*> gfx ;
 	QList<QGraphicsItem *> items = scene->items() ;
 	for ( QList<QGraphicsItem*>::iterator i  = items.begin() ;
 	                                      i != items.end() ; ++i )
 	{
-		TextObject *text = dynamic_cast<TextObject*>( *i ) ;
-		
-		if ( text != 0 )
+		GraphicsObject *gobj = dynamic_cast<GraphicsObject*>( *i ) ;
+		if ( gobj != 0 )
 		{
-			PDF_ASSERT( text->Format().GetFont() != 0 ) ;
-			t->AddLine( text->GetLine() ) ;
+			Graphics *g = gobj->Write( ) ;
+			if ( g != 0 )
+				gfx.push_back( g ) ;
 		}
 	}
-	
-	std::vector<Graphics*> gfx( 1, t ) ;
+
 	page->SetContent( gfx ) ;
+	
+	std::for_each( gfx.begin(), gfx.end(), DeletePtr() ) ;
 }
 
 void DocModel::AddText(

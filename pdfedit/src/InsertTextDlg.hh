@@ -59,14 +59,18 @@ private slots:
 	void OnFontChanged( ) ;		// apply font selection to QTextEdit
 	void OnInsertTextNow( );	// insert text into document page
 	void OnMousePositionSet( QPointF );
-	void EmitFontChanged( QFont );		//	emit if Font changed
-	void EmitFontChanged( int );		// emit if font size changed
-	void SetFontChanged( QFont );
-	void SetFontChanged( int );
+	void OnTextColorChanged( );
 
 private:
 	QPushButton	*m_btn;
 	QPointF		pos;			// mouse position
+	QAction*	m_text_action;
+
+private:
+	// text color
+	QIcon OnCreateColorButtonIcon( const QString& , QColor );
+    QMenu *OnCreateColorMenu( const char*, QColor );
+	QIcon OnCreateColorIcon( QColor );
 
 };
 

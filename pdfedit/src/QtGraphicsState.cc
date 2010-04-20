@@ -1,4 +1,4 @@
-/***************************************************************************
+/***************************************************************************\
  *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
@@ -15,51 +15,67 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+\***************************************************************************/
 
-/*!
-	\file	libpdfdoc.cc
-	\brief	implementation the export functions for the libpdfdoc DLL
-	\date	Fri Apr 11 2008
+/**	\file	QtGraphicsState.cc
+	\brief	implementation of the QtGraphicsState class
+	\date	Apr 18, 2010
 	\author	Nestal Wan
 */
 
-#include "libpdfdoc.hh"
+#include "QtGraphicsState.hh"
 
-#include "RealDoc.hh"
-#include "graphics/RealPath.hh"
-#include "graphics/RealText.hh"
+#include "Util.hh"
+
+#include <util/Debug.hh>
+
+#include <QBrush>
+#include <QColor>
+#include <QPen>
+#include <QPainterPathStroker>
 
 namespace pdf {
 
-///	Exported function to create a document object
-/**	This function is exported from the libpdfdoc DLL to create a document
-	object. A pointer to the Doc interface is returned. Clients must use
-	interact with the PDF document by using the Doc interface pointer. After
-	using the Doc object, clients must delete it.
-	\return	a pointer to the Doc interface of the PDF document object. Clients
-			must delete it after use.
+/**	constructor
+	
 */
-Doc*  CreateDoc( )
+QtGraphicsState::QtGraphicsState( const GraphicsState& gs )
+	: m_gs( gs )
 {
-	return new RealDoc ;
 }
 
-/// Exported function to get the version string of libpdfdoc.
-const char* Version( )
+const GraphicsState& QtGraphicsState::Get() const
 {
-	static const char version[] = VERSION ;
-	return version ;
+	return m_gs ;
 }
 
-Text* CreateText( const GraphicsState& ts )
+QPen QtGraphicsState::Pen() const
 {
-	return new RealText( ts ) ;
+	PDF_ASSERT( m_gs.GetLineJoin() >= GraphicsState::miter_join ) ;
+	PDF_ASSERT( m_gs.GetLineJoin() <= GraphicsState::bevel_join ) ;
+
+	Qt::PenJoinStyle jmap[] = { Qt::MiterJoin, Qt::RoundJoin, Qt::BevelJoin } ;
+
+	// fill colour
+	QPen p( ToQColor( m_gs.StrokeColour() ) ) ;
+	p.setWidthF( m_gs.LineWidth( ) ) ;
+	p.setJoinStyle( jmap[m_gs.GetLineJoin()] ) ;
+	p.setMiterLimit( m_gs.MiterLimit() ) ;
+	return p ;
 }
 
-Path* CreatePath( const GraphicsState& gs )
+QBrush QtGraphicsState::Brush( ) const
 {
-	return new RealPath( gs ) ;
+	return QBrush( ToQColor( m_gs.NonStrokeColour() ) ) ;
+}
+
+void QtGraphicsState::InitStroker( QPainterPathStroker& qpps ) const
+{
+	QPen pen = Pen() ;
+
+	qpps.setWidth( pen.widthF() ) ;
+	qpps.setJoinStyle( pen.joinStyle() ) ;
+	qpps.setMiterLimit( pen.miterLimit() ) ;
 }
 
 } // end of namespace

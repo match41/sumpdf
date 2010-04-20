@@ -50,6 +50,10 @@ class TextState ;
 class GraphicsState
 {
 public :
+	enum PenCap { butt_cap, round_cap, project_cap } ;
+	enum LineJoin { miter_join, round_join, bevel_join } ;
+
+public :
 	GraphicsState( ) ;
 	explicit GraphicsState( const TextState& ts ) ;
 	~GraphicsState( ) ;
@@ -79,11 +83,11 @@ public :
 	void LineWidth( double value ) ;
 	double LineWidth( ) const ;
 
-	void LineCap( int value ) ;
-	int LineCap( ) const ;
+	void SetPenCap( PenCap value ) ;
+	PenCap GetPenCap( ) const ;
 	
-	void LineJoin( int value ) ;
-	int LineJoin( ) const ;
+	void SetLineJoin( LineJoin value ) ;
+	LineJoin GetLineJoin( ) const ;
 	
 	void MiterLimit( double value ) ;
 	double MiterLimit( ) const ;
@@ -99,6 +103,8 @@ private :
 	// text state command handlers
 	bool OnTf( ContentOp& op, const ResourcesDict *res ) ;
 	bool OnTL( ContentOp& op, const ResourcesDict *res ) ;
+	
+	// color space command handlers
 	bool OnCS( ContentOp& op, const ResourcesDict *res ) ;
 	bool Oncs( ContentOp& op, const ResourcesDict *res ) ;
 	bool OnG( ContentOp& op, const ResourcesDict *res ) ;
@@ -107,6 +113,13 @@ private :
 	bool Onrg( ContentOp& op, const ResourcesDict *res ) ;
 	bool OnK( ContentOp& op, const ResourcesDict *res ) ;
 	bool Onk( ContentOp& op, const ResourcesDict *res ) ;
+
+	// graphics states command handlers
+	bool Onw( ContentOp& op, const ResourcesDict *res ) ;
+	bool OnJ( ContentOp& op, const ResourcesDict *res ) ;
+	bool Onj( ContentOp& op, const ResourcesDict *res ) ;
+	bool OnM( ContentOp& op, const ResourcesDict *res ) ;
+	bool Ond( ContentOp& op, const ResourcesDict *res ) ;
 
 	void CopyOnWrite( ) ;
 

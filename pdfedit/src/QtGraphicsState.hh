@@ -1,4 +1,4 @@
-/***************************************************************************
+/***************************************************************************\
  *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
@@ -15,51 +15,45 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+\***************************************************************************/
 
-/*!
-	\file	libpdfdoc.cc
-	\brief	implementation the export functions for the libpdfdoc DLL
-	\date	Fri Apr 11 2008
-	\author	Nestal Wan
+/**	\file	QtGraphicsState.hh
+    \brief	definition the QtGraphicsState class
+    \date	Apr 18, 2010
+    \author	Nestal Wan
 */
 
-#include "libpdfdoc.hh"
+#ifndef __PDF_QTGRAPHICSSTATE_HH_EADER_INCLUDED__
+#define __PDF_QTGRAPHICSSTATE_HH_EADER_INCLUDED__
 
-#include "RealDoc.hh"
-#include "graphics/RealPath.hh"
-#include "graphics/RealText.hh"
+#include <graphics/GraphicsState.hh>
+
+class QBrush ;
+class QPen ;
+class QPainterPathStroker ;
 
 namespace pdf {
 
-///	Exported function to create a document object
-/**	This function is exported from the libpdfdoc DLL to create a document
-	object. A pointer to the Doc interface is returned. Clients must use
-	interact with the PDF document by using the Doc interface pointer. After
-	using the Doc object, clients must delete it.
-	\return	a pointer to the Doc interface of the PDF document object. Clients
-			must delete it after use.
+///	brief description
+/**	\internal
+	The QtGraphicsState class represents
 */
-Doc*  CreateDoc( )
+class QtGraphicsState
 {
-	return new RealDoc ;
-}
+public :
+	explicit QtGraphicsState( const GraphicsState& gs = GraphicsState() ) ;
 
-/// Exported function to get the version string of libpdfdoc.
-const char* Version( )
-{
-	static const char version[] = VERSION ;
-	return version ;
-}
+	const GraphicsState& Get() const ;
 
-Text* CreateText( const GraphicsState& ts )
-{
-	return new RealText( ts ) ;
-}
+	QPen Pen() const ;
+	QBrush Brush( ) const ;
 
-Path* CreatePath( const GraphicsState& gs )
-{
-	return new RealPath( gs ) ;
-}
+	void InitStroker( QPainterPathStroker& qpps ) const ;
+
+private :
+	GraphicsState	m_gs ;
+} ;
 
 } // end of namespace
+
+#endif // QTGRAPHICSSTATE_HH_

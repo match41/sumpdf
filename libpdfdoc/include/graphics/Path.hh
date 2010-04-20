@@ -42,6 +42,9 @@ class Matrix ;
 class Path : public Graphics
 {
 public :
+	enum	FillMode { winding, oddEven } ;
+
+public :
 	virtual ~Path( ) ;
 	
 	/// Returns the number of segment in the path
@@ -51,6 +54,15 @@ public :
 	virtual PathSegment Segment( std::size_t index ) const = 0 ;
 	
 	virtual Matrix Transform( ) const = 0 ;
+	
+	virtual void AddSegment( const PathSegment& seg ) = 0 ;
+	virtual void MoveTo( double x, double y ) = 0 ;
+	virtual void LineTo( double x, double y ) = 0 ;
+	virtual void CloseSubPath( ) = 0 ;
+	virtual bool IsFill( ) const = 0 ;
+	virtual bool IsStroke( ) const = 0 ;
+	virtual FillMode GetFillMode( ) const = 0 ;
+
 } ;
 
 } // end of namespace

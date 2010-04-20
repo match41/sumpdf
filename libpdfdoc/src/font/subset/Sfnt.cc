@@ -45,6 +45,7 @@
 
 // boost headers
 #include <boost/bind.hpp>
+#include <boost/format.hpp>
 
 // stdc++ headers
 #include <cstring>
@@ -379,7 +380,8 @@ Sfnt::Table Sfnt::FindTable( u32 tag ) const
 		PDF_ASSERT( i->second != 0 ) ;
 		return *i->second ;
 	}
-	throw FontException( "required table not found!" ) ;
+	throw FontException( boost::format(
+		"required table \"%1%\" not found!" ) % TagName( tag ) ) ;
 }
 
 void Sfnt::GenerateTable(
@@ -478,7 +480,7 @@ void Sfnt::CopyGlyph(
 				glyph_size ) ;
 		
 		if ( static_cast<std::size_t>( count ) != glyph_size )
-			throw FontException( "cannot write to destinationg glyf table" ) ;
+			throw FontException( "cannot write to destination glyf table" ) ;
 	}
 }
 
@@ -517,7 +519,16 @@ u32 Sfnt::WriteSubsetTables(
 				loca.size() ) ;
 		
 		else
-			CopyTable( dest, FindTable( *tag ) ) ;
+		{
+			try
+			{
+				CopyTable( dest, FindTable( *tag ) ) ;
+			}
+			catch ( FontException& e )
+			{
+				// skip the table that can't be copied
+			}
+		}
 	}
 	
 	return head_offset ;
@@ -528,19 +539,33 @@ u32 Sfnt::WriteTableDirectory(
 	const std::string&	loca,
 	std::streambuf		*dest ) const
 {
+	std::vector<u32> tags ;
+	for ( const u32* tag = Begin(required_tables) ;
+		tag != End(required_tables) ; ++tag )
+	{
+		try
+		{
+			FindTable( *tag ) ;
+			tags.push_back( *tag ) ;
+		}
+		catch ( FontException& )
+		{
+		}
+	}
+
 	// starting offset is the current write position plus the size of the
 	// table directory we are going to write.
 	u32 offset =
 		static_cast<u32>(dest->pubseekoff( 0, std::ios::cur, std::ios::out )) +
-		Count(required_tables) * sizeof(Table) ;
+		tags.size() * sizeof(Table) ;
 	
 	WriteStream ws( dest ) ;
 	
 	u32 head_offset = 0 ;
 	
 	// write the table directory
-	for ( const u32* tag = Begin(required_tables) ;
-		tag != End(required_tables) ; ++tag )
+	for ( std::vector<u32>::iterator tag = tags.begin() ;
+		tag != tags.end() ; ++tag )
 	{
 		Table tab ; 
 		if ( *tag == TTAG_glyf )
@@ -551,7 +576,15 @@ u32 Sfnt::WriteTableDirectory(
 		
 		else
 		{
-			tab = FindTable( *tag ) ;
+			try
+			{
+				tab = FindTable( *tag ) ;
+			}
+			catch ( FontException& e )
+			{
+				// skip the table that can't be copied
+				continue ;
+			}
 			tab.offset = offset ;
 			
 			// save the offset of the "head" table
@@ -574,6 +607,15 @@ u32 Sfnt::WriteTableDirectory(
 		throw FontException( "missing head table" ) ;
 	
 	return head_offset ;
+}
+
+std::string Sfnt::TagName( u32 tag )
+{
+	tag = SwapByte( tag ) ;
+	
+	std::string result( sizeof(tag), ' ' ) ;
+	std::memcpy( &result[0], &tag, sizeof(tag) ) ;
+	return result ;
 }
 
 } // end of namespace

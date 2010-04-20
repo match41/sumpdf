@@ -74,6 +74,9 @@ public :
 	virtual void SetContent( const std::vector<Graphics*>& gfx ) = 0 ;
 	
 	virtual void GetRawContent( std::vector<unsigned char>& out ) const = 0 ;
+	
+	virtual void SetRawContent(
+		const unsigned char *data, std::size_t size ) = 0 ;
 } ;
 
 } // end of namespace

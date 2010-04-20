@@ -30,6 +30,7 @@
 #include <graphics/GraphicsState.hh>
 #include <util/Exception.hh>
 #include <util/Matrix.hh>
+#include <util/Rect.hh>
 #include <util/Debug.hh>
 
 // Qt headers
@@ -152,6 +153,22 @@ QColor ToQColor( const Color& c )
 	return result ;
 }
 
+Rect FromQRectF( const QRectF& rect )
+{
+	return Rect( rect.left(),
+				rect.bottom(),
+				rect.right(),
+				rect.top() );
+}
+
+QRectF ToQRectF( const Rect& rect )
+{
+	return QRectF( rect.Left(),
+			rect.Bottom(),
+			rect.Right(),
+			rect.Top() );
+}
+
 QBrush MakeBrush( const GraphicsState& gs )
 {
 	// fill colour
@@ -161,7 +178,14 @@ QBrush MakeBrush( const GraphicsState& gs )
 QPen MakePen( const GraphicsState& gs )
 {
 	// fill colour
-	return QPen( ToQColor( gs.StrokeColour() ) ) ;
+	QPen p( ToQColor( gs.StrokeColour() ) ) ;
+	p.setWidthF( gs.LineWidth( ) ) ;
+	p.setJoinStyle(
+		  gs.GetLineJoin() == GraphicsState::miter_join	? Qt::MiterJoin :
+		( gs.GetLineJoin() == GraphicsState::round_join	? Qt::RoundJoin :
+		                                                  Qt::BevelJoin ) ) ;
+	p.setMiterLimit( 5 ) ;
+	return p ;
 }
 
 } // end of namespace

@@ -49,10 +49,8 @@ public :
 	typedef	std::vector<TextLine>::iterator			iterator ;
 	typedef	std::vector<TextLine>::const_iterator	const_iterator ;
 
-protected :
-	~Text( ) ;
-
 public :
+	virtual ~Text( ) ;
 
 	///	\name Iterator access members
 	//@{

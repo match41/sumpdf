@@ -37,13 +37,15 @@
 #include <cstdlib>
 #include <stdexcept>
 #include <algorithm>
+#include <iterator>
+#include <fstream>
 
 int main( int argc, char **argv )
 {
 	pdf::Doc *doc = pdf::CreateDoc( ) ;
 	if ( argc >= 2 )
 	{
-		try
+/*		try
 		{
 			doc->Read( argv[1] ) ;
 		}
@@ -51,19 +53,31 @@ int main( int argc, char **argv )
 		{
 			std::cout << e.what() ;
 			return -1 ;
-		}
+		}*/
 	}
-	pdf::Page *p = doc->AppendPage( ) ;
-	pdf::Font *f = doc->CreateSimpleFont( "ArialMT" ) ;
+//	pdf::Page *p = doc->AppendPage( ) ;
+	pdf::Page *p = doc->GetPage( 0 ) ;
+	if ( argc >= 3 )
+	{
+		std::ifstream file( argv[2] ) ;
+		std::vector<unsigned char> buf(
+			(std::istreambuf_iterator<char>( file )),
+			(std::istreambuf_iterator<char>()) ) ;
+		
+		p->SetRawContent( &buf[0], buf.size() ) ;
+	}
+	else
+	{
+		pdf::Font *f = doc->CreateSimpleFont( "ArialMT" ) ;
+		
+		pdf::TextState ts ;
+		ts.SetFont( 12.0, f ) ;
+		pdf::Text *t = pdf::CreateText( pdf::GraphicsState(ts) ) ;
+		t->AddLine( 100, 100, L"Hello world!" ) ;
+		std::vector<pdf::Graphics*> gfx( 1, t ) ;
+		p->SetContent( gfx ) ;
+	}
 	
-//	pdf::PageContent *c = p->GetContent( ) ;
-	pdf::TextState ts ;
-	ts.SetFont( 12.0, f ) ;
-	pdf::Text *t = pdf::CreateText( pdf::GraphicsState(ts) ) ;
-	t->AddLine( 100, 100, L"Hello world!" ) ;
-	std::vector<pdf::Graphics*> gfx( 1, t ) ;
-	p->SetContent( gfx ) ;
-
 	doc->Write( "test.pdf" ) ;
 	delete doc ;
 

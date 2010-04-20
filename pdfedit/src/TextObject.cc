@@ -29,6 +29,7 @@
 #include "Util.hh"
 
 #include <graphics/Color.hh>
+#include <graphics/Text.hh>
 #include <graphics/TextLine.hh>
 #include <graphics/TextState.hh>
 
@@ -82,6 +83,8 @@ GraphicsState TextObject::Format( ) const
 
 TextLine TextObject::GetLine( ) const
 {
+	PDF_ASSERT( m_line.Format().GetFont() != 0 ) ;
+	
 	TextLine line( m_line ) ;
 	line.SetTransform( Matrix::Translation( x(), y() ) * m_line.Transform() ) ;
 	return line ;
@@ -99,6 +102,16 @@ void TextObject::paint(
 	QWidget 						*widget )
 {
 	GraphicsObject::paint( painter, option, widget ) ;
+}
+
+Graphics* TextObject::Write( ) const
+{
+	PDF_ASSERT( m_line.Format().GetFont() != 0 ) ;
+	
+	Text *t = CreateText( GraphicsState() ) ;
+	t->AddLine( GetLine( ) ) ;
+	
+	return t ;
 }
 
 } // end of namespace
