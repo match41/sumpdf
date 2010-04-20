@@ -26,6 +26,7 @@
 
 #include "SimpleFont.hh"
 
+#include "AdobeCMap.hh"
 #include "RealGlyph.hh"
 #include "FontException.hh"
 #include "FontDescriptor.hh"
@@ -37,6 +38,8 @@
 #include "core/Name.hh"
 #include "core/Object.hh"
 #include "core/Dictionary.hh"
+
+#include "stream/Stream.hh"
 
 #include "font/FontDb.hh"
 #include "file/File.hh"
@@ -164,7 +167,11 @@ SimpleFont::SimpleFont( DictReader& reader, FontDb *font_db )
 			}
 		}
 		
-		reader.Detach( "ToUnicode",	m_impl->to_unicode ) ;
+		if ( reader.Detach( "ToUnicode",	m_impl->to_unicode ) )
+		{
+			std::istream is(m_impl->to_unicode.As<Stream>().InStreamBuf() ) ;
+			AdobeCMap cmp( is ) ;
+		}
 		
 		if ( LoadDescriptor( reader, font_db ) )
 		{
