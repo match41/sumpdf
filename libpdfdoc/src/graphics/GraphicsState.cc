@@ -102,11 +102,19 @@ struct GraphicsState::Impl
 	Name		name ;
 
 	Impl( )
+		: line_width( 0 )
+		, pen_cap( butt_cap )
+		, line_join( miter_join )
+		, miter_limit( 0 )
 	{
 	}
 	
 	Impl( const TextState& ts )
-	: text( ts )
+		: text( ts )
+		, line_width( 0 )
+		, pen_cap( butt_cap )
+		, line_join( miter_join )
+		, miter_limit( 0 )
 	{
 	}
 } ;
