@@ -85,7 +85,7 @@ void SfntTest::TestFull( )
 void SfntTest::TestSubset( )
 {
 	std::auto_ptr<FontDb> fdb = CreateFontDb( ) ;
-	std::vector<unsigned char> arial = fdb->FindFont( "Inconsolata" ) ;
+	std::vector<unsigned char> arial = fdb->FindFont( "Arial" ) ;
 
 	Sfnt subject( fdb->LoadFont( &arial[0], arial.size() ) ) ;
 
