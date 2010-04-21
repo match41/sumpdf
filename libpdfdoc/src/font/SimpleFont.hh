@@ -92,6 +92,8 @@ private :
 	bool InitWithStdFont( const std::string& name, FontDb *fontdb ) ;
 
 	bool LoadDescriptor( DictReader& reader, FontDb *font_db ) ;
+	bool LoadFontProgram( FontDb *font_db ) ;
+	void LoadEncoding( DictReader& reader ) ;
 
 	static bool IsSubset( const std::string& basename ) ;
 
