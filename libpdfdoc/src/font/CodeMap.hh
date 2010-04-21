@@ -30,8 +30,8 @@
 
 namespace pdf {
 
-const char*	UnicodeToName( wchar_t ch ) ;
-wchar_t		NameToUnicode( const char *name ) ;
+bool UnicodeToName( wchar_t ch, const char* &name ) ;
+bool NameToUnicode( const char *name, wchar_t& ch ) ;
 
 } // end of namespace
 

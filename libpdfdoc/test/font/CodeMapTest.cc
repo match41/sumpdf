@@ -47,11 +47,17 @@ void CodeMapTest::tearDown( )
 
 void CodeMapTest::Test( )
 {
-	PDFUT_ASSERT_EQUAL( NameToUnicode( "bullet" ), 8226 ) ;
-	PDFUT_ASSERT_EQUAL( NameToUnicode( "three" ), 0x33 ) ;
-	PDFUT_ASSERT_EQUAL( NameToUnicode( "3" ), 0x33 ) ;
-	PDFUT_ASSERT_EQUAL( UnicodeToName( 0x33 ), std::string("3") ) ;
-	PDFUT_ASSERT_EQUAL( UnicodeToName( 8226 ), std::string("bullet") ) ;
+	wchar_t ch ;
+	const char *name ;
+	
+	CPPUNIT_ASSERT( NameToUnicode( "bullet", ch ) ) ;
+	PDFUT_ASSERT_EQUAL( ch, 8226 ) ;
+	
+	CPPUNIT_ASSERT( NameToUnicode( "three", ch ) ) ;
+	PDFUT_ASSERT_EQUAL( ch, 0x33 ) ;
+	
+	CPPUNIT_ASSERT( UnicodeToName( 8226, name ) ) ;
+	PDFUT_ASSERT_EQUAL( name, std::string("bullet") ) ;
 }
 
 } // end of namespace

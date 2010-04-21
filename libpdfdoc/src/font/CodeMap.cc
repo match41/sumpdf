@@ -1113,16 +1113,28 @@ namespace
 
 } // end of local namespace
 
-const char*	UnicodeToName( wchar_t ch )
+bool UnicodeToName( wchar_t ch, const char*& name )
 {
 	UnicodeMap::left_const_iterator i = unimap.left.find( ch ) ;
-	return i != unimap.left.end() ? i->second : not_def ;
+	if ( i != unimap.left.end() )
+	{
+		name = i->second ;
+		return true ;
+	}
+	else
+		return false ;
 }
 
-wchar_t		NameToUnicode( const char *name )
+bool NameToUnicode( const char *name, wchar_t& unicode )
 {
 	UnicodeMap::right_const_iterator i = unimap.right.find( name ) ;
-	return i != unimap.right.end() ? i->second : 0 ;
+	if ( i != unimap.right.end() )
+	{
+		unicode = i->second ;
+		return true ;
+	}
+	else
+		return false ;
 }
 
 

@@ -144,17 +144,9 @@ SimpleFont::SimpleFont( DictReader& reader, FontDb *font_db )
 		// width is optional
 		reader.Detach( "Widths", 	m_impl->widths ) ;
 
-		if ( LoadDescriptor( reader, font_db ) )
-		{
-			// only load encoding for non-symbolic font
-			if ( !m_impl->descriptor->IsSymbolic() )
-				LoadEncoding( reader ) ;
-			
-			else if ( m_impl->encoding != 0 )
-				m_impl->encoding->Release() ;
-		}
-		
-		if ( LoadFontProgram( font_db ) )
+		LoadEncoding( reader ) ;
+
+		if ( LoadDescriptor( reader, font_db ) && LoadFontProgram( font_db ) )
 		{
 		}
 		
