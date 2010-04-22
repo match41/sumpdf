@@ -26,6 +26,7 @@
 
 #include "SimpleFont.hh"
 
+#include "AdobeCMap.hh"
 #include "RealGlyph.hh"
 #include "FontException.hh"
 #include "FontDescriptor.hh"
@@ -37,6 +38,8 @@
 #include "core/Name.hh"
 #include "core/Object.hh"
 #include "core/Dictionary.hh"
+
+#include "stream/Stream.hh"
 
 #include "font/FontDb.hh"
 #include "file/File.hh"
@@ -141,32 +144,9 @@ SimpleFont::SimpleFont( DictReader& reader, FontDb *font_db )
 		// width is optional
 		reader.Detach( "Widths", 	m_impl->widths ) ;
 
-		try
-		{
-			ElementFactory<> f( reader ) ;
-			SimpleEncoding *enc = f.Create<SimpleEncoding>(
-				"Encoding",
-				NewPtr<SimpleEncoding>() ) ;
-			
-			if ( enc != 0 )
-			{
-				if ( m_impl->encoding != 0 )
-					m_impl->encoding->Release() ;
-				
-				m_impl->encoding = enc ;
-			}
-		}
-		catch ( std::exception& )
-		{
-			Name name ;
-			if ( reader.Detach( "Encoding", name ) )
-			{
-			}
-		}
-		
-		reader.Detach( "ToUnicode",	m_impl->to_unicode ) ;
-		
-		if ( LoadDescriptor( reader, font_db ) )
+		LoadEncoding( reader ) ;
+
+		if ( LoadDescriptor( reader, font_db ) && LoadFontProgram( font_db ) )
 		{
 		}
 		
@@ -179,6 +159,12 @@ SimpleFont::SimpleFont( DictReader& reader, FontDb *font_db )
 		}
 		else
 			throw FontException( "no descriptor?" ) ;
+		
+		if ( reader.Detach( "ToUnicode",	m_impl->to_unicode ) )
+		{
+			std::istream is(m_impl->to_unicode.As<Stream>().InStreamBuf() ) ;
+			AdobeCMap cmp( is ) ;
+		}
 	}
 	catch ( Exception& e )
 	{
@@ -189,6 +175,32 @@ SimpleFont::SimpleFont( DictReader& reader, FontDb *font_db )
 	}
 	
 	PDF_ASSERT( m_impl->face != 0 ) ;
+}
+
+void SimpleFont::LoadEncoding( DictReader& reader )
+{
+	try
+	{
+		ElementFactory<> f( reader ) ;
+		SimpleEncoding *enc = f.Create<SimpleEncoding>(
+			"Encoding",
+			NewPtr<SimpleEncoding>() ) ;
+		
+		if ( enc != 0 )
+		{
+			if ( m_impl->encoding != 0 )
+				m_impl->encoding->Release() ;
+			
+			m_impl->encoding = enc ;
+		}
+	}
+	catch ( std::exception& )
+	{
+		Name name ;
+		if ( reader.Detach( "Encoding", name ) )
+		{
+		}
+	}
 }
 
 SimpleFont::~SimpleFont( )
@@ -223,7 +235,17 @@ bool SimpleFont::LoadDescriptor( DictReader& reader, FontDb *font_db )
 			m_impl->descriptor->Release() ;
 		
 		m_impl->descriptor = fd ;
+		
+		return true ;
+	}
+	else
+		return false ;
+}
 
+bool SimpleFont::LoadFontProgram( FontDb *font_db )
+{
+	if ( m_impl->descriptor != 0 )
+	{
 		const std::vector<unsigned char>& font_file
 			= m_impl->descriptor->FontFile( ) ;
 		

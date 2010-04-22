@@ -59,10 +59,10 @@ SimpleEncoding::SimpleEncoding( DictReader& self )
 			
 			else if ( i->Is<Name>() )
 			{
-				wchar_t ch = NameToUnicode( i->As<Name>().Str().c_str() ) ;
-
-				m_charmap.insert( CharMap::value_type(
-					static_cast<unsigned short>( current ), ch ) ) ;
+				wchar_t ch = 0 ;
+				if ( NameToUnicode( i->As<Name>().Str().c_str(), ch ) )
+					m_charmap.insert( CharMap::value_type(
+						static_cast<unsigned short>( current ), ch ) ) ;
 			
 				current++ ;
 			}
@@ -74,14 +74,17 @@ SimpleEncoding::SimpleEncoding( DictReader& self )
 
 wchar_t SimpleEncoding::ToUnicode( unsigned short char_code ) const
 {
+	// pass-through if the character code is not found
 	CharMap::left_const_iterator i = m_charmap.left.find( char_code ) ;
-	return i != m_charmap.left.end() ? i->second : 0 ; 
+	return i != m_charmap.left.end() ? i->second :
+		static_cast<wchar_t>( char_code ) ; 
 }
 
 unsigned short SimpleEncoding::FromUnicode( wchar_t unicode ) const
 {
 	CharMap::right_const_iterator i = m_charmap.right.find( unicode ) ;
-	return i != m_charmap.right.end() ? i->second : 0 ; 
+	return i != m_charmap.right.end() ? i->second :
+		static_cast<unsigned short>( unicode ) ; 
 }
 
 std::wstring SimpleEncoding::Decode( const std::string& bytes ) const
@@ -117,10 +120,10 @@ Ref SimpleEncoding::Write( File *file ) const
 	for ( CharMap::left_const_iterator i = m_charmap.left.begin() ;
 		i != m_charmap.left.end() ; ++i )
 	{
-		PDF_ASSERT( UnicodeToName( i->second ) != 0 ) ;
-	
-		diff.push_back( i->first ) ;
-		diff.push_back( Name( UnicodeToName( i->second ) ) ) ;
+//		PDF_ASSERT( UnicodeToName( i->second ) != 0 ) ;
+//	
+//		diff.push_back( i->first ) ;
+//		diff.push_back( Name( UnicodeToName( i->second ) ) ) ;
 	}
 	if ( !diff.empty() )
 		self.insert( "Differences", diff ) ;

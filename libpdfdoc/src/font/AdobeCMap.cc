@@ -17,47 +17,53 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	CodeMapTest.cc
-	\brief	implementation of the CodeMapTest class
-	\date	Mar 21, 2010
+/**	\file	AdobeCMap.cc
+	\brief	implementation of the AdobeCMap class
+	\date	Apr 21, 2010
 	\author	Nestal Wan
 */
 
-#include "CodeMapTest.hh"
+#include "AdobeCMap.hh"
 
-#include "font/CodeMap.hh"
+#include "core/Object.hh"
 
-#include "mock/Assert.hh"
+#include <iostream>
+#include <sstream>
 
-namespace pdfut {
+namespace pdf {
 
-using namespace pdf ;
-
-CodeMapTest::CodeMapTest( )
+/**	constructor
+	
+*/
+AdobeCMap::AdobeCMap( std::istream& is )
 {
+	std::string line ;
+	while ( std::getline( is, line ) )
+	{
+		std::istringstream oss( line ) ;
+		
+		std::size_t count = 0 ;
+		std::string op ;
+		if ( oss >> count >> op && op == "beginbfrange" && count > 0 )
+			ReadBFRange( is, count ) ;
+	}
 }
 
-void CodeMapTest::setUp( )
+void AdobeCMap::ReadBFRange( std::istream& is, std::size_t count )
 {
-}
-
-void CodeMapTest::tearDown( )
-{
-}
-
-void CodeMapTest::Test( )
-{
-	wchar_t ch ;
-	const char *name ;
-	
-	CPPUNIT_ASSERT( NameToUnicode( "bullet", ch ) ) ;
-	PDFUT_ASSERT_EQUAL( ch, 8226 ) ;
-	
-	CPPUNIT_ASSERT( NameToUnicode( "three", ch ) ) ;
-	PDFUT_ASSERT_EQUAL( ch, 0x33 ) ;
-	
-	CPPUNIT_ASSERT( UnicodeToName( 8226, name ) ) ;
-	PDFUT_ASSERT_EQUAL( name, std::string("bullet") ) ;
+	for ( std::size_t i = 0 ; i < count ; ++i )
+	{
+		std::string line ;
+		while ( std::getline( is, line ) )
+		{
+			std::istringstream oss( line ) ;
+			
+			Object begin, end, unicode ;
+			if ( oss >> begin >> end >> unicode )
+			{
+			}
+		}
+	}
 }
 
 } // end of namespace

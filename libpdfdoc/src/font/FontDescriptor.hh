@@ -71,6 +71,8 @@ public :
 	double	ItalicAngle( ) const ;
 
 	const std::vector<unsigned char>&	FontFile( ) const ;
+	
+	bool IsSymbolic() const ;
 
 private :
 	static const Name m_stretch_names[] ; 

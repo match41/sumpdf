@@ -273,20 +273,12 @@ private :
 
 	bool DecodeNumberOrIndirectObj( TokenSrc& is, const Token& token ) ;
 
+	template <typename T>
+	std::vector<T> ToVec( ) const ;
+
 private :
 	Variant	m_obj ;
 } ;
-
-template <> unsigned short	Object::To( ) const ;
-template <> short			Object::To( ) const ;
-template <> unsigned		Object::To( ) const ;
-template <> long			Object::To( ) const ;
-template <> unsigned long	Object::To( ) const ;
-template <> float			Object::To( ) const ;
-template <> double			Object::To( ) const ;
-template <> Rect 			Object::To( ) const ;
-template <> Object& Object::As( ) ;
-template <> const Object& Object::As( ) const ;
 
 } // end of namespace
 

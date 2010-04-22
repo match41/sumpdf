@@ -378,4 +378,9 @@ double FontDescriptor::FontUnit( double val, FT_Face face )
 	return val * 1000.0 / face->units_per_EM ; 
 }
 
+bool FontDescriptor::IsSymbolic() const
+{
+	return m_flags[symbolic] ;
+}
+
 } // end of namespace
