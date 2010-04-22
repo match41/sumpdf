@@ -122,6 +122,12 @@ struct GraphicsState::Impl
 		, dash_phase( 0 )
 	{
 	}
+
+	template <typename T>
+	void PrintField(
+		const GraphicsState&		prev,
+		T GraphicsState::Impl::*	field,
+		const std::string&			op ) ;
 } ;
 
 GraphicsState::GraphicsState( )
@@ -162,6 +168,8 @@ std::ostream& GraphicsState::Print(
 {
 	// print text state
 	m_impl->text.Print( os, res, prev.m_impl->text ) ;
+	
+	m_impl->PrintField( prev, &Impl::strk_color, "RG" ) ;
 	
 	// print stroking color
 	if ( m_impl->strk_color != prev.m_impl->strk_color )
@@ -456,6 +464,11 @@ bool GraphicsState::Onj( ContentOp& op, const ResourcesDict *res )
 
 bool GraphicsState::OnM( ContentOp& op, const ResourcesDict *res )
 {
+	if ( op.Count() >= 1 )
+	{
+		m_impl->miter_limit = op[0].To<double>() ;
+		return true ;
+	}
 	return false ;
 }
 
@@ -480,5 +493,12 @@ int GraphicsState::DashPhrase( ) const
 	return m_impl->dash_phase ;
 }
 
+template <typename T>
+void GraphicsState::Impl::PrintField(
+	const GraphicsState&		prev,
+	T GraphicsState::Impl::*	field,
+	const std::string&			op )
+{
+}
 
 } // end of namespace

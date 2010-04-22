@@ -406,10 +406,56 @@ template <> double Object::To() const
 	return Is<int>() ? As<int>() : As<double>() ;
 }
 
-template <> std::vector<int> Object::To() const
+template <typename T>
+std::vector<T> Object::ToVec( ) const
 {
 	const Array& a = As<Array>() ;
-	return std::vector<int>( a.begin(), a.end() ) ;
+	return std::vector<T>( a.begin(), a.end() ) ;
+}
+
+template <> std::vector<int> Object::To() const
+{
+	return ToVec<int>() ;
+}
+
+template <> std::vector<double> Object::To() const
+{
+	return ToVec<double>() ;
+}
+
+template <> std::vector<unsigned> Object::To() const
+{
+	return ToVec<unsigned>() ;
+}
+
+template <> std::vector<short> Object::To() const
+{
+	return ToVec<short>() ;
+}
+
+template <> std::vector<unsigned short> Object::To() const
+{
+	return ToVec<unsigned short>() ;
+}
+
+template <> std::vector<long> Object::To() const
+{
+	return ToVec<long>() ;
+}
+
+template <> std::vector<unsigned long> Object::To() const
+{
+	return ToVec<unsigned long>() ;
+}
+
+template <> std::vector<float> Object::To() const
+{
+	return ToVec<float>() ;
+}
+
+template <> std::vector<Rect> Object::To() const
+{
+	return ToVec<Rect>() ;
 }
 
 template <> Rect Object::To() const
