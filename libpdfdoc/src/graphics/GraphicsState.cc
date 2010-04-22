@@ -124,11 +124,45 @@ struct GraphicsState::Impl
 	}
 
 	template <typename T>
-	void PrintField(
-		const GraphicsState&		prev,
-		T GraphicsState::Impl::*	field,
-		const std::string&			op ) ;
+	bool PrintField(
+		const GraphicsState::Impl&		prev,
+		T GraphicsState::Impl::*		field,
+		const std::string&				op,
+		std::ostream&					os ) ;
 } ;
+
+template <>
+bool GraphicsState::Impl::PrintField(
+	const GraphicsState::Impl&		prev,
+	Color GraphicsState::Impl::*	field,
+	const std::string&				op,
+	std::ostream&					os )
+{
+	if ( this->*field != prev.*field )
+	{
+		std::copy( (this->*field).begin(), (this->*field).end(),
+			std::ostream_iterator<double>( os, " " ) ) ;
+		os << op << '\n' ;
+		return true ;
+	}
+	else
+		return false ;
+}
+
+template <typename T>
+bool GraphicsState::Impl::PrintField(
+	const GraphicsState::Impl&	prev,
+	T GraphicsState::Impl::*	field,
+	const std::string&			op,
+	std::ostream&				os )
+{
+	if ( this->*field != prev.*field )
+	{
+		os << this->*field << ' ' << op << '\n' ;
+		return true ;
+	}
+	return false ;
+}
 
 GraphicsState::GraphicsState( )
 	: m_impl( new Impl )
@@ -161,6 +195,24 @@ TextState& GraphicsState::GetTextState()
 	return m_impl->text ;
 }
 
+void GraphicsState::PrintColors(
+	std::ostream&			os,
+	ResourcesDict			*res,
+	const GraphicsState&	prev ) const
+{
+	Color::Space ssp = m_impl->strk_color.ColorSpace() ;
+	Color::Space fsp = m_impl->fill_color.ColorSpace() ;
+
+	PDF_ASSERT( ssp >= Color::rgb && ssp <= Color::cmyk ) ;
+	PDF_ASSERT( fsp >= Color::rgb && fsp <= Color::cmyk ) ;
+
+	static const std::string strk_ops[]	= { "RG", "G", "K" } ;
+	static const std::string fill_ops[]	= { "rg", "g", "k" } ;
+	
+	m_impl->PrintField( *prev.m_impl, &Impl::strk_color, strk_ops[ssp], os ) ;
+	m_impl->PrintField( *prev.m_impl, &Impl::fill_color, fill_ops[fsp], os ) ;
+}
+
 std::ostream& GraphicsState::Print(
 	std::ostream&			os,
 	ResourcesDict			*res,
@@ -169,39 +221,19 @@ std::ostream& GraphicsState::Print(
 	// print text state
 	m_impl->text.Print( os, res, prev.m_impl->text ) ;
 	
-	m_impl->PrintField( prev, &Impl::strk_color, "RG" ) ;
+	PrintColors( os, res, prev ) ;
+	m_impl->PrintField( *prev.m_impl, &Impl::line_width,	"w", os ) ;
+	m_impl->PrintField( *prev.m_impl, &Impl::pen_cap,		"J", os ) ;
+	m_impl->PrintField( *prev.m_impl, &Impl::line_join,		"j", os ) ;
+	m_impl->PrintField( *prev.m_impl, &Impl::miter_limit,	"M", os ) ;
 	
-	// print stroking color
-	if ( m_impl->strk_color != prev.m_impl->strk_color )
+	if ( m_impl->dash_pattern	!= prev.m_impl->dash_pattern ||
+		 m_impl->dash_phase		!= prev.m_impl->dash_phase )
 	{
-		const Color& strk = m_impl->strk_color ;
-		std::copy( strk.begin(), strk.end(),
-			std::ostream_iterator<double>( os, " " ) ) ;
-		
-		switch ( strk.ColorSpace() )
-		{
-			// there will be a space after copying to ostream_iterator
-			case Color::rgb:	os << "RG\n" ; break ;
-			case Color::gray:	os << "G\n" ; break ;
-			case Color::cmyk:	os << "K\n" ; break ;
-		}
+		os 	<< Object(m_impl->dash_pattern) << ' ' << m_impl->dash_phase
+			<< " d\n" ; 
 	}
 	
-	// print non-stroking color
-	if ( m_impl->fill_color != prev.m_impl->fill_color )
-	{
-		const Color& c = m_impl->fill_color ;
-		std::copy( c.begin(), c.end(),
-			std::ostream_iterator<double>( os, " " ) ) ;
-		
-		switch ( c.ColorSpace() )
-		{
-			// there will be a space after copying to ostream_iterator
-			case Color::rgb:	os << "rg\n" ; break ;
-			case Color::gray:	os << "g\n" ; break ;
-			case Color::cmyk:	os << "k\n" ; break ;
-		}
-	}
 	return os ;
 }
 
@@ -243,7 +275,7 @@ bool GraphicsState::OnTf( ContentOp& op, const ResourcesDict *res )
 			double font_size = op[1].To<double>() ;
 			
 			if ( m_impl->text.FontSize()	!= font_size	||
-				m_impl->text.GetFont()	!= f )
+				 m_impl->text.GetFont()		!= f )
 			{
 				CopyOnWrite( ) ;
 				m_impl->text.SetFont( font_size, f ) ;
@@ -361,6 +393,7 @@ bool GraphicsState::ChangeColour( Color& old, const Color& new_ )
 {
 	if ( old != new_ )
 	{
+		CopyOnWrite( ) ;
 		old = new_ ;
 		return true ;
 	}
@@ -436,6 +469,7 @@ bool GraphicsState::Onw( ContentOp& op, const ResourcesDict * )
 {
 	if ( op.Count() >= 1 )
 	{
+		CopyOnWrite( ) ;
 		m_impl->line_width = op[0] ;
 		return true ;
 	}
@@ -446,6 +480,7 @@ bool GraphicsState::OnJ( ContentOp& op, const ResourcesDict *res )
 {
 	if ( op.Count() >= 1 )
 	{
+		CopyOnWrite( ) ;
 		m_impl->pen_cap = static_cast<PenCap>( op[0].To<int>() ) ;
 		return true ;
 	}
@@ -456,6 +491,7 @@ bool GraphicsState::Onj( ContentOp& op, const ResourcesDict *res )
 {
 	if ( op.Count() >= 1 )
 	{
+		CopyOnWrite( ) ;
 		m_impl->line_join = static_cast<LineJoin>( op[0].To<int>() ) ;
 		return true ;
 	}
@@ -466,6 +502,7 @@ bool GraphicsState::OnM( ContentOp& op, const ResourcesDict *res )
 {
 	if ( op.Count() >= 1 )
 	{
+		CopyOnWrite( ) ;
 		m_impl->miter_limit = op[0].To<double>() ;
 		return true ;
 	}
@@ -476,6 +513,7 @@ bool GraphicsState::Ond( ContentOp& op, const ResourcesDict *res )
 {
 	if ( op.Count() >= 2 )
 	{
+		CopyOnWrite( ) ;
 		m_impl->dash_pattern	= op[0].To<std::vector<int> >() ;
 		m_impl->dash_phase		= op[1].To<int>() ;
 		return true ;
@@ -491,14 +529,6 @@ std::vector<int> GraphicsState::DashPattern() const
 int GraphicsState::DashPhrase( ) const
 {
 	return m_impl->dash_phase ;
-}
-
-template <typename T>
-void GraphicsState::Impl::PrintField(
-	const GraphicsState&		prev,
-	T GraphicsState::Impl::*	field,
-	const std::string&			op )
-{
 }
 
 } // end of namespace

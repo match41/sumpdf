@@ -280,27 +280,6 @@ private :
 	Variant	m_obj ;
 } ;
 
-template <> unsigned short	Object::To( ) const ;
-template <> short			Object::To( ) const ;
-template <> unsigned		Object::To( ) const ;
-template <> long			Object::To( ) const ;
-template <> unsigned long	Object::To( ) const ;
-template <> float			Object::To( ) const ;
-template <> double			Object::To( ) const ;
-template <> Rect 			Object::To( ) const ;
-template <> Object& Object::As( ) ;
-template <> const Object& Object::As( ) const ;
-
-template <> std::vector<int> Object::To() const ;
-template <> std::vector<double> Object::To() const ;
-template <> std::vector<short> Object::To() const ;
-template <> std::vector<unsigned> Object::To() const ;
-template <> std::vector<long> Object::To() const ;
-template <> std::vector<unsigned long> Object::To() const ;
-template <> std::vector<float> Object::To() const ;
-template <> std::vector<Rect> Object::To() const ;
-template <> std::vector<Object> Object::To() const ;
-
 } // end of namespace
 
 #ifdef __GNUC__

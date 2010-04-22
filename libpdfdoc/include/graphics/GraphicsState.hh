@@ -127,8 +127,13 @@ private :
 
 	void CopyOnWrite( ) ;
 
-	static bool SetColourSpace( Color& colour, const Name& cs ) ;
-	static bool ChangeColour( Color& old, const Color& new_ ) ;
+	bool SetColourSpace( Color& colour, const Name& cs ) ;
+	bool ChangeColour( Color& old, const Color& new_ ) ;
+
+	void PrintColors(
+		std::ostream&			os,
+		ResourcesDict			*res,
+		const GraphicsState&	prev ) const ;
 
 private :
 	struct Impl ;

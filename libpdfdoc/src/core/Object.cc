@@ -61,6 +61,27 @@ template class boost::variant<
 
 namespace pdf {
 
+template <> unsigned short	Object::To( ) const ;
+template <> short			Object::To( ) const ;
+template <> unsigned		Object::To( ) const ;
+template <> long			Object::To( ) const ;
+template <> unsigned long	Object::To( ) const ;
+template <> float			Object::To( ) const ;
+template <> double			Object::To( ) const ;
+template <> Rect 			Object::To( ) const ;
+template <> Object& Object::As( ) ;
+template <> const Object& Object::As( ) const ;
+
+template <> std::vector<int> Object::To() const ;
+template <> std::vector<double> Object::To() const ;
+template <> std::vector<short> Object::To() const ;
+template <> std::vector<unsigned> Object::To() const ;
+template <> std::vector<long> Object::To() const ;
+template <> std::vector<unsigned long> Object::To() const ;
+template <> std::vector<float> Object::To() const ;
+template <> std::vector<Rect> Object::To() const ;
+template <> std::vector<Object> Object::To() const ;
+
 struct Bool
 {
 	operator bool( ) const { return value ; }
@@ -361,7 +382,6 @@ T Object::To( ) const
 	return As<T>() ;
 }
 
-template int Object::To( ) const ;
 template bool Object::To( ) const ;
 template Ref Object::To( ) const ;
 template Name Object::To( ) const ;
@@ -404,6 +424,12 @@ template <> double Object::To() const
 {
 	// the PDF specification said integers can be converted to doubles
 	return Is<int>() ? As<int>() : As<double>() ;
+}
+
+template <> int Object::To() const
+{
+	// the PDF specification said integers can be converted to doubles
+	return Is<int>() ? As<int>() : static_cast<int>(As<double>()) ;
 }
 
 template <typename T>

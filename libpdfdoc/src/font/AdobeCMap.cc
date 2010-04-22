@@ -40,8 +40,6 @@ AdobeCMap::AdobeCMap( std::istream& is )
 	std::string line ;
 	while ( std::getline( is, line ) )
 	{
-		std::cout << line << std::endl ;
-		
 		std::istringstream oss( line ) ;
 		
 		std::size_t count = 0 ;
@@ -63,8 +61,6 @@ void AdobeCMap::ReadBFRange( std::istream& is, std::size_t count )
 			Object begin, end, unicode ;
 			if ( oss >> begin >> end >> unicode )
 			{
-				std::cout << "begin = " << begin << " end = " << end
-				<< "uni = " << unicode << std::endl; 
 			}
 		}
 	}
