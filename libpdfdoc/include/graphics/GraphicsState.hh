@@ -29,6 +29,7 @@
 #include <boost/shared_ptr.hpp>
 
 #include <iosfwd>
+#include <vector>
 
 namespace pdf {
 
@@ -96,6 +97,9 @@ public :
 	
 	const Color& StrokeColour( ) const ;
 	const Color& NonStrokeColour( ) const ;
+
+	std::vector<int> DashPattern() const ;
+	int DashPhrase( ) const ;
 
 private :
 	struct HandlerMap ;

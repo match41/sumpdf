@@ -287,6 +287,7 @@ template <> double			Object::To( ) const ;
 template <> Rect 			Object::To( ) const ;
 template <> Object& Object::As( ) ;
 template <> const Object& Object::As( ) const ;
+template <> std::vector<int> Object::To() const ;
 
 } // end of namespace
 

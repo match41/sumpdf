@@ -406,6 +406,12 @@ template <> double Object::To() const
 	return Is<int>() ? As<int>() : As<double>() ;
 }
 
+template <> std::vector<int> Object::To() const
+{
+	const Array& a = As<Array>() ;
+	return std::vector<int>( a.begin(), a.end() ) ;
+}
+
 template <> Rect Object::To() const
 {
 	const Array& a = As<Array>() ;

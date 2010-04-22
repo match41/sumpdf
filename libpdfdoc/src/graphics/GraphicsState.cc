@@ -97,6 +97,9 @@ struct GraphicsState::Impl
 	PenCap		pen_cap ;
 	LineJoin	line_join ;
 	double		miter_limit ;
+	
+	std::vector<int>	dash_pattern ;
+	int					dash_phase ;
 
 	// association with external states dictionaries
 	Name		name ;
@@ -106,6 +109,7 @@ struct GraphicsState::Impl
 		, pen_cap( butt_cap )
 		, line_join( miter_join )
 		, miter_limit( 0 )
+		, dash_phase( 0 )
 	{
 	}
 	
@@ -115,6 +119,7 @@ struct GraphicsState::Impl
 		, pen_cap( butt_cap )
 		, line_join( miter_join )
 		, miter_limit( 0 )
+		, dash_phase( 0 )
 	{
 	}
 } ;
@@ -431,11 +436,21 @@ bool GraphicsState::Onw( ContentOp& op, const ResourcesDict * )
 
 bool GraphicsState::OnJ( ContentOp& op, const ResourcesDict *res )
 {
+	if ( op.Count() >= 1 )
+	{
+		m_impl->pen_cap = static_cast<PenCap>( op[0].To<int>() ) ;
+		return true ;
+	}
 	return false ;
 }
 
 bool GraphicsState::Onj( ContentOp& op, const ResourcesDict *res )
 {
+	if ( op.Count() >= 1 )
+	{
+		m_impl->line_join = static_cast<LineJoin>( op[0].To<int>() ) ;
+		return true ;
+	}
 	return false ;
 }
 
@@ -446,7 +461,24 @@ bool GraphicsState::OnM( ContentOp& op, const ResourcesDict *res )
 
 bool GraphicsState::Ond( ContentOp& op, const ResourcesDict *res )
 {
+	if ( op.Count() >= 2 )
+	{
+		m_impl->dash_pattern	= op[0].To<std::vector<int> >() ;
+		m_impl->dash_phase		= op[1].To<int>() ;
+		return true ;
+	}
 	return false ;
 }
+
+std::vector<int> GraphicsState::DashPattern() const
+{
+	return m_impl->dash_pattern ;
+}
+
+int GraphicsState::DashPhrase( ) const
+{
+	return m_impl->dash_phase ;
+}
+
 
 } // end of namespace
