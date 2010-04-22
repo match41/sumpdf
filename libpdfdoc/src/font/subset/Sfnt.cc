@@ -524,7 +524,7 @@ u32 Sfnt::WriteSubsetTables(
 			{
 				CopyTable( dest, FindTable( *tag ) ) ;
 			}
-			catch ( FontException& e )
+			catch ( FontException& )
 			{
 				// skip the table that can't be copied
 			}
@@ -580,7 +580,7 @@ u32 Sfnt::WriteTableDirectory(
 			{
 				tab = FindTable( *tag ) ;
 			}
-			catch ( FontException& e )
+			catch ( FontException& )
 			{
 				// skip the table that can't be copied
 				continue ;
