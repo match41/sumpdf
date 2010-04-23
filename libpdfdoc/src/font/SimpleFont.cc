@@ -32,6 +32,7 @@
 #include "FontDescriptor.hh"
 #include "FontSubsetInfo.hh"
 #include "SimpleEncoding.hh"
+#include "Type1Encoding.hh"
 
 // libpdfdoc headers
 #include "core/Array.hh"
@@ -144,10 +145,10 @@ SimpleFont::SimpleFont( DictReader& reader, FontDb *font_db )
 		// width is optional
 		reader.Detach( "Widths", 	m_impl->widths ) ;
 
-		LoadEncoding( reader ) ;
-
 		if ( LoadDescriptor( reader, font_db ) && LoadFontProgram( font_db ) )
 		{
+			LoadEncoding( reader ) ;
+			LoadGlyphs( ) ;
 		}
 		
 		// font descriptor is absent. it may be a standard 14 fonts.
@@ -192,6 +193,10 @@ void SimpleFont::LoadEncoding( DictReader& reader )
 				m_impl->encoding->Release() ;
 			
 			m_impl->encoding = enc ;
+		}
+		else
+		{
+//			Type1Encoding *enc = new Type1Encoding( m_impl->face ) ;
 		}
 	}
 	catch ( std::exception& )
@@ -255,14 +260,14 @@ bool SimpleFont::LoadFontProgram( FontDb *font_db )
 			
 			PDF_ASSERT( m_impl->face != 0 ) ;
 			
-			LoadGlyphs( ) ;
+//			LoadGlyphs( ) ;
+			return true ;
 		}
-		else if ( !InitWithStdFont( m_impl->base_font.Str(), font_db )  )
-			throw Exception( "can't load font " + m_impl->base_font.Str() );
+//		else if ( !InitWithStdFont( m_impl->base_font.Str(), font_db )  )
+//			throw Exception( "can't load font " + m_impl->base_font.Str() );
 		
-		return true ;
 	}
-	else
+//	else
 		return false ;
 }
 

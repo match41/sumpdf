@@ -156,6 +156,7 @@ set( FONT_HDRS		${FONT_DIR}/Types.hh
 					${FONT_DIR}/BasicFontDb.hh
 					${FONT_DIR}/CodeMap.hh
 					${FONT_DIR}/SimpleEncoding.hh
+					${FONT_DIR}/Type1Encoding.hh
 					${FONT_DIR}/FontSubsetInfo.hh
 					${FONT_DIR}/AdobeCMap.hh
 					${FONT_DIR}/subset/Sfnt.hh
@@ -285,6 +286,7 @@ set( FONT_SRCS		${FONT_DIR}/Font.cc
 					${FONT_DIR}/CodeMap.cc
 					${FONT_DIR}/FontEncoding.cc
 					${FONT_DIR}/SimpleEncoding.cc
+					${FONT_DIR}/Type1Encoding.cc
 					${FONT_DIR}/FontSubsetInfo.cc
 					${FONT_DIR}/AdobeCMap.cc
 					${FONT_DIR}/subset/Sfnt.cc
