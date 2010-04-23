@@ -54,6 +54,10 @@ protected :
 signals:
 	void mousePositionSet( QPointF pos );	// mouse position at empty space
 
+private slots:
+	void InsertI_beam( QPointF );
+	void DeleteI_beam( QPointF );
+
 private :
 	class LineEdit ;
 	QMainWindow	*m_parent ;

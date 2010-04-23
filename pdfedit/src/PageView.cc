@@ -101,4 +101,26 @@ void PageView::mouseMoveEvent( QMouseEvent *event )
 	QGraphicsView::mouseMoveEvent( event ) ;
 }
 
+void PageView::InsertI_beam( QPointF pos)
+{
+
+	QTextEdit text;
+	text.setFontPointSize(16);
+	text.setText("I");
+	QGraphicsItem *item = scene()->addText(text.toPlainText(),text.currentFont());
+	QMatrix m;
+//	m.scale(1,-1);
+//	item->setMatrix( m );
+	QPoint pos_correction(10.0,13.0);
+	item->setPos( pos - pos_correction);
+	//	->itemAt( pos ) ;
+}
+
+void PageView::DeleteI_beam( QPointF pos )
+{
+	QPoint pos_correction(10.0,13.0);
+	QGraphicsItem *item = scene()->itemAt( pos - pos_correction );
+	item->hide();
+}
+
 } // end of namespace

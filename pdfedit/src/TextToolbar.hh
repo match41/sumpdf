@@ -59,6 +59,9 @@ public:
 public slots:
 	void OnInsertBtnUp( );
 
+signals:
+	void clicked( );
+
 private:
 	void CreateTextInsertToolbar( QToolBar *parent , QWidget *parentWnd );
 

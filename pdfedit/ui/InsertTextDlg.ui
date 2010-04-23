@@ -23,7 +23,7 @@
    <string>Dialog</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="6">
+   <item row="1" column="5">
     <widget class="QPushButton" name="m_btn_insert">
      <property name="text">
       <string>Insert</string>
@@ -33,7 +33,7 @@
    <item row="1" column="0">
     <widget class="QFontComboBox" name="m_font"/>
    </item>
-   <item row="2" column="0" colspan="7">
+   <item row="2" column="0" colspan="6">
     <widget class="QTextEdit" name="m_text">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Ignored">
@@ -46,7 +46,7 @@
    <item row="1" column="1">
     <widget class="QComboBox" name="m_fontsize"/>
    </item>
-   <item row="1" column="5">
+   <item row="1" column="4">
     <widget class="QToolButton" name="m_textcolor">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -85,20 +85,6 @@
      <property name="icon">
       <iconset resource="pdfedit.qrc">
        <normaloff>:/images/italic.png</normaloff>:/images/italic.png</iconset>
-     </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="4">
-    <widget class="QPushButton" name="m_underlined">
-     <property name="text">
-      <string/>
-     </property>
-     <property name="icon">
-      <iconset resource="pdfedit.qrc">
-       <normaloff>:/images/underline.png</normaloff>:/images/underline.png</iconset>
      </property>
      <property name="checkable">
       <bool>true</bool>
