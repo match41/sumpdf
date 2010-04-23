@@ -260,7 +260,7 @@ void TextLine::VisitChars( CharVisitor *v ) const
 		else
 		{
 			// TODO: handle non-scalable font here
-//std::cout << "can't find char_code = " << (unsigned)m_text[idx] << std::endl ;
+std::cout << "can't find char_code in font " << font->BaseName() << " = " << (unsigned)m_text[idx] << std::endl ;
 		}
 	}
 }

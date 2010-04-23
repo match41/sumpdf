@@ -176,7 +176,9 @@ QGraphicsScene* DocModel::GoToPage( std::size_t page )
 		m_pages[m_current_page] = scene ;
 	}
 	
+	// triggers redraw
 	scene->invalidate() ;
+	
 	return scene ;
 }
 
