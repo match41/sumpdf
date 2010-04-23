@@ -17,47 +17,43 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	CodeMapTest.cc
-	\brief	implementation of the CodeMapTest class
-	\date	Mar 21, 2010
-	\author	Nestal Wan
+/**	\file	Type1Encoding.hh
+    \brief	definition the Type1Encoding class
+    \date	Apr 24, 2010
+    \author	Nestal Wan
 */
 
-#include "CodeMapTest.hh"
+#ifndef __PDF_TYPE1ENCODING_HH_EADER_INCLUDED__
+#define __PDF_TYPE1ENCODING_HH_EADER_INCLUDED__
 
-#include "font/encoding/CodeMap.hh"
+// base class headers
+#include "BaseEncoding.hh"
 
-#include "mock/Assert.hh"
+#include <wchar.h>
 
-namespace pdfut {
+struct FT_FaceRec_ ;
 
-using namespace pdf ;
+namespace pdf {
 
-CodeMapTest::CodeMapTest( )
+///	brief description
+/**	\internal
+	The Type1Encoding class represents
+*/
+class Type1Encoding : public BaseEncoding
 {
-}
+public :
+	explicit Type1Encoding( FT_FaceRec_ *face ) ;
 
-void CodeMapTest::setUp( )
-{
-}
+	std::wstring Decode( const std::string& bytes ) const ;
+	std::size_t Encode(
+		std::wstring::const_iterator first,
+		std::wstring::const_iterator last,
+		std::ostream& out ) const ;
 
-void CodeMapTest::tearDown( )
-{
-}
-
-void CodeMapTest::Test( )
-{
-	wchar_t ch ;
-	const char *name ;
-	
-	CPPUNIT_ASSERT( NameToUnicode( "bullet", ch ) ) ;
-	PDFUT_ASSERT_EQUAL( ch, 8226 ) ;
-	
-	CPPUNIT_ASSERT( NameToUnicode( "three", ch ) ) ;
-	PDFUT_ASSERT_EQUAL( ch, 0x33 ) ;
-	
-	CPPUNIT_ASSERT( UnicodeToName( 8226, name ) ) ;
-	PDFUT_ASSERT_EQUAL( name, std::string("bullet") ) ;
-}
+private :
+	wchar_t	m_map[256] ;
+} ;
 
 } // end of namespace
+
+#endif // TYPE1ENCODING_HH_

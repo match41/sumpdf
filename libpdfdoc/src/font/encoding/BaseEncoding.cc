@@ -17,47 +17,21 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	CodeMapTest.cc
-	\brief	implementation of the CodeMapTest class
-	\date	Mar 21, 2010
+/**	\file	BaseEncoding.cc
+	\brief	implementation of the BaseEncoding class
+	\date	Apr 24, 2010
 	\author	Nestal Wan
 */
 
-#include "CodeMapTest.hh"
+#include "BaseEncoding.hh"
 
-#include "font/encoding/CodeMap.hh"
+namespace pdf {
 
-#include "mock/Assert.hh"
-
-namespace pdfut {
-
-using namespace pdf ;
-
-CodeMapTest::CodeMapTest( )
-{
-}
-
-void CodeMapTest::setUp( )
-{
-}
-
-void CodeMapTest::tearDown( )
-{
-}
-
-void CodeMapTest::Test( )
-{
-	wchar_t ch ;
-	const char *name ;
+/**	constructor
 	
-	CPPUNIT_ASSERT( NameToUnicode( "bullet", ch ) ) ;
-	PDFUT_ASSERT_EQUAL( ch, 8226 ) ;
-	
-	CPPUNIT_ASSERT( NameToUnicode( "three", ch ) ) ;
-	PDFUT_ASSERT_EQUAL( ch, 0x33 ) ;
-	
-	CPPUNIT_ASSERT( UnicodeToName( 8226, name ) ) ;
-	PDFUT_ASSERT_EQUAL( name, std::string("bullet") ) ;
+*/
+BaseEncoding::~BaseEncoding( )
+{
 }
 
 } // end of namespace

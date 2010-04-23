@@ -25,13 +25,13 @@
 
 #include "SimpleEncoding.hh"
 
+#include "CodeMap.hh"
+
 #include "core/Array.hh"
 #include "core/Ref.hh"
 
 #include "file/ArrayReader.hh"
 #include "file/DictReader.hh"
-
-#include "font/CodeMap.hh"
 
 #include "util/Debug.hh"
 

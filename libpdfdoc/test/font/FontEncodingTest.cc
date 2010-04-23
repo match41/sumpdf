@@ -27,7 +27,7 @@
 
 #include "file/DictReader.hh"
 
-#include "font/SimpleEncoding.hh"
+#include "font/encoding/SimpleEncoding.hh"
 
 #include "mock/Assert.hh"
 #include "mock/MockFile.hh"

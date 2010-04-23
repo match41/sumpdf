@@ -17,33 +17,41 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	Type1Encoding.hh
-    \brief	definition the Type1Encoding class
-    \date	Apr 24, 2010
+/**	\file	FontEncoding.hh
+    \brief	definition the FontEncoding class
+    \date	Mar 21, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_TYPE1ENCODING_HH_EADER_INCLUDED__
-#define __PDF_TYPE1ENCODING_HH_EADER_INCLUDED__
+#ifndef __PDF_SIMPLEENCODING_HEADER_INCLUDED__
+#define __PDF_SIMPLEENCODING_HEADER_INCLUDED__
 
 // base class headers
-#include "util/RefCounter.hh"
-#include "font/FontEncoding.hh"
+#include "BaseEncoding.hh"
 
-#include <wchar.h>
+// other headers
+#include "core/Name.hh"
 
-struct FT_FaceRec_ ;
+#include <boost/bimap.hpp>
+#include <boost/bimap/unordered_set_of.hpp>
+
+#include <string>
+#include <iosfwd>
 
 namespace pdf {
 
+class DictReader ;
+class File ;
+class Ref ;
+
 ///	brief description
 /**	\internal
-	The Type1Encoding class represents
+	The FontEncoding class represents
 */
-class Type1Encoding : public RefCounter, public FontEncoding
+class SimpleEncoding : public BaseEncoding
 {
 public :
-	explicit Type1Encoding( FT_FaceRec_ *face ) ;
+	explicit SimpleEncoding( DictReader& self ) ;
 
 	std::wstring Decode( const std::string& bytes ) const ;
 	std::size_t Encode(
@@ -51,10 +59,23 @@ public :
 		std::wstring::const_iterator last,
 		std::ostream& out ) const ;
 
+	wchar_t ToUnicode( unsigned short char_code ) const ;
+	unsigned short FromUnicode( wchar_t unicode ) const ;
+
+	Ref Write( File *file ) const ;
+
 private :
-	wchar_t	m_map[256] ;
+	typedef	boost::bimap<
+		boost::bimaps::unordered_set_of<unsigned short>,
+		boost::bimaps::unordered_set_of<wchar_t>
+	> CharMap ; 
+
+	/// mapping from character code to unicode
+	CharMap	m_charmap ;
+	
+	Name	m_base ;
 } ;
 
 } // end of namespace
 
-#endif // TYPE1ENCODING_HH_
+#endif // FONTENCODING_HH_
