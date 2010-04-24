@@ -97,7 +97,7 @@ void RealDocTest::TestReadColour( )
 	page1->VisitGraphics( &v ) ;
 	
 	CPPUNIT_ASSERT( !v.m_lines.empty() ) ;
-	PDFUT_ASSERT_EQUAL( v.m_lines.front().Format().NonStrokeColour(),
+	PDFUT_ASSERT_EQUAL( v.m_lines.front().Format().FillColor(),
 		Color( 1,0,0 ) ) ;
 }
 

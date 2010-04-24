@@ -41,6 +41,7 @@ public :
 	CPPUNIT_TEST_SUITE( GraphicsStateTest ) ;
 		CPPUNIT_TEST( TestTextStateCommand ) ;
 		CPPUNIT_TEST( TestColourCommand ) ;
+		CPPUNIT_TEST( TestCopy ) ;
 	CPPUNIT_TEST_SUITE_END();
 
 public :
@@ -50,6 +51,7 @@ public :
 private :
 	void TestTextStateCommand( ) ;
 	void TestColourCommand( ) ;
+	void TestCopy( ) ;
 } ;
 
 } // end of namespace

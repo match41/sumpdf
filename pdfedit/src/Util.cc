@@ -172,13 +172,13 @@ QRectF ToQRectF( const Rect& rect )
 QBrush MakeBrush( const GraphicsState& gs )
 {
 	// fill colour
-	return QBrush( ToQColor( gs.NonStrokeColour() ) ) ;
+	return QBrush( ToQColor( gs.FillColor() ) ) ;
 }
 
 QPen MakePen( const GraphicsState& gs )
 {
 	// fill colour
-	QPen p( ToQColor( gs.StrokeColour() ) ) ;
+	QPen p( ToQColor( gs.StrokeColor() ) ) ;
 	p.setWidthF( gs.LineWidth( ) ) ;
 	p.setJoinStyle(
 		  gs.GetLineJoin() == GraphicsState::miter_join	? Qt::MiterJoin :

@@ -42,7 +42,7 @@
 
 #include <algorithm>
 #include <iterator>
-#include <ostream>
+#include <iostream>
 #include <set>
 
 namespace pdf {

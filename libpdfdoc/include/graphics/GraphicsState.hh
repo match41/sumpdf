@@ -95,8 +95,11 @@ public :
 
 	void SetValue( const Name& name, const Object& val ) ;
 	
-	const Color& StrokeColour( ) const ;
-	const Color& NonStrokeColour( ) const ;
+	const Color& StrokeColor( ) const ;
+	const Color& FillColor( ) const ;
+
+	bool SetStrokeColor( const Color& color ) ;
+	bool SetFillColor( const Color& color ) ;
 
 	std::vector<int> DashPattern() const ;
 	int DashPhrase( ) const ;
@@ -127,13 +130,14 @@ private :
 
 	void CopyOnWrite( ) ;
 
-	bool SetColourSpace( Color& colour, const Name& cs ) ;
-	bool ChangeColour( Color& old, const Color& new_ ) ;
-
 	void PrintColors(
 		std::ostream&			os,
 		ResourcesDict			*res,
 		const GraphicsState&	prev ) const ;
+
+	enum ColorType { strk_color, fill_color } ;
+	bool ChangeColor( ColorType type, const Color& color ) ;
+	bool SetColorSpace( ColorType type, const Name& cs ) ;
 
 private :
 	struct Impl ;

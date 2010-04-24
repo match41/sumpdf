@@ -107,9 +107,9 @@ QVariant GraphicsObject::data( const QModelIndex& index, int role ) const
 			// font size
 			case 3: return gs.GetTextState().FontSize( ) ;
 			
-			case 4: return (format("%1%") % gs.NonStrokeColour()).str().c_str();
+			case 4: return (format("%1%") % gs.FillColor()).str().c_str();
 			
-			case 5: return (format("%1%") % gs.StrokeColour()).str().c_str();
+			case 5: return (format("%1%") % gs.StrokeColor()).str().c_str();
 			}
 		}
 	}

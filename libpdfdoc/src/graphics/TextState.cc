@@ -155,8 +155,9 @@ std::ostream& TextState::Print(
 
 std::ostream& operator<<( std::ostream& os, const TextState& ts )
 {
-	return os	<< "<TextState font=\"" << ts.GetFont()->BaseName() << "\" "
-				<< "size=\"" << ts.FontSize() << "\" />\n" ;
+	return os	<< "<TextState font=\""
+				<< ( ts.GetFont() != 0 ? ts.GetFont()->BaseName() : "" )
+				<< "\" size=\"" << ts.FontSize() << "\" />\n" ;
 }
 
 bool TextState::operator==( const TextState& rhs ) const

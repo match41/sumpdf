@@ -79,15 +79,15 @@ void GraphicsStateTest::TestColourCommand( )
 	ContentOp op( Token("CS"), Begin(args), End(args) ) ;
 	subject.OnCommand( op, &res ) ;
 	
-	PDFUT_ASSERT_EQUAL( subject.StrokeColour().ColorSpace(), Color::rgb ) ;
-	PDFUT_ASSERT_EQUAL( subject.StrokeColour(), Color(0.0, 0.0, 0.0) ) ;
+	PDFUT_ASSERT_EQUAL( subject.StrokeColor().ColorSpace(), Color::rgb ) ;
+	PDFUT_ASSERT_EQUAL( subject.StrokeColor(), Color(0.0, 0.0, 0.0) ) ;
 
 	Object args2[] = { 1.0, 0.0, 0.0 } ;
 	ContentOp op2( Token("RG"), Begin(args2), End(args2) ) ;
 	subject.OnCommand( op2, &res ) ;
 
-	PDFUT_ASSERT_EQUAL( subject.StrokeColour().ColorSpace(), Color::rgb ) ;
-	PDFUT_ASSERT_EQUAL( subject.StrokeColour(), Color(1.0, 0.0, 0.0) ) ;
+	PDFUT_ASSERT_EQUAL( subject.StrokeColor().ColorSpace(), Color::rgb ) ;
+	PDFUT_ASSERT_EQUAL( subject.StrokeColor(), Color(1.0, 0.0, 0.0) ) ;
 	
 	GraphicsState prev ;
 	std::ostringstream oss ;
@@ -101,6 +101,16 @@ void GraphicsStateTest::TestColourCommand( )
 	std::ostringstream oss2 ;
 	subject.Print( oss2, &res, prev ) ;
 	PDFUT_ASSERT_EQUAL( oss2.str(), "1 0 0 RG\n0 1 0 0.5 k\n" ) ;
+}
+
+void GraphicsStateTest::TestCopy( )
+{
+	GraphicsState subject ;
+	subject.SetPenCap( GraphicsState::butt_cap ) ;
+	
+	GraphicsState copy( subject ) ;
+	PDFUT_ASSERT_EQUAL( copy.GetPenCap(), GraphicsState::butt_cap ) ;
+	PDFUT_ASSERT_EQUAL( copy, subject ) ;
 }
 
 } // end of namespace

@@ -57,7 +57,7 @@ QPen QtGraphicsState::Pen() const
 	Qt::PenJoinStyle jmap[] = { Qt::MiterJoin, Qt::RoundJoin, Qt::BevelJoin } ;
 
 	// fill colour
-	QPen p( ToQColor( m_gs.StrokeColour() ) ) ;
+	QPen p( ToQColor( m_gs.StrokeColor() ) ) ;
 	p.setWidthF( m_gs.LineWidth( ) ) ;
 	p.setJoinStyle( jmap[m_gs.GetLineJoin()] ) ;
 	p.setMiterLimit( m_gs.MiterLimit() ) ;
@@ -66,7 +66,7 @@ QPen QtGraphicsState::Pen() const
 
 QBrush QtGraphicsState::Brush( ) const
 {
-	return QBrush( ToQColor( m_gs.NonStrokeColour() ) ) ;
+	return QBrush( ToQColor( m_gs.FillColor() ) ) ;
 }
 
 void QtGraphicsState::InitStroker( QPainterPathStroker& qpps ) const

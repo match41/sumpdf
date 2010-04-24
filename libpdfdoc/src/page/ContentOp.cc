@@ -94,7 +94,7 @@ TokenSrc& operator>>( TokenSrc& src, ContentOp& op )
 			break ;
 		}
 	}
-//std::cout << op << std::endl;
+
 	return src ;
 }
 
