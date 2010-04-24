@@ -24,11 +24,15 @@
 #include <QPushButton>
 #include <QMenu>
 #include <QPainter>
+#include <QColorDialog>
 
 namespace pdf {
 
 InsertTextDlg::InsertTextDlg( QWidget *parent )
 	: QDialog( parent )
+	, m_getpos( false )
+	, m_toinsert( false )
+
 {
 	setupUi( this ) ;
 
@@ -46,27 +50,12 @@ InsertTextDlg::InsertTextDlg( QWidget *parent )
     m_textcolor->setIcon(
 		OnCreateColorButtonIcon( ":/images/textpointer.png", Qt::black) );
     m_textcolor->setAutoFillBackground( true );
-
-	connect(	// text color changed
-		m_textcolor, 
-		SIGNAL( clicked( ) ),
-		this, 
-		SLOT( OnFontChanged( ) ) );
-	connect(	// text bold
-		m_bold, 
-		SIGNAL( clicked( ) ),
-		this, 
-		SLOT( OnFontChanged( ) ) );	
-	connect(	// text italic
-		m_italic, 
-		SIGNAL( clicked( ) ),
-		this, 
-		SLOT( OnFontChanged( ) ) );
-	connect(	// text underlined
-		m_underlined, 
-		SIGNAL( clicked( ) ),
-		this, 
-		SLOT( OnFontChanged( ) ) );
+	// text color changed
+	connect( m_textcolor,	SIGNAL( clicked() ), this, SLOT( OnFontChanged() ) );
+	// text bold
+	connect( m_bold,		SIGNAL( clicked() ), this, SLOT( OnFontChanged() ) );	
+	// text italic
+	connect( m_italic,		SIGNAL( clicked() ), this, SLOT( OnFontChanged() ) );
 
 	connect(
 		m_font,
@@ -98,7 +87,14 @@ void InsertTextDlg::OnTextColorChanged( )
 		qVariantValue<QColor>( m_text_action->data() ) ) );
     OnFontChanged();
 }
-
+void InsertTextDlg::OnSetColor( )
+{
+    QColor color = QColorDialog::getColor(Qt::green, this);
+	m_textcolor->setIcon(
+		OnCreateColorButtonIcon( ":/images/textpointer.png", color ) );
+    m_text->setTextColor( color );
+}
+// drop-down text color selection menu
 QMenu *InsertTextDlg::OnCreateColorMenu( const char *slot, QColor default_color )
 {
     QList<QColor> colors;
@@ -108,22 +104,29 @@ QMenu *InsertTextDlg::OnCreateColorMenu( const char *slot, QColor default_color 
 		<< tr("blue") << tr("yellow");
 
     QMenu *color_menu = new QMenu;
-    for (int i = 0; i < colors.count(); ++i) {
-        QAction *action = new QAction(names.at(i), this);
-        action->setData(colors.at(i));
-        action->setIcon(OnCreateColorIcon(colors.at(i)));
+    for ( int i = 0; i < colors.count(); ++i ) 
+	{
+        QAction *action = new QAction( names.at(i), this );
+        action->setData( colors.at(i) );
+        action->setIcon( OnCreateColorIcon( colors.at(i) ) );
         connect( action, SIGNAL( triggered() ), this, slot );
         color_menu->addAction( action );
         if (colors.at(i) == default_color) 
 		{
             color_menu->setDefaultAction( action );
         }
-    }
+    }        
+	// chose color from QColorDialog
+	QAction *action = new QAction( "... more", this );
+    color_menu->addAction( action );
+    connect( action, SIGNAL( triggered() ), this, SLOT( OnSetColor() ) );
+
     return color_menu;
 }
 
-QIcon InsertTextDlg::OnCreateColorButtonIcon( const QString &image_file,
-                        QColor color )
+QIcon InsertTextDlg::OnCreateColorButtonIcon( 
+	const QString &image_file,
+	QColor color )
 {
     QPixmap pixmap( 50, 80 );
     pixmap.fill( Qt::transparent );
@@ -147,9 +150,23 @@ QIcon InsertTextDlg::OnCreateColorIcon( QColor color )
     return QIcon( pixmap );
 }
 
+void InsertTextDlg::OnIBeamCursor( )
+{
+	QApplication::setOverrideCursor( QCursor(Qt::IBeamCursor) );
+	m_getpos = true;
+	m_toinsert = true;
+
+}
+
 void InsertTextDlg::OnMousePositionSet( QPointF new_pos )
 {
-	pos = new_pos;
+	if ( m_getpos )
+	{
+		pos = new_pos;
+		QApplication::restoreOverrideCursor();
+		emit InsertI_beam( pos );
+		m_getpos = false;
+	}
 }
 
 QString	InsertTextDlg::GetFontSize( )
@@ -173,7 +190,7 @@ void InsertTextDlg::OnFontChanged( )
     font.setPointSize( m_fontsize->currentText().toInt() );
     font.setWeight(m_bold->isChecked() ? QFont::Bold : QFont::Normal);
     font.setItalic(m_italic->isChecked());
-    font.setUnderline(m_underlined->isChecked());
+    // font.setUnderline(m_underlined->isChecked());
     m_text->setTextColor( qVariantValue<QColor>( m_text_action->data() ) );
 
     m_text->setFont( font );
@@ -182,11 +199,22 @@ void InsertTextDlg::OnFontChanged( )
 
 void InsertTextDlg::OnInsertTextNow( )
 {
-	emit OnInsertClicked( );
+	if ( m_toinsert )
+	{
+		m_toinsert = false;
+		emit DeleteI_beam( pos );
+		emit OnInsertClicked( pos );	
+		close();
+	}
 }
 
 void InsertTextDlg::closeEvent( QCloseEvent *e )
 {
+	if ( m_toinsert )
+		emit DeleteI_beam( pos );
+
+	m_getpos = false;
+	m_toinsert = false;
 	QDialog::closeEvent( e );
 	emit OnDlgClosed( );
 }

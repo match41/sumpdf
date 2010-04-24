@@ -45,31 +45,38 @@ public:
 	QTextEdit*	GetText( );
 	QString		GetFontSize( );
 	QPointF		GetPosition( );
+//	bool		ReadyToInsert( );	// prevents inserting on old position
 
 private:
 	void closeEvent(QCloseEvent *e);
 
 signals:
 	void OnDlgClosed( );
-	void OnInsertClicked( );
+	void OnInsertClicked( QPointF );
 	void FontPropertiesChanged( QFont );
 	void FontPropertiesChanged( int );
+	void InsertI_beam( QPointF );
+	void DeleteI_beam( QPointF );
 
 private slots:
+	void OnIBeamCursor( );
 	void OnFontChanged( ) ;		// apply font selection to QTextEdit
 	void OnInsertTextNow( );	// insert text into document page
 	void OnMousePositionSet( QPointF );
 	void OnTextColorChanged( );
+	void OnSetColor( );			// set color from QColorDialog
 
 private:
 	QPushButton	*m_btn;
 	QPointF		pos;			// mouse position
 	QAction*	m_text_action;
+	bool		m_getpos;		// get mouse click position only when insert icon clicked
+	bool		m_toinsert;	
 
 private:
 	// text color
 	QIcon OnCreateColorButtonIcon( const QString& , QColor );
-    QMenu *OnCreateColorMenu( const char*, QColor );
+    QMenu *OnCreateColorMenu( const char*, QColor );	// text color selection
 	QIcon OnCreateColorIcon( QColor );
 
 };

@@ -325,22 +325,46 @@ void MainWnd::OnViewSource( )
 
 void MainWnd::OnInsertDlg( )
 {
+	m_insert_dlg->setModal( true );
 	m_insert_dlg->show();
 }
 
 void MainWnd::TextInsertConnect( )
 {
+	connect( 
+		m_texttb_items->m_insert_text,	
+		SIGNAL( clicked() ),	
+		m_insert_dlg, 
+		SLOT(OnIBeamCursor() ) );
+
 	connect( 	// mouse position -> dlg
 		m_view, 
 		SIGNAL( mousePositionSet( QPointF ) ), 
 		m_insert_dlg, 
 		SLOT( OnMousePositionSet( QPointF ) ) );
 
+	connect( 	// mouse position -> dlg
+		m_insert_dlg, 
+		SIGNAL( InsertI_beam( QPointF ) ), 
+		m_view, 
+		SLOT( InsertI_beam( QPointF ) ) );
+	connect( 	// mouse position -> dlg
+		m_insert_dlg, 
+		SIGNAL( InsertI_beam( QPointF ) ), 
+		this, 
+		SLOT( OnInsertDlg() ) );
+
 	connect(	// Insert text into current scene
 		m_insert_dlg, 
-		SIGNAL( OnInsertClicked( ) ),	
+		SIGNAL( OnInsertClicked( QPointF ) ),	
 		this, 
 		SLOT( OnInsertTextNow( ) ) );
+	connect(	// Insert text into current scene
+		m_insert_dlg, 
+		SIGNAL( DeleteI_beam( QPointF ) ),	
+		m_view, 
+		SLOT( DeleteI_beam( QPointF ) ) );
+
 	connect(	// close Insert Dialog
 		m_insert_dlg, 
 		SIGNAL( OnDlgClosed( ) ),	
