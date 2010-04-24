@@ -26,13 +26,14 @@
 
 #include "SimpleFont.hh"
 
-#include "AdobeCMap.hh"
 #include "RealGlyph.hh"
 #include "FontException.hh"
 #include "FontDescriptor.hh"
 #include "FontSubsetInfo.hh"
-#include "SimpleEncoding.hh"
-#include "Type1Encoding.hh"
+
+#include "encoding/AdobeCMap.hh"
+#include "encoding/SimpleEncoding.hh"
+#include "encoding/Type1Encoding.hh"
 
 // libpdfdoc headers
 #include "core/Array.hh"
@@ -100,12 +101,18 @@ struct SimpleFont::Impl
 	}
 } ;
 
+// the "Subtype" field of the font dictionary 
 const Name SimpleFont::m_font_types[] =
 {
-	Name("TrueType"), Name("Type1"), Name("MMType1"), Name("Type3"),
+	Name("TrueType"),
 	Name("Type0" ),
+	Name("Type1" ),
+	Name("Type1" ),  	// CFF/type2 font is treated as type1
+	Name("Type3"),
+	Name("MMType1"),	
 	
-	Name("Type1"),	// CFF opentype font is treated as type1
+	Name("Type1"),		// CFF opentype font is treated as type1
+	Name("TrueType"),	// opentype font with glyf table is treated as truetype
 } ;
 
 SimpleFont::SimpleFont( const std::string& name, FontDb *font_db )
@@ -502,7 +509,7 @@ Ref SimpleFont::Write( File *file, const FontSubsetInfo *subset ) const
 
 const Name& SimpleFont::SubType( font::Type t )
 {
-	PDF_ASSERT( t >= font::truetype && t <= font::type0 ) ;
+	PDF_ASSERT( t >= font::truetype && t < font::unknown ) ;
 	return m_font_types[t] ;
 }
 

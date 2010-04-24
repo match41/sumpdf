@@ -57,8 +57,12 @@ Type GetType( FT_FaceRec_ *face )
 	
 	// OpenType CFF
 	else if ( ::strcasecmp( format, "CFF" ) == 0 )
-		return openType ;
-	
+	{
+		if ( face->face_flags & FT_FACE_FLAG_SFNT )
+			return opentype_cff ;
+		else
+			return type2 ;
+	}
 	else
 		throw FontException( "unknown font type: " + std::string(format) ) ;
 }

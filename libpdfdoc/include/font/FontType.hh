@@ -35,7 +35,50 @@ namespace font
 	///	font type enum
 	/**	The Type enum represents an enumeration of font types.
 	*/
-	enum Type { truetype, type1, mmtype1, type3, type0, openType, unknown } ;
+	enum Type
+	{
+		///	Truetype fonts
+		/**	Truetype fonts are SFNT base fonts with a "glyp" table. They are
+			the standard font format for MS Windows systems.
+		*/
+		truetype,
+		
+		/// Composite fonts
+		/**	Type 0 fonts are composite fonts. They aren't really real fonts.
+			They contain other fonts as their descendant. In PDF they can only
+			contain one single descendant which should be a CID font.
+		*/
+		type0,
+		
+		/// Type 1 fonts
+		/**	Very commonly called "postscript fonts". They are developed by
+			adobe. They use postscript language to describe glyph shapes.
+		*/
+		type1,
+		
+		/// CFF/Type 2 fonts
+		/**	Type 2 fonts are called CFF (compact font format). They are just
+			type 1 fonts with a binary representation.
+		*/
+		type2,
+		
+		/// Type 3 fonts
+		/**	Type 3 fonts are fake fonts which the glyph are described by PDF
+			rendering operators.
+		*/
+		type3,
+		
+		/// Multiple Master Type 1 fonts
+		mmtype1,
+		
+		/// OpenType CFF fonts
+		/**	OpenType font (i.e. SFNT based font) with a "CFF " table instead
+			of a "glyp" table. The "CFF " table contains a CFF font.
+		*/
+		opentype_cff,
+		
+		unknown
+	} ;
 	
 	Type GetType( FT_FaceRec_ *face ) ;
 	

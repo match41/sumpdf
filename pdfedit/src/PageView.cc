@@ -103,7 +103,6 @@ void PageView::mouseMoveEvent( QMouseEvent *event )
 
 void PageView::InsertI_beam( QPointF pos)
 {
-
 	QTextEdit text;
 	text.setFontPointSize(16);
 	text.setText("I");
