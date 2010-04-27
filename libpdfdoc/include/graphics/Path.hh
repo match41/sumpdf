@@ -61,8 +61,7 @@ public :
 	virtual void CloseSubPath( ) = 0 ;
 	virtual bool IsFill( ) const = 0 ;
 	virtual bool IsStroke( ) const = 0 ;
-	virtual FillMode GetFillMode( ) const = 0 ;
-
+	virtual FillMode Style( ) const = 0 ;
 } ;
 
 } // end of namespace

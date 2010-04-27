@@ -101,7 +101,7 @@ const RealPath::HandlerMap::SegOpMap RealPath::HandlerMap::m_seg_map(
 	
 */
 RealPath::RealPath( const GraphicsState& gs, const Matrix& ctm )
-	: m_stroke( false )
+	: m_stroke( true )
 	, m_fill( false )
 	, m_fillMode( winding )
 	, m_state( gs )
@@ -117,8 +117,37 @@ void RealPath::OnCommand( ContentOp& op, const ResourcesDict *res )
 		(this->*(i->second))( op, res ) ;
 }
 
-void RealPath::Print( std::ostream& os, ResourcesDict *res ) const
+void RealPath::Print( std::ostream& os, ResourcesDict * ) const
 {
+	PDF_ASSERT( m_ops.size() == m_pt_index.size() ) ;
+
+	std::size_t pt_idx = 0 ;
+	for ( std::vector<PathSegment::Op>::const_iterator i = m_ops.begin() ;
+		i != m_ops.end() ; ++i )
+	{
+		PDF_ASSERT( pt_idx == m_pt_index[i-m_ops.begin()] ) ;
+		PDF_ASSERT( pt_idx + PathSegment::ArgCount(*i) <= m_points.size() ) ;
+		
+		PathSegment ps( *i, &m_points[pt_idx] ) ;
+		os << ps ;
+
+		pt_idx += ps.Count() ;
+	}
+	
+	if ( m_stroke && !m_fill )
+		os << "S\n" ;
+	else if ( !m_stroke && m_fill && m_fillMode == winding )
+		os << "f\n" ;
+	else if ( !m_stroke && m_fill && m_fillMode == oddEven )
+		os << "f*\n" ;
+	else if ( m_stroke && m_fill && m_fillMode == winding )
+		os << "B\n" ;
+	else if ( m_stroke && m_fill && m_fillMode == oddEven )
+		os << "B*\n" ;
+	else if ( !m_stroke && !m_fill )
+		os << "n\n" ;
+	else
+		throw Exception( "??" ) ;
 }
 
 void RealPath::Visit( GraphicsVisitor *visitor )
@@ -298,7 +327,7 @@ bool RealPath::IsStroke( ) const
 	return m_stroke ;
 }
 
-RealPath::FillMode RealPath::GetFillMode( ) const
+RealPath::FillMode RealPath::Style( ) const
 {
 	return m_fillMode ;
 }

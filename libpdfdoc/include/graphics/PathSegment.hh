@@ -45,6 +45,7 @@ public :
 	typedef const double* iterator ;
 
 public :
+	// default constructor
 	explicit PathSegment( Op op = close, const double *points = 0 ) ;
 
 	// default copy constructor is fine.

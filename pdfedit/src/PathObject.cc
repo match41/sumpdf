@@ -37,6 +37,8 @@
 #include <QPainter>
 #include <QPainterPathStroker>
 
+#include <QDebug>
+
 namespace pdf {
 
 /**	constructor

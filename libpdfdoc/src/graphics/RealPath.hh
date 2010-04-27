@@ -62,7 +62,7 @@ public :
 	void CloseSubPath( ) ;
 	bool IsFill( ) const ;
 	bool IsStroke( ) const ;
-	FillMode GetFillMode( ) const ;
+	FillMode Style( ) const ;
 	
 private :
 	/// command handler
