@@ -28,6 +28,7 @@
 #include "Util.hh"
 
 #include <util/Debug.hh>
+#include <util/Util.hh>
 
 #include <QBrush>
 #include <QColor>
@@ -51,22 +52,25 @@ const GraphicsState& QtGraphicsState::Get() const
 
 QPen QtGraphicsState::Pen() const
 {
-	PDF_ASSERT( m_gs.GetLineJoin() >= GraphicsState::miter_join ) ;
-	PDF_ASSERT( m_gs.GetLineJoin() <= GraphicsState::bevel_join ) ;
-
 	Qt::PenJoinStyle jmap[] = { Qt::MiterJoin, Qt::RoundJoin, Qt::BevelJoin } ;
+	PDF_ASSERT( static_cast<std::size_t>(m_gs.LineJoin()) < Count(jmap) ) ;
 
 	// fill colour
 	QPen p( ToQColor( m_gs.StrokeColor() ) ) ;
 	p.setWidthF( m_gs.LineWidth( ) ) ;
-	p.setJoinStyle( jmap[m_gs.GetLineJoin()] ) ;
+	p.setJoinStyle( jmap[m_gs.LineJoin()] ) ;
 	p.setMiterLimit( m_gs.MiterLimit() ) ;
 	return p ;
 }
 
 QBrush QtGraphicsState::Brush( ) const
 {
-	return QBrush( ToQColor( m_gs.FillColor() ) ) ;
+	return Brush( m_gs.FillColor() ) ;
+}
+
+QBrush QtGraphicsState::Brush( const Color& color )
+{
+	return QBrush( ToQColor( color ) ) ;
 }
 
 void QtGraphicsState::InitStroker( QPainterPathStroker& qpps ) const

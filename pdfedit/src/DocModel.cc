@@ -242,10 +242,13 @@ void DocModel::AddText(
 	Font *f = m_doc->CreateSimpleFont( ToStr( font.family() ) ) ;
 	PDF_ASSERT( f != 0 ) ;
 
-	TextState ts ;
-	ts.SetFont( size, f ) ;
+	GraphicsState gs ;
+	gs.Text().ChangeFont( size, f ) ;
 
-	TextLine line( GraphicsState(ts),
+	// TODO: change color here
+	// gs.FillColor( Color(1,0,0) ) ;
+
+	TextLine line( gs,
 		Matrix::Translation( pos.x(), pos.y() ), 
 		ToWStr( text ) ) ;
 

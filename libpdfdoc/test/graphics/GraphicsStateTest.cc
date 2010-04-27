@@ -67,8 +67,8 @@ void GraphicsStateTest::TestTextStateCommand( )
 	ContentOp op( Token("Tf"), Begin(args), End(args) ) ;
 	subject.OnCommand( op, &res ) ;  
 	
-	PDFUT_ASSERT_EQUAL( subject.GetTextState().FontSize(), 12.0 ) ;
-	PDFUT_ASSERT_EQUAL( subject.GetTextState().GetFont(), &font ) ;
+	PDFUT_ASSERT_EQUAL( subject.Text().FontSize(), 12.0 ) ;
+	PDFUT_ASSERT_EQUAL( subject.Text().FontFace(), &font ) ;
 }
 
 void GraphicsStateTest::TestColourCommand( )
@@ -106,11 +106,15 @@ void GraphicsStateTest::TestColourCommand( )
 void GraphicsStateTest::TestCopy( )
 {
 	GraphicsState subject ;
-	subject.SetPenCap( GraphicsState::butt_cap ) ;
+	subject.PenCap( GraphicsState::butt_cap ) ;
 	
 	GraphicsState copy( subject ) ;
-	PDFUT_ASSERT_EQUAL( copy.GetPenCap(), GraphicsState::butt_cap ) ;
+	PDFUT_ASSERT_EQUAL( copy.PenCap(), GraphicsState::butt_cap ) ;
 	PDFUT_ASSERT_EQUAL( copy, subject ) ;
+	
+	copy.FillColor( Color(1,0,0) ) ;
+	PDFUT_ASSERT_EQUAL( copy.FillColor(), Color(1,0,0) ) ;
+	PDFUT_ASSERT_EQUAL( subject.FillColor(), Color() ) ;
 }
 
 } // end of namespace

@@ -51,10 +51,10 @@ TextStateTest::TextStateTest( )
 void TextStateTest::TestPrint( )
 {
 	TextState ts ;
-	ts.SetCharSpace( 100 ) ;
+	ts.CharSpace( 100 ) ;
 	
 	MockFont *font = new MockFont ;
-	ts.SetFont( 12.0, font ) ;
+	ts.ChangeFont( 12.0, font ) ;
 	
 	MockResources r ;
 	Name n = r.AddFont( font ) ;

@@ -257,7 +257,7 @@ void Catalog::FontSubset::VisitText( Text *text )
 	{
 		const std::wstring& text = i->Text() ;
 		const BaseFont* font = static_cast<BaseFont*>(
-			i->Format().GetTextState().GetFont() ) ;
+			i->Format().Text().FontFace() ) ;
 		
 		CharSet& cs = m_used_chars[font] ;
 		

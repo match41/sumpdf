@@ -64,9 +64,6 @@ namespace pdf
 	Rect FromQRectF( const QRectF& rect ) ;
 	QRectF ToQRectF( const Rect& rect );
 
-	QBrush MakeBrush( const GraphicsState& gs ) ;
-	QPen MakePen( const GraphicsState& gs ) ;
-
 } // end of namespace
 
 #endif // UTIL_HH_

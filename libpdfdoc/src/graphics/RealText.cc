@@ -241,7 +241,7 @@ void RealText::OnTD( ContentOp& op, const ResourcesDict * )
 	if ( op.Count() >= 2 )
 	{
 		double	ty	= op[1] ;
-		m_state.GetTextState().SetLeading( -ty ) ;
+		m_state.Text().Leading( -ty ) ;
 
 		m_text_mat.Translate( op[0], ty ) ; 
 		m_offset = 0 ;
@@ -266,7 +266,7 @@ void RealText::OnTm( ContentOp& op, const ResourcesDict * )
 
 void RealText::OnTstar( ContentOp& , const ResourcesDict * )
 {
-	m_text_mat.Translate( 0, -m_state.GetTextState().Leading() ) ;
+	m_text_mat.Translate( 0, -m_state.Text().Leading() ) ;
 	m_offset = 0 ;
 	
 	AddLine( TextLine( m_state, m_text_mat ) ) ;
@@ -282,12 +282,12 @@ void RealText::OnTj( ContentOp& op, const ResourcesDict * )
 		TextLine& current = m_lines.back() ;
 		
 		// must set the font properly before showing text
-		Font *font = current.Format().GetFont() ;
+		Font *font = current.Format().FontFace() ;
 		if ( font != 0 )
 		{
 			std::wstring ws = DecodeString( op[0].As<std::string>(), font ) ;
 			current.AppendText( ws ) ;
-			m_offset += m_state.GetTextState().Width( ws ) ;
+			m_offset += m_state.Text().Width( ws ) ;
 		}
 	}
 }
@@ -325,7 +325,7 @@ void RealText::OnTJ( ContentOp& op, const ResourcesDict * )
 
 	double offset = 0.0 ;
 
-	Font *font = current.Format().GetFont() ;
+	Font *font = current.Format().FontFace() ;
 
 	if ( op.Count() > 0 && font != 0 )
 	{
@@ -335,13 +335,13 @@ void RealText::OnTJ( ContentOp& op, const ResourcesDict * )
 			if ( i->Is<std::string>() )
 			{
 				std::wstring ws = DecodeString(i->As<std::string>(), font) ;
-				offset += m_state.GetTextState().Width( ws ) ;
+				offset += m_state.Text().Width( ws ) ;
 				current.AppendText( ws ) ;
 			}
 			else if ( i->IsNumber() )
 			{
 				double disp = i->To<double>() / 1000.0 *
-					m_state.GetTextState().FontSize() ;
+					m_state.Text().FontSize() ;
 				
 				offset -= disp ;
 				current.AppendSpace( disp ) ;

@@ -83,7 +83,7 @@ bool TextLine::IsEmpty( ) const
 
 void TextLine::AppendText( const std::wstring& text )
 {
-	Font *f = m_state.GetFont() ;
+	Font *f = m_state.FontFace() ;
 	if ( f != 0 )
 		m_text.insert( m_text.end(), text.begin(), text.end() ) ;
 }
@@ -145,7 +145,7 @@ std::ostream& TextLine::PrintText( std::ostream& os ) const
 				idx = i->index ;
 			}
 			
-			a.push_back( i->width * 1000.0 / m_state.GetTextState().FontSize() ) ;
+			a.push_back( i->width * 1000.0 / m_state.Text().FontSize() ) ;
 		}
 		
 		if ( idx < m_text.size() )
@@ -159,7 +159,7 @@ std::string TextLine::EncodeText(
 	std::wstring::const_iterator first,
 	std::wstring::const_iterator last ) const
 {
-	Font *f = m_state.GetTextState().GetFont() ;
+	Font *f = m_state.FontFace() ;
 	PDF_ASSERT( f != 0 ) ;
 	
 	std::ostringstream oss ;
@@ -216,7 +216,7 @@ const std::wstring& TextLine::Text() const
 */
 double TextLine::Width( ) const
 {
-	return m_state.GetTextState().Width( m_text ) -
+	return m_state.Text().Width( m_text ) -
 		std::accumulate(
 			m_space.begin(),
 			m_space.end(),
@@ -232,7 +232,7 @@ double TextLine::Width( ) const
 void TextLine::VisitChars( CharVisitor *v ) const
 {
 	double	offset = 0.0 ;
-	Font *font	= m_state.GetFont( ) ; 
+	Font *font	= m_state.FontFace( ) ; 
 	
 	std::vector<Space>::const_iterator sp = m_space.begin( ) ;
 	
@@ -248,7 +248,7 @@ void TextLine::VisitChars( CharVisitor *v ) const
 		PDF_ASSERT( font != 0 ) ;
 		const Glyph *glyph = font->GetGlyph( m_text[idx] ) ;
 
-		const TextState& ts = m_state.GetTextState() ;
+		const TextState& ts = m_state.Text() ;
 
 		if ( glyph != 0 && glyph->IsOutline() )
 		{

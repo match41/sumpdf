@@ -128,7 +128,7 @@ void RealPageTest::TestWrite( )
 	pdf::SimpleFont *f = new pdf::SimpleFont( "TimesNewRoman", m_font_db ) ;
 
 	pdf::TextState ts ;
-	ts.SetFont( 12.0, f ) ;
+	ts.ChangeFont( 12.0, f ) ;
 	p->GetResource()->AddFont( f ) ;
 
 	MockFile file ;
@@ -156,7 +156,7 @@ void RealPageTest::TestDecode( )
 //	p->Finish( ) ;
 
 	pdf::TextState ts ;
-	ts.SetFont( 12.0, f ) ;
+	ts.ChangeFont( 12.0, f ) ;
 	p->GetResource()->AddFont( f ) ;
 
 //	pdf::PageContent *c = p->GetContent( ) ;

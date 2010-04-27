@@ -122,10 +122,11 @@ Color FromQColor( const QColor& color )
 	switch ( c.spec() )
 	{
 		case QColor::Rgb:
-			result.AssignRGB( c.red(), c.green(), c.blue() ) ;
+			result.AssignRGB( c.redF(), c.greenF(), c.blueF() ) ;
 			break;
 		case QColor::Cmyk:
-			result.AssignCMYK( c.cyan(), c.magenta(), c.yellow(), c.black() ) ;
+			result.AssignCMYK(
+				c.cyanF(), c.magentaF(), c.yellowF(), c.blackF() ) ;
 			break ;
 		default :
 			break ;
@@ -167,25 +168,6 @@ QRectF ToQRectF( const Rect& rect )
 			rect.Bottom(),
 			rect.Right(),
 			rect.Top() );
-}
-
-QBrush MakeBrush( const GraphicsState& gs )
-{
-	// fill colour
-	return QBrush( ToQColor( gs.FillColor() ) ) ;
-}
-
-QPen MakePen( const GraphicsState& gs )
-{
-	// fill colour
-	QPen p( ToQColor( gs.StrokeColor() ) ) ;
-	p.setWidthF( gs.LineWidth( ) ) ;
-	p.setJoinStyle(
-		  gs.GetLineJoin() == GraphicsState::miter_join	? Qt::MiterJoin :
-		( gs.GetLineJoin() == GraphicsState::round_join	? Qt::RoundJoin :
-		                                                  Qt::BevelJoin ) ) ;
-	p.setMiterLimit( 5 ) ;
-	return p ;
 }
 
 } // end of namespace
