@@ -50,7 +50,12 @@ void ToolBox::CreateTextInsertToolbar( QToolBar *parent, QWidget *parentWnd )
     icon.addFile(QString::fromUtf8(":/images/inserttext.png"), QSize(), QIcon::Normal, QIcon::Off);
 	m_insert_text->setIcon(icon);
 	
-	connect( m_insert_text,		SIGNAL( clicked() ),	this, SLOT(emit clicked()) );
+	connect( m_insert_text,		SIGNAL( clicked() ),	this, SLOT( OnClicked() ) );
+}
+
+void ToolBox::OnClicked( )
+{
+	emit clicked();
 }
 
 } // end of namespace

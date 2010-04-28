@@ -51,16 +51,14 @@ public:
 
 public:
 	QPushButton		*m_insert_text;
-	// QFontComboBox	*m_font;
-	// QComboBox		*m_font_size;
 
 // signals:
-
 public slots:
 	void OnInsertBtnUp( );
+	void OnClicked( );
 
 signals:
-	void clicked( );
+	void clicked();
 
 private:
 	void CreateTextInsertToolbar( QToolBar *parent , QWidget *parentWnd );
