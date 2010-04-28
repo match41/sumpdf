@@ -77,7 +77,7 @@ std::wstring Type1Encoding::Decode( const std::string& bytes ) const
 {
 	std::wstring rs ;
 	for ( std::string::const_iterator i = bytes.begin() ; i != bytes.end() ; ++i )
-		rs.push_back( m_map[*i] ) ;
+		rs.push_back( m_map[static_cast<std::size_t>(*i)] ) ;
 	return rs ;
 }
 

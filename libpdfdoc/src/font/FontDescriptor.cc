@@ -67,24 +67,39 @@ const Name FontDescriptor::m_stretch_names[] =
 /**	\internal	constructor
 */
 FontDescriptor::FontDescriptor( )
-	: m_type( font::unknown ),
-	  m_flags( 0 )
+	: m_type( font::unknown )
+	, m_stretch( font::normal_width )
+	, m_weight( 400 )					// 400 means normal
+	, m_flags( 0 )
 {
-	m_length1 = m_length2 = m_length3 = 0 ;
-	m_italic_angle = m_ascent = m_descent = m_leading = 0.0 ;
+	m_ascent	= m_descent	= m_leading		= m_cap_height	= m_x_height   =
+	m_stemv		= m_stemh	= m_avg_width	= m_max_width	= m_miss_width = 0 ;
+	m_length1	= m_length2	= m_length3		= 0 ;
 }
 
 FontDescriptor::FontDescriptor( font::Type type, DictReader& self )
-	: m_type( type ),
-	  m_flags( 0 )
+	: m_type( type )
+	, m_stretch( font::normal_width )
+	, m_weight( 400 )					// 400 means normal
+	, m_flags( 0 )
 {
+	m_ascent	= m_descent	= m_leading		= m_cap_height	= m_x_height   =
+	m_stemv		= m_stemh	= m_avg_width	= m_max_width	= m_miss_width = 0 ;
+	m_length1	= m_length2	= m_length3		= 0 ;
+	
 	Read( type, self ) ;
 }
 
 FontDescriptor::FontDescriptor( FT_Face face, std::vector<unsigned char>& prog )
 	: m_type( font::GetType( face ) )
+	, m_stretch( font::normal_width )
+	, m_weight( 400 )					// 400 means normal
 	, m_flags( GetFlag( face ) )
 {
+	m_ascent	= m_descent	= m_leading		= m_cap_height	= m_x_height   =
+	m_stemv		= m_stemh	= m_avg_width	= m_max_width	= m_miss_width = 0 ;
+	m_length1	= m_length2	= m_length3		= 0 ;
+
 	PDF_ASSERT( face != 0 ) ;
 	m_length1 = m_length2 = m_length3 = 0 ;
 	
@@ -100,6 +115,7 @@ FontDescriptor::FontDescriptor( FT_Face face, std::vector<unsigned char>& prog )
 	m_ascent 		= FontUnit(face->ascender,	face) ;
 	m_descent		= FontUnit(face->descender,	face) ;
 	m_leading		= 0 ;					// TODO: see other implementation
+	m_stemv			= 70.0 ;				// TODO: verify?
 	
 	if ( os2 != 0 )
 	{
