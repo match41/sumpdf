@@ -85,7 +85,7 @@ struct SimpleFont::Impl
 	
 	FontDescriptor		*descriptor ;
 	Object				to_unicode ;
-	SimpleEncoding		*encoding ;		//!< name or dictionary
+	BaseEncoding		*encoding ;		//!< name or dictionary
 	
 	typedef std::tr1::unordered_map<wchar_t, RealGlyph*> GlyphMap ;
 	GlyphMap	glyphs ;
@@ -190,9 +190,12 @@ void SimpleFont::LoadEncoding( DictReader& reader )
 	try
 	{
 		ElementFactory<> f( reader ) ;
-		SimpleEncoding *enc = f.Create<SimpleEncoding>(
+		BaseEncoding *enc = f.Create<SimpleEncoding>(
 			"Encoding",
 			NewPtr<SimpleEncoding>() ) ;
+		
+		if ( enc == 0 && m_impl->type == font::type1 )
+			enc = new Type1Encoding( m_impl->face ) ;
 		
 		if ( enc != 0 )
 		{
@@ -200,10 +203,6 @@ void SimpleFont::LoadEncoding( DictReader& reader )
 				m_impl->encoding->Release() ;
 			
 			m_impl->encoding = enc ;
-		}
-		else
-		{
-//			Type1Encoding *enc = new Type1Encoding( m_impl->face ) ;
 		}
 	}
 	catch ( std::exception& )
@@ -267,15 +266,10 @@ bool SimpleFont::LoadFontProgram( FontDb *font_db )
 			
 			PDF_ASSERT( m_impl->face != 0 ) ;
 			
-//			LoadGlyphs( ) ;
 			return true ;
 		}
-//		else if ( !InitWithStdFont( m_impl->base_font.Str(), font_db )  )
-//			throw Exception( "can't load font " + m_impl->base_font.Str() );
-		
 	}
-//	else
-		return false ;
+	return false ;
 }
 
 bool SimpleFont::InitWithStdFont( const std::string& name, FontDb *font_db )

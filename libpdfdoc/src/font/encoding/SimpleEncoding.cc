@@ -61,8 +61,7 @@ SimpleEncoding::SimpleEncoding( DictReader& self )
 			{
 				wchar_t ch = 0 ;
 				if ( NameToUnicode( i->As<Name>().Str().c_str(), ch ) )
-					m_charmap.insert( CharMap::value_type(
-						static_cast<unsigned short>( current ), ch ) ) ;
+					Add( static_cast<unsigned short>( current ), ch ) ;
 			
 				current++ ;
 			}
@@ -70,43 +69,6 @@ SimpleEncoding::SimpleEncoding( DictReader& self )
 	}
 	
 	self.Detach( "BaseEncoding", m_base ) ;
-}
-
-wchar_t SimpleEncoding::ToUnicode( unsigned short char_code ) const
-{
-	// pass-through if the character code is not found
-	CharMap::left_const_iterator i = m_charmap.left.find( char_code ) ;
-	return i != m_charmap.left.end() ? i->second :
-		static_cast<wchar_t>( char_code ) ; 
-}
-
-unsigned short SimpleEncoding::FromUnicode( wchar_t unicode ) const
-{
-	CharMap::right_const_iterator i = m_charmap.right.find( unicode ) ;
-	return i != m_charmap.right.end() ? i->second :
-		static_cast<unsigned short>( unicode ) ; 
-}
-
-std::wstring SimpleEncoding::Decode( const std::string& bytes ) const
-{
-	std::wstring result( bytes.size(), ' ' ) ;
-	std::transform( bytes.begin(), bytes.end(), result.begin(),
-		boost::bind( &SimpleEncoding::ToUnicode, this, _1 ) ) ;
-	return result ;
-}
-
-std::size_t SimpleEncoding::Encode(
-	std::wstring::const_iterator first,
-	std::wstring::const_iterator last,
-	std::ostream& out ) const
-{
-	std::size_t count = 0 ;
-	for ( std::wstring::const_iterator i = first ; i != last ; ++i )
-	{
-		out.rdbuf()->sputc( static_cast<char>(FromUnicode(*i) ) ) ;
-		count++ ;
-	}
-	return count ;
 }
 
 Ref SimpleEncoding::Write( File *file ) const
@@ -117,8 +79,7 @@ Ref SimpleEncoding::Write( File *file ) const
 	Array diff ;
 	// write all glyph name pairs. it is a big waste of space.
 	// TODO: save space later
-	for ( CharMap::left_const_iterator i = m_charmap.left.begin() ;
-		i != m_charmap.left.end() ; ++i )
+	for ( const_iterator i = begin() ; i != end() ; ++i )
 	{
 //		PDF_ASSERT( UnicodeToName( i->second ) != 0 ) ;
 //	

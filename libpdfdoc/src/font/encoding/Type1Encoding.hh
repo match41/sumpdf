@@ -43,15 +43,6 @@ class Type1Encoding : public BaseEncoding
 {
 public :
 	explicit Type1Encoding( FT_FaceRec_ *face ) ;
-
-	std::wstring Decode( const std::string& bytes ) const ;
-	std::size_t Encode(
-		std::wstring::const_iterator first,
-		std::wstring::const_iterator last,
-		std::ostream& out ) const ;
-
-private :
-	wchar_t	m_map[256] ;
 } ;
 
 } // end of namespace

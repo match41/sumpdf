@@ -53,26 +53,9 @@ class SimpleEncoding : public BaseEncoding
 public :
 	explicit SimpleEncoding( DictReader& self ) ;
 
-	std::wstring Decode( const std::string& bytes ) const ;
-	std::size_t Encode(
-		std::wstring::const_iterator first,
-		std::wstring::const_iterator last,
-		std::ostream& out ) const ;
-
-	wchar_t ToUnicode( unsigned short char_code ) const ;
-	unsigned short FromUnicode( wchar_t unicode ) const ;
-
 	Ref Write( File *file ) const ;
 
 private :
-	typedef	boost::bimap<
-		boost::bimaps::unordered_set_of<unsigned short>,
-		boost::bimaps::unordered_set_of<wchar_t>
-	> CharMap ; 
-
-	/// mapping from character code to unicode
-	CharMap	m_charmap ;
-	
 	Name	m_base ;
 } ;
 

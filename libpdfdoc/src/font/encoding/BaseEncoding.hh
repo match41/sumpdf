@@ -30,7 +30,12 @@
 #include "util/RefCounter.hh"
 #include "font/FontEncoding.hh"
 
+#include <boost/bimap.hpp>
+#include <boost/bimap/unordered_set_of.hpp>
+
 namespace pdf {
+
+class Ref ;
 
 ///	brief description
 /**	\internal
@@ -39,10 +44,36 @@ namespace pdf {
 class BaseEncoding : public RefCounter, public FontEncoding
 {
 public :
-	virtual ~BaseEncoding( ) ;
+	~BaseEncoding( ) ;
 
-	virtual wchar_t ToUnicode( unsigned short char_code ) const = 0 ;
-	virtual unsigned short FromUnicode( wchar_t unicode ) const = 0 ;
+	virtual wchar_t ToUnicode( unsigned short char_code ) const ;
+	virtual unsigned short FromUnicode( wchar_t unicode ) const ;
+
+	std::wstring Decode( const std::string& bytes ) const ;
+	std::size_t Encode(
+		std::wstring::const_iterator first,
+		std::wstring::const_iterator last,
+		std::ostream& out ) const ;
+
+	void Add( unsigned short char_code, wchar_t unicode ) ;
+
+protected :
+	typedef	boost::bimap<
+		boost::bimaps::unordered_set_of<unsigned short>,
+		boost::bimaps::unordered_set_of<wchar_t>
+	> CharMap ; 
+
+	typedef CharMap::iterator		iterator ;
+	typedef CharMap::const_iterator	const_iterator ;
+
+	iterator begin( ) ;
+	iterator end( ) ;
+	const_iterator begin( ) const ;
+	const_iterator end( ) const ;
+
+private :
+	/// mapping from character code to unicode
+	CharMap	m_charmap ;
 } ;
 
 } // end of namespace

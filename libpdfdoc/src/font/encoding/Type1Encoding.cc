@@ -61,32 +61,16 @@ Type1Encoding::Type1Encoding( FT_Face face )
 		if ( ::FT_Get_Glyph_Name( face, gindex, name, sizeof(name) ) == 0 )
 		{
 			wchar_t unicode = 0 ;
-			if ( NameToUnicode( name, unicode ) && char_code < Count(m_map) )
+			if ( NameToUnicode( name, unicode ) )
 			{
-				m_map[char_code] = unicode ;
-				std::cout << "glyph: " << name << " char: " << char_code << " "
-				<< "unicode: " << (int)unicode << std::endl ;
+				Add( static_cast<unsigned short>(char_code), unicode ) ;
+//				std::cout << "glyph: " << name << " char: " << char_code << " "
+//				<< "unicode: " << (int)unicode << std::endl ;
 			}
 		}
 		
 		char_code = ::FT_Get_Next_Char( face, char_code, &gindex ) ;
 	}
-}
-
-std::wstring Type1Encoding::Decode( const std::string& bytes ) const
-{
-	std::wstring rs ;
-	for ( std::string::const_iterator i = bytes.begin() ; i != bytes.end() ; ++i )
-		rs.push_back( m_map[static_cast<std::size_t>(*i)] ) ;
-	return rs ;
-}
-
-std::size_t Type1Encoding::Encode(
-	std::wstring::const_iterator first,
-	std::wstring::const_iterator last,
-	std::ostream& out ) const
-{
-	return 0 ;
 }
 
 } // end of namespace
