@@ -1,4 +1,4 @@
-/***************************************************************************
+/***************************************************************************\
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
  *   the Free Software Foundation; version 2.                              *
@@ -12,61 +12,50 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+ \***************************************************************************/
 
 /**
-	\file	TextToolbar.hh
-	\brief	definition the TextToolbar class
+	\file	ToolBox.cc
+	\brief	definition the ToolBox class
 	\date	March 25, 2010
 */
 
-#ifndef __PDF_TEXTTOOLBAR_HH_EADER_INCLUDED__
-#define __PDF_TEXTTOOLBAR_HH_EADER_INCLUDED__
-
-#include <QToolBar>
-#include <QPushButton>
-#include <QMainWindow>
-#include <QFontComboBox>
-#include <QComboBox>
-#include <QWidget>
-#include <QDialog>
-
-class QPushButton;
-class QMainWindow;
-class QFontComboBox;
-class QComboBox;
-class QWidget;
-class QDialog;
+#include "ToolBox.hh"
+#include "InsertTextDlg.hh"
+#include "MainWnd.hh"
 
 namespace pdf {
 
-class TextToolbar 
-	: public QDialog
+ToolBox::ToolBox( QToolBar *parent, QWidget *parentWnd )
+	: QDialog( parentWnd )
+	, m_insert_text( new QPushButton )
 {
-	Q_OBJECT
+	CreateTextInsertToolbar( parent, parentWnd );
+}
 
-public:
-	explicit TextToolbar( QToolBar *parent =0 , QWidget *parentWnd = 0) ;
-	~TextToolbar( ) ;
+ToolBox::~ToolBox( )
+{
+}
 
-public:
-	QPushButton		*m_insert_text;
-	// QFontComboBox	*m_font;
-	// QComboBox		*m_font_size;
+void ToolBox::OnInsertBtnUp( )
+{
+	m_insert_text->setChecked( false );
+}
 
-// signals:
+void ToolBox::CreateTextInsertToolbar( QToolBar *parent, QWidget *parentWnd )
+{
+	parent->addWidget( m_insert_text );	// insert text push btn
+	m_insert_text->setCheckable( true );
+    QIcon icon;
+    icon.addFile(QString::fromUtf8(":/images/inserttext.png"), QSize(), QIcon::Normal, QIcon::Off);
+	m_insert_text->setIcon(icon);
+	
+	connect( m_insert_text,		SIGNAL( clicked() ),	this, SLOT( OnClicked() ) );
+}
 
-public slots:
-	void OnInsertBtnUp( );
-
-signals:
-	void clicked( );
-
-private:
-	void CreateTextInsertToolbar( QToolBar *parent , QWidget *parentWnd );
-
-};
+void ToolBox::OnClicked( )
+{
+	emit clicked();
+}
 
 } // end of namespace
-
-#endif // TEXTTOOLBAR_HH_

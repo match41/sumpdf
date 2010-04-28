@@ -27,6 +27,8 @@
 
 #include "CodeMap.hh"
 
+#include "util/Util.hh"
+
 // freetype headers
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -56,12 +58,12 @@ Type1Encoding::Type1Encoding( FT_Face face )
 	while ( gindex != 0 )
 	{
 		char name[1024] = {} ;
-		FT_Error e = ::FT_Get_Glyph_Name( face, gindex, name, sizeof(name) ) ;
-		if ( e == 0 )
+		if ( ::FT_Get_Glyph_Name( face, gindex, name, sizeof(name) ) == 0 )
 		{
 			wchar_t unicode = 0 ;
-			if ( NameToUnicode( name, unicode ) )
+			if ( NameToUnicode( name, unicode ) && char_code < Count(m_map) )
 			{
+				m_map[char_code] = unicode ;
 				std::cout << "glyph: " << name << " char: " << char_code << " "
 				<< "unicode: " << (int)unicode << std::endl ;
 			}
@@ -73,7 +75,10 @@ Type1Encoding::Type1Encoding( FT_Face face )
 
 std::wstring Type1Encoding::Decode( const std::string& bytes ) const
 {
-	return L"" ;
+	std::wstring rs ;
+	for ( std::string::const_iterator i = bytes.begin() ; i != bytes.end() ; ++i )
+		rs.push_back( m_map[*i] ) ;
+	return rs ;
 }
 
 std::size_t Type1Encoding::Encode(

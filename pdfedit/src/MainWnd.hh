@@ -57,7 +57,7 @@ class Matrix ;
 class TextLine ;
 class InsertTextDlg;
 class DocModel ;
-class TextToolbar;
+class ToolBox;
 
 class MainWnd :
 	public QMainWindow,
@@ -112,7 +112,7 @@ private :
 	QTextEdit		*m_text_edit;
 	InsertTextDlg	*m_insert_dlg;
 
-	TextToolbar		*m_texttb_items;
+	ToolBox		*m_texttb_items;
 } ;
 
 } // end of namespace

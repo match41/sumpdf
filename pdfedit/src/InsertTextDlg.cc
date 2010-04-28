@@ -193,7 +193,7 @@ void InsertTextDlg::OnFontChanged( )
     // font.setUnderline(m_underlined->isChecked());
     m_text->setTextColor( qVariantValue<QColor>( m_text_action->data() ) );
 
-    m_text->setFont( font );
+	m_text->setFont( font );
 
 }
 
