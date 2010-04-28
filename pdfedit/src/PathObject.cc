@@ -128,6 +128,9 @@ Graphics* PathObject::Write( ) const
 	Path *path = CreatePath( m_format.Get() ) ;
 	path->SetStyle( m_stroke, m_fill, m_path.fillRule() == Qt::WindingFill
 		? Path::winding : Path::odd_even ) ;
+
+	path->Transform( Matrix::Translation( x(), y() ) * FromQtMatrix( transform() ) ) ;
+	
 	for ( int i = 0 ; i < m_path.elementCount() ; ++i )
 	{
 		QPainterPath::Element e = m_path.elementAt(i) ;

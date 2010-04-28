@@ -117,9 +117,23 @@ void RealPath::OnCommand( ContentOp& op, const ResourcesDict *res )
 		(this->*(i->second))( op, res ) ;
 }
 
-void RealPath::Print( std::ostream& os, ResourcesDict * ) const
+void RealPath::Print(
+	std::ostream&	os,
+	ResourcesDict	*res,
+	GraphicsState&	gs,
+	Matrix&			trans ) const
 {
 	PDF_ASSERT( m_ops.size() == m_pt_index.size() ) ;
+
+	if ( m_state != gs )
+		m_state.Print( os, res, gs ) ;
+
+	if ( m_ctm != trans )
+	{
+		os	<< m_ctm.M11() << ' ' << m_ctm.M12() << ' '
+			<< m_ctm.M21() << ' ' << m_ctm.M22() << ' '
+			<< m_ctm.Dx()  << ' ' << m_ctm.Dy( ) << " cm\n" ; 
+	}
 
 	std::size_t pt_idx = 0 ;
 	for ( std::vector<PathSegment::Op>::const_iterator i = m_ops.begin() ;
@@ -148,6 +162,9 @@ void RealPath::Print( std::ostream& os, ResourcesDict * ) const
 		os << "n\n" ;
 	else
 		throw Exception( "??" ) ;
+
+	gs		= m_state ;
+	trans	= m_ctm ;
 }
 
 void RealPath::Visit( GraphicsVisitor *visitor )
@@ -257,6 +274,11 @@ void RealPath::CloseSubPath( )
 Matrix RealPath::Transform( ) const
 {
 	return m_ctm ;
+}
+
+void RealPath::Transform( const Matrix& mat )
+{
+	m_ctm = mat ;
 }
 
 void RealPath::OnS( ContentOp& op, const ResourcesDict *res )

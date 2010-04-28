@@ -54,6 +54,7 @@ public :
 	virtual PathSegment Segment( std::size_t index ) const = 0 ;
 	
 	virtual Matrix Transform( ) const = 0 ;
+	virtual void Transform( const Matrix& mat ) = 0 ;
 	
 	virtual void AddSegment( const PathSegment& seg ) = 0 ;
 	virtual void MoveTo( double x, double y ) = 0 ;

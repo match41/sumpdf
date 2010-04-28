@@ -196,14 +196,14 @@ std::size_t RealText::Count( ) const
 	return m_lines.size( ) ;
 }
 
-void RealText::Print( std::ostream& os, ResourcesDict *res ) const
+void RealText::Print(
+	std::ostream&	os,
+	ResourcesDict	*res,
+	GraphicsState&	gs,
+	Matrix&			trans ) const
 {
 	os << "BT\n" ;
 	
-	// rendering state
-	GraphicsState	gs ;
-	Matrix			trans ;
-
 	using namespace boost ;
 	std::for_each(
 		m_lines.begin(),

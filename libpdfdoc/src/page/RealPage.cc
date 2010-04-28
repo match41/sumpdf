@@ -198,11 +198,15 @@ void RealPage::SetContent( const std::vector<Graphics*>& gfx )
 	Stream str ;
 	std::ostream os( str.OutStreamBuf() ) ;
 
+	GraphicsState	gs ;
+	Matrix			ctm ;
+
 	using namespace boost ;
 	std::for_each(
 		gfx.begin(),
 		gfx.end(),
-		bind( &Graphics::Print, _1, ref(os), m_pinfo.GetResource() ) ) ;
+		bind( &Graphics::Print, _1, ref(os), m_pinfo.GetResource(),
+			ref(gs), ref(ctm) ) ) ;
 
 	os.flush() ;
 

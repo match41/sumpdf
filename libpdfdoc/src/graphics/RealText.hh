@@ -53,7 +53,11 @@ public :
 
 	void OnCommand( ContentOp& op, const ResourcesDict *res ) ;
 
-	void Print( std::ostream& os, ResourcesDict *res ) const ;
+	void Print(
+		std::ostream&	os,
+		ResourcesDict	*res,
+		GraphicsState&	gs,
+		Matrix&			trans ) const ;
 
 	iterator begin() ;
 	iterator end() ;
@@ -106,12 +110,12 @@ private :
 	GraphicsState	m_state ;
 	
 	///	Current text line matrix.
-	double		/*m_dx, m_dy, */m_offset ;
+	double			m_offset ;
 	
 	///	Current text matrix.
 	/**	This matrix is used to create new TextLine objects.
 	*/
-	Matrix		m_text_mat ;
+	Matrix			m_text_mat ;
 } ;
 
 std::ostream& operator<<( std::ostream& os, const RealText& t ) ;
