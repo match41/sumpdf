@@ -47,20 +47,20 @@ public :
 
 	// compiler generated copy constructor and assignment operator are fine.
 
-	void SetCharSpace( double val ) ;
-	void SetWordSpace( double val ) ;
-	void SetHScale( double val ) ;
-	void SetLeading( double val ) ;
-	void SetFont( double size, Font *font ) ;
-	void SetRenderMode( int val ) ;
-	void SetTextRise( double val ) ;
+	void CharSpace( double val ) ;
+	void WordSpace( double val ) ;
+	void HScale( double val ) ;
+	void Leading( double val ) ;
+	void ChangeFont( double size, Font *font ) ;
+	void RenderMode( int val ) ;
+	void TextRise( double val ) ;
 
 	double CharSpace( ) const ;
 	double WordSpace( ) const ;
 	double HScale( ) const ;
 	double Leading( ) const ;
 	double FontSize( ) const ;
-	Font* GetFont( ) const ;
+	Font* FontFace( ) const ;
 	int RenderMode( ) const ;
 	double TextRise( ) const ;
 

@@ -42,6 +42,7 @@
 #include <util/Util.hh>
 #include <util/Matrix.hh>
 #include <util/Rect.hh>
+#include <graphics/Color.hh>
 
 #include <QDebug>
 
@@ -49,6 +50,7 @@
 #include <QGraphicsRectItem>
 #include <QGraphicsScene>
 #include <QString>
+#include <QColor>
 
 // stdc++ headers
 #include <algorithm>
@@ -237,15 +239,17 @@ void DocModel::AddText(
 	const QFont&	font,
 	double			size,
 	const QPointF&	pos,
-	const QString&	text )
+	const QString&	text, 
+	const QColor	c)
 {
 	Font *f = m_doc->CreateSimpleFont( ToStr( font.family() ) ) ;
 	PDF_ASSERT( f != 0 ) ;
 
-	TextState ts ;
-	ts.SetFont( size, f ) ;
+	GraphicsState gs ;
+	gs.Text().ChangeFont( size, f ) ;
+	gs.FillColor(FromQColor(c));	// set text color
 
-	TextLine line( GraphicsState(ts),
+	TextLine line( gs,
 		Matrix::Translation( pos.x(), pos.y() ), 
 		ToWStr( text ) ) ;
 

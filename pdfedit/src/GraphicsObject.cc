@@ -89,7 +89,7 @@ QVariant GraphicsObject::data( const QModelIndex& index, int role ) const
 			GraphicsState gs = Format() ;
 			using boost::format ;
 		
-			Font *font = gs.GetFont() ;
+			Font *font = gs.FontFace() ;
 		
 			QTransform t = transform() ;
 			switch ( index.row() )
@@ -105,7 +105,7 @@ QVariant GraphicsObject::data( const QModelIndex& index, int role ) const
 			case 2: return (font != 0 ? font->BaseName().c_str() : "") ;
 			
 			// font size
-			case 3: return gs.GetTextState().FontSize( ) ;
+			case 3: return gs.Text().FontSize( ) ;
 			
 			case 4: return (format("%1%") % gs.FillColor()).str().c_str();
 			

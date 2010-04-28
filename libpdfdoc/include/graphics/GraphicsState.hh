@@ -51,8 +51,8 @@ class TextState ;
 class GraphicsState
 {
 public :
-	enum PenCap { butt_cap, round_cap, project_cap } ;
-	enum LineJoin { miter_join, round_join, bevel_join } ;
+	enum PenCapStyle	{ butt_cap, round_cap, project_cap } ;
+	enum LineJoinStyle	{ miter_join, round_join, bevel_join } ;
 
 public :
 	GraphicsState( ) ;
@@ -61,10 +61,10 @@ public :
 
 	// use default generated copy constructor
 
-	const TextState& GetTextState() const ;
-	TextState& GetTextState() ;
+	const TextState& Text() const ;
+	TextState& Text() ;
 
-	Font* GetFont( ) const ;
+	Font* FontFace( ) const ;
 
 	std::ostream& Print(
 		std::ostream&			os,
@@ -81,25 +81,25 @@ public :
 
 	friend std::ostream& operator<<(std::ostream& os, const GraphicsState& gs) ;
 
-	void LineWidth( double value ) ;
+	bool LineWidth( double value ) ;
 	double LineWidth( ) const ;
 
-	void SetPenCap( PenCap value ) ;
-	PenCap GetPenCap( ) const ;
+	bool PenCap( PenCapStyle value ) ;
+	PenCapStyle PenCap( ) const ;
 	
-	void SetLineJoin( LineJoin value ) ;
-	LineJoin GetLineJoin( ) const ;
+	bool LineJoin( LineJoinStyle value ) ;
+	LineJoinStyle LineJoin( ) const ;
 	
-	void MiterLimit( double value ) ;
+	bool MiterLimit( double value ) ;
 	double MiterLimit( ) const ;
 
 	void SetValue( const Name& name, const Object& val ) ;
 	
 	const Color& StrokeColor( ) const ;
+	bool StrokeColor( const Color& color ) ;
+	
 	const Color& FillColor( ) const ;
-
-	bool SetStrokeColor( const Color& color ) ;
-	bool SetFillColor( const Color& color ) ;
+	bool FillColor( const Color& color ) ;
 
 	std::vector<int> DashPattern() const ;
 	int DashPhrase( ) const ;

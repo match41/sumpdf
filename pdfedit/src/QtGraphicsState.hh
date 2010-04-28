@@ -34,6 +34,8 @@ class QPainterPathStroker ;
 
 namespace pdf {
 
+class Color ;
+
 ///	brief description
 /**	\internal
 	The QtGraphicsState class represents
@@ -49,6 +51,8 @@ public :
 	QBrush Brush( ) const ;
 
 	void InitStroker( QPainterPathStroker& qpps ) const ;
+
+	static QBrush Brush( const Color& color ) ;
 
 private :
 	GraphicsState	m_gs ;

@@ -32,7 +32,7 @@
 #include "PropertiesDlg.hh"
 #include "TextDlg.hh"
 #include "InsertTextDlg.hh"
-#include "TextToolbar.hh"
+#include "ToolBox.hh"
 
 // Qt headers
 #include <QApplication>
@@ -135,7 +135,7 @@ MainWnd::MainWnd( QWidget *parent )
 	m_item_prop->horizontalHeader()->setStretchLastSection( true ) ;
 
 	// text insert
-	m_texttb_items = new TextToolbar( m_toolbar_text, this );
+	m_texttb_items = new ToolBox( m_toolbar_text, this );
 	TextInsertConnect();
 	
 	// setup the scene and view
@@ -377,14 +377,15 @@ void MainWnd::OnInsertTextNow( )
 	try
 	{
 		QTextEdit *text=m_insert_dlg->GetText( );
-		
+
 		PDF_ASSERT( m_doc != 0 ) ;
 
 		m_doc->AddText(
 			text->currentFont(),
 			m_insert_dlg->GetFontSize().toDouble(),
 			m_insert_dlg->GetPosition(),
-			text->toPlainText() ) ;
+			text->toPlainText(),
+			text->textColor() ) ;
 	}
 	catch ( Exception& e )
 	{

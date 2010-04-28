@@ -89,14 +89,14 @@ const GraphicsState::HandlerMap::Map GraphicsState::HandlerMap::m_map(
 
 struct GraphicsState::Impl
 {
-	TextState	text ;
+	TextState		text ;
 	
-	Color		strk_color, fill_color ;
+	Color			strk_color, fill_color ;
 	
-	double		line_width ;
-	PenCap		pen_cap ;
-	LineJoin	line_join ;
-	double		miter_limit ;
+	double			line_width ;
+	PenCapStyle		pen_cap ;
+	LineJoinStyle	line_join ;
+	double			miter_limit ;
 	
 	std::vector<int>	dash_pattern ;
 	int					dash_phase ;
@@ -184,12 +184,12 @@ void GraphicsState::CopyOnWrite( )
 		m_impl.reset( new Impl( *m_impl ) ) ;
 }
 
-const TextState& GraphicsState::GetTextState() const
+const TextState& GraphicsState::Text() const
 {
 	return m_impl->text ;
 }
 
-TextState& GraphicsState::GetTextState()
+TextState& GraphicsState::Text()
 {
 	CopyOnWrite( ) ;
 	return m_impl->text ;
@@ -275,10 +275,10 @@ bool GraphicsState::OnTf( ContentOp& op, const ResourcesDict *res )
 			double font_size = op[1].To<double>() ;
 			
 			if ( m_impl->text.FontSize()	!= font_size	||
-				 m_impl->text.GetFont()		!= f )
+				 m_impl->text.FontFace()	!= f )
 			{
 				CopyOnWrite( ) ;
-				m_impl->text.SetFont( font_size, f ) ;
+				m_impl->text.ChangeFont( font_size, f ) ;
 				return true ;
 			}
 		}
@@ -291,16 +291,16 @@ bool GraphicsState::OnTL( ContentOp& op, const ResourcesDict *res )
 	if ( op.Count() > 0 && op[0].IsNumber() )
 	{
 		CopyOnWrite( ) ;
-		m_impl->text.SetLeading( op[0].To<double>() ) ;
+		m_impl->text.Leading( op[0].To<double>() ) ;
 		return true ;
 	}
 	else
 		return false ;
 }
 
-Font* GraphicsState::GetFont( ) const
+Font* GraphicsState::FontFace( ) const
 {
-	return m_impl->text.GetFont( ) ;
+	return m_impl->text.FontFace( ) ;
 }
 
 bool GraphicsState::operator==( const GraphicsState& gs ) const
@@ -319,10 +319,16 @@ std::ostream& operator<<( std::ostream& os, const GraphicsState& gs )
 	return os << gs.m_impl->text << " " << gs.StrokeColor() << " " << gs.FillColor() ;
 }
 
-void GraphicsState::LineWidth( double value )
+bool GraphicsState::LineWidth( double value )
 {
-	CopyOnWrite( ) ;
-	m_impl->line_width = value ;
+	if ( m_impl->line_width != value )
+	{
+		CopyOnWrite( ) ;
+		m_impl->line_width = value ;
+		return true ;
+	}
+	else
+		return false ;
 }
 
 double GraphicsState::LineWidth( ) const
@@ -330,32 +336,62 @@ double GraphicsState::LineWidth( ) const
 	return m_impl->line_width ;
 }
 
-void GraphicsState::SetPenCap( PenCap value )
+bool GraphicsState::PenCap( PenCapStyle value )
 {
-	CopyOnWrite( ) ;
-	m_impl->pen_cap = value ;
+	PDF_ASSERT( value >= butt_cap ) ;
+	PDF_ASSERT( value <= project_cap ) ;
+
+	if ( m_impl->pen_cap != value )
+	{
+		CopyOnWrite( ) ;
+		m_impl->pen_cap = value ;
+		return true ;
+	}
+	else
+		return false ;
 }
 
-GraphicsState::PenCap GraphicsState::GetPenCap( ) const
+GraphicsState::PenCapStyle GraphicsState::PenCap( ) const
 {
+	PDF_ASSERT( m_impl->pen_cap >= butt_cap ) ;
+	PDF_ASSERT( m_impl->pen_cap <= project_cap ) ;
+	
 	return m_impl->pen_cap ;
 }
 
-void GraphicsState::SetLineJoin( LineJoin value )
+bool GraphicsState::LineJoin( LineJoinStyle value )
 {
-	CopyOnWrite( ) ;
-	m_impl->line_join = value ;
+	PDF_ASSERT( value >= miter_join ) ;
+	PDF_ASSERT( value <= bevel_join ) ;
+
+	if ( m_impl->line_join != value )
+	{
+		CopyOnWrite( ) ;
+		m_impl->line_join = value ;
+		return true ;
+	}
+	else
+		return false ;
 }
 
-GraphicsState::LineJoin GraphicsState::GetLineJoin( ) const
+GraphicsState::LineJoinStyle GraphicsState::LineJoin( ) const
 {
+	PDF_ASSERT( m_impl->line_join >= miter_join ) ;
+	PDF_ASSERT( m_impl->line_join <= bevel_join ) ;
+
 	return m_impl->line_join ;
 }
 
-void GraphicsState::MiterLimit( double value )
+bool GraphicsState::MiterLimit( double value )
 {
-	CopyOnWrite( ) ;
-	m_impl->miter_limit = value ;
+	if ( m_impl->miter_limit != value )
+	{
+		CopyOnWrite( ) ;
+		m_impl->miter_limit = value ;
+		return true ;
+	}
+	else
+		return false ;
 }
 
 double GraphicsState::MiterLimit( ) const
@@ -367,9 +403,9 @@ void GraphicsState::SetValue( const Name& name, const Object& val )
 {
 	CopyOnWrite( ) ;
 	if ( name == "LW" )
-		m_impl->line_width = static_cast<LineJoin>(val.To<int>() )  ;
+		m_impl->line_width = static_cast<LineJoinStyle>(val.To<int>() )  ;
 	else if ( name == "LC" )
-		m_impl->pen_cap = static_cast<PenCap>(val.To<int>()) ;
+		m_impl->pen_cap = static_cast<PenCapStyle>(val.To<int>()) ;
 }
 
 const Color& GraphicsState::StrokeColor( ) const
@@ -389,12 +425,12 @@ bool GraphicsState::OnCS( ContentOp& op, const ResourcesDict *res )
 		false ;
 }
 
-bool GraphicsState::SetStrokeColor( const Color& color )
+bool GraphicsState::StrokeColor( const Color& color )
 {
 	return ChangeColor( strk_color, color ) ;
 }
 
-bool GraphicsState::SetFillColor( const Color& color )
+bool GraphicsState::FillColor( const Color& color )
 {
 	return ChangeColor( fill_color, color ) ;
 }
@@ -493,7 +529,7 @@ bool GraphicsState::OnJ( ContentOp& op, const ResourcesDict *res )
 	if ( op.Count() >= 1 )
 	{
 		CopyOnWrite( ) ;
-		m_impl->pen_cap = static_cast<PenCap>( op[0].To<int>() ) ;
+		m_impl->pen_cap = static_cast<PenCapStyle>( op[0].To<int>() ) ;
 		return true ;
 	}
 	return false ;
@@ -504,7 +540,7 @@ bool GraphicsState::Onj( ContentOp& op, const ResourcesDict *res )
 	if ( op.Count() >= 1 )
 	{
 		CopyOnWrite( ) ;
-		m_impl->line_join = static_cast<LineJoin>( op[0].To<int>() ) ;
+		m_impl->line_join = static_cast<LineJoinStyle>( op[0].To<int>() ) ;
 		return true ;
 	}
 	return false ;

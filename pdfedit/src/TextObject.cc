@@ -26,6 +26,7 @@
 #include "TextObject.hh"
 
 #include "GlyphGraphicsItem.hh"
+#include "QtGraphicsState.hh"
 #include "Util.hh"
 
 #include <graphics/Color.hh>
@@ -67,7 +68,8 @@ void TextObject::OnChar(
 	GlyphGraphicsItem *item = new GlyphGraphicsItem( glyph, this ) ;
 
 	// colors
-	item->setBrush( MakeBrush( m_line.Format() ) ) ;
+	QtGraphicsState gs( m_line.Format() ) ;
+	item->setBrush( gs.Brush() ) ;
 	
 	// set glyph offset
 	item->setPos( offset, 0 ) ;
@@ -83,7 +85,7 @@ GraphicsState TextObject::Format( ) const
 
 TextLine TextObject::GetLine( ) const
 {
-	PDF_ASSERT( m_line.Format().GetFont() != 0 ) ;
+	PDF_ASSERT( m_line.Format().FontFace() != 0 ) ;
 	
 	TextLine line( m_line ) ;
 	line.SetTransform( Matrix::Translation( x(), y() ) * m_line.Transform() ) ;
@@ -106,7 +108,7 @@ void TextObject::paint(
 
 Graphics* TextObject::Write( ) const
 {
-	PDF_ASSERT( m_line.Format().GetFont() != 0 ) ;
+	PDF_ASSERT( m_line.Format().FontFace() != 0 ) ;
 	
 	Text *t = CreateText( GraphicsState() ) ;
 	t->AddLine( GetLine( ) ) ;

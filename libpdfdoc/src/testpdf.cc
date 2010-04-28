@@ -71,7 +71,7 @@ int main( int argc, char **argv )
 		pdf::Font *f = doc->CreateSimpleFont( "ArialMT" ) ;
 		
 		pdf::TextState ts ;
-		ts.SetFont( 12.0, f ) ;
+		ts.ChangeFont( 12.0, f ) ;
 		pdf::Text *t = pdf::CreateText( pdf::GraphicsState(ts) ) ;
 		t->AddLine( 100, 100, L"Hello world!" ) ;
 		std::vector<pdf::Graphics*> gfx( 1, t ) ;

@@ -61,12 +61,12 @@ double TextState::Leading( ) const
 	return m_leading ;
 }
 
-void TextState::SetLeading( double val )
+void TextState::Leading( double val )
 {
 	m_leading = val ;
 }
 
-void TextState::SetFont( double size, Font *font )
+void TextState::ChangeFont( double size, Font *font )
 {
 	assert( font != 0 ) ;
 
@@ -74,27 +74,27 @@ void TextState::SetFont( double size, Font *font )
 	m_font		= font ;
 }
 
-void TextState::SetCharSpace( double val )
+void TextState::CharSpace( double val )
 {
 	m_char_space = val ;
 }
 
-void TextState::SetWordSpace( double val )
+void TextState::WordSpace( double val )
 {
 	m_word_space = val ;
 }
 
-void TextState::SetHScale( double val )
+void TextState::HScale( double val )
 {
 	m_hori_scale = val ;
 }
 
-void TextState::SetRenderMode( int val )
+void TextState::RenderMode( int val )
 {
 	m_render_mode = val ;
 }
 
-void TextState::SetTextRise( double val )
+void TextState::TextRise( double val )
 {
 	m_text_rise = val ;
 }
@@ -119,7 +119,7 @@ double TextState::FontSize( ) const
 	return m_font_size ;
 }
 
-Font* TextState::GetFont( ) const
+Font* TextState::FontFace( ) const
 {
 	return m_font ;
 }
@@ -156,7 +156,7 @@ std::ostream& TextState::Print(
 std::ostream& operator<<( std::ostream& os, const TextState& ts )
 {
 	return os	<< "<TextState font=\""
-				<< ( ts.GetFont() != 0 ? ts.GetFont()->BaseName() : "" )
+				<< ( ts.FontFace() != 0 ? ts.FontFace()->BaseName() : "" )
 				<< "\" size=\"" << ts.FontSize() << "\" />\n" ;
 }
 

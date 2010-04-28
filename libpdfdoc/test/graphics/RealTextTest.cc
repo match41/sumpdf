@@ -55,7 +55,7 @@ void RealTextTest::TestTdCmd( )
 	res.AddFont( &font ) ;
 	
 	TextState ts ;
-	ts.SetFont( 12.0, &font ) ;
+	ts.ChangeFont( 12.0, &font ) ;
 	GraphicsState gs( ts ) ;
 
 	RealText t( gs ) ;
@@ -116,7 +116,7 @@ void RealTextTest::TestTj( )
 	PDFUT_ASSERT_EQUAL( t.front().Transform(), Matrix() ) ;
 	CPPUNIT_ASSERT( t.front().Text() == L"abc" ) ;
 	PDFUT_ASSERT_EQUAL( t.front().Width(), 18 ) ;
-	PDFUT_ASSERT_EQUAL( t.front().Format().GetFont(), &font ) ;
+	PDFUT_ASSERT_EQUAL( t.front().Format().FontFace(), &font ) ;
 	
 	// action: display another string "abc"
 	Object	args2[]	= { "abc" } ;
