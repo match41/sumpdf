@@ -56,6 +56,9 @@ PathObject::PathObject( const Path *path, QGraphicsItem *parent )
 {
 	PDF_ASSERT( path != 0 ) ;
 
+	m_path.setFillRule( path->FillRule() == Path::winding
+		? Qt::WindingFill : Qt::OddEvenFill ) ;
+
 	for ( std::size_t i = 0 ; i < path->Count() ; ++i )
 	{
 		PathSegment seg = path->Segment(i) ;
@@ -97,10 +100,11 @@ void PathObject::paint(
 
 	GraphicsObject::paint( painter, option, widget ) ;
 
-	// colors
+	// set colors
 	painter->setBrush( Brush() ) ;
 	painter->setPen( Pen() ) ;
 
+	// actually draw the path
 	painter->drawPath( m_path ) ;
 }
 
@@ -122,6 +126,8 @@ QBrush PathObject::Brush( ) const
 Graphics* PathObject::Write( ) const
 {
 	Path *path = CreatePath( m_format.Get() ) ;
+	path->SetStyle( m_stroke, m_fill, m_path.fillRule() == Qt::WindingFill
+		? Path::winding : Path::odd_even ) ;
 	for ( int i = 0 ; i < m_path.elementCount() ; ++i )
 	{
 		QPainterPath::Element e = m_path.elementAt(i) ;

@@ -62,7 +62,8 @@ public :
 	void CloseSubPath( ) ;
 	bool IsFill( ) const ;
 	bool IsStroke( ) const ;
-	FillMode Style( ) const ;
+	FillMode FillRule( ) const ;
+	bool SetStyle( bool fill, bool stroke, FillMode fill_mode ) ;
 	
 private :
 	/// command handler
@@ -91,7 +92,7 @@ private :
 	// path painting
 	bool		m_stroke ;
 	bool		m_fill ;
-	FillMode	m_fillMode ;
+	FillMode	m_fill_mode ;
 	
 	GraphicsState	m_state ;
 	Matrix			m_ctm ;

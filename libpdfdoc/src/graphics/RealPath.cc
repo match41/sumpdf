@@ -103,7 +103,7 @@ const RealPath::HandlerMap::SegOpMap RealPath::HandlerMap::m_seg_map(
 RealPath::RealPath( const GraphicsState& gs, const Matrix& ctm )
 	: m_stroke( true )
 	, m_fill( false )
-	, m_fillMode( winding )
+	, m_fill_mode( winding )
 	, m_state( gs )
 	, m_ctm( ctm )
 {
@@ -136,15 +136,15 @@ void RealPath::Print( std::ostream& os, ResourcesDict * ) const
 	
 	if ( m_stroke && !m_fill )
 		os << "S\n" ;
-	else if ( !m_stroke && m_fill && m_fillMode == winding )
+	else if ( !m_stroke	&& m_fill && m_fill_mode == winding )
 		os << "f\n" ;
-	else if ( !m_stroke && m_fill && m_fillMode == oddEven )
+	else if ( !m_stroke	&& m_fill && m_fill_mode == odd_even )
 		os << "f*\n" ;
-	else if ( m_stroke && m_fill && m_fillMode == winding )
+	else if ( m_stroke	&& m_fill && m_fill_mode == winding )
 		os << "B\n" ;
-	else if ( m_stroke && m_fill && m_fillMode == oddEven )
+	else if ( m_stroke	&& m_fill && m_fill_mode == odd_even )
 		os << "B*\n" ;
-	else if ( !m_stroke && !m_fill )
+	else if ( !m_stroke	&& !m_fill )
 		os << "n\n" ;
 	else
 		throw Exception( "??" ) ;
@@ -275,28 +275,28 @@ void RealPath::Onf( ContentOp& , const ResourcesDict * )
 {
 	m_stroke	= false ;
 	m_fill		= true ;
-	m_fillMode	= winding ;
+	m_fill_mode	= winding ;
 }
 
 void RealPath::OnfStar( ContentOp& , const ResourcesDict * )
 {
 	m_stroke	= false ;
 	m_fill		= true ;
-	m_fillMode	= oddEven ;
+	m_fill_mode	= odd_even ;
 }
 
 void RealPath::OnB( ContentOp& , const ResourcesDict * )
 {
 	m_stroke	= true ;
 	m_fill		= true ;
-	m_fillMode	= winding ;
+	m_fill_mode	= winding ;
 }
 
 void RealPath::OnBStar( ContentOp& , const ResourcesDict * )
 {
 	m_stroke	= true ;
 	m_fill		= true ;
-	m_fillMode	= oddEven ;
+	m_fill_mode	= odd_even ;
 }
 
 void RealPath::Onb( ContentOp& op, const ResourcesDict *res )
@@ -327,9 +327,30 @@ bool RealPath::IsStroke( ) const
 	return m_stroke ;
 }
 
-RealPath::FillMode RealPath::Style( ) const
+RealPath::FillMode RealPath::FillRule( ) const
 {
-	return m_fillMode ;
+	return m_fill_mode ;
+}
+
+bool RealPath::SetStyle( bool fill, bool stroke, FillMode fill_mode )
+{
+	bool changed = false ;
+	if ( m_fill != fill )
+	{
+		m_fill = fill ;
+		changed = true ;
+	}
+	if ( m_stroke != stroke )
+	{
+		m_stroke = stroke ;
+		changed = true ;
+	}
+	if ( m_fill_mode != fill_mode )
+	{
+		m_fill_mode = fill_mode ;
+		changed = true ;
+	}
+	return changed ;
 }
 
 } // end of namespace
