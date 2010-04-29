@@ -342,13 +342,18 @@ void MainWnd::TextInsertConnect( )
 		SIGNAL( mousePositionSet( QPointF ) ), 
 		m_insert_dlg, 
 		SLOT( OnMousePositionSet( QPointF ) ) );
-
 	connect( 	// mouse position -> dlg
+		m_texttb_items, 
+		SIGNAL( deleteitem( ) ), 
+		m_view, 
+		SLOT( DeleteItem( ) ) );
+
+	connect(
 		m_insert_dlg, 
 		SIGNAL( InsertI_beam( QPointF ) ), 
 		m_view, 
 		SLOT( InsertI_beam( QPointF ) ) );
-	connect( 	// mouse position -> dlg
+	connect(
 		m_insert_dlg, 
 		SIGNAL( InsertI_beam( QPointF ) ), 
 		this, 
@@ -359,7 +364,7 @@ void MainWnd::TextInsertConnect( )
 		SIGNAL( OnInsertClicked( QPointF ) ),	
 		this, 
 		SLOT( OnInsertTextNow( ) ) );
-	connect(	// Insert text into current scene
+	connect(
 		m_insert_dlg, 
 		SIGNAL( DeleteI_beam( QPointF ) ),	
 		m_view, 

@@ -29,6 +29,7 @@ namespace pdf {
 ToolBox::ToolBox( QToolBar *parent, QWidget *parentWnd )
 	: QDialog( parentWnd )
 	, m_insert_text( new QPushButton )
+	, m_delete_item( new QPushButton )
 {
 	CreateTextInsertToolbar( parent, parentWnd );
 }
@@ -44,18 +45,30 @@ void ToolBox::OnInsertBtnUp( )
 
 void ToolBox::CreateTextInsertToolbar( QToolBar *parent, QWidget *parentWnd )
 {
-	parent->addWidget( m_insert_text );	// insert text push btn
+	// insert text push btn
+	parent->addWidget( m_insert_text );	
 	m_insert_text->setCheckable( true );
     QIcon icon;
     icon.addFile(QString::fromUtf8(":/images/inserttext.png"), QSize(), QIcon::Normal, QIcon::Off);
 	m_insert_text->setIcon(icon);
-	
+
+	// insert delete graphics item button
+	parent->addWidget( m_delete_item );	
+    icon.addFile(QString::fromUtf8(":/images/delete.png"), QSize(), QIcon::Normal, QIcon::Off);
+	m_delete_item->setIcon(icon);
+
 	connect( m_insert_text,		SIGNAL( clicked() ),	this, SLOT( OnClicked() ) );
+	connect( m_delete_item,		SIGNAL( clicked() ),	this, SLOT( OnDelete() ) );
 }
 
 void ToolBox::OnClicked( )
 {
 	emit clicked();
+}
+
+void ToolBox::OnDelete( )
+{
+	emit deleteitem( );
 }
 
 } // end of namespace

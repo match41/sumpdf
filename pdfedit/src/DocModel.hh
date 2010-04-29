@@ -27,6 +27,7 @@
 #define __PDF_DOCMODEL_HEADER_INCLUDED__
 
 #include <QObject>
+#include <QColor>
 
 #include <memory>
 #include <vector>
@@ -70,7 +71,7 @@ public :
 
 	Page* GetPage( std::size_t idx ) ;
 	void AddText( const QFont& font, double size, const QPointF& pos,
-		const QString& text, const QColor c ) ;
+		const QString& text, const QColor c = QColor(0,0,0) ) ;
 
 signals :
 	void SelectionChanged() ;

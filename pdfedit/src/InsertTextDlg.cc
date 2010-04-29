@@ -25,6 +25,7 @@
 #include <QMenu>
 #include <QPainter>
 #include <QColorDialog>
+#include <QTextEdit>
 
 namespace pdf {
 
@@ -186,15 +187,18 @@ QPointF	InsertTextDlg::GetPosition( )
 
 void InsertTextDlg::OnFontChanged( )
 {
-    QFont font = m_font->currentFont();
+	QTextCursor cur=m_text->textCursor();	// get the current cursor
+
+	QFont font = m_font->currentFont();
     font.setPointSize( m_fontsize->currentText().toInt() );
     font.setWeight(m_bold->isChecked() ? QFont::Bold : QFont::Normal);
     font.setItalic(m_italic->isChecked());
     // font.setUnderline(m_underlined->isChecked());
     m_text->setTextColor( qVariantValue<QColor>( m_text_action->data() ) );
-
 	m_text->setFont( font );
 
+	m_text->setText( m_text->toPlainText() );	// update text to apply new color
+	m_text->setTextCursor(cur);					// set cursor to intial state
 }
 
 void InsertTextDlg::OnInsertTextNow( )
