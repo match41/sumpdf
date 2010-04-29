@@ -216,8 +216,9 @@ void DocModel::StorePage( QGraphicsScene *scene, Page *page )
 	PDF_ASSERT( scene != 0 ) ;
 	PDF_ASSERT( page != 0 ) ;
 	
+	// need to traverse in ascending order
 	std::vector<Graphics*> gfx ;
-	QList<QGraphicsItem *> items = scene->items() ;
+	QList<QGraphicsItem *> items = scene->items( Qt::AscendingOrder ) ;
 	for ( QList<QGraphicsItem*>::iterator i  = items.begin() ;
 	                                      i != items.end() ; ++i )
 	{
