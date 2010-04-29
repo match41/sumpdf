@@ -129,7 +129,7 @@ Graphics* PathObject::Write( ) const
 	path->SetStyle( m_stroke, m_fill, m_path.fillRule() == Qt::WindingFill
 		? Path::winding : Path::odd_even ) ;
 
-	path->Transform( Matrix::Translation( x(), y() ) * FromQtMatrix( transform() ) ) ;
+	path->Transform( FromQtMatrix( transform() ) * Matrix::Translation( x(), y() ) ) ;
 	
 	for ( int i = 0 ; i < m_path.elementCount() ; ++i )
 	{
