@@ -126,7 +126,7 @@ QBrush PathObject::Brush( ) const
 Graphics* PathObject::Write( ) const
 {
 	Path *path = CreatePath( m_format.Get() ) ;
-	path->SetStyle( m_stroke, m_fill, m_path.fillRule() == Qt::WindingFill
+	path->SetStyle( m_fill, m_stroke, m_path.fillRule() == Qt::WindingFill
 		? Path::winding : Path::odd_even ) ;
 
 	path->Transform( FromQtMatrix( transform() ) * Matrix::Translation( x(), y() ) ) ;
