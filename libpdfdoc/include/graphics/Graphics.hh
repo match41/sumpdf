@@ -35,6 +35,7 @@ namespace pdf {
 class ContentOp ;
 class GraphicsVisitor ;
 class GraphicsState ;
+class Matrix ;
 class ResourcesDict ;
 
 /**	\defgroup	graphics Graphics
@@ -84,7 +85,11 @@ public :
 	
 	virtual void OnCommand( ContentOp& op, const ResourcesDict *res ) = 0 ;
 
-	virtual void Print( std::ostream& os, ResourcesDict *res ) const = 0 ;
+	virtual void Print(
+		std::ostream&	os,
+		ResourcesDict	*res,
+		GraphicsState&	gs,
+		Matrix&			trans ) const = 0 ;
 
 	virtual void Visit( GraphicsVisitor *visitor ) = 0 ;
 	

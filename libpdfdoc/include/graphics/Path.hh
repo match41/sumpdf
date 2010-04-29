@@ -42,7 +42,7 @@ class Matrix ;
 class Path : public Graphics
 {
 public :
-	enum	FillMode { winding, oddEven } ;
+	enum	FillMode { winding, odd_even } ;
 
 public :
 	virtual ~Path( ) ;
@@ -54,6 +54,7 @@ public :
 	virtual PathSegment Segment( std::size_t index ) const = 0 ;
 	
 	virtual Matrix Transform( ) const = 0 ;
+	virtual void Transform( const Matrix& mat ) = 0 ;
 	
 	virtual void AddSegment( const PathSegment& seg ) = 0 ;
 	virtual void MoveTo( double x, double y ) = 0 ;
@@ -61,7 +62,8 @@ public :
 	virtual void CloseSubPath( ) = 0 ;
 	virtual bool IsFill( ) const = 0 ;
 	virtual bool IsStroke( ) const = 0 ;
-	virtual FillMode Style( ) const = 0 ;
+	virtual FillMode FillRule( ) const = 0 ;
+	virtual bool SetStyle( bool fill, bool stroke, FillMode fill_mode ) = 0 ;
 } ;
 
 } // end of namespace

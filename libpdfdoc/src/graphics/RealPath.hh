@@ -48,7 +48,11 @@ public :
 	
 	// Graphics virtual functions
 	void OnCommand( ContentOp& op, const ResourcesDict *res ) ;
-	void Print( std::ostream& os, ResourcesDict *res ) const ;
+	void Print(
+		std::ostream&	os,
+		ResourcesDict	*res,
+		GraphicsState&	gs,
+		Matrix&			trans ) const ;
 	void Visit( GraphicsVisitor *visitor ) ;
 	GraphicsState GetState( ) const ;
 	
@@ -56,13 +60,15 @@ public :
 	std::size_t Count( ) const ;
 	PathSegment Segment( std::size_t index ) const ;
 	Matrix Transform( ) const ;
+	void Transform( const Matrix& mat ) ;
 	void AddSegment( const PathSegment& seg ) ;
 	void MoveTo( double x, double y ) ;
 	void LineTo( double x, double y ) ;
 	void CloseSubPath( ) ;
 	bool IsFill( ) const ;
 	bool IsStroke( ) const ;
-	FillMode Style( ) const ;
+	FillMode FillRule( ) const ;
+	bool SetStyle( bool fill, bool stroke, FillMode fill_mode ) ;
 	
 private :
 	/// command handler
@@ -91,7 +97,7 @@ private :
 	// path painting
 	bool		m_stroke ;
 	bool		m_fill ;
-	FillMode	m_fillMode ;
+	FillMode	m_fill_mode ;
 	
 	GraphicsState	m_state ;
 	Matrix			m_ctm ;

@@ -306,7 +306,16 @@ Font* GraphicsState::FontFace( ) const
 bool GraphicsState::operator==( const GraphicsState& gs ) const
 {
 	// TODO: add more members
-	return m_impl->text == gs.m_impl->text ;
+	return
+		m_impl->text		== gs.m_impl->text &&
+		m_impl->strk_color	== gs.m_impl->strk_color &&
+		m_impl->fill_color	== gs.m_impl->fill_color &&
+		m_impl->line_width	== gs.m_impl->line_width &&
+		m_impl->pen_cap		== gs.m_impl->pen_cap &&
+		m_impl->line_join	== gs.m_impl->line_join &&
+		m_impl->miter_limit	== gs.m_impl->miter_limit &&
+		m_impl->dash_pattern	== gs.m_impl->dash_pattern &&
+		m_impl->dash_phase		== gs.m_impl->dash_phase  ;
 }
 
 bool GraphicsState::operator!=( const GraphicsState& gs ) const
