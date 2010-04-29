@@ -125,10 +125,12 @@ void RealPath::Print(
 {
 	PDF_ASSERT( m_ops.size() == m_pt_index.size() ) ;
 
-	if ( m_state != gs )
+	os << "q\n" ;
+
+//	if ( m_state != gs )
 		m_state.Print( os, res, gs ) ;
 
-	if ( m_ctm != trans )
+//	if ( m_ctm != trans )
 	{
 		os	<< m_ctm.M11() << ' ' << m_ctm.M12() << ' '
 			<< m_ctm.M21() << ' ' << m_ctm.M22() << ' '
@@ -163,8 +165,10 @@ void RealPath::Print(
 	else
 		throw Exception( "??" ) ;
 
-	gs		= m_state ;
-	trans	= m_ctm ;
+os << "Q\n" ;
+
+//	gs		= m_state ;
+//	trans	= m_ctm ;
 }
 
 void RealPath::Visit( GraphicsVisitor *visitor )
