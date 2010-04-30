@@ -55,6 +55,10 @@
 // stdc++ headers
 #include <algorithm>
 
+#ifdef Q_WS_WIN
+#include <windows.h>
+#endif
+
 namespace pdf {
 
 /**	constructor
@@ -250,15 +254,16 @@ void DocModel::AddText(
 	
 	HDC hdc = CreateCompatibleDC( NULL ) ;
 	SelectObject( hdc, (HGDIOBJ)font.handle() ) ;
-	DWORD size = GetFontData( hdc, 0, 0, 0, 0 ) ;
+	DWORD fsize = GetFontData( hdc, 0, 0, 0, 0 ) ;
 	
-	if ( size == GDI_ERROR )
+	if ( fsize == GDI_ERROR )
 		throw -1 ;
 
-	std::vector<unsigned char> result( size ) ;
-	GetFontData( hdc, 0, 0, &result[0], size ) ;
+	std::vector<unsigned char> result( fsize ) ;
+	if ( GetFontData( hdc, 0, 0, &result[0], fsize ) == GDI_ERROR )
+		throw -1 ;
 	
-	Font *f = m_doc->CreateSimpleFont( &result[0], size ) ;
+	Font *f = m_doc->CreateSimpleFont( &result[0], fsize ) ;
 #endif
 
 	PDF_ASSERT( f != 0 ) ;
