@@ -131,9 +131,10 @@ Font* RealDoc::CreateSimpleFont( FT_FaceRec_ *face )
 
 Font* RealDoc::CreateSimpleFont( const unsigned char *data, std::size_t size )
 {
+	std::vector<unsigned char> prog( data, data + size ) ;
+
 	FT_Face face = m_font_db->LoadFont( data, size ) ;
-	Font *font = new SimpleFont( face, m_font_db.get() ) ;
-	FT_Done_Face( face ) ;
+	Font *font = new SimpleFont( face, prog ) ;
 	return font ;
 }
 

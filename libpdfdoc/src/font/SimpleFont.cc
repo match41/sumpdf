@@ -126,14 +126,20 @@ SimpleFont::SimpleFont( const std::string& name, FontDb *font_db )
 }
 
 SimpleFont::SimpleFont( FT_FaceRec_ *ref, FontDb *fontdb )
-: m_impl( new Impl )
+	: m_impl( new Impl )
 {
 	PDF_ASSERT( fontdb != 0 ) ;
 	
 	std::vector<unsigned char> prog = fontdb->FindFont( ref ) ;
-	Init( prog, fontdb ) ;
+	Init( fontdb->LoadFont( &prog[0], prog.size() ), prog ) ;
 	
 	PDF_ASSERT( m_impl->face != 0 ) ;
+}
+
+SimpleFont::SimpleFont( FT_FaceRec_ *face, std::vector<unsigned char>& prog )
+	: m_impl( new Impl )
+{
+	Init( face, prog ) ;
 }
 
 SimpleFont::SimpleFont( DictReader& reader, FontDb *font_db )
@@ -289,18 +295,22 @@ bool SimpleFont::InitWithStdFont( const std::string& name, FontDb *font_db )
 	{
 		PDF_ASSERT( font_db != 0 ) ;
 		std::vector<unsigned char> prog = FindStdFont( name, font_db ) ;
-		Init( prog, font_db ) ;
+		Init( font_db->LoadFont( &prog[0], prog.size() ), prog ) ;
 		return true ;
 	}
 	else
 		return false ;
 }
 	
-void SimpleFont::Init( std::vector<unsigned char>& prog, FontDb *font_db )
+//void SimpleFont::Init( std::vector<unsigned char>& prog, FontDb *font_db )
+//{
+//	PDF_ASSERT( font_db != 0 ) ;
+//	m_impl->face = font_db->LoadFont( &prog[0], prog.size() ) ;
+
+void SimpleFont::Init( FT_FaceRec_ *face, std::vector<unsigned char>& prog )
 {
-	PDF_ASSERT( font_db != 0 ) ;
-	m_impl->face = font_db->LoadFont( &prog[0], prog.size() ) ;
-	
+	m_impl->face = face ;
+
 	if ( m_impl->base_font.empty() )
 	{
 		const char *psname = ::FT_Get_Postscript_Name( m_impl->face ) ;
