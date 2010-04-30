@@ -198,6 +198,7 @@ void FontDescriptor::InitType1Lengths( )
 
 std::bitset<32> FontDescriptor::GetFlag( FT_FaceRec_ *face )
 {
+	// TODO: use some real flags
 	std::bitset<32> r ;
 	r[nonsymbolic] = 1 ;
 	return r ;

@@ -51,6 +51,7 @@ Type1Encoding::Type1Encoding( FT_Face face )
 			break ;
 		}
 	}
+
 	// traverse all characters
 	unsigned		gindex ;
 	unsigned long 	char_code = ::FT_Get_First_Char( face, &gindex ) ;
@@ -62,10 +63,7 @@ Type1Encoding::Type1Encoding( FT_Face face )
 		{
 			wchar_t unicode = 0 ;
 			if ( NameToUnicode( name, unicode ) )
-			{
 				Add( static_cast<unsigned short>(char_code), unicode ) ;
-//				std::cout << "glyph: " << name << " char: " << char_code << " "
-//				<< "unicode: " << (int)unicode << std::endl ;
 			}
 		}
 		
