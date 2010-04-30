@@ -66,6 +66,8 @@ public :
 	Page* GetPage( std::size_t index ) ;
 
 	Font* CreateSimpleFont( const std::string& name ) ;
+	Font* CreateSimpleFont( FT_FaceRec_ *face ) ;
+	Font* CreateSimpleFont( const unsigned char	*data, std::size_t size ) ;
 
 	const DocInfo* Info( ) const ;
 	DocInfo* Info( ) ;

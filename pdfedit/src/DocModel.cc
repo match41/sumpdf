@@ -243,7 +243,24 @@ void DocModel::AddText(
 	const QString&	text, 
 	const QColor	c)
 {
-	Font *f = m_doc->CreateSimpleFont( ToStr( font.family() ) ) ;
+#if defined(Q_WS_X11) || defined(Q_WS_QWS)
+	Font *f = m_doc->CreateSimpleFont( font.freetypeFace() ) ;
+
+#elif defined(Q_WS_WIN)
+	
+	HDC hdc = CreateCompatibleDC( NULL ) ;
+	SelectObject( hdc, (HGDIOBJ)font.handle() ) ;
+	DWORD size = GetFontData( hdc, 0, 0, 0, 0 ) ;
+	
+	if ( size == GDI_ERROR )
+		throw -1 ;
+
+	std::vector<unsigned char> result( size ) ;
+	GetFontData( hdc, 0, 0, &result[0], size ) ;
+	
+	Font *f = m_doc->CreateSimpleFont( &result[0], size ) ;
+#endif
+
 	PDF_ASSERT( f != 0 ) ;
 
 	GraphicsState gs ;

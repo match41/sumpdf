@@ -37,6 +37,10 @@
 
 #include "util/Debug.hh"
 
+// freetype headers
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 #include <sstream>
 #include <stdexcept>
 
@@ -117,8 +121,20 @@ Page* RealDoc::GetPage( std::size_t index )
 
 Font* RealDoc::CreateSimpleFont( const std::string& name )
 {
-	PDF_ASSERT( m_catalog.get() != 0 ) ;
 	return new SimpleFont( name, m_font_db.get() ) ;
+}
+
+Font* RealDoc::CreateSimpleFont( FT_FaceRec_ *face )
+{
+	return new SimpleFont( face, m_font_db.get() ) ;
+}
+
+Font* RealDoc::CreateSimpleFont( const unsigned char *data, std::size_t size )
+{
+	FT_Face face = m_font_db->LoadFont( data, size ) ;
+	Font *font = new SimpleFont( face, m_font_db.get() ) ;
+	FT_Done_Face( face ) ;
+	return font ;
 }
 
 Page* RealDoc::AddPage( std::size_t index )

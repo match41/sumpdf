@@ -159,7 +159,13 @@ FontDescriptor::FontDescriptor( FT_Face face, std::vector<unsigned char>& prog )
 	m_font_file.swap( prog ) ;
 	
 	if ( m_type == font::type1 )
+	{
 		InitType1Lengths( ) ;
+	}
+	else if ( m_type == font::opentype_cff )
+	{
+		m_subtype = "OpenType" ;
+	}
 }
 
 void FontDescriptor::InitType1Lengths( )
@@ -350,24 +356,18 @@ Ref FontDescriptor::Write(
 			
 			Dictionary& sdict = s.Self() ;
 			
-			if ( m_subtype == Name() )
-			{
-				sdict.insert( std::make_pair( "Length1", m_length1 ) ) ;
-				sdict.insert( std::make_pair( "Length2", m_length2 ) ) ;
-				sdict.insert( std::make_pair( "Length3", m_length3 ) ) ;
-				self.insert( "FontFile", file->WriteObj( s ) ) ;
-			}
-			else
-			{
-				sdict.insert( std::make_pair( "Subtype", m_subtype ) ) ;
-				self.insert( "FontFile3", file->WriteObj( s ) ) ;
-			}
+			sdict.insert( std::make_pair( "Length1", m_length1 ) ) ;
+			sdict.insert( std::make_pair( "Length2", m_length2 ) ) ;
+			sdict.insert( std::make_pair( "Length3", m_length3 ) ) ;
+			self.insert( "FontFile", file->WriteObj( s ) ) ;
 		}
 		else
 		{
 			s.Append( &m_font_file[0], m_font_file.size() ) ;
 			s.Flush( ) ;
 			
+			Dictionary& sdict = s.Self() ;
+			sdict.insert( std::make_pair( "Subtype", m_subtype ) ) ;
 			self.insert( "FontFile3", file->WriteObj( s ) ) ;
 		}
 	}

@@ -125,6 +125,17 @@ SimpleFont::SimpleFont( const std::string& name, FontDb *font_db )
 	PDF_ASSERT( m_impl->face != 0 ) ;
 }
 
+SimpleFont::SimpleFont( FT_FaceRec_ *ref, FontDb *fontdb )
+: m_impl( new Impl )
+{
+	PDF_ASSERT( fontdb != 0 ) ;
+	
+	std::vector<unsigned char> prog = fontdb->FindFont( ref ) ;
+	Init( prog, fontdb ) ;
+	
+	PDF_ASSERT( m_impl->face != 0 ) ;
+}
+
 SimpleFont::SimpleFont( DictReader& reader, FontDb *font_db )
 	: m_impl( new Impl )
 {

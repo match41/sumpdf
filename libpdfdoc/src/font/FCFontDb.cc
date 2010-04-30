@@ -36,10 +36,12 @@
 	#error This file requires fontconfig to compile.
 #else
 #include <fontconfig/fontconfig.h>
+#include <fontconfig/fcfreetype.h>
 #endif
 
 #include <fstream>
 #include <iterator>
+#include <iostream>
 
 namespace pdf {
 
@@ -117,6 +119,8 @@ std::vector<unsigned char> FCFontDb::FindFont(
 	if ( sans == 0 )
 		throw FontException( "cannot create font pattern" ) ;
 
+	FcConfigSubstitute( 0, sans, FcMatchPattern ) ;
+
 	FcResult result ;
 	FcPattern *matched = FcFontMatch( 0, sans, &result ) ;
 
@@ -127,10 +131,57 @@ std::vector<unsigned char> FCFontDb::FindFont(
 	const char *file = reinterpret_cast<const char*>( filename ) ;
 	if ( file == 0 )
 		throw FontException( "cannot find font " + base_name ) ;
-	
+
+std::cout << "found font = " << file << std::endl ;
+
 	int idx ;
 	if ( FcPatternGetInteger( matched, FC_INDEX, 0, &idx ) != FcResultMatch )
 		throw FontException( "cannot find font " + base_name ) ;
+
+	// TODO: how to embed font with index != 0?
+	if ( idx != 0 )
+		throw FontException( "font collection is not supported yet" ) ;
+
+	std::ifstream fs( file, std::ios::binary | std::ios::in ) ;
+	std::vector<unsigned char> prog(
+		(std::istreambuf_iterator<char>( fs )),
+		(std::istreambuf_iterator<char>()) ) ;
+	
+	using boost::format ;
+	if ( prog.empty() )
+		throw FontException( format("font file %1% is empty") % file ) ;
+	
+	return prog ;
+}
+
+std::vector<unsigned char> FCFontDb::FindFont( FT_FaceRec_ *face )
+{
+	PDF_ASSERT( face != 0 ) ;
+
+	// something non-null
+	FcChar8 abc[1] ;
+
+	FcBlanks *b = FcBlanksCreate() ;
+
+	FcPattern *pat = FcFreeTypeQueryFace( face, abc, 0, b ) ;
+	PDF_ASSERT( pat != 0 ) ;
+
+	FcResult result ;
+	FcPattern *matched = FcFontMatch( 0, pat, &result ) ;
+
+	FcChar8 *filename ;
+	if ( FcPatternGetString(matched, FC_FILE, 0, &filename ) != FcResultMatch )
+		throw FontException( "cannot find font " ) ;
+
+	const char *file = reinterpret_cast<const char*>( filename ) ;
+	if ( file == 0 )
+		throw FontException( "cannot find font " ) ;
+
+std::cout << "found font = " << file << std::endl ;
+
+	int idx ;
+	if ( FcPatternGetInteger( matched, FC_INDEX, 0, &idx ) != FcResultMatch )
+		throw FontException( "cannot find font " ) ;
 
 	// TODO: how to embed font with index != 0?
 	if ( idx != 0 )

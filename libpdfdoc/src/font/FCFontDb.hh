@@ -44,6 +44,8 @@ public :
 		font::Weight		weight,
 		font::Slant			slant,
 		font::Width			width ) ;
+
+	std::vector<unsigned char> FindFont( FT_FaceRec_ *face ) ;
 } ;
 
 } // end of namespace
