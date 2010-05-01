@@ -154,6 +154,7 @@ set( FONT_HDRS		${FONT_DIR}/Types.hh
 					${FONT_DIR}/FontException.hh
 					${FONT_DIR}/RealGlyph.hh
 					${FONT_DIR}/BasicFontDb.hh
+					${FONT_DIR}/FontCache.hh
 					${FONT_DIR}/encoding/AdobeCMap.hh
 					${FONT_DIR}/encoding/CodeMap.hh
 					${FONT_DIR}/encoding/BaseEncoding.hh
@@ -284,6 +285,7 @@ set( FONT_SRCS		${FONT_DIR}/Font.cc
 					${FONT_DIR}/Outline.cc
 					${FONT_DIR}/FontDb.cc
 					${FONT_DIR}/BasicFontDb.cc
+					${FONT_DIR}/FontCache.cc
 					${FONT_DIR}/encoding/AdobeCMap.cc
 					${FONT_DIR}/encoding/CodeMap.cc
 					${FONT_DIR}/encoding/FontEncoding.cc

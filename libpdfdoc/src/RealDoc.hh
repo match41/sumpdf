@@ -33,12 +33,15 @@
 #include "core/Dictionary.hh"
 #include "core/Name.hh"
 
+#include "font/FontCache.hh"
+
 #include <string>
 #include <fstream>
 #include <memory>
 
 namespace pdf {
 
+class BaseFont ;
 class IndirectObj ;
 class Font ;
 class FontDb ;
@@ -65,7 +68,6 @@ public :
 	std::size_t PageCount( ) const ;
 	Page* GetPage( std::size_t index ) ;
 
-	Font* CreateSimpleFont( const std::string& name ) ;
 	Font* CreateSimpleFont( FT_FaceRec_ *face ) ;
 	Font* CreateSimpleFont( const unsigned char	*data, std::size_t size ) ;
 
@@ -74,7 +76,8 @@ public :
 
 private :
 	//! font database for loading the font files.
-	std::auto_ptr<FontDb>	m_font_db ;
+//	std::auto_ptr<FontDb>	m_font_db ;
+	FontCache				m_fonts ;
 
 	//! Catalog of the document
 	std::auto_ptr<Catalog>	m_catalog ;
@@ -103,6 +106,9 @@ private :
 		const std::string& Field( const Name& name ) const ;
 		void SetField( const Name& name, const std::string& value ) ;
 	} m_info ;
+	
+//	typedef std::map<std::string, BaseFont*>	FontMap ;
+//	FontMap	m_fonts ;
 } ;
 
 } // end of namespace
