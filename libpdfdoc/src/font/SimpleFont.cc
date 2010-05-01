@@ -302,11 +302,6 @@ bool SimpleFont::InitWithStdFont( const std::string& name, FontDb *font_db )
 		return false ;
 }
 	
-//void SimpleFont::Init( std::vector<unsigned char>& prog, FontDb *font_db )
-//{
-//	PDF_ASSERT( font_db != 0 ) ;
-//	m_impl->face = font_db->LoadFont( &prog[0], prog.size() ) ;
-
 void SimpleFont::Init( FT_FaceRec_ *face, std::vector<unsigned char>& prog )
 {
 	m_impl->face = face ;
