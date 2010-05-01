@@ -55,10 +55,10 @@ class FontDescriptor : public RefCounter
 {
 public :
 	FontDescriptor( ) ;
-	FontDescriptor( font::Type type, DictReader& self ) ;
+	FontDescriptor( DictReader& self ) ;
 	FontDescriptor( FT_FaceRec_ *face, std::vector<unsigned char>& prog ) ;
 	
-	void Read( font::Type type, DictReader& self ) ;
+	void Read( DictReader& self ) ;
 	Ref Write( 
 		File 						*file,
 		const std::vector<long>&	glyphs,
@@ -85,8 +85,12 @@ private :
 
 	void InitType1Lengths( ) ;
 
+	Stream WriteTrueTypeFont(
+		FT_FaceRec_ 				*face,
+		const std::vector<long>&	glyphs ) const ;
+
 private :
-	font::Type	m_type ;
+//	font::Type	m_type ;
 
 	std::string	m_family ;
 	std::string	m_psname ;

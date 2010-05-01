@@ -253,21 +253,10 @@ SimpleFont::~SimpleFont( )
 bool SimpleFont::LoadDescriptor( DictReader& reader, FontDb *font_db )
 {
 	ElementFactory<> f( reader ) ;
-	FontDescriptor *fd = f.Create<FontDescriptor>(
-		"FontDescriptor",
-		boost::bind( NewPtr<FontDescriptor>(), m_impl->type, _1 ) ) ;
+	m_impl->descriptor = f.Create<FontDescriptor>(
+		"FontDescriptor", NewPtr<FontDescriptor>(), m_impl->descriptor ) ;
 
-	if ( fd != 0 )
-	{
-		if ( m_impl->descriptor != 0 )
-			m_impl->descriptor->Release() ;
-		
-		m_impl->descriptor = fd ;
-		
-		return true ;
-	}
-	else
-		return false ;
+	return m_impl->descriptor != 0 ;
 }
 
 bool SimpleFont::LoadFontProgram( FontDb *font_db )
@@ -282,6 +271,7 @@ bool SimpleFont::LoadFontProgram( FontDb *font_db )
 			m_impl->face = font_db->LoadFont( &font_file[0], font_file.size() );
 			
 			PDF_ASSERT( m_impl->face != 0 ) ;
+			m_impl->type = font::GetType( m_impl->face ) ;
 			
 			return true ;
 		}

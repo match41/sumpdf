@@ -34,6 +34,7 @@
 #include <boost/bind.hpp>
 
 #include <algorithm>
+#include <memory>
 
 // freetype headers
 #include <ft2build.h>
@@ -43,12 +44,6 @@ namespace pdf {
 
 struct BasicFontDb::FontEntry
 {
-	~FontEntry( )
-	{
-		FT_Done_Face( face ) ;
-	}
-
-	FT_Face						face ;
 	std::vector<unsigned char>	prog ;
 } ;
 
@@ -77,28 +72,28 @@ FT_LibraryRec_* BasicFontDb::Library()
 	return m_ft ;
 }
 
-
 FT_FaceRec_* BasicFontDb::LoadFont(
 	const unsigned char	*data,
 	std::size_t			size )
 {
-	FontEntry	*fe = new FontEntry ;
+	std::auto_ptr<FontEntry> fe( new FontEntry ) ;
 	fe->prog.assign( data, data + size ) ;
 
-	FT_Error e = FT_New_Memory_Face( m_ft, &fe->prog[0], size, 0, &fe->face ) ;
+	FT_Face face = 0 ;
+	FT_Error e = FT_New_Memory_Face( m_ft, &fe->prog[0], size, 0, &face ) ;
 	
 	using boost::format ;
 	if ( e != 0 )
 		throw FontException( format("cannot create font face: %1%") % e ) ;
 	
-	const char *name = FT_Get_Postscript_Name( fe->face ) ;
+	const char *name = FT_Get_Postscript_Name( face ) ;
 	
 	if ( name == 0 )
-		m_nameless.push_back( fe ) ;
+		m_nameless.push_back( fe.release() ) ;
 	else
 	{
 		std::pair<FontMap::iterator, bool> r =
-			m_map.insert( std::make_pair( name, fe ) ) ; 
+			m_map.insert( std::make_pair( name, fe.release() ) ) ; 
 		
 		// r.second indicates whether the pair is really inserted.
 		// if not, that means the name already exists.
@@ -110,8 +105,7 @@ FT_FaceRec_* BasicFontDb::LoadFont(
 //		}
 	}
 
-	PDF_ASSERT( fe != 0 ) ;
-	return fe->face ;
+	return face ;
 }
 
 } // end of namespace
