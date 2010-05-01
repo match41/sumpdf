@@ -63,11 +63,11 @@ BasicFontDb::BasicFontDb( )
 
 BasicFontDb::~BasicFontDb( )
 {
-//	std::for_each( m_map.begin(), m_map.end(),
-//		boost::bind( DeletePtr(),
-//			boost::bind( &FontMap::value_type::second, _1 ) ) ) ;
-//
-//	std::for_each( m_nameless.begin(), m_nameless.end(), DeletePtr() ) ;
+	std::for_each( m_map.begin(), m_map.end(),
+		boost::bind( DeletePtr(),
+			boost::bind( &FontMap::value_type::second, _1 ) ) ) ;
+
+	std::for_each( m_nameless.begin(), m_nameless.end(), DeletePtr() ) ;
 	
 	FT_Done_FreeType( m_ft ) ;
 }
