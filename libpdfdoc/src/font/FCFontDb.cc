@@ -157,19 +157,30 @@ std::vector<unsigned char> FCFontDb::FindFont(
 	return MatchFont( sans, base_name ) ;
 }
 
-std::vector<unsigned char> FCFontDb::FindFont( FT_FaceRec_ *face )
+std::string FCFontDb::FindFontPath( FT_FaceRec_ *ref )
 {
-	PDF_ASSERT( face != 0 ) ;
+	PDF_ASSERT( ref != 0 ) ;
 
 	// something non-null
 	FcChar8 abc[1] ;
 
 	FcBlanks *b = FcBlanksCreate() ;
 
-	FcPattern *pat = FcFreeTypeQueryFace( face, abc, 0, b ) ;
+	FcPattern *pat = FcFreeTypeQueryFace( ref, abc, 0, b ) ;
 	PDF_ASSERT( pat != 0 ) ;
 
-	return MatchFont( pat, "" ) ;
+	FcResult result ;
+	FcPattern *matched = FcFontMatch( 0, pat, &result ) ;
+
+	FcChar8 *filename ;
+	if ( FcPatternGetString(matched, FC_FILE, 0, &filename ) != FcResultMatch )
+		throw FontException( "cannot find font" ) ;
+
+	const char *file = reinterpret_cast<const char*>( filename ) ;
+	if ( file == 0 )
+		throw FontException( "cannot find font" ) ;
+
+	return file ;
 }
 
 } // end of namespace

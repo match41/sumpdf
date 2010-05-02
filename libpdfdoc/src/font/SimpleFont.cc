@@ -131,17 +131,6 @@ SimpleFont::SimpleFont( const std::string& path, FontDb *font_db )
 	PDF_ASSERT( m_impl->face != 0 ) ;
 }
 
-SimpleFont::SimpleFont( FT_FaceRec_ *ref, FontDb *font_db )
-	: m_impl( new Impl )
-{
-	PDF_ASSERT( font_db != 0 ) ;
-	
-	std::vector<unsigned char> prog = font_db->FindFont( ref ) ;
-	Init( font_db->LoadFont( &prog[0], prog.size() ), prog ) ;
-	
-	PDF_ASSERT( m_impl->face != 0 ) ;
-}
-
 SimpleFont::SimpleFont( FT_FaceRec_ *face, std::vector<unsigned char>& prog )
 	: m_impl( new Impl )
 {

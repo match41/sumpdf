@@ -45,7 +45,7 @@ public :
 		font::Slant			slant,
 		font::Width			width ) ;
 
-	std::vector<unsigned char> FindFont( FT_FaceRec_ *face ) ;
+	std::string FindFontPath( FT_FaceRec_ *ref ) ;
 } ;
 
 } // end of namespace

@@ -55,7 +55,6 @@ class SimpleFont : public BaseFont
 public :
 	SimpleFont( DictReader& self, FontDb *font_db ) ;
 	SimpleFont( const std::string& path, FontDb *font_db ) ;
-	SimpleFont( FT_FaceRec_ *ref, FontDb *font_db ) ;
 	SimpleFont( FT_FaceRec_ *face, std::vector<unsigned char>& prog ) ;
 	~SimpleFont( ) ;
 

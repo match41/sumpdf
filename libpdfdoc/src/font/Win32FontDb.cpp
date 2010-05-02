@@ -113,7 +113,7 @@ std::vector<unsigned char> Win32FontDb::FindFont(
         % e ) ;
 }
 
-std::vector<unsigned char> Win32FontDb::FindFont( FT_FaceRec_ *face )
+std::string Win32FontDb::FindFontPath( FT_FaceRec_ *ref )
 {
 	throw FontException( "FontFont( FT_Face ) is not supported" ) ;
 }
