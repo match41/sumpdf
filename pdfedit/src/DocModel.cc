@@ -50,7 +50,6 @@
 #include <QGraphicsRectItem>
 #include <QGraphicsScene>
 #include <QString>
-#include <QColor>
 
 // stdc++ headers
 #include <algorithm>
@@ -245,7 +244,7 @@ void DocModel::AddText(
 	double			size,
 	const QPointF&	pos,
 	const QString&	text, 
-	const QColor	c)
+	const QColor	c )
 {
 #if defined(Q_WS_X11) || defined(Q_WS_QWS)
 	Font *f = m_doc->CreateSimpleFont( font.freetypeFace() ) ;
@@ -277,6 +276,7 @@ void DocModel::AddText(
 		ToWStr( text ) ) ;
 
 	m_pages[m_current_page]->addItem( new TextObject( line ) ) ;
+
 }
 
 } // end of namespace

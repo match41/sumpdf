@@ -51,18 +51,22 @@ public:
 
 public:
 	QPushButton		*m_insert_text;
+	QPushButton		*m_delete_item;
 
 // signals:
 public slots:
 	void OnInsertBtnUp( );
 	void OnClicked( );
+	void OnDelete( );
 
 signals:
-	void clicked();
+	void DeleteItem( );
 
 private:
 	void CreateTextInsertToolbar( QToolBar *parent , QWidget *parentWnd );
 
+private:
+	QPointF		m_pos;			// mouse position
 };
 
 } // end of namespace
