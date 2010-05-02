@@ -197,6 +197,8 @@ Name RealResources::AddFont( BaseFont *font )
 	} while ( m_fonts.left.find( name ) != m_fonts.left.end( ) ) ;
 
 	m_fonts.insert( FontMap::value_type( name, font ) ) ;
+	font->AddRef() ;
+	
 	return name ;
 }
 

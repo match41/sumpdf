@@ -200,6 +200,10 @@ void RealPage::SetContent( const std::vector<Graphics*>& gfx )
 
 	GraphicsState	gs ;
 
+	// clear the resource dictionary first. the fonts/images will be
+	// added to the resource dictionary when calling Graphics::Print().
+	m_pinfo.GetResource()->Clear( ) ;
+
 	using namespace boost ;
 	std::for_each(
 		gfx.begin(),
