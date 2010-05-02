@@ -39,13 +39,12 @@ class InsertTextDlg :
 	Q_OBJECT
 
 public:
-	explicit InsertTextDlg( QWidget *parent, QPointF pos = QPointF()) ;
+	explicit InsertTextDlg( QWidget *parent ) ;
 	~InsertTextDlg( ) ;
 
 	QTextEdit*	GetText( );
 	QString		GetFontSize( );
 	QPointF		GetPosition( );
-//	bool		ReadyToInsert( );	// prevents inserting on old position
 
 signals:
 	void OnInsertClicked( QPointF );
@@ -59,10 +58,7 @@ private slots:
 
 private:
 	QPushButton	*m_btn;
-	QPointF		m_pos;			// mouse position
 	QAction*	m_text_action;
-	bool		m_getpos;		// get mouse click position only when insert icon clicked
-	bool		m_toinsert;	
 
 private:
 	// text color
