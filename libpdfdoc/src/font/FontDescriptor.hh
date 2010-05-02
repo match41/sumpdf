@@ -90,8 +90,6 @@ private :
 		const std::vector<long>&	glyphs ) const ;
 
 private :
-//	font::Type	m_type ;
-
 	std::string	m_family ;
 	std::string	m_psname ;
 	font::Width	m_stretch ;
@@ -100,9 +98,6 @@ private :
 	double		m_italic_angle ;
 	double		m_ascent, m_descent, m_leading, m_cap_height, m_x_height,
 				m_stemv, m_stemh, m_avg_width, m_max_width, m_miss_width ;
-
-	/// for FontFile3 only
-	Name		m_subtype ;
 
 	// for reading type1 font only
 	int	m_length1, m_length2, m_length3 ;

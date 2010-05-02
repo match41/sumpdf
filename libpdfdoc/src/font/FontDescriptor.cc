@@ -44,6 +44,8 @@
 #include FT_TRUETYPE_IDS_H
 #include FT_TRUETYPE_TABLES_H
 
+#include <boost/format.hpp>
+
 #include <iostream>
 #include <iterator>
 #include <fstream>
@@ -161,10 +163,6 @@ FontDescriptor::FontDescriptor( FT_Face face, std::vector<unsigned char>& prog )
 	{
 		InitType1Lengths( ) ;
 	}
-	else if ( type == font::opentype_cff )
-	{
-		m_subtype = "OpenType" ;
-	}
 }
 
 void FontDescriptor::InitType1Lengths( )
@@ -208,28 +206,11 @@ std::bitset<32> FontDescriptor::GetFlag( FT_FaceRec_ *face )
 	return r ;
 }
 
-bool FontDescriptor::DecodeFontFile3( DictReader& reader, Stream& prog )
-{
-	if ( reader.Detach( "FontFile3", prog ) )
-	{
-		Dictionary prog_dict = prog.Self() ;
-		DictReader prog_reader( prog_dict, reader.GetFile() ) ;
-		
-		if ( !prog_reader.Detach( "Subtype", m_subtype ) )
-			throw FontException( "missing Subtype for FontFile3 font" ) ; 
-		
-		return true ;
-	}
-	else
-		return false ;
-}
-
 ///	Read the font descriptor from file.
 void FontDescriptor::Read( DictReader& reader )
 {
 	// font file can be in FontFile, FontFile2 or 3, depending on font type
 	Stream prog ;
-	m_subtype = Name() ;
 	
 	// type1 font program is embbeded in the "FontFile" stream.
 	if ( reader.Detach( "FontFile", 	prog ) )
@@ -252,12 +233,6 @@ void FontDescriptor::Read( DictReader& reader )
 	// CFF and open type are in "FontFile3"
 	else if ( reader.Detach( "FontFile3", prog ) )
 	{
-		Dictionary prog_dict = prog.Self() ;
-		DictReader prog_reader( prog_dict, reader.GetFile() ) ;
-		
-		// subtype will indicate CFF or open type
-		if ( !prog_reader.Detach( "Subtype", m_subtype ) )
-			throw FontException( "missing Subtype for FontFile3 font" ) ; 
 	}
 	
 	prog.CopyData( m_font_file ) ;
@@ -300,7 +275,7 @@ Stream FontDescriptor::WriteTrueTypeFont(
 	FT_FaceRec_ 				*face,
 	const std::vector<long>&	glyphs ) const
 {
-	PDF_ASSERT( font::GetType( face ) == font::truetype ) ;
+	PDF_ASSERT( FT_IS_SFNT( face ) ) ;
 
 	std::size_t size = m_font_file.size() ;
 	
@@ -369,6 +344,8 @@ Ref FontDescriptor::Write(
 			s.Append( &m_font_file[0], m_font_file.size() ) ;
 			s.Flush( ) ;
 			
+			Name prog_key ;
+			
 			Dictionary& sdict = s.Self() ;
 			
 			if ( type == font::type1 )
@@ -376,15 +353,23 @@ Ref FontDescriptor::Write(
 				sdict.insert( std::make_pair( "Length1", m_length1 ) ) ;
 				sdict.insert( std::make_pair( "Length2", m_length2 ) ) ;
 				sdict.insert( std::make_pair( "Length3", m_length3 ) ) ;
-				self.insert( "FontFile", file->WriteObj( s ) ) ;
+				prog_key = "FontFile" ;
 			}
 			else if ( type == font::opentype_cff )
 			{
-				sdict.insert( std::make_pair( "Subtype", m_subtype ) ) ;
-				self.insert( "FontFile3", file->WriteObj( s ) ) ;
+				sdict.insert( std::make_pair( "Subtype", Name("OpenType") ) ) ;
+				prog_key = "FontFile3" ;
+			}
+			else if ( type == font::type2 )
+			{
+				sdict.insert( std::make_pair( "Subtype", Name("Type1C") ) ) ;
+				prog_key = "FontFile3" ;
 			}
 			else
-				throw FontException( "unsupported font type" ) ;
+				throw FontException(
+					boost::format( "unsupported font type %1%" ) % type ) ;
+			
+			self.insert( prog_key, file->WriteObj( s ) ) ;
 		}
 	}
 	

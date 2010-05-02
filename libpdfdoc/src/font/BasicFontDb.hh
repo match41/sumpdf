@@ -28,9 +28,6 @@
 
 #include "font/FontDb.hh"
 
-#include <map>
-#include <string>
-
 struct FT_LibraryRec_ ;
 
 namespace pdf {
@@ -53,13 +50,6 @@ public :
 
 protected :
 	FT_LibraryRec_	*m_ft ;
-	
-	struct FontEntry ;
-	typedef std::map<std::string, FontEntry*>	FontMap ;
-	FontMap	m_map ;
-	
-	typedef std::vector<FontEntry*> NamelessFont ;
-	NamelessFont	m_nameless ;
 } ;
 
 } // end of namespace
