@@ -53,7 +53,7 @@ CompositeFont::CompositeFont( DictReader& dict, FontDb *ft )
 
 	DictReader cidfont ;
 	descendant.Detach( 0, cidfont ) ;
-	std::cout << *cidfont << std::endl ;
+//	std::cout << *cidfont << std::endl ;
 	
 	// trying to reuse the code in SimpleFont
 //	SimpleFont *sfont = new SimpleFont( cidfont, ft ) ;

@@ -66,7 +66,7 @@ public :
 	
 	std::string Family( ) const ;
 
-	font::Width GetStretch( ) const ;
+	font::Width Stretch( ) const ;
 
 	double	ItalicAngle( ) const ;
 

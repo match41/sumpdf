@@ -69,7 +69,8 @@ FT_FaceRec_* BasicFontDb::LoadFont(
 	
 	using boost::format ;
 	if ( e != 0 )
-		throw FontException( format("cannot create font face: %1%") % e ) ;
+		throw FontException( format("cannot create font face: %1%") %
+			FontException::LookUpFtError(e) ) ;
 	
 	return face ;
 }

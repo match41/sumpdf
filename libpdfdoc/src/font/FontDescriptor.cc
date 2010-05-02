@@ -69,7 +69,6 @@ const Name FontDescriptor::m_stretch_names[] =
 /**	\internal	constructor
 */
 FontDescriptor::FontDescriptor( )
-//	: m_type( font::unknown )
 	: m_stretch( font::normal_width )
 	, m_weight( 400 )					// 400 means normal
 	, m_flags( 0 )
@@ -167,8 +166,6 @@ FontDescriptor::FontDescriptor( FT_Face face, std::vector<unsigned char>& prog )
 
 void FontDescriptor::InitType1Lengths( )
 {
-//	PDF_ASSERT( m_type == font::type1 ) ;
-
 	unsigned char eexec[] = "eexec" ;
 	std::size_t eexec_len = Count( eexec ) - 1 ;
 	
@@ -392,6 +389,7 @@ std::string FontDescriptor::Family( ) const
 
 double FontDescriptor::FontUnit( double val, FT_Face face )
 {
+	PDF_ASSERT( face != 0 ) ;
 	return val * 1000.0 / face->units_per_EM ; 
 }
 
