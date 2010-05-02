@@ -29,10 +29,8 @@
 
 namespace pdf {
 
-InsertTextDlg::InsertTextDlg( QWidget *parent, QPointF pos )
+InsertTextDlg::InsertTextDlg( QWidget *parent )
 	: QDialog( parent )
-	, m_getpos( false )
-	, m_toinsert( false )
 {
 	setupUi( this ) ;
 	

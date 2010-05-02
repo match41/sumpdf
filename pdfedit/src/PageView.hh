@@ -56,7 +56,7 @@ protected :
 
 signals:
 	void InsertText( QPointF pos, double fontsize );
-	void InsertBtnUp( );
+	void OnInsertBtnUp( );
 
 private slots:
 	void InsertCaret( QPointF );

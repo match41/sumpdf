@@ -83,7 +83,6 @@ MainWnd::MainWnd( QWidget *parent )
 {
 	setupUi( this ) ;
 	setCentralWidget( m_view ) ;
-	QApplication::setOverrideCursor( QCursor(Qt::ArrowCursor) );
 
 	connect( m_action_about,	SIGNAL(triggered()), this, SLOT(OnAbout()));
 	connect( m_action_prop,		SIGNAL(triggered()), this, SLOT(OnProperties()));
@@ -325,7 +324,7 @@ void MainWnd::OnViewSource( )
 
 void MainWnd::TextInsertConnect( )
 {
-	connect( 	// mouse position -> dlg
+	connect( 	// Delete ToolBox Button
 		m_toolbox, 
 		SIGNAL( DeleteItem( ) ), 
 		m_view, 
@@ -339,7 +338,7 @@ void MainWnd::TextInsertConnect( )
 
 	connect(	// ToolBox Insert Btn Up
 		m_view, 
-		SIGNAL( InsertBtnUp() ),	
+		SIGNAL( OnInsertBtnUp() ),	
 		m_toolbox, 
 		SLOT( OnInsertBtnUp( ) ) );
 }
@@ -353,10 +352,10 @@ void MainWnd::InsertText( QPointF pos, double fontsize )
 		PDF_ASSERT( m_doc != 0 ) ;
 
 		m_doc->AddText(
-			text->currentFont(),
-			fontsize,
-			pos,
-			text->toPlainText(),
+			text->currentFont(), 
+			fontsize, 
+			pos, 
+			text->toPlainText(), 
 			text->textColor() ) ;
 	}
 	catch ( Exception& e )

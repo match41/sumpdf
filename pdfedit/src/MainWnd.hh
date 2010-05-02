@@ -105,7 +105,6 @@ private :
 	QComboBox 		*m_zoom_box ;
 
 	QLabel			*m_label;
-	QTextEdit		*m_text;
 
 	ToolBox		*m_toolbox;
 } ;
