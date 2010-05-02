@@ -44,6 +44,10 @@ FontCache::FontCache( )
 {
 }
 
+FontCache::~FontCache( )
+{
+}
+
 BaseFont* FontCache::GetFont( FT_FaceRec_ *face )
 {
 	const char *psname = FT_Get_Postscript_Name( face ) ;

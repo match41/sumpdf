@@ -45,6 +45,7 @@ class FontCache
 {
 public :
 	FontCache( ) ;
+	~FontCache( ) ;
 	
 	BaseFont* GetFont( FT_FaceRec_ *face ) ;
 	BaseFont* GetFont(
