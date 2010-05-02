@@ -63,12 +63,12 @@ void ToolBox::CreateTextInsertToolbar( QToolBar *parent, QWidget *parentWnd )
 
 void ToolBox::OnClicked( )
 {
-	emit clicked();
+	QApplication::setOverrideCursor( QCursor(Qt::IBeamCursor) );
 }
 
 void ToolBox::OnDelete( )
 {
-	emit deleteitem( );
+	emit DeleteItem( );
 }
 
 } // end of namespace

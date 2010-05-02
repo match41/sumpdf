@@ -60,14 +60,13 @@ public slots:
 	void OnDelete( );
 
 signals:
-	void clicked();
-	void deleteitem( );
+	void DeleteItem( );
 
 private:
 	void CreateTextInsertToolbar( QToolBar *parent , QWidget *parentWnd );
 
 private:
-		QPointF		m_pos;			// mouse position
+	QPointF		m_pos;			// mouse position
 };
 
 } // end of namespace

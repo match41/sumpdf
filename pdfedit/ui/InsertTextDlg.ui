@@ -2,51 +2,63 @@
 <ui version="4.0">
  <class>InsertTextUI</class>
  <widget class="QDialog" name="InsertTextUI">
-  <property name="windowModality">
-   <enum>Qt::NonModal</enum>
-  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>458</width>
-    <height>83</height>
+    <height>80</height>
    </rect>
-  </property>
-  <property name="sizePolicy">
-   <sizepolicy hsizetype="Preferred" vsizetype="Ignored">
-    <horstretch>0</horstretch>
-    <verstretch>0</verstretch>
-   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="5">
-    <widget class="QPushButton" name="m_btn_insert">
-     <property name="text">
-      <string>Insert</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
+   <item row="0" column="0" colspan="4">
     <widget class="QFontComboBox" name="m_font"/>
    </item>
-   <item row="2" column="0" colspan="6">
-    <widget class="QTextEdit" name="m_text">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Ignored">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+   <item row="0" column="8" rowspan="4">
+    <widget class="QDialogButtonBox" name="m_btn_insert">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
-   <item row="1" column="1">
+   <item row="0" column="4">
     <widget class="QComboBox" name="m_fontsize"/>
    </item>
-   <item row="1" column="4">
+   <item row="0" column="5">
+    <widget class="QPushButton" name="m_bold">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="pdfedit.qrc">
+       <normaloff>:/images/bold.png</normaloff>:/images/bold.png</iconset>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="6">
+    <widget class="QPushButton" name="m_italic">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="pdfedit.qrc">
+       <normaloff>:/images/italic.png</normaloff>:/images/italic.png</iconset>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="7">
     <widget class="QToolButton" name="m_textcolor">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -63,31 +75,13 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="2">
-    <widget class="QPushButton" name="m_bold">
-     <property name="text">
-      <string/>
-     </property>
-     <property name="icon">
-      <iconset resource="pdfedit.qrc">
-       <normaloff>:/images/bold.png</normaloff>:/images/bold.png</iconset>
-     </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="3">
-    <widget class="QPushButton" name="m_italic">
-     <property name="text">
-      <string/>
-     </property>
-     <property name="icon">
-      <iconset resource="pdfedit.qrc">
-       <normaloff>:/images/italic.png</normaloff>:/images/italic.png</iconset>
-     </property>
-     <property name="checkable">
-      <bool>true</bool>
+   <item row="1" column="0" rowspan="3" colspan="8">
+    <widget class="QTextEdit" name="m_text">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Ignored">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
     </widget>
    </item>
@@ -96,5 +90,38 @@
  <resources>
   <include location="pdfedit.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>m_btn_insert</sender>
+   <signal>accepted()</signal>
+   <receiver>InsertTextUI</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_btn_insert</sender>
+   <signal>rejected()</signal>
+   <receiver>InsertTextUI</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

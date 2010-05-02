@@ -89,8 +89,7 @@ public slots :
 	void OnChanged( const QList<QRectF>& ) ;
 	void OnViewSource( ) ;
 
-	void OnInsertDlg( );
-	void OnInsertTextNow( );
+	void InsertText( QPointF pos, double fontsize );
 
 	void OnFileChanged( );
 
@@ -108,11 +107,7 @@ private :
 	QLabel			*m_label;
 	QTextEdit		*m_text;
 
-	// text editing
-	QTextEdit		*m_text_edit;
-	InsertTextDlg	*m_insert_dlg;
-
-	ToolBox		*m_texttb_items;
+	ToolBox		*m_toolbox;
 } ;
 
 } // end of namespace
