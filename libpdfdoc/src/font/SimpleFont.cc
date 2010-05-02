@@ -479,8 +479,8 @@ Ref SimpleFont::Write( File *file, const FontSubsetInfo *subset ) const
 	dict.insert( "LastChar", 	last_char ) ;
 	
 	// write the font encoding
-//	if ( m_impl->encoding != 0 )
-//		dict.insert( "Encoding", m_impl->encoding->Write( file ) ) ;
+	if ( m_impl->encoding != 0 )
+		dict.insert( "Encoding", m_impl->encoding->Write( file ) ) ;
 	
 	if ( m_impl->widths.empty() )
 	{

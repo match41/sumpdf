@@ -33,6 +33,7 @@
 #include "mock/MockFile.hh"
 
 #include <sstream>
+#include <iostream>
 
 namespace pdfut {
 
@@ -82,7 +83,7 @@ void FontEncodingTest::TestRoundTrip( )
 	
 	Dictionary self ;
 	CPPUNIT_ASSERT( ss >> self ) ;
-	
+
 	MockFile file ;
 	DictReader dr( self, &file ) ;
 
@@ -97,6 +98,17 @@ void FontEncodingTest::TestRoundTrip( )
 	PDFUT_ASSERT_EQUAL( oss.str(), out ) ;
 	std::wstring wout = subject.Decode( oss.str() ) ;
 	PDFUT_ASSERT_EQUAL( wout, str ) ;
+	
+	MockFile f2 ;
+	Ref ref = subject.Write( &f2 ) ;
+	Dictionary self2 ;
+	f2.ReadType( ref, self2 ) ;
+
+	DictReader dr2( self2, &f2 ) ;
+	SimpleEncoding subject2( dr2 ) ;
+	std::ostringstream oss2 ;
+	subject2.Encode( str.begin(), str.end(), oss2 ) ;
+	PDFUT_ASSERT_EQUAL( oss.str(), oss2.str() ) ;
 }
 
 } // end of namespace
