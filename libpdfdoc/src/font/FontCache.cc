@@ -62,7 +62,9 @@ BaseFont* FontCache::GetFont( FT_FaceRec_ *face )
 	}
 	else
 	{
-		BaseFont *result = new SimpleFont( face, m_font_db.get() ) ;
+		std::string path = m_font_db->FindFontPath( face ) ;
+	
+		BaseFont *result = new SimpleFont( path, m_font_db.get() ) ;
 		m_fonts.insert( std::make_pair( psname, result ) ) ;
 		return result ;
 	}

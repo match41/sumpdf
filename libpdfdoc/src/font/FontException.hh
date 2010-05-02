@@ -38,6 +38,9 @@ class FontException : public Exception
 public :
 	explicit FontException( const std::string& msg ) ;
 	explicit FontException( boost::format fmt ) ;
+	FontException( const std::string& msg, int fterror ) ;
+	
+	static std::string LookUpFtError( int fterror ) ;
 } ;
 
 } // end of namespace

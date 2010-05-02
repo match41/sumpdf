@@ -55,7 +55,7 @@ public :
 		font::Slant			slant	= font::roman,
 		font::Width			width	= font::normal_width ) = 0 ;
 
-	virtual std::vector<unsigned char> FindFont( FT_FaceRec_ *face ) = 0 ;
+	virtual std::string FindFontPath( FT_FaceRec_ *ref ) = 0 ;
 
 	virtual FT_FaceRec_* LoadFont(
 		const unsigned char	*data,

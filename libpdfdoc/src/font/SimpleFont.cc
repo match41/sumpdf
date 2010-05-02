@@ -115,23 +115,18 @@ const Name SimpleFont::m_font_types[] =
 	Name("TrueType"),	// opentype font with glyf table is treated as truetype
 } ;
 
-SimpleFont::SimpleFont( const std::string& name, FontDb *font_db )
+SimpleFont::SimpleFont( const std::string& path, FontDb *font_db )
 	: m_impl( new Impl )
 {
 	PDF_ASSERT( font_db != 0 ) ;
 	
-	InitWithStdFont( name, font_db ) ;
+	// load font data from file
+	std::ifstream file( path.c_str(), std::ios::binary | std::ios::in ) ;
+	std::vector<unsigned char> prog(
+		(std::istreambuf_iterator<char>( file )),
+		(std::istreambuf_iterator<char>()) ) ;
 	
-	PDF_ASSERT( m_impl->face != 0 ) ;
-}
-
-SimpleFont::SimpleFont( FT_FaceRec_ *ref, FontDb *fontdb )
-	: m_impl( new Impl )
-{
-	PDF_ASSERT( fontdb != 0 ) ;
-	
-	std::vector<unsigned char> prog = fontdb->FindFont( ref ) ;
-	Init( fontdb->LoadFont( &prog[0], prog.size() ), prog ) ;
+	Init( font_db->LoadFont( &prog[0], prog.size() ), prog ) ;
 	
 	PDF_ASSERT( m_impl->face != 0 ) ;
 }
@@ -139,6 +134,7 @@ SimpleFont::SimpleFont( FT_FaceRec_ *ref, FontDb *fontdb )
 SimpleFont::SimpleFont( FT_FaceRec_ *face, std::vector<unsigned char>& prog )
 	: m_impl( new Impl )
 {
+	PDF_ASSERT( face != 0 ) ;
 	Init( face, prog ) ;
 }
 

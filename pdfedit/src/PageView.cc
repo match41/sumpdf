@@ -90,14 +90,14 @@ void PageView::mousePressEvent( QMouseEvent *event )
 			// insert text from modal InsertTextDlg
 			QApplication::setOverrideCursor( QCursor(Qt::ArrowCursor) );
 			InsertCaret( pos );
-			InsertTextDlg dlg(this, pos);
+			InsertTextDlg dlg( this );
 			if ( dlg.exec() == QDialog::Accepted )	// insert text here
 			{
 				m_txt=dlg.GetText();
 				emit InsertText( pos, dlg.GetFontSize().toDouble() );
 			}
 			DeleteCaret( pos );
-			emit InsertBtnUp();
+			emit OnInsertBtnUp();
 		}
 	}
 
