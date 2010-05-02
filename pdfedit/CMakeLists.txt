@@ -30,6 +30,7 @@ add_definitions( -DVERSION="${VERSION}" )
 set( Boost_USE_MULTITHREAD ON )
 find_package( Qt4 REQUIRED )
 find_package( Boost COMPONENTS program_options )
+find_package( ZLIB REQUIRED )
 find_package( Freetype REQUIRED )
 
 # we don't want to let the boost header to choose the libraries for us
@@ -211,5 +212,6 @@ include_directories( ${QT_INCLUDE_DIR} ${pdfedit_SOURCE_DIR}/src
 
 target_link_libraries( pdfedit	${PDFDOC_LIBRARY} ${OPT_LIBS} ${QT_LIBRARIES}
 								${QT_QTMAIN_LIBRARY}
+								${ZLIB_LIBRARIES}
 								${FREETYPE_LIBRARIES} )
 								
