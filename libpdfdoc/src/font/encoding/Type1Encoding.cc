@@ -62,10 +62,7 @@ Type1Encoding::Type1Encoding( FT_Face face )
 		{
 			wchar_t unicode = 0 ;
 			if ( NameToUnicode( name, unicode ) )
-			{
 				Add( static_cast<unsigned short>(char_code), unicode ) ;
-//				std::cout << "glyph: " << name << " char: " << char_code << " "
-//				<< "unicode: " << (int)unicode << std::endl ;
 			}
 		}
 		
