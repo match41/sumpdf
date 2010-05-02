@@ -84,7 +84,8 @@ void PageView::mousePressEvent( QMouseEvent *event )
 	}
 	else 	// click at empty space
 	{
-		if (QApplication::overrideCursor()->shape()== Qt::IBeamCursor) 
+		if ( QApplication::overrideCursor() != 0 &&
+			QApplication::overrideCursor()->shape()== Qt::IBeamCursor) 
 		{
 			// insert text from modal InsertTextDlg
 			QApplication::setOverrideCursor( QCursor(Qt::ArrowCursor) );
