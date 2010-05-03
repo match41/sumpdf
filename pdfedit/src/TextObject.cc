@@ -116,4 +116,9 @@ Graphics* TextObject::Write( ) const
 	return t ;
 }
 
+bool TextObject::OnChangeState( const GraphicsState& new_gs )
+{
+	return false ;
+}
+
 } // end of namespace

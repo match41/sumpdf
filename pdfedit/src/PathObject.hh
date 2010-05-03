@@ -58,6 +58,9 @@ public :
 	GraphicsState Format( ) const ;
 
 	Graphics* Write( ) const ;
+
+protected :
+	bool OnChangeState( const GraphicsState& new_gs ) ;
 	
 private :
 	void CalculateBounding( ) ;

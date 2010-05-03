@@ -159,4 +159,9 @@ Graphics* PathObject::Write( ) const
 	return path ;
 }
 
+bool PathObject::OnChangeState( const GraphicsState& new_gs )
+{
+	return false ;
+}
+
 } // end of namespace
