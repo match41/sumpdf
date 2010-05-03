@@ -58,7 +58,7 @@ Type GetType( FT_FaceRec_ *face )
 	// OpenType CFF
 	else if ( ::strcasecmp( format, "CFF" ) == 0 )
 	{
-		if ( face->face_flags & FT_FACE_FLAG_SFNT )
+		if ( FT_IS_SFNT( face ) )
 			return opentype_cff ;
 		else
 			return type2 ;

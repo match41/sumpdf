@@ -47,6 +47,8 @@ public :
 		pdf::font::Slant	slant,
 		pdf::font::Width	width ) ;
 
+	std::string FindFontPath( FT_FaceRec_ *face ) ;
+
 	std::string LastQueryName( ) const ;
 	pdf::font::Weight LastQueryWeight( ) const ;
 	pdf::font::Slant LastQuerySlant( ) const ;

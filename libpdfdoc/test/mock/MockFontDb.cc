@@ -62,6 +62,11 @@ std::vector<unsigned char> MockFontDb::FindFont(
 		(std::istreambuf_iterator<char>()) ) ;
 }
 
+std::string MockFontDb::FindFontPath( FT_FaceRec_ * )
+{
+	return std::string(TEST_DATA_DIR) +"FreeMonoBoldOblique.ttf" ;
+}
+
 std::string MockFontDb::LastQueryName( ) const
 {
 	return m_basename ;

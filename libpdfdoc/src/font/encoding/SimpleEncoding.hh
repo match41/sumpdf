@@ -32,12 +32,6 @@
 // other headers
 #include "core/Name.hh"
 
-#include <boost/bimap.hpp>
-#include <boost/bimap/unordered_set_of.hpp>
-
-#include <string>
-#include <iosfwd>
-
 namespace pdf {
 
 class DictReader ;
@@ -52,8 +46,6 @@ class SimpleEncoding : public BaseEncoding
 {
 public :
 	explicit SimpleEncoding( DictReader& self ) ;
-
-	Ref Write( File *file ) const ;
 
 private :
 	Name	m_base ;

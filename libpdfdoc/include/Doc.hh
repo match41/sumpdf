@@ -29,6 +29,8 @@
 
 #include <string>
 
+struct FT_FaceRec_ ;
+
 namespace pdf {
 
 class Page ;
@@ -141,7 +143,10 @@ public :
 				by it will be invalidated after the document is destroyed. The
 				caller does not need to delete it after use. 
 	*/
-	virtual Font* CreateSimpleFont( const std::string& name ) = 0 ;
+	virtual Font* CreateSimpleFont( FT_FaceRec_ *face ) = 0 ;
+	virtual Font* CreateSimpleFont(
+		const unsigned char		*data,
+		std::size_t 			size ) = 0 ;
 	//@}
 	
 	virtual const DocInfo* Info( ) const = 0 ;

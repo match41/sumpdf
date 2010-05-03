@@ -44,6 +44,8 @@ public :
 		font::Weight		weight,
 		font::Slant			slant,
 		font::Width			width ) ;
+
+	std::string FindFontPath( FT_FaceRec_ *ref ) ;
 } ;
 
 } // end of namespace

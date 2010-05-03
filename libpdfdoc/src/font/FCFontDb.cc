@@ -36,10 +36,12 @@
 	#error This file requires fontconfig to compile.
 #else
 #include <fontconfig/fontconfig.h>
+#include <fontconfig/fcfreetype.h>
 #endif
 
 #include <fstream>
 #include <iterator>
+#include <iostream>
 
 namespace pdf {
 
@@ -86,6 +88,41 @@ namespace
 		FC_SLANT_ITALIC,	// italic
 		FC_SLANT_OBLIQUE,	// oblique
 	} ;
+	
+	std::vector<unsigned char> MatchFont( FcPattern *sans, const std::string& base_name )
+	{
+		FcConfigSubstitute( 0, sans, FcMatchPattern ) ;
+
+		FcResult result ;
+		FcPattern *matched = FcFontMatch( 0, sans, &result ) ;
+
+		FcChar8 *filename ;
+		if ( FcPatternGetString(matched, FC_FILE, 0, &filename ) != FcResultMatch )
+			throw FontException( "cannot find font " + base_name ) ;
+
+		const char *file = reinterpret_cast<const char*>( filename ) ;
+		if ( file == 0 )
+			throw FontException( "cannot find font " + base_name ) ;
+
+		int idx ;
+		if ( FcPatternGetInteger( matched, FC_INDEX, 0, &idx ) != FcResultMatch )
+			throw FontException( "cannot find font " + base_name ) ;
+
+		// TODO: how to embed font with index != 0?
+		if ( idx != 0 )
+			throw FontException( "font collection is not supported yet" ) ;
+
+		std::ifstream fs( file, std::ios::binary | std::ios::in ) ;
+		std::vector<unsigned char> prog(
+			(std::istreambuf_iterator<char>( fs )),
+			(std::istreambuf_iterator<char>()) ) ;
+		
+		using boost::format ;
+		if ( prog.empty() )
+			throw FontException( format("font file %1% is empty") % file ) ;
+		
+		return prog ;
+	}
 }
 
 /**	constructor
@@ -117,35 +154,33 @@ std::vector<unsigned char> FCFontDb::FindFont(
 	if ( sans == 0 )
 		throw FontException( "cannot create font pattern" ) ;
 
+	return MatchFont( sans, base_name ) ;
+}
+
+std::string FCFontDb::FindFontPath( FT_FaceRec_ *ref )
+{
+	PDF_ASSERT( ref != 0 ) ;
+
+	// something non-null
+	FcChar8 abc[1] ;
+
+	FcBlanks *b = FcBlanksCreate() ;
+
+	FcPattern *pat = FcFreeTypeQueryFace( ref, abc, 0, b ) ;
+	PDF_ASSERT( pat != 0 ) ;
+
 	FcResult result ;
-	FcPattern *matched = FcFontMatch( 0, sans, &result ) ;
+	FcPattern *matched = FcFontMatch( 0, pat, &result ) ;
 
 	FcChar8 *filename ;
 	if ( FcPatternGetString(matched, FC_FILE, 0, &filename ) != FcResultMatch )
-		throw FontException( "cannot find font " + base_name ) ;
+		throw FontException( "cannot find font" ) ;
 
 	const char *file = reinterpret_cast<const char*>( filename ) ;
 	if ( file == 0 )
-		throw FontException( "cannot find font " + base_name ) ;
-	
-	int idx ;
-	if ( FcPatternGetInteger( matched, FC_INDEX, 0, &idx ) != FcResultMatch )
-		throw FontException( "cannot find font " + base_name ) ;
+		throw FontException( "cannot find font" ) ;
 
-	// TODO: how to embed font with index != 0?
-	if ( idx != 0 )
-		throw FontException( "font collection is not supported yet" ) ;
-
-	std::ifstream fs( file, std::ios::binary | std::ios::in ) ;
-	std::vector<unsigned char> prog(
-		(std::istreambuf_iterator<char>( fs )),
-		(std::istreambuf_iterator<char>()) ) ;
-	
-	using boost::format ;
-	if ( prog.empty() )
-		throw FontException( format("font file %1% is empty") % file ) ;
-	
-	return prog ;
+	return file ;
 }
 
 } // end of namespace

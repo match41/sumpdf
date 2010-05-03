@@ -120,8 +120,7 @@ void RealPath::OnCommand( ContentOp& op, const ResourcesDict *res )
 void RealPath::Print(
 	std::ostream&	os,
 	ResourcesDict	*res,
-	GraphicsState&	gs,
-	Matrix&			trans ) const
+	GraphicsState&	gs ) const
 {
 	PDF_ASSERT( m_ops.size() == m_pt_index.size() ) ;
 
@@ -165,10 +164,7 @@ void RealPath::Print(
 	else
 		throw Exception( "??" ) ;
 
-os << "Q\n" ;
-
-//	gs		= m_state ;
-//	trans	= m_ctm ;
+	os << "Q\n" ;
 }
 
 void RealPath::Visit( GraphicsVisitor *visitor )

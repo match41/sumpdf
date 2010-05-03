@@ -50,10 +50,13 @@
 #include <QGraphicsRectItem>
 #include <QGraphicsScene>
 #include <QString>
-#include <QColor>
 
 // stdc++ headers
 #include <algorithm>
+
+#ifdef Q_WS_WIN
+#include <windows.h>
+#endif
 
 namespace pdf {
 
@@ -241,9 +244,27 @@ void DocModel::AddText(
 	double			size,
 	const QPointF&	pos,
 	const QString&	text, 
-	const QColor	c)
+	const QColor	c )
 {
-	Font *f = m_doc->CreateSimpleFont( ToStr( font.family() ) ) ;
+#if defined(Q_WS_X11) || defined(Q_WS_QWS)
+	Font *f = m_doc->CreateSimpleFont( font.freetypeFace() ) ;
+
+#elif defined(Q_WS_WIN)
+	
+	HDC hdc = CreateCompatibleDC( NULL ) ;
+	SelectObject( hdc, (HGDIOBJ)font.handle() ) ;
+	DWORD fsize = GetFontData( hdc, 0, 0, 0, 0 ) ;
+	
+	if ( fsize == GDI_ERROR )
+		throw -1 ;
+
+	std::vector<unsigned char> result( fsize ) ;
+	if ( GetFontData( hdc, 0, 0, &result[0], fsize ) == GDI_ERROR )
+		throw -1 ;
+	
+	Font *f = m_doc->CreateSimpleFont( &result[0], fsize ) ;
+#endif
+
 	PDF_ASSERT( f != 0 ) ;
 
 	GraphicsState gs ;
@@ -255,6 +276,7 @@ void DocModel::AddText(
 		ToWStr( text ) ) ;
 
 	m_pages[m_current_page]->addItem( new TextObject( line ) ) ;
+
 }
 
 } // end of namespace

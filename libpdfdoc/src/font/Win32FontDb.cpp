@@ -113,4 +113,9 @@ std::vector<unsigned char> Win32FontDb::FindFont(
         % e ) ;
 }
 
+std::string Win32FontDb::FindFontPath( FT_FaceRec_ *ref )
+{
+	throw FontException( "FontFont( FT_Face ) is not supported" ) ;
+}
+
 } // end of namespace

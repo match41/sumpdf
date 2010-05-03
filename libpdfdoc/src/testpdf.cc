@@ -68,7 +68,15 @@ int main( int argc, char **argv )
 	}
 	else
 	{
-		pdf::Font *f = doc->CreateSimpleFont( "ArialMT" ) ;
+		std::string test_font =
+			TEST_DATA_DIR + std::string("FreeMonoBoldOblique.ttf") ;
+
+		std::ifstream file(test_font.c_str(), std::ios::binary | std::ios::in) ;
+		std::vector<unsigned char> buf(
+			(std::istreambuf_iterator<char>( file )),
+			(std::istreambuf_iterator<char>()) ) ;
+
+		pdf::Font *f = doc->CreateSimpleFont( &buf[0], buf.size() ) ;
 		
 		pdf::TextState ts ;
 		ts.ChangeFont( 12.0, f ) ;

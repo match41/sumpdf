@@ -25,6 +25,15 @@
 
 #include "BaseEncoding.hh"
 
+#include "CodeMap.hh"
+
+#include "core/Array.hh"
+#include "core/Dictionary.hh"
+#include "core/Ref.hh"
+#include "file/File.hh"
+
+#include "util/Debug.hh"
+
 #include <boost/bind.hpp>
 
 #include <algorithm>
@@ -84,22 +93,51 @@ std::size_t BaseEncoding::Encode(
 
 BaseEncoding::iterator BaseEncoding::begin( )
 {
-	return m_charmap.begin( ) ;
+	return m_charmap.left.begin( ) ;
 }
 
 BaseEncoding::iterator BaseEncoding::end( )
 {
-	return m_charmap.end( ) ;
+	return m_charmap.left.end( ) ;
 }
 
 BaseEncoding::const_iterator BaseEncoding::begin( ) const
 {
-	return m_charmap.begin( ) ;
+	return m_charmap.left.begin( ) ;
 }
 
 BaseEncoding::const_iterator BaseEncoding::end( ) const
 {
-	return m_charmap.end( ) ;
+	return m_charmap.left.end( ) ;
+}
+
+Ref BaseEncoding::Write( File *file ) const
+{
+	Dictionary self ;
+//	self.insert( "BaseEncoding", 	m_base ) ;
+	self.insert( "Type",			"Encoding" ) ;
+	wchar_t current = 0 ;
+	
+	Array diff ;
+	// write all glyph name pairs. it is a big waste of space.
+	// TODO: save space later
+	for ( const_iterator i = begin() ; i != end() ; ++i )
+	{
+		const char *char_name = 0 ;
+		bool r = UnicodeToName( i->second, char_name ) ;
+		PDF_ASSERT( r ) ;
+		PDF_ASSERT( char_name != 0 ) ;
+
+		if ( current == 0 || i->first != current + 1 )
+			diff.push_back( i->first ) ;
+		
+		diff.push_back( Name(char_name) ) ;
+		current = i->first ;
+	}
+	if ( !diff.empty() )
+		self.insert( "Differences", diff ) ;
+	
+	return file->WriteObj( self ) ;
 }
 
 } // end of namespace

@@ -17,32 +17,51 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	FontException.hh
-    \brief	definition the FontException class
-    \date	Jan 23, 2010
+/**	\file	FontCache.hh
+    \brief	definition the FontCache class
+    \date	May 1, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_FONTEXCEPTION_HH_EADER_INCLUDED__
-#define __PDF_FONTEXCEPTION_HH_EADER_INCLUDED__
+#ifndef __PDF_FONTCACHE_HH_EADER_INCLUDED__
+#define __PDF_FONTCACHE_HH_EADER_INCLUDED__
 
-#include "util/Exception.hh"
+#include <map>
+#include <memory>
+#include <string>
+
+struct FT_FaceRec_ ;
 
 namespace pdf {
 
+class BaseFont ;
+class FontDb ;
+
 ///	brief description
-/**	The FontException class represents
+/**	\internal
+	The FontCache class represents
 */
-class FontException : public Exception
+class FontCache
 {
 public :
-	explicit FontException( const std::string& msg ) ;
-	explicit FontException( boost::format fmt ) ;
-	FontException( const std::string& msg, int fterror ) ;
+	FontCache( ) ;
+	~FontCache( ) ;
 	
-	static std::string LookUpFtError( int fterror ) ;
+	BaseFont* GetFont( FT_FaceRec_ *face ) ;
+	BaseFont* GetFont(
+		const unsigned char		*data,
+		std::size_t 			size ) ;
+
+	FontDb* Database() ;
+
+private :
+	//! font database for loading the font files.
+	std::auto_ptr<FontDb>	m_font_db ;
+
+	typedef std::map<std::string, BaseFont*>	FontMap ;
+	FontMap	m_fonts ;
 } ;
 
 } // end of namespace
 
-#endif // FONTEXCEPTION_HH_
+#endif // FONTCACHE_HH_

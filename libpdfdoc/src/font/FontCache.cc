@@ -17,20 +17,18 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	BasicFontDb.cc
-	\brief	implementation of the BasicFontDb class
-	\date	Feb 14, 2010
+/**	\file	FontCache.cc
+	\brief	implementation of the FontCache class
+	\date	May 1, 2010
 	\author	Nestal Wan
 */
 
-#include "BasicFontDb.hh"
+#include "FontCache.hh"
 
+#include "font/FontDb.hh"
+
+#include "SimpleFont.hh"
 #include "FontException.hh"
-
-#include "util/Debug.hh"
-#include "util/Util.hh"
-
-#include <boost/format.hpp>
 
 // freetype headers
 #include <ft2build.h>
@@ -41,38 +39,65 @@ namespace pdf {
 /**	constructor
 	
 */
-BasicFontDb::BasicFontDb( )
-	: m_ft( 0 )
+FontCache::FontCache( )
+	: m_font_db( CreateFontDb() )
 {
-	FT_Init_FreeType( &m_ft ) ;
 }
 
-BasicFontDb::~BasicFontDb( )
+FontCache::~FontCache( )
 {
-	FT_Done_FreeType( m_ft ) ;
 }
 
-FT_LibraryRec_* BasicFontDb::Library()
+BaseFont* FontCache::GetFont( FT_FaceRec_ *face )
 {
-	return m_ft ;
-}
+	const char *psname = FT_Get_Postscript_Name( face ) ;
+	if ( psname == 0 )
+		throw FontException( "font type not supported" ) ;
 
-FT_FaceRec_* BasicFontDb::LoadFont(
-	const unsigned char	*data,
-	std::size_t			size )
-{
-	PDF_ASSERT( data != 0 ) ;
-	PDF_ASSERT( size > 0 ) ;
-
-	FT_Face face = 0 ;
-	FT_Error e = FT_New_Memory_Face( m_ft, data, size, 0, &face ) ;
+	FontMap::iterator i = m_fonts.find( psname ) ;
+	if ( i != m_fonts.end() )
+	{
+		i->second->AddRef() ;
+		return i->second ;
+	}
+	else
+	{
+		std::string path = m_font_db->FindFontPath( face ) ;
 	
-	using boost::format ;
-	if ( e != 0 )
-		throw FontException( format("cannot create font face: %1%") %
-			FontException::LookUpFtError(e) ) ;
-	
-	return face ;
+		BaseFont *result = new SimpleFont( path, m_font_db.get() ) ;
+		m_fonts.insert( std::make_pair( psname, result ) ) ;
+		return result ;
+	}
+}
+
+BaseFont* FontCache::GetFont( const unsigned char *data, std::size_t size )
+{
+	std::vector<unsigned char> prog( data, data + size ) ;
+
+	FT_Face face = m_font_db->LoadFont( &prog[0], size ) ;
+
+	const char *psname = FT_Get_Postscript_Name( face ) ;
+	if ( psname == 0 )
+		throw FontException( "font type not supported" ) ;
+
+	FontMap::iterator i = m_fonts.find( psname ) ;
+	if ( i != m_fonts.end() )
+	{
+		FT_Done_Face( face ) ;
+		i->second->AddRef() ;
+		return i->second ;
+	}
+	else
+	{
+		BaseFont *result = new SimpleFont( face, prog ) ;
+		m_fonts.insert( std::make_pair( psname, result ) ) ;
+		return result ;
+	}
+}
+
+FontDb* FontCache::Database()
+{
+	return m_font_db.get() ;
 }
 
 } // end of namespace

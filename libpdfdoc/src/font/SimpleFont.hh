@@ -53,8 +53,9 @@ class Name ;
 class SimpleFont : public BaseFont
 {
 public :
-	SimpleFont( DictReader& self, FontDb *fontdb ) ;
-	SimpleFont( const std::string& name, FontDb *fontdb ) ;
+	SimpleFont( DictReader& self, FontDb *font_db ) ;
+	SimpleFont( const std::string& path, FontDb *font_db ) ;
+	SimpleFont( FT_FaceRec_ *face, std::vector<unsigned char>& prog ) ;
 	~SimpleFont( ) ;
 
 	std::string BaseName( ) const ;
@@ -83,7 +84,7 @@ private :
 		std::size_t 		size,
 		FontDb 				*fontdb );
 
-	void Init( std::vector<unsigned char>& prog, FontDb *fontdb ) ; 
+	void Init( FT_FaceRec_ *face, std::vector<unsigned char>& prog ) ;
 
 	static std::vector<unsigned char> FindStdFont(
 		const std::string&	name,

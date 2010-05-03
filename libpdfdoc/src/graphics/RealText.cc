@@ -199,16 +199,17 @@ std::size_t RealText::Count( ) const
 void RealText::Print(
 	std::ostream&	os,
 	ResourcesDict	*res,
-	GraphicsState&	gs,
-	Matrix&			trans ) const
+	GraphicsState&	gs ) const
 {
 	os << "BT\n" ;
+	
+	Matrix			mat ;
 	
 	using namespace boost ;
 	std::for_each(
 		m_lines.begin(),
 		m_lines.end(),
-		bind( &TextLine::Print, _1, ref(os), ref(trans), ref(gs), res ) ) ;
+		bind( &TextLine::Print, _1, ref(os), ref(mat), ref(gs), res ) ) ;
 
 	os << "ET\n" ;
 }

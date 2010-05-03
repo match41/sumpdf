@@ -125,6 +125,8 @@ namespace
 Sfnt::Sfnt( FT_FaceRec_ *face )
 : m_impl( new Impl )
 {
+	PDF_ASSERT( FT_IS_SFNT( face ) ) ;
+
 	m_impl->face = face ;
 
 	LoadTableInfo( ) ;

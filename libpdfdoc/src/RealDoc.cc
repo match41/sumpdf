@@ -32,10 +32,13 @@
 #include "file/Catalog.hh"
 #include "file/RealFile.hh"
 
-#include "font/FontDb.hh"
-#include "font/SimpleFont.hh"
+#include "font/BaseFont.hh"
 
 #include "util/Debug.hh"
+
+// freetype headers
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 #include <sstream>
 #include <stdexcept>
@@ -49,8 +52,7 @@ const std::string RealDoc::Info_::m_empty ;
 /**	It will create an empty document with only one page.
 */
 RealDoc::RealDoc( )
-	: m_font_db( CreateFontDb() ),
-	  m_catalog( new Catalog( m_font_db.get() ) )
+	: m_catalog( new Catalog( m_fonts.Database() ) )
 {
 	AppendPage( ) ;
 }
@@ -74,7 +76,7 @@ void RealDoc::Read( const std::string& filename )
 
 	// for exception safety, first create a new catalog before deleting
 	// the existing one.
-	Catalog *catalog = new Catalog( file.Root( ), &file, m_font_db.get() ) ;
+	Catalog *catalog = new Catalog( file.Root( ), &file, m_fonts.Database() ) ;
 	
 	PDF_ASSERT( m_catalog.get() != 0 ) ;
 	m_catalog.reset( catalog ) ;
@@ -115,10 +117,14 @@ Page* RealDoc::GetPage( std::size_t index )
 	return m_catalog->GetPage( index ) ;
 }
 
-Font* RealDoc::CreateSimpleFont( const std::string& name )
+Font* RealDoc::CreateSimpleFont( FT_FaceRec_ *face )
 {
-	PDF_ASSERT( m_catalog.get() != 0 ) ;
-	return new SimpleFont( name, m_font_db.get() ) ;
+	return m_fonts.GetFont( face ) ;
+}
+
+Font* RealDoc::CreateSimpleFont( const unsigned char *data, std::size_t size )
+{
+	return m_fonts.GetFont( data, size ) ;
 }
 
 Page* RealDoc::AddPage( std::size_t index )

@@ -54,7 +54,9 @@ public :
 		font::Weight		weight	= font::normal_weight,
 		font::Slant			slant	= font::roman,
 		font::Width			width	= font::normal_width ) = 0 ;
-	
+
+	virtual std::string FindFontPath( FT_FaceRec_ *ref ) = 0 ;
+
 	virtual FT_FaceRec_* LoadFont(
 		const unsigned char	*data,
 		std::size_t			size ) = 0 ;

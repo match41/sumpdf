@@ -29,14 +29,17 @@
 
 #include <QGraphicsView>
 #include <QPointF>
+#include <QTextEdit>
 
 class QMainWindow ;
 class QPainter ;
 class QPointF ;
+class QTextEdit;
 
 namespace pdf {
 
 class Page ;
+class InsertTextDlg;
 
 class PageView : public QGraphicsView
 {
@@ -52,15 +55,21 @@ protected :
 	void mouseMoveEvent( QMouseEvent *event ) ;
 
 signals:
-	void mousePositionSet( QPointF pos );	// mouse position at empty space
+	void InsertText( QPointF pos, double fontsize );
+	void OnInsertBtnUp( );
 
 private slots:
-	void InsertI_beam( QPointF );
-	void DeleteI_beam( QPointF );
+	void InsertCaret( QPointF );
+	void DeleteCaret( QPointF );
+	void DeleteItem( );
 
 private :
 	class LineEdit ;
 	QMainWindow	*m_parent ;
+	QTextEdit	*m_txt;
+
+public:
+	QTextEdit* GetText( );
 } ;
 
 } // end of namespace

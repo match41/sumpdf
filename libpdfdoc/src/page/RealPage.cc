@@ -199,14 +199,17 @@ void RealPage::SetContent( const std::vector<Graphics*>& gfx )
 	std::ostream os( str.OutStreamBuf() ) ;
 
 	GraphicsState	gs ;
-	Matrix			ctm ;
+
+	// clear the resource dictionary first. the fonts/images will be
+	// added to the resource dictionary when calling Graphics::Print().
+	m_pinfo.GetResource()->Clear( ) ;
 
 	using namespace boost ;
 	std::for_each(
 		gfx.begin(),
 		gfx.end(),
 		bind( &Graphics::Print, _1, ref(os), m_pinfo.GetResource(),
-			ref(gs), ref(ctm) ) ) ;
+			ref(gs) ) ) ;
 
 	os.flush() ;
 

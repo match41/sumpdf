@@ -27,11 +27,11 @@
 #include "PageView.hh"
 
 #include "TextEdit.hh"
-
 #include "Util.hh"
-
 #include <util/Debug.hh>
+#include "InsertTextDlg.hh"
 
+// Qt
 #include <QGraphicsItem>
 #include <QDebug>
 #include <QMainWindow>
@@ -82,13 +82,24 @@ void PageView::mousePressEvent( QMouseEvent *event )
 			QString( "%1 %2 %3 %4 %5 %6" )
 			% t.m11() % t.m12() % t.m21() % t.m22() % t.m31() % t.m32() ) ;
 	}
-	
-	// click at empty space
-	else
+	else 	// click at empty space
 	{
-		emit mousePositionSet(pos);	// mouse position at empty space
+		if ( QApplication::overrideCursor() != 0 &&
+			QApplication::overrideCursor()->shape()== Qt::IBeamCursor) 
+		{
+			// insert text from modal InsertTextDlg
+			QApplication::setOverrideCursor( QCursor(Qt::ArrowCursor) );
+			InsertCaret( pos );
+			InsertTextDlg dlg( this );
+			if ( dlg.exec() == QDialog::Accepted )	// insert text here
+			{
+				m_txt=dlg.GetText();
+				emit InsertText( pos, dlg.GetFontSize().toDouble() );
+			}
+			DeleteCaret( pos );
+			emit OnInsertBtnUp();
+		}
 	}
-	
 
 	QGraphicsView::mousePressEvent( event ) ;
 }
@@ -101,25 +112,35 @@ void PageView::mouseMoveEvent( QMouseEvent *event )
 	QGraphicsView::mouseMoveEvent( event ) ;
 }
 
-void PageView::InsertI_beam( QPointF pos)
+void PageView::InsertCaret( QPointF pos)
 {
 	QTextEdit text;
-	text.setFontPointSize(16);
+	text.setFontPointSize(12);
 	text.setText("I");
 	QGraphicsItem *item = scene()->addText(text.toPlainText(),text.currentFont());
-	QMatrix m;
-//	m.scale(1,-1);
-//	item->setMatrix( m );
-	QPoint pos_correction(10.0,13.0);
-	item->setPos( pos - pos_correction);
-	//	->itemAt( pos ) ;
+	// QMatrix m;
+	//	m.scale(1,-1);
+	//	item->setMatrix( m );
+	item->setPos( pos - QPoint(10,13) );	// (10,13) = correction offset
 }
 
-void PageView::DeleteI_beam( QPointF pos )
+void PageView::DeleteCaret( QPointF pos )
 {
-	QPoint pos_correction(10.0,13.0);
-	QGraphicsItem *item = scene()->itemAt( pos - pos_correction );
-	item->hide();
+	QGraphicsItem *item = scene()->itemAt( pos - QPoint(10,13) );
+	item->~QGraphicsItem( );
+}
+
+void PageView::DeleteItem( )
+{
+	foreach (QGraphicsItem *item, scene()->selectedItems())
+	{
+		scene()->removeItem( item );
+	}
+}
+
+QTextEdit* PageView::GetText( )
+{
+	return m_txt;
 }
 
 } // end of namespace

@@ -28,6 +28,7 @@
 
 #include "font/SimpleFont.hh"
 #include "font/FontDescriptor.hh"
+#include "font/FontException.hh"
 
 #include "mock/Assert.hh"
 #include "mock/MockFile.hh"
@@ -46,7 +47,9 @@ SimpleFontTest::SimpleFontTest( )
 
 void SimpleFontTest::TestLoadByName( )
 {
-	pdf::SimpleFont subject( "FreeMonoBoldOblique", m_font_db ) ;
+	pdf::SimpleFont subject(
+		TEST_DATA_DIR + std::string("FreeMonoBoldOblique.ttf"), m_font_db ) ;
+	
 	PDFUT_ASSERT_EQUAL( subject.BaseName( ), "FreeMonoBoldOblique" ) ;
 	CPPUNIT_ASSERT( !subject.IsSubset() ) ;
 	
@@ -58,20 +61,7 @@ void SimpleFontTest::TestLoadByName( )
 	
 	pdf::Object fdo = file.ReadObj( r ) ;
 	CPPUNIT_ASSERT( fdo.Is<pdf::Dictionary>() ) ;
-	PDFUT_ASSERT_EQUAL( fd->Family(), "" ) ; 
-
-std::cout << "dict = " << fdo << std::endl ;	
-}
-
-void SimpleFontTest::TestParseBold( )
-{
-	SimpleFont subject( "Helvetica-Bold", m_font_db ) ;
-	PDFUT_ASSERT_EQUAL( m_mock_fdb->LastQueryName(), "Arial" ) ;
-	PDFUT_ASSERT_EQUAL( m_mock_fdb->LastQueryWeight(), font::bold ) ;
-
-	SimpleFont subject2( "Helvetica-BoldOblique", m_font_db ) ;
-	PDFUT_ASSERT_EQUAL( m_mock_fdb->LastQueryName(), "Arial" ) ;
-	PDFUT_ASSERT_EQUAL( m_mock_fdb->LastQueryWeight(), font::bold ) ;
+	PDFUT_ASSERT_EQUAL( fd->Family(), "" ) ;
 }
 
 } // end of namespace

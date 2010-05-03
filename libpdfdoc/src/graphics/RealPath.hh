@@ -51,8 +51,7 @@ public :
 	void Print(
 		std::ostream&	os,
 		ResourcesDict	*res,
-		GraphicsState&	gs,
-		Matrix&			trans ) const ;
+		GraphicsState&	gs ) const ;
 	void Visit( GraphicsVisitor *visitor ) ;
 	GraphicsState GetState( ) const ;
 	

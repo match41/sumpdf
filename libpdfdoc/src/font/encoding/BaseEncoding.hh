@@ -36,6 +36,7 @@
 namespace pdf {
 
 class Ref ;
+class File ;
 
 ///	brief description
 /**	\internal
@@ -45,6 +46,8 @@ class BaseEncoding : public RefCounter, public FontEncoding
 {
 public :
 	~BaseEncoding( ) ;
+
+	virtual Ref Write( File *file ) const ;
 
 	virtual wchar_t ToUnicode( unsigned short char_code ) const ;
 	virtual unsigned short FromUnicode( wchar_t unicode ) const ;
@@ -63,8 +66,8 @@ protected :
 		boost::bimaps::unordered_set_of<wchar_t>
 	> CharMap ; 
 
-	typedef CharMap::iterator		iterator ;
-	typedef CharMap::const_iterator	const_iterator ;
+	typedef CharMap::left_iterator			iterator ;
+	typedef CharMap::left_const_iterator	const_iterator ;
 
 	iterator begin( ) ;
 	iterator end( ) ;

@@ -80,7 +80,6 @@ MainWnd::MainWnd( QWidget *parent )
 	, m_tool_bar( addToolBar(tr("Main") ) )
 	, m_zoom_box( new QComboBox( m_tool_bar ) )
 	, m_label( new QLabel( tr(" page:    ") ) )
-	, m_insert_dlg(new InsertTextDlg(this) )
 {
 	setupUi( this ) ;
 	setCentralWidget( m_view ) ;
@@ -135,7 +134,7 @@ MainWnd::MainWnd( QWidget *parent )
 	m_item_prop->horizontalHeader()->setStretchLastSection( true ) ;
 
 	// text insert
-	m_texttb_items = new ToolBox( m_toolbar_text, this );
+	m_toolbox = new ToolBox( m_toolbar_text, this );
 	TextInsertConnect();
 	
 	// setup the scene and view
@@ -323,68 +322,40 @@ void MainWnd::OnViewSource( )
 	}
 }
 
-void MainWnd::OnInsertDlg( )
-{
-	m_insert_dlg->setModal( true );
-	m_insert_dlg->show();
-}
-
 void MainWnd::TextInsertConnect( )
 {
-	connect( 
-		m_texttb_items->m_insert_text,	
-		SIGNAL( clicked() ),	
-		m_insert_dlg, 
-		SLOT(OnIBeamCursor() ) );
-
-	connect( 	// mouse position -> dlg
+	connect( 	// Delete ToolBox Button
+		m_toolbox, 
+		SIGNAL( DeleteItem( ) ), 
 		m_view, 
-		SIGNAL( mousePositionSet( QPointF ) ), 
-		m_insert_dlg, 
-		SLOT( OnMousePositionSet( QPointF ) ) );
-
-	connect( 	// mouse position -> dlg
-		m_insert_dlg, 
-		SIGNAL( InsertI_beam( QPointF ) ), 
-		m_view, 
-		SLOT( InsertI_beam( QPointF ) ) );
-	connect( 	// mouse position -> dlg
-		m_insert_dlg, 
-		SIGNAL( InsertI_beam( QPointF ) ), 
-		this, 
-		SLOT( OnInsertDlg() ) );
+		SLOT( DeleteItem( ) ) );
 
 	connect(	// Insert text into current scene
-		m_insert_dlg, 
-		SIGNAL( OnInsertClicked( QPointF ) ),	
-		this, 
-		SLOT( OnInsertTextNow( ) ) );
-	connect(	// Insert text into current scene
-		m_insert_dlg, 
-		SIGNAL( DeleteI_beam( QPointF ) ),	
 		m_view, 
-		SLOT( DeleteI_beam( QPointF ) ) );
+		SIGNAL( InsertText( QPointF , double ) ),	
+		this, 
+		SLOT( InsertText( QPointF , double ) ) );
 
-	connect(	// close Insert Dialog
-		m_insert_dlg, 
-		SIGNAL( OnDlgClosed( ) ),	
-		m_texttb_items, 
+	connect(	// ToolBox Insert Btn Up
+		m_view, 
+		SIGNAL( OnInsertBtnUp() ),	
+		m_toolbox, 
 		SLOT( OnInsertBtnUp( ) ) );
 }
 
-void MainWnd::OnInsertTextNow( )
+void MainWnd::InsertText( QPointF pos, double fontsize )
 {
+	QTextEdit *text=m_view->GetText();
+
 	try
 	{
-		QTextEdit *text=m_insert_dlg->GetText( );
-
 		PDF_ASSERT( m_doc != 0 ) ;
 
 		m_doc->AddText(
-			text->currentFont(),
-			m_insert_dlg->GetFontSize().toDouble(),
-			m_insert_dlg->GetPosition(),
-			text->toPlainText(),
+			text->currentFont(), 
+			fontsize, 
+			pos, 
+			text->toPlainText(), 
 			text->textColor() ) ;
 	}
 	catch ( Exception& e )

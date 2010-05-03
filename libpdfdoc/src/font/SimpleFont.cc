@@ -115,14 +115,27 @@ const Name SimpleFont::m_font_types[] =
 	Name("TrueType"),	// opentype font with glyf table is treated as truetype
 } ;
 
-SimpleFont::SimpleFont( const std::string& name, FontDb *font_db )
+SimpleFont::SimpleFont( const std::string& path, FontDb *font_db )
 	: m_impl( new Impl )
 {
 	PDF_ASSERT( font_db != 0 ) ;
 	
-	InitWithStdFont( name, font_db ) ;
+	// load font data from file
+	std::ifstream file( path.c_str(), std::ios::binary | std::ios::in ) ;
+	std::vector<unsigned char> prog(
+		(std::istreambuf_iterator<char>( file )),
+		(std::istreambuf_iterator<char>()) ) ;
+	
+	Init( font_db->LoadFont( &prog[0], prog.size() ), prog ) ;
 	
 	PDF_ASSERT( m_impl->face != 0 ) ;
+}
+
+SimpleFont::SimpleFont( FT_FaceRec_ *face, std::vector<unsigned char>& prog )
+	: m_impl( new Impl )
+{
+	PDF_ASSERT( face != 0 ) ;
+	Init( face, prog ) ;
 }
 
 SimpleFont::SimpleFont( DictReader& reader, FontDb *font_db )
@@ -236,21 +249,10 @@ SimpleFont::~SimpleFont( )
 bool SimpleFont::LoadDescriptor( DictReader& reader, FontDb *font_db )
 {
 	ElementFactory<> f( reader ) ;
-	FontDescriptor *fd = f.Create<FontDescriptor>(
-		"FontDescriptor",
-		boost::bind( NewPtr<FontDescriptor>(), m_impl->type, _1 ) ) ;
+	m_impl->descriptor = f.Create<FontDescriptor>(
+		"FontDescriptor", NewPtr<FontDescriptor>(), m_impl->descriptor ) ;
 
-	if ( fd != 0 )
-	{
-		if ( m_impl->descriptor != 0 )
-			m_impl->descriptor->Release() ;
-		
-		m_impl->descriptor = fd ;
-		
-		return true ;
-	}
-	else
-		return false ;
+	return m_impl->descriptor != 0 ;
 }
 
 bool SimpleFont::LoadFontProgram( FontDb *font_db )
@@ -265,6 +267,7 @@ bool SimpleFont::LoadFontProgram( FontDb *font_db )
 			m_impl->face = font_db->LoadFont( &font_file[0], font_file.size() );
 			
 			PDF_ASSERT( m_impl->face != 0 ) ;
+			m_impl->type = font::GetType( m_impl->face ) ;
 			
 			return true ;
 		}
@@ -278,18 +281,17 @@ bool SimpleFont::InitWithStdFont( const std::string& name, FontDb *font_db )
 	{
 		PDF_ASSERT( font_db != 0 ) ;
 		std::vector<unsigned char> prog = FindStdFont( name, font_db ) ;
-		Init( prog, font_db ) ;
+		Init( font_db->LoadFont( &prog[0], prog.size() ), prog ) ;
 		return true ;
 	}
 	else
 		return false ;
 }
 	
-void SimpleFont::Init( std::vector<unsigned char>& prog, FontDb *font_db )
+void SimpleFont::Init( FT_FaceRec_ *face, std::vector<unsigned char>& prog )
 {
-	PDF_ASSERT( font_db != 0 ) ;
-	m_impl->face = font_db->LoadFont( &prog[0], prog.size() ) ;
-	
+	m_impl->face = face ;
+
 	if ( m_impl->base_font.empty() )
 	{
 		const char *psname = ::FT_Get_Postscript_Name( m_impl->face ) ;
@@ -473,8 +475,8 @@ Ref SimpleFont::Write( File *file, const FontSubsetInfo *subset ) const
 	dict.insert( "LastChar", 	last_char ) ;
 	
 	// write the font encoding
-//	if ( m_impl->encoding != 0 )
-//		dict.insert( "Encoding", m_impl->encoding->Write( file ) ) ;
+	if ( m_impl->encoding != 0 )
+		dict.insert( "Encoding", m_impl->encoding->Write( file ) ) ;
 	
 	if ( m_impl->widths.empty() )
 	{
