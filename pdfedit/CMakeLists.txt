@@ -21,7 +21,7 @@ PROJECT(pdfedit)
 
 cmake_minimum_required(VERSION 2.6)
 
-set( VERSION	0.1.2 )
+set( VERSION	0.2.0 )
 add_definitions( -DVERSION="${VERSION}" )
 
 ###############################################################################
@@ -44,12 +44,10 @@ set( BASE_SRCS		src/main.cc
 					src/MainWnd.cc
 					src/PageLoader.cc
 					src/PageView.cc
-					src/TextEdit.cc
 					src/PropertiesDlg.cc
 					src/ExceptionDlg.cc
 					src/TextDlg.cc
 					src/InsertTextDlg.cc
-					src/ToolBox.cc
 					src/DocModel.cc
 					src/PathObject.cc
                     src/TextObject.cc
@@ -66,11 +64,9 @@ qt4_automoc( ${SRCS} )
 set( MOC_HDRS	src/MainWnd.hh
 				src/PropertiesDlg.hh
 				src/PageView.hh
-				src/TextEdit.hh
 				src/ExceptionDlg.hh
 				src/TextDlg.hh 
 				src/InsertTextDlg.hh
-				src/ToolBox.hh
 				src/DocModel.hh )
 set( UIS 		ui/MainWnd.ui
 				ui/Properties.ui

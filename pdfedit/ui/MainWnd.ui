@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>20</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="m_menu_file">
@@ -53,7 +53,7 @@
    <addaction name="m_menu_edit"/>
    <addaction name="m_menu_help"/>
   </widget>
-  <widget class="QStatusBar" name="m_statusbar"/>
+  <widget class="QStatusBar" name="m_status_bar"/>
   <widget class="QDockWidget" name="dockWidget">
    <property name="windowTitle">
     <string>Text Properties</string>
@@ -91,7 +91,7 @@
    <addaction name="m_action_next_pg"/>
    <addaction name="m_action_last_pg"/>
   </widget>
-  <widget class="QToolBar" name="m_toolbar_text">
+  <widget class="QToolBar" name="m_tools">
    <property name="windowTitle">
     <string>toolBar</string>
    </property>
@@ -101,6 +101,9 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="m_action_pointer_tool"/>
+   <addaction name="m_action_text_tool"/>
+   <addaction name="m_action_zoom_tool"/>
   </widget>
   <action name="m_action_new">
    <property name="icon">
@@ -205,6 +208,45 @@
   <action name="m_action_viewsrc">
    <property name="text">
     <string>View Source</string>
+   </property>
+  </action>
+  <action name="m_action_zoom_tool">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="pdfedit.qrc">
+     <normaloff>:/images/Magnifying_glass_icon.svg</normaloff>:/images/Magnifying_glass_icon.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom Tool</string>
+   </property>
+  </action>
+  <action name="m_action_text_tool">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="pdfedit.qrc">
+     <normaloff>:/images/inserttext.png</normaloff>:/images/inserttext.png</iconset>
+   </property>
+   <property name="text">
+    <string>Text Tool</string>
+   </property>
+  </action>
+  <action name="m_action_pointer_tool">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="pdfedit.qrc">
+     <normaloff>:/images/Mouse_pointer.svg</normaloff>:/images/Mouse_pointer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Pointer Tool</string>
    </property>
   </action>
  </widget>

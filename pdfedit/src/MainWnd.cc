@@ -32,7 +32,8 @@
 #include "PropertiesDlg.hh"
 #include "TextDlg.hh"
 #include "InsertTextDlg.hh"
-#include "ToolBox.hh"
+#include "GraphicsObject.hh"
+#include "Util.hh"
 
 // Qt headers
 #include <QApplication>
@@ -51,10 +52,6 @@
 #include <QtGlobal>
 #include <QToolBar>
 #include <QFontComboBox>
-
-#include "TextEdit.hh"
-#include "GraphicsObject.hh"
-#include "Util.hh"
 
 // libpdfdoc headers
 #include <libpdfdoc.hh>
@@ -76,13 +73,14 @@ namespace pdf {
 MainWnd::MainWnd( QWidget *parent )
 	: QMainWindow( parent )
 	, m_doc( new DocModel( this ) )
-	, m_view( new PageView( this ) )
+	, m_view( new PageView( this, m_doc ) )
 	, m_tool_bar( addToolBar(tr("Main") ) )
 	, m_zoom_box( new QComboBox( m_tool_bar ) )
 	, m_label( new QLabel( tr(" page:    ") ) )
 {
 	setupUi( this ) ;
 	setCentralWidget( m_view ) ;
+	m_view->SetStatusBar( m_status_bar ) ;
 
 	connect( m_action_about,	SIGNAL(triggered()), this, SLOT(OnAbout()));
 	connect( m_action_prop,		SIGNAL(triggered()), this, SLOT(OnProperties()));
@@ -134,8 +132,11 @@ MainWnd::MainWnd( QWidget *parent )
 	m_item_prop->horizontalHeader()->setStretchLastSection( true ) ;
 
 	// text insert
-	m_toolbox = new ToolBox( m_toolbar_text, this );
-	TextInsertConnect();
+	QActionGroup *g = new QActionGroup( this ) ;
+	g->addAction( m_action_pointer_tool ) ;
+	g->addAction( m_action_text_tool ) ;
+	g->addAction( m_action_zoom_tool ) ;
+	ConnectToolbarSignals( ) ;
 	
 	// setup the scene and view
 	GoToPage( 0 ) ;
@@ -322,47 +323,28 @@ void MainWnd::OnViewSource( )
 	}
 }
 
-void MainWnd::TextInsertConnect( )
+void MainWnd::ConnectToolbarSignals( )
 {
-	connect( 	// Delete ToolBox Button
-		m_toolbox, 
-		SIGNAL( DeleteItem( ) ), 
+	// pointer tool
+	connect(
+		m_action_pointer_tool, 
+		SIGNAL( activated( ) ), 
 		m_view, 
-		SLOT( DeleteItem( ) ) );
+		SLOT( OnSelectPointerTool( ) ) );
 
-	connect(	// Insert text into current scene
+	// text tool
+	connect(
+		m_action_text_tool, 
+		SIGNAL( activated( ) ), 
 		m_view, 
-		SIGNAL( InsertText( QPointF , double ) ),	
-		this, 
-		SLOT( InsertText( QPointF , double ) ) );
+		SLOT( OnSelectTextTool( ) ) );
 
-	connect(	// ToolBox Insert Btn Up
+	// zoom tool
+	connect(
+		m_action_zoom_tool, 
+		SIGNAL( activated( ) ), 
 		m_view, 
-		SIGNAL( OnInsertBtnUp() ),	
-		m_toolbox, 
-		SLOT( OnInsertBtnUp( ) ) );
-}
-
-void MainWnd::InsertText( QPointF pos, double fontsize )
-{
-	QTextEdit *text=m_view->GetText();
-
-	try
-	{
-		PDF_ASSERT( m_doc != 0 ) ;
-
-		m_doc->AddText(
-			text->currentFont(), 
-			fontsize, 
-			pos, 
-			text->toPlainText(), 
-			text->textColor() ) ;
-	}
-	catch ( Exception& e )
-	{
-		ExceptionDlg dlg( e, this ) ;
-		dlg.exec() ;
-	}
+		SLOT( OnSelectZoomTool( ) ) );
 }
 
 void MainWnd::OnFileChanged( )

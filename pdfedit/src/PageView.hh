@@ -29,47 +29,43 @@
 
 #include <QGraphicsView>
 #include <QPointF>
-#include <QTextEdit>
 
-class QMainWindow ;
-class QPainter ;
 class QPointF ;
-class QTextEdit;
+class QWidget ;
+class QStatusBar ;
 
 namespace pdf {
 
-class Page ;
-class InsertTextDlg;
+class DocModel ;
 
 class PageView : public QGraphicsView
 {
 	Q_OBJECT
 
 public:
-	PageView( QMainWindow *parent ) ;
+	PageView( QWidget *parent, DocModel *doc ) ;
 
 	void Zoom( double factor ) ;
+	void SetStatusBar( QStatusBar *status ) ;
+
+public slots:
+	void OnSelectPointerTool( ) ;
+	void OnSelectTextTool( ) ;
+	void OnSelectZoomTool( ) ;
 
 protected :
 	void mousePressEvent( QMouseEvent *event ) ;
 	void mouseMoveEvent( QMouseEvent *event ) ;
 
-signals:
-	void InsertText( QPointF pos, double fontsize );
-	void OnInsertBtnUp( );
-
-private slots:
-	void InsertCaret( QPointF );
-	void DeleteCaret( QPointF );
-	void DeleteItem( );
+private :
+	QGraphicsItem* InsertCaret( QPointF pos ) ;
+	void DeleteItem( ) ;
 
 private :
-	class LineEdit ;
-	QMainWindow	*m_parent ;
-	QTextEdit	*m_txt;
+	enum Tool { pointer, text, zoom } m_tool ;
 
-public:
-	QTextEdit* GetText( );
+	QStatusBar	*m_status ;
+	DocModel	*m_doc ;
 } ;
 
 } // end of namespace

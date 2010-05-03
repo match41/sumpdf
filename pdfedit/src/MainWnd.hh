@@ -89,13 +89,13 @@ public slots :
 	void OnChanged( const QList<QRectF>& ) ;
 	void OnViewSource( ) ;
 
-	void InsertText( QPointF pos, double fontsize );
+//	void InsertText( QPointF pos, double fontsize );
 
 	void OnFileChanged( );
-
+	
 private :
 	void LoadTextLine( const TextLine& line ) ;
-	void TextInsertConnect( );
+	void ConnectToolbarSignals( ) ;
 
 private :
 	DocModel		*m_doc ;

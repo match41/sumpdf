@@ -1,5 +1,7 @@
 <RCC>
   <qresource>
+    <file>images/Magnifying_glass_icon.svg</file>
+    <file>images/Mouse_pointer.svg</file>
     <file>images/delete.png</file>
     <file>images/underline.png</file>
     <file>images/bold.png</file>

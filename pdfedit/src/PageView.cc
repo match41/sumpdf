@@ -26,34 +26,38 @@
 
 #include "PageView.hh"
 
-#include "TextEdit.hh"
-#include "Util.hh"
-#include <util/Debug.hh>
+#include "DocModel.hh"
 #include "InsertTextDlg.hh"
+#include "Util.hh"
 
-// Qt
+// libpdfdoc headers
+#include <util/Debug.hh>
+
+// Qt headers
 #include <QGraphicsItem>
 #include <QDebug>
-#include <QMainWindow>
 #include <QMouseEvent>
 #include <QStatusBar>
-#include <QMessageBox>
 #include <QTransform>
-#include <QVariant>
 
 namespace pdf {
 
-PageView::PageView( QMainWindow	*parent )
+PageView::PageView( QWidget	*parent, DocModel *doc )
 	: QGraphicsView( parent )
-	, m_parent( parent )
+	, m_tool( pointer )
+	, m_status( 0 )
+	, m_doc( doc )
 {
-	PDF_ASSERT( parent != 0 ) ;
-
 	// default zoom is 100%
 	Zoom( 1.0 ) ;
 	setRenderHint( QPainter::Antialiasing ) ;
 	
 	setMouseTracking( true ) ;
+}
+
+void PageView::SetStatusBar( QStatusBar *status )
+{
+	m_status = status ;
 }
 
 void PageView::Zoom( double factor )
@@ -69,35 +73,47 @@ void PageView::mousePressEvent( QMouseEvent *event )
 {
 	QPointF pos = mapToScene( event->pos() ) ;
 	
-	QGraphicsItem *item = scene()->itemAt( pos ) ;
-	
-	// add text box if the user clicks empty space
-	if ( event->button() == Qt::RightButton &&
-	     item != 0  )
+	if ( m_tool == pointer )
 	{
-		QTransform t = item->transform( ) ;		
-		QMessageBox::information(
-			this,
-			"Item",
-			QString( "%1 %2 %3 %4 %5 %6" )
-			% t.m11() % t.m12() % t.m21() % t.m22() % t.m31() % t.m32() ) ;
-	}
-	else 	// click at empty space
-	{
-		if ( QApplication::overrideCursor() != 0 &&
-			QApplication::overrideCursor()->shape()== Qt::IBeamCursor) 
+		if ( event->button() == Qt::RightButton )
 		{
-			// insert text from modal InsertTextDlg
-			QApplication::setOverrideCursor( QCursor(Qt::ArrowCursor) );
-			InsertCaret( pos );
-			InsertTextDlg dlg( this );
-			if ( dlg.exec() == QDialog::Accepted )	// insert text here
-			{
-				m_txt=dlg.GetText();
-				emit InsertText( pos, dlg.GetFontSize().toDouble() );
-			}
-			DeleteCaret( pos );
-			emit OnInsertBtnUp();
+			// TODO: create a right-click menu here
+			// TODO: delete the item when the user selects delete from the menu
+		}
+	}
+	else if ( m_tool == text )
+	{
+		// create a new caret. use auto_ptr to ensure it is deleted
+		// at the end of this statement block.
+		std::auto_ptr<QGraphicsItem> caret( InsertCaret( pos ) ) ;
+		
+		// insert text from modal InsertTextDlg
+		InsertTextDlg dlg( this );
+		if ( dlg.exec() == QDialog::Accepted )
+		{
+			// user press OK. insert text here
+			QTextEdit *text = dlg.GetText( ) ;
+			m_doc->AddText(
+				text->currentFont(), 
+				dlg.GetFontSize().toDouble(),
+				pos, 
+				text->toPlainText(), 
+				text->textColor() ) ;
+
+		}
+		
+		// auto_ptr will delete the caret here, even if exception is thrown.
+	}
+	else if ( m_tool == zoom )
+	{
+		// TODO: insert zoom action here
+		if ( event->button() == Qt::LeftButton )
+		{
+			// TODO: zoom in
+		}
+		else if ( event->button() == Qt::RightButton )
+		{
+			// TODO: zoom out
 		}
 	}
 
@@ -107,27 +123,30 @@ void PageView::mousePressEvent( QMouseEvent *event )
 void PageView::mouseMoveEvent( QMouseEvent *event )
 {
 	QPointF pos = mapToScene( event->pos() ) ;
-	m_parent->statusBar()->showMessage( QString("%1,%2").arg( pos.x() ).arg( pos.y() ) ) ;
+	
+	if ( m_status != 0 )
+		m_status->showMessage( QString("%1,%2").arg( pos.x() ).arg( pos.y() ) ) ;
 
 	QGraphicsView::mouseMoveEvent( event ) ;
 }
 
-void PageView::InsertCaret( QPointF pos)
+QGraphicsItem* PageView::InsertCaret( QPointF pos )
 {
+	// TODO: no need to create text edit here
 	QTextEdit text;
 	text.setFontPointSize(12);
 	text.setText("I");
-	QGraphicsItem *item = scene()->addText(text.toPlainText(),text.currentFont());
-	// QMatrix m;
-	//	m.scale(1,-1);
-	//	item->setMatrix( m );
+	
+	// TODO: try to use text and QFont directly here
+	QGraphicsItem *item = scene()->addText(
+		text.toPlainText(),
+		text.currentFont() ) ;
+	
+	// TODO: can we not hard code it? the offset is different in different
+	// systems.
 	item->setPos( pos - QPoint(10,13) );	// (10,13) = correction offset
-}
-
-void PageView::DeleteCaret( QPointF pos )
-{
-	QGraphicsItem *item = scene()->itemAt( pos - QPoint(10,13) );
-	item->~QGraphicsItem( );
+	
+	return item ;
 }
 
 void PageView::DeleteItem( )
@@ -138,9 +157,24 @@ void PageView::DeleteItem( )
 	}
 }
 
-QTextEdit* PageView::GetText( )
+void PageView::OnSelectPointerTool( )
 {
-	return m_txt;
+	m_tool = pointer ;
+	setCursor( Qt::ArrowCursor ) ;
+}
+
+void PageView::OnSelectTextTool( )
+{
+	m_tool = text ;
+	setCursor( Qt::IBeamCursor ) ;
+}
+
+void PageView::OnSelectZoomTool( )
+{
+	m_tool = zoom ;
+	
+	// TODO: use ":/images/Magnifying_glass_icon.svg" but smaller
+	setCursor( Qt::CrossCursor ) ;
 }
 
 } // end of namespace
