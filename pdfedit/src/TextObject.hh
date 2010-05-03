@@ -67,6 +67,9 @@ public :
 		QWidget 						*widget ) ; 
 	
 	Graphics* Write( ) const ;
+
+protected :
+	bool OnChangeState( const GraphicsState& new_gs ) ;
 	
 private :
 	TextLine		m_line ;

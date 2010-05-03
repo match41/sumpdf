@@ -56,9 +56,14 @@ public :
 	/// abstract table model members
 	int rowCount( const QModelIndex& parent ) const ;
 	int columnCount( const QModelIndex& parent ) const ;
+	Qt::ItemFlags flags(const QModelIndex &index) const ;
 	
 	QVariant data( const QModelIndex& index, int role ) const ;
 	QVariant headerData( int sect, Qt::Orientation ori, int role ) const ;
+	bool setData(
+		const QModelIndex&	index,
+		const QVariant&		value,
+		int role ) ;
 	//@}
 
 	QVariant itemChange( GraphicsItemChange change, const QVariant& value ) ;
@@ -67,6 +72,9 @@ public :
 		QPainter 						*painter,
 		const QStyleOptionGraphicsItem	*option,
 		QWidget 						*widget ) = 0 ; 
+
+protected :
+	virtual bool OnChangeState( const GraphicsState& new_gs ) = 0 ;
 } ;
 
 } // end of namespace

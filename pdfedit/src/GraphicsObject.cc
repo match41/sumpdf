@@ -70,7 +70,7 @@ int GraphicsObject::columnCount( const QModelIndex& parent ) const
 
 QVariant GraphicsObject::data( const QModelIndex& index, int role ) const
 {
-	if ( role == Qt::DisplayRole )
+	if ( role == Qt::DisplayRole || role == Qt::EditRole )
 	{
 		if ( index.column() == 0 )
 		{
@@ -161,6 +161,37 @@ void GraphicsObject::DrawSelectedBox( QPainter *p ) const
 
 	p->setBrush( Qt::NoBrush ) ;
 	p->drawRect( boundingRect() ) ;
+}
+
+Qt::ItemFlags GraphicsObject::flags( const QModelIndex &index ) const
+{
+	if (!index.isValid())
+		return Qt::ItemIsEnabled;
+
+	return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
+}
+
+bool GraphicsObject::setData(
+	const QModelIndex&	index,
+	const QVariant&		value,
+	int role )
+{
+	if ( index.isValid() && role == Qt::EditRole )
+	{
+		switch ( index.row() )
+		{
+		case 0: break ;
+		case 1: break ;
+		case 2: break ;
+		case 3: break ;
+		case 4: break ;
+		case 5: break ;
+		}
+		
+		emit dataChanged( index, index ) ;
+		return true ;
+	}
+	return false;
 }
 
 } // end of namespace

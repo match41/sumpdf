@@ -64,7 +64,6 @@ Type1Encoding::Type1Encoding( FT_Face face )
 			wchar_t unicode = 0 ;
 			if ( NameToUnicode( name, unicode ) )
 				Add( static_cast<unsigned short>(char_code), unicode ) ;
-			}
 		}
 		
 		char_code = ::FT_Get_Next_Char( face, char_code, &gindex ) ;
