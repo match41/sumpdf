@@ -31,7 +31,6 @@
 #include "PageView.hh"
 #include "PropertiesDlg.hh"
 #include "TextDlg.hh"
-#include "InsertTextDlg.hh"
 #include "GraphicsObject.hh"
 #include "Util.hh"
 
@@ -40,18 +39,15 @@
 #include <QComboBox>
 #include <QDebug>
 #include <QFileDialog>
-#include <QFontDialog>
 #include <QGraphicsScene>
 #include <QLabel>
 #include <QList>
 #include <QMessageBox>
 #include <QPointF>
-#include <QPushButton>
 #include <QSizePolicy>
 #include <QTransform>
 #include <QtGlobal>
 #include <QToolBar>
-#include <QFontComboBox>
 
 // libpdfdoc headers
 #include <libpdfdoc.hh>
