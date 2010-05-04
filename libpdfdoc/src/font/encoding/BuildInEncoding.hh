@@ -44,7 +44,7 @@ public :
 	Object Write( File *file ) const ;
 	
 private :
-	enum Encoding { win, macRoman, macExpert, standard } m_enc ;
+	enum Encoding { win, mac_roman, mac_expert, standard } m_enc ;
 
 private :
 	static Encoding Parse( const Name& name ) ;
