@@ -1137,5 +1137,4 @@ bool NameToUnicode( const char *name, wchar_t& unicode )
 		return false ;
 }
 
-
 } // end of pdf namespace

@@ -17,71 +17,40 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	BaseEncoding.hh
-    \brief	definition the BaseEncoding class
-    \date	Apr 24, 2010
+/**	\file	BuildInEncoding.hh
+    \brief	definition the BuildInEncoding class
+    \date	May 4, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_BASEENCODING_HH_EADER_INCLUDED__
-#define __PDF_BASEENCODING_HH_EADER_INCLUDED__
+#ifndef __PDF_BUILDINENCODING_HH_EADER_INCLUDED__
+#define __PDF_BUILDINENCODING_HH_EADER_INCLUDED__
 
-// base class headers
-#include "util/RefCounter.hh"
-#include "font/FontEncoding.hh"
-
-#include <boost/bimap.hpp>
-#include <boost/bimap/unordered_set_of.hpp>
+#include "BaseEncoding.hh"
 
 namespace pdf {
 
-class Object ;
-class File ;
+class Name ;
 
 ///	brief description
 /**	\internal
-	The BaseEncoding class represents
+	The BuildInEncoding class represents
 */
-class BaseEncoding : public RefCounter, public FontEncoding
+class BuildInEncoding : public BaseEncoding
 {
 public :
-	~BaseEncoding( ) ;
+	explicit BuildInEncoding( const Name& name ) ;
 
-	virtual Object Write( File *file ) const ;
-
-	virtual wchar_t ToUnicode( unsigned short char_code ) const ;
-	virtual unsigned short FromUnicode( wchar_t unicode ) const ;
-
-	std::wstring Decode( const std::string& bytes ) const ;
-	std::size_t Encode(
-		std::wstring::const_iterator first,
-		std::wstring::const_iterator last,
-		std::ostream& out ) const ;
-
-	void Add( unsigned short char_code, wchar_t unicode ) ;
-
-protected :
-	typedef	boost::bimap<
-		boost::bimaps::unordered_set_of<unsigned short>,
-		boost::bimaps::unordered_set_of<wchar_t>
-	> CharMap ; 
-
-	typedef CharMap::left_iterator			iterator ;
-	typedef CharMap::left_const_iterator	const_iterator ;
-
-	iterator begin( ) ;
-	iterator end( ) ;
-	const_iterator begin( ) const ;
-	const_iterator end( ) const ;
+	Object Write( File *file ) const ;
+	
+private :
+	enum Encoding { win, macRoman, macExpert, standard } m_enc ;
 
 private :
-	static unsigned short Ext( char ch ) ;
-
-private :
-	/// mapping from character code to unicode
-	CharMap	m_charmap ;
+	static Encoding Parse( const Name& name ) ;
+	void Build( const char **map ) ;
 } ;
 
 } // end of namespace
 
-#endif // BASEENCODING_HH_
+#endif // BUILDINENCODING_HH_

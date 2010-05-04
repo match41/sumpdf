@@ -69,11 +69,19 @@ void BaseEncoding::Add( unsigned short char_code, wchar_t unicode )
 		static_cast<unsigned short>( char_code ), unicode ) ) ;
 }
 
+/// avoid stupid sign extension when converting char to unsigned short
+unsigned short BaseEncoding::Ext( char ch )
+{
+	return static_cast<unsigned char>( ch ) ;
+}
+
 std::wstring BaseEncoding::Decode( const std::string& bytes ) const
 {
 	std::wstring result( bytes.size(), ' ' ) ;
 	std::transform( bytes.begin(), bytes.end(), result.begin(),
-		boost::bind( &BaseEncoding::ToUnicode, this, _1 ) ) ;
+		boost::bind( &BaseEncoding::ToUnicode,
+			this,
+			boost::bind( &BaseEncoding::Ext, _1 ) ) ) ;
 	return result ;
 }
 
@@ -111,7 +119,7 @@ BaseEncoding::const_iterator BaseEncoding::end( ) const
 	return m_charmap.left.end( ) ;
 }
 
-Ref BaseEncoding::Write( File *file ) const
+Object BaseEncoding::Write( File *file ) const
 {
 	Dictionary self ;
 //	self.insert( "BaseEncoding", 	m_base ) ;

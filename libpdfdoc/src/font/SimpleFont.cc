@@ -33,6 +33,7 @@
 
 #include "encoding/AdobeCMap.hh"
 #include "encoding/SimpleEncoding.hh"
+#include "encoding/BuildInEncoding.hh"
 #include "encoding/Type1Encoding.hh"
 
 // libpdfdoc headers
@@ -202,10 +203,27 @@ void SimpleFont::LoadEncoding( DictReader& reader )
 {
 	try
 	{
-		ElementFactory<> f( reader ) ;
-		BaseEncoding *enc = f.Create<SimpleEncoding>(
-			"Encoding",
-			NewPtr<SimpleEncoding>() ) ;
+		BaseEncoding *enc = 0 ;
+	
+		Dictionary::iterator it = reader->find( "Encoding" ) ;
+		if ( it != reader->end() )
+		{
+			if ( it->second.Is<Ref>() )
+			{
+				Object obj = reader.GetFile()->ReadObj( it->second ) ;
+				if ( obj.Is<Name>() )
+					enc = new BuildInEncoding( obj.As<Name>() ) ;
+				else
+				{
+					ElementFactory<> f( reader ) ;
+					enc = f.Create<SimpleEncoding>(
+						"Encoding",
+						NewPtr<SimpleEncoding>() ) ;
+				}
+			}
+			else if ( it->second.Is<Name>() )
+				enc = new BuildInEncoding( it->second.As<Name>() ) ;
+		}
 		
 		if ( enc == 0 && m_impl->type == font::type1 )
 			enc = new Type1Encoding( m_impl->face ) ;

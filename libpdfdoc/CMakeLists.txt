@@ -160,6 +160,7 @@ set( FONT_HDRS		${FONT_DIR}/Types.hh
 					${FONT_DIR}/encoding/BaseEncoding.hh
 					${FONT_DIR}/encoding/SimpleEncoding.hh
 					${FONT_DIR}/encoding/Type1Encoding.hh
+					${FONT_DIR}/encoding/BuildInEncoding.hh
 					${FONT_DIR}/FontSubsetInfo.hh
 					${FONT_DIR}/subset/Sfnt.hh
 					${FONT_DIR}/subset/Types.hh
@@ -292,6 +293,7 @@ set( FONT_SRCS		${FONT_DIR}/Font.cc
 					${FONT_DIR}/encoding/BaseEncoding.cc
 					${FONT_DIR}/encoding/SimpleEncoding.cc
 					${FONT_DIR}/encoding/Type1Encoding.cc
+					${FONT_DIR}/encoding/BuildInEncoding.cc
 					${FONT_DIR}/FontSubsetInfo.cc
 					${FONT_DIR}/subset/Sfnt.cc
 					${FONT_DIR}/subset/ReadStream.cc
