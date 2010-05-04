@@ -299,7 +299,11 @@ std::wstring RealText::DecodeString( const std::string& s, Font *font )
 
 	std::wstring ws ;
 	if ( font->Encoding() == 0 )
-		ws.assign( s.begin(), s.end() ) ;
+	{
+		for ( unsigned i = 0 ; i < s.size() ; ++i )
+			ws.push_back( static_cast<wchar_t>(
+				static_cast<unsigned char>( s[i] ) ) ) ;
+	}
 	else
 		ws = font->Encoding()->Decode( s ) ;
 	
