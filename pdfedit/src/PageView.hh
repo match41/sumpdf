@@ -66,6 +66,9 @@ private :
 
 	QStatusBar	*m_status ;
 	DocModel	*m_doc ;
+	
+	// dragging
+	QPointF		m_start_drag ;
 } ;
 
 } // end of namespace

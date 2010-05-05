@@ -40,6 +40,8 @@
 #include <QStatusBar>
 #include <QTransform>
 
+#include <limits>
+
 namespace pdf {
 
 PageView::PageView( QWidget	*parent, DocModel *doc )
@@ -80,6 +82,33 @@ void PageView::mousePressEvent( QMouseEvent *event )
 			// TODO: create a right-click menu here
 			// TODO: delete the item when the user selects delete from the menu
 		}
+		else if ( event->button() == Qt::LeftButton )
+		{
+			// first clear the selection
+			scene()->clearSelection() ;
+			
+			QGraphicsItem *smallest = 0 ;
+			double min_area = std::numeric_limits<double>::max() ;
+			
+			QList<QGraphicsItem*> selected = items( event->pos() ) ;
+			for ( QList<QGraphicsItem*>::iterator i = selected.begin() ;
+				i != selected.end() ; ++i )
+			{
+				QRectF bbox = (*i)->boundingRect() ;
+				double area = bbox.width() * bbox.height() ;
+				if ( area < min_area )
+				{
+					min_area = area ;
+					smallest = *i ;
+				}
+			}
+			
+			if ( smallest != 0 )
+			{
+				smallest->setSelected(true) ;
+				m_start_drag = pos ;
+			}
+		}
 	}
 	else if ( m_tool == text )
 	{
@@ -116,8 +145,6 @@ void PageView::mousePressEvent( QMouseEvent *event )
 			// TODO: zoom out
 		}
 	}
-
-	QGraphicsView::mousePressEvent( event ) ;
 }
 
 void PageView::mouseMoveEvent( QMouseEvent *event )
@@ -127,7 +154,20 @@ void PageView::mouseMoveEvent( QMouseEvent *event )
 	if ( m_status != 0 )
 		m_status->showMessage( QString("%1,%2").arg( pos.x() ).arg( pos.y() ) ) ;
 
-	QGraphicsView::mouseMoveEvent( event ) ;
+	// do draggin with pointer tool
+	if ( m_tool == pointer && event->buttons() & Qt::LeftButton )
+	{
+		QPointF offset = pos - m_start_drag ;
+	
+		QList<QGraphicsItem*> sel = scene()->selectedItems( ) ;
+		for ( QList<QGraphicsItem*>::iterator i = sel.begin() ;
+			i != sel.end() ; ++i )
+		{
+			(*i)->moveBy( offset.x(), offset.y() ) ;
+		}
+		
+		m_start_drag = pos ;
+	}
 }
 
 QGraphicsItem* PageView::InsertCaret( QPointF pos )
