@@ -32,6 +32,7 @@
 #include <graphics/PathSegment.hh>
 #include <util/Debug.hh>
 #include <util/Matrix.hh>
+#include <util/Util.hh>
 
 // Qt headers
 #include <QPainter>
@@ -66,6 +67,25 @@ PathObject::PathObject( const Path *path, QGraphicsItem *parent )
 		{
 			case PathSegment::move : m_path.moveTo( seg[0], seg[1] ) ; break ;
 			case PathSegment::line : m_path.lineTo( seg[0], seg[1] ) ; break ;
+			
+			case PathSegment::cubic123 :
+				m_path.cubicTo(seg[0], seg[1], seg[2], seg[3], seg[4], seg[5]) ;
+				break ;
+			
+			case PathSegment::cubic23 :
+				m_path.cubicTo(
+					m_path.currentPosition(),
+					QPointF(seg[0], seg[1]),
+					QPointF(seg[2], seg[3]) ) ;
+				break ;
+
+			case PathSegment::cubic13 :
+				m_path.cubicTo(
+					QPointF(seg[0], seg[1]),
+					QPointF(seg[2], seg[3]),
+					QPointF(seg[2], seg[3]) ) ;
+				break ;
+			
 			case PathSegment::close: m_path.closeSubpath( ) ; break ;
 			default : break ;
 		}
@@ -135,6 +155,7 @@ Graphics* PathObject::Write( ) const
 	path->Transform(
 		FromQtMatrix( transform() ) * Matrix::Translation( x(), y() ) ) ;
 	
+	std::vector<double> cubic ;
 	for ( int i = 0 ; i < m_path.elementCount() ; ++i )
 	{
 		QPainterPath::Element e = m_path.elementAt(i) ;
@@ -152,6 +173,21 @@ Graphics* PathObject::Write( ) const
 				path->AddSegment( PathSegment( PathSegment::line, pt ) ) ;
 				break ;
 			}
+			case QPainterPath::CurveToElement :
+			case QPainterPath::CurveToDataElement :
+				cubic.push_back( e.x ) ;
+				cubic.push_back( e.y ) ;
+				
+				if ( cubic.size() ==
+					PathSegment::ArgCount( PathSegment::cubic123 ) )
+				{
+					path->AddSegment( PathSegment(
+						PathSegment::cubic123, &cubic[0] ) ) ;
+					cubic.clear() ;
+				}
+				
+				break ;
+
 			default :
 				break ;
 		}

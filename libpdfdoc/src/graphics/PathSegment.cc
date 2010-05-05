@@ -95,9 +95,9 @@ std::ostream& operator<<( std::ostream& os, const PathSegment& seg )
 	PDF_ASSERT( op >= PathSegment::move && op <= PathSegment::close ) ;
 
 	// enum Op { move, line, cubic123, cubic23, cubic13, close } ;
-	static const char *op_name[] =
+	static const char op_name[] =
 	{
-		"m", "l", "c", "v", "y", "h"
+		'm', 'l', 'c', 'v', 'y', 'h'
 	} ;
 	std::copy( seg.Points(), seg.Points() + seg.Count(),
 		std::ostream_iterator<double>( os, " " ) ) ;
