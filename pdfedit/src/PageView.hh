@@ -52,6 +52,7 @@ public slots:
 	void OnSelectPointerTool( ) ;
 	void OnSelectTextTool( ) ;
 	void OnSelectZoomTool( ) ;
+	void DeleteSelection( ) ;
 
 protected :
 	void mousePressEvent( QMouseEvent *event ) ;
@@ -59,7 +60,11 @@ protected :
 
 private :
 	QGraphicsItem* InsertCaret( QPointF pos ) ;
-	void DeleteItem( ) ;
+	
+	// event handlers for tools
+	void OnPointerLeftClick( QMouseEvent *event ) ;
+	void OnPointerRightClick( QMouseEvent *event ) ;
+	void OnTextLeftClick( QMouseEvent *event ) ;
 
 private :
 	enum Tool { pointer, text, zoom } m_tool ;

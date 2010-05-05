@@ -39,6 +39,7 @@
 #include <QMouseEvent>
 #include <QStatusBar>
 #include <QTransform>
+#include <QMenu>
 
 #include <limits>
 
@@ -71,67 +72,86 @@ void PageView::Zoom( double factor )
 	setMatrix( m ) ;
 }
 
-void PageView::mousePressEvent( QMouseEvent *event )
+void PageView::OnPointerRightClick( QMouseEvent *event )
+{
+	// do the selection as well
+	OnPointerLeftClick( event ) ;
+
+	std::auto_ptr<QMenu> menu( new QMenu( this ) ) ;
+	menu->addAction( "Delete", this, SLOT(DeleteSelection()) ) ;
+	menu->popup( QCursor::pos() ) ;
+	menu->exec( ) ;
+}
+
+void PageView::OnPointerLeftClick( QMouseEvent *event )
 {
 	QPointF pos = mapToScene( event->pos() ) ;
 	
+	// first clear the selection
+	scene()->clearSelection() ;
+	
+	QGraphicsItem *smallest = 0 ;
+	double min_area = std::numeric_limits<double>::max() ;
+	
+	QList<QGraphicsItem*> selected = items( event->pos() ) ;
+	for ( QList<QGraphicsItem*>::iterator i = selected.begin() ;
+		i != selected.end() ; ++i )
+	{
+		QRectF bbox = (*i)->boundingRect() ;
+		double area = bbox.width() * bbox.height() ;
+		if ( area < min_area )
+		{
+			min_area = area ;
+			smallest = *i ;
+		}
+	}
+	
+	if ( smallest != 0 )
+	{
+		smallest->setSelected(true) ;
+		m_start_drag = pos ;
+	}
+}
+
+void PageView::OnTextLeftClick( QMouseEvent *event )
+{
+	QPointF pos = mapToScene( event->pos() ) ;
+	
+	// create a new caret. use auto_ptr to ensure it is deleted
+	// at the end of this statement block.
+	std::auto_ptr<QGraphicsItem> caret( InsertCaret( pos ) ) ;
+	
+	// insert text from modal InsertTextDlg
+	InsertTextDlg dlg( this );
+	if ( dlg.exec() == QDialog::Accepted )
+	{
+		// user press OK. insert text here
+		QTextEdit *text = dlg.GetText( ) ;
+		m_doc->AddText(
+			text->currentFont(), 
+			dlg.GetFontSize().toDouble(),
+			pos, 
+			text->toPlainText(), 
+			text->textColor() ) ;
+	}
+	
+	// auto_ptr will delete the caret here, even if exception is thrown.
+}
+
+void PageView::mousePressEvent( QMouseEvent *event )
+{
 	if ( m_tool == pointer )
 	{
 		if ( event->button() == Qt::RightButton )
-		{
-			// TODO: create a right-click menu here
-			// TODO: delete the item when the user selects delete from the menu
-		}
+			OnPointerRightClick( event ) ;
+		
 		else if ( event->button() == Qt::LeftButton )
-		{
-			// first clear the selection
-			scene()->clearSelection() ;
-			
-			QGraphicsItem *smallest = 0 ;
-			double min_area = std::numeric_limits<double>::max() ;
-			
-			QList<QGraphicsItem*> selected = items( event->pos() ) ;
-			for ( QList<QGraphicsItem*>::iterator i = selected.begin() ;
-				i != selected.end() ; ++i )
-			{
-				QRectF bbox = (*i)->boundingRect() ;
-				double area = bbox.width() * bbox.height() ;
-				if ( area < min_area )
-				{
-					min_area = area ;
-					smallest = *i ;
-				}
-			}
-			
-			if ( smallest != 0 )
-			{
-				smallest->setSelected(true) ;
-				m_start_drag = pos ;
-			}
-		}
+			OnPointerLeftClick( event ) ;
 	}
 	else if ( m_tool == text )
 	{
-		// create a new caret. use auto_ptr to ensure it is deleted
-		// at the end of this statement block.
-		std::auto_ptr<QGraphicsItem> caret( InsertCaret( pos ) ) ;
-		
-		// insert text from modal InsertTextDlg
-		InsertTextDlg dlg( this );
-		if ( dlg.exec() == QDialog::Accepted )
-		{
-			// user press OK. insert text here
-			QTextEdit *text = dlg.GetText( ) ;
-			m_doc->AddText(
-				text->currentFont(), 
-				dlg.GetFontSize().toDouble(),
-				pos, 
-				text->toPlainText(), 
-				text->textColor() ) ;
-
-		}
-		
-		// auto_ptr will delete the caret here, even if exception is thrown.
+		if ( event->button() == Qt::LeftButton )
+			OnTextLeftClick( event ) ;
 	}
 	else if ( m_tool == zoom )
 	{
@@ -158,7 +178,7 @@ void PageView::mouseMoveEvent( QMouseEvent *event )
 	if ( m_tool == pointer && event->buttons() & Qt::LeftButton )
 	{
 		QPointF offset = pos - m_start_drag ;
-	
+		
 		QList<QGraphicsItem*> sel = scene()->selectedItems( ) ;
 		for ( QList<QGraphicsItem*>::iterator i = sel.begin() ;
 			i != sel.end() ; ++i )
@@ -189,7 +209,7 @@ QGraphicsItem* PageView::InsertCaret( QPointF pos )
 	return item ;
 }
 
-void PageView::DeleteItem( )
+void PageView::DeleteSelection( )
 {
 	foreach (QGraphicsItem *item, scene()->selectedItems())
 	{
