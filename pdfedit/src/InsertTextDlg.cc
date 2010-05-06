@@ -21,11 +21,16 @@
 */
 
 #include "InsertTextDlg.hh"
+
 #include <QPushButton>
 #include <QMenu>
 #include <QPainter>
 #include <QColorDialog>
 #include <QTextEdit>
+#include <QTextBlock>
+#include <QString>
+#include <QDebug>
+#include <QTextLayout>
 
 namespace pdf {
 
@@ -83,6 +88,7 @@ void InsertTextDlg::OnTextColorChanged( )
 		qVariantValue<QColor>( m_text_action->data() ) ) );
 	OnFontChanged();
 }
+
 void InsertTextDlg::OnSetColor( )
 {
 	QColor color = QColorDialog::getColor(Qt::green, this);
@@ -158,6 +164,19 @@ QTextEdit* InsertTextDlg::GetText( )
 
 void InsertTextDlg::OnFontChanged( )
 {
+	QTextBlock b = m_text->document()->begin( ) ;
+	while ( b.isValid() )
+	{
+		qDebug() << "text is : " << b.text() << " " << b.layout()->position() ;
+		
+		for ( QTextBlock::iterator i = b.begin() ; i != b.end() ; ++i )
+		{
+			qDebug() << "frag = " << i.fragment().text() ;
+		}
+		
+		b = b.next() ;
+	}
+	
 	QTextCursor cur=m_text->textCursor();	// get the current cursor
 
 	QFont font = m_font->currentFont();
@@ -166,10 +185,10 @@ void InsertTextDlg::OnFontChanged( )
     font.setItalic(m_italic->isChecked());
     // font.setUnderline(m_underlined->isChecked());
     m_text->setTextColor( qVariantValue<QColor>( m_text_action->data() ) );
-	m_text->setFont( font );
+	m_text->setCurrentFont ( font );
 
-	m_text->setText( m_text->toPlainText() );	// update text to apply new color
-	m_text->setTextCursor(cur);					// set cursor to intial state
+//	m_text->setText( m_text->toPlainText() );	// update text to apply new color
+//	m_text->setTextCursor(cur);					// set cursor to intial state
 }
 
 } // end of namespace
