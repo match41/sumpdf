@@ -27,8 +27,9 @@
 #include "page/Page.hh"
 
 #include "util/Backtrace.hh"
-
+#include "util/Matrix.hh"
 #include "util/Util.hh"
+
 #include <boost/bind.hpp>
 
 #include <sstream>
@@ -39,6 +40,7 @@
 #include <algorithm>
 #include <iterator>
 #include <fstream>
+#include <cmath>
 
 int main( int argc, char **argv )
 {
@@ -82,6 +84,19 @@ int main( int argc, char **argv )
 		ts.ChangeFont( 12.0, f ) ;
 		pdf::Text *t = pdf::CreateText( pdf::GraphicsState(ts) ) ;
 		t->AddLine( 100, 100, L"Hello world!" ) ;
+		
+//		const double pi = 3.1415926 ;
+//		pdf::Matrix mat(
+//			std::cos( pi/4), -std::sin(pi/4),
+//			std::sin( pi/4),  std::cos(pi/4),
+//			0, 0 ) ;
+//		t->Transform( mat ) ;
+		pdf::Matrix mat(
+			2, 0,
+			0, 2,
+			0, 0 ) ;
+		t->Transform( mat ) ;
+		
 		std::vector<pdf::Graphics*> gfx( 1, t ) ;
 		p->SetContent( gfx ) ;
 	}

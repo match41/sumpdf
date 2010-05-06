@@ -392,4 +392,9 @@ Matrix RealText::Transform() const
 	return m_transform ;
 }
 
+void RealText::Transform( const Matrix& mat )
+{
+	m_transform = mat ;
+}
+
 } // end of namespace

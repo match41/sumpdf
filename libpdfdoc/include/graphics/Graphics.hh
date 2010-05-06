@@ -86,6 +86,7 @@ public :
 	virtual void OnCommand( ContentOp& op, const ResourcesDict *res ) = 0 ;
 
 	virtual Matrix Transform( ) const = 0 ;
+	virtual void Transform( const Matrix& mat ) = 0 ;
 
 	virtual void Print(
 		std::ostream&	os,

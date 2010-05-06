@@ -204,12 +204,24 @@ void RealPage::SetContent( const std::vector<Graphics*>& gfx )
 	// added to the resource dictionary when calling Graphics::Print().
 	m_pinfo.GetResource()->Clear( ) ;
 
-	using namespace boost ;
-	std::for_each(
-		gfx.begin(),
-		gfx.end(),
-		bind( &Graphics::Print, _1, ref(os), m_pinfo.GetResource(),
-			ref(gs) ) ) ;
+	for ( std::vector<Graphics*>::const_iterator i = gfx.begin() ;
+		i != gfx.end() ; ++i )
+	{
+		if ( (*i)->Transform() != Matrix() )
+			os << "q " << (*i)->Transform() << " cm\n" ;
+	
+		(*i)->Print( os, m_pinfo.GetResource(), gs ) ;
+		
+		if ( (*i)->Transform() != Matrix() )
+			os << "Q\n" ;
+	}
+
+//	using namespace boost ;
+//	std::for_each(
+//		gfx.begin(),
+//		gfx.end(),
+//		bind( &Graphics::Print, _1, ref(os), m_pinfo.GetResource(),
+//			ref(gs) ) ) ;
 
 	os.flush() ;
 

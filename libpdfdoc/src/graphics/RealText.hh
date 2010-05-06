@@ -84,6 +84,7 @@ public :
 	GraphicsState GetState() const ;
 
 	Matrix Transform() const ;
+	void Transform( const Matrix& mat ) ;
 
 private :
 	/// command handler
