@@ -79,7 +79,7 @@ void PageView::OnPointerRightClick( QMouseEvent *event )
 
 	std::auto_ptr<QMenu> menu( new QMenu( this ) ) ;
 	menu->addAction( "Delete", this, SLOT(DeleteSelection()) ) ;
-	menu->popup( QCursor::pos() ) ;
+	menu->popup( event->globalPos() ) ;
 	menu->exec( ) ;
 }
 
