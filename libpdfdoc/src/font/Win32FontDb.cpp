@@ -85,7 +85,7 @@ std::vector<unsigned char> Win32FontDb::FindFont(
 		0,						// width,
 		0,						// escapement
 		0,						// orientation
-		weight_map[width],		// weight
+		weight_map[weight],		// weight
 		slant != font::roman ? TRUE : FALSE,	// italic
 		FALSE,					// underline
 		FALSE,					// strikeout
