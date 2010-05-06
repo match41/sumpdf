@@ -82,7 +82,7 @@ RealText::RealText( const GraphicsState& gs, const Matrix& ctm )
 	: m_lines( 1, TextLine( gs, ctm ) )
 	, m_state( gs )
 	, m_offset( 0 )
-	, m_text_mat( ctm )
+	, m_transform( ctm )
 {
 }
 
@@ -385,6 +385,11 @@ bool RealText::operator!=( const RealText& rhs ) const
 GraphicsState RealText::GetState() const
 {
 	return m_state ;
+}
+
+Matrix RealText::Transform() const
+{
+	return m_transform ;
 }
 
 } // end of namespace

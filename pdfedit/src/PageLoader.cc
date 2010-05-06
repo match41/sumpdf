@@ -28,6 +28,7 @@
 // local headers
 #include "TextObject.hh"
 #include "PathObject.hh"
+#include "Util.hh"
 
 // libpdfdoc headers
 #include <graphics/Path.hh>
@@ -39,6 +40,7 @@
 //#include <QGraphicsPathItem>
 #include <QGraphicsScene>
 #include <QPainterPath>
+#include <QGraphicsItemGroup>
 
 // boost headers
 #include <boost/bind.hpp>
@@ -58,14 +60,20 @@ void PageLoader::VisitText( Text *text )
 {
 	PDF_ASSERT( text != 0 ) ;
 
+	QGraphicsItemGroup *g = new QGraphicsItemGroup ;
+	g->setTransform( ToQtMatrix( text->Transform() ) ) ;
+	
 	std::for_each( text->begin(), text->end(),
-		boost::bind( &PageLoader::LoadTextLine, this, _1 ) ) ;
+		boost::bind( &PageLoader::LoadTextLine, this, g, _1 ) ) ;
+	
+	m_scene->addItem( g ) ;
 }
 
-void PageLoader::LoadTextLine( const TextLine& line )
+void PageLoader::LoadTextLine( QGraphicsItem *parent, const TextLine& line )
 {
 	PDF_ASSERT( m_scene != 0 ) ;
-	m_scene->addItem( new TextObject( line ) ) ;
+	
+	new TextObject( line, parent ) ;
 }
 
 void PageLoader::VisitGraphics( Graphics *gfx )

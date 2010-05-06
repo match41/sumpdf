@@ -36,6 +36,7 @@ class ContentOp ;
 class GraphicsVisitor ;
 class GraphicsState ;
 class ResourcesDict ;
+class Matrix ;
 
 /**	\defgroup	graphics Graphics
 	\brief		Graphics objects module
@@ -83,6 +84,8 @@ public :
 	virtual ~Graphics( ) ;
 	
 	virtual void OnCommand( ContentOp& op, const ResourcesDict *res ) = 0 ;
+
+	virtual Matrix Transform( ) const = 0 ;
 
 	virtual void Print(
 		std::ostream&	os,

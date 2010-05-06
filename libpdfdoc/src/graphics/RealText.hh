@@ -83,6 +83,8 @@ public :
 
 	GraphicsState GetState() const ;
 
+	Matrix Transform() const ;
+
 private :
 	/// command handler
 	struct HandlerMap ;
@@ -115,6 +117,8 @@ private :
 	/**	This matrix is used to create new TextLine objects.
 	*/
 	Matrix			m_text_mat ;
+	
+	Matrix			m_transform ;
 } ;
 
 std::ostream& operator<<( std::ostream& os, const RealText& t ) ;

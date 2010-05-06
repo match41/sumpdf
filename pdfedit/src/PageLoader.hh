@@ -29,6 +29,7 @@
 #include <graphics/GraphicsVisitor.hh>
 
 class QGraphicsScene ;
+class QGraphicsItem ;
 
 namespace pdf {
 
@@ -48,7 +49,7 @@ public :
 	void VisitPath( Path *path ) ;
 
 private :
-	void LoadTextLine( const TextLine& line ) ;
+	void LoadTextLine( QGraphicsItem *parent, const TextLine& line ) ;
 
 private :
 	QGraphicsScene *m_scene ;
