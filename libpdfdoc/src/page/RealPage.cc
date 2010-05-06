@@ -193,6 +193,22 @@ void RealPage::VisitGraphics( GraphicsVisitor *visitor ) const
 	cs.Decode( ) ;
 }
 
+void RealPage::WriteGraphic(
+	const Graphics	*gfx,
+	std::ostream& 	os,
+	GraphicsState& 	gs )
+{
+	PDF_ASSERT( gfx != 0 ) ;
+
+	if ( gfx->Transform() != Matrix() )
+		os << "q " << gfx->Transform() << " cm\n" ;
+
+	gfx->Print( os, m_pinfo.GetResource(), gs ) ;
+	
+	if ( gfx->Transform() != Matrix() )
+		os << "Q\n" ;
+}
+
 void RealPage::SetContent( const std::vector<Graphics*>& gfx )
 {
 	Stream str ;
@@ -204,24 +220,11 @@ void RealPage::SetContent( const std::vector<Graphics*>& gfx )
 	// added to the resource dictionary when calling Graphics::Print().
 	m_pinfo.GetResource()->Clear( ) ;
 
-	for ( std::vector<Graphics*>::const_iterator i = gfx.begin() ;
-		i != gfx.end() ; ++i )
-	{
-		if ( (*i)->Transform() != Matrix() )
-			os << "q " << (*i)->Transform() << " cm\n" ;
-	
-		(*i)->Print( os, m_pinfo.GetResource(), gs ) ;
-		
-		if ( (*i)->Transform() != Matrix() )
-			os << "Q\n" ;
-	}
-
-//	using namespace boost ;
-//	std::for_each(
-//		gfx.begin(),
-//		gfx.end(),
-//		bind( &Graphics::Print, _1, ref(os), m_pinfo.GetResource(),
-//			ref(gs) ) ) ;
+	using namespace boost ;
+	std::for_each(
+		gfx.begin(),
+		gfx.end(),
+		bind( &RealPage::WriteGraphic, this, _1, ref(os), ref(gs) ) ) ;
 
 	os.flush() ;
 

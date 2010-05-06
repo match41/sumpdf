@@ -83,7 +83,7 @@ int main( int argc, char **argv )
 		pdf::TextState ts ;
 		ts.ChangeFont( 12.0, f ) ;
 		pdf::Text *t = pdf::CreateText( pdf::GraphicsState(ts) ) ;
-		t->AddLine( 100, 100, L"Hello world!" ) ;
+		t->AddLine( 0, 0, L"Hello world!" ) ;
 		
 //		const double pi = 3.1415926 ;
 //		pdf::Matrix mat(
@@ -92,9 +92,8 @@ int main( int argc, char **argv )
 //			0, 0 ) ;
 //		t->Transform( mat ) ;
 		pdf::Matrix mat(
-			2, 0,
-			0, 2,
-			0, 0 ) ;
+//			24.20442, 20.931938, -20.931938, 24.20442, 141.968289, 428.170339 ) ;
+			24.20442, 20.931938, -20.931938, 24.20442, 0, 0 ) ;
 		t->Transform( mat ) ;
 		
 		std::vector<pdf::Graphics*> gfx( 1, t ) ;

@@ -35,6 +35,8 @@
 // other libpdfdoc headers
 #include "stream/Stream.hh"
 
+#include <iosfwd>
+
 namespace pdf {
 
 class Dictionary ;
@@ -84,6 +86,11 @@ public :
 private :
 	void ReadContent( const Object& str_obj, File *file ) ;
 	Object WriteContent( File *file ) const ; 
+
+	void WriteGraphic(
+		const Graphics	*gfx,
+		std::ostream& 	os,
+		GraphicsState& 	gs ) ;
 
 private :
 	PageInfo			m_pinfo ;

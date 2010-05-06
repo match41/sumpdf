@@ -79,7 +79,7 @@ const RealText::HandlerMap::Map RealText::HandlerMap::m_map(
 /**	constructor
 */
 RealText::RealText( const GraphicsState& gs, const Matrix& ctm )
-	: m_lines( 1, TextLine( gs, ctm ) )
+	: m_lines( 1, TextLine( gs ) )
 	, m_state( gs )
 	, m_offset( 0 )
 	, m_transform( ctm )
