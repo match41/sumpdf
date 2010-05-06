@@ -358,7 +358,11 @@ std::vector<unsigned char> SimpleFont::FindStdFont(
 		name = "Arial" ;
 
 	else if ( name == "Times" )
+#ifndef WIN32
 		name = "TimesNewRoman" ;
+#else
+		name = "Times New Roman" ;
+#endif
 
 	else if ( name == "Courier" )
 		name = "Courier New" ;
