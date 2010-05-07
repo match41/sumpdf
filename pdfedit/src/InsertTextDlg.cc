@@ -37,6 +37,8 @@
 #include <QPainter>
 #include <QTextItem>
 
+#include <limits>
+
 namespace pdf {
 
 InsertTextDlg::InsertTextDlg( QWidget *parent )
@@ -202,11 +204,33 @@ public :
 class PdfPaintDevice : public QPaintDevice
 {
 public :
-	PdfPaintDevice( 
+	PdfPaintDevice( )
+	{
+	}
 
-	QPaintEngine* paintEngine  () const
+	QPaintEngine* paintEngine( ) const
 	{
 		return &m_engine ;
+	}
+
+protected :
+	int metric( PaintDeviceMetric metric ) const
+	{
+		switch (metric)
+		{
+		case PdmWidth:		return 500 ;
+		case PdmHeight:		return 500 ;
+		case PdmWidthMM:	return static_cast<int>(500/72.0 * 2.54) ;
+		case PdmHeightMM:	return static_cast<int>(500/72.0 * 2.54) ;
+		case PdmNumColors:	return std::numeric_limits<int>::max() ;
+		case PdmDepth:		return 24 ;
+		case PdmDpiX:
+		case PdmDpiY:
+		case PdmPhysicalDpiX:
+		case PdmPhysicalDpiY:	return 72 ;
+		
+		default :		return 0 ;
+		}
 	}
 
 private :
@@ -215,19 +239,6 @@ private :
 
 void InsertTextDlg::OnFontChanged( )
 {
-	QTextBlock b = m_text->document()->begin( ) ;
-	while ( b.isValid() )
-	{
-		qDebug() << "text is : " << b.text() << " " << b.layout()->boundingRect () ;
-		
-		for ( QTextBlock::iterator i = b.begin() ; i != b.end() ; ++i )
-		{
-			qDebug() << "frag = " << i.fragment().text() ;
-		}
-		
-		b = b.next() ;
-	}
-	
 	PdfPaintDevice dev ;
 	QPainter painter( &dev ) ;
 	m_text->document()->drawContents( &painter ) ;
