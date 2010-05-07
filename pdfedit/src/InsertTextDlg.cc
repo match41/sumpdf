@@ -32,6 +32,11 @@
 #include <QDebug>
 #include <QTextLayout>
 
+#include <QPaintEngine>
+#include <QPaintDevice>
+#include <QPainter>
+#include <QTextItem>
+
 namespace pdf {
 
 InsertTextDlg::InsertTextDlg( QWidget *parent )
@@ -162,12 +167,58 @@ QTextEdit* InsertTextDlg::GetText( )
 	return m_text;
 }
 
+class PdfPaintEngine : public QPaintEngine
+{
+public :
+	bool begin( QPaintDevice * pdev )
+	{
+		return true ;
+	}
+	
+	void drawPixmap( const QRectF & r, const QPixmap & pm, const QRectF & sr )
+	{
+	}
+	
+	bool end()
+	{
+		return true ;
+	}
+	
+	void drawTextItem( const QPointF & p, const QTextItem& textItem )
+	{
+		qDebug() << "drawing " << textItem.text() << " at: " << p ;
+	}
+	
+	Type type() const
+	{
+		return QPaintEngine::User ;
+	}
+	
+	void updateState( const QPaintEngineState & state )
+	{
+	}
+} ;
+
+class PdfPaintDevice : public QPaintDevice
+{
+public :
+	PdfPaintDevice( 
+
+	QPaintEngine* paintEngine  () const
+	{
+		return &m_engine ;
+	}
+
+private :
+	mutable PdfPaintEngine	m_engine ;
+} ;
+
 void InsertTextDlg::OnFontChanged( )
 {
 	QTextBlock b = m_text->document()->begin( ) ;
 	while ( b.isValid() )
 	{
-		qDebug() << "text is : " << b.text() << " " << b.layout()->position() ;
+		qDebug() << "text is : " << b.text() << " " << b.layout()->boundingRect () ;
 		
 		for ( QTextBlock::iterator i = b.begin() ; i != b.end() ; ++i )
 		{
@@ -176,6 +227,10 @@ void InsertTextDlg::OnFontChanged( )
 		
 		b = b.next() ;
 	}
+	
+	PdfPaintDevice dev ;
+	QPainter painter( &dev ) ;
+	m_text->document()->drawContents( &painter ) ;
 	
 	QTextCursor cur=m_text->textCursor();	// get the current cursor
 
