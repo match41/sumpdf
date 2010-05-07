@@ -25,7 +25,7 @@
 
 #include "DocModel.hh"
 
-#include "TextObject.hh"
+#include "TextLineObject.hh"
 #include "PageLoader.hh"
 #include "Util.hh"
 
@@ -275,7 +275,7 @@ void DocModel::AddText(
 		Matrix::Translation( pos.x(), pos.y() ), 
 		ToWStr( text ) ) ;
 
-	m_pages[m_current_page]->addItem( new TextObject( line ) ) ;
+	m_pages[m_current_page]->addItem( new TextLineObject( line ) ) ;
 
 }
 

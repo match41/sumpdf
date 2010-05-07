@@ -17,13 +17,13 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	GlyphGroup.cc
+/**	\file	TextLineObject.cc
 	\brief	implementation of the GlyphGroup class
 	\date	Jan 24, 2010
 	\author	Nestal Wan
 */
 
-#include "TextObject.hh"
+#include "TextLineObject.hh"
 
 #include "GlyphGraphicsItem.hh"
 #include "QtGraphicsState.hh"
@@ -49,7 +49,7 @@ namespace pdf {
 
 /**	constructor
 */
-TextObject::TextObject( const TextLine& blk, QGraphicsItem *parent )
+TextLineObject::TextLineObject( const TextLine& blk, QGraphicsItem *parent )
 	: GraphicsObject( parent )
 	, m_line( blk )
 {
@@ -59,7 +59,7 @@ TextObject::TextObject( const TextLine& blk, QGraphicsItem *parent )
 	setTransform( ToQtMatrix( m_line.Transform() ) ) ;
 }
 
-void TextObject::OnChar(
+void TextLineObject::OnChar(
 	wchar_t 			ch,
 	double				offset,
 	const Glyph			*glyph,
@@ -78,12 +78,12 @@ void TextObject::OnChar(
 	item->scale( state.ScaleFactor(), state.ScaleFactor() ) ;
 }
 
-GraphicsState TextObject::Format( ) const
+GraphicsState TextLineObject::Format( ) const
 {
 	return m_line.Format() ;
 }
 
-TextLine TextObject::GetLine( ) const
+TextLine TextLineObject::GetLine( ) const
 {
 	PDF_ASSERT( m_line.Format().FontFace() != 0 ) ;
 	
@@ -93,12 +93,12 @@ TextLine TextObject::GetLine( ) const
 }
 
 // virtual functions for QGraphicsItem
-QRectF TextObject::boundingRect( ) const
+QRectF TextLineObject::boundingRect( ) const
 {
 	return m_bound ;
 }
 
-void TextObject::paint(
+void TextLineObject::paint(
 	QPainter 						*painter,
 	const QStyleOptionGraphicsItem	*option,
 	QWidget 						*widget )
@@ -106,7 +106,7 @@ void TextObject::paint(
 	GraphicsObject::paint( painter, option, widget ) ;
 }
 
-Graphics* TextObject::Write( ) const
+Graphics* TextLineObject::Write( ) const
 {
 	PDF_ASSERT( m_line.Format().FontFace() != 0 ) ;
 	
@@ -116,7 +116,7 @@ Graphics* TextObject::Write( ) const
 	return t ;
 }
 
-bool TextObject::OnChangeState( const GraphicsState& new_gs )
+bool TextLineObject::OnChangeState( const GraphicsState& new_gs )
 {
 	return false ;
 }

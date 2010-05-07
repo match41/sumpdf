@@ -26,7 +26,7 @@
 #include "PageLoader.hh"
 
 // local headers
-#include "TextObject.hh"
+#include "TextLineObject.hh"
 #include "PathObject.hh"
 #include "Util.hh"
 
@@ -73,7 +73,7 @@ void PageLoader::LoadTextLine( QGraphicsItem *parent, const TextLine& line )
 {
 	PDF_ASSERT( m_scene != 0 ) ;
 	
-	new TextObject( line, parent ) ;
+	new TextLineObject( line, parent ) ;
 }
 
 void PageLoader::VisitGraphics( Graphics *gfx )

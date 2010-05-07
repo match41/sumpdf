@@ -42,12 +42,12 @@ class GraphicsState ;
 ///	brief description
 /**	The GlyphGroup class represents
 */
-class TextObject :
+class TextLineObject :
 	public GraphicsObject,
 	private CharVisitor
 {
 public :
-	explicit TextObject( const TextLine& blk, QGraphicsItem *parent = 0 ) ;
+	explicit TextLineObject( const TextLine& blk, QGraphicsItem *parent = 0 ) ;
 
 	void OnChar(
 		wchar_t 			ch,
