@@ -28,7 +28,11 @@
 
 #include "GraphicsObject.hh"
 
+class QTextDocument ;
+
 namespace pdf {
+
+class DocModel ;
 
 ///	brief description
 /**	\internal
@@ -38,6 +42,8 @@ class TextObject : public GraphicsObject
 {
 public :
 	explicit TextObject( QGraphicsItem *parent = 0 ) ;
+	explicit TextObject( QTextDocument *text, DocModel *doc,
+		QGraphicsItem *parent = 0 );
 	
 	// virtual functions for QGraphicsItem
 	QRectF boundingRect( ) const ;

@@ -37,10 +37,12 @@ class QString ;
 class QPointF ;
 class QGraphicsScene ;
 class QColor ;
+class QTextDocument ;
 
 namespace pdf {
 
 class Doc ;
+class Font ;
 class Page ;
 class Color;
 
@@ -72,6 +74,10 @@ public :
 	Page* GetPage( std::size_t idx ) ;
 	void AddText( const QFont& font, double size, const QPointF& pos,
 		const QString& text, const QColor c = QColor(0,0,0) ) ;
+
+	void AddText( const QPointF& pos, QTextDocument *doc ) ;
+
+	Font* CreateFont( const QFont& font ) ;
 
 signals :
 	void SelectionChanged() ;

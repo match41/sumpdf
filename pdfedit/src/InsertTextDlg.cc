@@ -169,80 +169,8 @@ QTextEdit* InsertTextDlg::GetText( )
 	return m_text;
 }
 
-class PdfPaintEngine : public QPaintEngine
-{
-public :
-	bool begin( QPaintDevice * pdev )
-	{
-		return true ;
-	}
-	
-	void drawPixmap( const QRectF & r, const QPixmap & pm, const QRectF & sr )
-	{
-	}
-	
-	bool end()
-	{
-		return true ;
-	}
-	
-	void drawTextItem( const QPointF & p, const QTextItem& textItem )
-	{
-		qDebug() << "drawing " << textItem.text() << " at: " << p ;
-	}
-	
-	Type type() const
-	{
-		return QPaintEngine::User ;
-	}
-	
-	void updateState( const QPaintEngineState & state )
-	{
-	}
-} ;
-
-class PdfPaintDevice : public QPaintDevice
-{
-public :
-	PdfPaintDevice( )
-	{
-	}
-
-	QPaintEngine* paintEngine( ) const
-	{
-		return &m_engine ;
-	}
-
-protected :
-	int metric( PaintDeviceMetric metric ) const
-	{
-		switch (metric)
-		{
-		case PdmWidth:		return 500 ;
-		case PdmHeight:		return 500 ;
-		case PdmWidthMM:	return static_cast<int>(500/72.0 * 2.54) ;
-		case PdmHeightMM:	return static_cast<int>(500/72.0 * 2.54) ;
-		case PdmNumColors:	return std::numeric_limits<int>::max() ;
-		case PdmDepth:		return 24 ;
-		case PdmDpiX:
-		case PdmDpiY:
-		case PdmPhysicalDpiX:
-		case PdmPhysicalDpiY:	return 72 ;
-		
-		default :		return 0 ;
-		}
-	}
-
-private :
-	mutable PdfPaintEngine	m_engine ;
-} ;
-
 void InsertTextDlg::OnFontChanged( )
 {
-	PdfPaintDevice dev ;
-	QPainter painter( &dev ) ;
-	m_text->document()->drawContents( &painter ) ;
-	
 	QTextCursor cur=m_text->textCursor();	// get the current cursor
 
 	QFont font = m_font->currentFont();

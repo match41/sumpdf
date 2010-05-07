@@ -240,6 +240,13 @@ void DocModel::StorePage( QGraphicsScene *scene, Page *page )
 	std::for_each( gfx.begin(), gfx.end(), DeletePtr() ) ;
 }
 
+void DocModel::AddText( const QPointF& pos, QTextDocument *doc )
+{
+	TextObject *to = new TextObject( doc, this ) ;
+	to->setPos( pos ) ;
+	m_pages[m_current_page]->addItem( to ) ;
+}
+
 void DocModel::AddText(
 	const QFont&	font,
 	double			size,
@@ -247,24 +254,7 @@ void DocModel::AddText(
 	const QString&	text, 
 	const QColor	c )
 {
-#if defined(Q_WS_X11) || defined(Q_WS_QWS)
-	Font *f = m_doc->CreateSimpleFont( font.freetypeFace() ) ;
-
-#elif defined(Q_WS_WIN)
-	
-	HDC hdc = CreateCompatibleDC( NULL ) ;
-	SelectObject( hdc, (HGDIOBJ)font.handle() ) ;
-	DWORD fsize = GetFontData( hdc, 0, 0, 0, 0 ) ;
-	
-	if ( fsize == GDI_ERROR )
-		throw -1 ;
-
-	std::vector<unsigned char> result( fsize ) ;
-	if ( GetFontData( hdc, 0, 0, &result[0], fsize ) == GDI_ERROR )
-		throw -1 ;
-	
-	Font *f = m_doc->CreateSimpleFont( &result[0], fsize ) ;
-#endif
+	Font *f = CreateFont( font ) ;
 
 	PDF_ASSERT( f != 0 ) ;
 
@@ -280,7 +270,28 @@ void DocModel::AddText(
 	new TextLineObject( line, to ) ;
 
 	m_pages[m_current_page]->addItem( to ) ;
+}
 
+Font* DocModel::CreateFont( const QFont& font )
+{
+#if defined(Q_WS_X11) || defined(Q_WS_QWS)
+	return m_doc->CreateSimpleFont( font.freetypeFace() ) ;
+
+#elif defined(Q_WS_WIN)
+	
+	HDC hdc = CreateCompatibleDC( NULL ) ;
+	SelectObject( hdc, (HGDIOBJ)font.handle() ) ;
+	DWORD fsize = GetFontData( hdc, 0, 0, 0, 0 ) ;
+	
+	if ( fsize == GDI_ERROR )
+		throw -1 ;
+
+	std::vector<unsigned char> result( fsize ) ;
+	if ( GetFontData( hdc, 0, 0, &result[0], fsize ) == GDI_ERROR )
+		throw -1 ;
+	
+	return m_doc->CreateSimpleFont( &result[0], fsize ) ;
+#endif
 }
 
 } // end of namespace

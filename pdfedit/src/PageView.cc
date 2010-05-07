@@ -134,12 +134,15 @@ void PageView::OnTextLeftClick( QMouseEvent *event )
 	{
 		// user press OK. insert text here
 		QTextEdit *text = dlg.GetText( ) ;
+/*
 		m_doc->AddText(
 			text->currentFont(), 
 			dlg.GetFontSize().toDouble(),
 			pos, 
 			text->toPlainText(), 
 			text->textColor() ) ;
+*/
+		m_doc->AddText( pos, text->document() ) ;
 	}
 	
 	// auto_ptr will delete the caret here, even if exception is thrown.
