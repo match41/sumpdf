@@ -42,6 +42,8 @@
 #include <QPaintEngineState>
 #include <QPainter>
 #include <QTextDocument>
+#include <QFontInfo>
+#include <QFontMetrics>
 
 #include <limits>
 #include <iostream>
@@ -75,22 +77,25 @@ public :
 		return true ;
 	}
 	
-	void drawTextItem( const QPointF & pos, const QTextItem& item )
+	void drawTextItem( const QPointF& pos, const QTextItem& item )
 	{
-		qDebug() << "drawing " << item.text() << " at: " << pos << " with font: "
-		<< item.font() ;
-		
 		Font *f = m_doc->CreateFont( item.font() ) ;
 
 		PDF_ASSERT( f != 0 ) ;
 
 		GraphicsState gs ;
-		gs.Text().ChangeFont( item.font().pointSizeF(), f ) ;
-		gs.FillColor( FromQColor( m_state.brush().color() ) ) ;
-
+		gs.Text().ChangeFont( QFontInfo(item.font()).pixelSize(), f ) ;
+		gs.FillColor( m_color ) ;
 		TextLine line( gs,
 			Matrix::Translation( pos.x(), pos.y() ), 
 			ToWStr( item.text() ) ) ;
+
+qDebug() << "draw text " << item.text() << " at " << pos 
+<< " actual width: " << line.Width() << " point size = " << item.font().pointSizeF()
+<< " " << QFontInfo(item.font()).pixelSize() ;
+
+QFontMetrics m(item.font() ) ;
+qDebug() << "rect = " << m.width(item.text()) ;
 
 		new TextLineObject( line, m_owner ) ;
 	}
@@ -102,13 +107,14 @@ public :
 	
 	void updateState( const QPaintEngineState& state )
 	{
-		m_state = state ;
+		if ( state.state() | QPaintEngine::DirtyPen )
+			m_color = FromQColor( state.pen().color() ) ;
 	}
 	
 	TextObject	*m_owner ;
 	DocModel	*m_doc ;
 	
-	QPaintEngineState	m_state ;
+	Color		m_color ;
 } ;
 
 class PaintDevice : public QPaintDevice
