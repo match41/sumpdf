@@ -17,47 +17,27 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	GlyphGroup.hh
-    \brief	definition the GlyphGroup class
-    \date	Jan 24, 2010
+/**	\file	TextObject.hh
+    \brief	definition the TextObject class
+    \date	May 7, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_GLYPHGROUP_HH_EADER_INCLUDED__
-#define __PDF_GLYPHGROUP_HH_EADER_INCLUDED__
+#ifndef __PDF_TEXTOBJECT_HH_EADER_INCLUDED__
+#define __PDF_TEXTOBJECT_HH_EADER_INCLUDED__
 
 #include "GraphicsObject.hh"
 
-#include <QRectF>
-
-#include <graphics/CharVisitor.hh>
-
-#include <graphics/TextLine.hh>
-
 namespace pdf {
 
-class Matrix ;
-class GraphicsState ;
-
 ///	brief description
-/**	The GlyphGroup class represents
+/**	\internal
+	The TextObject class represents
 */
-class TextLineObject :
-	public QAbstractGraphicsShapeItem,
-	private CharVisitor
+class TextObject : public GraphicsObject
 {
 public :
-	explicit TextLineObject( const TextLine& blk, QGraphicsItem *parent = 0 ) ;
-
-	void OnChar(
-		wchar_t 			ch,
-		double				offset,
-		const Glyph			*glyph,
-		const TextState&	state ) ; 
-
-	GraphicsState Format( ) const ;
-	
-	TextLine GetLine( ) const ;
+	explicit TextObject( QGraphicsItem *parent = 0 ) ;
 	
 	// virtual functions for QGraphicsItem
 	QRectF boundingRect( ) const ;
@@ -65,12 +45,15 @@ public :
 		QPainter 						*painter,
 		const QStyleOptionGraphicsItem	*option,
 		QWidget 						*widget ) ; 
-	
-private :
-	TextLine		m_line ;
-	QRectF			m_bound ;
+
+	Graphics* Write( ) const ;
+
+	GraphicsState Format( ) const ;
+
+protected :
+	bool OnChangeState( const GraphicsState& new_gs ) ;
 } ;
 
 } // end of namespace
 
-#endif // GLYPHGROUP_HH_
+#endif // TEXTOBJECT_HH_

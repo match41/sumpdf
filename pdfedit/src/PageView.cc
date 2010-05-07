@@ -27,6 +27,7 @@
 #include "PageView.hh"
 
 #include "DocModel.hh"
+#include "GraphicsObject.hh"
 #include "InsertTextDlg.hh"
 #include "Util.hh"
 
@@ -90,19 +91,25 @@ void PageView::OnPointerLeftClick( QMouseEvent *event )
 	// first clear the selection
 	scene()->clearSelection() ;
 	
-	QGraphicsItem *smallest = 0 ;
+	GraphicsObject *smallest = 0 ;
 	double min_area = std::numeric_limits<double>::max() ;
 	
 	QList<QGraphicsItem*> selected = items( event->pos() ) ;
 	for ( QList<QGraphicsItem*>::iterator i = selected.begin() ;
 		i != selected.end() ; ++i )
 	{
-		QRectF bbox = (*i)->boundingRect() ;
-		double area = bbox.width() * bbox.height() ;
-		if ( area < min_area )
+		GraphicsObject *go = dynamic_cast<GraphicsObject*>( *i ) ;
+		
+		// only allow selecting top level graphics objects
+		if ( go != 0 )
 		{
-			min_area = area ;
-			smallest = *i ;
+			QRectF bbox = go->boundingRect() ;
+			double area = bbox.width() * bbox.height() ;
+			if ( area < min_area )
+			{
+				min_area = area ;
+				smallest = go ;
+			}
 		}
 	}
 	

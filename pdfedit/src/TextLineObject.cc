@@ -30,7 +30,6 @@
 #include "Util.hh"
 
 #include <graphics/Color.hh>
-#include <graphics/Text.hh>
 #include <graphics/TextLine.hh>
 #include <graphics/TextState.hh>
 
@@ -50,7 +49,7 @@ namespace pdf {
 /**	constructor
 */
 TextLineObject::TextLineObject( const TextLine& blk, QGraphicsItem *parent )
-	: GraphicsObject( parent )
+	: QAbstractGraphicsShapeItem( parent )
 	, m_line( blk )
 {
 	m_line.VisitChars( this ) ;
@@ -103,22 +102,6 @@ void TextLineObject::paint(
 	const QStyleOptionGraphicsItem	*option,
 	QWidget 						*widget )
 {
-	GraphicsObject::paint( painter, option, widget ) ;
-}
-
-Graphics* TextLineObject::Write( ) const
-{
-	PDF_ASSERT( m_line.Format().FontFace() != 0 ) ;
-	
-	Text *t = CreateText( GraphicsState() ) ;
-	t->AddLine( GetLine( ) ) ;
-	
-	return t ;
-}
-
-bool TextLineObject::OnChangeState( const GraphicsState& new_gs )
-{
-	return false ;
 }
 
 } // end of namespace

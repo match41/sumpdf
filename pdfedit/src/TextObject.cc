@@ -17,60 +17,72 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	GlyphGroup.hh
-    \brief	definition the GlyphGroup class
-    \date	Jan 24, 2010
-    \author	Nestal Wan
+/**	\file	TextObject.cc
+	\brief	implementation of the TextObject class
+	\date	May 7, 2010
+	\author	Nestal Wan
 */
 
-#ifndef __PDF_GLYPHGROUP_HH_EADER_INCLUDED__
-#define __PDF_GLYPHGROUP_HH_EADER_INCLUDED__
+#include "TextObject.hh"
 
-#include "GraphicsObject.hh"
+#include "TextLineObject.hh"
 
-#include <QRectF>
-
-#include <graphics/CharVisitor.hh>
-
-#include <graphics/TextLine.hh>
+#include <graphics/Text.hh>
+#include <util/Debug.hh>
 
 namespace pdf {
 
-class Matrix ;
-class GraphicsState ;
-
-///	brief description
-/**	The GlyphGroup class represents
+/**	constructor
+	
 */
-class TextLineObject :
-	public QAbstractGraphicsShapeItem,
-	private CharVisitor
+TextObject::TextObject( QGraphicsItem *parent )
+	: GraphicsObject( parent )
 {
-public :
-	explicit TextLineObject( const TextLine& blk, QGraphicsItem *parent = 0 ) ;
+}
 
-	void OnChar(
-		wchar_t 			ch,
-		double				offset,
-		const Glyph			*glyph,
-		const TextState&	state ) ; 
+// virtual functions for QGraphicsItem
+QRectF TextObject::boundingRect( ) const
+{
+	return childrenBoundingRect( ) ;
+}
 
-	GraphicsState Format( ) const ;
+void TextObject::paint(
+	QPainter 						*painter,
+	const QStyleOptionGraphicsItem	*option,
+	QWidget 						*widget )
+{
+	GraphicsObject::paint( painter, option, widget ) ;
+}
+
+bool TextObject::OnChangeState( const GraphicsState& new_gs )
+{
+	return false ;
+}
+
+Graphics* TextObject::Write( ) const
+{
+	Text *t = CreateText( GraphicsState() ) ;
 	
-	TextLine GetLine( ) const ;
+	foreach ( QGraphicsItem *item, childItems() )
+	{
+		TextLineObject *line = dynamic_cast<TextLineObject*>( item ) ;
+		PDF_ASSERT( line->Format().FontFace() != 0 ) ;
+		
+		t->AddLine( line->GetLine( ) ) ;
+	}
 	
-	// virtual functions for QGraphicsItem
-	QRectF boundingRect( ) const ;
-	void paint(
-		QPainter 						*painter,
-		const QStyleOptionGraphicsItem	*option,
-		QWidget 						*widget ) ; 
-	
-private :
-	TextLine		m_line ;
-	QRectF			m_bound ;
-} ;
+	return t ;
+}
+
+GraphicsState TextObject::Format( ) const
+{
+	foreach ( QGraphicsItem *item, childItems() )
+	{
+		TextLineObject *line = dynamic_cast<TextLineObject*>( item ) ;
+		return line->Format( ) ;
+	}
+	return GraphicsState() ;
+}
+
 
 } // end of namespace
-
-#endif // GLYPHGROUP_HH_

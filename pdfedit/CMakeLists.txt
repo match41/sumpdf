@@ -50,6 +50,7 @@ set( BASE_SRCS		src/main.cc
 					src/InsertTextDlg.cc
 					src/DocModel.cc
 					src/PathObject.cc
+                    src/TextObject.cc
                     src/TextLineObject.cc
 					src/GraphicsObject.cc
 					src/QtGraphicsState.cc )

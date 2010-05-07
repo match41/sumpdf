@@ -27,6 +27,7 @@
 
 // local headers
 #include "TextLineObject.hh"
+#include "TextObject.hh"
 #include "PathObject.hh"
 #include "Util.hh"
 
@@ -40,7 +41,6 @@
 //#include <QGraphicsPathItem>
 #include <QGraphicsScene>
 #include <QPainterPath>
-#include <QGraphicsItemGroup>
 
 // boost headers
 #include <boost/bind.hpp>
@@ -60,7 +60,7 @@ void PageLoader::VisitText( Text *text )
 {
 	PDF_ASSERT( text != 0 ) ;
 
-	QGraphicsItemGroup *g = new QGraphicsItemGroup ;
+	TextObject *g = new TextObject ;
 	g->setTransform( ToQtMatrix( text->Transform() ) ) ;
 	
 	std::for_each( text->begin(), text->end(),
