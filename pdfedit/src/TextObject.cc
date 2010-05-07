@@ -32,15 +32,19 @@
 #include <graphics/Text.hh>
 #include <graphics/TextLine.hh>
 #include <graphics/TextState.hh>
+#include <graphics/Color.hh>
 #include <util/Debug.hh>
 
+#include <QColor>
 #include <QDebug>
 #include <QPaintDevice>
 #include <QPaintEngine>
+#include <QPaintEngineState>
 #include <QPainter>
 #include <QTextDocument>
 
 #include <limits>
+#include <iostream>
 
 namespace pdf {
 
@@ -82,7 +86,7 @@ public :
 
 		GraphicsState gs ;
 		gs.Text().ChangeFont( item.font().pointSizeF(), f ) ;
-//		gs.FillColor(FromQColor(c));	// set text color
+		gs.FillColor( FromQColor( m_state.brush().color() ) ) ;
 
 		TextLine line( gs,
 			Matrix::Translation( pos.x(), pos.y() ), 
@@ -98,10 +102,13 @@ public :
 	
 	void updateState( const QPaintEngineState& state )
 	{
+		m_state = state ;
 	}
 	
 	TextObject	*m_owner ;
 	DocModel	*m_doc ;
+	
+	QPaintEngineState	m_state ;
 } ;
 
 class PaintDevice : public QPaintDevice
@@ -189,8 +196,14 @@ Graphics* TextObject::Write( ) const
 	{
 		TextLineObject *line = dynamic_cast<TextLineObject*>( item ) ;
 		PDF_ASSERT( line->Format().FontFace() != 0 ) ;
-		
-		t->AddLine( line->GetLine( ) ) ;
+
+		TextLine tline( line->GetLine() ) ;
+		tline.SetTransform(
+			Matrix::Translation( x(), y() ) * 
+			Matrix::Translation( line->x(), line->y() ) *
+			tline.Transform() ) ;
+
+		t->AddLine( tline ) ;
 	}
 	
 	return t ;
