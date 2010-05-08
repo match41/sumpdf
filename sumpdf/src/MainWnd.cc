@@ -227,15 +227,15 @@ void MainWnd::OnProperties( )
 
 void MainWnd::OnOpen( )
 {
-	QString fname = QFileDialog::getOpenFileName( this, "Open", ".", "*.pdf" ) ;
+	QString fname = QFileDialog::getOpenFileName( this, tr("Open"), ".", "*.pdf" ) ;
 	if ( !fname.isEmpty( ) )
 		OpenFile( fname ) ;
 }
 
 void MainWnd::OnSaveAs( )
 {
-	QString fname = QFileDialog::getSaveFileName( this, "Open",
-						m_doc->GetCurrentFile(), "*.pdf" ) ;
+	QString fname = QFileDialog::getSaveFileName( this, tr("Save As"),
+		m_doc->GetCurrentFile(), "*.pdf" ) ;
 	if ( !fname.isEmpty( ) )
 	{
 		m_doc->SaveFile( fname ) ;
