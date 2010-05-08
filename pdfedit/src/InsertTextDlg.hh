@@ -27,6 +27,7 @@
 #include "ui_InsertTextDlg.h"
 
 class QPushButton;
+class QTextDocument ;
 
 namespace pdf {
 
@@ -42,9 +43,7 @@ public:
 	explicit InsertTextDlg( QWidget *parent ) ;
 	~InsertTextDlg( ) ;
 
-	QTextEdit*	GetText( );
-	QString		GetFontSize( );
-	QPointF		GetPosition( );
+	QTextDocument*	GetText( ) ;
 
 signals:
 	void OnInsertClicked( QPointF );

@@ -43,7 +43,7 @@
 #include <QPainter>
 #include <QTextDocument>
 #include <QFontInfo>
-#include <QFontMetrics>
+#include <QFontMetricsF>
 
 #include <limits>
 #include <iostream>
@@ -86,18 +86,21 @@ public :
 		GraphicsState gs ;
 		gs.Text().ChangeFont( QFontInfo(item.font()).pixelSize(), f ) ;
 		gs.FillColor( m_color ) ;
-		TextLine line( gs,
-			Matrix::Translation( pos.x(), pos.y() ), 
-			ToWStr( item.text() ) ) ;
 
-qDebug() << "draw text " << item.text() << " at " << pos 
-<< " actual width: " << line.Width() << " point size = " << item.font().pointSizeF()
-<< " " << QFontInfo(item.font()).pixelSize() ;
+		// the way Qt calculate character width is less accurate that us
+		// so we can't just make a text line with the whole string.
+		// we need to break it down into character and ask Qt the width
+		// of each character and advance the position.
+		double offset = 0 ;
+		foreach( QChar ch, item.text() )
+		{
+			TextLine line( gs,
+				Matrix::Translation( pos.x() + offset, pos.y() ), 
+				ToWStr( QString(ch) ) ) ;
 
-QFontMetrics m(item.font() ) ;
-qDebug() << "rect = " << m.width(item.text()) ;
-
-		new TextLineObject( line, m_owner ) ;
+			offset += QFontMetricsF(item.font() ).width(ch) ;
+			new TextLineObject( line, m_owner ) ;
+		}
 	}
 	
 	Type type() const
@@ -172,6 +175,7 @@ TextObject::TextObject( QTextDocument *text, DocModel *doc,
 
 	PaintDevice dev( this, doc ) ;
 	QPainter painter( &dev ) ;
+	painter.setRenderHints( QPainter::TextAntialiasing ) ;
 	text->drawContents( &painter ) ;
 }
 

@@ -103,6 +103,7 @@ void InsertTextDlg::OnSetColor( )
 		OnCreateColorButtonIcon( ":/images/textpointer.png", color ) );
 	m_text->setTextColor( color );
 }
+
 // drop-down text color selection menu
 QMenu *InsertTextDlg::OnCreateColorMenu( const char *slot, QColor default_color )
 {
@@ -159,14 +160,9 @@ QIcon InsertTextDlg::OnCreateColorIcon( QColor color )
 	return QIcon( pixmap );
 }
 
-QString	InsertTextDlg::GetFontSize( )
+QTextDocument* InsertTextDlg::GetText( )
 {
-	return m_fontsize->currentText( );
-}
-
-QTextEdit* InsertTextDlg::GetText( )
-{
-	return m_text;
+	return m_text->document() ;
 }
 
 void InsertTextDlg::OnFontChanged( )
@@ -174,7 +170,7 @@ void InsertTextDlg::OnFontChanged( )
 	QTextCursor cur=m_text->textCursor();	// get the current cursor
 
 	QFont font = m_font->currentFont();
-    font.setPointSize( m_fontsize->currentText().toInt() );
+    font.setPixelSize( m_fontsize->currentText().toInt() );
     font.setWeight(m_bold->isChecked() ? QFont::Bold : QFont::Normal);
     font.setItalic(m_italic->isChecked());
     // font.setUnderline(m_underlined->isChecked());

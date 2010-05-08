@@ -133,16 +133,7 @@ void PageView::OnTextLeftClick( QMouseEvent *event )
 	if ( dlg.exec() == QDialog::Accepted )
 	{
 		// user press OK. insert text here
-		QTextEdit *text = dlg.GetText( ) ;
-/*
-		m_doc->AddText(
-			text->currentFont(), 
-			dlg.GetFontSize().toDouble(),
-			pos, 
-			text->toPlainText(), 
-			text->textColor() ) ;
-*/
-		m_doc->AddText( pos, text->document() ) ;
+		m_doc->AddText( pos, dlg.GetText( ) ) ;
 	}
 	
 	// auto_ptr will delete the caret here, even if exception is thrown.
