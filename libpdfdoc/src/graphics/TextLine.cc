@@ -89,10 +89,10 @@ void TextLine::AppendText( const std::wstring& text )
 }
 
 std::ostream& TextLine::Print(
-	std::ostream& 			os,
-	Matrix&					current,
-	const GraphicsState& 	state,
-	ResourcesDict			*res ) const
+	std::ostream& 	os,
+	Matrix&			current,
+	GraphicsState& 	prev_gs,
+	ResourcesDict	*res ) const
 {
 	// print transformation if different
 	if ( m_trans != current )
@@ -117,7 +117,9 @@ std::ostream& TextLine::Print(
 	// replace current matrix and position
 	current = m_trans ;
 	
-	m_state.Print( os, res, state ) ;
+	m_state.Print( os, res, prev_gs ) ;
+	prev_gs = m_state ;
+	
 	return PrintText( os ) ;
 }
 

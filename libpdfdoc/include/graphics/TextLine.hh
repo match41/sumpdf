@@ -69,10 +69,10 @@ public :
 	void AppendSpace( double width ) ;
 
 	std::ostream& Print(
-		std::ostream& 			os,
-		Matrix&					current,
-		const GraphicsState& 	state,
-		ResourcesDict			*res ) const ;
+		std::ostream& 	os,
+		Matrix&			current,
+		GraphicsState& 	prev_gs,
+		ResourcesDict	*res ) const ;
 
 	bool operator==( const TextLine& rhs ) const ;
 	bool operator!=( const TextLine& rhs ) const ;

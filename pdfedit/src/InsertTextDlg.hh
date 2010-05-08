@@ -41,7 +41,6 @@ class InsertTextDlg :
 
 public:
 	explicit InsertTextDlg( QWidget *parent ) ;
-	~InsertTextDlg( ) ;
 
 	QTextDocument*	GetText( ) ;
 

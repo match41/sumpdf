@@ -55,7 +55,7 @@ namespace {
 class PaintEngine : public QPaintEngine
 {
 public :
-	explicit PaintEngine( TextObject *owner, DocModel *doc )
+	explicit PaintEngine( QGraphicsItem *owner, DocModel *doc )
 		: m_owner( owner )
 		, m_doc( doc )
 	{
@@ -114,7 +114,7 @@ public :
 			m_color = FromQColor( state.pen().color() ) ;
 	}
 	
-	TextObject	*m_owner ;
+	QGraphicsItem	*m_owner ;
 	DocModel	*m_doc ;
 	
 	Color		m_color ;
@@ -123,7 +123,7 @@ public :
 class PaintDevice : public QPaintDevice
 {
 public :
-	explicit PaintDevice( TextObject *owner, DocModel *doc )
+	explicit PaintDevice( QGraphicsItem *owner, DocModel *doc )
 		: m_engine( new PaintEngine( owner, doc ) )
 	{
 	}

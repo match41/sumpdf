@@ -82,10 +82,6 @@ InsertTextDlg::InsertTextDlg( QWidget *parent )
 		SLOT( OnFontChanged( ) ) );
 }
 
-InsertTextDlg::~InsertTextDlg( )
-{
-}
-
 void InsertTextDlg::OnTextColorChanged( )
 {
 	m_text_action = qobject_cast<QAction *>( sender() );
@@ -167,18 +163,13 @@ QTextDocument* InsertTextDlg::GetText( )
 
 void InsertTextDlg::OnFontChanged( )
 {
-	QTextCursor cur=m_text->textCursor();	// get the current cursor
-
 	QFont font = m_font->currentFont();
     font.setPixelSize( m_fontsize->currentText().toInt() );
     font.setWeight(m_bold->isChecked() ? QFont::Bold : QFont::Normal);
     font.setItalic(m_italic->isChecked());
-    // font.setUnderline(m_underlined->isChecked());
+//    font.setUnderline(m_underlined->isChecked());
     m_text->setTextColor( qVariantValue<QColor>( m_text_action->data() ) );
 	m_text->setCurrentFont ( font );
-
-//	m_text->setText( m_text->toPlainText() );	// update text to apply new color
-//	m_text->setTextCursor(cur);					// set cursor to intial state
 }
 
 } // end of namespace
