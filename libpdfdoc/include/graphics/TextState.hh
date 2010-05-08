@@ -74,6 +74,7 @@ public :
 
 	double ScaleFactor( ) const ;
 	double Width( const std::wstring& str ) const ;
+	double Height( ) const ;
 
 private :
 	double	m_char_space ;

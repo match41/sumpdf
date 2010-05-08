@@ -52,6 +52,7 @@ public :
 	const pdf::Glyph*	GetGlyph( wchar_t ch ) const ;
 	double FromFontUnit( unsigned val ) const ; 
 	unsigned UnitsPerEM() const ;
+	double Height( ) const ;
 
 private :
 	MockGlyph	m_glyph ;

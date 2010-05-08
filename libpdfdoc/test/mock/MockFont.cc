@@ -70,4 +70,9 @@ unsigned MockFont::UnitsPerEM() const
 	return 2048 ;
 }
 
+double MockFont::Height( ) const
+{
+	return 0 ;
+}
+
 } // end of namespace

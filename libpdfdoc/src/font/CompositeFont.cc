@@ -100,4 +100,9 @@ double	CompositeFont::FromFontUnit( unsigned val ) const
 	return val ;
 }
 
+double CompositeFont::Height( ) const
+{
+	return 0 ;
+}
+
 } // end of namespace

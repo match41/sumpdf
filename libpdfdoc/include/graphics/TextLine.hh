@@ -87,6 +87,8 @@ public :
 	///	Returns the width of the text line in text space units.
 	double Width( ) const ;
 	
+	double Height( ) const ;
+	
 	///	Walkthrough all characters in the text line.
 	/**	This function will call CharVisitor::OnChar() for each character it
 		contains. The arguments of CharVisitor::OnChar() provide information

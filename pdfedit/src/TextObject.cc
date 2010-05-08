@@ -182,12 +182,13 @@ TextObject::TextObject( QTextDocument *text, DocModel *doc,
 //	painter.setRenderHints( QPainter::TextAntialiasing ) ;
 //	text->drawContents( &painter ) ;
 	
+	double voffset = 0 ;
+	
 	QTextBlock b = text->firstBlock() ;
 	while ( b.isValid() )
 	{
-		QPointF pos = b.layout()->position() ;
-	
-		double offset = 0 ;
+		double max_height	= 0 ;
+		double hoffset		= 0 ;
 		for ( QTextBlock::iterator i = b.begin() ; i != b.end() ; ++i )
 		{
 			QTextFragment frag = i.fragment() ;
@@ -199,15 +200,18 @@ TextObject::TextObject( QTextDocument *text, DocModel *doc,
 			gs.FillColor( FromQColor( format.foreground().color() ) ) ;
 			
 			TextLine line( gs,
-				Matrix::Translation( pos.x() + offset, pos.y() ), 
+				Matrix::Translation( hoffset, voffset ), 
 				ToWStr( frag.text() ) ) ;
 
-			offset += line.Width() ;
+			hoffset += line.Width() ;
+			max_height = std::max( max_height, gs.Text().Height() ) ;
 			
 			new TextLineObject( line, this ) ;
 		}
-		
+qDebug() << "height = " << max_height ;
+
 		b = b.next() ;
+		voffset += max_height ;
 	}
 }
 

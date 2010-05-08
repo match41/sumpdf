@@ -68,6 +68,7 @@ public :
 
 	unsigned UnitsPerEM( ) const ;
 	double FromFontUnit( unsigned val ) const ;
+	double Height( ) const ;
 	
 	bool IsSubset( ) const ;
 	

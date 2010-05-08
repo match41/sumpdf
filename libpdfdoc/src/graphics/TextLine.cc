@@ -231,6 +231,11 @@ double TextLine::Width( ) const
 				boost::bind( &Space::width, _2 ) ) ) ;
 }
 
+double TextLine::Height( ) const
+{
+	return m_state.Text().Height( ) ;
+}
+
 void TextLine::VisitChars( CharVisitor *v ) const
 {
 	double	offset = 0.0 ;

@@ -56,6 +56,7 @@ public :
 	const Glyph*	GetGlyph( wchar_t ch ) const ;
 	unsigned		UnitsPerEM( ) const ;
 	double			FromFontUnit( unsigned val ) const ;
+	double 			Height( ) const ;
 
 private :
 	Name		m_base_font ;

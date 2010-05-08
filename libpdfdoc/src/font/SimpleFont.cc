@@ -551,19 +551,6 @@ std::string SimpleFont::BaseName( ) const
 
 const Glyph* SimpleFont::GetGlyph( wchar_t ch ) const
 {
-//	char encbuf[] = {
-//		(char)(m_impl->face->charmap->encoding>>24),
-//		(char)(m_impl->face->charmap->encoding>>16),
-//		(char)(m_impl->face->charmap->encoding>>8),
-//		(char)(m_impl->face->charmap->encoding),
-//		0
-//	} ;
-//	
-//	std::cout << BaseName() << " " << encbuf << " char " << ch << "\'" << (char)ch << "\' mapped to " << (char)m_impl->encoding->LookUp( ch ) << std::endl ;
-	
-//	if ( m_impl->encoding != 0 )
-//		ch = m_impl->encoding->LookUp( ch ) ;
-	
 	Impl::GlyphMap::const_iterator it = m_impl->glyphs.find( ch ) ;
 	return it != m_impl->glyphs.end() ? it->second : 0 ;
 }
@@ -576,6 +563,13 @@ FontDescriptor* SimpleFont::Descriptor( )
 FontEncoding* SimpleFont::Encoding( )
 {
 	return m_impl->encoding ;
+}
+
+double SimpleFont::Height( ) const
+{
+std::cout << m_impl->face->height << std::endl ;
+	return static_cast<double>(m_impl->face->height) /*/
+		static_cast<double>(m_impl->face->units_per_EM)*/ ;
 }
 
 } // end of namespace

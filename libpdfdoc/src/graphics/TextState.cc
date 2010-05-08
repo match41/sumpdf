@@ -204,4 +204,10 @@ double TextState::Width( const std::wstring& str ) const
 	return font_unit * ScaleFactor() ;
 }
 
+
+double TextState::Height( ) const
+{
+	return m_font->Height( ) * ScaleFactor() ;
+}
+
 } // end of namespace

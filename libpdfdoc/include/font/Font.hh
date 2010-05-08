@@ -116,6 +116,12 @@ public :
 	virtual double FromFontUnit( unsigned val ) const = 0 ;
 	
 	virtual FontEncoding* Encoding( ) = 0 ;
+	
+	/// Return the height of the font.
+	/**	This field is simply used to compute a default line spacing (i.e., the
+		baseline-to-baseline distance) when writing text with this font.
+	*/
+	virtual double Height( ) const = 0 ; 
 } ;
 
 } // end of namespace
