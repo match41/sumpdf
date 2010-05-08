@@ -254,7 +254,7 @@ void DocModel::AddText(
 	const QString&	text, 
 	const QColor	c )
 {
-	Font *f = CreateFont( font ) ;
+	Font *f = CreatePdfFont( font ) ;
 
 	PDF_ASSERT( f != 0 ) ;
 
@@ -272,7 +272,7 @@ void DocModel::AddText(
 	m_pages[m_current_page]->addItem( to ) ;
 }
 
-Font* DocModel::CreateFont( const QFont& font )
+Font* DocModel::CreatePdfFont( const QFont& font )
 {
 #if defined(Q_WS_X11) || defined(Q_WS_QWS)
 	return m_doc->CreateSimpleFont( font.freetypeFace() ) ;

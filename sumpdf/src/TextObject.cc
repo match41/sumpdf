@@ -83,7 +83,7 @@ public :
 	
 	void drawTextItem( const QPointF& pos, const QTextItem& item )
 	{
-		Font *f = m_doc->CreateFont( item.font() ) ;
+		Font *f = m_doc->CreatePdfFont( item.font() ) ;
 
 		PDF_ASSERT( f != 0 ) ;
 
@@ -193,7 +193,7 @@ TextObject::TextObject( QTextDocument *text, DocModel *doc,
 		{
 			QTextFragment frag = i.fragment() ;
 			QTextCharFormat format = frag.charFormat() ;
-			Font *f = doc->CreateFont( format.font() ) ;
+			Font *f = doc->CreatePdfFont( format.font() ) ;
 
 			GraphicsState gs ;
 			gs.Text().ChangeFont( format.font().pointSizeF(), f ) ;

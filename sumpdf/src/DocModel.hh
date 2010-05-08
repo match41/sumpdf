@@ -77,7 +77,7 @@ public :
 
 	void AddText( const QPointF& pos, QTextDocument *doc ) ;
 
-	Font* CreateFont( const QFont& font ) ;
+	Font* CreatePdfFont( const QFont& font ) ;
 
 signals :
 	void SelectionChanged() ;
