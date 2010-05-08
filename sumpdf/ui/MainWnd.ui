@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>PDF Editor</string>
+   <string>SumPDF</string>
   </property>
   <widget class="QWidget" name="centralwidget"/>
   <widget class="QMenuBar" name="m_menubar">
@@ -107,7 +107,7 @@
   </widget>
   <action name="m_action_new">
    <property name="icon">
-    <iconset resource="pdfedit.qrc">
+    <iconset resource="sumpdf.qrc">
      <normaloff>:/images/filenew.png</normaloff>:/images/filenew.png</iconset>
    </property>
    <property name="text">
@@ -116,7 +116,7 @@
   </action>
   <action name="m_action_open">
    <property name="icon">
-    <iconset resource="pdfedit.qrc">
+    <iconset resource="sumpdf.qrc">
      <normaloff>:/images/fileopen.png</normaloff>:/images/fileopen.png</iconset>
    </property>
    <property name="text">
@@ -140,7 +140,7 @@
   </action>
   <action name="m_action_save">
    <property name="icon">
-    <iconset resource="pdfedit.qrc">
+    <iconset resource="sumpdf.qrc">
      <normaloff>:/images/filesave.png</normaloff>:/images/filesave.png</iconset>
    </property>
    <property name="text">
@@ -159,7 +159,7 @@
   </action>
   <action name="m_action_next_pg">
    <property name="icon">
-    <iconset resource="pdfedit.qrc">
+    <iconset resource="sumpdf.qrc">
      <normaloff>:/images/arrow-right.png</normaloff>:/images/arrow-right.png</iconset>
    </property>
    <property name="text">
@@ -168,7 +168,7 @@
   </action>
   <action name="m_action_previous_pg">
    <property name="icon">
-    <iconset resource="pdfedit.qrc">
+    <iconset resource="sumpdf.qrc">
      <normaloff>:/images/arrow-left.png</normaloff>:/images/arrow-left.png</iconset>
    </property>
    <property name="text">
@@ -177,7 +177,7 @@
   </action>
   <action name="m_action_last_pg">
    <property name="icon">
-    <iconset resource="pdfedit.qrc">
+    <iconset resource="sumpdf.qrc">
      <normaloff>:/images/arrow-right-end.png</normaloff>:/images/arrow-right-end.png</iconset>
    </property>
    <property name="text">
@@ -189,7 +189,7 @@
   </action>
   <action name="m_action_first_pg">
    <property name="icon">
-    <iconset resource="pdfedit.qrc">
+    <iconset resource="sumpdf.qrc">
      <normaloff>:/images/arrow-left-end.png</normaloff>:/images/arrow-left-end.png</iconset>
    </property>
    <property name="text">
@@ -215,7 +215,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="pdfedit.qrc">
+    <iconset resource="sumpdf.qrc">
      <normaloff>:/images/Magnifying_glass_icon.svg</normaloff>:/images/Magnifying_glass_icon.svg</iconset>
    </property>
    <property name="text">
@@ -227,7 +227,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="pdfedit.qrc">
+    <iconset resource="sumpdf.qrc">
      <normaloff>:/images/inserttext.png</normaloff>:/images/inserttext.png</iconset>
    </property>
    <property name="text">
@@ -242,7 +242,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="pdfedit.qrc">
+    <iconset resource="sumpdf.qrc">
      <normaloff>:/images/Mouse_pointer.svg</normaloff>:/images/Mouse_pointer.svg</iconset>
    </property>
    <property name="text">
@@ -251,7 +251,7 @@
   </action>
  </widget>
  <resources>
-  <include location="pdfedit.qrc"/>
+  <include location="sumpdf.qrc"/>
  </resources>
  <connections/>
 </ui>

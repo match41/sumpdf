@@ -17,7 +17,7 @@
  #   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 #***************************************************************************#
 
-PROJECT(pdfedit)
+PROJECT(sumpdf)
 
 cmake_minimum_required(VERSION 2.6)
 
@@ -78,9 +78,9 @@ set( UIS 		ui/MainWnd.ui
 qt4_wrap_ui( UIH ${UIS})
 qt4_wrap_cpp( MOC_SRCS ${MOC_HDRS})
 
-qt4_add_resources( RCC_SRCS ui/pdfedit.qrc )
+qt4_add_resources( RCC_SRCS ui/sumpdf.qrc )
 
-add_executable( pdfedit WIN32 ${SRCS} ${UIH} ${MOC_SRCS} ${RCC_SRCS} )
+add_executable( sumpdf WIN32 ${SRCS} ${UIH} ${MOC_SRCS} ${RCC_SRCS} )
 
 ###############################################################################
 # finding optional fontconfig library
@@ -152,7 +152,7 @@ endif ( WIN32 )
 # MSVC has stupid warnings on STD
 if ( MSVC )
 	add_definitions( -D_SCL_SECURE_NO_WARNINGS )
-	set_target_properties( pdfedit
+	set_target_properties( sumpdf
 		PROPERTIES COMPILE_FLAGS "/wd4345 /wd4819 /Zc:wchar_t-" )
 endif ( MSVC )
 
@@ -200,14 +200,14 @@ if ( PDFDOC_INCLUDE_DIR AND PDFDOC_LIBRARY )
 endif ( PDFDOC_INCLUDE_DIR AND PDFDOC_LIBRARY )
 
 # in order to include the generated UI header files
-include_directories( ${QT_INCLUDE_DIR} ${pdfedit_SOURCE_DIR}/src
-                                       ${pdfedit_SOURCE_DIR}
-                                       ${pdfedit_BINARY_DIR}
+include_directories( ${QT_INCLUDE_DIR} ${sumpdf_SOURCE_DIR}/src
+                                       ${sumpdf_SOURCE_DIR}
+                                       ${sumpdf_BINARY_DIR}
                                        ${Boost_INCLUDE_DIRS}
                                        ${FREETYPE_INCLUDE_DIRS}
                                        ${OPT_INCS} )
 
-target_link_libraries( pdfedit	${PDFDOC_LIBRARY} ${OPT_LIBS} ${QT_LIBRARIES}
+target_link_libraries( sumpdf	${PDFDOC_LIBRARY} ${OPT_LIBS} ${QT_LIBRARIES}
 								${QT_QTMAIN_LIBRARY}
 								${ZLIB_LIBRARIES}
 								${FREETYPE_LIBRARIES} )

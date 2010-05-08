@@ -209,14 +209,14 @@ void MainWnd::GoToPage( std::size_t page )
 void MainWnd::OnAbout( )
 {
 	std::ostringstream vs ;
-	vs	<< "About PDF Editor\n"
+	vs	<< "About SumPDF\n"
 		<< "version "    				<< VERSION		<< '\n'
 		<< __DATE__ << '\n'
 		<< "Using libpdfdoc version "	<< Version()	<< '\n'
 		<< "Qt version "				<< qVersion()	<< '\n'
 		<< "Copyright 2010 Nestal Wan\n"
 		<< "License: GNU Public License Version 2" ;
-	QMessageBox::information( this, "About PDF Editor", vs.str().c_str() ) ;
+	QMessageBox::information( this, "About SumPDF", vs.str().c_str() ) ;
 }
 
 void MainWnd::OnProperties( )
@@ -354,7 +354,7 @@ void MainWnd::OnFileChanged( )
 
 	setWindowTitle( tr("%1[*] - %2")
 						.arg(window_name)
-						.arg(tr("PDF Edit")) );
+						.arg(tr("SumPDF")) );
 }
 
 } // end of namespace
