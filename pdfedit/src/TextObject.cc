@@ -44,6 +44,10 @@
 #include <QTextDocument>
 #include <QFontInfo>
 #include <QFontMetricsF>
+#include <QTextBlock>
+#include <QTextFragment>
+#include <QTextCharFormat>
+#include <QTextLayout>
 
 #include <limits>
 #include <iostream>
@@ -173,10 +177,38 @@ TextObject::TextObject( QTextDocument *text, DocModel *doc,
 {
 	PDF_ASSERT( text != 0 ) ;
 
-	PaintDevice dev( this, doc ) ;
-	QPainter painter( &dev ) ;
-	painter.setRenderHints( QPainter::TextAntialiasing ) ;
-	text->drawContents( &painter ) ;
+//	PaintDevice dev( this, doc ) ;
+//	QPainter painter( &dev ) ;
+//	painter.setRenderHints( QPainter::TextAntialiasing ) ;
+//	text->drawContents( &painter ) ;
+	
+	QTextBlock b = text->firstBlock() ;
+	while ( b.isValid() )
+	{
+		QPointF pos = b.layout()->position() ;
+	
+		double offset = 0 ;
+		for ( QTextBlock::iterator i = b.begin() ; i != b.end() ; ++i )
+		{
+			QTextFragment frag = i.fragment() ;
+			QTextCharFormat format = frag.charFormat() ;
+			Font *f = doc->CreateFont( format.font() ) ;
+
+			GraphicsState gs ;
+			gs.Text().ChangeFont( format.font().pointSizeF(), f ) ;
+			gs.FillColor( FromQColor( format.foreground().color() ) ) ;
+			
+			TextLine line( gs,
+				Matrix::Translation( pos.x() + offset, pos.y() ), 
+				ToWStr( frag.text() ) ) ;
+
+			offset += line.Width() ;
+			
+			new TextLineObject( line, this ) ;
+		}
+		
+		b = b.next() ;
+	}
 }
 
 // virtual functions for QGraphicsItem

@@ -164,7 +164,7 @@ QTextDocument* InsertTextDlg::GetText( )
 void InsertTextDlg::OnFontChanged( )
 {
 	QFont font = m_font->currentFont();
-    font.setPixelSize( m_fontsize->currentText().toInt() );
+    font.setPointSizeF( m_fontsize->currentText().toDouble() );
     font.setWeight(m_bold->isChecked() ? QFont::Bold : QFont::Normal);
     font.setItalic(m_italic->isChecked());
 //    font.setUnderline(m_underlined->isChecked());
