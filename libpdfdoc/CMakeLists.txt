@@ -99,7 +99,8 @@ set( PAGE_HDRS		${PAGE_DIR}/RealPage.hh
 					${PAGE_DIR}/PageInfo.hh
 					${PAGE_DIR}/ContentStream.hh
 					${PAGE_DIR}/ContentOp.hh
-					${PAGE_DIR}/ExtGState.hh )
+					${PAGE_DIR}/ExtGState.hh
+					${PAGE_DIR}/XObject.hh )
 
 set( GRAPICS_HDRS	${GRAPICS_DIR}/RealText.hh
 					${GRAPICS_DIR}/RealPath.hh )
@@ -217,7 +218,8 @@ set( PAGE_SRCS  	${PAGE_DIR}/RealPage.cc
 					${PAGE_DIR}/PageInfo.cc
 					${PAGE_DIR}/ContentStream.cc
 					${PAGE_DIR}/ContentOp.cc
-					${PAGE_DIR}/ExtGState.cc )
+					${PAGE_DIR}/ExtGState.cc
+					${PAGE_DIR}/XObject.cc )
 
 set( GRAPICS_SRCS	${GRAPICS_DIR}/Graphics.cc
 					${GRAPICS_DIR}/GraphicsVisitor.cc

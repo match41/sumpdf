@@ -52,6 +52,7 @@ class RealImage ;
 class Object ;
 class Ref ;
 class ExtGState ;
+class XObject ;
 
 /*!	\brief	page resources
 
@@ -82,6 +83,8 @@ private :
 
 	void ReadStateDict( DictReader& self ) ;
 
+	void ReadXObject( DictReader& self ) ;
+
 private :
 	const RealResources	*const m_parent ;
 	FontDb				*m_font_db ;
@@ -97,6 +100,12 @@ private :
 		boost::bimaps::set_of<ExtGState*>
 	> StateMap ; 
 	StateMap			m_states ;
+	
+	typedef	boost::bimap<
+		boost::bimaps::set_of<Name>,
+		boost::bimaps::set_of<XObject*>
+	> XObjectMap ; 
+	XObjectMap			m_xobjs ;
 	
 	std::vector<Name>	m_proc_set ;
 } ;

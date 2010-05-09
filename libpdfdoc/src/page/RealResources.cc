@@ -91,6 +91,10 @@ void RealResources::Read( DictReader& self )
 	ReadFontDict( self ) ;
 }
 
+void RealResources::ReadXObject( DictReader& self )
+{
+}
+
 Ref RealResources::Write( File *file, const FontSubsetInfo *subset ) const
 {
 	Dictionary dict ;
@@ -99,11 +103,6 @@ Ref RealResources::Write( File *file, const FontSubsetInfo *subset ) const
 	dict.insert( "Font",	WriteFontDict( file, subset ) ) ;
 
     return file->WriteObj( dict ) ;
-}
-
-ExtGState* NewState( DictReader& d )
-{
-	return new ExtGState( d ) ;
 }
 
 void RealResources::ReadStateDict( DictReader& self )
