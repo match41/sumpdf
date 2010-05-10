@@ -33,6 +33,8 @@
 #include "util/Exception.hh"
 #include "util/Debug.hh"
 
+#include <boost/format.hpp>
+
 #include <iostream>
 
 namespace pdf {
@@ -66,19 +68,19 @@ std::istream& operator>>( std::istream& is, Array& array )
 
 TokenSrc& operator>>( TokenSrc& src, Array& array )
 {
+	using boost::format ;
+
 	Token t ;
-	if ( !(src >> t) )
-		throw ParseError( "cannot read first token in array" ) ;
-	if ( t.Get() != "[" )
-		throw ParseError(
-			"bad token: \"" + t.Get() + "\" found in the first token of "
-			"array" ) ;
-		
+	if ( TokenSrc::PeekPrefix( src, t ) && t.Get() != "[" )
+		throw ParseError( format("array not start with \"[\" but \"%1%\"")
+			% t.Get( ) ) ;
+
+	// dump the "[" token
+	src >> t ;
+
 	Array temp ;
-	while ( src >> t && t.Get() != "]" )
+	while ( TokenSrc::PeekPrefix( src, t ) && t.Get() != "]" )
 	{
-		src.PutBack( t ) ;
-		
 		Object obj ;
 		if ( src >> obj )
 		{
@@ -91,7 +93,12 @@ TokenSrc& operator>>( TokenSrc& src, Array& array )
 	
 	// commit
 	if ( src )
+	{
+		// dump the "]" token
+		src >> t ;
+
 		temp.swap( array ) ;
+	}
 	
 	return src ;
 }

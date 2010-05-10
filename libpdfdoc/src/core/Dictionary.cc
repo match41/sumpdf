@@ -198,23 +198,16 @@ TokenSrc& operator>>( TokenSrc& src, Dictionary& dict )
 	
 	// dump the "<<" token
 	src >> t ;
-	TokenSrc::PeekPrefix( src, t ) ;
 	
 	Dictionary temp ;
-	while ( src && t.Get() != ">>" )
+	while ( TokenSrc::PeekPrefix( src, t ) && t.Get() != ">>" )
 	{
-//std::cout << "get prefix = " << t << std::endl ;
 		Name	key ;
 		Object	value ;
 		
 		// null value means absent entry
 		if ( src >> key >> value && Dictionary::IsGoodObject( value ) )
-		{
-//std::cout << "get pair = " << key << " " << value << std::endl ;
 			temp.m_map.insert( std::make_pair( key, value ) ) ;
-		}
-			
-		TokenSrc::PeekPrefix( src, t ) ;
 	}
 	
 	if ( src )
