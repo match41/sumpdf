@@ -546,10 +546,8 @@ const Object& Object::NullObj()
 }
 
 template <typename T>
-bool Object::DecodeObject( TokenSrc& src, const Token& tok )
+bool Object::DecodeObject( TokenSrc& src )
 {
-	src.PutBack( tok ) ;
-	
 	T t ;
 	if ( src >> t )
 	{
@@ -560,9 +558,9 @@ bool Object::DecodeObject( TokenSrc& src, const Token& tok )
 		return false ;
 }
 
-bool Object::DecodeNumberOrIndirectObj( TokenSrc& is, const Token& token )
+bool Object::DecodeNumberOrIndirectObj( TokenSrc& is )
 {
-	if ( DecodeObject<Ref>( is, token ) )
+	if ( DecodeObject<Ref>( is ) )
 		return true ;
 	else
 	{
@@ -572,19 +570,18 @@ bool Object::DecodeNumberOrIndirectObj( TokenSrc& is, const Token& token )
 		if ( is >> t )
 		{
 			const std::string& str = t.Get() ;
-			assert( t == token ) ;
 			
 			// can't use ?: because the types are different
 			if ( str.find( '.' ) != str.npos )
-				m_obj = token.As<double>( ) ;
+				m_obj = t.As<double>( ) ;
 			else
-				m_obj = token.As<int>( ) ;
+				m_obj = t.As<int>( ) ;
 
 			return true ;
 		}
 		else
 		{
-			assert( false ) ;
+			PDF_ASSERT( false ) ;
 			return false ;
 		}
 	}
@@ -594,7 +591,10 @@ std::istream& operator>>( std::istream& is, Object& obj )
 {
 	// decoded token is treated as failure. only object accepted.
 	TokenSrc s( is ) ;
-	return (s >> obj).Stream() ;
+	s >> obj ;
+	
+	PDF_ASSERT( !s.HasCache() ) ;
+	return s.Stream() ;
 }
 
 /**	\brief	Read an object from a TokenSrc.
@@ -603,7 +603,7 @@ TokenSrc& operator>>( TokenSrc& src, Object& obj )
 {
 	static const std::string numeric = "0123456789.+-" ;
 	
-	typedef bool (Object::*FuncPtr)( TokenSrc&, const Token& ) ;
+	typedef bool (Object::*FuncPtr)( TokenSrc& ) ;
 	
 	static const std::pair<const Token, FuncPtr> table[] =
 	{
@@ -646,26 +646,27 @@ TokenSrc& operator>>( TokenSrc& src, Object& obj )
 		
 		FuncMap::const_iterator it = map.find( t ) ;
 		
-		src >> t ;
-		PDF_ASSERT( src ) ;
-		
 		// token that represents objects with known types
 		if ( it != map.end( ) )
-			(obj.*it->second)( src, t ) ;
+			(obj.*it->second)( src ) ;
 		
 		// numeric tokens. can represent number (int/double) or indirect
 		// objects (reference)
 		else if ( numeric.find( t.Get()[0] ) != numeric.npos )
-			obj.DecodeNumberOrIndirectObj( src, t ) ;
+			obj.DecodeNumberOrIndirectObj( src ) ;
 		
 		// "null" represent null object of course
 		// null object is a default construct Object, so no need to set
 		// explicitly, i.e. nothing to do.
 		// if not null object, then it is a parse error.
-		else if ( t.Get() != "null" )
+		else
 		{
-			src.PutBack( t ) ;
-			src.SetState( std::ios::failbit ) ;
+			src >> t ;
+			if ( t.Get() != "null" )
+			{
+				src.PutBack( t ) ;
+				src.SetState( std::ios::failbit ) ;
+			}
 		}
 	}
 		

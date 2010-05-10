@@ -80,7 +80,7 @@ const ContentStream::HandlerMap::Map::value_type
 	std::make_pair( "n",	&ContentStream::OnPaintPath ),
 	
 	// inline image commands
-	std::make_pair( "BI",	&ContentStream::OnInlineImage ),
+//	std::make_pair( "BI",	&ContentStream::OnInlineImage ),
 } ;
 
 

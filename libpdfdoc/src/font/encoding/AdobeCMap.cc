@@ -57,11 +57,12 @@ void AdobeCMap::ReadBFRange( std::istream& is, std::size_t count )
 		while ( std::getline( is, line ) )
 		{
 			std::istringstream oss( line ) ;
-			
+/*			
 			Object begin, end, unicode ;
 			if ( oss >> begin >> end >> unicode )
 			{
 			}
+*/
 		}
 	}
 }

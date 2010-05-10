@@ -269,9 +269,9 @@ private :
 	// private function called only by non-template members,
 	// so it can be defined in the cpp file.
 	template <typename T>
-	bool DecodeObject( TokenSrc& is, const Token& t ) ;
+	bool DecodeObject( TokenSrc& is ) ;
 
-	bool DecodeNumberOrIndirectObj( TokenSrc& is, const Token& token ) ;
+	bool DecodeNumberOrIndirectObj( TokenSrc& is ) ;
 
 	template <typename T>
 	std::vector<T> ToVec( ) const ;
