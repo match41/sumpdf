@@ -30,7 +30,7 @@ namespace pdf {
 /**	constructor
 	
 */
-XObject::XObject( )
+XObject::~XObject( )
 {
 }
 

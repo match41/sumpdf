@@ -80,15 +80,15 @@ void ContentStreamTest::TestTestCID( )
 	public :
 		void VisitText( Text *text )
 		{
+			PDFUT_ASSERT_EQUAL( text->Transform(),
+				Matrix::Translation( 72.0,  769.89) ) ;
+		
 			PDFUT_ASSERT_EQUAL( text->Count(), 7U ) ;
 			Text::iterator i = text->begin() ;
 			CPPUNIT_ASSERT( i != text->end() ) ;
 			PDFUT_ASSERT_EQUAL( i->Transform(),
-				Matrix::Translation( 61.77, -63.35) *
-				Matrix::Translation( 72.0,  769.89) ) ;
+				Matrix::Translation( 61.77, -63.35) ) ;
 			PDFUT_ASSERT_EQUAL( i->Text(), std::wstring(L"1SectionTitle") ) ;
-//			PDFUT_ASSERT_EQUAL( i->XPos(), 61.77 ) ;
-//			PDFUT_ASSERT_EQUAL( i->YPos(), -63.35 ) ;
 			
 			++i ;
 			CPPUNIT_ASSERT( i != text->end() ) ;
