@@ -116,6 +116,7 @@ void ContentStream::Decode( Stream& str )
 
 	while ( src >> op )
 	{
+//std::cout << op  ;
 		ProcessCommand( op ) ;
 	}
 }

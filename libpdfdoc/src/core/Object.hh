@@ -29,6 +29,7 @@
 
 #include "Ref.hh"
 #include "Name.hh"
+#include "Token.hh"
 #include "util/Exception.hh"
 
 #include <boost/variant.hpp>
@@ -115,14 +116,15 @@ private :
 		Null, int, double, bool, std::string, Name,
 		boost::recursive_wrapper<Stream>, Ref,
 		boost::recursive_wrapper<Array>,
-		boost::recursive_wrapper<Dictionary>
+		boost::recursive_wrapper<Dictionary>,
+		Token
 	> Variant ;
 
 public :
 	enum ObjType
 	{
 		null, integer, floating, boolean, string, name, stream, ref,
-		array, dictionary
+		array, dictionary, token
 	} ;
 
 public :

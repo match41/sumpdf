@@ -258,4 +258,15 @@ void ObjectTest::TestVTab( )
 	PDFUT_ASSERT_EQUAL( str.As<std::string>(), "\x09" ) ;
 }
 
+void ObjectTest::TestF( )
+{
+	std::istringstream ss( "f\n" ) ;
+	TokenSrc src( ss ) ;
+	
+	pdf::Object str ;
+	CPPUNIT_ASSERT( src >> str ) ;
+	CPPUNIT_ASSERT( str.Is<Token>() ) ;
+	PDFUT_ASSERT_EQUAL( str.As<Token>(), Token("f") ) ;
+}
+
 } // end of namespace

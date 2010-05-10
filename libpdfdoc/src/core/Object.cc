@@ -266,6 +266,11 @@ template <> bool Object::Is<void>( ) const
 	return Type() == null ;
 }
 
+template <> bool Object::Is<Token>( ) const
+{
+	return Type() == token ;
+}
+
 /// needless to say...
 template <> bool Object::Is<Object>( ) const
 {
@@ -320,6 +325,8 @@ template Array& Object::As() ;
 template const Array& Object::As() const ;
 template Dictionary& Object::As() ;
 template const Dictionary& Object::As() const ;
+template Token& Object::As() ;
+template const Token& Object::As() const ;
 
 template <typename T>
 Object::operator T() const
@@ -336,6 +343,7 @@ template Object::operator std::string() const ;
 template Object::operator Stream() const ;
 template Object::operator Array() const ;
 template Object::operator Dictionary() const ;
+template Object::operator Token() const ;
 
 template Object::operator unsigned() const ;
 template Object::operator unsigned short() const ;
@@ -367,6 +375,7 @@ template std::string Object::To( std::nothrow_t ) const ;
 template Stream Object::To( std::nothrow_t ) const ;
 template Array Object::To( std::nothrow_t ) const ;
 template Dictionary Object::To( std::nothrow_t ) const ;
+template Token Object::To( std::nothrow_t ) const ;
 
 template unsigned Object::To( std::nothrow_t ) const ;
 template unsigned short Object::To( std::nothrow_t ) const ;
@@ -389,6 +398,7 @@ template std::string Object::To( ) const ;
 template Stream Object::To( ) const ;
 template Array Object::To( ) const ;
 template Dictionary Object::To( ) const ;
+template Token Object::To( ) const ;
 
 template <> unsigned Object::To() const
 {
@@ -612,8 +622,8 @@ TokenSrc& operator>>( TokenSrc& src, Object& obj )
 		std::make_pair( Token( "(" ),		&Object::DecodeObject<String> ),
 		std::make_pair( Token( "<" ),		&Object::DecodeObject<String> ),
 		std::make_pair( Token( "/" ),		&Object::DecodeObject<Name> ),
-		std::make_pair( Token( "t" ),		&Object::DecodeObject<Bool> ),
-		std::make_pair( Token( "f" ),		&Object::DecodeObject<Bool> ),
+//		std::make_pair( Token( "t" ),		&Object::DecodeObject<Bool> ),
+//		std::make_pair( Token( "f" ),		&Object::DecodeObject<Bool> ),
 	} ;
 	typedef std::map<Token, FuncPtr> FuncMap ;
 	static const FuncMap map( Begin( table ), End( table ) ) ;
@@ -624,7 +634,6 @@ TokenSrc& operator>>( TokenSrc& src, Object& obj )
 	{
 		src >> t ;
 		src.PutBack( t ) ;
-
 		Token key = t ;
 		if ( t.Get()[0] == '(' )
 			key = Token( "(" ) ;
@@ -662,10 +671,25 @@ TokenSrc& operator>>( TokenSrc& src, Object& obj )
 		else
 		{
 			src >> t ;
-			if ( t.Get() != "null" )
+			if ( t.Get() == "true" )
 			{
-				src.PutBack( t ) ;
-				src.SetState( std::ios::failbit ) ;
+				Bool b = { true } ;
+				obj.m_obj = b ;
+			}
+			else if ( t.Get() == "false" )
+			{
+				Bool b = { false } ;
+				obj.m_obj = b ;
+			}
+			else if ( t.Get() == "null" )
+			{
+				obj.m_obj = Object::Null() ;
+			}
+			else
+			{
+//				src.PutBack( t ) ;
+//				src.SetState( std::ios::failbit ) ;
+				obj.m_obj = t ;
 			}
 		}
 	}
