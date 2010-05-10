@@ -87,6 +87,8 @@ public :
 	bool HasCache( ) const ;
 	
 	TokenSrc& GetChar( char& ch ) ;
+	
+	static TokenSrc& PeekPrefix( TokenSrc& src, Token& prefix ) ;
 
 private :
 	TokenSrc& ExtractToken( Token& token ) ;

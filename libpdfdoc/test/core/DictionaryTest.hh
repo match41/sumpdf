@@ -38,6 +38,7 @@ public :
 
 	// declare suit function
 	CPPUNIT_TEST_SUITE( DictionaryTest ) ;
+		CPPUNIT_TEST( TestReadEmpty ) ;
 		CPPUNIT_TEST( TestNormal ) ;
 		CPPUNIT_TEST( TestRead ) ;
 		CPPUNIT_TEST( TestTrailer ) ;
@@ -59,6 +60,7 @@ private :
 	void TestNull( ) ;
 	void TestErase( ) ;
 	void TestEraseByAddNull( ) ;
+	void TestReadEmpty( ) ;
 } ;
 
 #endif

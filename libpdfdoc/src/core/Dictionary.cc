@@ -192,25 +192,38 @@ TokenSrc& operator>>( TokenSrc& src, Dictionary& dict )
 	using namespace boost ;
 
 	Token t ;
-	if ( src >> t && t.Get() != "<<" )
+	if ( TokenSrc::PeekPrefix( src, t ) && t.Get() != "<<" )
 		throw ParseError( format("dictionary not start with \"<<\" but \"%1%\"")
 			% t.Get( ) ) ;
 	
+	// dump the "<<" token
+	src >> t ;
+	TokenSrc::PeekPrefix( src, t ) ;
+	
 	Dictionary temp ;
-	while ( src >> t && t.Get() != ">>" )
+	while ( src && t.Get() != ">>" )
 	{
-		src.PutBack( t ) ;
-		
+//std::cout << "get prefix = " << t << std::endl ;
 		Name	key ;
 		Object	value ;
 		
 		// null value means absent entry
 		if ( src >> key >> value && Dictionary::IsGoodObject( value ) )
+		{
+//std::cout << "get pair = " << key << " " << value << std::endl ;
 			temp.m_map.insert( std::make_pair( key, value ) ) ;
+		}
+			
+		TokenSrc::PeekPrefix( src, t ) ;
 	}
 	
 	if ( src )
+	{
+		// dump the ">>" token
+		src >> t ;
+		
 		temp.swap( dict ) ;
+	}
 	
 	return src ;
 }
@@ -242,6 +255,11 @@ std::ostream& operator<<( std::ostream& os, const Dictionary& dict )
 bool Dictionary::operator==( const Dictionary& dict ) const
 {
 	return m_map == dict.m_map ;
+}
+
+bool Dictionary::operator!=( const Dictionary& dict ) const
+{
+	return m_map != dict.m_map ;
 }
 
 bool Dictionary::operator<( const Dictionary& dict ) const

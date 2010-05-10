@@ -602,8 +602,17 @@ std::istream& operator>>( std::istream& is, Object& obj )
 	// decoded token is treated as failure. only object accepted.
 	TokenSrc s( is ) ;
 	s >> obj ;
-	
-	PDF_ASSERT( !s.HasCache() ) ;
+
+	if ( s.HasCache() )
+	{
+		std::vector<Token> ts ;
+		s.Peek( std::back_inserter(ts), 1000 ) ;
+		std::cout << "cache has: \"" << std::endl ;
+		std::copy( ts.begin(), ts.end(), std::ostream_iterator<Token>( std::cout, "\", \"" ) ) ;
+		std::cout << "\"" << std::endl ;
+	}
+//
+//	PDF_ASSERT( !s.HasCache() ) ;
 	return s.Stream() ;
 }
 
@@ -622,34 +631,13 @@ TokenSrc& operator>>( TokenSrc& src, Object& obj )
 		std::make_pair( Token( "(" ),		&Object::DecodeObject<String> ),
 		std::make_pair( Token( "<" ),		&Object::DecodeObject<String> ),
 		std::make_pair( Token( "/" ),		&Object::DecodeObject<Name> ),
-//		std::make_pair( Token( "t" ),		&Object::DecodeObject<Bool> ),
-//		std::make_pair( Token( "f" ),		&Object::DecodeObject<Bool> ),
 	} ;
 	typedef std::map<Token, FuncPtr> FuncMap ;
 	static const FuncMap map( Begin( table ), End( table ) ) ;
 	
 	// decode tokens from stream
 	Token t ;
-	if ( src.HasCache() )
-	{
-		src >> t ;
-		src.PutBack( t ) ;
-		Token key = t ;
-		if ( t.Get()[0] == '(' )
-			key = Token( "(" ) ;
-		
-		else if ( t.Get()[0] == '<' && t.Get() != "<<" )
-			key = Token( "<" ) ;
-		
-		else if ( t.Get() != "<<" )
-			key = Token( std::string( 1, t.Get()[0] ) ) ;
-		
-		t = key ;
-	}
-	else
-		Token::PeekPrefix( src.Stream(), t ) ;
-	
-	if ( src )
+	if ( TokenSrc::PeekPrefix( src, t ) )
 	{
 		PDF_ASSERT( !t.Get().empty( ) ) ;
 		

@@ -96,6 +96,7 @@ public :
 	friend TokenSrc& operator>>( TokenSrc& src, Dictionary& dict ) ;
 	
 	bool operator==( const Dictionary& dict ) const ;
+	bool operator!=( const Dictionary& dict ) const ;
 	bool operator<( const Dictionary& dict ) const ;
 	
 	bool Set( const Name& key, const Object& value ) ;

@@ -197,4 +197,31 @@ void TokenSrc::Ignore( std::size_t count )
 	}
 }
 
+TokenSrc& TokenSrc::PeekPrefix( TokenSrc& src, Token& prefix )
+{
+	Token t ;
+	if ( src.HasCache() )
+	{
+		src >> t ;
+		src.PutBack( t ) ;
+		Token key = t ;
+		if ( t.Get()[0] == '(' )
+			key = Token( "(" ) ;
+		
+		else if ( t.Get()[0] == '<' && t.Get() != "<<" )
+			key = Token( "<" ) ;
+		
+		else if ( t.Get() != "<<" && t.Get() != ">>" )
+			key = Token( std::string( 1, t.Get()[0] ) ) ;
+		
+		t = key ;
+	}
+	else
+		Token::PeekPrefix( src.Stream(), t ) ;
+
+	t.Swap( prefix ) ;
+
+	return src ;
+}
+
 } // end of namespace

@@ -26,6 +26,8 @@
 
 #include "Token.hh"
 
+#include "util/Exception.hh"
+
 #include <boost/bind.hpp>
 
 #include <algorithm>
@@ -56,7 +58,11 @@ std::istream& Token::PeekPrefix( std::istream& is, Token& prefix )
 		{
 			is.ignore() ;
 			int ich2 = is.peek() ;
-			if ( is.putback( ich ) && ich2 != std::char_traits<char>::eof() )
+			
+			if ( !is.putback( ich ) )
+				throw ParseError( "cannot putback!" ) ;
+			
+			if (  ich2 != std::char_traits<char>::eof() )
 			{
 				if ( ich2 == ich )
 				{

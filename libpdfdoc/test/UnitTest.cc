@@ -77,6 +77,7 @@ int main( int argc, char **argv )
 	using namespace pdfut ;
 
 	CppUnit::TextUi::TestRunner runner;
+	runner.addTest( DictionaryTest::suite( ) ) ;
 	runner.addTest( RealDocTest::suite( ) ) ;
 	runner.addTest( TokenTest::suite( ) ) ;
 	runner.addTest( TokenSrcTest::suite( ) ) ;
@@ -84,7 +85,6 @@ int main( int argc, char **argv )
 	runner.addTest( RefTest::suite( ) ) ;
 	runner.addTest( ObjectTest::suite( ) ) ;
 	runner.addTest( StringTest::suite( ) ) ;
-	runner.addTest( DictionaryTest::suite( ) ) ;
 	runner.addTest( ArrayTest::suite( ) ) ;
 	runner.addTest( RealPageTest::suite( ) ) ;
 	runner.addTest( RealResourcesTest::suite( ) ) ;
