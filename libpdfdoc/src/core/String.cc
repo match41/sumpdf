@@ -81,7 +81,7 @@ TokenSrc& operator>>( TokenSrc& src, String& obj )
 		if ( !str.empty() )
 		{
 			if ( str[0] == '(' )
-				obj.DecodeLiteralString( t.Get() ) ;
+				obj.DecodeLiteralString( str ) ;
 			
 			else if ( str[0] == '<' )
 				obj.DecodeHexString( src ) ;

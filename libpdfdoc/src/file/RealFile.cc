@@ -218,7 +218,7 @@ void RealFile::BasicRead( const Ref& link, T& result )
 	
 	std::ostringstream ss ;
 	ss << "cannot read object ID " << link
-	   << " offset: " << std::hex << offset
+	   << " offset: 0x" << std::setfill('0') << std::setw(8) << std::hex << offset
 	   << " current token: \"" << objstr.Get() << "\"" ;
 	throw ParseError( ss.str() ) ;
 }

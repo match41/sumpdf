@@ -60,8 +60,6 @@ public :
 
 	void Decode( ) ;
 
-//	void SwapGfxObj( std::vector<Graphics*>& gfxs ) ;
-
 private :
 	struct HandlerMap ;
 	
@@ -76,6 +74,7 @@ private :
 	void Onq( ContentOp& op ) ;
 	void Onm( ContentOp& op ) ;
 	void OnPaintPath( ContentOp& op ) ;
+	void OnInlineImage( ContentOp& op ) ;
 
 private :
 	std::vector<Stream>		m_strs ;

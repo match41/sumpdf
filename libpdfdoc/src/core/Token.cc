@@ -43,6 +43,41 @@ Token::Token( const std::string& t )
 {
 }
 
+std::istream& Token::PeekPrefix( std::istream& is, Token& prefix )
+{
+	// skip all spaces
+	while ( std::isspace( is.peek() ) && is )
+		is.get() ;
+
+	int ich = is.peek() ;
+	if ( ich != std::char_traits<char>::eof() )
+	{
+		if ( ich == '<' || ich == '>' )
+		{
+			is.ignore() ;
+			int ich2 = is.peek() ;
+			if ( is.putback( ich ) && ich2 != std::char_traits<char>::eof() )
+			{
+				if ( ich2 == ich )
+				{
+					char t[] =
+					{
+						static_cast<char>( ich ),
+						static_cast<char>( ich ),
+						'\0'
+					} ;
+					prefix.m_token = t ;
+					return is ;
+				}
+			}
+		}
+		prefix.m_token = static_cast<char>( ich ) ;
+	}
+	else
+		is.setstate( is.failbit ) ;
+	return is ;
+}
+
 /*!	extracts a token from input stream. This function does the actual parsing.
 	It will extract the characters one-by-one using istream::peek() and
 	istream::ignore(). Characters will not be putback()'d back to the input

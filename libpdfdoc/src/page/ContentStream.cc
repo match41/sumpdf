@@ -78,6 +78,9 @@ const ContentStream::HandlerMap::Map::value_type
 	std::make_pair( "b",	&ContentStream::OnPaintPath ),
 	std::make_pair( "b*",	&ContentStream::OnPaintPath ),
 	std::make_pair( "n",	&ContentStream::OnPaintPath ),
+	
+	// inline image commands
+	std::make_pair( "BI",	&ContentStream::OnInlineImage ),
 } ;
 
 
@@ -179,6 +182,52 @@ void ContentStream::OnPaintPath( ContentOp& op )
 	if ( m_current != 0 )
 		m_current->OnCommand( op, m_res ) ;
 	OnEndObject( op ) ;
+}
+
+class Image : public Graphics
+{
+public :
+	void OnCommand( ContentOp& op, const ResourcesDict *res )
+	{
+	}
+
+	Matrix Transform( ) const
+	{
+		return m_transform ;
+	}
+	
+	void Transform( const Matrix& mat )
+	{
+		m_transform = mat ;
+	}
+
+	void Print(
+		std::ostream&	os,
+		ResourcesDict	*res,
+		GraphicsState&	gs ) const
+	{
+	}
+
+	void Visit( GraphicsVisitor *visitor )
+	{
+	}
+	
+	GraphicsState GetState( ) const
+	{
+		return m_gs ;
+	}
+
+private :
+	Matrix			m_transform ;
+	GraphicsState	m_gs ;
+} ;
+
+class InlineImage : public Image
+{
+} ;
+
+void ContentStream::OnInlineImage( ContentOp& op )
+{
 }
 
 } // end of namespace

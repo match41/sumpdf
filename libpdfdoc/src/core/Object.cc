@@ -612,25 +612,42 @@ TokenSrc& operator>>( TokenSrc& src, Object& obj )
 		std::make_pair( Token( "(" ),		&Object::DecodeObject<String> ),
 		std::make_pair( Token( "<" ),		&Object::DecodeObject<String> ),
 		std::make_pair( Token( "/" ),		&Object::DecodeObject<Name> ),
-		std::make_pair( Token( "true" ),	&Object::DecodeObject<Bool> ),
-		std::make_pair( Token( "false" ),	&Object::DecodeObject<Bool> ),
+		std::make_pair( Token( "t" ),		&Object::DecodeObject<Bool> ),
+		std::make_pair( Token( "f" ),		&Object::DecodeObject<Bool> ),
 	} ;
 	typedef std::map<Token, FuncPtr> FuncMap ;
 	static const FuncMap map( Begin( table ), End( table ) ) ;
 	
 	// decode tokens from stream
 	Token t ;
-	if ( src >> t )
+	if ( src.HasCache() )
 	{
-		PDF_ASSERT( !t.Get().empty( ) ) ;
-		
+		src >> t ;
+		src.PutBack( t ) ;
+
 		Token key = t ;
 		if ( t.Get()[0] == '(' )
 			key = Token( "(" ) ;
+		
 		else if ( t.Get()[0] == '<' && t.Get() != "<<" )
 			key = Token( "<" ) ;
-
-		FuncMap::const_iterator it = map.find( key ) ;
+		
+		else if ( t.Get() != "<<" )
+			key = Token( std::string( 1, t.Get()[0] ) ) ;
+		
+		t = key ;
+	}
+	else
+		Token::PeekPrefix( src.Stream(), t ) ;
+	
+	if ( src )
+	{
+		PDF_ASSERT( !t.Get().empty( ) ) ;
+		
+		FuncMap::const_iterator it = map.find( t ) ;
+		
+		src >> t ;
+		PDF_ASSERT( src ) ;
 		
 		// token that represents objects with known types
 		if ( it != map.end( ) )
