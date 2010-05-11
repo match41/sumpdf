@@ -17,48 +17,21 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	Image.hh
-    \brief	definition the Image class
-    \date	May 11, 2010
-    \author	Nestal Wan
+/**	\file	XImage.cc
+	\brief	implementation of the XImage class
+	\date	May 11, 2010
+	\author	Nestal Wan
 */
 
-#ifndef __PDF_IMAGE_HEADER_INCLUDED__
-#define __PDF_IMAGE_HEADER_INCLUDED__
-
-#include "Graphics.hh"
-
-#include "GraphicsState.hh"
-#include "util/Matrix.hh"
+#include "XImage.hh"
 
 namespace pdf {
 
-///	brief description
-/**	The Image class represents
-*/
-class Image : public Graphics
-{
-public :
-	Image( ) ;
-	~Image( ) ;
-
-	void OnCommand( ContentOp& op, const ResourcesDict *res ) ;
-
-	Matrix Transform( ) const ;
-	void Transform( const Matrix& mat ) ;
-	void Print(
-		std::ostream&	os,
-		ResourcesDict	*res,
-		GraphicsState&	gs ) const ;
-	void Visit( GraphicsVisitor *visitor ) ;
+/**	constructor
 	
-	GraphicsState GetState( ) const ;
-
-private :
-	Matrix			m_transform ;
-	GraphicsState	m_gs ;
-} ;
+*/
+XImage::XImage( )
+{
+}
 
 } // end of namespace
-
-#endif // IMAGE_HH_
