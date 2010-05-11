@@ -35,7 +35,6 @@
 namespace pdf {
 
 class Token ;
-class TokenSrc ;
 
 /*!	\brief	PDF dictionary object
 	\internal
@@ -93,7 +92,6 @@ public :
 	friend std::istream& operator>>( std::istream& is, Dictionary& dict ) ;
 	friend std::ostream& operator<<( std::ostream& os,
 	                                 const Dictionary& dict ) ;
-	friend TokenSrc& operator>>( TokenSrc& src, Dictionary& dict ) ;
 	
 	bool operator==( const Dictionary& dict ) const ;
 	bool operator!=( const Dictionary& dict ) const ;

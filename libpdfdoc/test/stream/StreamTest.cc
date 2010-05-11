@@ -28,7 +28,6 @@
 
 #include "core/Dictionary.hh"
 #include "core/Token.hh"
-#include "core/TokenSrc.hh"
 
 #include "stream/Stream.hh"
 
@@ -69,10 +68,9 @@ void StreamTest::tearDown( )
 
 void StreamTest::TestRead( )
 {
-	std::istringstream oss( "<<\n/Length 45\n>>\nstream\nBT\n"
+	std::istringstream src( "<<\n/Length 45\n>>\nstream\nBT\n"
 	                          "/F0 12 Tf 100 100 Td (Hello world!) Tj\n"
 	                          "ET\nendstream" ) ;
-	pdf::TokenSrc src( oss ) ;
 	pdf::Dictionary d ;
 	CPPUNIT_ASSERT( src >> d ) ;
 	
@@ -153,9 +151,11 @@ void StreamTest::TestReadDeflate( )
 	
 	std::ostringstream ss ; 
 	std::size_t count = subject.CopyData( ss.rdbuf() ) ;
-	CPPUNIT_ASSERT( count == m_original.size() ) ;
-	CPPUNIT_ASSERT( subject.Length() == str.size( ) ) ;
-	
+	PDFUT_ASSERT_EQUAL( count, m_original.size() ) ;
+	PDFUT_ASSERT_EQUAL( subject.Length(), str.size( ) ) ;
+
+	m_original.push_back( 0 ) ;
+std::cout << "original = " << &m_original[0] << std::endl ;
 	subject.Rewind( ) ;
 	
 	std::istream is( subject.InStreamBuf() ) ;
@@ -188,16 +188,14 @@ void StreamTest::TestWriteOstream( )
 	CPPUNIT_ASSERT( ss << subject ) ;
 	CPPUNIT_ASSERT( subject.Length() > 0 ) ;
 
-	pdf::TokenSrc src( ss ) ;
-
 	// stream dictionary
 	pdf::Object self ;
-	CPPUNIT_ASSERT( src >> self ) ;
+	CPPUNIT_ASSERT( ss >> self ) ;
 	CPPUNIT_ASSERT( self == subject.GetRawDict() ) ;
 
 	// "stream" keyword after dictionary
 	pdf::Token t ;
-	CPPUNIT_ASSERT( src >> t ) ;
+	CPPUNIT_ASSERT( ss >> t ) ;
 	CPPUNIT_ASSERT( t.Get() == "stream" ) ;
 
 	// stream content after keyword
@@ -211,7 +209,7 @@ void StreamTest::TestWriteOstream( )
 	
 	CPPUNIT_ASSERT( ss.get( ch ) ) ;
 	CPPUNIT_ASSERT( ch == '\n' ) ;
-	CPPUNIT_ASSERT( src >> t ) ;
+	CPPUNIT_ASSERT( ss >> t ) ;
 	CPPUNIT_ASSERT( t.Get() == "endstream" ) ;
 }
 

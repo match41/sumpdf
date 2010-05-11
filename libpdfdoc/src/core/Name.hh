@@ -33,7 +33,6 @@ namespace pdf {
 
 class Object ;
 class Token ;
-class TokenSrc ;
 
 ///	PDF name object
 /**	\internal
@@ -62,7 +61,6 @@ public :
 
 	friend std::istream& operator>>( std::istream& is, Name& name ) ;
 	friend std::ostream& operator<<( std::ostream& os, const Name& name ) ;
-	friend TokenSrc& operator>>( TokenSrc& src, Name& dict ) ;
 	
 	friend bool operator<( const Name& name1, const Name& name2 ) ;
 	

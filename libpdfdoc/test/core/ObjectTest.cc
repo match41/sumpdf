@@ -29,7 +29,6 @@
 #include "core/Object.hh"
 #include "core/TraverseObject.hh"
 #include "core/Array.hh"
-#include "core/TokenSrc.hh"
 #include "core/Token.hh"
 
 #include "stream/Stream.hh"
@@ -250,9 +249,8 @@ void ObjectTest::TestConvert( )
 
 void ObjectTest::TestVTab( )
 {
-	std::istringstream ss( "(\x09)" ) ;
-	TokenSrc src( ss ) ;
-	
+	std::istringstream src( "(\x09)" ) ;
+
 	pdf::Object str ;
 	CPPUNIT_ASSERT( src >> str ) ;
 	PDFUT_ASSERT_EQUAL( str.As<std::string>(), "\x09" ) ;
@@ -260,8 +258,7 @@ void ObjectTest::TestVTab( )
 
 void ObjectTest::TestF( )
 {
-	std::istringstream ss( "f\n" ) ;
-	TokenSrc src( ss ) ;
+	std::istringstream src( "f\n" ) ;
 	
 	pdf::Object str ;
 	CPPUNIT_ASSERT( src >> str ) ;

@@ -66,6 +66,8 @@ public :
 	bool IsSpace( ) const ;
 
 	static std::istream& PeekPrefix( std::istream& is, Token& prefix ) ;
+	
+	bool IsNumber( ) const ;
 
 private :
 	static bool IsCharInToken( char ch, const std::string& text ) ;

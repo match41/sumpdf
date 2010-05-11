@@ -282,4 +282,10 @@ bool Token::IsSpace( ) const
 	return !m_token.empty() && std::isspace( *m_token.begin() ) ; 
 }
 
+bool Token::IsNumber( ) const
+{
+	static const std::string numeric = "0123456789.+-" ;
+	return !m_token.empty() && numeric.find( m_token[0] ) != numeric.npos ;
+}
+
 } // end of namespace

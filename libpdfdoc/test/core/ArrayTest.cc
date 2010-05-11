@@ -31,7 +31,6 @@
 #include "util/Util.hh"
 
 #include "core/Token.hh"
-#include "core/TokenSrc.hh"
 
 #include "mock/Assert.hh"
 
@@ -80,10 +79,6 @@ void ArrayTest::TestRead( )
 	PDFUT_ASSERT_EQUAL( sub[0], 10 ) ;
 	PDFUT_ASSERT_EQUAL( sub[1].As<pdf::Name>(), pdf::Name("Hello") ) ;
 	PDFUT_ASSERT_EQUAL( sub[2], 123.0 ) ;
-/*	CPPUNIT_ASSERT( sub[3] == std::string("I am a string") ) ;
-	pdf::Dictionary d ;
-	d["Type"] = pdf::Name("Dict") ;
-	CPPUNIT_ASSERT( sub[4] == d ) ;*/
 }
 
 void ArrayTest::TestString( )
@@ -95,9 +90,9 @@ void ArrayTest::TestString( )
 
 void ArrayTest::TestTJ( )
 {
-//	std::istringstream ss( "[<01111111111111111> 59 <02> 3 <02> 3 <02> -6 <02> "
-//	"3 <02> 3 <02> -6 <02> 3 <02> 3 <02> -6 <02> 3 <02> 3 <02> -6 <02>]" ) ;
-	std::istringstream ss( "[<01> 59 <02>]" ) ;
+	std::istringstream ss(
+		"[<01111111111111111> 59 <02> 3 <02> 3 <02> -6 <02> "
+		"3 <02> 3 <02> -6 <02> 3 <02> 3 <02> -6 <02> 3 <02> 3 <02> -6 <02>]" ) ;
 	
 	pdf::Array sub ;
 	CPPUNIT_ASSERT( ss >> sub ) ;
@@ -109,13 +104,12 @@ void ArrayTest::TestTJ( )
 
 void ArrayTest::TestGsTJ( )
 {
-	std::istringstream ss(
+	std::istringstream src(
 		"[(\x9)95.985(\x9)95.0775(\x3)94.9402(\x4)97.6199(\x5)99.0967"
 		"(\x6)93.9489(\x5)99.0967(\x7)99.2789(\x8)91.3616(\x9)95.0775"
 		"(\xa)98.1911(\x7)93.4046(\x7)99.2789(\x2)95.0782(\x3)94.9406"
 		"(\x0b)100.133(\x9)95.0775(\xc)100.421(\x5)99.0953]" ) ;
 	
-	TokenSrc src( ss ) ;
 	Array sub ;
 	CPPUNIT_ASSERT( src >> sub ) ;
 	
@@ -126,10 +120,9 @@ void ArrayTest::TestGsTJ( )
 
 void ArrayTest::TestBracketTJ( )
 {
-	std::istringstream ss(
+	std::istringstream src(
 		"[(the line siz)10.8(e)-0.1( is 128 by)12.5(tes "
 		"\\(sub-)19.4(div)12.5(i)-3(ded or )]TJ" ) ;
-	TokenSrc src( ss ) ;
 	Array sub ;
 	CPPUNIT_ASSERT( src >> sub ) ;
 	

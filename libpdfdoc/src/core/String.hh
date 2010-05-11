@@ -53,7 +53,6 @@ public :
 	
 	friend std::istream& operator>>( std::istream& is, String& b ) ;
 	friend std::ostream& operator<<( std::ostream& os, const String& b ) ;
-	friend TokenSrc& operator>>( TokenSrc& src, String& obj ) ;
 	
 	const std::string& Get( ) const ;
 

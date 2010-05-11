@@ -27,7 +27,6 @@
 #include "RefTest.hh"
 
 #include "core/Ref.hh"
-#include "core/TokenSrc.hh"
 #include "util/Util.hh"
 
 #include "mock/Assert.hh"
@@ -58,39 +57,20 @@ void RefTest::TestError( )
 
 void RefTest::TestNonIntError( )
 {
-	std::istringstream ss( "82/R" ) ;
-	pdf::TokenSrc src( ss ) ;
+	std::istringstream src( "82/R" ) ;
 	
 	pdf::Ref obj ;
 	CPPUNIT_ASSERT( !(src >> obj) ) ;
 	PDFUT_ASSERT_EQUAL( obj.ID( ), 0U ) ;
 	PDFUT_ASSERT_EQUAL( obj.Gen( ), 0U ) ;
-	
-	// the 3 tokens can still be read
-	pdf::Token t[3] ;
-	src.ResetState( ) ;
-	CPPUNIT_ASSERT( src.Peek( t, pdf::Count(t) ) == pdf::End(t) ) ;
-	PDFUT_ASSERT_EQUAL( t[0].Get(), "82" ) ;
-	PDFUT_ASSERT_EQUAL( t[1].Get(), "/" ) ;
-	PDFUT_ASSERT_EQUAL( t[2].Get(), "R" ) ;
-
 }
 
 void RefTest::TestTooFewToken( )
 {
-	std::istringstream ss( "a" ) ;
-	pdf::TokenSrc src( ss ) ;
-	src.PutBack( pdf::Token( "2" ) ) ;
+	std::istringstream src( "a" ) ;
 	
 	pdf::Ref obj ;
 	CPPUNIT_ASSERT( !(src >> obj) ) ;
 	PDFUT_ASSERT_EQUAL( obj.ID( ), 0U ) ;
 	PDFUT_ASSERT_EQUAL( obj.Gen( ), 0U ) ;
-
-	// the 2 tokens can still be read
-	pdf::Token t[2] ;
-	src.ResetState( ) ;
-	PDFUT_ASSERT_EQUAL( src.Peek( t, pdf::Count(t) ), pdf::End(t) ) ;
-	PDFUT_ASSERT_EQUAL( t[0].Get(), "2" ) ;
-	PDFUT_ASSERT_EQUAL( t[1].Get(), "a" ) ;
 }

@@ -25,8 +25,6 @@
 
 #include "ContentOp.hh"
 
-#include "core/TokenSrc.hh"
-
 #include "util/Debug.hh"
 
 #include <algorithm>
@@ -67,7 +65,7 @@ ContentOp::const_iterator ContentOp::end( ) const
 	return m_operands.end( ) ;
 }
 
-TokenSrc& operator>>( TokenSrc& src, ContentOp& op )
+std::istream& operator>>( std::istream& src, ContentOp& op )
 {
 	Object		obj ;
 	ContentOp	tmp ;

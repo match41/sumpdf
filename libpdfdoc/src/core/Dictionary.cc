@@ -28,7 +28,6 @@
 
 #include "Array.hh"
 #include "Token.hh"
-#include "TokenSrc.hh"
 #include "util/Exception.hh"
 #include "util/Debug.hh"
 
@@ -181,18 +180,12 @@ bool Dictionary::Set( const Name& key, const Object& value )
 	return r.second ;
 }
 
-std::istream& operator>>( std::istream& is, Dictionary& dict )
-{
-	TokenSrc s( is ) ;
-	return (s >> dict).Stream() ;
-}
-
-TokenSrc& operator>>( TokenSrc& src, Dictionary& dict )
+std::istream& operator>>( std::istream& src, Dictionary& dict )
 {
 	using namespace boost ;
 
 	Token t ;
-	if ( TokenSrc::PeekPrefix( src, t ) && t.Get() != "<<" )
+	if ( Token::PeekPrefix( src, t ) && t.Get() != "<<" )
 		throw ParseError( format("dictionary not start with \"<<\" but \"%1%\"")
 			% t.Get( ) ) ;
 	
@@ -200,14 +193,17 @@ TokenSrc& operator>>( TokenSrc& src, Dictionary& dict )
 	src >> t ;
 	
 	Dictionary temp ;
-	while ( TokenSrc::PeekPrefix( src, t ) && t.Get() != ">>" )
+	while ( Token::PeekPrefix( src, t ) && t.Get() != ">>" )
 	{
 		Name	key ;
 		Object	value ;
 		
 		// null value means absent entry
 		if ( src >> key >> value && Dictionary::IsGoodObject( value ) )
+		{
+std::cout << "key = " << key << " value: " << value << std::endl ;
 			temp.m_map.insert( std::make_pair( key, value ) ) ;
+		}
 	}
 	
 	if ( src )

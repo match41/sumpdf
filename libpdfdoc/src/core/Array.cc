@@ -28,7 +28,6 @@
 
 #include "Dictionary.hh"
 #include "Token.hh"
-#include "TokenSrc.hh"
 
 #include "util/Exception.hh"
 #include "util/Debug.hh"
@@ -59,19 +58,12 @@ void Array::push_back( const Object& obj )
 	m_array.push_back( obj ) ;
 }
 
-
-std::istream& operator>>( std::istream& is, Array& array )
-{
-	TokenSrc s( is ) ;
-	return (s >> array).Stream() ;
-}
-
-TokenSrc& operator>>( TokenSrc& src, Array& array )
+std::istream& operator>>( std::istream& src, Array& array )
 {
 	using boost::format ;
 
 	Token t ;
-	if ( TokenSrc::PeekPrefix( src, t ) && t.Get() != "[" )
+	if ( Token::PeekPrefix( src, t ) && t.Get() != "[" )
 		throw ParseError( format("array not start with \"[\" but \"%1%\"")
 			% t.Get( ) ) ;
 
@@ -79,7 +71,7 @@ TokenSrc& operator>>( TokenSrc& src, Array& array )
 	src >> t ;
 
 	Array temp ;
-	while ( TokenSrc::PeekPrefix( src, t ) && t.Get() != "]" )
+	while ( Token::PeekPrefix( src, t ) && t.Get() != "]" )
 	{
 		Object obj ;
 		if ( src >> obj )

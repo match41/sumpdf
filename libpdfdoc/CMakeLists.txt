@@ -120,7 +120,6 @@ set( CORE_HDRS  	${CORE_DIR}/Object.hh
 					${CORE_DIR}/Array.hh
 					${CORE_DIR}/Dictionary.hh
 					${CORE_DIR}/Token.hh
-					${CORE_DIR}/TokenSrc.hh
 					${CORE_DIR}/String.hh
 					${CORE_DIR}/Name.hh
 					${CORE_DIR}/TraverseObject.hh )
@@ -250,7 +249,6 @@ set( CORE_SRCS  	${CORE_DIR}/Object.cc
 					${CORE_DIR}/Array.cc
 					${CORE_DIR}/Dictionary.cc
 					${CORE_DIR}/Token.cc
-					${CORE_DIR}/TokenSrc.cc
 					${CORE_DIR}/String.cc
 					${CORE_DIR}/Name.cc )
 
@@ -530,7 +528,6 @@ target_link_libraries( testpdf pdfdoc_static )
 if ( CPPUNIT_FOUND )
 
 set( UT_SRCS	test/core/TokenTest.cc
-				test/core/TokenSrcTest.cc
 				test/core/NameTest.cc
 				test/core/RefTest.cc
 				test/core/ObjectTest.cc

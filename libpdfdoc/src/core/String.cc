@@ -26,7 +26,6 @@
 #include "String.hh"
 
 #include "Token.hh"
-#include "TokenSrc.hh"
 
 #include "util/Debug.hh"
 
@@ -59,24 +58,6 @@ const std::string& String::Get( ) const
 String::operator std::string( ) const
 {
 	return m_value ;
-}
-
-TokenSrc& operator>>( TokenSrc& src, String& obj )
-{
-//	PDF_ASSERT( !src.HasCache() ) ;
-	if ( src.HasCache() )
-	{
-		Token t ;
-		src >> t ;
-		std::istringstream ss( t.Get() ) ;
-		
-		if ( !( ss >> obj ) )
-			src.SetState( std::ios::failbit ) ;
-	}
-	else
-		src.Stream() >> obj ;
-		
-	return src ;
 }
 
 /// Read from std::istream.

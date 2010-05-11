@@ -26,7 +26,6 @@
 #include "ContentStream.hh"
 
 #include "ContentOp.hh"
-#include "core/TokenSrc.hh"
 #include "graphics/GraphicsState.hh"
 #include "graphics/GraphicsVisitor.hh"
 #include "graphics/RealPath.hh"
@@ -107,8 +106,7 @@ void ContentStream::Decode( Stream& str )
 	// rewind to stream start for reading
 	str.Rewind( ) ;
 	
-	std::istream s( str.InStreamBuf() ) ;
-	TokenSrc src( s ) ;
+	std::istream src( str.InStreamBuf() ) ;
 	std::vector<Object> args ;
 	
 	ContentOp		op ;

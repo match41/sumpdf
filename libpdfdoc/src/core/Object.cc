@@ -30,7 +30,6 @@
 #include "Dictionary.hh"
 #include "String.hh"
 #include "Token.hh"
-#include "TokenSrc.hh"
 
 #include "stream/Stream.hh"
 
@@ -88,7 +87,6 @@ struct Bool
 	bool value ;
 	friend std::istream& operator>>( std::istream& is, Bool& b ) ;
 	friend std::ostream& operator<<( std::ostream& os, const Bool& b ) ;
-	friend TokenSrc& operator>>( TokenSrc& os, Bool& b ) ;
 	bool operator==( const Bool& b ) const { return value == b.value ; }
 } ;
 
@@ -556,7 +554,7 @@ const Object& Object::NullObj()
 }
 
 template <typename T>
-bool Object::DecodeObject( TokenSrc& src )
+bool Object::DecodeObject( std::istream& src )
 {
 	T t ;
 	if ( src >> t )
@@ -568,17 +566,33 @@ bool Object::DecodeObject( TokenSrc& src )
 		return false ;
 }
 
-bool Object::DecodeNumberOrIndirectObj( TokenSrc& is )
+bool Object::DecodeNumberOrIndirectObj( std::istream& is )
 {
-	if ( DecodeObject<Ref>( is ) )
+	std::streamsize pos = is.tellg() ;
+
+	// special handling for stream that cannot be rewinded
+	if ( pos != -1 && DecodeObject<Ref>( is ) )
+	{
 		return true ;
+	}
 	else
 	{
-		is.ResetState( ) ;
-
+		if ( pos != -1 )
+		{
+			is.clear( ) ;
+			is.seekg( pos ) ;
+		}
+		
 		Token t ;
 		if ( is >> t )
 		{
+//			Token t2 ;
+//			if ( Token::PeekPrefix( is, t2 ) && t2.IsNumber() )
+//			{
+//				is >> t2 ;
+//				Token t3 ;
+//			}
+		
 			const std::string& str = t.Get() ;
 			
 			// can't use ?: because the types are different
@@ -591,38 +605,14 @@ bool Object::DecodeNumberOrIndirectObj( TokenSrc& is )
 		}
 		else
 		{
-			PDF_ASSERT( false ) ;
 			return false ;
 		}
 	}
 }
 
-std::istream& operator>>( std::istream& is, Object& obj )
+std::istream& operator>>( std::istream& src, Object& obj )
 {
-	// decoded token is treated as failure. only object accepted.
-	TokenSrc s( is ) ;
-	s >> obj ;
-
-	if ( s.HasCache() )
-	{
-		std::vector<Token> ts ;
-		s.Peek( std::back_inserter(ts), 1000 ) ;
-		std::cout << "cache has: \"" << std::endl ;
-		std::copy( ts.begin(), ts.end(), std::ostream_iterator<Token>( std::cout, "\", \"" ) ) ;
-		std::cout << "\"" << std::endl ;
-	}
-//
-//	PDF_ASSERT( !s.HasCache() ) ;
-	return s.Stream() ;
-}
-
-/**	\brief	Read an object from a TokenSrc.
-*/
-TokenSrc& operator>>( TokenSrc& src, Object& obj )
-{
-	static const std::string numeric = "0123456789.+-" ;
-	
-	typedef bool (Object::*FuncPtr)( TokenSrc& ) ;
+	typedef bool (Object::*FuncPtr)( std::istream& ) ;
 	
 	static const std::pair<const Token, FuncPtr> table[] =
 	{
@@ -637,7 +627,7 @@ TokenSrc& operator>>( TokenSrc& src, Object& obj )
 	
 	// decode tokens from stream
 	Token t ;
-	if ( TokenSrc::PeekPrefix( src, t ) )
+	if ( Token::PeekPrefix( src, t ) )
 	{
 		PDF_ASSERT( !t.Get().empty( ) ) ;
 		
@@ -649,7 +639,7 @@ TokenSrc& operator>>( TokenSrc& src, Object& obj )
 		
 		// numeric tokens. can represent number (int/double) or indirect
 		// objects (reference)
-		else if ( numeric.find( t.Get()[0] ) != numeric.npos )
+		else if ( t.IsNumber() )
 			obj.DecodeNumberOrIndirectObj( src ) ;
 		
 		// "null" represent null object of course
@@ -741,12 +731,6 @@ std::ostream& operator<<( std::ostream& os, const Object::Null& )
 
 std::istream& operator>>( std::istream& is, Bool& b )
 {
-	TokenSrc src( is ) ;
-	return (src >> b).Stream() ;
-}
-
-TokenSrc& operator>>( TokenSrc& is, Bool& b )
-{
 	Token t ;
 	if ( is >> t )
 	{
@@ -755,7 +739,7 @@ TokenSrc& operator>>( TokenSrc& is, Bool& b )
 		else if ( t.Get() == "false" )
 			b.value = false ;
 		else
-			is.SetState( std::ios::failbit ) ;
+			is.setstate( std::ios::failbit ) ;
 	}
 	
 	return is ;
