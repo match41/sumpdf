@@ -586,13 +586,6 @@ bool Object::DecodeNumberOrIndirectObj( std::istream& is )
 		Token t ;
 		if ( is >> t )
 		{
-//			Token t2 ;
-//			if ( Token::PeekPrefix( is, t2 ) && t2.IsNumber() )
-//			{
-//				is >> t2 ;
-//				Token t3 ;
-//			}
-		
 			const std::string& str = t.Get() ;
 			
 			// can't use ?: because the types are different
@@ -665,8 +658,6 @@ std::istream& operator>>( std::istream& src, Object& obj )
 			}
 			else
 			{
-//				src.PutBack( t ) ;
-//				src.SetState( std::ios::failbit ) ;
 				obj.m_obj = t ;
 			}
 		}

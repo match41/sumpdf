@@ -74,7 +74,7 @@ private :
 	void Onq( ContentOp& op ) ;
 	void Onm( ContentOp& op ) ;
 	void OnPaintPath( ContentOp& op ) ;
-	void OnInlineImage( ContentOp& op ) ;
+	void OnInlineImage( std::istream& is ) ;
 
 private :
 	std::vector<Stream>		m_strs ;

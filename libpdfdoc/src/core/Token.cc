@@ -288,4 +288,15 @@ bool Token::IsNumber( ) const
 	return !m_token.empty() && numeric.find( m_token[0] ) != numeric.npos ;
 }
 
+std::istream& Token::Putback( std::istream& is ) const
+{
+	is.putback( ' ' ) ;
+	
+	for ( std::string::const_reverse_iterator i = m_token.rbegin() ;
+		i != m_token.rend() ; ++i )
+		is.putback( *i ) ;
+	
+	return is.putback( ' ' ) ;
+}
+
 } // end of namespace

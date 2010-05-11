@@ -200,10 +200,7 @@ std::istream& operator>>( std::istream& src, Dictionary& dict )
 		
 		// null value means absent entry
 		if ( src >> key >> value && Dictionary::IsGoodObject( value ) )
-		{
-std::cout << "key = " << key << " value: " << value << std::endl ;
 			temp.m_map.insert( std::make_pair( key, value ) ) ;
-		}
 	}
 	
 	if ( src )

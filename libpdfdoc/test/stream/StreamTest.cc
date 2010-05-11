@@ -154,8 +154,6 @@ void StreamTest::TestReadDeflate( )
 	PDFUT_ASSERT_EQUAL( count, m_original.size() ) ;
 	PDFUT_ASSERT_EQUAL( subject.Length(), str.size( ) ) ;
 
-	m_original.push_back( 0 ) ;
-std::cout << "original = " << &m_original[0] << std::endl ;
 	subject.Rewind( ) ;
 	
 	std::istream is( subject.InStreamBuf() ) ;

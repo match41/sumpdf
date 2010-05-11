@@ -77,9 +77,6 @@ const ContentStream::HandlerMap::Map::value_type
 	std::make_pair( "b",	&ContentStream::OnPaintPath ),
 	std::make_pair( "b*",	&ContentStream::OnPaintPath ),
 	std::make_pair( "n",	&ContentStream::OnPaintPath ),
-	
-	// inline image commands
-//	std::make_pair( "BI",	&ContentStream::OnInlineImage ),
 } ;
 
 
@@ -114,7 +111,6 @@ void ContentStream::Decode( Stream& str )
 
 	while ( src >> op )
 	{
-//std::cout << op  ;
 		ProcessCommand( op ) ;
 	}
 }
@@ -225,7 +221,7 @@ class InlineImage : public Image
 {
 } ;
 
-void ContentStream::OnInlineImage( ContentOp& op )
+void ContentStream::OnInlineImage( std::istream& is )
 {
 }
 
