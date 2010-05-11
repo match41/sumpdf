@@ -193,16 +193,8 @@ void PageView::mouseMoveEvent( QMouseEvent *event )
 
 QGraphicsItem* PageView::InsertCaret( QPointF pos )
 {
-	// TODO: no need to create text edit here
-	QTextEdit text;
-	text.setFontPointSize(12);
-	text.setText("I");
-	
-	// TODO: try to use text and QFont directly here
-	QGraphicsItem *item = scene()->addText(
-		text.toPlainText(),
-		text.currentFont() ) ;
-	
+	QGraphicsItem *item = scene()->addText( "I", QFont( "" , 12 ) );
+
 	// TODO: can we not hard code it? the offset is different in different
 	// systems.
 	item->setPos( pos - QPoint(10,13) );	// (10,13) = correction offset

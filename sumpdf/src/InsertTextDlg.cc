@@ -82,6 +82,7 @@ InsertTextDlg::InsertTextDlg( QWidget *parent )
 		SLOT( OnFontChanged( ) ) );
 }
 
+//----------------------------------------------------------------
 void InsertTextDlg::OnTextColorChanged( )
 {
 	m_text_action = qobject_cast<QAction *>( sender() );
@@ -155,7 +156,7 @@ QIcon InsertTextDlg::OnCreateColorIcon( QColor color )
 
 	return QIcon( pixmap );
 }
-
+// -----------------------------------------------------------------
 QTextDocument* InsertTextDlg::GetText( )
 {
 	return m_text->document() ;
