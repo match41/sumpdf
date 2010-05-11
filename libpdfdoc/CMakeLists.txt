@@ -142,7 +142,7 @@ set( UTIL_HDRS  	${UTIL_DIR}/Export.hh
 					${UTIL_DIR}/RefCounter.hh
 					${UTIL_DIR}/RefCounterWrapper.hh )
 					
-set( IMG_HDRS  		${IMG_DIR}/Image.hh
+set( IMG_HDRS  		${IMG_DIR}/Pixmap.hh
 					${IMG_DIR}/PngImage.hh
 					${IMG_DIR}/JpegImage.hh )
 
@@ -192,6 +192,7 @@ set( GFX_INC_HDRS	${INCLUDE_DIR}/graphics/Graphics.hh
 					${INCLUDE_DIR}/graphics/GraphicsState.hh
 					${INCLUDE_DIR}/graphics/Text.hh
 					${INCLUDE_DIR}/graphics/Path.hh
+					${INCLUDE_DIR}/graphics/Image.hh
 					${INCLUDE_DIR}/graphics/PathSegment.hh
 					${INCLUDE_DIR}/graphics/TextState.hh
 					${INCLUDE_DIR}/graphics/CharVisitor.hh
@@ -226,6 +227,7 @@ set( GRAPICS_SRCS	${GRAPICS_DIR}/Graphics.cc
 					${GRAPICS_DIR}/Text.cc
 					${GRAPICS_DIR}/RealText.cc
 					${GRAPICS_DIR}/Path.cc
+					${GRAPICS_DIR}/Image.cc
 					${GRAPICS_DIR}/PathSegment.cc
 					${GRAPICS_DIR}/RealPath.cc
 					${GRAPICS_DIR}/CharVisitor.cc
@@ -272,7 +274,7 @@ set( UTIL_SRCS  	${UTIL_DIR}/Rect.cc
 					${UTIL_DIR}/Debug.cc
 					${UTIL_DIR}/Matrix.cc )
 
-set( IMG_SRCS  		${IMG_DIR}/Image.cc )
+set( IMG_SRCS  		${IMG_DIR}/Pixmap.cc )
 
 set( FONT_SRCS		${FONT_DIR}/Font.cc
                     ${FONT_DIR}/SimpleFont.cc

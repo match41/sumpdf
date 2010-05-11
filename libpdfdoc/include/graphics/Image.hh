@@ -1,4 +1,4 @@
-/***************************************************************************
+/***************************************************************************\
  *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
@@ -15,65 +15,50 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+\***************************************************************************/
 
-/*!
-	\file	JpegImage.hh
-	\brief	definition the JpegImage class
-	\date	Sat Feb 28 2009
-	\author	Nestal Wan
+/**	\file	Image.hh
+    \brief	definition the Image class
+    \date	May 11, 2010
+    \author	Nestal Wan
 */
 
-#ifndef __IMG_JPEG_IMAGE_HEADER_INCLUDED__
-#define __IMG_JPEG_IMAGE_HEADER_INCLUDED__
+#ifndef __PDF_IMAGE_HH_EADER_INCLUDED__
+#define __PDF_IMAGE_HH_EADER_INCLUDED__
 
-#include "Pixmap.hh"
+#include "Graphics.hh"
 
-#include <cstdio>		// must include it before jpeglib header
-#include <jpeglib.h>
+#include "GraphicsState.hh"
+#include "util/Matrix.hh"
 
-#include <string>
+namespace pdf {
 
-namespace img {
-
-/*!	\brief	brief description
-	
-	this class represents
+///	brief description
+/**	The Image class represents
 */
-class JpegImage : public Pixmap
+class Image : public Graphics
 {
 public :
-	JpegImage( const std::string& filename ) ;
-	~JpegImage( ) ;
+	Image( ) ;
+	~Image( ) ;
 
-	//! width of the image in pixels
-	virtual std::size_t Width( ) const ;
+	void OnCommand( ContentOp& op, const ResourcesDict *res ) ;
+
+	Matrix Transform( ) const ;
+	void Transform( const Matrix& mat ) ;
+	void Print(
+		std::ostream&	os,
+		ResourcesDict	*res,
+		GraphicsState&	gs ) const ;
+	void Visit( GraphicsVisitor *visitor ) ;
 	
-	//! height of the image in pixels
-	virtual std::size_t Height( ) const ;
-
-	//! number of bits per pixel of the image
-	virtual std::size_t Depth( ) const ;
-
-	//! pixel format
-	virtual PixFormat Format( ) const ;
-	
-	//! size of one row of pixel
-	virtual std::size_t RowSize( ) const ;
-
-	//! read one row of pixel. the buffer must be at least RowSize().
-	virtual bool ReadRow( unsigned char *pixel ) ;
-
-public :
-	static void my_error_exit( j_common_ptr cinfo ) ;
+	GraphicsState GetState( ) const ;
 
 private :
-	std::FILE	*m_fp ;
-	
-	struct jpeg_error_mgr 			m_jerr ;
-	struct jpeg_decompress_struct	m_cinfo ;
+	Matrix			m_transform ;
+	GraphicsState	m_gs ;
 } ;
 
 } // end of namespace
 
-#endif
+#endif // IMAGE_HH_

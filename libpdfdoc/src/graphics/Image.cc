@@ -1,4 +1,4 @@
-/***************************************************************************
+/***************************************************************************\
  *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
@@ -15,53 +15,53 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+\***************************************************************************/
 
-/*!
-	\file	Image.hh
-	\brief	definition the Image class
-	\date	Thu Feb 26 2009
+/**	\file	Image.cc
+	\brief	implementation of the Image class
+	\date	May 11, 2010
 	\author	Nestal Wan
 */
 
-#ifndef __IMG_IMAGE_HEADER_INCLUDED__
-#define __IMG_IMAGE_HEADER_INCLUDED__
+#include "graphics/Image.hh"
 
-#include <cstddef>
+namespace pdf {
 
-namespace img {
-
-/*!	\brief	image interface
+/**	constructor
 	
-	This is the image interface. It provides an abstraction on images.
 */
-class Image
+Image::~Image( )
 {
-public :
-	enum PixFormat { RGB, RGBA, BGR, BGRA, grey } ;
+}
 
-public :
-	virtual ~Image( ) ;
+void Image::OnCommand( ContentOp& op, const ResourcesDict *res )
+{
+}
 
-	//! width of the image in pixels
-	virtual std::size_t Width( ) const = 0 ;
-	
-	//! height of the image in pixels
-	virtual std::size_t Height( ) const = 0 ;
+Matrix Image::Transform( ) const
+{
+	return m_transform ;
+}
 
-	//! number of bits per pixel of the image
-	virtual std::size_t Depth( ) const = 0 ;
+void Image::Transform( const Matrix& mat )
+{
+	m_transform = mat ;
+}
 
-	//! pixel format
-	virtual PixFormat Format( ) const = 0 ;
-	
-	//! size of one row of pixel
-	virtual std::size_t RowSize( ) const = 0 ;
+void Image::Print(
+	std::ostream&	os,
+	ResourcesDict	*res,
+	GraphicsState&	gs ) const
+{
+}
 
-	//! read one row of pixel. the buffer must be at least RowSize().
-	virtual bool ReadRow( unsigned char *pixel ) = 0 ;
-} ;
+void Image::Visit( GraphicsVisitor *visitor )
+{
+}
+
+GraphicsState Image::GetState( ) const
+{
+	return m_gs ;
+}
 
 } // end of namespace
-
-#endif

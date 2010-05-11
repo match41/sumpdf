@@ -30,6 +30,7 @@
 #include "graphics/GraphicsVisitor.hh"
 #include "graphics/RealPath.hh"
 #include "graphics/RealText.hh"
+#include "graphics/Image.hh"
 #include "stream/Stream.hh"
 
 #include "util/Debug.hh"
@@ -179,43 +180,6 @@ void ContentStream::OnPaintPath( ContentOp& op )
 	OnEndObject( op ) ;
 }
 
-class Image : public Graphics
-{
-public :
-	void OnCommand( ContentOp& op, const ResourcesDict *res )
-	{
-	}
-
-	Matrix Transform( ) const
-	{
-		return m_transform ;
-	}
-	
-	void Transform( const Matrix& mat )
-	{
-		m_transform = mat ;
-	}
-
-	void Print(
-		std::ostream&	os,
-		ResourcesDict	*res,
-		GraphicsState&	gs ) const
-	{
-	}
-
-	void Visit( GraphicsVisitor *visitor )
-	{
-	}
-	
-	GraphicsState GetState( ) const
-	{
-		return m_gs ;
-	}
-
-private :
-	Matrix			m_transform ;
-	GraphicsState	m_gs ;
-} ;
 
 class InlineImage : public Image
 {
