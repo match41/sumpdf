@@ -112,7 +112,10 @@ void ContentStream::Decode( Stream& str )
 
 	while ( src >> op )
 	{
-		ProcessCommand( op ) ;
+		if ( op.Operator() == Token("BI") )
+			OnInlineImage( src ) ;
+		else
+			ProcessCommand( op ) ;
 	}
 }
 
@@ -187,6 +190,56 @@ class InlineImage : public Image
 
 void ContentStream::OnInlineImage( std::istream& is )
 {
+	Object key ;
+	
+	while ( is >> key )
+	{
+		if ( key.Is<Token>() && key.As<Token>().Get() == "ID" )
+		{
+std::cout << "got ID" << std::endl ;
+			std::vector<unsigned char> bytes ;
+			
+			while ( is )
+			{
+				int ich = is.rdbuf()->sgetc() ;
+				if ( ich == std::istream::traits_type::eof() )
+				{
+					std::cout << "EOF!" << std::endl ;
+					return ;
+				}
+
+				if ( std::istream::traits_type::to_char_type(ich) == 'E' )
+				{
+					is.rdbuf()->sbumpc() ;
+					
+					int ich2 = is.rdbuf()->sgetc() ;
+					if ( ich2 == std::istream::traits_type::eof() )
+					{
+						std::cout << "EOF!" << std::endl ;
+						return ;
+					}
+					
+					if ( std::istream::traits_type::to_char_type(ich2) == 'I' )
+					{
+						std::cout << "finished inline image" << std::endl ;
+						return ;
+					}
+				}
+				
+				is.rdbuf()->sbumpc() ;
+			}
+		}
+		else if ( key.Is<Name>() )
+		{
+			Object value ;
+			if ( is >> value )
+			{
+				std::cout << "read pair: " << key << " " << value << std::endl ;
+			}
+		}
+	}
+
+	std::cout << "premature finish" << std::endl ;
 }
 
 } // end of namespace
