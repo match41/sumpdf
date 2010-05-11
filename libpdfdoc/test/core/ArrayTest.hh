@@ -40,13 +40,15 @@ public :
 
 	// declare suit function
 	CPPUNIT_TEST_SUITE( ArrayTest ) ;
+		CPPUNIT_TEST( TestTJ ) ;
+/*
 		CPPUNIT_TEST( TestNormal ) ;
 		CPPUNIT_TEST( TestDifferent ) ;
 		CPPUNIT_TEST( TestRead ) ;
 		CPPUNIT_TEST( TestString ) ;
-		CPPUNIT_TEST( TestTJ ) ;
 		CPPUNIT_TEST( TestGsTJ ) ;
 		CPPUNIT_TEST( TestBracketTJ ) ;
+*/
 	CPPUNIT_TEST_SUITE_END( ) ;
 
 private :

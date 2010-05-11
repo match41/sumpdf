@@ -115,7 +115,7 @@ std::istream& operator>>( std::istream& is, Token& token )
 		text.swap( token.m_token ) ;
 
 	// set stream state to failed if extracted token is empty
-	// to prevend infinite loop
+	// to prevent infinite loop
 	else
 		is.setstate( is.failbit ) ;
 	

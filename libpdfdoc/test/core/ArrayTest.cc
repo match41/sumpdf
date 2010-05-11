@@ -95,8 +95,9 @@ void ArrayTest::TestString( )
 
 void ArrayTest::TestTJ( )
 {
-	std::istringstream ss( "[<01111111111111111> 59 <02> 3 <02> 3 <02> -6 <02> "
-	"3 <02> 3 <02> -6 <02> 3 <02> 3 <02> -6 <02> 3 <02> 3 <02> -6 <02>]" ) ;
+//	std::istringstream ss( "[<01111111111111111> 59 <02> 3 <02> 3 <02> -6 <02> "
+//	"3 <02> 3 <02> -6 <02> 3 <02> 3 <02> -6 <02> 3 <02> 3 <02> -6 <02>]" ) ;
+	std::istringstream ss( "[<01> 59 <02>]" ) ;
 	
 	pdf::Array sub ;
 	CPPUNIT_ASSERT( ss >> sub ) ;

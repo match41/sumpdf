@@ -68,11 +68,11 @@ public :
 	void Swap( std::string& val ) ;
 
 private :
-	static TokenSrc& ReadXDigit( TokenSrc& is, char& digit ) ;
+	static std::istream& ReadXDigit( std::istream& is, char& digit ) ;
 
 private :
 	void DecodeLiteralString( const std::string& token ) ;
-	void DecodeHexString( TokenSrc& is ) ;
+	void DecodeHexString( std::istream& is ) ;
 
 	static bool GetChar(
 		char&							ch,
