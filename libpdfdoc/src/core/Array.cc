@@ -28,10 +28,11 @@
 
 #include "Dictionary.hh"
 #include "Token.hh"
-#include "TokenSrc.hh"
 
 #include "util/Exception.hh"
 #include "util/Debug.hh"
+
+#include <boost/format.hpp>
 
 #include <iostream>
 
@@ -57,28 +58,21 @@ void Array::push_back( const Object& obj )
 	m_array.push_back( obj ) ;
 }
 
-
-std::istream& operator>>( std::istream& is, Array& array )
+std::istream& operator>>( std::istream& src, Array& array )
 {
-	TokenSrc s( is ) ;
-	return (s >> array).Stream() ;
-}
+	using boost::format ;
 
-TokenSrc& operator>>( TokenSrc& src, Array& array )
-{
 	Token t ;
-	if ( !(src >> t) )
-		throw ParseError( "cannot read first token in array" ) ;
-	if ( t.Get() != "[" )
-		throw ParseError(
-			"bad token: \"" + t.Get() + "\" found in the first token of "
-			"array" ) ;
-		
+	if ( Token::PeekPrefix( src, t ) && t.Get() != "[" )
+		throw ParseError( format("array not start with \"[\" but \"%1%\"")
+			% t.Get( ) ) ;
+
+	// dump the "[" token
+	src >> t ;
+
 	Array temp ;
-	while ( src >> t && t.Get() != "]" )
+	while ( Token::PeekPrefix( src, t ) && t.Get() != "]" )
 	{
-		src.PutBack( t ) ;
-		
 		Object obj ;
 		if ( src >> obj )
 		{
@@ -91,7 +85,12 @@ TokenSrc& operator>>( TokenSrc& src, Array& array )
 	
 	// commit
 	if ( src )
+	{
+		// dump the "]" token
+		src >> t ;
+
 		temp.swap( array ) ;
+	}
 	
 	return src ;
 }

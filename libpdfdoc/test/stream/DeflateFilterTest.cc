@@ -48,6 +48,11 @@ void DeflateFilterTest::TestRead( )
 {
 	std::istringstream ss( std::string( m_compressed.begin(),
 	                                    m_compressed.end() ) ) ;
+	
+	// put some data at the end
+	char enddat[] = "Hello!" ;
+	ss.rdbuf()->sputn( enddat, sizeof(enddat) ) ;
+	
 	pdf::RawFilter *raw = new pdf::RawFilter( ss.rdbuf() ) ;
 	pdf::DeflateFilter subject(( StreamFilterPtr(raw) )) ;
 	
@@ -55,13 +60,18 @@ void DeflateFilterTest::TestRead( )
 	
 	unsigned char buf[200] ;
 	std::size_t count = subject.Read( buf, sizeof( buf ) ) ;
+	std::size_t total = count ;
+	
 	while ( count != 0 )
 	{
 		CPPUNIT_ASSERT( std::equal( buf, buf + count, src.begin() ) ) ;
 		src.erase( src.begin( ), src.begin() + count ) ;
 		
 		count = subject.Read( buf, sizeof( buf ) - 1 ) ;
+		total += count ;
 	}
+	
+	CPPUNIT_ASSERT( total == m_original.size() ) ;
 }
 
 void DeflateFilterTest::TestReset( )

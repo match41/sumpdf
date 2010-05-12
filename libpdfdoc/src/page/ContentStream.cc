@@ -26,11 +26,11 @@
 #include "ContentStream.hh"
 
 #include "ContentOp.hh"
-#include "core/TokenSrc.hh"
 #include "graphics/GraphicsState.hh"
 #include "graphics/GraphicsVisitor.hh"
 #include "graphics/RealPath.hh"
 #include "graphics/RealText.hh"
+#include "graphics/Image.hh"
 #include "stream/Stream.hh"
 
 #include "util/Debug.hh"
@@ -104,8 +104,7 @@ void ContentStream::Decode( Stream& str )
 	// rewind to stream start for reading
 	str.Rewind( ) ;
 	
-	std::istream s( str.InStreamBuf() ) ;
-	TokenSrc src( s ) ;
+	std::istream src( str.InStreamBuf() ) ;
 	std::vector<Object> args ;
 	
 	ContentOp		op ;
@@ -113,7 +112,10 @@ void ContentStream::Decode( Stream& str )
 
 	while ( src >> op )
 	{
-		ProcessCommand( op ) ;
+		if ( op.Operator() == Token("BI") )
+			OnInlineImage( src ) ;
+		else
+			ProcessCommand( op ) ;
 	}
 }
 
@@ -179,6 +181,65 @@ void ContentStream::OnPaintPath( ContentOp& op )
 	if ( m_current != 0 )
 		m_current->OnCommand( op, m_res ) ;
 	OnEndObject( op ) ;
+}
+
+
+class InlineImage : public Image
+{
+} ;
+
+void ContentStream::OnInlineImage( std::istream& is )
+{
+	Object key ;
+	
+	while ( is >> key )
+	{
+		if ( key.Is<Token>() && key.As<Token>().Get() == "ID" )
+		{
+std::cout << "got ID" << std::endl ;
+			std::vector<unsigned char> bytes ;
+			
+			while ( is )
+			{
+				int ich = is.rdbuf()->sgetc() ;
+				if ( ich == std::istream::traits_type::eof() )
+				{
+					std::cout << "EOF!" << std::endl ;
+					return ;
+				}
+
+				if ( std::istream::traits_type::to_char_type(ich) == 'E' )
+				{
+					is.rdbuf()->sbumpc() ;
+					
+					int ich2 = is.rdbuf()->sgetc() ;
+					if ( ich2 == std::istream::traits_type::eof() )
+					{
+						std::cout << "EOF!" << std::endl ;
+						return ;
+					}
+					
+					if ( std::istream::traits_type::to_char_type(ich2) == 'I' )
+					{
+						std::cout << "finished inline image" << std::endl ;
+						return ;
+					}
+				}
+				
+				is.rdbuf()->sbumpc() ;
+			}
+		}
+		else if ( key.Is<Name>() )
+		{
+			Object value ;
+			if ( is >> value )
+			{
+				std::cout << "read pair: " << key << " " << value << std::endl ;
+			}
+		}
+	}
+
+	std::cout << "premature finish" << std::endl ;
 }
 
 } // end of namespace

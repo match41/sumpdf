@@ -30,7 +30,6 @@
 #include "Dictionary.hh"
 #include "String.hh"
 #include "Token.hh"
-#include "TokenSrc.hh"
 
 #include "stream/Stream.hh"
 
@@ -88,7 +87,6 @@ struct Bool
 	bool value ;
 	friend std::istream& operator>>( std::istream& is, Bool& b ) ;
 	friend std::ostream& operator<<( std::ostream& os, const Bool& b ) ;
-	friend TokenSrc& operator>>( TokenSrc& os, Bool& b ) ;
 	bool operator==( const Bool& b ) const { return value == b.value ; }
 } ;
 
@@ -266,6 +264,11 @@ template <> bool Object::Is<void>( ) const
 	return Type() == null ;
 }
 
+template <> bool Object::Is<Token>( ) const
+{
+	return Type() == token ;
+}
+
 /// needless to say...
 template <> bool Object::Is<Object>( ) const
 {
@@ -320,6 +323,8 @@ template Array& Object::As() ;
 template const Array& Object::As() const ;
 template Dictionary& Object::As() ;
 template const Dictionary& Object::As() const ;
+template Token& Object::As() ;
+template const Token& Object::As() const ;
 
 template <typename T>
 Object::operator T() const
@@ -336,6 +341,7 @@ template Object::operator std::string() const ;
 template Object::operator Stream() const ;
 template Object::operator Array() const ;
 template Object::operator Dictionary() const ;
+template Object::operator Token() const ;
 
 template Object::operator unsigned() const ;
 template Object::operator unsigned short() const ;
@@ -367,6 +373,7 @@ template std::string Object::To( std::nothrow_t ) const ;
 template Stream Object::To( std::nothrow_t ) const ;
 template Array Object::To( std::nothrow_t ) const ;
 template Dictionary Object::To( std::nothrow_t ) const ;
+template Token Object::To( std::nothrow_t ) const ;
 
 template unsigned Object::To( std::nothrow_t ) const ;
 template unsigned short Object::To( std::nothrow_t ) const ;
@@ -389,6 +396,7 @@ template std::string Object::To( ) const ;
 template Stream Object::To( ) const ;
 template Array Object::To( ) const ;
 template Dictionary Object::To( ) const ;
+template Token Object::To( ) const ;
 
 template <> unsigned Object::To() const
 {
@@ -546,10 +554,8 @@ const Object& Object::NullObj()
 }
 
 template <typename T>
-bool Object::DecodeObject( TokenSrc& src, const Token& tok )
+bool Object::DecodeObject( std::istream& src )
 {
-	src.PutBack( tok ) ;
-	
 	T t ;
 	if ( src >> t )
 	{
@@ -560,50 +566,46 @@ bool Object::DecodeObject( TokenSrc& src, const Token& tok )
 		return false ;
 }
 
-bool Object::DecodeNumberOrIndirectObj( TokenSrc& is, const Token& token )
+bool Object::DecodeNumberOrIndirectObj( std::istream& is )
 {
-	if ( DecodeObject<Ref>( is, token ) )
+	std::streamsize pos = is.tellg() ;
+
+	// special handling for stream that cannot be rewinded
+	if ( pos != -1 && DecodeObject<Ref>( is ) )
+	{
 		return true ;
+	}
 	else
 	{
-		is.ResetState( ) ;
-
+		if ( pos != -1 )
+		{
+			is.clear( ) ;
+			is.seekg( pos ) ;
+		}
+		
 		Token t ;
 		if ( is >> t )
 		{
 			const std::string& str = t.Get() ;
-			assert( t == token ) ;
 			
 			// can't use ?: because the types are different
 			if ( str.find( '.' ) != str.npos )
-				m_obj = token.As<double>( ) ;
+				m_obj = t.As<double>( ) ;
 			else
-				m_obj = token.As<int>( ) ;
+				m_obj = t.As<int>( ) ;
 
 			return true ;
 		}
 		else
 		{
-			assert( false ) ;
 			return false ;
 		}
 	}
 }
 
-std::istream& operator>>( std::istream& is, Object& obj )
+std::istream& operator>>( std::istream& src, Object& obj )
 {
-	// decoded token is treated as failure. only object accepted.
-	TokenSrc s( is ) ;
-	return (s >> obj).Stream() ;
-}
-
-/**	\brief	Read an object from a TokenSrc.
-*/
-TokenSrc& operator>>( TokenSrc& src, Object& obj )
-{
-	static const std::string numeric = "0123456789.+-" ;
-	
-	typedef bool (Object::*FuncPtr)( TokenSrc&, const Token& ) ;
+	typedef bool (Object::*FuncPtr)( std::istream& ) ;
 	
 	static const std::pair<const Token, FuncPtr> table[] =
 	{
@@ -612,43 +614,52 @@ TokenSrc& operator>>( TokenSrc& src, Object& obj )
 		std::make_pair( Token( "(" ),		&Object::DecodeObject<String> ),
 		std::make_pair( Token( "<" ),		&Object::DecodeObject<String> ),
 		std::make_pair( Token( "/" ),		&Object::DecodeObject<Name> ),
-		std::make_pair( Token( "true" ),	&Object::DecodeObject<Bool> ),
-		std::make_pair( Token( "false" ),	&Object::DecodeObject<Bool> ),
 	} ;
 	typedef std::map<Token, FuncPtr> FuncMap ;
 	static const FuncMap map( Begin( table ), End( table ) ) ;
 	
 	// decode tokens from stream
 	Token t ;
-	if ( src >> t )
+	if ( Token::PeekPrefix( src, t ) )
 	{
 		PDF_ASSERT( !t.Get().empty( ) ) ;
 		
-		Token key = t ;
-		if ( t.Get()[0] == '(' )
-			key = Token( "(" ) ;
-		else if ( t.Get()[0] == '<' && t.Get() != "<<" )
-			key = Token( "<" ) ;
-
-		FuncMap::const_iterator it = map.find( key ) ;
+		FuncMap::const_iterator it = map.find( t ) ;
 		
 		// token that represents objects with known types
 		if ( it != map.end( ) )
-			(obj.*it->second)( src, t ) ;
+			(obj.*it->second)( src ) ;
 		
 		// numeric tokens. can represent number (int/double) or indirect
 		// objects (reference)
-		else if ( numeric.find( t.Get()[0] ) != numeric.npos )
-			obj.DecodeNumberOrIndirectObj( src, t ) ;
+		else if ( t.IsNumber() )
+			obj.DecodeNumberOrIndirectObj( src ) ;
 		
 		// "null" represent null object of course
 		// null object is a default construct Object, so no need to set
 		// explicitly, i.e. nothing to do.
 		// if not null object, then it is a parse error.
-		else if ( t.Get() != "null" )
+		else
 		{
-			src.PutBack( t ) ;
-			src.SetState( std::ios::failbit ) ;
+			src >> t ;
+			if ( t.Get() == "true" )
+			{
+				Bool b = { true } ;
+				obj.m_obj = b ;
+			}
+			else if ( t.Get() == "false" )
+			{
+				Bool b = { false } ;
+				obj.m_obj = b ;
+			}
+			else if ( t.Get() == "null" )
+			{
+				obj.m_obj = Object::Null() ;
+			}
+			else
+			{
+				obj.m_obj = t ;
+			}
 		}
 	}
 		
@@ -711,12 +722,6 @@ std::ostream& operator<<( std::ostream& os, const Object::Null& )
 
 std::istream& operator>>( std::istream& is, Bool& b )
 {
-	TokenSrc src( is ) ;
-	return (src >> b).Stream() ;
-}
-
-TokenSrc& operator>>( TokenSrc& is, Bool& b )
-{
 	Token t ;
 	if ( is >> t )
 	{
@@ -725,7 +730,7 @@ TokenSrc& operator>>( TokenSrc& is, Bool& b )
 		else if ( t.Get() == "false" )
 			b.value = false ;
 		else
-			is.SetState( std::ios::failbit ) ;
+			is.setstate( std::ios::failbit ) ;
 	}
 	
 	return is ;

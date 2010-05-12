@@ -34,8 +34,6 @@
 
 namespace pdf {
 
-class TokenSrc ;
-
 ///	brief description
 /**	\internal
 	The ContentOp class represents
@@ -71,11 +69,12 @@ public :
 	Object& operator[]( std::size_t idx ) ;
 	const Object& operator[]( std::size_t idx ) const ;
 
-	friend TokenSrc& operator>>( TokenSrc& src, ContentOp& op ) ;
 	bool operator==( const ContentOp& rhs ) const ;
 	bool operator!=( const ContentOp& rhs ) const ;
 
 	void Swap( ContentOp& op ) ;
+
+	friend std::istream& operator>>( std::istream& os, ContentOp& op ) ;
 
 private :
 	Token		m_operator ;

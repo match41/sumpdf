@@ -39,7 +39,8 @@ public :
 
 	// declare suit function
 	CPPUNIT_TEST_SUITE( ContentStreamTest ) ;
-		CPPUNIT_TEST( TestTestCID ) ;
+		CPPUNIT_TEST( TestCID ) ;
+		CPPUNIT_TEST( TestF ) ;
 	CPPUNIT_TEST_SUITE_END();
 
 public :
@@ -47,7 +48,8 @@ public :
 	void tearDown( ) ;
 
 private :
-	void TestTestCID( ) ;
+	void TestCID( ) ;
+	void TestF( ) ;
 } ;
 
 } // end of namespace

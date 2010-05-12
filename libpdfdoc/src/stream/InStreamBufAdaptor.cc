@@ -29,7 +29,8 @@
 #include "StreamFilter.hh"
 #include "MockStreamFilter.hh"
 
-#include <cassert>
+#include "util/Debug.hh"
+
 #include <cstring>
 
 namespace
@@ -60,14 +61,14 @@ InStreamBufAdaptor::InStreamBufAdaptor( const InStreamBufAdaptor& rhs )
 
 void InStreamBufAdaptor::Set( StreamFilter *str )
 {
-	assert( str != 0 ) ;
-	assert( m_str == &dummy ) ;
+	PDF_ASSERT( str != 0 ) ;
+	PDF_ASSERT( m_str == &dummy ) ;
 	m_str = str ;
 }
 
-int InStreamBufAdaptor::underflow( )
+InStreamBufAdaptor::int_type InStreamBufAdaptor::underflow( )
 {
-	assert( m_str != 0 ) ;
+	PDF_ASSERT( m_str != 0 ) ;
 
 	if ( gptr() < egptr() )
 		return traits_type::to_int_type( *gptr() ) ;

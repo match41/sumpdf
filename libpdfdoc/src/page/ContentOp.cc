@@ -25,8 +25,6 @@
 
 #include "ContentOp.hh"
 
-#include "core/TokenSrc.hh"
-
 #include "util/Debug.hh"
 
 #include <algorithm>
@@ -67,31 +65,25 @@ ContentOp::const_iterator ContentOp::end( ) const
 	return m_operands.end( ) ;
 }
 
-TokenSrc& operator>>( TokenSrc& src, ContentOp& op )
+std::istream& operator>>( std::istream& src, ContentOp& op )
 {
 	Object		obj ;
 	ContentOp	tmp ;
 
-	while ( true )
+	while ( src >> obj )
 	{
-		if ( src >> obj )
+		// if it is not an object, then it should be a command operator
+		if ( obj.Is<Token>() )
+		{
+			tmp.m_operator = obj.As<Token>() ;
+			op.Swap( tmp ) ;
+			break ;
+		}
+		else
 		{
 			// swapping is faster
 			tmp.m_operands.push_back( Object() ) ;
 			obj.Swap( tmp.m_operands.back() ) ;
-		}
-		
-		// if it is not an object, then it should be a command operator
-		else
-		{
-			src.ResetState( ) ;
-			
-			// all successful, commit
-			if ( src >> tmp.m_operator )
-				op.Swap( tmp ) ;
-			
-			// leave the state of the TokenSrc to indicate success or error
-			break ;
 		}
 	}
 

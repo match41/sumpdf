@@ -29,6 +29,7 @@
 
 #include "Ref.hh"
 #include "Name.hh"
+#include "Token.hh"
 #include "util/Exception.hh"
 
 #include <boost/variant.hpp>
@@ -46,7 +47,6 @@ class Dictionary ;
 class Rect ;
 class Stream ;
 class Token ;
-class TokenSrc ;
 
 /*!	\brief	The PDF object class.
 	\internal
@@ -115,14 +115,15 @@ private :
 		Null, int, double, bool, std::string, Name,
 		boost::recursive_wrapper<Stream>, Ref,
 		boost::recursive_wrapper<Array>,
-		boost::recursive_wrapper<Dictionary>
+		boost::recursive_wrapper<Dictionary>,
+		Token
 	> Variant ;
 
 public :
 	enum ObjType
 	{
 		null, integer, floating, boolean, string, name, stream, ref,
-		array, dictionary
+		array, dictionary, token
 	} ;
 
 public :
@@ -167,8 +168,6 @@ public :
 	friend std::istream& operator>>( std::istream& is, Object& obj ) ;
 	friend std::ostream& operator<<( std::ostream& os, const Object& obj ) ;
 	
-	friend TokenSrc& operator>>( TokenSrc& src, Object& obj ) ;
-
 	static const Object& NullObj() ;
 	
 	ObjType Type( ) const ;
@@ -269,9 +268,9 @@ private :
 	// private function called only by non-template members,
 	// so it can be defined in the cpp file.
 	template <typename T>
-	bool DecodeObject( TokenSrc& is, const Token& t ) ;
+	bool DecodeObject( std::istream& is ) ;
 
-	bool DecodeNumberOrIndirectObj( TokenSrc& is, const Token& token ) ;
+	bool DecodeNumberOrIndirectObj( std::istream& is ) ;
 
 	template <typename T>
 	std::vector<T> ToVec( ) const ;

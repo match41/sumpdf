@@ -56,6 +56,7 @@ public :
 		CPPUNIT_TEST( TestIsVoid ) ;
 		CPPUNIT_TEST( TestConvert ) ;
 		CPPUNIT_TEST( TestVTab ) ;
+		CPPUNIT_TEST( TestF ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
 private :
@@ -76,6 +77,7 @@ private :
 	void TestIsVoid( ) ;
 	void TestConvert( ) ;
 	void TestVTab( ) ;
+	void TestF( ) ;
 } ;
 
 } // end of namespace

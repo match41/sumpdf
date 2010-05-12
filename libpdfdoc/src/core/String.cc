@@ -26,7 +26,6 @@
 #include "String.hh"
 
 #include "Token.hh"
-#include "TokenSrc.hh"
 
 #include "util/Debug.hh"
 
@@ -65,13 +64,7 @@ String::operator std::string( ) const
 /**	This function will create a TokenSrc for reading. It is recommended to use
 	the extraction operator of TokenSrc instead.
 */
-std::istream& operator>>( std::istream& is, String& b )
-{
-	TokenSrc src( is ) ;
-	return (src >> b).Stream() ;
-}
-
-TokenSrc& operator>>( TokenSrc& src, String& obj )
+std::istream& operator>>( std::istream& src, String& obj )
 {
 	Token t ;
 	if ( src >> t )
@@ -81,13 +74,13 @@ TokenSrc& operator>>( TokenSrc& src, String& obj )
 		if ( !str.empty() )
 		{
 			if ( str[0] == '(' )
-				obj.DecodeLiteralString( t.Get() ) ;
+				obj.DecodeLiteralString( str ) ;
 			
 			else if ( str[0] == '<' )
 				obj.DecodeHexString( src ) ;
 			
 			else
-				src.SetState( std::ios::failbit ) ;
+				src.setstate( std::ios::failbit ) ;
 		}
 	}
 	return src ;
@@ -225,16 +218,16 @@ bool String::HandleEscapeCharacter(
 	return true ;
 }
 
-TokenSrc& String::ReadXDigit( TokenSrc& is, char& digit )
+std::istream& String::ReadXDigit( std::istream& is, char& digit )
 {
 	// skip space characters
-	while ( is.GetChar( digit ) && std::isspace( digit ) )
+	while ( is.get( digit ) && std::isspace( digit ) )
 	{
 	}
 	return is ;
 }
 
-void String::DecodeHexString( TokenSrc& is )
+void String::DecodeHexString( std::istream& is )
 {
 	// the 3rd byte is never written to keep it null-terminated
 	char ch[3] = {} ;
@@ -248,7 +241,7 @@ void String::DecodeHexString( TokenSrc& is )
 		{
 			if ( !ReadXDigit( is, ch[1] ) )
 			{
-				is.SetState( std::ios::failbit ) ;
+				is.setstate( std::ios::failbit ) ;
 				break ;
 			}
 			else
@@ -261,7 +254,7 @@ void String::DecodeHexString( TokenSrc& is )
 				}
 				else if ( !std::isxdigit( ch[1] ) )
 				{
-					is.SetState( std::ios::failbit ) ;
+					is.setstate( std::ios::failbit ) ;
 					break ;
 				}
 				
@@ -272,7 +265,7 @@ void String::DecodeHexString( TokenSrc& is )
 			}
 		}
 		else
-			is.SetState( std::ios::failbit ) ;
+			is.setstate( std::ios::failbit ) ;
 	}
 }
 

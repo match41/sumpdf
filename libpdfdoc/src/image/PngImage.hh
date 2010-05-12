@@ -27,7 +27,7 @@
 #ifndef __IMG_PNG_IMAGE_HEADER_INCLUDED__
 #define __IMG_PNG_IMAGE_HEADER_INCLUDED__
 
-#include "Image.hh"
+#include "Pixmap.hh"
 
 // libpng header. As client will not include this file directly, it is OK
 // to include it here.
@@ -43,7 +43,7 @@ namespace img {
 	
 	this class represents
 */
-class PngImage : public Image
+class PngImage : public Pixmap
 {
 public :
 	PngImage( const std::string& filename ) ;

@@ -26,6 +26,7 @@
 #include "ContentStreamTest.hh"
 
 #include "graphics/GraphicsVisitor.hh"
+#include "graphics/Path.hh"
 #include "graphics/Text.hh"
 #include "graphics/TextLine.hh"
 
@@ -57,7 +58,7 @@ void ContentStreamTest::tearDown( )
 {
 }
 
-void ContentStreamTest::TestTestCID( )
+void ContentStreamTest::TestCID( )
 {
 	Stream str[] =
 	{
@@ -80,15 +81,15 @@ void ContentStreamTest::TestTestCID( )
 	public :
 		void VisitText( Text *text )
 		{
+			PDFUT_ASSERT_EQUAL( text->Transform(),
+				Matrix::Translation( 72.0,  769.89) ) ;
+		
 			PDFUT_ASSERT_EQUAL( text->Count(), 7U ) ;
 			Text::iterator i = text->begin() ;
 			CPPUNIT_ASSERT( i != text->end() ) ;
 			PDFUT_ASSERT_EQUAL( i->Transform(),
-				Matrix::Translation( 61.77, -63.35) *
-				Matrix::Translation( 72.0,  769.89) ) ;
+				Matrix::Translation( 61.77, -63.35) ) ;
 			PDFUT_ASSERT_EQUAL( i->Text(), std::wstring(L"1SectionTitle") ) ;
-//			PDFUT_ASSERT_EQUAL( i->XPos(), 61.77 ) ;
-//			PDFUT_ASSERT_EQUAL( i->YPos(), -63.35 ) ;
 			
 			++i ;
 			CPPUNIT_ASSERT( i != text->end() ) ;
@@ -105,6 +106,45 @@ void ContentStreamTest::TestTestCID( )
 
 	ContentStream subject( str, str+1, &res, &v ) ;
 	subject.Decode() ;
+}
+
+void ContentStreamTest::TestF( )
+{
+	Stream str[] =
+	{
+		Stream( "q\n0.03137 0.2902 0.3451 rg\n36 783 523 23 re\nf\nQ\n" )
+	} ;
+
+	class Visitor : public GraphicsVisitor
+	{
+	public :
+		Visitor()
+			: m_path_count( 0 )
+		{
+		}
+		
+		void VisitText( Text *text )
+		{
+		}
+		
+		void VisitGraphics( Graphics *text )
+		{
+		}
+		
+		void VisitPath( Path *path )
+		{
+			m_path_count++ ;
+			CPPUNIT_ASSERT( path->IsFill() ) ;
+		}
+	
+		int m_path_count ;
+	} v ;
+
+	MockResources res ;
+	ContentStream subject( str, str+1, &res, &v ) ;
+	subject.Decode() ;
+	
+	PDFUT_ASSERT_EQUAL( v.m_path_count, 1 ) ;
 }
 
 } // end of namespace

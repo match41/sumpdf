@@ -72,7 +72,6 @@ public :
 	}
 
 	friend std::istream& operator>>( std::istream& is, Array& array ) ;
-	friend TokenSrc& operator>>( TokenSrc& src, Array& obj ) ;
 
 	void swap( Array& array ) ;
 

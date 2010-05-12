@@ -23,8 +23,8 @@
     \author	Nestal Wan
 */
 
-#ifndef __PDF_XOBJECT_HH_EADER_INCLUDED__
-#define __PDF_XOBJECT_HH_EADER_INCLUDED__
+#ifndef __PDF_XOBJECT_HEADER_INCLUDED__
+#define __PDF_XOBJECT_HEADER_INCLUDED__
 
 namespace pdf {
 

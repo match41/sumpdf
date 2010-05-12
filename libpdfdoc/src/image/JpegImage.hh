@@ -27,7 +27,7 @@
 #ifndef __IMG_JPEG_IMAGE_HEADER_INCLUDED__
 #define __IMG_JPEG_IMAGE_HEADER_INCLUDED__
 
-#include "Image.hh"
+#include "Pixmap.hh"
 
 #include <cstdio>		// must include it before jpeglib header
 #include <jpeglib.h>
@@ -40,7 +40,7 @@ namespace img {
 	
 	this class represents
 */
-class JpegImage : public Image
+class JpegImage : public Pixmap
 {
 public :
 	JpegImage( const std::string& filename ) ;

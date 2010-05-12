@@ -18,18 +18,50 @@
  ***************************************************************************/
 
 /*!
-	\file	Image.cc
-	\brief	implementation the Image class
+	\file	Image.hh
+	\brief	definition the Image class
 	\date	Thu Feb 26 2009
 	\author	Nestal Wan
 */
 
-#include "Image.hh"
+#ifndef __IMG_PIXMAP_HEADER_INCLUDED__
+#define __IMG_PIXMAP_HEADER_INCLUDED__
+
+#include <cstddef>
 
 namespace img {
 
-Image::~Image( )
+/*!	\brief	image interface
+	
+	This is the image interface. It provides an abstraction on images.
+*/
+class Pixmap
 {
-}
+public :
+	enum PixFormat { RGB, RGBA, BGR, BGRA, grey } ;
+
+public :
+	virtual ~Pixmap( ) ;
+
+	//! width of the image in pixels
+	virtual std::size_t Width( ) const = 0 ;
+	
+	//! height of the image in pixels
+	virtual std::size_t Height( ) const = 0 ;
+
+	//! number of bits per pixel of the image
+	virtual std::size_t Depth( ) const = 0 ;
+
+	//! pixel format
+	virtual PixFormat Format( ) const = 0 ;
+	
+	//! size of one row of pixel
+	virtual std::size_t RowSize( ) const = 0 ;
+
+	//! read one row of pixel. the buffer must be at least RowSize().
+	virtual bool ReadRow( unsigned char *pixel ) = 0 ;
+} ;
 
 } // end of namespace
+
+#endif

@@ -65,6 +65,12 @@ public :
 	
 	bool IsSpace( ) const ;
 
+	static std::istream& PeekPrefix( std::istream& is, Token& prefix ) ;
+	
+	std::istream& Putback( std::istream& is ) const ;
+
+	bool IsNumber( ) const ;
+
 private :
 	static bool IsCharInToken( char ch, const std::string& text ) ;
 	static bool IsDelimiter( char ch ) ;

@@ -17,84 +17,30 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	ContentStream.hh
-    \brief	definition the ContentStream class
-    \date	Feb 20, 2010
+/**	\file	XImage.hh
+    \brief	definition the XImage class
+    \date	May 11, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_CONTENTSTREAM_HH_EADER_INCLUDED__
-#define __PDF_CONTENTSTREAM_HH_EADER_INCLUDED__
+#ifndef __PDF_XIMAGE_HH_EADER_INCLUDED__
+#define __PDF_XIMAGE_HH_EADER_INCLUDED__
 
-#include "graphics/GraphicsState.hh"
-#include "stream/Stream.hh"
-#include "util/Matrix.hh"
-
-#include <stack>
-#include <vector>
+#include "graphics/Image.hh"
+#include "page/XObject.hh"
 
 namespace pdf {
 
-class ContentOp ;
-class Graphics ;
-class GraphicsVisitor ;
-class ResourcesDict ;
-
 ///	brief description
 /**	\internal
-	The ContentStream class represents
+	The XImage class represents
 */
-class ContentStream
+class XImage : public XObject, public Image
 {
 public :
-	template <typename InputIt>
-	ContentStream( InputIt first, InputIt last,
-		const ResourcesDict	*res,
-		GraphicsVisitor		*visitor )
-		: m_strs( first, last )
-		, m_visitor( visitor )
-		, m_res( res )
-		, m_current( 0 )
-	{
-	}
-
-	void Decode( ) ;
-
-private :
-	struct HandlerMap ;
-	
-	void Decode( Stream& str ) ;
-
-	void ProcessCommand( ContentOp& op ) ;
-
-	void OnBT( ContentOp& op ) ;
-	void OnEndObject( ContentOp& op ) ;
-	void Oncm( ContentOp& op ) ;
-	void OnQ( ContentOp& op ) ;
-	void Onq( ContentOp& op ) ;
-	void Onm( ContentOp& op ) ;
-	void OnPaintPath( ContentOp& op ) ;
-	void OnInlineImage( std::istream& is ) ;
-
-private :
-	std::vector<Stream>		m_strs ;
-	GraphicsVisitor 		*m_visitor ; 
-	const ResourcesDict		*m_res ;
-
-	/// all graphics states
-	struct State
-	{
-		GraphicsState	gs ;
-		Matrix			ctm ;
-	} m_state ;
-
-	//@{
-	/// Context information for decoding the graphics objects
-	Graphics			*m_current ;
-	std::stack<State>	m_state_stack ;
-	//@}
+	XImage( ) ;
 } ;
 
 } // end of namespace
 
-#endif // CONTENTSTREAM_HH_
+#endif // XIMAGE_HH_

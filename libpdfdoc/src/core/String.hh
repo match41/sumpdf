@@ -53,7 +53,6 @@ public :
 	
 	friend std::istream& operator>>( std::istream& is, String& b ) ;
 	friend std::ostream& operator<<( std::ostream& os, const String& b ) ;
-	friend TokenSrc& operator>>( TokenSrc& src, String& obj ) ;
 	
 	const std::string& Get( ) const ;
 
@@ -68,11 +67,11 @@ public :
 	void Swap( std::string& val ) ;
 
 private :
-	static TokenSrc& ReadXDigit( TokenSrc& is, char& digit ) ;
+	static std::istream& ReadXDigit( std::istream& is, char& digit ) ;
 
 private :
 	void DecodeLiteralString( const std::string& token ) ;
-	void DecodeHexString( TokenSrc& is ) ;
+	void DecodeHexString( std::istream& is ) ;
 
 	static bool GetChar(
 		char&							ch,

@@ -27,7 +27,6 @@
 #include "Name.hh"
 #include "Object.hh"
 #include "Token.hh"
-#include "TokenSrc.hh"
 #include "util/Exception.hh"
 
 #include <iostream>
@@ -59,19 +58,15 @@ void Name::swap( Name& name )
 	m_name.swap( name.m_name ) ;
 }
 
-std::istream& operator>>( std::istream& is, Name& name )
-{
-	TokenSrc src( is ) ;
-	return (src >> name).Stream() ;
-}
-
-TokenSrc& operator>>( TokenSrc& src, Name& name )
+std::istream& operator>>( std::istream& src, Name& name )
 {
 	// search for
 	Token bslash, name_text ;
 	if ( src >> bslash >> name_text && bslash.Get() == "/" )
 		name.m_name = name_text.Get( ) ;
-	
+	else
+		src.setstate( std::ios::failbit ) ;
+
 	return src ;
 }
 

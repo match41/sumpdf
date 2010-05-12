@@ -1,4 +1,4 @@
-/***************************************************************************
+/***************************************************************************\
  *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
@@ -15,62 +15,23 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+\***************************************************************************/
 
-/*!
-	\file	RefTest.cc
-	\brief	implementation the RefTest class
-	\date	Sun Mar 9 2008
+/**	\file	InlineImage.cc
+	\brief	implementation of the InlineImage class
+	\date	May 11, 2010
 	\author	Nestal Wan
 */
 
-#include "RefTest.hh"
+#include "InlineImage.hh"
 
-#include "core/Ref.hh"
-#include "util/Util.hh"
+namespace pdf {
 
-#include "mock/Assert.hh"
-
-#include <sstream>
-
-RefTest::RefTest( )
-{
-}
-
-void RefTest::TestNormal( )
-{
-	std::istringstream ss( "1 9 R" ) ;
-	pdf::Ref obj ;
-	CPPUNIT_ASSERT( ss >> obj ) ;
-	PDFUT_ASSERT_EQUAL( obj.ID( ), 1U ) ;
-	PDFUT_ASSERT_EQUAL( obj.Gen( ), 9U ) ;
-}
-
-void RefTest::TestError( )
-{
-	std::istringstream ss( "1 0 a a R" ) ;
-	pdf::Ref obj ;
-	CPPUNIT_ASSERT( !(ss >> obj) ) ;
-	PDFUT_ASSERT_EQUAL( obj.ID( ), 0U ) ;
-	PDFUT_ASSERT_EQUAL( obj.Gen( ), 0U ) ;
-}
-
-void RefTest::TestNonIntError( )
-{
-	std::istringstream src( "82/R" ) ;
+/**	constructor
 	
-	pdf::Ref obj ;
-	CPPUNIT_ASSERT( !(src >> obj) ) ;
-	PDFUT_ASSERT_EQUAL( obj.ID( ), 0U ) ;
-	PDFUT_ASSERT_EQUAL( obj.Gen( ), 0U ) ;
+*/
+InlineImage::InlineImage( )
+{
 }
 
-void RefTest::TestTooFewToken( )
-{
-	std::istringstream src( "a" ) ;
-	
-	pdf::Ref obj ;
-	CPPUNIT_ASSERT( !(src >> obj) ) ;
-	PDFUT_ASSERT_EQUAL( obj.ID( ), 0U ) ;
-	PDFUT_ASSERT_EQUAL( obj.Gen( ), 0U ) ;
-}
+} // end of namespace

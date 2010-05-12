@@ -32,7 +32,6 @@
 namespace pdf {
 
 class Token ;
-class TokenSrc ;
 
 /*!	\brief	Indirect objects in PDF
 	\internal
@@ -53,7 +52,6 @@ public :
 	
 	friend std::istream& operator>>( std::istream& is, Ref& obj ) ;
 	friend std::ostream& operator<<( std::ostream& is, const Ref& obj );
-	friend TokenSrc& operator>>( TokenSrc& src, Ref& obj ) ;
 	
 private :
 	// These two types should be std::size_t, but I want to save space

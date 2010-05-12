@@ -27,7 +27,6 @@
 #include "Ref.hh"
 
 #include "Token.hh"
-#include "TokenSrc.hh"
 #include "util/Util.hh"
 
 #include <cassert>
@@ -80,43 +79,24 @@ std::ostream& operator<<( std::ostream& os, const Ref& obj )
 */
 std::istream& operator>>( std::istream& is, Ref& obj )
 {
-	TokenSrc src( is ) ;
-	return ( src >> obj ).Stream( ) ;
-}
-
-/*!	\brief	extraction operator from TokenSrc
-	\internal
-
-	This function extracts a Ref object \a obj from a TokenSrc \a is . It will
-	call TokenSrc::Peek() for 3 tokens and verify if the first two are integer
-	and the third one is "R". If yes, it is a valid indirect object and it will
-	be extracted successfully. Otherwise, all three tokens are unchanged and
-	will still be in the TokenSrc.
-	\param	is	TokenSrc to be extracted from
-	\param	obj	the extracted reference object
-	\return	the input TokenSrc reference, i.e. \a is
-*/
-TokenSrc& operator>>( TokenSrc& is, Ref& obj )
-{
 	// ID generation "R"
 	Token t[3] ;
-	
+
 	// peek 3 tokens. and check if they are in the reference format
-	if ( is.Peek( t, Count(t) ) == End(t) &&
+	if ( is >> t[0] && is >> t[1] && is >> t[2] &&
 		 t[0].IsInt( ) && t[1].IsInt() && t[2].Get( ) == "R" )
 	{
 		// get the object ID and generation
 		obj.m_obj_id		= t[0].As<int>() ;
 		obj.m_generation	= t[1].As<int>() ;
-		
-		// discard the three tokens as we consumed it
-		is.Ignore( Count(t) ) ;
 	}
 	
 	// set stream state to indicate failure
 	else
-		is.SetState( std::ios::failbit ) ;
-
+	{
+		is.setstate( std::ios::failbit ) ;
+	}
+	
 	return is ;
 }
 

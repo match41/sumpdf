@@ -46,14 +46,14 @@ public :
 	void Set( StreamFilter *str ) ;
 
 protected :
-	int underflow( ) ;
+	int_type underflow( ) ;
 
 private :
     bool BufferIn( ) ;
 
 private :
 	static const std::streamsize	m_buf_size	= 80 ;
-	static const std::streamsize    m_pb_size	= 4 ;
+	static const std::streamsize    m_pb_size	= 20 ;
 
 	char 			m_buf[m_buf_size] ;
 	StreamFilter	*m_str ;

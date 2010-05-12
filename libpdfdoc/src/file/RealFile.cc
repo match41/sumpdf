@@ -30,7 +30,6 @@
 #include "core/Object.hh"
 #include "core/String.hh"
 #include "core/Token.hh"
-#include "core/TokenSrc.hh"
 #include "core/TraverseObject.hh"
 
 #include "util/Exception.hh"
@@ -142,18 +141,11 @@ void RealFile::ReadType( const Ref& link, Object& obj )
 	     link.ID()		== id		&&
 	     link.Gen()		== gen )
 	{
-		// from now on, we must use TokenSrc to read the PDF objects.
-		// it is because when reading the objects, some tokens may be
-		// PutBack() to the TokenSrc. if we use operator>>(std::istream&)
-		// to read the objects, it will internally construct and destruct
-		// the TokenSrc objects, and the PutBack()'ed tokens will be lost.
-		TokenSrc src( *m_in ) ;
-		
 		// read the underlying object
 		Object r ;
-		if ( src >> r )
+		if ( *m_in >> r )
 		{
-			src >> objstr ;	// endobj or stream
+			*m_in >> objstr ;	// endobj or stream
 			
 			if ( objstr.Get() == "endobj" )
 			{
@@ -196,17 +188,10 @@ void RealFile::BasicRead( const Ref& link, T& result )
 	     link.ID()		== id		&&
 	     link.Gen()		== gen )
 	{
-		// from now on, we must use TokenSrc to read the PDF objects.
-		// it is because when reading the objects, some tokens may be
-		// PutBack() to the TokenSrc. if we use operator>>(std::istream&)
-		// to read the objects, it will internally construct and destruct
-		// the TokenSrc objects, and the PutBack()'ed tokens will be lost.
-		TokenSrc src( *m_in ) ;
-		
 		// read the underlying object
-		if ( src >> result )
+		if ( *m_in >> result )
 		{
-			src >> objstr ;	// endobj or stream
+			*m_in >> objstr ;	// endobj or stream
 			
 			if ( objstr.Get() == "endobj" )
 				return ;
@@ -218,7 +203,7 @@ void RealFile::BasicRead( const Ref& link, T& result )
 	
 	std::ostringstream ss ;
 	ss << "cannot read object ID " << link
-	   << " offset: " << std::hex << offset
+	   << " offset: 0x" << std::setfill('0') << std::setw(8) << std::hex << offset
 	   << " current token: \"" << objstr.Get() << "\"" ;
 	throw ParseError( ss.str() ) ;
 }

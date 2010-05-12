@@ -103,7 +103,9 @@ set( PAGE_HDRS		${PAGE_DIR}/RealPage.hh
 					${PAGE_DIR}/XObject.hh )
 
 set( GRAPICS_HDRS	${GRAPICS_DIR}/RealText.hh
-					${GRAPICS_DIR}/RealPath.hh )
+					${GRAPICS_DIR}/RealPath.hh
+					${GRAPICS_DIR}/InlineImage.hh
+					${GRAPICS_DIR}/XImage.hh )
 
 set( FILE_HDRS		${FILE_DIR}/RealFile.hh
 					${FILE_DIR}/File.hh
@@ -120,7 +122,6 @@ set( CORE_HDRS  	${CORE_DIR}/Object.hh
 					${CORE_DIR}/Array.hh
 					${CORE_DIR}/Dictionary.hh
 					${CORE_DIR}/Token.hh
-					${CORE_DIR}/TokenSrc.hh
 					${CORE_DIR}/String.hh
 					${CORE_DIR}/Name.hh
 					${CORE_DIR}/TraverseObject.hh )
@@ -143,7 +144,7 @@ set( UTIL_HDRS  	${UTIL_DIR}/Export.hh
 					${UTIL_DIR}/RefCounter.hh
 					${UTIL_DIR}/RefCounterWrapper.hh )
 					
-set( IMG_HDRS  		${IMG_DIR}/Image.hh
+set( IMG_HDRS  		${IMG_DIR}/Pixmap.hh
 					${IMG_DIR}/PngImage.hh
 					${IMG_DIR}/JpegImage.hh )
 
@@ -193,6 +194,7 @@ set( GFX_INC_HDRS	${INCLUDE_DIR}/graphics/Graphics.hh
 					${INCLUDE_DIR}/graphics/GraphicsState.hh
 					${INCLUDE_DIR}/graphics/Text.hh
 					${INCLUDE_DIR}/graphics/Path.hh
+					${INCLUDE_DIR}/graphics/Image.hh
 					${INCLUDE_DIR}/graphics/PathSegment.hh
 					${INCLUDE_DIR}/graphics/TextState.hh
 					${INCLUDE_DIR}/graphics/CharVisitor.hh
@@ -227,6 +229,9 @@ set( GRAPICS_SRCS	${GRAPICS_DIR}/Graphics.cc
 					${GRAPICS_DIR}/Text.cc
 					${GRAPICS_DIR}/RealText.cc
 					${GRAPICS_DIR}/Path.cc
+					${GRAPICS_DIR}/Image.cc
+					${GRAPICS_DIR}/InlineImage.cc
+					${GRAPICS_DIR}/XImage.cc
 					${GRAPICS_DIR}/PathSegment.cc
 					${GRAPICS_DIR}/RealPath.cc
 					${GRAPICS_DIR}/CharVisitor.cc
@@ -250,7 +255,6 @@ set( CORE_SRCS  	${CORE_DIR}/Object.cc
 					${CORE_DIR}/Array.cc
 					${CORE_DIR}/Dictionary.cc
 					${CORE_DIR}/Token.cc
-					${CORE_DIR}/TokenSrc.cc
 					${CORE_DIR}/String.cc
 					${CORE_DIR}/Name.cc )
 
@@ -274,7 +278,7 @@ set( UTIL_SRCS  	${UTIL_DIR}/Rect.cc
 					${UTIL_DIR}/Debug.cc
 					${UTIL_DIR}/Matrix.cc )
 
-set( IMG_SRCS  		${IMG_DIR}/Image.cc )
+set( IMG_SRCS  		${IMG_DIR}/Pixmap.cc )
 
 set( FONT_SRCS		${FONT_DIR}/Font.cc
                     ${FONT_DIR}/SimpleFont.cc
@@ -530,7 +534,6 @@ target_link_libraries( testpdf pdfdoc_static )
 if ( CPPUNIT_FOUND )
 
 set( UT_SRCS	test/core/TokenTest.cc
-				test/core/TokenSrcTest.cc
 				test/core/NameTest.cc
 				test/core/RefTest.cc
 				test/core/ObjectTest.cc

@@ -26,6 +26,8 @@
 
 #include "Token.hh"
 
+#include "util/Exception.hh"
+
 #include <boost/bind.hpp>
 
 #include <algorithm>
@@ -41,6 +43,45 @@ namespace pdf {
 Token::Token( const std::string& t )
 	: m_token( t )
 {
+}
+
+std::istream& Token::PeekPrefix( std::istream& is, Token& prefix )
+{
+	// skip all spaces
+	while ( std::isspace( is.peek() ) && is )
+		is.get() ;
+
+	int ich = is.peek() ;
+	if ( ich != std::char_traits<char>::eof() )
+	{
+		if ( ich == '<' || ich == '>' )
+		{
+			is.ignore() ;
+			int ich2 = is.peek() ;
+			
+			if ( !is.putback( ich ) )
+				throw ParseError( "cannot putback!" ) ;
+			
+			if (  ich2 != std::char_traits<char>::eof() )
+			{
+				if ( ich2 == ich )
+				{
+					char t[] =
+					{
+						static_cast<char>( ich ),
+						static_cast<char>( ich ),
+						'\0'
+					} ;
+					prefix.m_token = t ;
+					return is ;
+				}
+			}
+		}
+		prefix.m_token = static_cast<char>( ich ) ;
+	}
+	else
+		is.setstate( is.failbit ) ;
+	return is ;
 }
 
 /*!	extracts a token from input stream. This function does the actual parsing.
@@ -74,7 +115,7 @@ std::istream& operator>>( std::istream& is, Token& token )
 		text.swap( token.m_token ) ;
 
 	// set stream state to failed if extracted token is empty
-	// to prevend infinite loop
+	// to prevent infinite loop
 	else
 		is.setstate( is.failbit ) ;
 	
@@ -239,6 +280,23 @@ bool Token::IsInt( ) const
 bool Token::IsSpace( ) const
 {
 	return !m_token.empty() && std::isspace( *m_token.begin() ) ; 
+}
+
+bool Token::IsNumber( ) const
+{
+	static const std::string numeric = "0123456789.+-" ;
+	return !m_token.empty() && numeric.find( m_token[0] ) != numeric.npos ;
+}
+
+std::istream& Token::Putback( std::istream& is ) const
+{
+	is.putback( ' ' ) ;
+	
+	for ( std::string::const_reverse_iterator i = m_token.rbegin() ;
+		i != m_token.rend() ; ++i )
+		is.putback( *i ) ;
+	
+	return is.putback( ' ' ) ;
 }
 
 } // end of namespace

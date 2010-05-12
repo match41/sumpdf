@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2009 by Nestal Wan                                      *
+ *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,44 +17,21 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/*!
-	\file	TokenSrcTest.hh
-	\brief	definition the TokenSrcTest class
-	\date	Sun Mar 22 2009
+/**	\file	XImage.cc
+	\brief	implementation of the XImage class
+	\date	May 11, 2010
 	\author	Nestal Wan
 */
 
-#ifndef __PDFUT_TOKEN_SRC_TEST_HEADER_INCLUDED__
-#define __PDFUT_TOKEN_SRC_TEST_HEADER_INCLUDED__
+#include "XImage.hh"
 
-#include <cppunit/TestFixture.h>
+namespace pdf {
 
-#include <cppunit/extensions/HelperMacros.h>
-
-class TokenSrcTest : public CppUnit::TestFixture
-{
-public :
-	TokenSrcTest( ) ;
+/**	constructor
 	
-	// declare suit function
-	CPPUNIT_TEST_SUITE( TokenSrcTest ) ;
-		CPPUNIT_TEST( TestGetChar ) ;
-		CPPUNIT_TEST( TestReadToken ) ;
-		CPPUNIT_TEST( TestPeekAllCache ) ;
-		CPPUNIT_TEST( TestPeekWithRead ) ;
-		CPPUNIT_TEST( TestIgnoreCache ) ;
-		CPPUNIT_TEST( TestIgnoreRead ) ;
-		CPPUNIT_TEST( TestSpaceInString ) ;
-	CPPUNIT_TEST_SUITE_END( ) ;
+*/
+XImage::XImage( )
+{
+}
 
-private :
-	void TestGetChar( ) ;
-	void TestReadToken( ) ;
-	void TestPeekAllCache( ) ;
-	void TestPeekWithRead( ) ;
-	void TestIgnoreCache( ) ;
-	void TestIgnoreRead( ) ;
-	void TestSpaceInString( ) ;
-} ;
-
-#endif
+} // end of namespace

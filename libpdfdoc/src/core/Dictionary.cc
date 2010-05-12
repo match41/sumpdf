@@ -28,7 +28,6 @@
 
 #include "Array.hh"
 #include "Token.hh"
-#include "TokenSrc.hh"
 #include "util/Exception.hh"
 #include "util/Debug.hh"
 
@@ -181,26 +180,21 @@ bool Dictionary::Set( const Name& key, const Object& value )
 	return r.second ;
 }
 
-std::istream& operator>>( std::istream& is, Dictionary& dict )
-{
-	TokenSrc s( is ) ;
-	return (s >> dict).Stream() ;
-}
-
-TokenSrc& operator>>( TokenSrc& src, Dictionary& dict )
+std::istream& operator>>( std::istream& src, Dictionary& dict )
 {
 	using namespace boost ;
 
 	Token t ;
-	if ( src >> t && t.Get() != "<<" )
+	if ( Token::PeekPrefix( src, t ) && t.Get() != "<<" )
 		throw ParseError( format("dictionary not start with \"<<\" but \"%1%\"")
 			% t.Get( ) ) ;
 	
+	// dump the "<<" token
+	src >> t ;
+	
 	Dictionary temp ;
-	while ( src >> t && t.Get() != ">>" )
+	while ( Token::PeekPrefix( src, t ) && t.Get() != ">>" )
 	{
-		src.PutBack( t ) ;
-		
 		Name	key ;
 		Object	value ;
 		
@@ -210,7 +204,12 @@ TokenSrc& operator>>( TokenSrc& src, Dictionary& dict )
 	}
 	
 	if ( src )
+	{
+		// dump the ">>" token
+		src >> t ;
+		
 		temp.swap( dict ) ;
+	}
 	
 	return src ;
 }
@@ -242,6 +241,11 @@ std::ostream& operator<<( std::ostream& os, const Dictionary& dict )
 bool Dictionary::operator==( const Dictionary& dict ) const
 {
 	return m_map == dict.m_map ;
+}
+
+bool Dictionary::operator!=( const Dictionary& dict ) const
+{
+	return m_map != dict.m_map ;
 }
 
 bool Dictionary::operator<( const Dictionary& dict ) const

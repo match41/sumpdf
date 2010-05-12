@@ -213,13 +213,13 @@ void PageView::DeleteSelection( )
 void PageView::OnSelectPointerTool( )
 {
 	m_tool = pointer ;
-	setCursor( Qt::ArrowCursor ) ;
+	viewport()->setCursor( Qt::ArrowCursor ) ;
 }
 
 void PageView::OnSelectTextTool( )
 {
 	m_tool = text ;
-	setCursor( Qt::IBeamCursor ) ;
+	viewport()->setCursor( Qt::IBeamCursor ) ;
 }
 
 void PageView::OnSelectZoomTool( )
@@ -227,7 +227,7 @@ void PageView::OnSelectZoomTool( )
 	m_tool = zoom ;
 	
 	// TODO: use ":/images/Magnifying_glass_icon.svg" but smaller
-	setCursor( Qt::CrossCursor ) ;
+	viewport()->setCursor( Qt::CrossCursor ) ;
 }
 
 } // end of namespace

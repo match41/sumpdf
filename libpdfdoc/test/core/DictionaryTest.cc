@@ -213,3 +213,12 @@ void DictionaryTest::TestEraseByAddNull( )
 	CPPUNIT_ASSERT( s.find( "haha" ) == s.end() ) ;
 	PDFUT_ASSERT_EQUAL( s["!!!"], "hehe" ) ;
 }
+
+void DictionaryTest::TestReadEmpty( )
+{
+	std::istringstream ss( "<< >>" ) ;
+
+	pdf::Dictionary d2 ;
+	CPPUNIT_ASSERT( ss >> d2 ) ;
+	PDFUT_ASSERT_EQUAL( d2, pdf::Dictionary() ) ;
+}

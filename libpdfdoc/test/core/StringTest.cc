@@ -28,7 +28,6 @@
 
 #include "core/String.hh"
 #include "core/Token.hh"
-#include "core/TokenSrc.hh"
 
 #include "mock/Assert.hh"
 
@@ -124,8 +123,7 @@ void StringTest::TestOctal2( )
 
 void StringTest::TestSpace( )
 {
-	std::istringstream ss( "( )" ) ;
-	TokenSrc src( ss ) ;
+	std::istringstream src( "( )" ) ;
 	
 	pdf::String str ;
 	CPPUNIT_ASSERT( src >> str ) ;
@@ -134,8 +132,7 @@ void StringTest::TestSpace( )
 
 void StringTest::TestVTab( )
 {
-	std::istringstream ss( "(\x09)" ) ;
-	TokenSrc src( ss ) ;
+	std::istringstream src( "(\x09)" ) ;
 	
 	pdf::String str ;
 	CPPUNIT_ASSERT( src >> str ) ;
@@ -144,8 +141,7 @@ void StringTest::TestVTab( )
 
 void StringTest::TestSpacesMix( )
 {
-	std::istringstream ss( "(\x09""abc\nb\t123\x0b)" ) ;
-	TokenSrc src( ss ) ;
+	std::istringstream src( "(\x09""abc\nb\t123\x0b)" ) ;
 	
 	pdf::String str ;
 	CPPUNIT_ASSERT( src >> str ) ;
@@ -154,8 +150,7 @@ void StringTest::TestSpacesMix( )
 
 void StringTest::TestBrackets( )
 {
-	std::istringstream ss( "(\x09(abcd hello?? ?(\nb)\t12)3\x0b)" ) ;
-	TokenSrc src( ss ) ;
+	std::istringstream src( "(\x09(abcd hello?? ?(\nb)\t12)3\x0b)" ) ;
 	
 	pdf::String str ;
 	CPPUNIT_ASSERT( src >> str ) ;

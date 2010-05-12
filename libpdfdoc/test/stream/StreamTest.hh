@@ -47,9 +47,9 @@ public :
 
 	// declare suit function
 	CPPUNIT_TEST_SUITE( StreamTest ) ;
+		CPPUNIT_TEST( TestReadDeflate ) ;
 		CPPUNIT_TEST( TestRead ) ;
 		CPPUNIT_TEST( TestRead2 ) ;
-		CPPUNIT_TEST( TestReadDeflate ) ;
 		CPPUNIT_TEST( TestWriteDeflate ) ;
 		CPPUNIT_TEST( TestWrite ) ;
 		CPPUNIT_TEST( TestWrite2 ) ;

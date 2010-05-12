@@ -27,7 +27,6 @@
 
 #include "core/Array.hh"
 #include "core/Object.hh"
-#include "core/TokenSrc.hh"
 #include "graphics/RealText.hh"
 #include "graphics/TextState.hh"
 #include "page/ContentOp.hh"
@@ -73,8 +72,6 @@ void RealTextTest::TestTdCmd( )
 	PDFUT_ASSERT_EQUAL( t.Count(), 1U ) ;
 	PDFUT_ASSERT_EQUAL( t.front().Format(), gs ) ;
 	PDFUT_ASSERT_EQUAL( t.front().Transform(), Matrix::Translation(100,200) ) ;
-//	PDFUT_ASSERT_EQUAL( t.front().XPos(), 100.0 ) ;
-//	PDFUT_ASSERT_EQUAL( t.front().YPos(), 200.0 ) ;
 
 	// action: move another 300,900
 	args[0] = 300 ;
@@ -86,8 +83,6 @@ void RealTextTest::TestTdCmd( )
 	PDFUT_ASSERT_EQUAL( t.Count(), 1U ) ;
 	PDFUT_ASSERT_EQUAL( t.front().Format(), gs ) ;
 	PDFUT_ASSERT_EQUAL( t.front().Transform(), Matrix::Translation(400,1100) ) ;
-//	PDFUT_ASSERT_EQUAL( t.front().XPos(), 400.0 ) ;
-//	PDFUT_ASSERT_EQUAL( t.front().YPos(), 1100.0 ) ;
 	
 	RealText exp( gs ) ;
 	exp.back() = TextLine( gs, Matrix::Translation(400, 1100) ) ;
@@ -147,8 +142,6 @@ void RealTextTest::TestTj( )
 	PDFUT_ASSERT_EQUAL( t.Count(), 2U ) ;
 	PDFUT_ASSERT_EQUAL( t.back().Format(), gs2x ) ;
 	PDFUT_ASSERT_EQUAL( t.back().Transform(), Matrix::Translation(36.0,0.0) ) ;
-//	PDFUT_ASSERT_EQUAL( t.back().XPos(), 36.0 ) ;
-//	PDFUT_ASSERT_EQUAL( t.back().YPos(), 0.0 ) ;
 }
 
 void RealTextTest::TestTJ( )
@@ -192,8 +185,6 @@ void RealTextTest::TestTJ( )
 
 	// next object starts at 60.0 units further
 	PDFUT_ASSERT_EQUAL( t.back().Transform(), Matrix::Translation(60.0,0.0) ) ;
-//	PDFUT_ASSERT_EQUAL( t.back().XPos(), 60.0 ) ;
-//	PDFUT_ASSERT_EQUAL( t.back().YPos(), 0.0 ) ;
 }
 
 void RealTextTest::TestTjx2( )
@@ -250,10 +241,9 @@ void RealTextTest::TestName( )
 	PDFUT_ASSERT_EQUAL( line.Transform(), Matrix() ) ;
 	
 	Matrix mat ;
-	std::stringstream ss ;
-	line.Print( ss, mat, gs, &res ) ;
+	std::stringstream src ;
+	line.Print( src, mat, gs, &res ) ;
 	
-	TokenSrc src( ss ) ;
 	ContentOp op2 ;
 	while ( src >> op2 && op2.Operator().Get() != "TJ" ) ;
 	PDFUT_ASSERT_EQUAL( op2, op ) ;

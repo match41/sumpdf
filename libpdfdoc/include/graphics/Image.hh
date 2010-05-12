@@ -17,84 +17,48 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	ContentStream.hh
-    \brief	definition the ContentStream class
-    \date	Feb 20, 2010
+/**	\file	Image.hh
+    \brief	definition the Image class
+    \date	May 11, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_CONTENTSTREAM_HH_EADER_INCLUDED__
-#define __PDF_CONTENTSTREAM_HH_EADER_INCLUDED__
+#ifndef __PDF_IMAGE_HEADER_INCLUDED__
+#define __PDF_IMAGE_HEADER_INCLUDED__
 
-#include "graphics/GraphicsState.hh"
-#include "stream/Stream.hh"
+#include "Graphics.hh"
+
+#include "GraphicsState.hh"
 #include "util/Matrix.hh"
-
-#include <stack>
-#include <vector>
 
 namespace pdf {
 
-class ContentOp ;
-class Graphics ;
-class GraphicsVisitor ;
-class ResourcesDict ;
-
 ///	brief description
-/**	\internal
-	The ContentStream class represents
+/**	The Image class represents
 */
-class ContentStream
+class Image : public Graphics
 {
 public :
-	template <typename InputIt>
-	ContentStream( InputIt first, InputIt last,
-		const ResourcesDict	*res,
-		GraphicsVisitor		*visitor )
-		: m_strs( first, last )
-		, m_visitor( visitor )
-		, m_res( res )
-		, m_current( 0 )
-	{
-	}
+	Image( ) ;
+	~Image( ) ;
 
-	void Decode( ) ;
+	void OnCommand( ContentOp& op, const ResourcesDict *res ) ;
 
-private :
-	struct HandlerMap ;
+	Matrix Transform( ) const ;
+	void Transform( const Matrix& mat ) ;
+	void Print(
+		std::ostream&	os,
+		ResourcesDict	*res,
+		GraphicsState&	gs ) const ;
+	void Visit( GraphicsVisitor *visitor ) ;
 	
-	void Decode( Stream& str ) ;
-
-	void ProcessCommand( ContentOp& op ) ;
-
-	void OnBT( ContentOp& op ) ;
-	void OnEndObject( ContentOp& op ) ;
-	void Oncm( ContentOp& op ) ;
-	void OnQ( ContentOp& op ) ;
-	void Onq( ContentOp& op ) ;
-	void Onm( ContentOp& op ) ;
-	void OnPaintPath( ContentOp& op ) ;
-	void OnInlineImage( std::istream& is ) ;
+	GraphicsState GetState( ) const ;
 
 private :
-	std::vector<Stream>		m_strs ;
-	GraphicsVisitor 		*m_visitor ; 
-	const ResourcesDict		*m_res ;
-
-	/// all graphics states
-	struct State
-	{
-		GraphicsState	gs ;
-		Matrix			ctm ;
-	} m_state ;
-
-	//@{
-	/// Context information for decoding the graphics objects
-	Graphics			*m_current ;
-	std::stack<State>	m_state_stack ;
-	//@}
+	Matrix			m_transform ;
+	GraphicsState	m_gs ;
 } ;
 
 } // end of namespace
 
-#endif // CONTENTSTREAM_HH_
+#endif // IMAGE_HH_

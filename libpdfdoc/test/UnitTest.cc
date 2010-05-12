@@ -28,7 +28,6 @@
 
 #include "RealDocTest.hh"
 #include "core/TokenTest.hh"
-#include "core/TokenSrcTest.hh"
 #include "core/NameTest.hh"
 #include "core/RefTest.hh"
 #include "core/ObjectTest.hh"
@@ -77,18 +76,16 @@ int main( int argc, char **argv )
 	using namespace pdfut ;
 
 	CppUnit::TextUi::TestRunner runner;
-	runner.addTest( RealDocTest::suite( ) ) ;
+	runner.addTest( StreamTest::suite( ) ) ;
+	runner.addTest( ArrayTest::suite( ) ) ;
+	runner.addTest( DictionaryTest::suite( ) ) ;
 	runner.addTest( TokenTest::suite( ) ) ;
-	runner.addTest( TokenSrcTest::suite( ) ) ;
 	runner.addTest( NameTest::suite( ) ) ;
 	runner.addTest( RefTest::suite( ) ) ;
 	runner.addTest( ObjectTest::suite( ) ) ;
 	runner.addTest( StringTest::suite( ) ) ;
-	runner.addTest( DictionaryTest::suite( ) ) ;
-	runner.addTest( ArrayTest::suite( ) ) ;
 	runner.addTest( RealPageTest::suite( ) ) ;
 	runner.addTest( RealResourcesTest::suite( ) ) ;
-	runner.addTest( StreamTest::suite( ) ) ;
 	runner.addTest( RealFileTest::suite( ) ) ;
 	runner.addTest( CatalogTest::suite( ) ) ;
 	runner.addTest( ElementPoolTest::suite( ) ) ;
@@ -122,6 +119,7 @@ int main( int argc, char **argv )
 	runner.addTest( OutStreamBufAdaptorTest::suite( ) ) ;
 	runner.addTest( RawFilterTest::suite( ) ) ;
 	runner.addTest( MatrixTest::suite( ) ) ;
+	runner.addTest( RealDocTest::suite( ) ) ;
 
 	runner.run();
   
