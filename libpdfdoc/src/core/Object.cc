@@ -635,10 +635,6 @@ std::istream& operator>>( std::istream& src, Object& obj )
 		else if ( t.IsNumber() )
 			obj.DecodeNumberOrIndirectObj( src ) ;
 		
-		// "null" represent null object of course
-		// null object is a default construct Object, so no need to set
-		// explicitly, i.e. nothing to do.
-		// if not null object, then it is a parse error.
 		else
 		{
 			src >> t ;
@@ -652,14 +648,13 @@ std::istream& operator>>( std::istream& src, Object& obj )
 				Bool b = { false } ;
 				obj.m_obj = b ;
 			}
+			// "null" represent null object of course
 			else if ( t.Get() == "null" )
-			{
 				obj.m_obj = Object::Null() ;
-			}
+			
+			// Token
 			else
-			{
 				obj.m_obj = t ;
-			}
 		}
 	}
 		
