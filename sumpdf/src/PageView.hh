@@ -74,6 +74,7 @@ private :
 	
 	// dragging
 	QPointF		m_start_drag ;
+	int			m_page_size ;
 } ;
 
 } // end of namespace
