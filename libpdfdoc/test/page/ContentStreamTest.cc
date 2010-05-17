@@ -37,6 +37,7 @@
 
 #include "mock/Assert.hh"
 #include "mock/MockFont.hh"
+#include "mock/MockGraphicsVisitor.hh"
 
 #include "util/Matrix.hh"
 
@@ -76,7 +77,7 @@ void ContentStreamTest::TestCID( )
 	MockResources res ;
 	res.Add( Name("F1"), &font ) ;
 
-	class Visitor : public GraphicsVisitor
+	class Visitor : public MockGraphicsVisitor
 	{
 	public :
 		void VisitText( Text *text )
@@ -94,14 +95,6 @@ void ContentStreamTest::TestCID( )
 			++i ;
 			CPPUNIT_ASSERT( i != text->end() ) ;
 		}
-		
-		void VisitGraphics( Graphics *text )
-		{
-		}
-		
-		void VisitPath( Path *path )
-		{
-		}
 	} v ;
 
 	ContentStream subject( str, str+1, &res, &v ) ;
@@ -115,19 +108,11 @@ void ContentStreamTest::TestF( )
 		Stream( "q\n0.03137 0.2902 0.3451 rg\n36 783 523 23 re\nf\nQ\n" )
 	} ;
 
-	class Visitor : public GraphicsVisitor
+	class Visitor : public MockGraphicsVisitor
 	{
 	public :
 		Visitor()
 			: m_path_count( 0 )
-		{
-		}
-		
-		void VisitText( Text *text )
-		{
-		}
-		
-		void VisitGraphics( Graphics *text )
 		{
 		}
 		

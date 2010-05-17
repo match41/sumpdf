@@ -17,22 +17,87 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	XImage.cc
-	\brief	implementation of the XImage class
+/**	\file	Image.cc
+	\brief	implementation of the Image class
 	\date	May 11, 2010
 	\author	Nestal Wan
 */
 
-#include "XImage.hh"
+#include "graphics/XObject.hh"
+
+#include "core/Name.hh"
+#include "core/Object.hh"
 
 namespace pdf {
+
+template <typename T>
+XObject<T>::XObject( const GraphicsState& gs, const Matrix& ctm )
+	: m_transform( ctm )
+	, m_gs( gs )
+{
+}
 
 /**	constructor
 	
 */
-XImage::XImage( const GraphicsState& gs, const Matrix& ctm )
-	: Image( gs, ctm )
+template <typename T>
+XObject<T>::~XObject( )
 {
 }
 
+template <typename T>
+void XObject<T>::OnCommand( ContentOp& op, const ResourcesDict *res )
+{
+}
+
+template <typename T>
+Matrix XObject<T>::Transform( ) const
+{
+	return m_transform ;
+}
+
+template <typename T>
+void XObject<T>::Transform( const Matrix& mat )
+{
+	m_transform = mat ;
+}
+
+template <typename T>
+void XObject<T>::Print(
+	std::ostream&	os,
+	ResourcesDict	*res,
+	GraphicsState&	gs ) const
+{
+}
+
+template <typename T>
+void XObject<T>::Visit( GraphicsVisitor *visitor )
+{
+}
+
+template <typename T>
+GraphicsState XObject<T>::GetState( ) const
+{
+	return m_gs ;
+}
+
+template <typename T>
+const T& XObject<T>::Get( ) const
+{
+	return m_obj ;
+}
+
+template <typename T>
+T& XObject<T>::Get( )
+{
+	return m_obj ;
+}
+
 } // end of namespace
+
+// explicit instantiation
+#include "graphics/Image.hh"
+namespace pdf
+{
+	template class XObject<Image> ;
+}

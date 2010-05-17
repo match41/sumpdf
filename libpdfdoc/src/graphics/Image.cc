@@ -19,7 +19,7 @@
 
 /**	\file	Image.cc
 	\brief	implementation of the Image class
-	\date	May 11, 2010
+	\date	May 17, 2010
 	\author	Nestal Wan
 */
 
@@ -28,51 +28,75 @@
 #include "core/Name.hh"
 #include "core/Object.hh"
 
-namespace pdf {
+#include <iostream>
 
-Image::Image( const GraphicsState& gs, const Matrix& ctm )
-	: m_transform( ctm )
-	, m_gs( gs )
-	, m_width( 0 )
-	, m_height( 0 )
-{
-}
+namespace pdf {
 
 /**	constructor
 	
 */
-Image::~Image( )
+Image::Image( )
+	: m_width( 0 )
+	, m_height( 0 )
 {
 }
 
-void Image::OnCommand( ContentOp& op, const ResourcesDict *res )
+Image::Image( Stream& str )
 {
 }
 
-Matrix Image::Transform( ) const
+std::istream& Image::ReadInlineImage( std::istream& is )
 {
-	return m_transform ;
-}
+	Object key ;
+	while ( is >> key )
+	{
+		if ( key.Is<Token>() && key.As<Token>().Get() == "ID" )
+		{
+std::cout << "got ID" << std::endl ;
+			while ( is )
+			{
+				int ich = is.rdbuf()->sgetc() ;
+				if ( ich == std::istream::traits_type::eof() )
+				{
+					std::cout << "EOF!" << std::endl ;
+					return is ;
+				}
 
-void Image::Transform( const Matrix& mat )
-{
-	m_transform = mat ;
-}
+				char ch = std::istream::traits_type::to_char_type(ich) ;
 
-void Image::Print(
-	std::ostream&	os,
-	ResourcesDict	*res,
-	GraphicsState&	gs ) const
-{
-}
-
-void Image::Visit( GraphicsVisitor *visitor )
-{
-}
-
-GraphicsState Image::GetState( ) const
-{
-	return m_gs ;
+				if ( ch == 'E' )
+				{
+					is.rdbuf()->sbumpc() ;
+					
+					int ich2 = is.rdbuf()->sgetc() ;
+					if ( ich2 == std::istream::traits_type::eof() )
+					{
+						std::cout << "EOF!" << std::endl ;
+						return is ;
+					}
+					
+					if ( std::istream::traits_type::to_char_type(ich2) == 'I' )
+					{
+						std::cout << "finished inline image" << std::endl ;
+						std::cout << "width = " << m_width << " height = "
+						<< m_height << std::endl ;
+						return is ;
+					}
+				}
+				
+				m_bytes.push_back( ch ) ;
+				is.rdbuf()->sbumpc() ;
+			}
+		}
+		else if ( key.Is<Name>() )
+		{
+			Object value ;
+			if ( is >> value )
+				ProcessDictEntry( key.As<Name>(), value ) ;
+		}
+	}
+	std::cout << "premature finish" << std::endl ;
+	return is ;
 }
 
 void Image::ProcessDictEntry( const Name& name, const Object& entry )

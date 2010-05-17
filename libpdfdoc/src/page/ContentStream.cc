@@ -28,10 +28,10 @@
 #include "ContentOp.hh"
 #include "graphics/GraphicsState.hh"
 #include "graphics/GraphicsVisitor.hh"
+#include "graphics/Image.hh"
 #include "graphics/RealPath.hh"
 #include "graphics/RealText.hh"
-#include "graphics/Image.hh"
-#include "graphics/InlineImage.hh"
+#include "graphics/XObject.hh"
 #include "stream/Stream.hh"
 
 #include "util/Debug.hh"
@@ -200,60 +200,13 @@ void ContentStream::OnPaintPath( ContentOp& op, std::istream& is )
 	OnEndObject( op, is ) ;
 }
 
-void ContentStream::OnInlineImage( ContentOp&, std::istream& is )
+void ContentStream::OnInlineImage( ContentOp& op, std::istream& is )
 {
-	Object key ;
-
-	InlineImage *img = new InlineImage( m_state.gs, m_state.ctm ) ;
-
-	while ( is >> key )
-	{
-		if ( key.Is<Token>() && key.As<Token>().Get() == "ID" )
-		{
-std::cout << "got ID" << std::endl ;
-			std::vector<unsigned char> bytes ;
-			
-			while ( is )
-			{
-				int ich = is.rdbuf()->sgetc() ;
-				if ( ich == std::istream::traits_type::eof() )
-				{
-					std::cout << "EOF!" << std::endl ;
-					return ;
-				}
-
-				if ( std::istream::traits_type::to_char_type(ich) == 'E' )
-				{
-					is.rdbuf()->sbumpc() ;
-					
-					int ich2 = is.rdbuf()->sgetc() ;
-					if ( ich2 == std::istream::traits_type::eof() )
-					{
-						std::cout << "EOF!" << std::endl ;
-						return ;
-					}
-					
-					if ( std::istream::traits_type::to_char_type(ich2) == 'I' )
-					{
-						std::cout << "finished inline image" << std::endl ;
-						std::cout << "width = " << img->Width() << " height = "
-						<< img->Height() << std::endl ;
-						return ;
-					}
-				}
-				
-				is.rdbuf()->sbumpc() ;
-			}
-		}
-		else if ( key.Is<Name>() )
-		{
-			Object value ;
-			if ( is >> value )
-				img->ProcessDictEntry( key.As<Name>(), value ) ;
-		}
-	}
-
-	std::cout << "premature finish" << std::endl ;
+	XObject<Image> *img = new XObject<Image>( m_state.gs, m_state.ctm ) ;
+	img->Get().ReadInlineImage( is ) ;
+	
+	m_current = img ;
+	OnEndObject( op, is ) ;
 }
 
 } // end of namespace

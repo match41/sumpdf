@@ -17,21 +17,54 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	XObject.cc
-	\brief	implementation of the XObject class
-	\date	May 8, 2010
-	\author	Nestal Wan
+/**	\file	Image.hh
+    \brief	definition the Image class
+    \date	May 11, 2010
+    \author	Nestal Wan
 */
 
-#include "XObject.hh"
+#ifndef __PDF_IMAGE_HEADER_INCLUDED__
+#define __PDF_IMAGE_HEADER_INCLUDED__
+
+#include "Graphics.hh"
+
+#include "GraphicsState.hh"
+#include "util/Matrix.hh"
 
 namespace pdf {
 
-/**	constructor
-	
+///	brief description
+/**	The Image class represents
 */
-XObject::~XObject( )
+template <typename T>
+class XObject : public Graphics
 {
-}
+public :
+	XObject( const GraphicsState& gs, const Matrix& ctm ) ;
+	~XObject( ) ;
+
+	void OnCommand( ContentOp& op, const ResourcesDict *res ) ;
+
+	Matrix Transform( ) const ;
+	void Transform( const Matrix& mat ) ;
+	void Print(
+		std::ostream&	os,
+		ResourcesDict	*res,
+		GraphicsState&	gs ) const ;
+	void Visit( GraphicsVisitor *visitor ) ;
+	
+	GraphicsState GetState( ) const ;
+
+	const T& Get( ) const ;
+	T& Get( ) ;
+
+private :
+	Matrix			m_transform ;
+	GraphicsState	m_gs ;
+	
+	T	m_obj ;
+} ;
 
 } // end of namespace
+
+#endif // IMAGE_HH_

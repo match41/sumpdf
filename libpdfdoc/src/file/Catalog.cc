@@ -80,7 +80,8 @@ public :
 	void VisitText( Text *text ) ;
 	void VisitGraphics( Graphics *text ) ;
 	void VisitPath( Path *path ) ;
-
+	void VisitImage( XObject<Image> *img ) ;
+	
 private :
 	typedef std::set<wchar_t> CharSet ;
 	typedef std::map<const BaseFont*, CharSet> FontChars ;
@@ -270,6 +271,10 @@ void Catalog::FontSubset::VisitGraphics( Graphics *text )
 }
 
 void Catalog::FontSubset::VisitPath( Path *path )
+{
+}
+
+void Catalog::FontSubset::VisitImage( XObject<Image> *img )
 {
 }
 

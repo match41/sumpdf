@@ -48,11 +48,10 @@ class Font ;
 class FontDb ;
 class FontSubsetInfo ;
 class DictReader ;
-class RealImage ;
+class Image ;
 class Object ;
 class Ref ;
 class ExtGState ;
-class XObject ;
 
 /*!	\brief	page resources
 
@@ -103,9 +102,9 @@ private :
 	
 	typedef	boost::bimap<
 		boost::bimaps::set_of<Name>,
-		boost::bimaps::set_of<XObject*>
-	> XObjectMap ; 
-	XObjectMap			m_xobjs ;
+		boost::bimaps::set_of<Image*>
+	> ImageMap ; 
+	ImageMap			m_imgs ;
 	
 	std::vector<Name>	m_proc_set ;
 } ;

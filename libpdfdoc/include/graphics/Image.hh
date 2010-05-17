@@ -19,52 +19,45 @@
 
 /**	\file	Image.hh
     \brief	definition the Image class
-    \date	May 11, 2010
+    \date	May 17, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_IMAGE_HEADER_INCLUDED__
-#define __PDF_IMAGE_HEADER_INCLUDED__
+#ifndef __PDF_IMAGE_HH_EADER_INCLUDED__
+#define __PDF_IMAGE_HH_EADER_INCLUDED__
 
-#include "Graphics.hh"
-
-#include "GraphicsState.hh"
-#include "util/Matrix.hh"
+#include <iosfwd>
+#include <vector>
 
 namespace pdf {
 
+class Name ;
+class Object ;
+class Stream ;
+
 ///	brief description
-/**	The Image class represents
+/**	\internal
+	The Image class represents
 */
-class Image : public Graphics
+class Image
 {
 public :
-	Image( const GraphicsState& gs, const Matrix& ctm ) ;
-	~Image( ) ;
-
-	void OnCommand( ContentOp& op, const ResourcesDict *res ) ;
-
-	Matrix Transform( ) const ;
-	void Transform( const Matrix& mat ) ;
-	void Print(
-		std::ostream&	os,
-		ResourcesDict	*res,
-		GraphicsState&	gs ) const ;
-	void Visit( GraphicsVisitor *visitor ) ;
+	Image( ) ;
+	Image( Stream& str ) ;
 	
-	GraphicsState GetState( ) const ;
+	std::size_t Width() const ;
+	std::size_t Height() const ;
+	
+	std::istream& ReadInlineImage( std::istream& is ) ;
 
-	std::size_t Width( ) const ;
-	std::size_t Height( ) const ;
-
+private :
 	void ProcessDictEntry( const Name& name, const Object& entry ) ;
 
 private :
-	Matrix			m_transform ;
-	GraphicsState	m_gs ;
-	
 	std::size_t		m_width ;
 	std::size_t		m_height ;
+	
+	std::vector<unsigned char>	m_bytes ;
 } ;
 
 } // end of namespace
