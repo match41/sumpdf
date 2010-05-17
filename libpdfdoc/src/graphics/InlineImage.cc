@@ -30,7 +30,8 @@ namespace pdf {
 /**	constructor
 	
 */
-InlineImage::InlineImage( )
+InlineImage::InlineImage( const GraphicsState& gs, const Matrix& ctm )
+	: Image( gs, ctm )
 {
 }
 

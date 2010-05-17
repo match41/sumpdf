@@ -39,7 +39,7 @@ namespace pdf {
 class Image : public Graphics
 {
 public :
-	Image( ) ;
+	Image( const GraphicsState& gs, const Matrix& ctm ) ;
 	~Image( ) ;
 
 	void OnCommand( ContentOp& op, const ResourcesDict *res ) ;
@@ -54,9 +54,17 @@ public :
 	
 	GraphicsState GetState( ) const ;
 
+	std::size_t Width( ) const ;
+	std::size_t Height( ) const ;
+
+	void ProcessDictEntry( const Name& name, const Object& entry ) ;
+
 private :
 	Matrix			m_transform ;
 	GraphicsState	m_gs ;
+	
+	std::size_t		m_width ;
+	std::size_t		m_height ;
 } ;
 
 } // end of namespace

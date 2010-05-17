@@ -30,7 +30,8 @@ namespace pdf {
 /**	constructor
 	
 */
-XImage::XImage( )
+XImage::XImage( const GraphicsState& gs, const Matrix& ctm )
+	: Image( gs, ctm )
 {
 }
 

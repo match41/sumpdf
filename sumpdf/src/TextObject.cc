@@ -208,7 +208,6 @@ TextObject::TextObject( QTextDocument *text, DocModel *doc,
 			
 			new TextLineObject( line, this ) ;
 		}
-qDebug() << "height = " << max_height ;
 
 		b = b.next() ;
 		voffset += max_height ;

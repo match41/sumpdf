@@ -37,7 +37,7 @@ namespace pdf {
 class InlineImage : public Image
 {
 public :
-	InlineImage( ) ;
+	InlineImage( const GraphicsState& gs, const Matrix& ctm ) ;
 } ;
 
 } // end of namespace
