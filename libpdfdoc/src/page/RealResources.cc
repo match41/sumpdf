@@ -89,10 +89,29 @@ void RealResources::Read( DictReader& self )
 		m_proc_set.assign( proc_set.begin( ), proc_set.end( ) ) ;
 
 	ReadFontDict( self ) ;
+	ReadXObject( self ) ;
 }
 
 void RealResources::ReadXObject( DictReader& self )
 {
+	PDF_ASSERT( self.GetFile() != 0 ) ;
+	PDF_ASSERT( self.GetFile()->Pool() != 0 ) ;
+
+	DictReader xobjs ;
+	if ( self.Detach( "XObject",	xobjs ) )
+	{
+//		// clear the states before
+//		ElementFactory<> factory( xobjs ) ;
+//		using namespace boost ;
+//		std::for_each( m_imgs.left.begin(), m_imgs.left.end(),
+//			bind( &ExtGState::Release,
+//				bind( &StateMap::left_value_type::second, _1 ) ) ) ;
+//		m_imgs.clear( ) ;
+
+//		factory.MassProduce<ExtGState>(
+//			NewPtr<ExtGState>(),
+//			std::inserter( m_states.left, m_states.left.end() ) ) ;
+	}
 }
 
 Ref RealResources::Write( File *file, const FontSubsetInfo *subset ) const
@@ -114,13 +133,13 @@ void RealResources::ReadStateDict( DictReader& self )
 	if ( self.Detach( "ExtGState",	gs ) )
 	{
 		// clear the states before
+		ElementFactory<> factory( gs ) ;
 		using namespace boost ;
 		std::for_each( m_states.left.begin(), m_states.left.end(),
 			bind( &ExtGState::Release,
 				bind( &StateMap::left_value_type::second, _1 ) ) ) ;
 		m_states.clear( ) ;
 
-		ElementFactory<> factory( gs ) ;
 		factory.MassProduce<ExtGState>(
 			NewPtr<ExtGState>(),
 			std::inserter( m_states.left, m_states.left.end() ) ) ;
