@@ -34,6 +34,8 @@
 #include "file/ElementPool.hh"
 #include "file/ElementFactory.hh"
 #include "font/BaseFont.hh"
+#include "graphics/RealImage.hh"
+#include "stream/Stream.hh"
 #include "util/Util.hh"
 #include "util/Debug.hh"
 
@@ -100,17 +102,17 @@ void RealResources::ReadXObject( DictReader& self )
 	DictReader xobjs ;
 	if ( self.Detach( "XObject",	xobjs ) )
 	{
-//		// clear the states before
-//		ElementFactory<> factory( xobjs ) ;
-//		using namespace boost ;
-//		std::for_each( m_imgs.left.begin(), m_imgs.left.end(),
-//			bind( &ExtGState::Release,
-//				bind( &StateMap::left_value_type::second, _1 ) ) ) ;
-//		m_imgs.clear( ) ;
+		// clear the states before
+		ElementFactory<Stream> factory( xobjs ) ;
+		using namespace boost ;
+		std::for_each( m_imgs.left.begin(), m_imgs.left.end(),
+			bind( &RealImage::Release,
+				bind( &ImageMap::left_value_type::second, _1 ) ) ) ;
+		m_imgs.clear( ) ;
 
-//		factory.MassProduce<ExtGState>(
-//			NewPtr<ExtGState>(),
-//			std::inserter( m_states.left, m_states.left.end() ) ) ;
+		factory.MassProduce<RealImage>(
+			NewPtr<RealImage>(),
+			std::inserter( m_imgs.left, m_imgs.left.end() ) ) ;
 	}
 }
 

@@ -40,7 +40,7 @@ template <typename T>
 class XObject : public Graphics
 {
 public :
-	XObject( const GraphicsState& gs, const Matrix& ctm ) ;
+	XObject( const GraphicsState& gs, const Matrix& ctm, const T& t ) ;
 	~XObject( ) ;
 
 	void OnCommand( ContentOp& op, const ResourcesDict *res ) ;

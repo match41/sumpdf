@@ -102,7 +102,8 @@ set( PAGE_HDRS		${PAGE_DIR}/RealPage.hh
 					${PAGE_DIR}/ExtGState.hh )
 
 set( GRAPICS_HDRS	${GRAPICS_DIR}/RealText.hh
-					${GRAPICS_DIR}/RealPath.hh )
+					${GRAPICS_DIR}/RealPath.hh
+					${GRAPICS_DIR}/RealImage.hh )
 
 set( FILE_HDRS		${FILE_DIR}/RealFile.hh
 					${FILE_DIR}/File.hh
@@ -227,6 +228,7 @@ set( GRAPICS_SRCS	${GRAPICS_DIR}/Graphics.cc
 					${GRAPICS_DIR}/RealText.cc
 					${GRAPICS_DIR}/Path.cc
 					${GRAPICS_DIR}/Image.cc
+					${GRAPICS_DIR}/RealImage.cc
 					${GRAPICS_DIR}/XObject.cc
 					${GRAPICS_DIR}/PathSegment.cc
 					${GRAPICS_DIR}/RealPath.cc

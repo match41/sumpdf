@@ -31,9 +31,10 @@
 namespace pdf {
 
 template <typename T>
-XObject<T>::XObject( const GraphicsState& gs, const Matrix& ctm )
+XObject<T>::XObject( const GraphicsState& gs, const Matrix& ctm, const T& t )
 	: m_transform( ctm )
 	, m_gs( gs )
+	, m_obj( t )
 {
 }
 
@@ -96,8 +97,8 @@ T& XObject<T>::Get( )
 } // end of namespace
 
 // explicit instantiation
-#include "graphics/Image.hh"
 namespace pdf
 {
-	template class XObject<Image> ;
+	class Image ;
+	template class XObject<Image*> ;
 }

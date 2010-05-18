@@ -58,10 +58,10 @@ public :
 		if ( i != m_dict->end() )
 		{
 			T temp ;
-			m_dict.SwapAt( i, temp ) ;
+			bool is_ref = m_dict.SwapAt( i, temp ) ;
 			result = func( temp ) ;
 
-			if ( i->second.Is<Ref>() )
+			if ( is_ref )
 				pool->Add( i->second, result ) ;
 		}
 	

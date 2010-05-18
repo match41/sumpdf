@@ -17,21 +17,52 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	Image.cc
-	\brief	implementation of the Image class
-	\date	May 17, 2010
-	\author	Nestal Wan
+/**	\file	RealImage.hh
+    \brief	definition the RealImage class
+    \date	May 19, 2010
+    \author	Nestal Wan
 */
 
+#ifndef __PDF_REALIMAGE_HEADER_INCLUDED__
+#define __PDF_REALIMAGE_HEADER_INCLUDED__
+
 #include "graphics/Image.hh"
+#include "util/RefCounter.hh"
+
+#include <vector>
+#include <iosfwd>
 
 namespace pdf {
 
-/**	constructor
-	
+class Name ;
+class Object ;
+class Stream ;
+
+///	brief description
+/**	\internal
+	The RealImage class represents
 */
-Image::~Image( )
+class RealImage : public Image, public RefCounter
 {
-}
+public :
+	explicit RealImage( std::istream& is ) ;
+	explicit RealImage( Stream& str ) ;
+
+	std::size_t Width( ) const ;
+	std::size_t Height( ) const ;
+
+	std::istream& ReadInlineImage( std::istream& is ) ;
+
+private :
+	void ProcessDictEntry( const Name& name, const Object& entry ) ;
+
+private :
+	std::size_t		m_width ;
+	std::size_t		m_height ;
+	
+	std::vector<unsigned char>	m_bytes ;
+} ;
 
 } // end of namespace
+
+#endif // REALIMAGE_HH_

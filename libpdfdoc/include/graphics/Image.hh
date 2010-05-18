@@ -31,9 +31,6 @@
 
 namespace pdf {
 
-class Name ;
-class Object ;
-class Stream ;
 
 ///	brief description
 /**	\internal
@@ -42,22 +39,10 @@ class Stream ;
 class Image
 {
 public :
-	Image( ) ;
-	Image( Stream& str ) ;
+	virtual ~Image( ) = 0 ;
 	
-	std::size_t Width() const ;
-	std::size_t Height() const ;
-	
-	std::istream& ReadInlineImage( std::istream& is ) ;
-
-private :
-	void ProcessDictEntry( const Name& name, const Object& entry ) ;
-
-private :
-	std::size_t		m_width ;
-	std::size_t		m_height ;
-	
-	std::vector<unsigned char>	m_bytes ;
+	virtual std::size_t Width( ) const = 0 ;
+	virtual std::size_t Height( ) const = 0 ;
 } ;
 
 } // end of namespace

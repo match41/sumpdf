@@ -48,7 +48,7 @@ class Font ;
 class FontDb ;
 class FontSubsetInfo ;
 class DictReader ;
-class Image ;
+class RealImage ;
 class Object ;
 class Ref ;
 class ExtGState ;
@@ -102,7 +102,7 @@ private :
 	
 	typedef	boost::bimap<
 		boost::bimaps::set_of<Name>,
-		boost::bimaps::set_of<Image*>
+		boost::bimaps::set_of<RealImage*>
 	> ImageMap ; 
 	ImageMap			m_imgs ;
 	

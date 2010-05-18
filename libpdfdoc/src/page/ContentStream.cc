@@ -28,7 +28,7 @@
 #include "ContentOp.hh"
 #include "graphics/GraphicsState.hh"
 #include "graphics/GraphicsVisitor.hh"
-#include "graphics/Image.hh"
+#include "graphics/RealImage.hh"
 #include "graphics/RealPath.hh"
 #include "graphics/RealText.hh"
 #include "graphics/XObject.hh"
@@ -202,10 +202,8 @@ void ContentStream::OnPaintPath( ContentOp& op, std::istream& is )
 
 void ContentStream::OnInlineImage( ContentOp& op, std::istream& is )
 {
-	XObject<Image> *img = new XObject<Image>( m_state.gs, m_state.ctm ) ;
-	img->Get().ReadInlineImage( is ) ;
-	
-	m_current = img ;
+	Image *img = new RealImage( is ) ;
+	m_current = new XObject<Image*>( m_state.gs, m_state.ctm, img ) ;
 	OnEndObject( op, is ) ;
 }
 

@@ -86,4 +86,8 @@ void PageLoader::VisitPath( Path *path )
 	m_scene->addItem( new PathObject( path ) ) ;
 }
 
+void PageLoader::VisitImage( XObject<Image> *img )
+{
+}
+
 } // end of namespace
