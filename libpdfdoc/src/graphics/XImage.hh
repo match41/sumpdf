@@ -38,7 +38,7 @@ namespace pdf {
 class XImage : public XObject, public Image
 {
 public :
-	XImage( ) ;
+	XImage( const GraphicsState& gs, const Matrix& ctm ) ;
 } ;
 
 } // end of namespace

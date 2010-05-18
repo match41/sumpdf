@@ -44,6 +44,7 @@
 
 #include <limits>
 
+
 namespace pdf {
 
 PageView::PageView( QWidget	*parent, DocModel *doc )
@@ -67,6 +68,10 @@ void PageView::SetStatusBar( QStatusBar *status )
 void PageView::Zoom( double factor )
 {
 	double physical = physicalDpiX() / 72.0 ;
+
+	//save the current page size, save it as integer type
+	//it's easy to compare values and faster than double type
+	m_page_size = factor ;
 
 	QMatrix m ;
 	m.scale( factor * physical, -factor * physical ) ;
@@ -141,6 +146,9 @@ void PageView::OnTextLeftClick( QMouseEvent *event )
 
 void PageView::mousePressEvent( QMouseEvent *event )
 {
+	double page_size = 0 ;
+	const double ratio = 0.1 ;
+
 	if ( m_tool == pointer )
 	{
 		if ( event->button() == Qt::RightButton )
@@ -160,10 +168,16 @@ void PageView::mousePressEvent( QMouseEvent *event )
 		if ( event->button() == Qt::LeftButton )
 		{
 			// TODO: zoom in
+			page_size = m_page_size - ratio ;
+			page_size = (page_size > 0.01) ? page_size : 0.01 ;
+			Zoom(page_size) ;
 		}
 		else if ( event->button() == Qt::RightButton )
 		{
 			// TODO: zoom out
+			page_size = m_page_size + ratio ;
+			page_size = (page_size < 3.0) ? page_size : 3.0 ;
+			Zoom(page_size) ;
 		}
 	}
 }

@@ -25,7 +25,18 @@
 
 #include "graphics/Image.hh"
 
+#include "core/Name.hh"
+#include "core/Object.hh"
+
 namespace pdf {
+
+Image::Image( const GraphicsState& gs, const Matrix& ctm )
+	: m_transform( ctm )
+	, m_gs( gs )
+	, m_width( 0 )
+	, m_height( 0 )
+{
+}
 
 /**	constructor
 	
@@ -62,6 +73,24 @@ void Image::Visit( GraphicsVisitor *visitor )
 GraphicsState Image::GetState( ) const
 {
 	return m_gs ;
+}
+
+void Image::ProcessDictEntry( const Name& name, const Object& entry )
+{
+	if ( name == "W" || name == "Width" )
+		m_width = entry ;
+	else if ( name == "H" || name == "Height" )
+		m_height = entry ;
+}
+
+std::size_t Image::Width( ) const
+{
+	return m_width ;
+}
+
+std::size_t Image::Height( ) const
+{
+	return m_height ;
 }
 
 } // end of namespace
