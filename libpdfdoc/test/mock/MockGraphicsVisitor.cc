@@ -46,7 +46,7 @@ void MockGraphicsVisitor::VisitPath( Path *path )
 {
 }
 
-void MockGraphicsVisitor::VisitImage( XObject<Image> *img )
+void MockGraphicsVisitor::VisitRenderedObject( RenderedObject<Image> *img )
 {
 }
 

@@ -38,6 +38,7 @@ namespace pdf {
 class ContentOp ;
 class Graphics ;
 class GraphicsVisitor ;
+class Image ;
 class ResourcesDict ;
 
 ///	brief description
@@ -93,6 +94,9 @@ private :
 	Graphics			*m_current ;
 	std::stack<State>	m_state_stack ;
 	//@}
+	
+	// inline images
+	std::vector<Image*>	m_inline_imgs ;
 } ;
 
 } // end of namespace

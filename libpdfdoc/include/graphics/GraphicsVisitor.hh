@@ -34,7 +34,7 @@ class Image ;
 class Path ;
 class Text ;
 
-template <typename T> class XObject ;
+template <typename T> class RenderedObject ;
 
 ///	brief description
 /**	\ingroup graphics
@@ -49,7 +49,7 @@ public :
 	virtual void VisitText( Text *text ) = 0 ;
 	virtual void VisitGraphics( Graphics *text ) = 0 ;
 	virtual void VisitPath( Path *path ) = 0 ;
-	virtual void VisitImage( XObject<Image> *img ) = 0 ;
+	virtual void VisitRenderedObject( RenderedObject<Image> *img ) = 0 ;
 } ;
 
 } // end of namespace

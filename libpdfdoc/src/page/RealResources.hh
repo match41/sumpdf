@@ -52,6 +52,7 @@ class RealImage ;
 class Object ;
 class Ref ;
 class ExtGState ;
+class XObject ;
 
 /*!	\brief	page resources
 
@@ -102,9 +103,9 @@ private :
 	
 	typedef	boost::bimap<
 		boost::bimaps::set_of<Name>,
-		boost::bimaps::set_of<RealImage*>
-	> ImageMap ; 
-	ImageMap			m_imgs ;
+		boost::bimaps::set_of<XObject*>
+	> XObjectMap ; 
+	XObjectMap			m_xobjs ;
 	
 	std::vector<Name>	m_proc_set ;
 } ;

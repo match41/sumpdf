@@ -31,7 +31,7 @@
 #include "graphics/RealImage.hh"
 #include "graphics/RealPath.hh"
 #include "graphics/RealText.hh"
-#include "graphics/XObject.hh"
+#include "graphics/RenderedObject.hh"
 #include "stream/Stream.hh"
 
 #include "util/Debug.hh"
@@ -171,7 +171,8 @@ void ContentStream::OnEndObject( ContentOp&, std::istream& )
 void ContentStream::Oncm( ContentOp& op, std::istream& )
 {
 	if ( op.Count() >= 6 )
-		m_state.ctm = Matrix( op[0], op[1], op[2], op[3], op[4], op[5] ) * m_state.ctm ;
+		m_state.ctm = Matrix( op[0], op[1], op[2], op[3], op[4], op[5] ) *
+			m_state.ctm ;
 }
 
 void ContentStream::OnQ( ContentOp&, std::istream& )
@@ -203,7 +204,9 @@ void ContentStream::OnPaintPath( ContentOp& op, std::istream& is )
 void ContentStream::OnInlineImage( ContentOp& op, std::istream& is )
 {
 	Image *img = new RealImage( is ) ;
-	m_current = new XObject<Image*>( m_state.gs, m_state.ctm, img ) ;
+	m_inline_imgs.push_back( img ) ;
+	
+	m_current = new RenderedObject<Image>( m_state.gs, m_state.ctm, img ) ;
 	OnEndObject( op, is ) ;
 }
 

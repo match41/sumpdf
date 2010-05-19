@@ -27,6 +27,7 @@
 
 #include "core/Name.hh"
 #include "core/Object.hh"
+#include "graphics/RenderedObject.hh"
 #include "stream/Stream.hh"
 
 #include <iostream>
@@ -112,6 +113,13 @@ std::size_t RealImage::Width( ) const
 std::size_t RealImage::Height( ) const
 {
 	return m_height ;
+}
+
+Graphics* RealImage::CreateRenderedObject(
+	const GraphicsState&	gs,
+	const Matrix&			ctm ) const
+{
+	return new RenderedObject<Image>( gs, ctm, this ) ;
 }
 
 } // end of namespace

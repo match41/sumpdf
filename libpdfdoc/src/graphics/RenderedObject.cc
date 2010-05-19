@@ -17,21 +17,91 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	XObject.cc
-	\brief	implementation of the XObject class
-	\date	May 19, 2010
+/**	\file	Image.cc
+	\brief	implementation of the Image class
+	\date	May 11, 2010
 	\author	Nestal Wan
 */
 
-#include "XObject.hh"
+#include "graphics/RenderedObject.hh"
+#include "graphics/GraphicsVisitor.hh"
+
+#include "core/Name.hh"
+#include "core/Object.hh"
+
+#include "util/Debug.hh"
 
 namespace pdf {
+
+template <typename T>
+RenderedObject<T>::RenderedObject(
+	const GraphicsState&	gs,
+	const Matrix&			ctm,
+	const T*				t )
+	: m_transform( ctm )
+	, m_gs( gs )
+	, m_obj( t )
+{
+}
 
 /**	constructor
 	
 */
-XObject::~XObject( )
+template <typename T>
+RenderedObject<T>::~RenderedObject( )
 {
 }
 
+template <typename T>
+void RenderedObject<T>::OnCommand( ContentOp& op, const ResourcesDict *res )
+{
+}
+
+template <typename T>
+Matrix RenderedObject<T>::Transform( ) const
+{
+	return m_transform ;
+}
+
+template <typename T>
+void RenderedObject<T>::Transform( const Matrix& mat )
+{
+	m_transform = mat ;
+}
+
+template <typename T>
+void RenderedObject<T>::Print(
+	std::ostream&	os,
+	ResourcesDict	*res,
+	GraphicsState&	gs ) const
+{
+}
+
+template <typename T>
+void RenderedObject<T>::Visit( GraphicsVisitor *visitor )
+{
+	// assume the GraphicsVisitor has an overloaded function for each
+	// rendered object (e.g. image) type.
+	visitor->VisitRenderedObject( this ) ;
+}
+
+template <typename T>
+GraphicsState RenderedObject<T>::GetState( ) const
+{
+	return m_gs ;
+}
+
+template <typename T>
+const T* RenderedObject<T>::Get( ) const
+{
+	return m_obj ;
+}
+
 } // end of namespace
+
+// explicit instantiation
+namespace pdf
+{
+	class Image ;
+	template class RenderedObject<Image> ;
+}

@@ -105,14 +105,14 @@ void RealResources::ReadXObject( DictReader& self )
 		// clear the states before
 		ElementFactory<Stream> factory( xobjs ) ;
 		using namespace boost ;
-		std::for_each( m_imgs.left.begin(), m_imgs.left.end(),
-			bind( &RealImage::Release,
-				bind( &ImageMap::left_value_type::second, _1 ) ) ) ;
-		m_imgs.clear( ) ;
+		std::for_each( m_xobjs.left.begin(), m_xobjs.left.end(),
+			bind( &XObject::Release,
+				bind( &XObjectMap::left_value_type::second, _1 ) ) ) ;
+		m_xobjs.clear( ) ;
 
-		factory.MassProduce<RealImage>(
+		factory.MassProduce<XObject>(
 			NewPtr<RealImage>(),
-			std::inserter( m_imgs.left, m_imgs.left.end() ) ) ;
+			std::inserter( m_xobjs.left, m_xobjs.left.end() ) ) ;
 	}
 }
 

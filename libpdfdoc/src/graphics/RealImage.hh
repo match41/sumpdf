@@ -27,7 +27,7 @@
 #define __PDF_REALIMAGE_HEADER_INCLUDED__
 
 #include "graphics/Image.hh"
-#include "util/RefCounter.hh"
+#include "XObject.hh"
 
 #include <vector>
 #include <iosfwd>
@@ -42,7 +42,7 @@ class Stream ;
 /**	\internal
 	The RealImage class represents
 */
-class RealImage : public Image, public RefCounter
+class RealImage : public Image, public XObject
 {
 public :
 	explicit RealImage( std::istream& is ) ;
@@ -52,6 +52,10 @@ public :
 	std::size_t Height( ) const ;
 
 	std::istream& ReadInlineImage( std::istream& is ) ;
+
+	Graphics* CreateRenderedObject(
+		const GraphicsState&	gs,
+		const Matrix&			ctm ) const ;
 
 private :
 	void ProcessDictEntry( const Name& name, const Object& entry ) ;

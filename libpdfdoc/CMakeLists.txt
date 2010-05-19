@@ -103,7 +103,8 @@ set( PAGE_HDRS		${PAGE_DIR}/RealPage.hh
 
 set( GRAPICS_HDRS	${GRAPICS_DIR}/RealText.hh
 					${GRAPICS_DIR}/RealPath.hh
-					${GRAPICS_DIR}/RealImage.hh )
+					${GRAPICS_DIR}/RealImage.hh
+					${GRAPICS_DIR}/XObject.hh )
 
 set( FILE_HDRS		${FILE_DIR}/RealFile.hh
 					${FILE_DIR}/File.hh
@@ -193,7 +194,7 @@ set( GFX_INC_HDRS	${INCLUDE_DIR}/graphics/Graphics.hh
 					${INCLUDE_DIR}/graphics/Text.hh
 					${INCLUDE_DIR}/graphics/Path.hh
 					${INCLUDE_DIR}/graphics/Image.hh
-					${INCLUDE_DIR}/graphics/XObject.hh
+					${INCLUDE_DIR}/graphics/RenderedObject.hh
 					${INCLUDE_DIR}/graphics/PathSegment.hh
 					${INCLUDE_DIR}/graphics/TextState.hh
 					${INCLUDE_DIR}/graphics/CharVisitor.hh
@@ -229,13 +230,14 @@ set( GRAPICS_SRCS	${GRAPICS_DIR}/Graphics.cc
 					${GRAPICS_DIR}/Path.cc
 					${GRAPICS_DIR}/Image.cc
 					${GRAPICS_DIR}/RealImage.cc
-					${GRAPICS_DIR}/XObject.cc
+					${GRAPICS_DIR}/RenderedObject.cc
 					${GRAPICS_DIR}/PathSegment.cc
 					${GRAPICS_DIR}/RealPath.cc
 					${GRAPICS_DIR}/CharVisitor.cc
 					${GRAPICS_DIR}/TextLine.cc
 					${GRAPICS_DIR}/TextState.cc
-					${GRAPICS_DIR}/Color.cc )
+					${GRAPICS_DIR}/Color.cc
+					${GRAPICS_DIR}/XObject.cc )
 
 set( FILE_SRCS		${FILE_DIR}/RealFile.cc
 					${FILE_DIR}/DictReader.cc
