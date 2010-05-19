@@ -190,6 +190,7 @@ void RealPage::VisitGraphics( GraphicsVisitor *visitor ) const
 		m_cstrs.end(),
 		m_pinfo.GetResource(),
 		visitor ) ;
+	
 	cs.Decode( ) ;
 }
 

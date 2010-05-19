@@ -68,12 +68,16 @@ public :
 	~RealResources( ) ;
 
 	Name AddFont( BaseFont *font ) ;
-
+	Name AddXObject( XObject *xobj ) ;
+	
 	void Read( DictReader& self ) ;
 	Ref  Write( File *file, const FontSubsetInfo *ss ) const ;
 
 	BaseFont* FindFont( const Name& name ) const ;
 	Name FindFont( const BaseFont *font ) const ;
+
+	XObject* FindXObject( const Name& name ) const ;
+	Name FindXObject( const XObject *xobj ) const ;
 
 	void Clear( ) ;
 

@@ -30,6 +30,7 @@
 
 namespace pdf {
 
+class File ;
 class Graphics ;
 class Matrix ;
 class GraphicsState ;
@@ -47,7 +48,7 @@ public :
 		const Matrix&			ctm ) const = 0 ;
 } ;
 
-XObject* CreateXObject( Stream& s ) ;
+XObject* CreateXObject( Stream& s, File *file ) ;
 
 } // end of namespace
 

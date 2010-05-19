@@ -28,6 +28,7 @@
 #include "core/Name.hh"
 #include "core/Object.hh"
 #include "graphics/RenderedObject.hh"
+#include "file/File.hh"
 #include "stream/Stream.hh"
 
 #include <iostream>
@@ -37,7 +38,7 @@ namespace pdf {
 /**	constructor
 	
 */
-RealImage::RealImage( Stream& str )
+RealImage::RealImage( Stream& str, File *file )
 {
 	std::cout << "image? " << str.Self() << std::endl ;
 }

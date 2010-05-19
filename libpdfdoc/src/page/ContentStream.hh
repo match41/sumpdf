@@ -58,8 +58,12 @@ public :
 		, m_current( 0 )
 	{
 	}
+	
+	~ContentStream( ) ;
 
 	void Decode( ) ;
+	
+	std::vector<Image*> InlineImages( ) const ;
 
 private :
 	struct HandlerMap ;

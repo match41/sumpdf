@@ -30,6 +30,7 @@ namespace pdf {
 
 class Name ;
 class BaseFont ;
+class XObject ;
 
 ///	brief description
 /**	The Resources class represents
@@ -43,6 +44,10 @@ public :
 	virtual Name AddFont( BaseFont *font ) = 0 ;
 	virtual BaseFont* FindFont( const Name& name ) const = 0 ;
 	virtual Name FindFont( const BaseFont *font ) const = 0 ;
+	
+	virtual Name AddXObject( XObject *xobj ) = 0 ;
+	virtual Name FindXObject( const XObject *xobj ) const = 0 ;
+	virtual XObject* FindXObject( const Name& name ) const = 0 ;
 } ;
 
 } // end of namespace

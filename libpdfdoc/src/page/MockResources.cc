@@ -58,4 +58,19 @@ Name MockResources::FindFont( const BaseFont *font ) const
 	return Name( font->BaseName( ) ) ;
 }
 
+Name MockResources::AddXObject( XObject *xobj )
+{
+	return Name() ;
+}
+
+Name MockResources::FindXObject( const XObject *xobj ) const
+{
+	return Name() ;
+}
+
+XObject* MockResources::FindXObject( const Name& name ) const
+{
+	return 0 ;
+}
+
 } // end of namespace

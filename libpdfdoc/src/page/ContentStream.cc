@@ -103,9 +103,11 @@ const ContentStream::HandlerMap::Map ContentStream::HandlerMap::m_map(
     Begin( ContentStream::HandlerMap::m_val ),
     End( ContentStream::HandlerMap::m_val ) ) ;
 
-/**	constructor
-	
-*/
+ContentStream::~ContentStream( )
+{
+	std::for_each( m_inline_imgs.begin(), m_inline_imgs.end(), DeletePtr() ) ;
+}
+
 void ContentStream::Decode( )
 {
 	std::for_each(
@@ -206,8 +208,16 @@ void ContentStream::OnInlineImage( ContentOp& op, std::istream& is )
 	Image *img = new RealImage( is ) ;
 	m_inline_imgs.push_back( img ) ;
 	
+	// m_current will be deleted in OnEndObject()
 	m_current = new RenderedObject<Image>( m_state.gs, m_state.ctm, img ) ;
 	OnEndObject( op, is ) ;
+	
+	PDF_ASSERT( m_current == 0 ) ;
+}
+
+std::vector<Image*> ContentStream::InlineImages( ) const
+{
+	return m_inline_imgs ;
 }
 
 } // end of namespace

@@ -111,7 +111,7 @@ void RealResources::ReadXObject( DictReader& self )
 		m_xobjs.clear( ) ;
 
 		factory.MassProduce<XObject>(
-			&CreateXObject,
+			bind( &CreateXObject, _1, self.GetFile() ),
 			std::inserter( m_xobjs.left, m_xobjs.left.end() ) ) ;
 	}
 }
@@ -222,6 +222,32 @@ Name RealResources::AddFont( BaseFont *font )
 	return name ;
 }
 
+Name RealResources::AddXObject( XObject *xo )
+{
+	// first, see if the font is already added
+	using namespace boost ;
+	XObjectMap::right_iterator it = m_xobjs.right.find( xo ) ;
+	if ( it != m_xobjs.right.end( ) )
+		return it->second ;
+
+	std::size_t idx = m_xobjs.size( ) ;
+
+	// create a new name
+	Name name ;
+	do
+	{
+		std::ostringstream oss ;
+		oss << "X" << idx++ ;
+		name = Name( oss.str() ) ;
+
+	} while ( m_xobjs.left.find( name ) != m_xobjs.left.end( ) ) ;
+
+	m_xobjs.insert( XObjectMap::value_type( name, xo ) ) ;
+	xo->AddRef() ;
+	
+	return name ;
+}
+
 BaseFont* RealResources::FindFont( const Name& name ) const
 {
 	PDF_ASSERT( UseCount() > 0 ) ;
@@ -239,6 +265,25 @@ Name RealResources::FindFont( const BaseFont *font ) const
 	FontMap::right_const_iterator i = m_fonts.right.find( ncfont ) ;
 	return i != m_fonts.right.end() ? i->second :
 		( m_parent != 0 ? m_parent->FindFont( font ) : Name() ) ; 
+}
+
+XObject* RealResources::FindXObject( const Name& name ) const
+{
+	PDF_ASSERT( UseCount() > 0 ) ;
+
+	XObjectMap::left_const_iterator i = m_xobjs.left.find( name ) ;
+	return i != m_xobjs.left.end() ? i->second :
+		( m_parent != 0 ? m_parent->FindXObject( name ) : 0 ) ;
+}
+
+Name RealResources::FindXObject( const XObject *xobj ) const
+{
+	// we don't modify it anyway. it is for searching in the map
+	XObject *nc = const_cast<XObject*>( xobj ) ;
+
+	XObjectMap::right_const_iterator i = m_xobjs.right.find( nc ) ;
+	return i != m_xobjs.right.end() ? i->second :
+		( m_parent != 0 ? m_parent->FindXObject( xobj ) : Name() ) ; 
 }
 
 /// Throw everything away and start over.

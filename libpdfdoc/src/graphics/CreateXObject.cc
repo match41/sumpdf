@@ -34,16 +34,16 @@
 
 namespace pdf {
 
-XObject* CreateXObject( Stream& s )
+XObject* CreateXObject( Stream& s, File *file )
 {
 	const Dictionary& dict = s.Self() ;
 	if ( dict["Subtype"].As<Name>() == Name("Image") )
-		return new RealImage( s ) ;
+		return new RealImage( s, file ) ;
 	else
 	{
 		std::cout << "XObject type: " << dict["Subtype"] <<
 			" is not supported yet." << std::endl ;
-		return new RealImage( s ) ;
+		return new RealImage( s, file ) ;
 	}
 }
 
