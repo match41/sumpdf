@@ -47,7 +47,7 @@ public :
 	void VisitText( Text *text ) ;
 	void VisitGraphics( Graphics *gfx ) ;
 	void VisitPath( Path *path ) ;
-	void VisitImage( XObject<Image> *img ) ;
+	void VisitRenderedObject( RenderedObject<Image> *img ) ;
 
 private :
 	void LoadTextLine( QGraphicsItem *parent, const TextLine& line ) ;

@@ -237,7 +237,7 @@ set( GRAPICS_SRCS	${GRAPICS_DIR}/Graphics.cc
 					${GRAPICS_DIR}/TextLine.cc
 					${GRAPICS_DIR}/TextState.cc
 					${GRAPICS_DIR}/Color.cc
-					${GRAPICS_DIR}/XObject.cc )
+					${GRAPICS_DIR}/CreateXObject.cc )
 
 set( FILE_SRCS		${FILE_DIR}/RealFile.cc
 					${FILE_DIR}/DictReader.cc

@@ -111,7 +111,7 @@ void RealResources::ReadXObject( DictReader& self )
 		m_xobjs.clear( ) ;
 
 		factory.MassProduce<XObject>(
-			NewPtr<RealImage>(),
+			&CreateXObject,
 			std::inserter( m_xobjs.left, m_xobjs.left.end() ) ) ;
 	}
 }

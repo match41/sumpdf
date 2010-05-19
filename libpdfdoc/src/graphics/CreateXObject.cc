@@ -17,7 +17,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	XObject.cc
+/**	\file	CreateXObject.cc
 	\brief	implementation of the XObject class
 	\date	May 19, 2010
 	\author	Nestal Wan
@@ -25,13 +25,26 @@
 
 #include "XObject.hh"
 
+#include "RealImage.hh"
+
+#include "core/Dictionary.hh"
+#include "stream/Stream.hh"
+
+#include <iostream>
+
 namespace pdf {
 
-/**	constructor
-	
-*/
-XObject::~XObject( )
+XObject* CreateXObject( Stream& s )
 {
+	const Dictionary& dict = s.Self() ;
+	if ( dict["Subtype"].As<Name>() == Name("Image") )
+		return new RealImage( s ) ;
+	else
+	{
+		std::cout << "XObject type: " << dict["Subtype"] <<
+			" is not supported yet." << std::endl ;
+		return new RealImage( s ) ;
+	}
 }
 
 } // end of namespace

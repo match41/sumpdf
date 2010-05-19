@@ -33,6 +33,7 @@ namespace pdf {
 class Graphics ;
 class Matrix ;
 class GraphicsState ;
+class Stream ;
 
 ///	brief description
 /**	\internal
@@ -41,12 +42,12 @@ class GraphicsState ;
 class XObject : public RefCounter
 {
 public :
-	virtual ~XObject( ) ;
-
 	virtual Graphics* CreateRenderedObject(
 		const GraphicsState&	gs,
 		const Matrix&			ctm ) const = 0 ;
 } ;
+
+XObject* CreateXObject( Stream& s ) ;
 
 } // end of namespace
 
