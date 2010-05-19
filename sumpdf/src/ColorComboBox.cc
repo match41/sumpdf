@@ -22,24 +22,50 @@
 
 #include "ColorComboBox.hh"
 
+#include <QColor>
+#include <QPainter>
+#include <QMenu>
+#include <QColorDialog>
+#include <QPaintEngine>
+#include <QPaintDevice>
+
+
+namespace pdf {
+
+ColorComboBox::ColorComboBox( QWidget *parent )
+	: QToolButton( parent )
+{
+}
+
+void ColorComboBox::Initialize(QToolButton* box)
+{
+	box->setPopupMode( QToolButton::MenuButtonPopup );
+	box->setMenu(
+		OnCreateColorMenu( SLOT( OnTextColorChanged() ), Qt::black ) );
+    m_text_action = box->menu()->defaultAction();
+	box->setIcon(
+		OnCreateColorButtonIcon( ":/images/textpointer.png", Qt::black) );
+	box->setAutoFillBackground( true );
+}
+
 void ColorComboBox::OnTextColorChanged( )
 {
 	m_text_action = qobject_cast<QAction *>( sender() );
-	m_combobox->setIcon(
+	this->setIcon(
 		OnCreateColorButtonIcon(
 		":/images/textpointer.png",
 		qVariantValue<QColor>( m_text_action->data() ) ) );
-	OnFontChanged();
+	emit clicked( qVariantValue<QColor>( m_text_action->data() ) );
 }
 
-QColor ColorComboBox::OnSetColor( )	// needs to be changed -----------------------
+void ColorComboBox::OnSetColor( )
 {
 	QColor color = QColorDialog::getColor(Qt::green, this);
-	m_combobox->setIcon(
+	this->setIcon(
 		OnCreateColorButtonIcon( ":/images/textpointer.png", color ) );
-//	m_text->setTextColor( color );
-	return color;
+	emit clicked( color );
 }
+
 // drop-down text color selection menu
 QMenu *ColorComboBox::OnCreateColorMenu( const char *slot, QColor default_color )
 {
@@ -95,3 +121,5 @@ QIcon ColorComboBox::OnCreateColorIcon( QColor color )
 
 	return QIcon( pixmap );
 }
+
+} // end of namespace

@@ -26,6 +26,8 @@
 #include <QDialog>
 #include "ui_InsertTextDlg.h"
 
+#include "ColorComboBox.hh"
+
 class QPushButton;
 class QTextDocument ;
 
@@ -50,19 +52,12 @@ signals:
 	void FontPropertiesChanged( int );
 
 private slots:
-	void OnFontChanged( ) ;		// apply font selection to QTextEdit
-	void OnTextColorChanged( );
-	void OnSetColor( );			// set color from QColorDialog
+	void OnFontChanged( ) ;			// apply font selection to QTextEdit
+	void OnFontChanged( QColor color ) ;	// apply color selection to QTextEdit
 
 private:
-	QPushButton	*m_btn;
-	QAction*	m_text_action;
-
-private:
-	// text color
-	QIcon OnCreateColorButtonIcon( const QString& , QColor );
-    QMenu *OnCreateColorMenu( const char*, QColor );	// text color selection
-	QIcon OnCreateColorIcon( QColor );
+	QPushButton		*m_btn;
+	ColorComboBox	*m_colorbox;
 
 };
 

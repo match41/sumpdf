@@ -53,7 +53,8 @@ set( BASE_SRCS		src/main.cc
                     src/TextObject.cc
                     src/TextLineObject.cc
 					src/GraphicsObject.cc
-					src/QtGraphicsState.cc )
+					src/QtGraphicsState.cc 
+					src/ColorComboBox.cc )
 
 ###############################################################################
 # all sources
@@ -68,7 +69,8 @@ set( MOC_HDRS	src/MainWnd.hh
 				src/ExceptionDlg.hh
 				src/TextDlg.hh 
 				src/InsertTextDlg.hh
-				src/DocModel.hh )
+				src/DocModel.hh 
+				src/ColorComboBox.hh )
 set( UIS 		ui/MainWnd.ui
 				ui/Properties.ui
 				ui/ExceptionDlg.ui

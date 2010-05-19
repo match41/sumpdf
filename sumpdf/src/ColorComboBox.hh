@@ -25,9 +25,9 @@
 
 #include <QToolButton>
 
-namespace pdf {
+//class QToolButton;
 
-class QToolButton;
+namespace pdf {
 
 class ColorComboBox :
 	public QToolButton
@@ -35,18 +35,24 @@ class ColorComboBox :
 	Q_OBJECT
 
 public:
-	explicit ColorComboBox( QWidget *parent ) ;
-	~ColorComboBox( ) ;
+	explicit ColorComboBox( QWidget *parent = 0 ) ;
 
-	QToolButton	m_combobox;
+	void Initialize( QToolButton* box );
 
 signals:
+	void clicked( QColor );
 
 private slots:
-
+	void OnTextColorChanged( );
+	void OnSetColor( );			// set color from QColorDialog
 
 private:
+	QAction	*m_text_action;
 
+private:
+	QIcon OnCreateColorButtonIcon( const QString& , QColor );
+    QMenu *OnCreateColorMenu( const char*, QColor );	// text color selection
+	QIcon OnCreateColorIcon( QColor );
 };
 
 } // end of namespace
