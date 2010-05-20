@@ -26,8 +26,6 @@
 #include <QDialog>
 #include "ui_InsertTextDlg.h"
 
-#include "ColorButton.hh"
-
 class QPushButton;
 class QTextDocument ;
 
@@ -57,7 +55,7 @@ private slots:
 
 private:
 	QPushButton		*m_btn;
-	ColorButton		*m_colorbox;
+//	ColorButton		*m_colorbox;
 
 };
 
