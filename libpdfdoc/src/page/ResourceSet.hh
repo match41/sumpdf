@@ -17,41 +17,52 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**
-    \file	GraphicsVisitor.hh
-    \brief	definition the GraphicsVisitor class
-    \date	Jan 9, 2010
+/**	\file	ResourceSet.hh
+    \brief	definition the ResourceSet class
+    \date	May 21, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_GRAPHICSVISITOR_HEADER_INCLUDED__
-#define __PDF_GRAPHICSVISITOR_HEADER_INCLUDED__
+#ifndef __PDF_RESOURCESET_HH_EADER_INCLUDED__
+#define __PDF_RESOURCESET_HH_EADER_INCLUDED__
+
+#include "core/Dictionary.hh"
+#include "core/Name.hh"
+
+#include <boost/bimap.hpp>
+#include <boost/bimap/set_of.hpp>
 
 namespace pdf {
 
-class Graphics ;
-class Image ;
-class Path ;
-class Text ;
-
-template <typename T> class GraphicsLink ;
+class DictReader ;
 
 ///	brief description
-/**	\ingroup graphics
-	The GraphicsVisitor class represent
+/**	\internal
+	The ResourceSet class represents
 */
-class GraphicsVisitor
+template <typename T>
+class ResourceSet
 {
-protected :
-	~GraphicsVisitor( ) ;
+public :
+	ResourceSet( ) ;
 
 public :
-	virtual void VisitText( Text *text ) = 0 ;
-	virtual void VisitGraphics( Graphics *text ) = 0 ;
-	virtual void VisitPath( Path *path ) = 0 ;
-	virtual void VisitRenderedObject( GraphicsLink<Image> *img ) = 0 ;
+	typedef	boost::bimap<
+		boost::bimaps::set_of<Name>,
+		boost::bimaps::set_of<T*>
+	> Map ; 
+	
+	template <typename Factory>
+	void Read( DictReader& self, Factory f ) ;
+
+	Name Find( const T *t ) const ;
+	T* Find( const Name& name ) ;
+	const T* Find( const Name& name ) const ;
+
+private :
+	Map	m_map ;
 } ;
 
 } // end of namespace
 
-#endif // GRAPHICSVISITOR_HH_
+#endif // RESOURCESET_HH_

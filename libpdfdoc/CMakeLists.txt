@@ -94,6 +94,7 @@ set( PAGE_HDRS		${PAGE_DIR}/RealPage.hh
 					${PAGE_DIR}/ResourcesDict.hh
 					${PAGE_DIR}/RealResources.hh
 					${PAGE_DIR}/MockResources.hh
+					${PAGE_DIR}/ResourceSet.hh
 					${PAGE_DIR}/PageNode.hh
 					${PAGE_DIR}/PageTree.hh
 					${PAGE_DIR}/PageInfo.hh
@@ -194,7 +195,7 @@ set( GFX_INC_HDRS	${INCLUDE_DIR}/graphics/Graphics.hh
 					${INCLUDE_DIR}/graphics/Text.hh
 					${INCLUDE_DIR}/graphics/Path.hh
 					${INCLUDE_DIR}/graphics/Image.hh
-					${INCLUDE_DIR}/graphics/RenderedObject.hh
+					${INCLUDE_DIR}/graphics/GraphicsLink.hh
 					${INCLUDE_DIR}/graphics/PathSegment.hh
 					${INCLUDE_DIR}/graphics/TextState.hh
 					${INCLUDE_DIR}/graphics/CharVisitor.hh
@@ -213,6 +214,7 @@ set( UTIL_INC_HDRS	${INCLUDE_DIR}/util/Exception.hh
 set( PAGE_SRCS  	${PAGE_DIR}/RealPage.cc
 					${PAGE_DIR}/ResourcesDict.cc
 					${PAGE_DIR}/RealResources.cc
+					${PAGE_DIR}/ResourceSet.cc
 					${PAGE_DIR}/MockResources.cc
 					${PAGE_DIR}/Page.cc
 					${PAGE_DIR}/PageNode.cc
@@ -230,7 +232,7 @@ set( GRAPICS_SRCS	${GRAPICS_DIR}/Graphics.cc
 					${GRAPICS_DIR}/Path.cc
 					${GRAPICS_DIR}/Image.cc
 					${GRAPICS_DIR}/RealImage.cc
-					${GRAPICS_DIR}/RenderedObject.cc
+					${GRAPICS_DIR}/GraphicsLink.cc
 					${GRAPICS_DIR}/PathSegment.cc
 					${GRAPICS_DIR}/RealPath.cc
 					${GRAPICS_DIR}/CharVisitor.cc

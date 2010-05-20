@@ -17,91 +17,53 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	Image.cc
-	\brief	implementation of the Image class
-	\date	May 11, 2010
-	\author	Nestal Wan
+/**	\file	RenderedObject.hh
+    \brief	definition the Image class
+    \date	May 11, 2010
+    \author	Nestal Wan
 */
 
-#include "graphics/RenderedObject.hh"
-#include "graphics/GraphicsVisitor.hh"
+#ifndef __PDF_IMAGE_HEADER_INCLUDED__
+#define __PDF_IMAGE_HEADER_INCLUDED__
 
-#include "core/Name.hh"
-#include "core/Object.hh"
+#include "Graphics.hh"
 
-#include "util/Debug.hh"
+#include "GraphicsState.hh"
+#include "util/Matrix.hh"
 
 namespace pdf {
 
-template <typename T>
-RenderedObject<T>::RenderedObject(
-	const GraphicsState&	gs,
-	const Matrix&			ctm,
-	const T*				t )
-	: m_transform( ctm )
-	, m_gs( gs )
-	, m_obj( t )
-{
-}
-
-/**	constructor
-	
+///	A already rendered object, e.g. image.
+/**	In a PDF document, there may be 
 */
 template <typename T>
-RenderedObject<T>::~RenderedObject( )
+class GraphicsLink : public Graphics
 {
-}
+public :
+	GraphicsLink( const GraphicsState& gs, const Matrix& ctm, const T *t ) ;
+	~GraphicsLink( ) ;
 
-template <typename T>
-void RenderedObject<T>::OnCommand( ContentOp& op, const ResourcesDict *res )
-{
-}
+	void OnCommand( ContentOp& op, const ResourcesDict *res ) ;
 
-template <typename T>
-Matrix RenderedObject<T>::Transform( ) const
-{
-	return m_transform ;
-}
+	Matrix Transform( ) const ;
+	void Transform( const Matrix& mat ) ;
+	void Print(
+		std::ostream&	os,
+		ResourcesDict	*res,
+		GraphicsState&	gs ) const ;
+	void Visit( GraphicsVisitor *visitor ) ;
+	
+	GraphicsState GetState( ) const ;
 
-template <typename T>
-void RenderedObject<T>::Transform( const Matrix& mat )
-{
-	m_transform = mat ;
-}
+	const T* Get( ) const ;
 
-template <typename T>
-void RenderedObject<T>::Print(
-	std::ostream&	os,
-	ResourcesDict	*res,
-	GraphicsState&	gs ) const
-{
-}
-
-template <typename T>
-void RenderedObject<T>::Visit( GraphicsVisitor *visitor )
-{
-	// assume the GraphicsVisitor has an overloaded function for each
-	// rendered object (e.g. image) type.
-	visitor->VisitRenderedObject( this ) ;
-}
-
-template <typename T>
-GraphicsState RenderedObject<T>::GetState( ) const
-{
-	return m_gs ;
-}
-
-template <typename T>
-const T* RenderedObject<T>::Get( ) const
-{
-	return m_obj ;
-}
+private :
+	Matrix			m_transform ;
+	GraphicsState	m_gs ;
+	
+	const T	*m_obj ;
+} ;
 
 } // end of namespace
 
-// explicit instantiation
-namespace pdf
-{
-	class Image ;
-	template class RenderedObject<Image> ;
-}
+#endif // IMAGE_HH_

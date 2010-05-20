@@ -86,7 +86,7 @@ void PageLoader::VisitPath( Path *path )
 	m_scene->addItem( new PathObject( path ) ) ;
 }
 
-void PageLoader::VisitRenderedObject( RenderedObject<Image> *img )
+void PageLoader::VisitRenderedObject( GraphicsLink<Image> *img )
 {
 }
 

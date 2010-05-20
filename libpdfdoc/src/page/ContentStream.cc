@@ -26,12 +26,15 @@
 #include "ContentStream.hh"
 
 #include "ContentOp.hh"
+#include "ResourcesDict.hh"
+
 #include "graphics/GraphicsState.hh"
 #include "graphics/GraphicsVisitor.hh"
 #include "graphics/RealImage.hh"
 #include "graphics/RealPath.hh"
 #include "graphics/RealText.hh"
-#include "graphics/RenderedObject.hh"
+#include "graphics/GraphicsLink.hh"
+#include "graphics/XObject.hh"
 #include "stream/Stream.hh"
 
 #include "util/Debug.hh"
@@ -95,9 +98,13 @@ const ContentStream::HandlerMap::Map::value_type
 	std::make_pair( "b",	&ContentStream::OnPaintPath ),
 	std::make_pair( "b*",	&ContentStream::OnPaintPath ),
 	std::make_pair( "n",	&ContentStream::OnPaintPath ),
+	
+	// inline image
 	std::make_pair( "BI",	&ContentStream::OnInlineImage ),
+	
+	// XObjects
+	std::make_pair( "Do",	&ContentStream::OnDoXObject ),
 } ;
-
 
 const ContentStream::HandlerMap::Map ContentStream::HandlerMap::m_map(
     Begin( ContentStream::HandlerMap::m_val ),
@@ -209,7 +216,7 @@ void ContentStream::OnInlineImage( ContentOp& op, std::istream& is )
 	m_inline_imgs.push_back( img ) ;
 	
 	// m_current will be deleted in OnEndObject()
-	m_current = new RenderedObject<Image>( m_state.gs, m_state.ctm, img ) ;
+	m_current = new GraphicsLink<Image>( m_state.gs, m_state.ctm, img ) ;
 	OnEndObject( op, is ) ;
 	
 	PDF_ASSERT( m_current == 0 ) ;
@@ -218,6 +225,19 @@ void ContentStream::OnInlineImage( ContentOp& op, std::istream& is )
 std::vector<Image*> ContentStream::InlineImages( ) const
 {
 	return m_inline_imgs ;
+}
+
+void ContentStream::OnDoXObject( ContentOp& op, std::istream& is )
+{
+	if ( op.Count() >= 1 )
+	{
+		XObject *xo = m_res->FindXObject( op[0].As<Name>() ) ;
+		if ( xo != 0 )
+		{
+			m_current = xo->CreateRenderedObject( m_state.gs, m_state.ctm ) ;
+			OnEndObject( op, is ) ;
+		}
+	}
 }
 
 } // end of namespace

@@ -80,6 +80,7 @@ private :
 	void Onm( ContentOp& op, std::istream& is ) ;
 	void OnPaintPath( ContentOp& op, std::istream& is ) ;
 	void OnInlineImage( ContentOp& op, std::istream& is ) ;
+	void OnDoXObject( ContentOp& op, std::istream& is ) ;
 
 private :
 	std::vector<Stream>		m_strs ;

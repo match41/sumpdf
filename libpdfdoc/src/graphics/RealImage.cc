@@ -27,7 +27,7 @@
 
 #include "core/Name.hh"
 #include "core/Object.hh"
-#include "graphics/RenderedObject.hh"
+#include "graphics/GraphicsLink.hh"
 #include "file/File.hh"
 #include "stream/Stream.hh"
 
@@ -120,7 +120,7 @@ Graphics* RealImage::CreateRenderedObject(
 	const GraphicsState&	gs,
 	const Matrix&			ctm ) const
 {
-	return new RenderedObject<Image>( gs, ctm, this ) ;
+	return new GraphicsLink<Image>( gs, ctm, this ) ;
 }
 
 } // end of namespace

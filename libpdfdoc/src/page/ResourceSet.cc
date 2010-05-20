@@ -17,53 +17,54 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	RenderedObject.hh
-    \brief	definition the Image class
-    \date	May 11, 2010
-    \author	Nestal Wan
+/**	\file	ResourceSet.cc
+	\brief	implementation of the ResourcesSet class
+	\date	May 21, 2010
+	\author	Nestal Wan
 */
 
-#ifndef __PDF_IMAGE_HEADER_INCLUDED__
-#define __PDF_IMAGE_HEADER_INCLUDED__
-
-#include "Graphics.hh"
-
-#include "GraphicsState.hh"
-#include "util/Matrix.hh"
+#include "ResourceSet.hh"
 
 namespace pdf {
 
-///	brief description
-/**	The Image class represents
+/**	constructor
+	
 */
 template <typename T>
-class RenderedObject : public Graphics
+ResourceSet<T>::ResourceSet( )
 {
-public :
-	RenderedObject( const GraphicsState& gs, const Matrix& ctm, const T *t ) ;
-	~RenderedObject( ) ;
+}
 
-	void OnCommand( ContentOp& op, const ResourcesDict *res ) ;
+template <typename T>
+template <typename Factory>
+void ResourceSet<T>::Read( DictReader& self, Factory f )
+{
+}
 
-	Matrix Transform( ) const ;
-	void Transform( const Matrix& mat ) ;
-	void Print(
-		std::ostream&	os,
-		ResourcesDict	*res,
-		GraphicsState&	gs ) const ;
-	void Visit( GraphicsVisitor *visitor ) ;
-	
-	GraphicsState GetState( ) const ;
+template <typename T>
+Name ResourceSet<T>::Find( const T *t ) const
+{
+	return Name() ;
+}
 
-	const T* Get( ) const ;
+template <typename T>
+T* ResourceSet<T>::Find( const Name& name )
+{
+	return 0 ;
+}
 
-private :
-	Matrix			m_transform ;
-	GraphicsState	m_gs ;
-	
-	const T	*m_obj ;
-} ;
+template <typename T>
+const T* ResourceSet<T>::Find( const Name& name ) const
+{
+	return 0 ;
+}
 
 } // end of namespace
 
-#endif // IMAGE_HH_
+#include "font/BaseFont.hh"
+
+namespace pdf
+{
+	template class ResourceSet<BaseFont> ;
+	template void ResourceSet<BaseFont>::Read( DictReader& self, int f ) ;
+}

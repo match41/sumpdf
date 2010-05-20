@@ -17,34 +17,91 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	MockGraphicsVisitor.hh
-    \brief	definition the MockGraphicsVisitor class
-    \date	Apr 6, 2010
-    \author	Nestal Wan
+/**	\file	Image.cc
+	\brief	implementation of the Image class
+	\date	May 11, 2010
+	\author	Nestal Wan
 */
 
-#ifndef __PDF_MOCKGRAPHICSVISITOR_HH_EADER_INCLUDED__
-#define __PDF_MOCKGRAPHICSVISITOR_HH_EADER_INCLUDED__
-
+#include "graphics/GraphicsLink.hh"
 #include "graphics/GraphicsVisitor.hh"
+
+#include "core/Name.hh"
+#include "core/Object.hh"
+
+#include "util/Debug.hh"
 
 namespace pdf {
 
-///	brief description
-/**	\internal
-	The MockGraphicsVisitor class represents
-*/
-class MockGraphicsVisitor : public GraphicsVisitor
+template <typename T>
+GraphicsLink<T>::GraphicsLink(
+	const GraphicsState&	gs,
+	const Matrix&			ctm,
+	const T*				t )
+	: m_transform( ctm )
+	, m_gs( gs )
+	, m_obj( t )
 {
-public :
-	MockGraphicsVisitor( ) ;
+}
 
-	void VisitText( Text *text ) ;
-	void VisitGraphics( Graphics *text ) ;
-	void VisitPath( Path *path ) ;
-	void VisitRenderedObject( GraphicsLink<Image> *img ) ;
-} ;
+/**	constructor
+	
+*/
+template <typename T>
+GraphicsLink<T>::~GraphicsLink( )
+{
+}
+
+template <typename T>
+void GraphicsLink<T>::OnCommand( ContentOp& op, const ResourcesDict *res )
+{
+}
+
+template <typename T>
+Matrix GraphicsLink<T>::Transform( ) const
+{
+	return m_transform ;
+}
+
+template <typename T>
+void GraphicsLink<T>::Transform( const Matrix& mat )
+{
+	m_transform = mat ;
+}
+
+template <typename T>
+void GraphicsLink<T>::Print(
+	std::ostream&	os,
+	ResourcesDict	*res,
+	GraphicsState&	gs ) const
+{
+}
+
+template <typename T>
+void GraphicsLink<T>::Visit( GraphicsVisitor *visitor )
+{
+	// assume the GraphicsVisitor has an overloaded function for each
+	// rendered object (e.g. image) type.
+	visitor->VisitRenderedObject( this ) ;
+}
+
+template <typename T>
+GraphicsState GraphicsLink<T>::GetState( ) const
+{
+	return m_gs ;
+}
+
+template <typename T>
+const T* GraphicsLink<T>::Get( ) const
+{
+	return m_obj ;
+}
 
 } // end of namespace
 
-#endif // MOCKGRAPHICSVISITOR_HH_
+// explicit instantiation
+namespace pdf
+{
+	class Image ;
+	template class GraphicsLink<Image> ;
+}
