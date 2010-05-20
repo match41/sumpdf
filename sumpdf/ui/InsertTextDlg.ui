@@ -58,23 +58,6 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="7">
-    <widget class="QToolButton" name="m_textcolor">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>...</string>
-     </property>
-     <property name="icon">
-      <iconset resource="pdfedit.qrc">
-       <normaloff>:/images/textpointer.png</normaloff>:/images/textpointer.png</iconset>
-     </property>
-    </widget>
-   </item>
    <item row="1" column="0" rowspan="3" colspan="8">
     <widget class="QTextEdit" name="m_text">
      <property name="sizePolicy">

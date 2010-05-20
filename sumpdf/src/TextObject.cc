@@ -210,7 +210,7 @@ TextObject::TextObject( QTextDocument *text, DocModel *doc,
 		}
 
 		b = b.next() ;
-		voffset += max_height ;
+		voffset -= max_height ;
 	}
 }
 

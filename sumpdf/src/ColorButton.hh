@@ -15,52 +15,40 @@
  ***************************************************************************/
 
 /**
-	\file	InsertTextDlg.hh
-	\brief	definition the InsertTextDlg class
-	\date	March 21, 2010
+	\file	ColorComboBox.hh
+	\brief	definition the ColorComboBox class
+	\date	May 6, 2010
 */
 
-#ifndef __PDF_INSERTTEXTWND_HH_EADER_INCLUDED__
-#define __PDF_INSERTTEXTWND_HH_EADER_INCLUDED__
+#ifndef __PDF_COLORBUTTON_HH_HEADER_INCLUDED__
+#define __PDF_COLORBUTTON_HH_HEADER_INCLUDED__
 
-#include <QDialog>
-#include "ui_InsertTextDlg.h"
-
-#include "ColorButton.hh"
-
-class QPushButton;
-class QTextDocument ;
+#include <QToolButton>
 
 namespace pdf {
 
-class MainWnd;
-
-class InsertTextDlg :
-	public QDialog,
-	private Ui::InsertTextUI
+class ColorButton :
+	public QToolButton
 {
 	Q_OBJECT
 
 public:
-	explicit InsertTextDlg( QWidget *parent ) ;
-
-	QTextDocument*	GetText( ) ;
+	explicit ColorButton( QWidget *parent = 0 ) ;
 
 signals:
-	void OnInsertClicked( QPointF );
-	void FontPropertiesChanged( QFont );
-	void FontPropertiesChanged( int );
+	void clicked( QColor );
 
 private slots:
-	void OnFontChanged( ) ;			// apply font selection to QTextEdit
-	void OnFontChanged( QColor color ) ;	// apply color selection to QTextEdit
+	void OnColorChanged( );
+	void OnSetColor( );			// set color from QColorDialog
 
 private:
-	QPushButton		*m_btn;
-	ColorButton		*m_colorbox;
-
+	void Initialize( QToolButton* box );
+	QIcon OnCreateColorButtonIcon( const QString& , QColor );
+    QMenu *OnCreateColorMenu( const char*, QColor );	// text color selection
+	QIcon OnCreateColorIcon( QColor );
 };
 
 } // end of namespace
 
-#endif // INSERTTEXTWND_HH_
+#endif // COLORBUTTON_HH
