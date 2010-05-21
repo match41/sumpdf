@@ -39,7 +39,7 @@ namespace pdf {
 class Image
 {
 public :
-	virtual ~Image( ) = 0 ;
+	virtual ~Image( ) ;
 	
 	virtual std::size_t Width( ) const = 0 ;
 	virtual std::size_t Height( ) const = 0 ;

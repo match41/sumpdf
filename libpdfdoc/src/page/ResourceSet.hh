@@ -29,6 +29,8 @@
 #include "core/Dictionary.hh"
 #include "core/Name.hh"
 
+#include "file/ElementFactory.hh"
+
 #include <boost/bimap.hpp>
 #include <boost/bimap/set_of.hpp>
 
@@ -44,23 +46,40 @@ template <typename T>
 class ResourceSet
 {
 public :
-	ResourceSet( ) ;
+	explicit ResourceSet( const std::string& prefix ) ;
+	~ResourceSet( ) ;
 
-public :
+	void Clear( ) ;
+	
+	Name Add( T *t ) ;
+	Name Find( const T *t ) const ;
+	T* Find( const Name& name ) const ;
+
+private :
 	typedef	boost::bimap<
 		boost::bimaps::set_of<Name>,
 		boost::bimaps::set_of<T*>
 	> Map ; 
-	
-	template <typename Factory>
-	void Read( DictReader& self, Factory f ) ;
 
-	Name Find( const T *t ) const ;
-	T* Find( const Name& name ) ;
-	const T* Find( const Name& name ) const ;
+public :
+	typedef typename Map::left_const_iterator	iterator ;
+	
+public :
+	template <typename Func>
+	void MassProduce( DictReader& dict, Func func )
+	{
+		ElementFactory<> factory( dict ) ;
+		factory.MassProduce<T>( func, std::inserter(
+			m_map.left, m_map.left.end() ) ) ;
+	}
+
+	iterator begin( ) const ;
+	iterator end( ) const ;
 
 private :
 	Map	m_map ;
+	
+	const std::string	m_prefix ;
 } ;
 
 } // end of namespace

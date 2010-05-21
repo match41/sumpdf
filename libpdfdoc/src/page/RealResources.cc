@@ -48,9 +48,10 @@
 namespace pdf {
 
 RealResources::RealResources( const RealResources *parent )
-	: m_parent( parent ),
-	  m_font_db( parent == 0 ? 0 : parent->m_font_db ),
-	  m_proc_set( 1, Name( "PDF" ) )
+	: m_parent( parent )
+	, m_font_db( parent == 0 ? 0 : parent->m_font_db )
+	, m_fonts( "F" )
+	, m_proc_set( 1, Name( "PDF" ) )
 {
 	PDF_ASSERT( parent != 0 ) ;
 	PDF_ASSERT( parent->UseCount() > 0 ) ;
@@ -60,9 +61,10 @@ RealResources::RealResources( const RealResources *parent )
 }
 
 RealResources::RealResources( FontDb *font_db )
-	: m_parent( 0 ),
-	  m_font_db( font_db ),
-	  m_proc_set( 1, Name( "PDF" ) )
+	: m_parent( 0 )
+	, m_font_db( font_db )
+	, m_fonts( "F" )
+	, m_proc_set( 1, Name( "PDF" ) )
 {
 	PDF_ASSERT( m_font_db != 0 ) ;
 	
@@ -71,10 +73,10 @@ RealResources::RealResources( FontDb *font_db )
 
 RealResources::~RealResources( )
 {
-	using namespace boost ;
-	std::for_each( m_fonts.left.begin(), m_fonts.left.end(),
-		bind( &BaseFont::Release,
-			bind( &FontMap::left_value_type::second, _1 ) ) ) ;
+//	using namespace boost ;
+//	std::for_each( m_fonts.left.begin(), m_fonts.left.end(),
+//		bind( &BaseFont::Release,
+//			bind( &FontMap::left_value_type::second, _1 ) ) ) ;
 
 	using namespace boost ;
 	std::for_each( m_states.left.begin(), m_states.left.end(),
@@ -157,16 +159,19 @@ void RealResources::ReadFontDict( DictReader& self )
 	DictReader dict ;
 	if ( self.Detach( "Font", dict ) )
 	{
-		using namespace boost ;
-		std::for_each( m_fonts.left.begin(), m_fonts.left.end(),
-			bind( &BaseFont::Release,
-				bind( &FontMap::left_value_type::second, _1 ) ) ) ;
-		m_fonts.clear( ) ;
-
-		ElementFactory<> factory( dict ) ;
-		factory.MassProduce<BaseFont>(
-			bind( &CreateFont, _1, m_font_db ),
-			std::inserter( m_fonts.left, m_fonts.left.end() ) ) ;
+//		using namespace boost ;
+//		std::for_each( m_fonts.left.begin(), m_fonts.left.end(),
+//			bind( &BaseFont::Release,
+//				bind( &FontMap::left_value_type::second, _1 ) ) ) ;
+//		m_fonts.clear( ) ;
+		m_fonts.Clear( ) ;
+		
+//		ElementFactory<> factory( dict ) ;
+//		factory.MassProduce<BaseFont>(
+//			bind( &CreateFont, _1, m_font_db ),
+//			std::inserter( m_fonts.left, m_fonts.left.end() ) ) ;
+	
+		m_fonts.MassProduce( dict, bind( &CreateFont, _1, m_font_db ) ) ;
 	}
 }
 
@@ -178,8 +183,10 @@ Ref RealResources::WriteFontDict( File *file, const FontSubsetInfo *ss ) const
 	ElementPool *pool = file->Pool( ) ;
 	Dictionary font_dict ;
 
-	for ( FontMap::left_const_iterator i = m_fonts.left.begin() ;
-		i != m_fonts.left.end() ; ++i)
+//	for ( FontMap::left_const_iterator i = m_fonts.left.begin() ;
+//		i != m_fonts.left.end() ; ++i)
+	for ( ResourceSet<BaseFont>::iterator i = m_fonts.begin() ;
+		i != m_fonts.end() ; ++i)
 	{
 		PDF_ASSERT( i->second != 0 ) ;
 	
@@ -198,28 +205,29 @@ Ref RealResources::WriteFontDict( File *file, const FontSubsetInfo *ss ) const
 
 Name RealResources::AddFont( BaseFont *font )
 {
-	// first, see if the font is already added
-	using namespace boost ;
-	FontMap::right_iterator it = m_fonts.right.find( font ) ;
-	if ( it != m_fonts.right.end( ) )
-		return it->second ;
-
-	std::size_t idx = m_fonts.size( ) ;
-
-	// create a new name
-	Name name ;
-	do
-	{
-		std::ostringstream oss ;
-		oss << "F" << idx++ ;
-		name = Name( oss.str() ) ;
-
-	} while ( m_fonts.left.find( name ) != m_fonts.left.end( ) ) ;
-
-	m_fonts.insert( FontMap::value_type( name, font ) ) ;
-	font->AddRef() ;
-	
-	return name ;
+	return m_fonts.Add( font ) ;
+//	// first, see if the font is already added
+//	using namespace boost ;
+//	FontMap::right_iterator it = m_fonts.right.find( font ) ;
+//	if ( it != m_fonts.right.end( ) )
+//		return it->second ;
+//
+//	std::size_t idx = m_fonts.size( ) ;
+//
+//	// create a new name
+//	Name name ;
+//	do
+//	{
+//		std::ostringstream oss ;
+//		oss << "F" << idx++ ;
+//		name = Name( oss.str() ) ;
+//
+//	} while ( m_fonts.left.find( name ) != m_fonts.left.end( ) ) ;
+//
+//	m_fonts.insert( FontMap::value_type( name, font ) ) ;
+//	font->AddRef() ;
+//	
+//	return name ;
 }
 
 Name RealResources::AddXObject( XObject *xo )
@@ -252,19 +260,25 @@ BaseFont* RealResources::FindFont( const Name& name ) const
 {
 	PDF_ASSERT( UseCount() > 0 ) ;
 
-	FontMap::left_const_iterator i = m_fonts.left.find( name ) ;
-	return i != m_fonts.left.end() ? i->second :
-		( m_parent != 0 ? m_parent->FindFont( name ) : 0 ) ;
+	BaseFont *f = const_cast<BaseFont*>( m_fonts.Find( name ) ) ;
+	return f != 0 ? f : ( m_parent != 0 ? m_parent->FindFont( name ) : 0 ) ;
+//
+//	FontMap::left_const_iterator i = m_fonts.left.find( name ) ;
+//	return i != m_fonts.left.end() ? i->second :
+//		( m_parent != 0 ? m_parent->FindFont( name ) : 0 ) ;
 }
 
 Name RealResources::FindFont( const BaseFont *font ) const
 {
-	// we don't modify it anyway. it is for searching in the map
-	BaseFont *ncfont = const_cast<BaseFont*>( font ) ;
+	Name n = m_fonts.Find( font ) ;
+	return n != Name() ? n : ( m_parent != 0 ? m_parent->FindFont( font ) : Name() ) ;
 
-	FontMap::right_const_iterator i = m_fonts.right.find( ncfont ) ;
-	return i != m_fonts.right.end() ? i->second :
-		( m_parent != 0 ? m_parent->FindFont( font ) : Name() ) ; 
+	// we don't modify it anyway. it is for searching in the map
+//	BaseFont *ncfont = const_cast<BaseFont*>( font ) ;
+//
+//	FontMap::right_const_iterator i = m_fonts.right.find( ncfont ) ;
+//	return i != m_fonts.right.end() ? i->second :
+//		( m_parent != 0 ? m_parent->FindFont( font ) : Name() ) ; 
 }
 
 XObject* RealResources::FindXObject( const Name& name ) const
@@ -289,7 +303,7 @@ Name RealResources::FindXObject( const XObject *xobj ) const
 /// Throw everything away and start over.
 void RealResources::Clear( )
 {
-	m_fonts.clear( ) ;
+	m_fonts.Clear( ) ;
 	m_states.clear( ) ;
 }
 

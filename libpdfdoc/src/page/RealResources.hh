@@ -30,6 +30,8 @@
 #include "ResourcesDict.hh"
 #include "util/RefCounter.hh"
 
+#include "ResourceSet.hh"
+
 #include "core/Dictionary.hh"
 #include "core/Name.hh"
 
@@ -93,12 +95,13 @@ private :
 	const RealResources	*const m_parent ;
 	FontDb				*m_font_db ;
 
-	typedef	boost::bimap<
-		boost::bimaps::set_of<Name>,
-		boost::bimaps::set_of<BaseFont*>
-	> FontMap ; 
-	FontMap				m_fonts ;
-
+//	typedef	boost::bimap<
+//		boost::bimaps::set_of<Name>,
+//		boost::bimaps::set_of<BaseFont*>
+//	> FontMap ; 
+//	FontMap				m_fonts ;
+	ResourceSet<BaseFont>	m_fonts ;
+	
 	typedef	boost::bimap<
 		boost::bimaps::set_of<Name>,
 		boost::bimaps::set_of<ExtGState*>
@@ -110,7 +113,7 @@ private :
 		boost::bimaps::set_of<XObject*>
 	> XObjectMap ; 
 	XObjectMap			m_xobjs ;
-	
+
 	std::vector<Name>	m_proc_set ;
 } ;
 

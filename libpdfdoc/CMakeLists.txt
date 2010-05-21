@@ -560,6 +560,7 @@ set( UT_SRCS	test/core/TokenTest.cc
 				test/page/PageNodeTest.cc
 				test/page/RealResourcesTest.cc
 				test/page/ExtGStateTest.cc
+				test/page/ResourceSetTest.cc
 				
 				test/file/RealFileTest.cc
 				test/file/CatalogTest.cc

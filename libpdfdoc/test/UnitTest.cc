@@ -47,6 +47,7 @@
 #include "page/RealResourcesTest.hh"
 #include "page/RealPageTest.hh"
 #include "page/ContentStreamTest.hh"
+#include "page/ResourceSetTest.hh"
 #include "font/FontDbTest.hh"
 #include "font/CodeMapTest.hh"
 #include "font/FontEncodingTest.hh"
@@ -76,6 +77,7 @@ int main( int argc, char **argv )
 	using namespace pdfut ;
 
 	CppUnit::TextUi::TestRunner runner;
+	runner.addTest( ResourceSetTest::suite( ) ) ;
 	runner.addTest( StreamTest::suite( ) ) ;
 	runner.addTest( ArrayTest::suite( ) ) ;
 	runner.addTest( DictionaryTest::suite( ) ) ;

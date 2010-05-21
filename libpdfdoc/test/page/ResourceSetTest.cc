@@ -17,51 +17,58 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	MockFont.hh
-    \brief	definition the MockFont class
-    \date	Jan 18, 2010
-    \author	Nestal Wan
+/**	\file	ResourceSetTest.cc
+	\brief	implementation of the ResourceSetTest class
+	\date	May 21, 2010
+	\author	Nestal Wan
 */
 
-#ifndef __PDF_MOCKFONT_HH_EADER_INCLUDED__
-#define __PDF_MOCKFONT_HH_EADER_INCLUDED__
+#include "ResourceSetTest.hh"
 
-#include "font/BaseFont.hh"
+#include "file/DictReader.hh"
+#include "page/ResourceSet.hh"
 
-#include "MockGlyph.hh"
+#include "mock/Assert.hh"
+#include "mock/MockFile.hh"
+#include "mock/MockFont.hh"
 
-namespace pdf
-{
-	class FontDescriptor ;
-}
+#include "util/Util.hh"
 
 namespace pdfut {
 
-///	brief description
-/**	The MockFont class represents
-*/
-class MockFont : public pdf::BaseFont
+using namespace pdf ;
+
+ResourceSetTest::ResourceSetTest( )
 {
-public :
-	MockFont( ) ;
+}
 
-	// whatever... I don't care
-	template <typename T>
-	MockFont( T ) { }
+void ResourceSetTest::setUp( )
+{
+}
 
-	std::string BaseName( ) const ;
-	pdf::Ref Write( pdf::File *file, const pdf::FontSubsetInfo * ) const ;
-	pdf::FontDescriptor* Descriptor( ) ;
-	pdf::FontEncoding* Encoding( ) ;
-	const pdf::Glyph*	GetGlyph( wchar_t ch ) const ;
-	double FromFontUnit( unsigned val ) const ; 
-	unsigned UnitsPerEM() const ;
-	double Height( ) const ;
+void ResourceSetTest::tearDown( )
+{
+}
 
-private :
-	MockGlyph	m_glyph ;
-} ;
+void ResourceSetTest::Test( )
+{
+	MockFont font ;
+	MockFile file ;
+	file.Pool()->Add( Ref(1,0), &font ) ;
+	
+	Dictionary dict ;
+	dict.insert( "F1", Ref(1,0) ) ;
+	
+	DictReader dr( dict, &file ) ;
+	
+	ResourceSet<BaseFont> subject( "F" ) ;
+	subject.MassProduce( dr, NewPtr<MockFont>( ) ) ;
+	
+	BaseFont* f = subject.Find( "F1" ) ;
+	PDFUT_ASSERT_EQUAL( f, &font ) ;
+	
+	Name n = subject.Find( f ) ;
+	PDFUT_ASSERT_EQUAL( n, "F1" ) ;
+}
 
 } // end of namespace
-
-#endif // MOCKFONT_HH_
