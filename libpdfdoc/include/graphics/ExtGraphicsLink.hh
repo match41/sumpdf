@@ -17,7 +17,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	RenderedObject.hh
+/**	\file	ExtGraphicsLink.hh
     \brief	definition the Image class
     \date	May 11, 2010
     \author	Nestal Wan
@@ -33,15 +33,22 @@
 
 namespace pdf {
 
-///	A already rendered object, e.g. image.
-/**	In a PDF document, there may be 
+///	A link to a graphics object external to the page content.
+/**	\ingroup graphics
+	In a PDF document, there may be some graphics objects that are not stored
+	in the page content. These objects includes images and PDF forms. The
+	ExtGraphicsLink class is a link to these external object in the page.
+	Multiple links to these external objects can appear in the PDF document
+	or even in the same page, but only one copy will be save to file.
+	
+	Currently, only images are supported.
 */
 template <typename T>
-class GraphicsLink : public Graphics
+class ExtGraphicsLink : public Graphics
 {
 public :
-	GraphicsLink( const GraphicsState& gs, const Matrix& ctm, const T *t ) ;
-	~GraphicsLink( ) ;
+	ExtGraphicsLink( const GraphicsState& gs, const Matrix& ctm, const T *t ) ;
+	~ExtGraphicsLink( ) ;
 
 	void OnCommand( ContentOp& op, const ResourcesDict *res ) ;
 

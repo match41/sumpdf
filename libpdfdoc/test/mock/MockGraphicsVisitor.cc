@@ -46,7 +46,7 @@ void MockGraphicsVisitor::VisitPath( Path *path )
 {
 }
 
-void MockGraphicsVisitor::VisitRenderedObject( GraphicsLink<Image> *img )
+void MockGraphicsVisitor::VisitRenderedObject( ExtGraphicsLink<Image> *img )
 {
 }
 

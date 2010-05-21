@@ -34,7 +34,7 @@ class Image ;
 class Path ;
 class Text ;
 
-template <typename T> class GraphicsLink ;
+template <typename T> class ExtGraphicsLink ;
 
 ///	brief description
 /**	\ingroup graphics
@@ -49,7 +49,7 @@ public :
 	virtual void VisitText( Text *text ) = 0 ;
 	virtual void VisitGraphics( Graphics *text ) = 0 ;
 	virtual void VisitPath( Path *path ) = 0 ;
-	virtual void VisitRenderedObject( GraphicsLink<Image> *img ) = 0 ;
+	virtual void VisitRenderedObject( ExtGraphicsLink<Image> *img ) = 0 ;
 } ;
 
 } // end of namespace

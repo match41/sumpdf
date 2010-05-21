@@ -42,7 +42,7 @@ public :
 	void VisitText( Text *text ) ;
 	void VisitGraphics( Graphics *text ) ;
 	void VisitPath( Path *path ) ;
-	void VisitRenderedObject( GraphicsLink<Image> *img ) ;
+	void VisitRenderedObject( ExtGraphicsLink<Image> *img ) ;
 } ;
 
 } // end of namespace

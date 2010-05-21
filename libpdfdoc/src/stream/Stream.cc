@@ -548,6 +548,11 @@ void Stream::CopyOnWrite( )
 		m_data.reset( new Data( *m_data ) ) ;
 }
 
+Name Stream::FilterName( ) const
+{
+	return m_data->filter->GetFilterName( ) ;
+}
+
 } // end of namespace
 
 namespace std

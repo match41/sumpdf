@@ -99,6 +99,7 @@ public :
 
 	Name Type( ) const ;
 	Name Subtype( ) const ;
+	Name FilterName( ) const ;
 	
 	Stream Clone( ) const ;
 	bool IsDirty( ) const ;

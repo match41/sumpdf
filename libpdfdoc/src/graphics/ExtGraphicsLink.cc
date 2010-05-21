@@ -23,7 +23,7 @@
 	\author	Nestal Wan
 */
 
-#include "graphics/GraphicsLink.hh"
+#include "graphics/ExtGraphicsLink.hh"
 #include "graphics/GraphicsVisitor.hh"
 
 #include "core/Name.hh"
@@ -34,7 +34,7 @@
 namespace pdf {
 
 template <typename T>
-GraphicsLink<T>::GraphicsLink(
+ExtGraphicsLink<T>::ExtGraphicsLink(
 	const GraphicsState&	gs,
 	const Matrix&			ctm,
 	const T*				t )
@@ -48,29 +48,29 @@ GraphicsLink<T>::GraphicsLink(
 	
 */
 template <typename T>
-GraphicsLink<T>::~GraphicsLink( )
+ExtGraphicsLink<T>::~ExtGraphicsLink( )
 {
 }
 
 template <typename T>
-void GraphicsLink<T>::OnCommand( ContentOp& op, const ResourcesDict *res )
+void ExtGraphicsLink<T>::OnCommand( ContentOp& op, const ResourcesDict *res )
 {
 }
 
 template <typename T>
-Matrix GraphicsLink<T>::Transform( ) const
+Matrix ExtGraphicsLink<T>::Transform( ) const
 {
 	return m_transform ;
 }
 
 template <typename T>
-void GraphicsLink<T>::Transform( const Matrix& mat )
+void ExtGraphicsLink<T>::Transform( const Matrix& mat )
 {
 	m_transform = mat ;
 }
 
 template <typename T>
-void GraphicsLink<T>::Print(
+void ExtGraphicsLink<T>::Print(
 	std::ostream&	os,
 	ResourcesDict	*res,
 	GraphicsState&	gs ) const
@@ -78,7 +78,7 @@ void GraphicsLink<T>::Print(
 }
 
 template <typename T>
-void GraphicsLink<T>::Visit( GraphicsVisitor *visitor )
+void ExtGraphicsLink<T>::Visit( GraphicsVisitor *visitor )
 {
 	// assume the GraphicsVisitor has an overloaded function for each
 	// rendered object (e.g. image) type.
@@ -86,13 +86,13 @@ void GraphicsLink<T>::Visit( GraphicsVisitor *visitor )
 }
 
 template <typename T>
-GraphicsState GraphicsLink<T>::GetState( ) const
+GraphicsState ExtGraphicsLink<T>::GetState( ) const
 {
 	return m_gs ;
 }
 
 template <typename T>
-const T* GraphicsLink<T>::Get( ) const
+const T* ExtGraphicsLink<T>::Get( ) const
 {
 	return m_obj ;
 }
@@ -103,5 +103,5 @@ const T* GraphicsLink<T>::Get( ) const
 namespace pdf
 {
 	class Image ;
-	template class GraphicsLink<Image> ;
+	template class ExtGraphicsLink<Image> ;
 }

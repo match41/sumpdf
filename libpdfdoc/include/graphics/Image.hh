@@ -32,8 +32,8 @@
 namespace pdf {
 
 
-///	brief description
-/**	\internal
+///	An image.
+/**	\ingroup graphics
 	The Image class represents
 */
 class Image

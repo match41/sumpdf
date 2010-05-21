@@ -33,7 +33,7 @@
 #include "graphics/RealImage.hh"
 #include "graphics/RealPath.hh"
 #include "graphics/RealText.hh"
-#include "graphics/GraphicsLink.hh"
+#include "graphics/ExtGraphicsLink.hh"
 #include "graphics/XObject.hh"
 #include "stream/Stream.hh"
 
@@ -216,7 +216,7 @@ void ContentStream::OnInlineImage( ContentOp& op, std::istream& is )
 	m_inline_imgs.push_back( img ) ;
 	
 	// m_current will be deleted in OnEndObject()
-	m_current = new GraphicsLink<Image>( m_state.gs, m_state.ctm, img ) ;
+	m_current = new ExtGraphicsLink<Image>( m_state.gs, m_state.ctm, img ) ;
 	OnEndObject( op, is ) ;
 	
 	PDF_ASSERT( m_current == 0 ) ;

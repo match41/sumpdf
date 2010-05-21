@@ -27,9 +27,11 @@
 
 #include "core/Name.hh"
 #include "core/Object.hh"
-#include "graphics/GraphicsLink.hh"
+#include "graphics/ExtGraphicsLink.hh"
 #include "file/File.hh"
 #include "stream/Stream.hh"
+
+#include "util/Debug.hh"
 
 #include <iostream>
 
@@ -40,7 +42,9 @@ namespace pdf {
 */
 RealImage::RealImage( Stream& str, File *file )
 {
+	PDF_ASSERT( str.Subtype() == "Image" ) ;
 	std::cout << "image? " << str.Self() << std::endl ;
+	std::cout << "filter name = " << str.FilterName() << std::endl ;
 }
 
 RealImage::RealImage( std::istream& is )
@@ -120,7 +124,7 @@ Graphics* RealImage::CreateRenderedObject(
 	const GraphicsState&	gs,
 	const Matrix&			ctm ) const
 {
-	return new GraphicsLink<Image>( gs, ctm, this ) ;
+	return new ExtGraphicsLink<Image>( gs, ctm, this ) ;
 }
 
 } // end of namespace

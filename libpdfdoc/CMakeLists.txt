@@ -195,7 +195,7 @@ set( GFX_INC_HDRS	${INCLUDE_DIR}/graphics/Graphics.hh
 					${INCLUDE_DIR}/graphics/Text.hh
 					${INCLUDE_DIR}/graphics/Path.hh
 					${INCLUDE_DIR}/graphics/Image.hh
-					${INCLUDE_DIR}/graphics/GraphicsLink.hh
+					${INCLUDE_DIR}/graphics/ExtGraphicsLink.hh
 					${INCLUDE_DIR}/graphics/PathSegment.hh
 					${INCLUDE_DIR}/graphics/TextState.hh
 					${INCLUDE_DIR}/graphics/CharVisitor.hh
@@ -232,7 +232,7 @@ set( GRAPICS_SRCS	${GRAPICS_DIR}/Graphics.cc
 					${GRAPICS_DIR}/Path.cc
 					${GRAPICS_DIR}/Image.cc
 					${GRAPICS_DIR}/RealImage.cc
-					${GRAPICS_DIR}/GraphicsLink.cc
+					${GRAPICS_DIR}/ExtGraphicsLink.cc
 					${GRAPICS_DIR}/PathSegment.cc
 					${GRAPICS_DIR}/RealPath.cc
 					${GRAPICS_DIR}/CharVisitor.cc
