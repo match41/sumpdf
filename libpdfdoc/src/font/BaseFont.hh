@@ -46,6 +46,8 @@ class FontSubsetInfo ;
 class BaseFont : public RefCounter, public Font
 {
 public :
+	typedef DictReader BaseType ;
+
 	virtual Ref Write( File *file, const FontSubsetInfo *subset ) const = 0 ;
 	virtual FontDescriptor* Descriptor( ) = 0 ;
 	virtual FontEncoding* Encoding( ) = 0 ;

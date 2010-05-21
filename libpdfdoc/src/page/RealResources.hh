@@ -67,8 +67,7 @@ class RealResources : public ResourcesDict, public RefCounter
 public :
 	explicit RealResources( const RealResources *parent ) ;
 	explicit RealResources( FontDb *fontdb ) ;
-	~RealResources( ) ;
-
+	
 	Name AddFont( BaseFont *font ) ;
 	Name AddXObject( XObject *xobj ) ;
 	
@@ -95,24 +94,9 @@ private :
 	const RealResources	*const m_parent ;
 	FontDb				*m_font_db ;
 
-//	typedef	boost::bimap<
-//		boost::bimaps::set_of<Name>,
-//		boost::bimaps::set_of<BaseFont*>
-//	> FontMap ; 
-//	FontMap				m_fonts ;
 	ResourceSet<BaseFont>	m_fonts ;
-	
-	typedef	boost::bimap<
-		boost::bimaps::set_of<Name>,
-		boost::bimaps::set_of<ExtGState*>
-	> StateMap ; 
-	StateMap			m_states ;
-	
-	typedef	boost::bimap<
-		boost::bimaps::set_of<Name>,
-		boost::bimaps::set_of<XObject*>
-	> XObjectMap ; 
-	XObjectMap			m_xobjs ;
+	ResourceSet<XObject>	m_xobjs ;
+	ResourceSet<ExtGState>	m_states ;
 
 	std::vector<Name>	m_proc_set ;
 } ;

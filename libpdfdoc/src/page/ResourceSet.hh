@@ -68,7 +68,7 @@ public :
 	template <typename Func>
 	void MassProduce( DictReader& dict, Func func )
 	{
-		ElementFactory<> factory( dict ) ;
+		ElementFactory<typename T::BaseType> factory( dict ) ;
 		factory.MassProduce<T>( func, std::inserter(
 			m_map.left, m_map.left.end() ) ) ;
 	}

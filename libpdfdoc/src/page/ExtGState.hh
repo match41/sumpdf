@@ -47,6 +47,8 @@ class Ref ;
 class ExtGState : public RefCounter
 {
 public :
+	typedef DictReader BaseType ;
+
 	ExtGState( ) ;
 	explicit ExtGState( DictReader& dict ) ;
 	

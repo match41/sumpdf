@@ -51,6 +51,8 @@ RealResources::RealResources( const RealResources *parent )
 	: m_parent( parent )
 	, m_font_db( parent == 0 ? 0 : parent->m_font_db )
 	, m_fonts( "F" )
+	, m_xobjs( "X" )
+	, m_states( "S" )
 	, m_proc_set( 1, Name( "PDF" ) )
 {
 	PDF_ASSERT( parent != 0 ) ;
@@ -64,24 +66,13 @@ RealResources::RealResources( FontDb *font_db )
 	: m_parent( 0 )
 	, m_font_db( font_db )
 	, m_fonts( "F" )
+	, m_xobjs( "X" )
+	, m_states( "S" )
 	, m_proc_set( 1, Name( "PDF" ) )
 {
 	PDF_ASSERT( m_font_db != 0 ) ;
 	
     m_proc_set.push_back( Name( "Text" ) ) ;
-}
-
-RealResources::~RealResources( )
-{
-//	using namespace boost ;
-//	std::for_each( m_fonts.left.begin(), m_fonts.left.end(),
-//		bind( &BaseFont::Release,
-//			bind( &FontMap::left_value_type::second, _1 ) ) ) ;
-
-	using namespace boost ;
-	std::for_each( m_states.left.begin(), m_states.left.end(),
-		bind( &ExtGState::Release,
-			bind( &StateMap::left_value_type::second, _1 ) ) ) ;
 }
 
 void RealResources::Read( DictReader& self )
@@ -104,17 +95,9 @@ void RealResources::ReadXObject( DictReader& self )
 	DictReader xobjs ;
 	if ( self.Detach( "XObject",	xobjs ) )
 	{
-		// clear the states before
-		ElementFactory<Stream> factory( xobjs ) ;
-		using namespace boost ;
-		std::for_each( m_xobjs.left.begin(), m_xobjs.left.end(),
-			bind( &XObject::Release,
-				bind( &XObjectMap::left_value_type::second, _1 ) ) ) ;
-		m_xobjs.clear( ) ;
-
-		factory.MassProduce<XObject>(
-			bind( &CreateXObject, _1, self.GetFile() ),
-			std::inserter( m_xobjs.left, m_xobjs.left.end() ) ) ;
+		m_xobjs.Clear( ) ;
+		m_xobjs.MassProduce( xobjs,
+			boost::bind( &CreateXObject, _1, self.GetFile() ) ) ;
 	}
 }
 
@@ -136,17 +119,8 @@ void RealResources::ReadStateDict( DictReader& self )
 	DictReader gs ;
 	if ( self.Detach( "ExtGState",	gs ) )
 	{
-		// clear the states before
-		ElementFactory<> factory( gs ) ;
-		using namespace boost ;
-		std::for_each( m_states.left.begin(), m_states.left.end(),
-			bind( &ExtGState::Release,
-				bind( &StateMap::left_value_type::second, _1 ) ) ) ;
-		m_states.clear( ) ;
-
-		factory.MassProduce<ExtGState>(
-			NewPtr<ExtGState>(),
-			std::inserter( m_states.left, m_states.left.end() ) ) ;
+		m_states.Clear( ) ;
+		m_states.MassProduce( gs, NewPtr<ExtGState>() ) ;
 	}
 }
 
@@ -159,18 +133,7 @@ void RealResources::ReadFontDict( DictReader& self )
 	DictReader dict ;
 	if ( self.Detach( "Font", dict ) )
 	{
-//		using namespace boost ;
-//		std::for_each( m_fonts.left.begin(), m_fonts.left.end(),
-//			bind( &BaseFont::Release,
-//				bind( &FontMap::left_value_type::second, _1 ) ) ) ;
-//		m_fonts.clear( ) ;
 		m_fonts.Clear( ) ;
-		
-//		ElementFactory<> factory( dict ) ;
-//		factory.MassProduce<BaseFont>(
-//			bind( &CreateFont, _1, m_font_db ),
-//			std::inserter( m_fonts.left, m_fonts.left.end() ) ) ;
-	
 		m_fonts.MassProduce( dict, bind( &CreateFont, _1, m_font_db ) ) ;
 	}
 }
@@ -183,8 +146,6 @@ Ref RealResources::WriteFontDict( File *file, const FontSubsetInfo *ss ) const
 	ElementPool *pool = file->Pool( ) ;
 	Dictionary font_dict ;
 
-//	for ( FontMap::left_const_iterator i = m_fonts.left.begin() ;
-//		i != m_fonts.left.end() ; ++i)
 	for ( ResourceSet<BaseFont>::iterator i = m_fonts.begin() ;
 		i != m_fonts.end() ; ++i)
 	{
@@ -206,54 +167,11 @@ Ref RealResources::WriteFontDict( File *file, const FontSubsetInfo *ss ) const
 Name RealResources::AddFont( BaseFont *font )
 {
 	return m_fonts.Add( font ) ;
-//	// first, see if the font is already added
-//	using namespace boost ;
-//	FontMap::right_iterator it = m_fonts.right.find( font ) ;
-//	if ( it != m_fonts.right.end( ) )
-//		return it->second ;
-//
-//	std::size_t idx = m_fonts.size( ) ;
-//
-//	// create a new name
-//	Name name ;
-//	do
-//	{
-//		std::ostringstream oss ;
-//		oss << "F" << idx++ ;
-//		name = Name( oss.str() ) ;
-//
-//	} while ( m_fonts.left.find( name ) != m_fonts.left.end( ) ) ;
-//
-//	m_fonts.insert( FontMap::value_type( name, font ) ) ;
-//	font->AddRef() ;
-//	
-//	return name ;
 }
 
 Name RealResources::AddXObject( XObject *xo )
 {
-	// first, see if the font is already added
-	using namespace boost ;
-	XObjectMap::right_iterator it = m_xobjs.right.find( xo ) ;
-	if ( it != m_xobjs.right.end( ) )
-		return it->second ;
-
-	std::size_t idx = m_xobjs.size( ) ;
-
-	// create a new name
-	Name name ;
-	do
-	{
-		std::ostringstream oss ;
-		oss << "X" << idx++ ;
-		name = Name( oss.str() ) ;
-
-	} while ( m_xobjs.left.find( name ) != m_xobjs.left.end( ) ) ;
-
-	m_xobjs.insert( XObjectMap::value_type( name, xo ) ) ;
-	xo->AddRef() ;
-	
-	return name ;
+	return m_xobjs.Add( xo ) ;
 }
 
 BaseFont* RealResources::FindFont( const Name& name ) const
@@ -262,49 +180,36 @@ BaseFont* RealResources::FindFont( const Name& name ) const
 
 	BaseFont *f = const_cast<BaseFont*>( m_fonts.Find( name ) ) ;
 	return f != 0 ? f : ( m_parent != 0 ? m_parent->FindFont( name ) : 0 ) ;
-//
-//	FontMap::left_const_iterator i = m_fonts.left.find( name ) ;
-//	return i != m_fonts.left.end() ? i->second :
-//		( m_parent != 0 ? m_parent->FindFont( name ) : 0 ) ;
 }
 
 Name RealResources::FindFont( const BaseFont *font ) const
 {
 	Name n = m_fonts.Find( font ) ;
-	return n != Name() ? n : ( m_parent != 0 ? m_parent->FindFont( font ) : Name() ) ;
-
-	// we don't modify it anyway. it is for searching in the map
-//	BaseFont *ncfont = const_cast<BaseFont*>( font ) ;
-//
-//	FontMap::right_const_iterator i = m_fonts.right.find( ncfont ) ;
-//	return i != m_fonts.right.end() ? i->second :
-//		( m_parent != 0 ? m_parent->FindFont( font ) : Name() ) ; 
+	return n != Name() ? n :
+		( m_parent != 0 ? m_parent->FindFont( font ) : Name() ) ;
 }
 
 XObject* RealResources::FindXObject( const Name& name ) const
 {
 	PDF_ASSERT( UseCount() > 0 ) ;
 
-	XObjectMap::left_const_iterator i = m_xobjs.left.find( name ) ;
-	return i != m_xobjs.left.end() ? i->second :
-		( m_parent != 0 ? m_parent->FindXObject( name ) : 0 ) ;
+	XObject *f = const_cast<XObject*>( m_xobjs.Find( name ) ) ;
+	return f != 0 ? f : ( m_parent != 0 ? m_parent->FindXObject( name ) : 0 ) ;
 }
 
 Name RealResources::FindXObject( const XObject *xobj ) const
 {
-	// we don't modify it anyway. it is for searching in the map
-	XObject *nc = const_cast<XObject*>( xobj ) ;
-
-	XObjectMap::right_const_iterator i = m_xobjs.right.find( nc ) ;
-	return i != m_xobjs.right.end() ? i->second :
-		( m_parent != 0 ? m_parent->FindXObject( xobj ) : Name() ) ; 
+	Name n = m_xobjs.Find( xobj ) ;
+	return n != Name() ? n :
+		( m_parent != 0 ? m_parent->FindXObject( xobj ) : Name() ) ;
 }
 
 /// Throw everything away and start over.
 void RealResources::Clear( )
 {
 	m_fonts.Clear( ) ;
-	m_states.clear( ) ;
+	m_states.Clear( ) ;
+	m_xobjs.Clear( ) ;
 }
 
 } // end of namespace
