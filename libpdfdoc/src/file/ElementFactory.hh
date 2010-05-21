@@ -44,7 +44,7 @@ public :
 	}
 
 	template <typename Element, typename Factory>
-	Element* Create( Dictionary::iterator i, Factory func )
+	Element* Create( Dictionary::iterator i, Factory func, Element *original=0 )
 	{
 		ElementPool *pool = m_dict.GetFile()->Pool() ;
 		Element *result = 0 ;
@@ -52,10 +52,11 @@ public :
 		// it's good if it's a reference to something already in the pool
 		if ( i != m_dict->end() && i->second.Is<Ref>() &&
 		     pool->Acquire( i->second, result ) )
-			return result ;
+		{
+		}
 
 		// otherwise we need to create it and maybe add it in the pool
-		if ( i != m_dict->end() )
+		else if ( i != m_dict->end() )
 		{
 			T temp ;
 			bool is_ref = m_dict.SwapAt( i, temp ) ;
@@ -65,6 +66,9 @@ public :
 				pool->Add( i->second, result ) ;
 		}
 	
+		if ( result != 0 && original != 0 )
+			original->Release() ;
+	
 		return result ;
 	}
 	
@@ -72,22 +76,11 @@ public :
 	Element* Create( const Name& name, Factory func, Element *original = 0 )
 	{
 		Dictionary::iterator i = m_dict->find( name ) ;
-		Element *e = Create<Element>( i, func ) ;
+		Element *e = Create<Element>( i, func, original ) ;
 		if ( e != 0 )
-		{
 			m_dict->erase( i ) ;
-			if ( original != 0 )
-				original->Release( ) ;
-		}
+		
 		return e ;
-	}
-	
-	template <typename Element, typename Factory, typename OutIt>
-	void MassProduce( Factory func, OutIt out,
-		std::size_t count = std::numeric_limits<std::size_t>::max() )
-	{
-		for ( Dictionary::iterator i = m_dict->begin(); i != m_dict->end(); ++i)
-			*out++ = std::make_pair( i->first, Create<Element>( i, func ) ) ;
 	}
 
 private :

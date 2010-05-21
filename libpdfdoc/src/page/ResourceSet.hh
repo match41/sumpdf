@@ -68,9 +68,14 @@ public :
 	template <typename Func>
 	void MassProduce( DictReader& dict, Func func )
 	{
+		T *dummy = 0 ;
+	
 		ElementFactory<typename T::BaseType> factory( dict ) ;
-		factory.MassProduce<T>( func, std::inserter(
-			m_map.left, m_map.left.end() ) ) ;
+		for ( Dictionary::iterator i = dict->begin(); i != dict->end(); ++i )
+		{
+			T *e = factory.Create( i, func, dummy ) ;
+			m_map.insert( typename Map::value_type( i->first, e ) );
+		}
 	}
 
 	iterator begin( ) const ;
