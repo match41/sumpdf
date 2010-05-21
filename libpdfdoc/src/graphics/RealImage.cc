@@ -28,6 +28,7 @@
 #include "core/Name.hh"
 #include "core/Object.hh"
 #include "graphics/ExtGraphicsLink.hh"
+#include "file/DictReader.hh"
 #include "file/File.hh"
 #include "stream/Stream.hh"
 
@@ -45,6 +46,14 @@ RealImage::RealImage( Stream& str, File *file )
 	PDF_ASSERT( str.Subtype() == "Image" ) ;
 	std::cout << "image? " << str.Self() << std::endl ;
 	std::cout << "filter name = " << str.FilterName() << std::endl ;
+	
+	DictReader dr( str.Self(), file ) ;
+	
+	Object cs ;
+	if ( dr.Detach( "ColorSpace", cs ) )
+	{
+		std::cout << "name = " << cs << std::endl ;
+	}
 }
 
 RealImage::RealImage( std::istream& is )
