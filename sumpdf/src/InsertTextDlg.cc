@@ -43,11 +43,8 @@ namespace pdf {
 
 InsertTextDlg::InsertTextDlg( QWidget *parent )
 	: QDialog( parent )
-//	m_colorbox( new ColorButton() )
 {
 	setupUi( this ) ;
-	// set up color combo box
-//	gridLayout->addWidget( dynamic_cast<QToolButton*>( m_colorbox ), 0, 7 );
 
 	// rename OK button to insert
 	m_btn_insert->button(QDialogButtonBox::Ok)->setText("Insert");

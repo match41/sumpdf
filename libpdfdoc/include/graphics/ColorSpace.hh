@@ -31,6 +31,7 @@
 #include "Color.hh"
 
 #include <memory>
+#include <string>
 
 namespace pdf {
 
