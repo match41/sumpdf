@@ -102,6 +102,7 @@ template bool DictReader::Detach( const Name&, double& ) ;
 template bool DictReader::Detach( const Name&, DictReader& ) ;
 template bool DictReader::Detach( const Name&, ArrayReader& ) ;
 template bool DictReader::Detach( const Name&, Rect& ) ;
+template bool DictReader::Detach( const Name&, std::size_t& ) ;
 
 // uncomment that when needed
 //template bool DictReader::Detach( const Name&, std::vector<Dictionary>& ) ;
@@ -169,6 +170,12 @@ bool DictReader::SwapAt<int>( Dictionary::iterator i, int& result )
 
 template <>
 bool DictReader::SwapAt<double>( Dictionary::iterator i, double& result )
+{
+	return DetachTo( m_file, m_dict, i, result ) ;
+}
+
+template <>
+bool DictReader::SwapAt<std::size_t>( Dictionary::iterator i, std::size_t& result )
 {
 	return DetachTo( m_file, m_dict, i, result ) ;
 }

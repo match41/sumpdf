@@ -26,7 +26,7 @@
 #ifndef __PDF_REFCOUNTERWRAPPER_HEADER_INCLUDED__
 #define __PDF_REFCOUNTERWRAPPER_HEADER_INCLUDED__
 
-#include "RefCounter.hh"
+#include "util/RefCounter.hh"
 
 namespace pdf {
 

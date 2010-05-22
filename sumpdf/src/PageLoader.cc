@@ -32,15 +32,21 @@
 #include "Util.hh"
 
 // libpdfdoc headers
+#include <graphics/ExtGraphicsLink.hh>
+#include <graphics/ColorSpace.hh>
+#include <graphics/Image.hh>
 #include <graphics/Path.hh>
 #include <graphics/PathSegment.hh>
 #include <graphics/Text.hh>
 #include <util/Debug.hh>
 
 // Qt headers
-//#include <QGraphicsPathItem>
 #include <QGraphicsScene>
+#include <QImage>
+#include <QPixmap>
 #include <QPainterPath>
+#include <QDebug>
+#include <QGraphicsPixmapItem>
 
 // boost headers
 #include <boost/bind.hpp>
@@ -62,6 +68,7 @@ void PageLoader::VisitText( Text *text )
 
 	TextObject *g = new TextObject ;
 	g->setTransform( ToQtMatrix( text->Transform() ) ) ;
+	SetTransform( text, g ) ;
 	
 	std::for_each( text->begin(), text->end(),
 		boost::bind( &PageLoader::LoadTextLine, this, g, _1 ) ) ;
@@ -83,11 +90,41 @@ void PageLoader::VisitGraphics( Graphics *gfx )
 void PageLoader::VisitPath( Path *path )
 {
 	PDF_ASSERT( m_scene != 0 ) ;
-	m_scene->addItem( new PathObject( path ) ) ;
+	
+	PathObject *p = new PathObject( path ) ;
+	SetTransform( path, p ) ;
+
+	m_scene->addItem( p ) ;
 }
 
 void PageLoader::VisitRenderedObject( ExtGraphicsLink<Image> *img )
 {
+	qDebug() << "get image " << img->Get()->Width( ) ;
+	
+	const Image *i = img->Get() ;
+	
+	QImage qimg( i->Pixels(), i->Width(), i->Height(), i->Width(), QImage::Format_Indexed8 ) ;
+	qimg.setColorCount( i->Space()->ColorCount() ) ;
+	QVector<QRgb> cmap ;
+	for ( std::size_t j = 0 ; j < i->Space()->ColorCount() ; ++j )
+		cmap.push_back( ToQColor(i->Space()->Lookup(j)).rgb() ) ;
+		
+	qimg.setColorTable(cmap) ;
+	
+	QGraphicsPixmapItem *p = m_scene->addPixmap( QPixmap::fromImage(qimg) ) ;
+	QTransform m = ToQtMatrix( img->Transform() ) ;
+	m.scale( 1.0/i->Width(), 1.0/i->Height() ) ;
+	m.translate( 0, 0.5*i->Height() ) ;
+	m.scale( 1.0, -1.0 ) ;
+	m.translate( 0, -0.5*i->Height() ) ;
+	
+	p->setTransform( m ) ;
+qDebug() << "matrix = " << ToQtMatrix( img->Transform( ) ) ;
+}
+
+void PageLoader::SetTransform( Graphics *gfx, QGraphicsItem  *go )
+{
+	go->setTransform( ToQtMatrix( gfx->Transform() ) ) ;
 }
 
 } // end of namespace

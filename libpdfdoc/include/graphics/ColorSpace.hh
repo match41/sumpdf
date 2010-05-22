@@ -50,6 +50,7 @@ public :
 	
 	bool IsIndex( ) const ;
 	Color Lookup( unsigned val ) const ;
+	std::size_t ColorCount( ) const ;
 	
 	Color::Space Get() const ;
 	

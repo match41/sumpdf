@@ -24,7 +24,7 @@
 	\author	nestal
 */
 
-#include "RefCounter.hh"
+#include "util/RefCounter.hh"
 
 namespace pdf {
 

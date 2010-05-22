@@ -34,6 +34,7 @@
 
 namespace pdf {
 
+class ColorSpace ;
 class Name ;
 class Object ;
 class Stream ;
@@ -57,14 +58,21 @@ public :
 		const GraphicsState&	gs,
 		const Matrix&			ctm ) const ;
 
+	ColorSpace*	Space( ) const ;
+
+	std::size_t ByteCount() const ;
+	const unsigned char* Pixels() const ;
+
 private :
 	void ProcessDictEntry( const Name& name, const Object& entry ) ;
 
 private :
 	std::size_t		m_width ;
 	std::size_t		m_height ;
+	std::size_t		m_depth ;
 	
 	std::vector<unsigned char>	m_bytes ;
+	ColorSpace		*m_space ;
 } ;
 
 } // end of namespace

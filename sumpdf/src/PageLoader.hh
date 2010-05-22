@@ -34,6 +34,7 @@ class QGraphicsItem ;
 namespace pdf {
 
 class TextLine ;
+class GraphicsObject ;
 
 ///	brief description
 /**	\internal
@@ -51,6 +52,7 @@ public :
 
 private :
 	void LoadTextLine( QGraphicsItem *parent, const TextLine& line ) ;
+	void SetTransform( Graphics *gfx, QGraphicsItem *go ) ;
 
 private :
 	QGraphicsScene *m_scene ;

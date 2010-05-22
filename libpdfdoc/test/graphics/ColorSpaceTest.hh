@@ -17,40 +17,39 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	Image.hh
-    \brief	definition the Image class
-    \date	May 17, 2010
+/**	\file	ColorSpaceTest.hh
+    \brief	definition the ColorSpaceTest class
+    \date	May 22, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_IMAGE_HH_EADER_INCLUDED__
-#define __PDF_IMAGE_HH_EADER_INCLUDED__
+#ifndef __PDFUT_COLORSPACETEST_HH_EADER_INCLUDED__
+#define __PDFUT_COLORSPACETEST_HH_EADER_INCLUDED__
 
-#include <iosfwd>
-#include <vector>
+#include <cppunit/TestFixture.h>
 
-namespace pdf {
+#include <cppunit/extensions/HelperMacros.h>
 
-class ColorSpace ;
+namespace pdfut {
 
-///	An image.
-/**	\ingroup graphics
-	The Image class represents
-*/
-class Image
+class ColorSpaceTest : public CppUnit::TestFixture
 {
 public :
-	virtual ~Image( ) ;
-	
-	virtual std::size_t Width( ) const = 0 ;
-	virtual std::size_t Height( ) const = 0 ;
+	ColorSpaceTest( ) ;
 
-	virtual ColorSpace*	Space( ) const = 0 ;
+	// declare suit function
+	CPPUNIT_TEST_SUITE( ColorSpaceTest ) ;
+		CPPUNIT_TEST( Test ) ;
+	CPPUNIT_TEST_SUITE_END();
 
-	virtual std::size_t ByteCount() const = 0 ;
-	virtual const unsigned char* Pixels() const = 0 ;
+public :
+	void setUp( ) ;
+	void tearDown( ) ;
+
+private :
+	void Test( ) ;
 } ;
 
 } // end of namespace
 
-#endif // IMAGE_HH_
+#endif // COLORSPACETEST_HH_

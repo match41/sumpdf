@@ -31,6 +31,7 @@
 #include "util/Exception.hh"
 #include "util/Debug.hh"
 
+#include <iostream>
 #include <cstring>
 #include <vector>
 
@@ -38,7 +39,7 @@ namespace pdf {
 
 struct ColorSpace::Map
 {
-	std::vector<unsigned char>	components ;
+	std::vector<unsigned char>	comp ;
 } ;
 
 /**	constructor
@@ -68,19 +69,21 @@ ColorSpace::ColorSpace( Object& obj, File *file )
 			(lookup.Is<std::string>() || lookup.Is<Stream>() ) )
 		{
 			m_map.reset( new Map ) ;
-			m_map->components.resize( hival + 1 ) ;
 			m_space = NameToSpace( base.Str() ) ;
+			m_map->comp.resize( (hival + 1) * Color::ChannelCount(m_space) ) ;
 			
 			if ( lookup.Is<std::string>() )
 			{
 				const std::string& s = lookup.As<std::string>() ;
-				std::size_t size = std::min(m_map->components.size(), s.size());
-				std::memcpy( &m_map->components[0], &s[0], size ) ;
+std::cout << s.size() << " " << m_map->comp.size() << std::endl ;
+				std::size_t size = std::min(m_map->comp.size(), s.size());
+std::cout << "min size = " << size << std::endl ;
+				std::memcpy( &m_map->comp[0], &s[0], size ) ;
 			}
 			else
 			{
 				Stream& s = lookup.As<Stream>() ;
-				s.CopyData( &m_map->components[0], m_map->components.size() ) ;
+				s.CopyData( &m_map->comp[0], m_map->comp.size() ) ;
 			}
 		}
 	}
@@ -102,7 +105,12 @@ bool ColorSpace::IsIndex( ) const
 Color ColorSpace::Lookup( unsigned val ) const
 {
 	PDF_ASSERT( m_map.get() != 0 ) ;
-	return Color() ;
+	
+	std::size_t count = Color::ChannelCount(m_space) ;
+	if ( (val+1) * count <= m_map->comp.size() )
+		return Color( m_space, &m_map->comp[val*count] ) ;
+	else
+		return Color() ;
 }
 
 Color::Space ColorSpace::Get() const
@@ -120,6 +128,11 @@ Color::Space ColorSpace::NameToSpace( const std::string& name )
 		return Color::cmyk ;
 	else
 		throw Exception( "unknown color space name" ) ;
+}
+
+std::size_t ColorSpace::ColorCount( ) const
+{
+	return m_map->comp.size() / Color::ChannelCount(m_space) ;
 }
 
 } // end of namespace

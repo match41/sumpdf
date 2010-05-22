@@ -28,11 +28,16 @@
 #include "core/Name.hh"
 #include "core/Object.hh"
 #include "graphics/ExtGraphicsLink.hh"
+#include "graphics/ColorSpace.hh"
 #include "file/DictReader.hh"
 #include "file/File.hh"
+#include "file/ElementFactory.hh"
 #include "stream/Stream.hh"
 
 #include "util/Debug.hh"
+#include "util/Util.hh"
+
+#include <boost/bind.hpp>
 
 #include <iostream>
 
@@ -42,18 +47,25 @@ namespace pdf {
 	
 */
 RealImage::RealImage( Stream& str, File *file )
+	: m_space( 0 )
 {
 	PDF_ASSERT( str.Subtype() == "Image" ) ;
 	std::cout << "image? " << str.Self() << std::endl ;
 	std::cout << "filter name = " << str.FilterName() << std::endl ;
 	
 	DictReader dr( str.Self(), file ) ;
+	ElementFactory<Object> factory( dr ) ;
 	
-	Object cs ;
-	if ( dr.Detach( "ColorSpace", cs ) )
-	{
-		std::cout << "name = " << cs << std::endl ;
-	}
+	m_space = factory.Create( "ColorSpace",
+		boost::bind( NewPtr<ColorSpace>(), _1, file ), m_space ) ;
+
+	if (!dr.Detach( "Width", 			m_width )	||
+		!dr.Detach( "Height",			m_height )	||
+		!dr.Detach( "BitsPerComponent",	m_depth )	)
+		throw Exception( "invalid image without width or height" ) ;
+
+	str.CopyData( m_bytes ) ;
+std::cout << "number of bytes = " << m_bytes.size() << std::endl ;
 }
 
 RealImage::RealImage( std::istream& is )
@@ -134,6 +146,21 @@ Graphics* RealImage::CreateRenderedObject(
 	const Matrix&			ctm ) const
 {
 	return new ExtGraphicsLink<Image>( gs, ctm, this ) ;
+}
+
+ColorSpace*	RealImage::Space( ) const
+{
+	return m_space ;
+}
+
+std::size_t RealImage::ByteCount() const
+{
+	return m_bytes.size() ;
+}
+
+const unsigned char* RealImage::Pixels() const
+{
+	return m_bytes.empty() ? 0 : &m_bytes[0] ;
 }
 
 } // end of namespace
