@@ -50,12 +50,8 @@ signals:
 	void FontPropertiesChanged( int );
 
 private slots:
-	void OnFontChanged( ) ;			// apply font selection to QTextEdit
+	void OnFontChanged( ) ;					// apply font selection to QTextEdit
 	void OnFontChanged( QColor color ) ;	// apply color selection to QTextEdit
-
-private:
-	QPushButton		*m_btn;
-//	ColorButton		*m_colorbox;
 
 };
 
