@@ -17,40 +17,20 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	MockGraphicsVisitor.cc
-	\brief	implementation of the MockGraphicsVisitor class
-	\date	Apr 6, 2010
+/**	\file	GraphicsGroup.cc
+	\brief	implementation of the GraphicsGroup class
+	\date	May 23, 2010
 	\author	Nestal Wan
 */
 
-#include "MockGraphicsVisitor.hh"
+#include "graphics/GraphicsGroup.hh"
 
 namespace pdf {
 
 /**	constructor
 	
 */
-MockGraphicsVisitor::MockGraphicsVisitor( )
-{
-}
-
-void MockGraphicsVisitor::VisitText( Text * )
-{
-}
-
-void MockGraphicsVisitor::VisitGraphics( Graphics * )
-{
-}
-
-void MockGraphicsVisitor::VisitPath( Path * )
-{
-}
-
-void MockGraphicsVisitor::VisitGraphicsLink( ExtGraphicsLink<Image> * )
-{
-}
-
-void MockGraphicsVisitor::VisitGraphicsLink( ExtGraphicsLink<GraphicsGroup> * )
+GraphicsGroup::~GraphicsGroup( )
 {
 }
 

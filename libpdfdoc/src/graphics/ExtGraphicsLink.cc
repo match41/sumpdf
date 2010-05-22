@@ -82,7 +82,7 @@ void ExtGraphicsLink<T>::Visit( GraphicsVisitor *visitor )
 {
 	// assume the GraphicsVisitor has an overloaded function for each
 	// rendered object (e.g. image) type.
-	visitor->VisitRenderedObject( this ) ;
+	visitor->VisitGraphicsLink( this ) ;
 }
 
 template <typename T>
@@ -104,4 +104,7 @@ namespace pdf
 {
 	class Image ;
 	template class ExtGraphicsLink<Image> ;
+	
+	class GraphicsGroup ;
+	template class ExtGraphicsLink<GraphicsGroup> ;
 }

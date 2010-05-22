@@ -26,6 +26,7 @@
 #include "XObject.hh"
 
 #include "RealImage.hh"
+#include "RealGraphicsGroup.hh"
 
 #include "core/Dictionary.hh"
 #include "stream/Stream.hh"
@@ -43,7 +44,7 @@ XObject* CreateXObject( Stream& s, File *file )
 	{
 		std::cout << "XObject type: " << dict["Subtype"] <<
 			" is not supported yet." << std::endl ;
-		return new RealImage( s, file ) ;
+		return new RealGraphicsGroup( s, file ) ;
 	}
 }
 

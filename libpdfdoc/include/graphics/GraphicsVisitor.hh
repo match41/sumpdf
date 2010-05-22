@@ -30,6 +30,7 @@
 namespace pdf {
 
 class Graphics ;
+class GraphicsGroup ;
 class Image ;
 class Path ;
 class Text ;
@@ -49,7 +50,8 @@ public :
 	virtual void VisitText( Text *text ) = 0 ;
 	virtual void VisitGraphics( Graphics *text ) = 0 ;
 	virtual void VisitPath( Path *path ) = 0 ;
-	virtual void VisitRenderedObject( ExtGraphicsLink<Image> *img ) = 0 ;
+	virtual void VisitGraphicsLink( ExtGraphicsLink<Image> *img ) = 0 ;
+	virtual void VisitGraphicsLink( ExtGraphicsLink<GraphicsGroup> *g ) = 0 ;
 } ;
 
 } // end of namespace

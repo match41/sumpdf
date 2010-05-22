@@ -105,7 +105,8 @@ set( PAGE_HDRS		${PAGE_DIR}/RealPage.hh
 set( GRAPICS_HDRS	${GRAPICS_DIR}/RealText.hh
 					${GRAPICS_DIR}/RealPath.hh
 					${GRAPICS_DIR}/RealImage.hh
-					${GRAPICS_DIR}/XObject.hh )
+					${GRAPICS_DIR}/XObject.hh
+					${GRAPICS_DIR}/RealGraphicsGroup.hh )
 
 set( FILE_HDRS		${FILE_DIR}/RealFile.hh
 					${FILE_DIR}/File.hh
@@ -195,6 +196,7 @@ set( GFX_INC_HDRS	${INCLUDE_DIR}/graphics/Graphics.hh
 					${INCLUDE_DIR}/graphics/Text.hh
 					${INCLUDE_DIR}/graphics/Path.hh
 					${INCLUDE_DIR}/graphics/Image.hh
+					${INCLUDE_DIR}/graphics/GraphicsGroup.hh
 					${INCLUDE_DIR}/graphics/ExtGraphicsLink.hh
 					${INCLUDE_DIR}/graphics/PathSegment.hh
 					${INCLUDE_DIR}/graphics/TextState.hh
@@ -236,6 +238,8 @@ set( GRAPICS_SRCS	${GRAPICS_DIR}/Graphics.cc
 					${GRAPICS_DIR}/ExtGraphicsLink.cc
 					${GRAPICS_DIR}/PathSegment.cc
 					${GRAPICS_DIR}/RealPath.cc
+					${GRAPICS_DIR}/GraphicsGroup.cc
+					${GRAPICS_DIR}/RealGraphicsGroup.cc
 					${GRAPICS_DIR}/CharVisitor.cc
 					${GRAPICS_DIR}/TextLine.cc
 					${GRAPICS_DIR}/TextState.cc

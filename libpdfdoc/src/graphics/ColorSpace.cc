@@ -132,7 +132,8 @@ Color::Space ColorSpace::NameToSpace( const std::string& name )
 
 std::size_t ColorSpace::ColorCount( ) const
 {
-	return m_map->comp.size() / Color::ChannelCount(m_space) ;
+	return m_map.get() == 0 ? 0 :
+		m_map->comp.size() / Color::ChannelCount(m_space) ;
 }
 
 } // end of namespace

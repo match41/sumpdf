@@ -17,41 +17,40 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	MockGraphicsVisitor.cc
-	\brief	implementation of the MockGraphicsVisitor class
-	\date	Apr 6, 2010
-	\author	Nestal Wan
+/**	\file	RealGraphicsGroup.hh
+    \brief	definition the RealGraphicsGroup class
+    \date	May 23, 2010
+    \author	Nestal Wan
 */
 
-#include "MockGraphicsVisitor.hh"
+#ifndef __PDF_REALGRAPHICSGROUP_HH_EADER_INCLUDED__
+#define __PDF_REALGRAPHICSGROUP_HH_EADER_INCLUDED__
+
+#include "graphics/GraphicsGroup.hh"
+#include "XObject.hh"
 
 namespace pdf {
 
-/**	constructor
-	
+class Stream ;
+class File ;
+
+///	brief description
+/**	\internal
+	The RealGraphicsGroup class represents
 */
-MockGraphicsVisitor::MockGraphicsVisitor( )
+class RealGraphicsGroup : public GraphicsGroup, public XObject
 {
-}
+public :
+	RealGraphicsGroup( Stream&, File * ) ;
 
-void MockGraphicsVisitor::VisitText( Text * )
-{
-}
+	std::size_t Count( ) const ;
+	const Graphics* At( std::size_t idx ) const ;
 
-void MockGraphicsVisitor::VisitGraphics( Graphics * )
-{
-}
-
-void MockGraphicsVisitor::VisitPath( Path * )
-{
-}
-
-void MockGraphicsVisitor::VisitGraphicsLink( ExtGraphicsLink<Image> * )
-{
-}
-
-void MockGraphicsVisitor::VisitGraphicsLink( ExtGraphicsLink<GraphicsGroup> * )
-{
-}
+	Graphics* CreateRenderedObject(
+		const GraphicsState&	gs,
+		const Matrix&			ctm ) const ;
+} ;
 
 } // end of namespace
+
+#endif // REALGRAPHICSGROUP_HH_

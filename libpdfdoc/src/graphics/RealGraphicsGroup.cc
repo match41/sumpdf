@@ -17,41 +17,39 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	MockGraphicsVisitor.cc
-	\brief	implementation of the MockGraphicsVisitor class
-	\date	Apr 6, 2010
+/**	\file	RealGraphicsGroup.cc
+	\brief	implementation of the RealGraphicsGroup class
+	\date	May 23, 2010
 	\author	Nestal Wan
 */
 
-#include "MockGraphicsVisitor.hh"
+#include "RealGraphicsGroup.hh"
+#include "graphics/ExtGraphicsLink.hh"
 
 namespace pdf {
 
 /**	constructor
 	
 */
-MockGraphicsVisitor::MockGraphicsVisitor( )
+RealGraphicsGroup::RealGraphicsGroup( Stream&, File * )
 {
 }
 
-void MockGraphicsVisitor::VisitText( Text * )
+std::size_t RealGraphicsGroup::Count( ) const
 {
+	return 0 ;
 }
 
-void MockGraphicsVisitor::VisitGraphics( Graphics * )
+const Graphics* RealGraphicsGroup::At( std::size_t idx ) const
 {
+	return 0 ;
 }
 
-void MockGraphicsVisitor::VisitPath( Path * )
+Graphics* RealGraphicsGroup::CreateRenderedObject(
+	const GraphicsState&	gs,
+	const Matrix&			ctm ) const
 {
-}
-
-void MockGraphicsVisitor::VisitGraphicsLink( ExtGraphicsLink<Image> * )
-{
-}
-
-void MockGraphicsVisitor::VisitGraphicsLink( ExtGraphicsLink<GraphicsGroup> * )
-{
+	return new ExtGraphicsLink<GraphicsGroup>( gs, ctm, this ) ;
 }
 
 } // end of namespace

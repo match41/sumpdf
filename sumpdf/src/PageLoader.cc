@@ -97,7 +97,7 @@ void PageLoader::VisitPath( Path *path )
 	m_scene->addItem( p ) ;
 }
 
-void PageLoader::VisitRenderedObject( ExtGraphicsLink<Image> *img )
+void PageLoader::VisitGraphicsLink( ExtGraphicsLink<Image> *img )
 {
 	qDebug() << "get image " << img->Get()->Width( ) ;
 	
@@ -120,6 +120,10 @@ void PageLoader::VisitRenderedObject( ExtGraphicsLink<Image> *img )
 	
 	p->setTransform( m ) ;
 qDebug() << "matrix = " << ToQtMatrix( img->Transform( ) ) ;
+}
+
+void PageLoader::VisitGraphicsLink( ExtGraphicsLink<GraphicsGroup> *g )
+{
 }
 
 void PageLoader::SetTransform( Graphics *gfx, QGraphicsItem  *go )
