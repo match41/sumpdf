@@ -17,49 +17,24 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	RefCounterWrapper.hh
-    \brief	definition the RefCounterWrapper class
-    \date	Jan 1, 2010
-    \author	Nestal Wan
+/**	\file	RefPtr.cc
+	\brief	implementation of the RefPtr class
+	\date	May 23, 2010
+	\author	Nestal Wan
 */
-
-#ifndef __PDF_REFCOUNTERWRAPPER_HEADER_INCLUDED__
-#define __PDF_REFCOUNTERWRAPPER_HEADER_INCLUDED__
 
 #include "util/RefCounter.hh"
 
-namespace pdf {
+namespace boost {
 
-///	A simple template to turn any class to a reference counted one.
-/**	\internal
-	The RefCountObjWrapper class represent a wrapper around any
-	object (i.e. \a	T) to make it supports reference counting.
-	\tparam	T	The class of the object being wrapped. It must be copy-
-				constructible.
-*/
-template <typename T>
-class RefCounterWrapper : public RefCounter
+void intrusive_ptr_add_ref( pdf::RefCounter *p )
 {
-public :
-	RefCounterWrapper( const T& t )
-	: m_t( t )
-	{
-	}
-	
-	T& Get( )
-	{
-		return m_t ;
-	}
-	
-	const T& Get( ) const
-	{
-		return m_t ;
-	}
+	p->AddRef( ) ;
+}
 
-private :
-	T m_t ;
-} ;
+void intrusive_ptr_release( pdf::RefCounter *p )
+{
+	p->Release( ) ;
+}
 
 } // end of namespace
-
-#endif // REFCOUNTOBJWRAPPER_HH_

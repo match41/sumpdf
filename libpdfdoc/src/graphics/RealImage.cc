@@ -28,7 +28,7 @@
 #include "core/Name.hh"
 #include "core/Object.hh"
 #include "graphics/ExtGraphicsLink.hh"
-#include "graphics/ColorSpace.hh"
+#include "graphics/RealColorSpace.hh"
 #include "file/DictReader.hh"
 #include "file/File.hh"
 #include "file/ElementFactory.hh"
@@ -60,7 +60,7 @@ void RealImage::Init( Dictionary& dict, File *file )
 	ElementFactory<Object> factory( dr ) ;
 	
 	m_space.reset( factory.Create( "ColorSpace",
-		boost::bind( NewPtr<ColorSpace>(), _1, file ), m_space.get() ) ) ;
+		boost::bind( NewPtr<RealColorSpace>(), _1, file ), m_space.get() ) ) ;
 
 	if (!dr.Detach( "Width", 			m_width )	||
 		!dr.Detach( "Height",			m_height )	||

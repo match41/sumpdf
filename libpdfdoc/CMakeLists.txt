@@ -106,7 +106,8 @@ set( GRAPICS_HDRS	${GRAPICS_DIR}/RealText.hh
 					${GRAPICS_DIR}/RealPath.hh
 					${GRAPICS_DIR}/RealImage.hh
 					${GRAPICS_DIR}/XObject.hh
-					${GRAPICS_DIR}/RealGraphicsGroup.hh )
+					${GRAPICS_DIR}/RealGraphicsGroup.hh
+					${GRAPICS_DIR}/RealColorSpace.hh )
 
 set( FILE_HDRS		${FILE_DIR}/RealFile.hh
 					${FILE_DIR}/File.hh
@@ -142,7 +143,8 @@ set( STRM_HDRS		${STRM_DIR}/Stream.hh
 set( UTIL_HDRS  	${UTIL_DIR}/Export.hh
 					${UTIL_DIR}/SymbolInfo.hh
 					${UTIL_DIR}/Backtrace.hh
-					${UTIL_DIR}/RefCounterWrapper.hh )
+					${UTIL_DIR}/RefCounter.hh
+					${UTIL_DIR}/RefPtr.hh )
 					
 set( IMG_HDRS  		${IMG_DIR}/Pixmap.hh
 					${IMG_DIR}/PngImage.hh
@@ -208,8 +210,6 @@ set( UTIL_INC_HDRS	${INCLUDE_DIR}/util/Exception.hh
 					${INCLUDE_DIR}/util/Debug.hh
 					${INCLUDE_DIR}/util/Rect.hh
 					${INCLUDE_DIR}/util/Matrix.hh
-					${INCLUDE_DIR}/util/RefCounter.hh
-					${INCLUDE_DIR}/util/RefPtr.hh
 					${INCLUDE_DIR}/util/Util.hh )
 
 ###############################################################################
@@ -246,6 +246,7 @@ set( GRAPICS_SRCS	${GRAPICS_DIR}/Graphics.cc
 					${GRAPICS_DIR}/TextState.cc
 					${GRAPICS_DIR}/Color.cc
 					${GRAPICS_DIR}/ColorSpace.cc
+					${GRAPICS_DIR}/RealColorSpace.cc
 					${GRAPICS_DIR}/CreateXObject.cc )
 
 set( FILE_SRCS		${FILE_DIR}/RealFile.cc

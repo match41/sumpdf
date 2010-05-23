@@ -27,7 +27,7 @@
 
 #include "core/Array.hh"
 #include "core/Name.hh"
-#include "graphics/ColorSpace.hh"
+#include "graphics/RealColorSpace.hh"
 
 #include "util/Util.hh"
 
@@ -59,7 +59,7 @@ void ColorSpaceTest::Test( )
 	MockFile file ;
 	Object src(( Array(a) )) ;
 
-	ColorSpace subject( src, &file ) ;
+	RealColorSpace subject( src, &file ) ;
 	PDFUT_ASSERT_EQUAL( subject.IsIndex(), true ) ;
 	PDFUT_ASSERT_EQUAL( subject.Get(), Color::rgb ) ;
 	PDFUT_ASSERT_EQUAL( subject.Lookup(0), Color( 0,   1.0, 0 ) ) ;
