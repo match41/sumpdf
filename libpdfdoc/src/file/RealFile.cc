@@ -30,10 +30,9 @@
 #include "core/Object.hh"
 #include "core/String.hh"
 #include "core/Token.hh"
-#include "core/TraverseObject.hh"
 
+#include "util/Debug.hh"
 #include "util/Exception.hh"
-#include "util/RefCounterWrapper.hh"
 #include "util/SymbolInfo.hh"
 #include "util/Util.hh"
 
@@ -82,7 +81,7 @@ RealFile::RealFile( std::ostream *os )
 	, m_in( 0 )
 	, m_out( os )
 {
-	assert( m_out != 0 ) ;
+	PDF_ASSERT( m_out != 0 ) ;
 	*m_out << "%PDF-1.4\n" ;
 }
 
@@ -100,7 +99,7 @@ RealFile::RealFile( std::ostream *os )
 */
 void RealFile::WriteTrailer( const Ref& catalog, const Ref& info )
 {
-	assert( m_out != 0 ) ;
+	PDF_ASSERT( m_out != 0 ) ;
 
 	if ( info != Ref() )
 		m_trailer.Set( "Info", info ) ;
@@ -126,7 +125,7 @@ void RealFile::WriteTrailer( const Ref& catalog, const Ref& info )
 
 void RealFile::ReadType( const Ref& link, Object& obj )
 {
-	assert( m_in != 0 ) ;
+	PDF_ASSERT( m_in != 0 ) ;
 
 	// use at() because it will check bounding
 	std::size_t offset = m_objs.at( link.ID() ) ;
@@ -173,7 +172,7 @@ void RealFile::ReadType( const Ref& link, Object& obj )
 template <typename T>
 void RealFile::BasicRead( const Ref& link, T& result )
 {
-	assert( m_in != 0 ) ;
+	PDF_ASSERT( m_in != 0 ) ;
 
 	// use at() because it will check bounding
 	std::size_t offset = m_objs.at( link.ID() ) ;
@@ -268,7 +267,7 @@ Object RealFile::ReadObj( const Ref& obj )
 
 Stream RealFile::ReadStream( Dictionary& dict )
 {
-	assert( m_in != 0 ) ;
+	PDF_ASSERT( m_in != 0 ) ;
 
 	char ch ;
 	if ( !m_in->get( ch ) || ( ch != '\r' && ch != '\n' ) )
@@ -305,9 +304,9 @@ Ref RealFile::AllocLink( )
 
 void RealFile::WriteObj( const Object& obj, const Ref& link )
 {
-	assert( m_out != 0 ) ;
-	assert( link.ID( ) < m_objs.size( ) ) ;
-	assert( m_objs[link.ID()] == 0 ) ;
+	PDF_ASSERT( m_out != 0 ) ;
+	PDF_ASSERT( link.ID( ) < m_objs.size( ) ) ;
+	PDF_ASSERT( m_objs[link.ID()] == 0 ) ;
 	
 	m_objs[link.ID()] = m_out->tellp( ) ;
 	*m_out << link.ID() << " 0 obj\n"
@@ -316,50 +315,58 @@ void RealFile::WriteObj( const Object& obj, const Ref& link )
 
 void RealFile::ReadXRef( std::size_t offset, Dictionary& trailer )
 {
-	assert( m_in != 0 ) ;
+	PDF_ASSERT( m_in != 0 ) ;
 	m_in->seekg( offset, std::ios::beg ) ;
 	
 	// reading xref	
 	std::string line ;
-	if ( !ReadLine( *m_in, line ) /*|| line != "xref" */)
+	if ( !ReadLine( *m_in, line ) || line != "xref" )
 		throw ParseError( "can't read xref marker" ) ;
 	
-	// start ID and number of object
-	std::size_t start, count ;
-	if ( ReadLine( *m_in, line ) )
+	while ( true )
 	{
-		std::istringstream ss ( line ) ;
-		if ( !( ss >> start >> count ) )
-			throw std::runtime_error( "can't read object count in xref" ) ;
-	}
-	else
-		throw std::runtime_error( "can't read object count in xref" ) ;
-	
-	if ( start + count > m_objs.size() )
-		m_objs.resize( start + count ) ;
-	
-	std::size_t index = 0 ;
-	while ( ReadLine( *m_in, line ) && index < count )
-	{
-		std::istringstream ss( line ) ;
-		std::size_t obj_offset, obj_gen ;
-		char flag ;
+		// start ID and number of object
+		std::size_t start, count ;
+		if ( ReadLine( *m_in, line ) )
+		{
+			// the "trailer" keyword indicates the end of the xref sections
+			if ( line == "trailer" )
+				break ;
 		
-		if ( ss >> obj_offset >> obj_gen >> flag )
-			m_objs[start+index] = obj_offset ;
-
+			std::istringstream ss ( line ) ;
+			if ( !( ss >> start >> count ) )
+				throw std::runtime_error( "can't read object count in xref" ) ;
+		}
 		else
-			throw ParseError( "can't read object offset in xref" ) ;
+			throw std::runtime_error( "can't read object count in xref" ) ;
 		
-		index++ ;
+		if ( start + count > m_objs.size() )
+			m_objs.resize( start + count ) ;
+		
+		std::size_t index = 0 ;
+		while ( index < count && ReadLine( *m_in, line ) )
+		{
+			std::istringstream ss( line ) ;
+			std::size_t obj_offset, obj_gen ;
+			char flag ;
+			
+			if ( ss >> obj_offset >> obj_gen >> flag )
+				m_objs[start+index] = obj_offset ;
+	
+			else
+				throw ParseError( "can't read object offset in xref" ) ;
+			
+			index++ ;
+		}
 	}
 	
+	// recursively read all xref and trailer sections in the file
 	std::size_t prev_offset = 0 ;
-	if ( ReadTailer( trailer, prev_offset ) )
+	if ( ReadTrailer( trailer, prev_offset ) )
 		ReadXRef( prev_offset, trailer ) ;
 }
 
-bool RealFile::ReadTailer( Dictionary& trailer, std::size_t& prev_offset )
+bool RealFile::ReadTrailer( Dictionary& trailer, std::size_t& prev_offset )
 {	
 	Dictionary t ;
 	if ( !(*m_in >> t ) )
@@ -371,7 +378,7 @@ bool RealFile::ReadTailer( Dictionary& trailer, std::size_t& prev_offset )
 		if ( i->first == "Prev" )
 		{
 			found_prev = true ;
-			prev_offset = int(i->second) ;
+			prev_offset = i->second.To<int>() ;
 		}
 
 		// never over-write existing values in trailer dictionary,

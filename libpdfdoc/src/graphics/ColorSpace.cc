@@ -75,9 +75,7 @@ ColorSpace::ColorSpace( Object& obj, File *file )
 			if ( lookup.Is<std::string>() )
 			{
 				const std::string& s = lookup.As<std::string>() ;
-std::cout << s.size() << " " << m_map->comp.size() << std::endl ;
 				std::size_t size = std::min(m_map->comp.size(), s.size());
-std::cout << "min size = " << size << std::endl ;
 				std::memcpy( &m_map->comp[0], &s[0], size ) ;
 			}
 			else

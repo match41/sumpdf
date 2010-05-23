@@ -137,7 +137,7 @@ void ContentStream::Decode( Stream& str )
 	ContentOp		op ;
 	GraphicsState	gstate ;
 
-	Clock clock ;
+//	Clock clock ;
 
 	while ( src >> op )
 	{
