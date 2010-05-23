@@ -75,12 +75,17 @@ QImage ImageObject::ToQImage( const Image *img )
 	{
 		QImage tmp( img->Pixels(), img->Width(), img->Height(), img->Width(),
 			QImage::Format_Indexed8 ) ;
-		tmp.setColorCount( img->Space()->ColorCount() ) ;
-		QVector<QRgb> cmap ;
-		for ( std::size_t j = 0 ; j < img->Space()->ColorCount() ; ++j )
-			cmap.push_back( ToQColor(img->Space()->Lookup(j)).rgb() ) ;
 			
-		tmp.setColorTable(cmap) ;
+		if ( img->Space() != 0 )
+		{
+			tmp.setColorCount( img->Space()->ColorCount() ) ;
+			QVector<QRgb> cmap ;
+			for ( std::size_t j = 0 ; j < img->Space()->ColorCount() ; ++j )
+				cmap.push_back( ToQColor(img->Space()->Lookup(j)).rgb() ) ;
+				
+			tmp.setColorTable(cmap) ;
+		}
+		
 		return tmp ;
 	}
 }

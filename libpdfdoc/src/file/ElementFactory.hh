@@ -46,11 +46,11 @@ public :
 	template <typename Element, typename Factory>
 	Element* Create( Dictionary::iterator i, Factory func, Element *original=0 )
 	{
-		ElementPool *pool = m_dict.GetFile()->Pool() ;
+		ElementPool *pool = m_dict.GetFile() ? m_dict.GetFile()->Pool() : 0 ;
 		Element *result = 0 ;
 		
 		// it's good if it's a reference to something already in the pool
-		if ( i != m_dict->end() && i->second.Is<Ref>() &&
+		if ( i != m_dict->end() && i->second.Is<Ref>() && pool != 0 &&
 		     pool->Acquire( i->second, result ) )
 		{
 		}
@@ -62,7 +62,7 @@ public :
 			bool is_ref = m_dict.SwapAt( i, temp ) ;
 			result = func( temp ) ;
 
-			if ( is_ref )
+			if ( is_ref && pool != 0 )
 				pool->Add( i->second, result ) ;
 		}
 	

@@ -56,7 +56,7 @@ DictReader::DictReader( Dictionary& dict, File *file )
 DictReader::DictReader( Object& obj, File *file )
 	: m_file( file )
 {
-	if ( obj.Is<Ref>() )
+	if ( obj.Is<Ref>() && file != 0 )
 		m_dict = file->ReadObj( obj.As<Ref>() ).As<Dictionary>() ;
 	else
 		m_dict.swap( obj.As<Dictionary>() ) ;
@@ -126,7 +126,7 @@ bool DictReader::SwapAt( Dictionary::iterator i, T& result )
 	Object& obj = i->second ;
 	
 	bool is_ref = obj.Is<Ref>() ; 
-	if ( is_ref )
+	if ( is_ref && m_file != 0 )
 		m_file->ReadType( obj, result ) ;
 	else
 		std::swap( obj.As<T>(), result ) ;
@@ -153,7 +153,7 @@ namespace
 	{
 		if ( i != dict.end( ) )
 		{
-			result = ( i->second.Is<Ref>() ) ?
+			result = ( i->second.Is<Ref>() && file != 0 ) ?
 				file->ReadObj( i->second ).To<T>() :
 				i->second.To<T>() ;
 			return true ;

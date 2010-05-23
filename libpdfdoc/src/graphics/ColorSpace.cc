@@ -52,8 +52,10 @@ ColorSpace::ColorSpace( Color::Space sp )
 
 ColorSpace::ColorSpace( Object& obj, File *file )
 {
+std::cout << obj << std::endl ;
 	if ( obj.Is<Name>() )
 		m_space = NameToSpace( obj.As<Name>().Str() ) ;
+	
 	else if ( obj.Is<Array>() )
 	{
 		ArrayReader ar( obj.As<Array>(), file ) ;

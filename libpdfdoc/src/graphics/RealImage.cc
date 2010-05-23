@@ -40,6 +40,7 @@
 #include <boost/bind.hpp>
 
 #include <iostream>
+#include <map>
 
 namespace pdf {
 
@@ -47,27 +48,32 @@ namespace pdf {
 	
 */
 RealImage::RealImage( Stream& str, File *file )
-	: m_space( 0 )
-	, m_is_jpeg( str.FilterName() != Name() )
+	: m_is_jpeg( str.FilterName() != Name() )
 {
-	DictReader dr( str.Self(), file ) ;
+	Init( str.Self(), file ) ;
+	str.CopyData( m_bytes ) ;
+}
+
+void RealImage::Init( Dictionary& dict, File *file )
+{
+	DictReader dr( dict, file ) ;
 	ElementFactory<Object> factory( dr ) ;
 	
-	m_space = factory.Create( "ColorSpace",
-		boost::bind( NewPtr<ColorSpace>(), _1, file ), m_space ) ;
+	m_space.reset( factory.Create( "ColorSpace",
+		boost::bind( NewPtr<ColorSpace>(), _1, file ), m_space.get() ) ) ;
 
 	if (!dr.Detach( "Width", 			m_width )	||
 		!dr.Detach( "Height",			m_height )	||
 		!dr.Detach( "BitsPerComponent",	m_depth )	)
 		throw Exception( "invalid image without width or height" ) ;
-
-	str.CopyData( m_bytes ) ;
 }
 
 RealImage::RealImage( std::istream& is )
 	: m_width( 0 )
 	, m_height( 0 )
 {
+	Dictionary dict ;
+	
 	Object key ;
 	while ( is >> key )
 	{
@@ -100,7 +106,8 @@ std::cout << "got ID" << std::endl ;
 					{
 						std::cout << "finished inline image" << std::endl ;
 						std::cout << "width = " << m_width << " height = "
-						<< m_height << std::endl ;
+						<< m_height << "\n" << dict << std::endl ;
+						Init( dict, 0 ) ;
 						return ;
 					}
 				}
@@ -113,18 +120,15 @@ std::cout << "got ID" << std::endl ;
 		{
 			Object value ;
 			if ( is >> value )
-				ProcessDictEntry( key.As<Name>(), value ) ;
+			{
+				if ( value.Is<Name>() )
+					value = ExpandAbbv( value.As<Name>() ) ;
+					
+				dict.insert( ExpandAbbv(key.As<Name>()), value ) ;
+			}
 		}
 	}
 	std::cout << "premature finish" << std::endl ;
-}
-
-void RealImage::ProcessDictEntry( const Name& name, const Object& entry )
-{
-	if ( name == "W" || name == "Width" )
-		m_width = entry ;
-	else if ( name == "H" || name == "Height" )
-		m_height = entry ;
 }
 
 std::size_t RealImage::Width( ) const
@@ -146,7 +150,7 @@ Graphics* RealImage::CreateRenderedObject(
 
 ColorSpace*	RealImage::Space( ) const
 {
-	return m_space ;
+	return m_space.get() ;
 }
 
 std::size_t RealImage::ByteCount() const
@@ -162,6 +166,38 @@ const unsigned char* RealImage::Pixels() const
 bool RealImage::IsJpeg( ) const
 {
 	return m_is_jpeg ;
+}
+
+Name RealImage::ExpandAbbv( const Name& name )
+{
+	typedef std::map<Name, Name> NameMap ;
+	static const NameMap::value_type map_val[] =
+	{
+		std::make_pair(Name("BPC"),	Name("BitsPerComponent") ),
+		std::make_pair(Name("CS"),	Name("ColorSpace") ),
+		std::make_pair(Name("D"),	Name("Decode") ),
+		std::make_pair(Name("DP"),	Name("DecodeParms") ),
+		std::make_pair(Name("F"),	Name("Filter") ),
+		std::make_pair(Name("H"),	Name("Height") ),
+		std::make_pair(Name("IM"),	Name("ImageMask") ),
+		std::make_pair(Name("I"),	Name("Interpolate") ),
+		std::make_pair(Name("W"),	Name("Width") ),
+		std::make_pair(Name("G"),	Name("DeviceGray") ),
+		std::make_pair(Name("RGB"),	Name("DeviceRGB") ),
+		std::make_pair(Name("CMYK"),Name("DeviceCMYK") ),
+		std::make_pair(Name("I"),	Name("Indexed") ),
+		std::make_pair(Name("AHx"),	Name("ASCIIHexDecode") ),
+		std::make_pair(Name("A85"),	Name("ASCII85Decode") ),
+		std::make_pair(Name("LZW"),	Name("LZWDecode") ),
+		std::make_pair(Name("Fl"),	Name("FlateDecode") ),
+		std::make_pair(Name("RL"),	Name("RunLengthDecode") ),
+		std::make_pair(Name("CCF"),	Name("CCITTFaxDecode") ),
+		std::make_pair(Name("DCT"),	Name("DCTDecode") ),
+	} ;
+	
+	static const NameMap mp( Begin(map_val), End(map_val) ) ;
+	NameMap::const_iterator i = mp.find( name ) ;
+	return i != mp.end() ? i->second : name ;
 }
 
 } // end of namespace

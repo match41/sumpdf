@@ -17,73 +17,28 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	RealImage.hh
-    \brief	definition the RealImage class
-    \date	May 19, 2010
+/**	\file	RefPtr.hh
+    \brief	definition the RefPtr class
+    \date	May 23, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_REALIMAGE_HEADER_INCLUDED__
-#define __PDF_REALIMAGE_HEADER_INCLUDED__
+#ifndef __PDF_REFPTR_HH_EADER_INCLUDED__
+#define __PDF_REFPTR_HH_EADER_INCLUDED__
 
-#include "graphics/Image.hh"
-#include "XObject.hh"
+#include <boost/intrusive_ptr.hpp>
 
-#include "util/RefPtr.hh"
-
-#include <vector>
-#include <iosfwd>
-
-namespace pdf {
-
-class ColorSpace ;
-class Dictionary ;
-class Name ;
-class Object ;
-class Stream ;
-
-///	brief description
-/**	\internal
-	The RealImage class represents
-*/
-class RealImage : public Image, public XObject
+namespace pdf
 {
-public :
-	explicit RealImage( std::istream& is ) ;
-	RealImage( Stream& str, File *file ) ;
+	class RefCounter ;
+}
 
-	std::size_t Width( ) const ;
-	std::size_t Height( ) const ;
-
-	std::istream& ReadInlineImage( std::istream& is ) ;
-
-	Graphics* CreateRenderedObject(
-		const GraphicsState&	gs,
-		const Matrix&			ctm ) const ;
-
-	ColorSpace*	Space( ) const ;
-
-	std::size_t ByteCount() const ;
-	const unsigned char* Pixels() const ;
-
-	bool IsJpeg( ) const ;
-
-private :
-	void Init( Dictionary& dict, File *file ) ;
-
-	static Name ExpandAbbv( const Name& name ) ;
-
-private :
-	std::size_t		m_width ;
-	std::size_t		m_height ;
-	std::size_t		m_depth ;
+namespace boost
+{
+	void intrusive_ptr_add_ref( pdf::RefCounter *p ) ;
 	
-	std::vector<unsigned char>			m_bytes ;
-	boost::intrusive_ptr<ColorSpace>	m_space ;
-	
-	bool			m_is_jpeg ;
-} ;
+	void intrusive_ptr_release( pdf::RefCounter *p ) ;
 
 } // end of namespace
 
-#endif // REALIMAGE_HH_
+#endif // REFPTR_HH_

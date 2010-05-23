@@ -142,7 +142,6 @@ set( STRM_HDRS		${STRM_DIR}/Stream.hh
 set( UTIL_HDRS  	${UTIL_DIR}/Export.hh
 					${UTIL_DIR}/SymbolInfo.hh
 					${UTIL_DIR}/Backtrace.hh
-					${UTIL_DIR}/RefCounter.hh
 					${UTIL_DIR}/RefCounterWrapper.hh )
 					
 set( IMG_HDRS  		${IMG_DIR}/Pixmap.hh
@@ -209,6 +208,8 @@ set( UTIL_INC_HDRS	${INCLUDE_DIR}/util/Exception.hh
 					${INCLUDE_DIR}/util/Debug.hh
 					${INCLUDE_DIR}/util/Rect.hh
 					${INCLUDE_DIR}/util/Matrix.hh
+					${INCLUDE_DIR}/util/RefCounter.hh
+					${INCLUDE_DIR}/util/RefPtr.hh
 					${INCLUDE_DIR}/util/Util.hh )
 
 ###############################################################################
@@ -283,6 +284,7 @@ set( UTIL_SRCS  	${UTIL_DIR}/Rect.cc
 					${UTIL_DIR}/Exception.cc
 					${UTIL_DIR}/Backtrace.cc
 					${UTIL_DIR}/RefCounter.cc
+					${UTIL_DIR}/RefPtr.cc
 					${UTIL_DIR}/Debug.cc
 					${UTIL_DIR}/Matrix.cc )
 
