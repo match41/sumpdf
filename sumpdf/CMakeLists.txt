@@ -54,7 +54,8 @@ set( BASE_SRCS		src/main.cc
                     src/TextLineObject.cc
 					src/GraphicsObject.cc
 					src/QtGraphicsState.cc 
-					src/ColorButton.cc )
+					src/ColorButton.cc
+					src/ImageObject.cc )
 
 ###############################################################################
 # all sources

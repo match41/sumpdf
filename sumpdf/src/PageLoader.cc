@@ -26,15 +26,13 @@
 #include "PageLoader.hh"
 
 // local headers
+#include "ImageObject.hh"
+#include "PathObject.hh"
 #include "TextLineObject.hh"
 #include "TextObject.hh"
-#include "PathObject.hh"
 #include "Util.hh"
 
 // libpdfdoc headers
-#include <graphics/ExtGraphicsLink.hh>
-#include <graphics/ColorSpace.hh>
-#include <graphics/Image.hh>
 #include <graphics/Path.hh>
 #include <graphics/PathSegment.hh>
 #include <graphics/Text.hh>
@@ -42,11 +40,8 @@
 
 // Qt headers
 #include <QGraphicsScene>
-#include <QImage>
-#include <QPixmap>
 #include <QPainterPath>
 #include <QDebug>
-#include <QGraphicsPixmapItem>
 
 // boost headers
 #include <boost/bind.hpp>
@@ -99,35 +94,8 @@ void PageLoader::VisitPath( Path *path )
 
 void PageLoader::VisitGraphicsLink( ExtGraphicsLink<Image> *img )
 {
-	const Image *i = img->Get() ;
-	
-	QImage pic ;
-	
-	if ( !i->IsJpeg() )
-	{
-		QImage qimg( i->Pixels(), i->Width(), i->Height(), i->Width(), QImage::Format_Indexed8 ) ;
-		qimg.setColorCount( i->Space()->ColorCount() ) ;
-		QVector<QRgb> cmap ;
-		for ( std::size_t j = 0 ; j < i->Space()->ColorCount() ; ++j )
-			cmap.push_back( ToQColor(i->Space()->Lookup(j)).rgb() ) ;
-			
-		qimg.setColorTable(cmap) ;
-		
-		pic = qimg ;
-	}
-	else
-		pic.loadFromData( i->Pixels(), i->ByteCount() ) ;
-	
-	QGraphicsPixmapItem *p = m_scene->addPixmap( QPixmap::fromImage(pic) ) ;
-	
-	// this is ugly. need to clean it up
-	QTransform m = ToQtMatrix( img->Transform() ) ;
-	m.scale( 1.0/i->Width(), 1.0/i->Height() ) ;
-	m.translate( 0, 0.5*i->Height() ) ;
-	m.scale( 1.0, -1.0 ) ;
-	m.translate( 0, -0.5*i->Height() ) ;
-	
-	p->setTransform( m ) ;
+	PDF_ASSERT( m_scene != 0 ) ;
+	m_scene->addItem( new ImageObject( img ) ) ;
 }
 
 void PageLoader::VisitGraphicsLink( ExtGraphicsLink<GraphicsGroup> *g )
