@@ -99,19 +99,28 @@ void PageLoader::VisitPath( Path *path )
 
 void PageLoader::VisitGraphicsLink( ExtGraphicsLink<Image> *img )
 {
-	qDebug() << "get image " << img->Get()->Width( ) ;
-	
 	const Image *i = img->Get() ;
 	
-	QImage qimg( i->Pixels(), i->Width(), i->Height(), i->Width(), QImage::Format_Indexed8 ) ;
-	qimg.setColorCount( i->Space()->ColorCount() ) ;
-	QVector<QRgb> cmap ;
-	for ( std::size_t j = 0 ; j < i->Space()->ColorCount() ; ++j )
-		cmap.push_back( ToQColor(i->Space()->Lookup(j)).rgb() ) ;
-		
-	qimg.setColorTable(cmap) ;
+	QImage pic ;
 	
-	QGraphicsPixmapItem *p = m_scene->addPixmap( QPixmap::fromImage(qimg) ) ;
+	if ( !i->IsJpeg() )
+	{
+		QImage qimg( i->Pixels(), i->Width(), i->Height(), i->Width(), QImage::Format_Indexed8 ) ;
+		qimg.setColorCount( i->Space()->ColorCount() ) ;
+		QVector<QRgb> cmap ;
+		for ( std::size_t j = 0 ; j < i->Space()->ColorCount() ; ++j )
+			cmap.push_back( ToQColor(i->Space()->Lookup(j)).rgb() ) ;
+			
+		qimg.setColorTable(cmap) ;
+		
+		pic = qimg ;
+	}
+	else
+		pic.loadFromData( i->Pixels(), i->ByteCount() ) ;
+	
+	QGraphicsPixmapItem *p = m_scene->addPixmap( QPixmap::fromImage(pic) ) ;
+	
+	// this is ugly. need to clean it up
 	QTransform m = ToQtMatrix( img->Transform() ) ;
 	m.scale( 1.0/i->Width(), 1.0/i->Height() ) ;
 	m.translate( 0, 0.5*i->Height() ) ;
@@ -119,7 +128,6 @@ void PageLoader::VisitGraphicsLink( ExtGraphicsLink<Image> *img )
 	m.translate( 0, -0.5*i->Height() ) ;
 	
 	p->setTransform( m ) ;
-qDebug() << "matrix = " << ToQtMatrix( img->Transform( ) ) ;
 }
 
 void PageLoader::VisitGraphicsLink( ExtGraphicsLink<GraphicsGroup> *g )

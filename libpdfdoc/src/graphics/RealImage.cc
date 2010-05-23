@@ -48,11 +48,8 @@ namespace pdf {
 */
 RealImage::RealImage( Stream& str, File *file )
 	: m_space( 0 )
+	, m_is_jpeg( str.FilterName() != Name() )
 {
-	PDF_ASSERT( str.Subtype() == "Image" ) ;
-	std::cout << "image? " << str.Self() << std::endl ;
-	std::cout << "filter name = " << str.FilterName() << std::endl ;
-	
 	DictReader dr( str.Self(), file ) ;
 	ElementFactory<Object> factory( dr ) ;
 	
@@ -65,7 +62,6 @@ RealImage::RealImage( Stream& str, File *file )
 		throw Exception( "invalid image without width or height" ) ;
 
 	str.CopyData( m_bytes ) ;
-std::cout << "number of bytes = " << m_bytes.size() << std::endl ;
 }
 
 RealImage::RealImage( std::istream& is )
@@ -161,6 +157,11 @@ std::size_t RealImage::ByteCount() const
 const unsigned char* RealImage::Pixels() const
 {
 	return m_bytes.empty() ? 0 : &m_bytes[0] ;
+}
+
+bool RealImage::IsJpeg( ) const
+{
+	return m_is_jpeg ;
 }
 
 } // end of namespace

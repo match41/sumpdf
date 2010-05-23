@@ -63,6 +63,8 @@ public :
 	std::size_t ByteCount() const ;
 	const unsigned char* Pixels() const ;
 
+	bool IsJpeg( ) const ;
+
 private :
 	void ProcessDictEntry( const Name& name, const Object& entry ) ;
 
@@ -73,6 +75,8 @@ private :
 	
 	std::vector<unsigned char>	m_bytes ;
 	ColorSpace		*m_space ;
+	
+	bool			m_is_jpeg ;
 } ;
 
 } // end of namespace

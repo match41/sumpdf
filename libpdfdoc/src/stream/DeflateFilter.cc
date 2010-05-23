@@ -208,9 +208,9 @@ DeflateFilter* DeflateFilter::Clone( ) const
 	return new DeflateFilter( std::auto_ptr<StreamFilter>(m_src->Clone()) ) ;
 }
 
-Object DeflateFilter::GetFilterName( ) const
+Object DeflateFilter::NameChain( ) const
 {
-	Object name = m_src->GetFilterName( ) ;
+	Object name = m_src->NameChain( ) ;
 	if ( name.Is<Array>( ) )
 	{
 		Array arr ;
@@ -229,6 +229,11 @@ Object DeflateFilter::GetFilterName( ) const
 StreamFilter* DeflateFilter::GetInner( )
 {
 	return m_src.get() ;
+}
+
+Name DeflateFilter::RawFormat( ) const
+{
+	return m_src->RawFormat() ;
 }
 
 } // end of namespace

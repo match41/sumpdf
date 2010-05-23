@@ -119,7 +119,7 @@ std::size_t RawFilter::Length( ) const
 	return m_length ;
 }
 
-Object RawFilter::GetFilterName( ) const
+Object RawFilter::NameChain( ) const
 {
 	return Object( ) ;
 }
@@ -137,6 +137,11 @@ StreamFilter* RawFilter::GetInner( )
 */
 void RawFilter::Flush( )
 {
+}
+
+Name RawFilter::RawFormat( ) const
+{
+	return Name() ;
 }
 
 } // end of namespace

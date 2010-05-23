@@ -49,6 +49,8 @@ public :
 
 	virtual std::size_t ByteCount() const = 0 ;
 	virtual const unsigned char* Pixels() const = 0 ;
+	
+	virtual bool IsJpeg( ) const = 0 ;
 } ;
 
 } // end of namespace

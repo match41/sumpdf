@@ -60,10 +60,11 @@ public :
 	std::size_t Write( const unsigned char *data, std::size_t size ) ;
 	void Rewind( ) ;
 	std::size_t Length( ) const ;
-	Object GetFilterName( ) const ;
+	Object NameChain( ) const ;
 	StreamFilter* Clone( ) const ;
 	StreamFilter* GetInner( ) ;
 	void Flush( ) ;
+	Name RawFormat( ) const ;
 	
 private :
 	std::vector<unsigned char>	m_buf ;		//!< chunk of data in memory

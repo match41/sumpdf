@@ -26,13 +26,18 @@
 #include "RealGraphicsGroup.hh"
 #include "graphics/ExtGraphicsLink.hh"
 
+#include "stream/Stream.hh"
+
+#include <iostream>
+
 namespace pdf {
 
 /**	constructor
 	
 */
-RealGraphicsGroup::RealGraphicsGroup( Stream&, File * )
+RealGraphicsGroup::RealGraphicsGroup( Stream& src, File * )
 {
+//	src.CopyData( std::cout.rdbuf() ) ;
 }
 
 std::size_t RealGraphicsGroup::Count( ) const

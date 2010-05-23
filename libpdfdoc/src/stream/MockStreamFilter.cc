@@ -67,7 +67,7 @@ std::size_t MockStreamFilter::Length( ) const
 	return m_inner.get() != 0 ? m_inner->Length() : 0 ;
 }
 
-Object MockStreamFilter::GetFilterName( ) const
+Object MockStreamFilter::NameChain( ) const
 {
 	// TODO: need to use array for multiple filter names
 	return m_filter.empty() ? Object( ) : Object( m_filter ) ;
@@ -82,6 +82,11 @@ StreamFilter* MockStreamFilter::Clone( ) const
 StreamFilter* MockStreamFilter::GetInner( )
 {
 	return m_inner.get() != 0 ? m_inner.get() : this ;
+}
+
+Name MockStreamFilter::RawFormat( ) const
+{
+	return m_filter ;
 }
 
 } // end of namespace

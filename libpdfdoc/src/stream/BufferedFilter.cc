@@ -96,7 +96,7 @@ std::size_t BufferedFilter::Length( ) const
 	return m_buf.size( ) ;
 }
 
-Object BufferedFilter::GetFilterName( ) const
+Object BufferedFilter::NameChain( ) const
 {
 	return Object( ) ;
 }
@@ -108,6 +108,11 @@ StreamFilter* BufferedFilter::GetInner( )
 
 void BufferedFilter::Flush( )
 {
+}
+
+Name BufferedFilter::RawFormat( ) const
+{
+	return Name() ;
 }
 
 } // end of namespace

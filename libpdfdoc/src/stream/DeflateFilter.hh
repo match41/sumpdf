@@ -59,7 +59,7 @@ public :
 
 	void Rewind( ) ;
 	std::size_t Length( ) const ;
-	Object GetFilterName( ) const ;
+	Object NameChain( ) const ;
 	DeflateFilter* Clone( ) const ;
 	StreamFilter* GetInner( ) ;
 	
@@ -70,6 +70,8 @@ public :
 	public :
 		Error( const char *func, const char *msg ) ;
 	} ;
+
+	Name RawFormat( ) const ;
 
 private :
 	struct ZData ;
