@@ -42,6 +42,8 @@ public :
 	void VisitText( Text *text ) ;
 	void VisitGraphics( Graphics *text ) ;
 	void VisitPath( Path *path ) ;
+	void VisitGraphicsLink( ExtGraphicsLink<Image> *img ) ;
+	void VisitGraphicsLink( ExtGraphicsLink<GraphicsGroup> *img ) ;
 } ;
 
 } // end of namespace

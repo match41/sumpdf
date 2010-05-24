@@ -19,44 +19,38 @@
 
 /**	\file	Image.hh
     \brief	definition the Image class
-    \date	May 11, 2010
+    \date	May 17, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_IMAGE_HEADER_INCLUDED__
-#define __PDF_IMAGE_HEADER_INCLUDED__
+#ifndef __PDF_IMAGE_HH_EADER_INCLUDED__
+#define __PDF_IMAGE_HH_EADER_INCLUDED__
 
-#include "Graphics.hh"
-
-#include "GraphicsState.hh"
-#include "util/Matrix.hh"
+#include <iosfwd>
+#include <vector>
 
 namespace pdf {
 
-///	brief description
-/**	The Image class represents
+class ColorSpace ;
+
+///	An image.
+/**	\ingroup graphics
+	The Image class represents
 */
-class Image : public Graphics
+class Image
 {
 public :
-	Image( ) ;
-	~Image( ) ;
-
-	void OnCommand( ContentOp& op, const ResourcesDict *res ) ;
-
-	Matrix Transform( ) const ;
-	void Transform( const Matrix& mat ) ;
-	void Print(
-		std::ostream&	os,
-		ResourcesDict	*res,
-		GraphicsState&	gs ) const ;
-	void Visit( GraphicsVisitor *visitor ) ;
+	virtual ~Image( ) ;
 	
-	GraphicsState GetState( ) const ;
+	virtual std::size_t Width( ) const = 0 ;
+	virtual std::size_t Height( ) const = 0 ;
 
-private :
-	Matrix			m_transform ;
-	GraphicsState	m_gs ;
+	virtual ColorSpace*	Space( ) const = 0 ;
+
+	virtual std::size_t ByteCount() const = 0 ;
+	virtual const unsigned char* Pixels() const = 0 ;
+	
+	virtual bool IsJpeg( ) const = 0 ;
 } ;
 
 } // end of namespace

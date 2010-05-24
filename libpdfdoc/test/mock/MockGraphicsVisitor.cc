@@ -34,15 +34,23 @@ MockGraphicsVisitor::MockGraphicsVisitor( )
 {
 }
 
-void MockGraphicsVisitor::VisitText( Text *text )
+void MockGraphicsVisitor::VisitText( Text * )
 {
 }
 
-void MockGraphicsVisitor::VisitGraphics( Graphics *text )
+void MockGraphicsVisitor::VisitGraphics( Graphics * )
 {
 }
 
-void MockGraphicsVisitor::VisitPath( Path *path )
+void MockGraphicsVisitor::VisitPath( Path * )
+{
+}
+
+void MockGraphicsVisitor::VisitGraphicsLink( ExtGraphicsLink<Image> * )
+{
+}
+
+void MockGraphicsVisitor::VisitGraphicsLink( ExtGraphicsLink<GraphicsGroup> * )
 {
 }
 

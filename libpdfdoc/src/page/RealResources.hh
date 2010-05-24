@@ -30,6 +30,8 @@
 #include "ResourcesDict.hh"
 #include "util/RefCounter.hh"
 
+#include "ResourceSet.hh"
+
 #include "core/Dictionary.hh"
 #include "core/Name.hh"
 
@@ -65,15 +67,18 @@ class RealResources : public ResourcesDict, public RefCounter
 public :
 	explicit RealResources( const RealResources *parent ) ;
 	explicit RealResources( FontDb *fontdb ) ;
-	~RealResources( ) ;
-
+	
 	Name AddFont( BaseFont *font ) ;
-
+	Name AddXObject( XObject *xobj ) ;
+	
 	void Read( DictReader& self ) ;
 	Ref  Write( File *file, const FontSubsetInfo *ss ) const ;
 
 	BaseFont* FindFont( const Name& name ) const ;
 	Name FindFont( const BaseFont *font ) const ;
+
+	XObject* FindXObject( const Name& name ) const ;
+	Name FindXObject( const XObject *xobj ) const ;
 
 	void Clear( ) ;
 
@@ -89,24 +94,10 @@ private :
 	const RealResources	*const m_parent ;
 	FontDb				*m_font_db ;
 
-	typedef	boost::bimap<
-		boost::bimaps::set_of<Name>,
-		boost::bimaps::set_of<BaseFont*>
-	> FontMap ; 
-	FontMap				m_fonts ;
+	ResourceSet<BaseFont>	m_fonts ;
+	ResourceSet<XObject>	m_xobjs ;
+	ResourceSet<ExtGState>	m_states ;
 
-	typedef	boost::bimap<
-		boost::bimaps::set_of<Name>,
-		boost::bimaps::set_of<ExtGState*>
-	> StateMap ; 
-	StateMap			m_states ;
-	
-	typedef	boost::bimap<
-		boost::bimaps::set_of<Name>,
-		boost::bimaps::set_of<XObject*>
-	> XObjectMap ; 
-	XObjectMap			m_xobjs ;
-	
 	std::vector<Name>	m_proc_set ;
 } ;
 

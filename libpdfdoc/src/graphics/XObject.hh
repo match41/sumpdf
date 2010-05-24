@@ -19,26 +19,38 @@
 
 /**	\file	XObject.hh
     \brief	definition the XObject class
-    \date	May 8, 2010
+    \date	May 19, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_XOBJECT_HEADER_INCLUDED__
-#define __PDF_XOBJECT_HEADER_INCLUDED__
+#ifndef __PDF_XOBJECT_HH_EADER_INCLUDED__
+#define __PDF_XOBJECT_HH_EADER_INCLUDED__
+
+#include "util/RefCounter.hh"
 
 namespace pdf {
+
+class File ;
+class Graphics ;
+class Matrix ;
+class GraphicsState ;
+class Stream ;
 
 ///	brief description
 /**	\internal
 	The XObject class represents
 */
-class XObject
+class XObject : public RefCounter
 {
 public :
-	virtual ~XObject( ) ;
-	
-	virtual void Do( ) const = 0 ;
+	typedef Stream BaseType ;
+
+	virtual Graphics* CreateRenderedObject(
+		const GraphicsState&	gs,
+		const Matrix&			ctm ) const = 0 ;
 } ;
+
+XObject* CreateXObject( Stream& s, File *file ) ;
 
 } // end of namespace
 

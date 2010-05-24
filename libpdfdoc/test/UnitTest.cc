@@ -39,6 +39,7 @@
 #include "graphics/TextLineTest.hh"
 #include "graphics/RealTextTest.hh"
 #include "graphics/RealPathTest.hh"
+#include "graphics/ColorSpaceTest.hh"
 #include "stream/StreamTest.hh"
 #include "stream/DeflateFilterTest.hh"
 #include "stream/InStreamBufAdaptorTest.hh"
@@ -47,6 +48,7 @@
 #include "page/RealResourcesTest.hh"
 #include "page/RealPageTest.hh"
 #include "page/ContentStreamTest.hh"
+#include "page/ResourceSetTest.hh"
 #include "font/FontDbTest.hh"
 #include "font/CodeMapTest.hh"
 #include "font/FontEncodingTest.hh"
@@ -76,6 +78,8 @@ int main( int argc, char **argv )
 	using namespace pdfut ;
 
 	CppUnit::TextUi::TestRunner runner;
+	runner.addTest( ColorSpaceTest::suite( ) ) ;
+	runner.addTest( ResourceSetTest::suite( ) ) ;
 	runner.addTest( StreamTest::suite( ) ) ;
 	runner.addTest( ArrayTest::suite( ) ) ;
 	runner.addTest( DictionaryTest::suite( ) ) ;

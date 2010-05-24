@@ -47,9 +47,11 @@ public:
 	void Flush( ) ;
 	void Rewind( ) ;
 	std::size_t Length( ) const ;
-	Object GetFilterName( ) const ;
+	Object NameChain( ) const ;
 	StreamFilter* Clone( ) const ;
 	StreamFilter* GetInner( ) ;
+	
+	Name RawFormat( ) const ;
 
 private :
 	const std::auto_ptr<StreamFilter>	m_inner ;

@@ -44,7 +44,7 @@ class Token ;
 class TextState ;
 
 ///	The PDF graphics state.
-/**	\internal
+/**	\ingroup graphics
 	The graphics state is a set of graphics control parameters. These
 	parameters define the way that the graphics operators execute. 
 */

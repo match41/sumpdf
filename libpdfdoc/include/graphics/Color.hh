@@ -60,9 +60,13 @@ public :
 	/// CMYK colour
 	Color( double c, double m, double y, double k ) ;
 	
+	Color( Space cs, double *channel ) ;
+	Color( Space cs, unsigned char *channel ) ;
+	
 	Space ColorSpace( ) const ;
 
 	std::size_t ChannelCount( ) const ;
+	static std::size_t ChannelCount( Space sp ) ;
 
 	/// grayscale
 	void AssignGray( double gray ) ;
@@ -96,6 +100,8 @@ public :
 
 	iterator begin( ) const ;
 	iterator end( ) const ;
+	
+	unsigned Quad() const ;
 
 private :
 	Space	m_cs ;

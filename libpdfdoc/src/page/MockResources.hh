@@ -48,10 +48,16 @@ public :
 	BaseFont* FindFont( const Name& name ) const ;
 	Name FindFont( const BaseFont *font ) const ;
 
+	Name AddXObject( XObject *xobj ) ;
+	Name FindXObject( const XObject *xobj ) const ;
+	XObject* FindXObject( const Name& name ) const ;
+
 	void Add( const Name& name, BaseFont *font ) ;
+	void Add( const Name& name, XObject *xo ) ;
 
 private :
 	std::map<Name, BaseFont*>	m_font_map ;
+	std::map<Name, XObject*>	m_xobj_map ;
 } ;
 
 } // end of namespace

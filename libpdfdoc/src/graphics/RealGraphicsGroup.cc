@@ -17,21 +17,44 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	InlineImage.cc
-	\brief	implementation of the InlineImage class
-	\date	May 11, 2010
+/**	\file	RealGraphicsGroup.cc
+	\brief	implementation of the RealGraphicsGroup class
+	\date	May 23, 2010
 	\author	Nestal Wan
 */
 
-#include "InlineImage.hh"
+#include "RealGraphicsGroup.hh"
+#include "graphics/ExtGraphicsLink.hh"
+
+#include "stream/Stream.hh"
+
+#include <iostream>
 
 namespace pdf {
 
 /**	constructor
 	
 */
-InlineImage::InlineImage( )
+RealGraphicsGroup::RealGraphicsGroup( Stream& src, File * )
 {
+//	src.CopyData( std::cout.rdbuf() ) ;
+}
+
+std::size_t RealGraphicsGroup::Count( ) const
+{
+	return 0 ;
+}
+
+const Graphics* RealGraphicsGroup::At( std::size_t idx ) const
+{
+	return 0 ;
+}
+
+Graphics* RealGraphicsGroup::CreateRenderedObject(
+	const GraphicsState&	gs,
+	const Matrix&			ctm ) const
+{
+	return new ExtGraphicsLink<GraphicsGroup>( gs, ctm, this ) ;
 }
 
 } // end of namespace

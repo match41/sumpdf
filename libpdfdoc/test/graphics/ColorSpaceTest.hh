@@ -17,21 +17,39 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	Image.cc
-	\brief	implementation of the Image class
-	\date	May 17, 2010
-	\author	Nestal Wan
+/**	\file	ColorSpaceTest.hh
+    \brief	definition the ColorSpaceTest class
+    \date	May 22, 2010
+    \author	Nestal Wan
 */
 
-#include "graphics/Image.hh"
+#ifndef __PDFUT_COLORSPACETEST_HH_EADER_INCLUDED__
+#define __PDFUT_COLORSPACETEST_HH_EADER_INCLUDED__
 
-namespace pdf {
+#include <cppunit/TestFixture.h>
 
-/**	constructor
-	
-*/
-Image::~Image( )
+#include <cppunit/extensions/HelperMacros.h>
+
+namespace pdfut {
+
+class ColorSpaceTest : public CppUnit::TestFixture
 {
-}
+public :
+	ColorSpaceTest( ) ;
+
+	// declare suit function
+	CPPUNIT_TEST_SUITE( ColorSpaceTest ) ;
+		CPPUNIT_TEST( Test ) ;
+	CPPUNIT_TEST_SUITE_END();
+
+public :
+	void setUp( ) ;
+	void tearDown( ) ;
+
+private :
+	void Test( ) ;
+} ;
 
 } // end of namespace
+
+#endif // COLORSPACETEST_HH_

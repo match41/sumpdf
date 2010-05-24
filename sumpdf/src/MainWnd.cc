@@ -170,7 +170,6 @@ void MainWnd::OnToolZoom( int choice )
 {
 	PDF_ASSERT( m_zoom_box != 0 ) ;
 
-	qDebug() << "zoom to " << m_zoom_box->itemData( choice ).toDouble() ;
 	m_view->Zoom( m_zoom_box->itemData( choice ).toDouble() ) ;
 }
 

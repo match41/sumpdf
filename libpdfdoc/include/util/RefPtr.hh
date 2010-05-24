@@ -17,21 +17,28 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	Image.cc
-	\brief	implementation of the Image class
-	\date	May 17, 2010
-	\author	Nestal Wan
+/**	\file	RefPtr.hh
+    \brief	definition the RefPtr class
+    \date	May 23, 2010
+    \author	Nestal Wan
 */
 
-#include "graphics/Image.hh"
+#ifndef __PDF_REFPTR_HH_EADER_INCLUDED__
+#define __PDF_REFPTR_HH_EADER_INCLUDED__
 
-namespace pdf {
+#include <boost/intrusive_ptr.hpp>
 
-/**	constructor
-	
-*/
-Image::~Image( )
+namespace pdf
 {
+	class RefCounter ;
 }
 
+namespace boost
+{
+	void intrusive_ptr_add_ref( pdf::RefCounter *p ) ;
+	
+	void intrusive_ptr_release( pdf::RefCounter *p ) ;
+
 } // end of namespace
+
+#endif // REFPTR_HH_

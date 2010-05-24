@@ -104,7 +104,7 @@ void DeflateFilterTest::TestName( )
 	                                    m_compressed.end() ) ) ;
 	pdf::RawFilter *raw = new pdf::RawFilter( ss.rdbuf() ) ;
 	pdf::DeflateFilter subject(( StreamFilterPtr(raw) )) ;
-	CPPUNIT_ASSERT( subject.GetFilterName().As<pdf::Name>()
+	CPPUNIT_ASSERT( subject.NameChain().As<pdf::Name>()
 		== pdf::Name( "FlateDecode" ) ) ;
 }
 

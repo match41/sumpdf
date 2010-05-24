@@ -138,7 +138,7 @@ Stream::Stream( std::streambuf *file, std::streamoff offset,
 
 	PDF_ASSERT( m_data->filter->GetInner()->Length() == m_self["Length"] ) ;
 	PDF_ASSERT( m_self["Filter"].Is<Array>() ||
-		m_self["Filter"] == m_data->filter->GetFilterName() ) ;
+		m_self["Filter"] == m_data->filter->NameChain() ) ;
 	InitFilter( ) ;
 	
 	m_self.erase( "Length" ) ;
@@ -161,7 +161,7 @@ Stream::Stream( std::vector<unsigned char>& data, const Object& filter )
 	ApplyFilter( filter ) ;
 	InitFilter( ) ;
 	
-	PDF_ASSERT( filter == m_data->filter->GetFilterName() ) ;
+	PDF_ASSERT( filter == m_data->filter->NameChain() ) ;
 }
 
 /**	empty destructor is required for shared_ptr.
@@ -225,7 +225,7 @@ Dictionary Stream::GetRawDict( ) const
 	
 	Dictionary dict = m_self ;
 	dict.insert( "Length", Length( ) ) ;
-	Object filter	= m_data->filter->GetFilterName( ) ;
+	Object filter	= m_data->filter->NameChain( ) ;
 	if ( !filter.Is<void>() )
 		dict.insert( "Filter", filter ) ;
 		
@@ -546,6 +546,11 @@ void Stream::CopyOnWrite( )
 {
 	if ( !m_data.unique() )
 		m_data.reset( new Data( *m_data ) ) ;
+}
+
+Name Stream::FilterName( ) const
+{
+	return m_data->filter->RawFormat( ) ;
 }
 
 } // end of namespace

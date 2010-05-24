@@ -26,9 +26,10 @@
 #include "PageLoader.hh"
 
 // local headers
+#include "ImageObject.hh"
+#include "PathObject.hh"
 #include "TextLineObject.hh"
 #include "TextObject.hh"
-#include "PathObject.hh"
 #include "Util.hh"
 
 // libpdfdoc headers
@@ -38,9 +39,9 @@
 #include <util/Debug.hh>
 
 // Qt headers
-//#include <QGraphicsPathItem>
 #include <QGraphicsScene>
 #include <QPainterPath>
+#include <QDebug>
 
 // boost headers
 #include <boost/bind.hpp>
@@ -62,6 +63,7 @@ void PageLoader::VisitText( Text *text )
 
 	TextObject *g = new TextObject ;
 	g->setTransform( ToQtMatrix( text->Transform() ) ) ;
+	SetTransform( text, g ) ;
 	
 	std::for_each( text->begin(), text->end(),
 		boost::bind( &PageLoader::LoadTextLine, this, g, _1 ) ) ;
@@ -83,7 +85,26 @@ void PageLoader::VisitGraphics( Graphics *gfx )
 void PageLoader::VisitPath( Path *path )
 {
 	PDF_ASSERT( m_scene != 0 ) ;
-	m_scene->addItem( new PathObject( path ) ) ;
+	
+	PathObject *p = new PathObject( path ) ;
+	SetTransform( path, p ) ;
+
+	m_scene->addItem( p ) ;
+}
+
+void PageLoader::VisitGraphicsLink( ExtGraphicsLink<Image> *img )
+{
+	PDF_ASSERT( m_scene != 0 ) ;
+	m_scene->addItem( new ImageObject( img ) ) ;
+}
+
+void PageLoader::VisitGraphicsLink( ExtGraphicsLink<GraphicsGroup> *g )
+{
+}
+
+void PageLoader::SetTransform( Graphics *gfx, QGraphicsItem  *go )
+{
+	go->setTransform( ToQtMatrix( gfx->Transform() ) ) ;
 }
 
 } // end of namespace

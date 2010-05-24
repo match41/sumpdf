@@ -38,6 +38,7 @@ namespace pdf {
 class ContentOp ;
 class Graphics ;
 class GraphicsVisitor ;
+class Image ;
 class ResourcesDict ;
 
 ///	brief description
@@ -57,24 +58,29 @@ public :
 		, m_current( 0 )
 	{
 	}
+	
+	~ContentStream( ) ;
 
 	void Decode( ) ;
+	
+	std::vector<Image*> InlineImages( ) const ;
 
 private :
 	struct HandlerMap ;
 	
 	void Decode( Stream& str ) ;
 
-	void ProcessCommand( ContentOp& op ) ;
+	void ProcessCommand( ContentOp& op, std::istream& is ) ;
 
-	void OnBT( ContentOp& op ) ;
-	void OnEndObject( ContentOp& op ) ;
-	void Oncm( ContentOp& op ) ;
-	void OnQ( ContentOp& op ) ;
-	void Onq( ContentOp& op ) ;
-	void Onm( ContentOp& op ) ;
-	void OnPaintPath( ContentOp& op ) ;
-	void OnInlineImage( std::istream& is ) ;
+	void OnBT( ContentOp& op, std::istream& is ) ;
+	void OnEndObject( ContentOp& op, std::istream& is ) ;
+	void Oncm( ContentOp& op, std::istream& is ) ;
+	void OnQ( ContentOp& op, std::istream& is ) ;
+	void Onq( ContentOp& op, std::istream& is ) ;
+	void Onm( ContentOp& op, std::istream& is ) ;
+	void OnPaintPath( ContentOp& op, std::istream& is ) ;
+	void OnInlineImage( ContentOp& op, std::istream& is ) ;
+	void OnDoXObject( ContentOp& op, std::istream& is ) ;
 
 private :
 	std::vector<Stream>		m_strs ;
@@ -93,6 +99,9 @@ private :
 	Graphics			*m_current ;
 	std::stack<State>	m_state_stack ;
 	//@}
+	
+	// inline images
+	std::vector<Image*>	m_inline_imgs ;
 } ;
 
 } // end of namespace

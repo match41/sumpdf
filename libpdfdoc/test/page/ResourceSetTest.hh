@@ -17,21 +17,39 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	XImage.cc
-	\brief	implementation of the XImage class
-	\date	May 11, 2010
-	\author	Nestal Wan
+/**	\file	ResourceSetTest.hh
+    \brief	definition the ResourceSetTest class
+    \date	May 21, 2010
+    \author	Nestal Wan
 */
 
-#include "XImage.hh"
+#ifndef __PDFUT_RESOURCESETTEST_HH_EADER_INCLUDED__
+#define __PDFUT_RESOURCESETTEST_HH_EADER_INCLUDED__
 
-namespace pdf {
+#include <cppunit/TestFixture.h>
 
-/**	constructor
-	
-*/
-XImage::XImage( )
+#include <cppunit/extensions/HelperMacros.h>
+
+namespace pdfut {
+
+class ResourceSetTest : public CppUnit::TestFixture
 {
-}
+public :
+	ResourceSetTest( ) ;
+
+	// declare suit function
+	CPPUNIT_TEST_SUITE( ResourceSetTest ) ;
+		CPPUNIT_TEST( Test ) ;
+	CPPUNIT_TEST_SUITE_END();
+
+public :
+	void setUp( ) ;
+	void tearDown( ) ;
+
+private :
+	void Test( ) ;
+} ;
 
 } // end of namespace
+
+#endif // RESOURCESETTEST_HH_

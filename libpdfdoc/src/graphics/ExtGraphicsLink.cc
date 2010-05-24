@@ -19,19 +19,92 @@
 
 /**	\file	Image.cc
 	\brief	implementation of the Image class
-	\date	May 17, 2010
+	\date	May 11, 2010
 	\author	Nestal Wan
 */
 
-#include "graphics/Image.hh"
+#include "graphics/ExtGraphicsLink.hh"
+#include "graphics/GraphicsVisitor.hh"
+
+#include "core/Name.hh"
+#include "core/Object.hh"
+
+#include "util/Debug.hh"
 
 namespace pdf {
+
+template <typename T>
+ExtGraphicsLink<T>::ExtGraphicsLink(
+	const GraphicsState&	gs,
+	const Matrix&			ctm,
+	const T*				t )
+	: m_transform( ctm )
+	, m_gs( gs )
+	, m_obj( t )
+{
+}
 
 /**	constructor
 	
 */
-Image::~Image( )
+template <typename T>
+ExtGraphicsLink<T>::~ExtGraphicsLink( )
 {
 }
 
+template <typename T>
+void ExtGraphicsLink<T>::OnCommand( ContentOp& op, const ResourcesDict *res )
+{
+}
+
+template <typename T>
+Matrix ExtGraphicsLink<T>::Transform( ) const
+{
+	return m_transform ;
+}
+
+template <typename T>
+void ExtGraphicsLink<T>::Transform( const Matrix& mat )
+{
+	m_transform = mat ;
+}
+
+template <typename T>
+void ExtGraphicsLink<T>::Print(
+	std::ostream&	os,
+	ResourcesDict	*res,
+	GraphicsState&	gs ) const
+{
+}
+
+template <typename T>
+void ExtGraphicsLink<T>::Visit( GraphicsVisitor *visitor )
+{
+	// assume the GraphicsVisitor has an overloaded function for each
+	// rendered object (e.g. image) type.
+	visitor->VisitGraphicsLink( this ) ;
+}
+
+template <typename T>
+GraphicsState ExtGraphicsLink<T>::GetState( ) const
+{
+	return m_gs ;
+}
+
+template <typename T>
+const T* ExtGraphicsLink<T>::Get( ) const
+{
+	return m_obj ;
+}
+
 } // end of namespace
+
+// explicit instantiation
+namespace pdf
+{
+	class Image ;
+	template class ExtGraphicsLink<Image> ;
+	
+	class GraphicsGroup ;
+	template class ExtGraphicsLink<GraphicsGroup> ;
+}

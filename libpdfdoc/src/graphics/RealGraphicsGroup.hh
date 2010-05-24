@@ -17,21 +17,40 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	Image.cc
-	\brief	implementation of the Image class
-	\date	May 17, 2010
-	\author	Nestal Wan
+/**	\file	RealGraphicsGroup.hh
+    \brief	definition the RealGraphicsGroup class
+    \date	May 23, 2010
+    \author	Nestal Wan
 */
 
-#include "graphics/Image.hh"
+#ifndef __PDF_REALGRAPHICSGROUP_HH_EADER_INCLUDED__
+#define __PDF_REALGRAPHICSGROUP_HH_EADER_INCLUDED__
+
+#include "graphics/GraphicsGroup.hh"
+#include "XObject.hh"
 
 namespace pdf {
 
-/**	constructor
-	
+class Stream ;
+class File ;
+
+///	brief description
+/**	\internal
+	The RealGraphicsGroup class represents
 */
-Image::~Image( )
+class RealGraphicsGroup : public GraphicsGroup, public XObject
 {
-}
+public :
+	RealGraphicsGroup( Stream&, File * ) ;
+
+	std::size_t Count( ) const ;
+	const Graphics* At( std::size_t idx ) const ;
+
+	Graphics* CreateRenderedObject(
+		const GraphicsState&	gs,
+		const Matrix&			ctm ) const ;
+} ;
 
 } // end of namespace
+
+#endif // REALGRAPHICSGROUP_HH_

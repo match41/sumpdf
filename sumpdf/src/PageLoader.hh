@@ -34,6 +34,7 @@ class QGraphicsItem ;
 namespace pdf {
 
 class TextLine ;
+class GraphicsObject ;
 
 ///	brief description
 /**	\internal
@@ -47,9 +48,12 @@ public :
 	void VisitText( Text *text ) ;
 	void VisitGraphics( Graphics *gfx ) ;
 	void VisitPath( Path *path ) ;
+	void VisitGraphicsLink( ExtGraphicsLink<Image> *img ) ;
+	void VisitGraphicsLink( ExtGraphicsLink<GraphicsGroup> *g ) ;
 
 private :
 	void LoadTextLine( QGraphicsItem *parent, const TextLine& line ) ;
+	void SetTransform( Graphics *gfx, QGraphicsItem *go ) ;
 
 private :
 	QGraphicsScene *m_scene ;

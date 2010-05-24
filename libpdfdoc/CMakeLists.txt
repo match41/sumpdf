@@ -94,18 +94,19 @@ set( PAGE_HDRS		${PAGE_DIR}/RealPage.hh
 					${PAGE_DIR}/ResourcesDict.hh
 					${PAGE_DIR}/RealResources.hh
 					${PAGE_DIR}/MockResources.hh
+					${PAGE_DIR}/ResourceSet.hh
 					${PAGE_DIR}/PageNode.hh
 					${PAGE_DIR}/PageTree.hh
 					${PAGE_DIR}/PageInfo.hh
 					${PAGE_DIR}/ContentStream.hh
 					${PAGE_DIR}/ContentOp.hh
-					${PAGE_DIR}/ExtGState.hh
-					${PAGE_DIR}/XObject.hh )
+					${PAGE_DIR}/ExtGState.hh )
 
 set( GRAPICS_HDRS	${GRAPICS_DIR}/RealText.hh
 					${GRAPICS_DIR}/RealPath.hh
-					${GRAPICS_DIR}/InlineImage.hh
-					${GRAPICS_DIR}/XImage.hh )
+					${GRAPICS_DIR}/RealImage.hh
+					${GRAPICS_DIR}/XObject.hh
+					${GRAPICS_DIR}/RealGraphicsGroup.hh )
 
 set( FILE_HDRS		${FILE_DIR}/RealFile.hh
 					${FILE_DIR}/File.hh
@@ -141,7 +142,6 @@ set( STRM_HDRS		${STRM_DIR}/Stream.hh
 set( UTIL_HDRS  	${UTIL_DIR}/Export.hh
 					${UTIL_DIR}/SymbolInfo.hh
 					${UTIL_DIR}/Backtrace.hh
-					${UTIL_DIR}/RefCounter.hh
 					${UTIL_DIR}/RefCounterWrapper.hh )
 					
 set( IMG_HDRS  		${IMG_DIR}/Pixmap.hh
@@ -195,16 +195,21 @@ set( GFX_INC_HDRS	${INCLUDE_DIR}/graphics/Graphics.hh
 					${INCLUDE_DIR}/graphics/Text.hh
 					${INCLUDE_DIR}/graphics/Path.hh
 					${INCLUDE_DIR}/graphics/Image.hh
+					${INCLUDE_DIR}/graphics/GraphicsGroup.hh
+					${INCLUDE_DIR}/graphics/ExtGraphicsLink.hh
 					${INCLUDE_DIR}/graphics/PathSegment.hh
 					${INCLUDE_DIR}/graphics/TextState.hh
 					${INCLUDE_DIR}/graphics/CharVisitor.hh
 					${INCLUDE_DIR}/graphics/TextLine.hh
-					${INCLUDE_DIR}/graphics/Color.hh )
+					${INCLUDE_DIR}/graphics/Color.hh
+					${INCLUDE_DIR}/graphics/ColorSpace.hh )
 
 set( UTIL_INC_HDRS	${INCLUDE_DIR}/util/Exception.hh
 					${INCLUDE_DIR}/util/Debug.hh
 					${INCLUDE_DIR}/util/Rect.hh
 					${INCLUDE_DIR}/util/Matrix.hh
+					${INCLUDE_DIR}/util/RefCounter.hh
+					${INCLUDE_DIR}/util/RefPtr.hh
 					${INCLUDE_DIR}/util/Util.hh )
 
 ###############################################################################
@@ -213,6 +218,7 @@ set( UTIL_INC_HDRS	${INCLUDE_DIR}/util/Exception.hh
 set( PAGE_SRCS  	${PAGE_DIR}/RealPage.cc
 					${PAGE_DIR}/ResourcesDict.cc
 					${PAGE_DIR}/RealResources.cc
+					${PAGE_DIR}/ResourceSet.cc
 					${PAGE_DIR}/MockResources.cc
 					${PAGE_DIR}/Page.cc
 					${PAGE_DIR}/PageNode.cc
@@ -220,8 +226,7 @@ set( PAGE_SRCS  	${PAGE_DIR}/RealPage.cc
 					${PAGE_DIR}/PageInfo.cc
 					${PAGE_DIR}/ContentStream.cc
 					${PAGE_DIR}/ContentOp.cc
-					${PAGE_DIR}/ExtGState.cc
-					${PAGE_DIR}/XObject.cc )
+					${PAGE_DIR}/ExtGState.cc )
 
 set( GRAPICS_SRCS	${GRAPICS_DIR}/Graphics.cc
 					${GRAPICS_DIR}/GraphicsVisitor.cc
@@ -230,14 +235,18 @@ set( GRAPICS_SRCS	${GRAPICS_DIR}/Graphics.cc
 					${GRAPICS_DIR}/RealText.cc
 					${GRAPICS_DIR}/Path.cc
 					${GRAPICS_DIR}/Image.cc
-					${GRAPICS_DIR}/InlineImage.cc
-					${GRAPICS_DIR}/XImage.cc
+					${GRAPICS_DIR}/RealImage.cc
+					${GRAPICS_DIR}/ExtGraphicsLink.cc
 					${GRAPICS_DIR}/PathSegment.cc
 					${GRAPICS_DIR}/RealPath.cc
+					${GRAPICS_DIR}/GraphicsGroup.cc
+					${GRAPICS_DIR}/RealGraphicsGroup.cc
 					${GRAPICS_DIR}/CharVisitor.cc
 					${GRAPICS_DIR}/TextLine.cc
 					${GRAPICS_DIR}/TextState.cc
-					${GRAPICS_DIR}/Color.cc )
+					${GRAPICS_DIR}/Color.cc
+					${GRAPICS_DIR}/ColorSpace.cc
+					${GRAPICS_DIR}/CreateXObject.cc )
 
 set( FILE_SRCS		${FILE_DIR}/RealFile.cc
 					${FILE_DIR}/DictReader.cc
@@ -275,6 +284,7 @@ set( UTIL_SRCS  	${UTIL_DIR}/Rect.cc
 					${UTIL_DIR}/Exception.cc
 					${UTIL_DIR}/Backtrace.cc
 					${UTIL_DIR}/RefCounter.cc
+					${UTIL_DIR}/RefPtr.cc
 					${UTIL_DIR}/Debug.cc
 					${UTIL_DIR}/Matrix.cc )
 
@@ -546,6 +556,7 @@ set( UT_SRCS	test/core/TokenTest.cc
 				test/graphics/RealTextTest.cc
 				test/graphics/GraphicsStateTest.cc
 				test/graphics/RealPathTest.cc
+				test/graphics/ColorSpaceTest.cc
 				
 				test/stream/StreamTest.cc
 				test/stream/RawFilterTest.cc
@@ -558,6 +569,7 @@ set( UT_SRCS	test/core/TokenTest.cc
 				test/page/PageNodeTest.cc
 				test/page/RealResourcesTest.cc
 				test/page/ExtGStateTest.cc
+				test/page/ResourceSetTest.cc
 				
 				test/file/RealFileTest.cc
 				test/file/CatalogTest.cc

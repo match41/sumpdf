@@ -17,20 +17,20 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	Image.cc
-	\brief	implementation of the Image class
-	\date	May 17, 2010
+/**	\file	GraphicsGroup.cc
+	\brief	implementation of the GraphicsGroup class
+	\date	May 23, 2010
 	\author	Nestal Wan
 */
 
-#include "graphics/Image.hh"
+#include "graphics/GraphicsGroup.hh"
 
 namespace pdf {
 
 /**	constructor
 	
 */
-Image::~Image( )
+GraphicsGroup::~GraphicsGroup( )
 {
 }
 

@@ -325,7 +325,8 @@ bool GraphicsState::operator!=( const GraphicsState& gs ) const
 
 std::ostream& operator<<( std::ostream& os, const GraphicsState& gs )
 {
-	return os << gs.m_impl->text << " " << gs.StrokeColor() << " " << gs.FillColor() ;
+	return os << gs.m_impl->text << " " << gs.StrokeColor() << " "
+		<< gs.FillColor() ;
 }
 
 bool GraphicsState::LineWidth( double value )

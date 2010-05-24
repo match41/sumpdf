@@ -32,6 +32,7 @@
 
 namespace pdf {
 
+class Name ;
 class Object ;
 
 /*!	\addtogroup	filter Filter
@@ -72,9 +73,14 @@ public :
 	virtual void Flush( ) = 0 ;
 	virtual void Rewind( ) = 0 ;
 	virtual std::size_t Length( ) const = 0 ;
-	virtual Object GetFilterName( ) const = 0 ;
+	virtual Object NameChain( ) const = 0 ;
 	virtual StreamFilter* Clone( ) const = 0 ;
 	virtual StreamFilter* GetInner( ) = 0 ;
+	
+	/// Raw format of the data.
+	/**	If the 
+	*/
+	virtual Name RawFormat( ) const = 0 ;
 } ;
 
 } // end of namespace

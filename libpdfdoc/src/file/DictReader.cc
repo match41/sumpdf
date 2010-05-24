@@ -56,7 +56,7 @@ DictReader::DictReader( Dictionary& dict, File *file )
 DictReader::DictReader( Object& obj, File *file )
 	: m_file( file )
 {
-	if ( obj.Is<Ref>() )
+	if ( obj.Is<Ref>() && file != 0 )
 		m_dict = file->ReadObj( obj.As<Ref>() ).As<Dictionary>() ;
 	else
 		m_dict.swap( obj.As<Dictionary>() ) ;
@@ -102,6 +102,7 @@ template bool DictReader::Detach( const Name&, double& ) ;
 template bool DictReader::Detach( const Name&, DictReader& ) ;
 template bool DictReader::Detach( const Name&, ArrayReader& ) ;
 template bool DictReader::Detach( const Name&, Rect& ) ;
+template bool DictReader::Detach( const Name&, std::size_t& ) ;
 
 // uncomment that when needed
 //template bool DictReader::Detach( const Name&, std::vector<Dictionary>& ) ;
@@ -125,7 +126,7 @@ bool DictReader::SwapAt( Dictionary::iterator i, T& result )
 	Object& obj = i->second ;
 	
 	bool is_ref = obj.Is<Ref>() ; 
-	if ( is_ref )
+	if ( is_ref && m_file != 0 )
 		m_file->ReadType( obj, result ) ;
 	else
 		std::swap( obj.As<T>(), result ) ;
@@ -152,7 +153,7 @@ namespace
 	{
 		if ( i != dict.end( ) )
 		{
-			result = ( i->second.Is<Ref>() ) ?
+			result = ( i->second.Is<Ref>() && file != 0 ) ?
 				file->ReadObj( i->second ).To<T>() :
 				i->second.To<T>() ;
 			return true ;
@@ -169,6 +170,12 @@ bool DictReader::SwapAt<int>( Dictionary::iterator i, int& result )
 
 template <>
 bool DictReader::SwapAt<double>( Dictionary::iterator i, double& result )
+{
+	return DetachTo( m_file, m_dict, i, result ) ;
+}
+
+template <>
+bool DictReader::SwapAt<std::size_t>( Dictionary::iterator i, std::size_t& result )
 {
 	return DetachTo( m_file, m_dict, i, result ) ;
 }

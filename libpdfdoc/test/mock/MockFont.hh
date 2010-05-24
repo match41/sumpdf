@@ -45,6 +45,10 @@ class MockFont : public pdf::BaseFont
 public :
 	MockFont( ) ;
 
+	// whatever... I don't care
+	template <typename T>
+	MockFont( T ) { }
+
 	std::string BaseName( ) const ;
 	pdf::Ref Write( pdf::File *file, const pdf::FontSubsetInfo * ) const ;
 	pdf::FontDescriptor* Descriptor( ) ;

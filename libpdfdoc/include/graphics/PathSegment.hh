@@ -31,9 +31,10 @@
 
 namespace pdf {
 
-///	brief description
-/**	\internal
-	The PathSegment class represents
+///	A line segment in a path.
+/**	\ingroup graphics
+	A path is made up of path segments. Each segment can be a straight line
+	or a cubic Bezier curve.
 */
 class PathSegment
 {

@@ -17,29 +17,57 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	InlineImage.hh
-    \brief	definition the InlineImage class
-    \date	May 11, 2010
+/**	\file	ImageObject.hh
+    \brief	definition the ImageObject class
+    \date	May 23, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_INLINEIMAGE_HEADER_INCLUDED__
-#define __PDF_INLINEIMAGE_HEADER_INCLUDED__
+#ifndef __PDF_IMAGEOBJECT_HEADER_INCLUDED__
+#define __PDF_IMAGEOBJECT_HEADER_INCLUDED__
 
-#include "graphics/Image.hh"
+#include "GraphicsObject.hh"
+
+#include "QtGraphicsState.hh"
+
+class QGraphicsPixmapItem ;
+class QImage ;
 
 namespace pdf {
 
+class Image ;
+template <typename T> class ExtGraphicsLink ;
+
 ///	brief description
 /**	\internal
-	The InlineImage class represents
+	The ImageObject class represents
 */
-class InlineImage : public Image
+class ImageObject : public GraphicsObject
 {
 public :
-	InlineImage( ) ;
+	explicit ImageObject( const ExtGraphicsLink<Image> *link,
+		QGraphicsItem *parent = 0 ) ;
+
+	GraphicsState Format() const ;
+	Graphics* Write( ) const ;
+
+	QRectF boundingRect( ) const ;
+	void paint(
+		QPainter 						*painter,
+		const QStyleOptionGraphicsItem	*option,
+		QWidget 						*widget ) ; 
+
+protected :
+	bool OnChangeState( const GraphicsState& new_gs ) ;
+
+private :
+	QImage ToQImage( const Image *img ) ;
+
+private :
+	QGraphicsPixmapItem	*m_child ;
+	QtGraphicsState		m_format ;
 } ;
 
 } // end of namespace
 
-#endif // INLINEIMAGE_HH_
+#endif // IMAGEOBJECT_HH_

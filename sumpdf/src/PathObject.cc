@@ -91,8 +91,6 @@ PathObject::PathObject( const Path *path, QGraphicsItem *parent )
 		}
 	}
 	
-	setTransform( ToQtMatrix( path->Transform() ) ) ;
-	
 	CalculateBounding( ) ;
 }
 

@@ -26,11 +26,15 @@
 #include "ContentStream.hh"
 
 #include "ContentOp.hh"
+#include "ResourcesDict.hh"
+
 #include "graphics/GraphicsState.hh"
 #include "graphics/GraphicsVisitor.hh"
+#include "graphics/RealImage.hh"
 #include "graphics/RealPath.hh"
 #include "graphics/RealText.hh"
-#include "graphics/Image.hh"
+#include "graphics/ExtGraphicsLink.hh"
+#include "graphics/XObject.hh"
 #include "stream/Stream.hh"
 
 #include "util/Debug.hh"
@@ -41,12 +45,28 @@
 #include <algorithm>
 #include <iostream>
 
+#include <ctime>
+
 namespace pdf {
+
+class Clock
+{
+private :
+	const std::clock_t m_start ;
+
+public :
+	Clock( ) : m_start( std::clock() ) {}
+	~Clock( )
+	{
+		std::clock_t diff = std::clock() - m_start ;
+		std::cout << "ticks = " << (double)diff/CLOCKS_PER_SEC << std::endl ;
+	}
+} ;
 
 struct ContentStream::HandlerMap
 {
 	/// command handler
-	typedef void (ContentStream::*Handler)( ContentOp& ) ;
+	typedef void (ContentStream::*Handler)( ContentOp&, std::istream& ) ;
 	typedef std::map<Token, Handler>	Map ;
 
 	static const Map::value_type	m_val[] ;
@@ -78,16 +98,23 @@ const ContentStream::HandlerMap::Map::value_type
 	std::make_pair( "b",	&ContentStream::OnPaintPath ),
 	std::make_pair( "b*",	&ContentStream::OnPaintPath ),
 	std::make_pair( "n",	&ContentStream::OnPaintPath ),
+	
+	// inline image
+	std::make_pair( "BI",	&ContentStream::OnInlineImage ),
+	
+	// XObjects
+	std::make_pair( "Do",	&ContentStream::OnDoXObject ),
 } ;
-
 
 const ContentStream::HandlerMap::Map ContentStream::HandlerMap::m_map(
     Begin( ContentStream::HandlerMap::m_val ),
     End( ContentStream::HandlerMap::m_val ) ) ;
 
-/**	constructor
-	
-*/
+ContentStream::~ContentStream( )
+{
+	std::for_each( m_inline_imgs.begin(), m_inline_imgs.end(), DeletePtr() ) ;
+}
+
 void ContentStream::Decode( )
 {
 	std::for_each(
@@ -110,22 +137,21 @@ void ContentStream::Decode( Stream& str )
 	ContentOp		op ;
 	GraphicsState	gstate ;
 
+//	Clock clock ;
+
 	while ( src >> op )
 	{
-		if ( op.Operator() == Token("BI") )
-			OnInlineImage( src ) ;
-		else
-			ProcessCommand( op ) ;
+		ProcessCommand( op, src ) ;
 	}
 }
 
-void ContentStream::ProcessCommand( ContentOp& op )
+void ContentStream::ProcessCommand( ContentOp& op, std::istream& is )
 {
 	HandlerMap::Map::const_iterator i = HandlerMap::m_map.find( op.Operator() );
 	if ( i != HandlerMap::m_map.end() )
 	{
 		PDF_ASSERT( i->second != 0 ) ;
-		(this->*(i->second))( op ) ;
+		(this->*(i->second))( op, is ) ;
 	}
 	else if ( m_current != 0 )
 		m_current->OnCommand( op, m_res ) ;
@@ -133,13 +159,13 @@ void ContentStream::ProcessCommand( ContentOp& op )
 		m_state.gs.OnCommand( op, m_res ) ;
 }
 
-void ContentStream::OnBT( ContentOp& )
+void ContentStream::OnBT( ContentOp&, std::istream& )
 {
 	if ( m_current == 0 )
 		m_current = new RealText( m_state.gs, m_state.ctm ) ;
 }
 
-void ContentStream::OnEndObject( ContentOp& )
+void ContentStream::OnEndObject( ContentOp&, std::istream& )
 {
 	if ( m_current != 0 )
 	{
@@ -151,24 +177,25 @@ void ContentStream::OnEndObject( ContentOp& )
 	}
 }
 
-void ContentStream::Oncm( ContentOp& op )
+void ContentStream::Oncm( ContentOp& op, std::istream& )
 {
 	if ( op.Count() >= 6 )
-		m_state.ctm = Matrix( op[0], op[1], op[2], op[3], op[4], op[5] ) * m_state.ctm ;
+		m_state.ctm = Matrix( op[0], op[1], op[2], op[3], op[4], op[5] ) *
+			m_state.ctm ;
 }
 
-void ContentStream::OnQ( ContentOp& )
+void ContentStream::OnQ( ContentOp&, std::istream& )
 {
 	m_state = m_state_stack.top( ) ;
 	m_state_stack.pop( ) ;
 }
 
-void ContentStream::Onq( ContentOp& )
+void ContentStream::Onq( ContentOp&, std::istream& )
 {
 	m_state_stack.push( m_state ) ;
 }
 
-void ContentStream::Onm( ContentOp& op )
+void ContentStream::Onm( ContentOp& op, std::istream& )
 {
 	if ( m_current == 0 )
 		m_current = new RealPath( m_state.gs, m_state.ctm ) ;
@@ -176,70 +203,41 @@ void ContentStream::Onm( ContentOp& op )
 	m_current->OnCommand( op, m_res ) ;
 }
 
-void ContentStream::OnPaintPath( ContentOp& op )
+void ContentStream::OnPaintPath( ContentOp& op, std::istream& is )
 {
 	if ( m_current != 0 )
 		m_current->OnCommand( op, m_res ) ;
-	OnEndObject( op ) ;
+	OnEndObject( op, is ) ;
 }
 
-
-class InlineImage : public Image
+void ContentStream::OnInlineImage( ContentOp& op, std::istream& is )
 {
-} ;
-
-void ContentStream::OnInlineImage( std::istream& is )
-{
-	Object key ;
+	Image *img = new RealImage( is ) ;
+	m_inline_imgs.push_back( img ) ;
 	
-	while ( is >> key )
-	{
-		if ( key.Is<Token>() && key.As<Token>().Get() == "ID" )
-		{
-std::cout << "got ID" << std::endl ;
-			std::vector<unsigned char> bytes ;
-			
-			while ( is )
-			{
-				int ich = is.rdbuf()->sgetc() ;
-				if ( ich == std::istream::traits_type::eof() )
-				{
-					std::cout << "EOF!" << std::endl ;
-					return ;
-				}
+	// m_current will be deleted in OnEndObject()
+	m_current = new ExtGraphicsLink<Image>( m_state.gs, m_state.ctm, img ) ;
+	OnEndObject( op, is ) ;
+	
+	PDF_ASSERT( m_current == 0 ) ;
+}
 
-				if ( std::istream::traits_type::to_char_type(ich) == 'E' )
-				{
-					is.rdbuf()->sbumpc() ;
-					
-					int ich2 = is.rdbuf()->sgetc() ;
-					if ( ich2 == std::istream::traits_type::eof() )
-					{
-						std::cout << "EOF!" << std::endl ;
-						return ;
-					}
-					
-					if ( std::istream::traits_type::to_char_type(ich2) == 'I' )
-					{
-						std::cout << "finished inline image" << std::endl ;
-						return ;
-					}
-				}
-				
-				is.rdbuf()->sbumpc() ;
-			}
-		}
-		else if ( key.Is<Name>() )
+std::vector<Image*> ContentStream::InlineImages( ) const
+{
+	return m_inline_imgs ;
+}
+
+void ContentStream::OnDoXObject( ContentOp& op, std::istream& is )
+{
+	if ( op.Count() >= 1 )
+	{
+		XObject *xo = m_res->FindXObject( op[0].As<Name>() ) ;
+		if ( xo != 0 )
 		{
-			Object value ;
-			if ( is >> value )
-			{
-				std::cout << "read pair: " << key << " " << value << std::endl ;
-			}
+			m_current = xo->CreateRenderedObject( m_state.gs, m_state.ctm ) ;
+			OnEndObject( op, is ) ;
 		}
 	}
-
-	std::cout << "premature finish" << std::endl ;
 }
 
 } // end of namespace

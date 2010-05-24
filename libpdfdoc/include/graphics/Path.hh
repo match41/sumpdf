@@ -35,9 +35,10 @@ namespace pdf {
 class PathSegment ;
 class Matrix ;
 
-///	brief description
-/**	\internal
-	The Path class represents
+///	An abstraction of a shape, trajectory and region of all sorts.
+/**	\ingroup graphics
+	The Path class represents shapes, trajectories, and regions of all sorts.
+	They are used to draw lines, define the shapes of filled areas.
 */
 class Path : public Graphics
 {

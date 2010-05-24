@@ -17,21 +17,34 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	Image.cc
-	\brief	implementation of the Image class
-	\date	May 17, 2010
-	\author	Nestal Wan
+/**	\file	GraphicsGroup.hh
+    \brief	definition the GraphicsGroup class
+    \date	May 23, 2010
+    \author	Nestal Wan
 */
 
-#include "graphics/Image.hh"
+#ifndef __PDF_GRAPHICSGROUP_HH_EADER_INCLUDED__
+#define __PDF_GRAPHICSGROUP_HH_EADER_INCLUDED__
+
+#include <cstddef>
 
 namespace pdf {
 
-/**	constructor
-	
+class Graphics ;
+
+///	brief description
+/**	\internal
+	The GraphicsGroup class represents
 */
-Image::~Image( )
+class GraphicsGroup
 {
-}
+public :
+	virtual ~GraphicsGroup( ) ;
+
+	virtual std::size_t Count( ) const = 0 ;
+	virtual const Graphics* At( std::size_t idx ) const = 0 ;
+} ;
 
 } // end of namespace
+
+#endif // GRAPHICSGROUP_HH_

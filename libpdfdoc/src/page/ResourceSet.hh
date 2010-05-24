@@ -17,21 +17,76 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	XObject.cc
-	\brief	implementation of the XObject class
-	\date	May 8, 2010
-	\author	Nestal Wan
+/**	\file	ResourceSet.hh
+    \brief	definition the ResourceSet class
+    \date	May 21, 2010
+    \author	Nestal Wan
 */
 
-#include "XObject.hh"
+#ifndef __PDF_RESOURCESET_HH_EADER_INCLUDED__
+#define __PDF_RESOURCESET_HH_EADER_INCLUDED__
+
+#include "core/Dictionary.hh"
+#include "core/Name.hh"
+
+#include "file/ElementFactory.hh"
+
+#include <boost/bimap.hpp>
+#include <boost/bimap/set_of.hpp>
 
 namespace pdf {
 
-/**	constructor
-	
+class DictReader ;
+
+///	brief description
+/**	\internal
+	The ResourceSet class represents
 */
-XObject::~XObject( )
+template <typename T>
+class ResourceSet
 {
-}
+public :
+	explicit ResourceSet( const std::string& prefix ) ;
+	~ResourceSet( ) ;
+
+	void Clear( ) ;
+	
+	Name Add( T *t ) ;
+	Name Find( const T *t ) const ;
+	T* Find( const Name& name ) const ;
+
+private :
+	typedef	boost::bimap<
+		boost::bimaps::set_of<Name>,
+		boost::bimaps::set_of<T*>
+	> Map ; 
+
+public :
+	typedef typename Map::left_const_iterator	iterator ;
+	
+public :
+	template <typename Func>
+	void MassProduce( DictReader& dict, Func func )
+	{
+		T *dummy = 0 ;
+	
+		ElementFactory<typename T::BaseType> factory( dict ) ;
+		for ( Dictionary::iterator i = dict->begin(); i != dict->end(); ++i )
+		{
+			T *e = factory.Create( i, func, dummy ) ;
+			m_map.insert( typename Map::value_type( i->first, e ) );
+		}
+	}
+
+	iterator begin( ) const ;
+	iterator end( ) const ;
+
+private :
+	Map	m_map ;
+	
+	const std::string	m_prefix ;
+} ;
 
 } // end of namespace
+
+#endif // RESOURCESET_HH_

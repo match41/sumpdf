@@ -17,21 +17,58 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	Image.cc
-	\brief	implementation of the Image class
-	\date	May 17, 2010
+/**	\file	ResourceSetTest.cc
+	\brief	implementation of the ResourceSetTest class
+	\date	May 21, 2010
 	\author	Nestal Wan
 */
 
-#include "graphics/Image.hh"
+#include "ResourceSetTest.hh"
 
-namespace pdf {
+#include "file/DictReader.hh"
+#include "page/ResourceSet.hh"
 
-/**	constructor
-	
-*/
-Image::~Image( )
+#include "mock/Assert.hh"
+#include "mock/MockFile.hh"
+#include "mock/MockFont.hh"
+
+#include "util/Util.hh"
+
+namespace pdfut {
+
+using namespace pdf ;
+
+ResourceSetTest::ResourceSetTest( )
 {
+}
+
+void ResourceSetTest::setUp( )
+{
+}
+
+void ResourceSetTest::tearDown( )
+{
+}
+
+void ResourceSetTest::Test( )
+{
+	MockFont font ;
+	MockFile file ;
+	file.Pool()->Add( Ref(1,0), &font ) ;
+	
+	Dictionary dict ;
+	dict.insert( "F1", Ref(1,0) ) ;
+	
+	DictReader dr( dict, &file ) ;
+	
+	ResourceSet<BaseFont> subject( "F" ) ;
+	subject.MassProduce( dr, NewPtr<MockFont>( ) ) ;
+	
+	BaseFont* f = subject.Find( "F1" ) ;
+	PDFUT_ASSERT_EQUAL( f, &font ) ;
+	
+	Name n = subject.Find( f ) ;
+	PDFUT_ASSERT_EQUAL( n, "F1" ) ;
 }
 
 } // end of namespace

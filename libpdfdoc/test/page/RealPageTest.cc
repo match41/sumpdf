@@ -34,7 +34,6 @@
 #include "core/Dictionary.hh"
 #include "file/DictReader.hh"
 #include "font/SimpleFont.hh"
-#include "graphics/GraphicsVisitor.hh"
 #include "graphics/RealText.hh"
 #include "graphics/TextState.hh"
 #include "page/RealPage.hh"
@@ -43,6 +42,8 @@
 #include "stream/Stream.hh"
 #include "util/Rect.hh"
 #include "util/Matrix.hh"
+
+#include "mock/MockGraphicsVisitor.hh"
 
 #include <sstream>
 #include <iostream>
@@ -160,7 +161,7 @@ void RealPageTest::TestDecode( )
 	p->GetResource()->AddFont( f ) ;
 
 	// visitor
-	struct V : public pdf::GraphicsVisitor
+	struct V : public MockGraphicsVisitor
 	{
 		std::size_t m_count ;
 		V( ) : m_count( 0 ) { }
@@ -183,12 +184,6 @@ void RealPageTest::TestDecode( )
 				PDFUT_ASSERT_EQUAL( m.Dy(), 400 ) ;
 			}
 			
-		}
-		void VisitGraphics( pdf::Graphics * )
-		{
-		}
-		void VisitPath( Path * )
-		{
 		}
 	} v ;
 	

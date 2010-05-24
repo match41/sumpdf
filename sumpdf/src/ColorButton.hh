@@ -1,7 +1,4 @@
-/***************************************************************************\
- *   Copyright (C) 2006 by Nestal Wan                                      *
- *   me@nestal.net                                                         *
- *                                                                         *
+/***************************************************************************
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
  *   the Free Software Foundation; version 2.                              *
@@ -15,23 +12,43 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
-\***************************************************************************/
+ ***************************************************************************/
 
-/**	\file	Image.cc
-	\brief	implementation of the Image class
-	\date	May 17, 2010
-	\author	Nestal Wan
+/**
+	\file	ColorComboBox.hh
+	\brief	definition the ColorComboBox class
+	\date	May 6, 2010
 */
 
-#include "graphics/Image.hh"
+#ifndef __PDF_COLORBUTTON_HH_HEADER_INCLUDED__
+#define __PDF_COLORBUTTON_HH_HEADER_INCLUDED__
+
+#include <QToolButton>
 
 namespace pdf {
 
-/**	constructor
-	
-*/
-Image::~Image( )
+class ColorButton :
+	public QToolButton
 {
-}
+	Q_OBJECT
+
+public:
+	explicit ColorButton( QWidget *parent = 0 ) ;
+
+signals:
+	void clicked( QColor );
+
+private slots:
+	void OnColorChanged( );
+	void OnSetColor( );			// set color from QColorDialog
+
+private:
+	void Initialize( QToolButton* box );
+	QIcon OnCreateColorButtonIcon( const QString& , QColor );
+    QMenu *OnCreateColorMenu( const char*, QColor );	// text color selection
+	QIcon OnCreateColorIcon( QColor );
+};
 
 } // end of namespace
+
+#endif // COLORBUTTON_HH
