@@ -23,8 +23,8 @@
     \author	Nestal Wan
 */
 
-#ifndef __PDF_REALIMAGE_HEADER_INCLUDED__
-#define __PDF_REALIMAGE_HEADER_INCLUDED__
+#ifndef __PDF_REAL_IMAGE_HEADER_INCLUDED__
+#define __PDF_REAL_IMAGE_HEADER_INCLUDED__
 
 #include "graphics/Image.hh"
 #include "XObject.hh"
@@ -36,7 +36,7 @@
 
 namespace pdf {
 
-class ColorSpace ;
+class RealColorSpace ;
 class Dictionary ;
 class Name ;
 class Object ;
@@ -78,8 +78,8 @@ private :
 	std::size_t		m_height ;
 	std::size_t		m_depth ;
 	
-	std::vector<unsigned char>			m_bytes ;
-	boost::intrusive_ptr<ColorSpace>	m_space ;
+	std::vector<unsigned char>				m_bytes ;
+	boost::intrusive_ptr<RealColorSpace>	m_space ;
 	
 	bool			m_is_jpeg ;
 } ;

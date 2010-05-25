@@ -23,8 +23,8 @@
     \author	Nestal Wan
 */
 
-#ifndef __PDF_IMAGE_HEADER_INCLUDED__
-#define __PDF_IMAGE_HEADER_INCLUDED__
+#ifndef __PDF_EXT_GRAPHICS_LINK_HEADER_INCLUDED__
+#define __PDF_EXT_GRAPHICS_LINK_HEADER_INCLUDED__
 
 #include "Graphics.hh"
 

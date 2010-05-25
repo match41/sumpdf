@@ -17,21 +17,58 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	ColorSpace.cc
-	\brief	implementation of the ColorSpace class
-	\date	May 24, 2010
-	\author	Nestal Wan
+/**	\file	ColorSpace.hh
+    \brief	definition the ColorSpace class
+    \date	May 21, 2010
+    \author	Nestal Wan
 */
 
+#ifndef __PDF_REAL_COLOR_SPACE_HEADER_INCLUDED__
+#define __PDF_REAL_COLOR_SPACE_HEADER_INCLUDED__
+
 #include "graphics/ColorSpace.hh"
+#include "util/RefCounter.hh"
+
+#include <memory>
+#include <string>
 
 namespace pdf {
 
-/**	constructor
-	
+class File ;
+class Object ;
+
+///	brief description
+/**	\internal
+	The ColorSpace class represents
 */
-ColorSpace::~ColorSpace( )
+class RealColorSpace : public ColorSpace, public RefCounter
 {
-}
+public :
+	explicit RealColorSpace( Color::Space sp = Color::rgb ) ;
+	RealColorSpace( Object& obj, File *file ) ;
+	RealColorSpace( const Color *map, std::size_t size ) ;
+	
+	bool IsIndex( ) const ;
+	Color Lookup( unsigned val ) const ;
+	std::size_t ColorCount( ) const ;
+	
+	Color::Space Get() const ;
+	
+	friend std::ostream& operator<<( std::ostream& os, const RealColorSpace& cs ) ;
+
+private :
+	static Color::Space	NameToSpace( const std::string& name ) ;
+
+private :
+	// color space enum. if space is index, this is the color space of the
+	// color map
+	Color::Space		m_space ;
+
+	// color map. only valid when space is index
+	struct	Map ;
+	std::auto_ptr<Map>	m_map ;
+} ;
 
 } // end of namespace
+
+#endif // COLORSPACE_HH_

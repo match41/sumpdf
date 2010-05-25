@@ -33,7 +33,6 @@
 #include "core/Array.hh"
 #include "core/Object.hh"
 #include "core/Token.hh"
-#include "util/RefCounterWrapper.hh"
 #include "util/Util.hh"
 #include "stream/Stream.hh"
 
