@@ -84,7 +84,7 @@ public :
 	}
 
 private :
-	DictReader m_dict ;
+	DictReader& m_dict ;
 } ;
 
 } // end of namespace
