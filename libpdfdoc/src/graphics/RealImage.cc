@@ -31,7 +31,6 @@
 #include "graphics/RealColorSpace.hh"
 #include "file/DictReader.hh"
 #include "file/File.hh"
-#include "file/ElementFactory.hh"
 #include "stream/Stream.hh"
 
 #include "util/Debug.hh"
@@ -57,9 +56,8 @@ RealImage::RealImage( Stream& str, File *file )
 void RealImage::Init( Dictionary& dict, File *file )
 {
 	DictReader dr( dict, file ) ;
-	ElementFactory<Object> factory( dr ) ;
 	
-	m_space.reset( factory.Create( "ColorSpace",
+	m_space.reset( dr.Create( "ColorSpace",
 		boost::bind( NewPtr<RealColorSpace>(), _1, file ), m_space.get() ) ) ;
 
 	if (!dr.Detach( "Width", 			m_width )	||

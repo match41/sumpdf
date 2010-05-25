@@ -97,6 +97,7 @@ private :
 	bool LoadFontProgram( FontDb *font_db ) ;
 	void LoadEncoding( DictReader& reader ) ;
 
+
 	static bool IsSubset( const std::string& basename ) ;
 
 private :

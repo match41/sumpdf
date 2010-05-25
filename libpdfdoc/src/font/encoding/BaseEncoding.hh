@@ -45,6 +45,9 @@ class File ;
 class BaseEncoding : public RefCounter, public FontEncoding
 {
 public :
+	typedef Object BaseType ;
+
+public :
 	~BaseEncoding( ) ;
 
 	virtual Object Write( File *file ) const ;
@@ -81,6 +84,8 @@ private :
 	/// mapping from character code to unicode
 	CharMap	m_charmap ;
 } ;
+
+BaseEncoding* CreateEncoding( Object& obj, File *file ) ;
 
 } // end of namespace
 

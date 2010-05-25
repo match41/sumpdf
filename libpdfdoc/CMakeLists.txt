@@ -117,8 +117,7 @@ set( FILE_HDRS		${FILE_DIR}/RealFile.hh
 					${FILE_DIR}/Destination.hh
 					${FILE_DIR}/NameTree.hh
 					${FILE_DIR}/ElementPool.hh
-					${FILE_DIR}/Function.hh
-					${FILE_DIR}/ElementFactory.hh )
+					${FILE_DIR}/Function.hh )
 
 set( CORE_HDRS  	${CORE_DIR}/Object.hh
 					${CORE_DIR}/Ref.hh
@@ -312,6 +311,7 @@ set( FONT_SRCS		${FONT_DIR}/Font.cc
 					${FONT_DIR}/encoding/SimpleEncoding.cc
 					${FONT_DIR}/encoding/Type1Encoding.cc
 					${FONT_DIR}/encoding/BuildInEncoding.cc
+					${FONT_DIR}/encoding/CreateEncoding.cc
 					${FONT_DIR}/FontSubsetInfo.cc
 					${FONT_DIR}/subset/Sfnt.cc
 					${FONT_DIR}/subset/ReadStream.cc

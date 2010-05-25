@@ -27,14 +27,20 @@
 #define __PDF_DICTREADER_HH_EADER_INCLUDED__
 
 #include "File.hh"
+#include "ElementPool.hh"
+
 #include "core/Object.hh"
 #include "core/Dictionary.hh"
 #include "core/Ref.hh"
+
+//#include "util/Util.hh"
 
 #include <utility>
 #include <vector>
 
 namespace pdf {
+
+template <typename T> struct NewPtr ;
 
 ///	brief description
 /**	\internal
@@ -57,6 +63,59 @@ public :
 
 	template <typename T>
 	bool SwapAt( Dictionary::iterator i, std::vector<T>& result ) ;
+	
+	template <typename Func>
+	typename Func::result_type Create( const Name& name, Func func )
+	{
+		typename Func::result_type dummy = 0 ;
+		return Create( name, func, dummy ) ;
+	}
+	
+	template <typename Func>
+	typename Func::result_type Create( Dictionary::iterator i, Func func )
+	{
+		typename Func::result_type dummy = 0 ;
+		return Create( i, func, dummy ) ;
+	}
+	
+	template <typename Element, typename Func>
+	Element* Create( const Name& name, Func func, Element *original )
+	{
+		Dictionary::iterator i = m_dict.find(name) ;
+		Element *e = Create( i, func, original ) ;
+		if ( e != 0 && i != m_dict.end() )
+			m_dict.erase(i) ;
+		return e ;
+	}
+	
+	template <typename Element, typename Func>
+	Element* Create( Dictionary::iterator i, Func func, Element *original )
+	{
+		ElementPool *pool = m_file ? m_file->Pool() : 0 ;
+		Element *result = 0 ;
+		
+		// it's good if it's a reference to something already in the pool
+		if ( i != m_dict.end() && i->second.Is<Ref>() && pool != 0 &&
+		     pool->Acquire( i->second, result ) )
+		{
+		}
+
+		// otherwise we need to create it and maybe add it in the pool
+		else if ( i != m_dict.end() )
+		{
+			typename Element::BaseType temp ;
+			bool is_ref = SwapAt( i, temp ) ;
+			result = func( temp ) ;
+			
+			if ( is_ref && pool != 0 && result != 0 )
+				pool->Add( i->second, result ) ;
+		}
+	
+		if ( result != 0 && original != 0 )
+			original->Release() ;
+		
+		return result ;
+	}
 	
 	template <typename T, typename Iterator>
 	T At( Iterator i ) const

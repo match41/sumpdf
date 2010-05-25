@@ -47,16 +47,16 @@
 #include "font/FontDb.hh"
 #include "file/File.hh"
 #include "file/DictReader.hh"
-#include "file/ElementFactory.hh"
 
-#include "util/Util.hh"
 #include "util/Debug.hh"
+#include "util/RefPtr.hh"
+#include "util/Util.hh"
 
 // boost library
 #include <boost/bind.hpp>
 #include <boost/format.hpp>
 #include <boost/tr1/unordered_map.hpp>
-#include <boost/lambda/construct.hpp>
+#include <boost/intrusive_ptr.hpp>
 
 #ifdef HAVE_FONTCONFIG
 #include <fontconfig/fontconfig.h>
@@ -85,9 +85,9 @@ struct SimpleFont::Impl
 
 	std::vector<double>	widths ;
 	
-	FontDescriptor		*descriptor ;
+	boost::intrusive_ptr<FontDescriptor>	descriptor ;
+	boost::intrusive_ptr<BaseEncoding>		encoding ;		//!< name or dictionary
 	Object				to_unicode ;
-	BaseEncoding		*encoding ;		//!< name or dictionary
 	
 	typedef std::tr1::unordered_map<wchar_t, RealGlyph*> GlyphMap ;
 	GlyphMap	glyphs ;
@@ -204,8 +204,9 @@ void SimpleFont::LoadEncoding( DictReader& reader )
 {
 	try
 	{
-		BaseEncoding *enc = 0 ;
-	
+		BaseEncoding *enc = reader.Create( "Encoding",
+			boost::bind( CreateEncoding, _1, reader.GetFile() ) ) ;
+/*	
 		Dictionary::iterator it = reader->find( "Encoding" ) ;
 		if ( it != reader->end() )
 		{
@@ -215,27 +216,17 @@ void SimpleFont::LoadEncoding( DictReader& reader )
 				if ( obj.Is<Name>() )
 					enc = new BuildInEncoding( obj.As<Name>() ) ;
 				else
-				{
-					ElementFactory<> f( reader ) ;
-					enc = f.Create<SimpleEncoding>(
-						"Encoding",
-						boost::lambda::new_ptr<SimpleEncoding>() ) ;
-				}
+					enc = reader.Create("Encoding", NewPtr<SimpleEncoding>() );
 			}
 			else if ( it->second.Is<Name>() )
 				enc = new BuildInEncoding( it->second.As<Name>() ) ;
 		}
-		
+*/
 		if ( enc == 0 && m_impl->type == font::type1 )
 			enc = new Type1Encoding( m_impl->face ) ;
 		
 		if ( enc != 0 )
-		{
-			if ( m_impl->encoding != 0 )
-				m_impl->encoding->Release() ;
-			
-			m_impl->encoding = enc ;
-		}
+			m_impl->encoding.reset( enc ) ;
 	}
 	catch ( std::exception& )
 	{
@@ -257,19 +248,13 @@ SimpleFont::~SimpleFont( )
 	
 	PDF_ASSERT( m_impl->face != 0 ) ;
 	FT_Done_Face( m_impl->face ) ;
-	
-	if ( m_impl->encoding != 0 )
-		m_impl->encoding->Release() ;
-	
-	if ( m_impl->descriptor != 0 )
-		m_impl->descriptor->Release() ;
 }
 
 bool SimpleFont::LoadDescriptor( DictReader& reader, FontDb *font_db )
 {
-	ElementFactory<> f( reader ) ;
-	m_impl->descriptor = f.Create<FontDescriptor>(
-		"FontDescriptor", NewPtr<FontDescriptor>(), m_impl->descriptor ) ;
+	m_impl->descriptor.reset( reader.Create(
+		"FontDescriptor",
+		NewPtr<FontDescriptor>() ) ) ;
 
 	return m_impl->descriptor != 0 ;
 }
@@ -558,12 +543,12 @@ const Glyph* SimpleFont::GetGlyph( wchar_t ch ) const
 
 FontDescriptor* SimpleFont::Descriptor( )
 {
-	return m_impl->descriptor ;
+	return m_impl->descriptor.get() ;
 }
 
 FontEncoding* SimpleFont::Encoding( )
 {
-	return m_impl->encoding ;
+	return m_impl->encoding.get() ;
 }
 
 double SimpleFont::Height( ) const

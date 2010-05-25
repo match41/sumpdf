@@ -32,7 +32,6 @@
 #include "file/File.hh"
 #include "file/DictReader.hh"
 #include "file/ElementPool.hh"
-#include "file/ElementFactory.hh"
 #include "font/BaseFont.hh"
 #include "graphics/RealImage.hh"
 #include "stream/Stream.hh"
