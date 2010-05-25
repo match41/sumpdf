@@ -56,6 +56,7 @@
 #include <boost/bind.hpp>
 #include <boost/format.hpp>
 #include <boost/tr1/unordered_map.hpp>
+#include <boost/lambda/construct.hpp>
 
 #ifdef HAVE_FONTCONFIG
 #include <fontconfig/fontconfig.h>
@@ -218,7 +219,7 @@ void SimpleFont::LoadEncoding( DictReader& reader )
 					ElementFactory<> f( reader ) ;
 					enc = f.Create<SimpleEncoding>(
 						"Encoding",
-						NewPtr<SimpleEncoding>() ) ;
+						boost::lambda::new_ptr<SimpleEncoding>() ) ;
 				}
 			}
 			else if ( it->second.Is<Name>() )

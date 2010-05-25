@@ -46,6 +46,9 @@ class Stream ;
 class Function : public RefCounter
 {
 public :
+	typedef Object BaseType ;
+
+public :
 	Function( ) ;
 	Function( Object& obj, File *file ) ;
 

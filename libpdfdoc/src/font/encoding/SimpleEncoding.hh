@@ -45,6 +45,8 @@ class Ref ;
 class SimpleEncoding : public BaseEncoding
 {
 public :
+	typedef DictReader BaseType ;
+
 	explicit SimpleEncoding( DictReader& self ) ;
 
 private :

@@ -23,8 +23,8 @@
     \author	Nestal Wan
 */
 
-#ifndef __PDF_FONTDESCRIPTOR_HH_EADER_INCLUDED__
-#define __PDF_FONTDESCRIPTOR_HH_EADER_INCLUDED__
+#ifndef __PDF_FONTDESCRIPTOR_HEADER_INCLUDED__
+#define __PDF_FONTDESCRIPTOR_HEADER_INCLUDED__
 
 #include "util/RefCounter.hh"
 
@@ -53,6 +53,9 @@ class Stream ;
 */
 class FontDescriptor : public RefCounter
 {
+public :
+	typedef DictReader BaseType ;
+
 public :
 	FontDescriptor( ) ;
 	FontDescriptor( DictReader& self ) ;

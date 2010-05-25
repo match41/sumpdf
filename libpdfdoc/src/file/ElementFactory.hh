@@ -23,12 +23,14 @@
     \author	Nestal Wan
 */
 
-#ifndef __PDF_DICTREADERIMPL_HH_EADER_INCLUDED__
-#define __PDF_DICTREADERIMPL_HH_EADER_INCLUDED__
+#ifndef __PDF_DICTREADERIMPL_HEADER_INCLUDED__
+#define __PDF_DICTREADERIMPL_HEADER_INCLUDED__
 
 #include "DictReader.hh"
 #include "ElementPool.hh"
 #include "File.hh"
+
+#include <boost/type_traits.hpp>
 
 #include <limits>
 
@@ -58,7 +60,7 @@ public :
 		// otherwise we need to create it and maybe add it in the pool
 		else if ( i != m_dict->end() )
 		{
-			T temp ;
+			Element::BaseType temp ;
 			bool is_ref = m_dict.SwapAt( i, temp ) ;
 			result = func( temp ) ;
 

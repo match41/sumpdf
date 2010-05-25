@@ -117,7 +117,8 @@ set( FILE_HDRS		${FILE_DIR}/RealFile.hh
 					${FILE_DIR}/Destination.hh
 					${FILE_DIR}/NameTree.hh
 					${FILE_DIR}/ElementPool.hh
-					${FILE_DIR}/Function.hh )
+					${FILE_DIR}/Function.hh
+					${FILE_DIR}/ElementFactory.hh )
 
 set( CORE_HDRS  	${CORE_DIR}/Object.hh
 					${CORE_DIR}/Ref.hh
