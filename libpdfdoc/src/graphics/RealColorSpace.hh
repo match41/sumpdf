@@ -50,6 +50,7 @@ public :
 	explicit RealColorSpace( Color::Space sp = Color::rgb ) ;
 	RealColorSpace( Object& obj, File *file ) ;
 	RealColorSpace( const Color *map, std::size_t size ) ;
+	~RealColorSpace( ) ;
 	
 	bool IsIndex( ) const ;
 	Color Lookup( unsigned val ) const ;

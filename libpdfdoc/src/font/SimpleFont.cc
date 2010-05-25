@@ -202,39 +202,14 @@ SimpleFont::SimpleFont( DictReader& reader, FontDb *font_db )
 
 void SimpleFont::LoadEncoding( DictReader& reader )
 {
-	try
-	{
-		BaseEncoding *enc = reader.Create( "Encoding",
-			boost::bind( CreateEncoding, _1, reader.GetFile() ) ) ;
-/*	
-		Dictionary::iterator it = reader->find( "Encoding" ) ;
-		if ( it != reader->end() )
-		{
-			if ( it->second.Is<Ref>() )
-			{
-				Object obj = reader.GetFile()->ReadObj( it->second ) ;
-				if ( obj.Is<Name>() )
-					enc = new BuildInEncoding( obj.As<Name>() ) ;
-				else
-					enc = reader.Create("Encoding", NewPtr<SimpleEncoding>() );
-			}
-			else if ( it->second.Is<Name>() )
-				enc = new BuildInEncoding( it->second.As<Name>() ) ;
-		}
-*/
-		if ( enc == 0 && m_impl->type == font::type1 )
-			enc = new Type1Encoding( m_impl->face ) ;
-		
-		if ( enc != 0 )
-			m_impl->encoding.reset( enc ) ;
-	}
-	catch ( std::exception& )
-	{
-		Name name ;
-		if ( reader.Detach( "Encoding", name ) )
-		{
-		}
-	}
+	BaseEncoding *enc = reader.Create( "Encoding",
+		boost::bind( CreateEncoding, _1, reader.GetFile() ) ) ;
+	
+	if ( enc == 0 && m_impl->type == font::type1 )
+		enc = new Type1Encoding( m_impl->face ) ;
+	
+	if ( enc != 0 )
+		m_impl->encoding.reset( enc ) ;
 }
 
 SimpleFont::~SimpleFont( )

@@ -96,6 +96,10 @@ RealColorSpace::RealColorSpace( const Color *map, std::size_t size )
 	}
 }
 
+RealColorSpace::~RealColorSpace( )
+{
+}
+
 bool RealColorSpace::IsIndex( ) const
 {
 	return m_map.get() != 0 ;
