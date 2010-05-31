@@ -25,10 +25,11 @@
 
 #include "DocModel.hh"
 
-#include "TextObject.hh"
-#include "TextLineObject.hh"
 #include "PageLoader.hh"
 #include "Util.hh"
+
+#include "graphics/TextObject.hh"
+#include "graphics/TextLineObject.hh"
 
 // libpdfdoc headers
 #include <Doc.hh>

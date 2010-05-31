@@ -24,6 +24,7 @@
 	\author	Nestal Wan
 */
 
+// class header
 #include "MainWnd.hh"
 
 #include "DocModel.hh"
@@ -31,8 +32,18 @@
 #include "PageView.hh"
 #include "PropertiesDlg.hh"
 #include "TextDlg.hh"
-#include "GraphicsObject.hh"
 #include "Util.hh"
+
+#include "graphics/GraphicsObject.hh"
+
+// libpdfdoc headers
+#include <libpdfdoc.hh>
+#include <Doc.hh>
+#include <page/Page.hh>
+#include <util/Exception.hh>
+#include <util/Rect.hh>
+#include <util/Debug.hh>
+#include <util/Util.hh>
 
 // Qt headers
 #include <QApplication>
@@ -49,17 +60,10 @@
 #include <QtGlobal>
 #include <QToolBar>
 
-// libpdfdoc headers
-#include <libpdfdoc.hh>
-#include <Doc.hh>
-#include <page/Page.hh>
-#include <util/Exception.hh>
-#include <util/Rect.hh>
-#include <util/Debug.hh>
-#include <util/Util.hh>
-
+// boost headers
 #include <boost/bind.hpp>
 
+// stdc++ headers
 #include <algorithm>
 #include <cassert>
 #include <sstream>

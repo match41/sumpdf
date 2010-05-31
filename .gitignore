@@ -2,6 +2,7 @@
 moc*.h
 moc*.cxx
 ui_*.h
+qrc*.cxx
 
 # cmake generated files
 CMakeCache.txt
@@ -16,7 +17,7 @@ cmake_install.cmake
 *.a
 *.o
 testpdf
-pdfedit
+sumpdf
 qtest
 unittest
 

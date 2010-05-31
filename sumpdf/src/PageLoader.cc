@@ -26,10 +26,10 @@
 #include "PageLoader.hh"
 
 // local headers
-#include "ImageObject.hh"
-#include "PathObject.hh"
-#include "TextLineObject.hh"
-#include "TextObject.hh"
+#include "graphics/ImageObject.hh"
+#include "graphics/PathObject.hh"
+#include "graphics/TextLineObject.hh"
+#include "graphics/TextObject.hh"
 #include "Util.hh"
 
 // libpdfdoc headers

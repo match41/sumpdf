@@ -39,7 +39,6 @@ add_definitions( -DBOOST_ALL_NO_LIB )
 include(${QT_USE_FILE})
 
 set( BASE_SRCS		src/main.cc
-                    src/GlyphGraphicsItem.cc
                     src/Util.cc
 					src/MainWnd.cc
 					src/PageLoader.cc
@@ -48,14 +47,15 @@ set( BASE_SRCS		src/main.cc
 					src/ExceptionDlg.cc
 					src/TextDlg.cc
 					src/InsertTextDlg.cc
-					src/DocModel.cc
-					src/PathObject.cc
-                    src/TextObject.cc
-                    src/TextLineObject.cc
-					src/GraphicsObject.cc
-					src/QtGraphicsState.cc 
 					src/ColorButton.cc
-					src/ImageObject.cc )
+					src/DocModel.cc
+					src/graphics/PathObject.cc
+                    src/graphics/TextObject.cc
+                    src/graphics/TextLineObject.cc
+					src/graphics/GraphicsObject.cc
+					src/graphics/QtGraphicsState.cc 
+                    src/graphics/GlyphGraphicsItem.cc
+					src/graphics/ImageObject.cc )
 
 ###############################################################################
 # all sources
