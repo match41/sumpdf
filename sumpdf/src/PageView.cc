@@ -27,9 +27,9 @@
 #include "PageView.hh"
 
 #include "DocModel.hh"
-#include "InsertTextDlg.hh"
 #include "Util.hh"
 
+#include "dialog/InsertTextDlg.hh"
 #include "graphics/GraphicsObject.hh"
 
 // libpdfdoc headers

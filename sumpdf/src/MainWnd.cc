@@ -28,11 +28,13 @@
 #include "MainWnd.hh"
 
 #include "DocModel.hh"
-#include "ExceptionDlg.hh"
 #include "PageView.hh"
-#include "PropertiesDlg.hh"
-#include "TextDlg.hh"
 #include "Util.hh"
+
+// dialogs
+#include "dialog/ExceptionDlg.hh"
+#include "dialog/PropertiesDlg.hh"
+#include "dialog/TextDlg.hh"
 
 #include "graphics/GraphicsObject.hh"
 

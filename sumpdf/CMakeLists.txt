@@ -42,13 +42,13 @@ set( BASE_SRCS		src/main.cc
                     src/Util.cc
 					src/MainWnd.cc
 					src/PageLoader.cc
-					src/PageView.cc
-					src/PropertiesDlg.cc
-					src/ExceptionDlg.cc
-					src/TextDlg.cc
-					src/InsertTextDlg.cc
 					src/ColorButton.cc
 					src/DocModel.cc
+					src/PageView.cc
+					src/dialog/PropertiesDlg.cc
+					src/dialog/ExceptionDlg.cc
+					src/dialog/TextDlg.cc
+					src/dialog/InsertTextDlg.cc
 					src/graphics/PathObject.cc
                     src/graphics/TextObject.cc
                     src/graphics/TextLineObject.cc
@@ -65,13 +65,13 @@ set( SRCS	${BASE_SRCS} )
 qt4_automoc( ${SRCS} )
 
 set( MOC_HDRS	src/MainWnd.hh
-				src/PropertiesDlg.hh
 				src/PageView.hh
-				src/ExceptionDlg.hh
-				src/TextDlg.hh 
-				src/InsertTextDlg.hh
 				src/DocModel.hh 
-				src/ColorButton.hh )
+				src/ColorButton.hh
+				src/dialog/PropertiesDlg.hh
+				src/dialog/ExceptionDlg.hh
+				src/dialog/TextDlg.hh 
+				src/dialog/InsertTextDlg.hh )
 set( UIS 		ui/MainWnd.ui
 				ui/Properties.ui
 				ui/ExceptionDlg.ui
