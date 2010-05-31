@@ -52,11 +52,12 @@ class PageView ;
 
 // pdfdoc classes
 class Doc ;
-class Page ;
-class Matrix ;
-class TextLine ;
-class InsertTextDlg;
 class DocModel ;
+class GraphicsDelegate ;
+class InsertTextDlg;
+class Matrix ;
+class Page ;
+class TextLine ;
 class ToolBox;
 
 class MainWnd :
@@ -98,15 +99,17 @@ private :
 	void ConnectToolbarSignals( ) ;
 
 private :
-	DocModel		*m_doc ;
+	DocModel	*m_doc ;
 
-	PageView		*m_view ;
-	QToolBar		*m_tool_bar ;
-	QComboBox 		*m_zoom_box ;
+	PageView	*m_view ;
+	QToolBar	*m_tool_bar ;
+	QComboBox 	*m_zoom_box ;
 
-	QLabel			*m_label;
+	QLabel		*m_label;
 
 	ToolBox		*m_toolbox;
+
+	GraphicsDelegate	*m_delegate ;
 } ;
 
 } // end of namespace

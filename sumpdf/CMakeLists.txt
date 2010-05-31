@@ -55,7 +55,8 @@ set( BASE_SRCS		src/main.cc
 					src/graphics/GraphicsObject.cc
 					src/graphics/QtGraphicsState.cc 
                     src/graphics/GlyphGraphicsItem.cc
-					src/graphics/ImageObject.cc )
+					src/graphics/ImageObject.cc
+					src/graphics/GraphicsDelegate.cc )
 
 ###############################################################################
 # all sources
@@ -68,6 +69,7 @@ set( MOC_HDRS	src/MainWnd.hh
 				src/PageView.hh
 				src/DocModel.hh 
 				src/ColorButton.hh
+				src/graphics/GraphicsDelegate.hh
 				src/dialog/PropertiesDlg.hh
 				src/dialog/ExceptionDlg.hh
 				src/dialog/TextDlg.hh 

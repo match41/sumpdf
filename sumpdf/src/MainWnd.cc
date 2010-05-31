@@ -36,6 +36,7 @@
 #include "dialog/PropertiesDlg.hh"
 #include "dialog/TextDlg.hh"
 
+#include "graphics/GraphicsDelegate.hh"
 #include "graphics/GraphicsObject.hh"
 
 // libpdfdoc headers
@@ -79,6 +80,7 @@ MainWnd::MainWnd( QWidget *parent )
 	, m_tool_bar( addToolBar(tr("Main") ) )
 	, m_zoom_box( new QComboBox( m_tool_bar ) )
 	, m_label( new QLabel( tr(" page:    ") ) )
+	, m_delegate( new GraphicsDelegate( this ) )
 {
 	setupUi( this ) ;
 	setCentralWidget( m_view ) ;
@@ -122,16 +124,18 @@ MainWnd::MainWnd( QWidget *parent )
 		this,
 		SLOT(OnToolZoom(int)) ) ;
 	
+	// toolbar initialization
 	m_tool_bar->addWidget( m_zoom_box ) ;
-
 	m_tool_bar->addWidget( m_label );
 	m_action_next_pg->setEnabled( false ) ;
 	m_action_previous_pg->setEnabled( false ) ;
 	m_action_first_pg->setEnabled( false ) ;
 	m_action_last_pg->setEnabled( false ) ;
 	
+	// properties window initialization
 	m_item_prop->verticalHeader()->hide() ;
 	m_item_prop->horizontalHeader()->setStretchLastSection( true ) ;
+	m_item_prop->setItemDelegate( m_delegate ) ;
 
 	// text insert
 	QActionGroup *g = new QActionGroup( this ) ;
