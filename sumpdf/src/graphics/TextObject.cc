@@ -72,13 +72,17 @@ public :
 		return true ;
 	}
 	
+	bool end()
+	{
+		return true ;
+	}
+	
 	void drawPixmap( const QRectF & r, const QPixmap & pm, const QRectF & sr )
 	{
 	}
 	
-	bool end()
+	void drawPolygon( const QPointF * points, int pointCount, PolygonDrawMode mode )
 	{
-		return true ;
 	}
 	
 	void drawTextItem( const QPointF& pos, const QTextItem& item )
@@ -95,16 +99,20 @@ public :
 		// so we can't just make a text line with the whole string.
 		// we need to break it down into character and ask Qt the width
 		// of each character and advance the position.
+		QFontMetrics met(item.font() ) ;
 		double offset = 0 ;
 		foreach( QChar ch, item.text() )
 		{
 			TextLine line( gs,
-				Matrix::Translation( pos.x() + offset, pos.y() ), 
+				Matrix::Translation( pos.x() + offset, -pos.y() ), 
 				ToWStr( QString(ch) ) ) ;
 
-			offset += QFontMetricsF(item.font() ).width(ch) ;
+			offset += met.width(ch) ;
 			new TextLineObject( line, m_owner ) ;
 		}
+		
+		double iwidth = item.width() ;
+		double diff = iwidth - offset ;
 	}
 	
 	Type type() const
@@ -177,12 +185,12 @@ TextObject::TextObject( QTextDocument *text, DocModel *doc,
 {
 	PDF_ASSERT( text != 0 ) ;
 
-//	PaintDevice dev( this, doc ) ;
-//	QPainter painter( &dev ) ;
-//	painter.setRenderHints( QPainter::TextAntialiasing ) ;
-//	text->drawContents( &painter ) ;
+	PaintDevice dev( this, doc ) ;
+	QPainter painter( &dev ) ;
+	painter.setRenderHints( QPainter::TextAntialiasing ) ;
+	text->drawContents( &painter ) ;
 	
-	double voffset = 0 ;
+/*	double voffset = 0 ;
 	
 	QTextBlock b = text->firstBlock() ;
 	while ( b.isValid() )
@@ -212,6 +220,7 @@ TextObject::TextObject( QTextDocument *text, DocModel *doc,
 		b = b.next() ;
 		voffset -= max_height ;
 	}
+*/
 }
 
 // virtual functions for QGraphicsItem
