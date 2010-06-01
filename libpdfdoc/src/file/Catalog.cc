@@ -262,8 +262,7 @@ void Catalog::FontSubset::VisitText( Text *text )
 			i->Format().Text().FontFace() ) ;
 		
 		CharSet& cs = m_used_chars[font] ;
-		
-		std::copy( text.begin(), text.end(), std::inserter( cs, cs.end() ) ) ;
+		cs.insert( text.begin(), text.end() ) ;
 	}
 }
 
