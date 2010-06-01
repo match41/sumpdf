@@ -65,9 +65,14 @@ class XObject ;
 class RealResources : public ResourcesDict, public RefCounter
 {
 public :
+	typedef DictReader BaseType ;
+
+public :
 	explicit RealResources( const RealResources *parent ) ;
 	explicit RealResources( FontDb *fontdb ) ;
-	
+
+	static RealResources* Create( const RealResources *parent, DictReader& self);
+
 	Name AddFont( BaseFont *font ) ;
 	Name AddXObject( XObject *xobj ) ;
 	
