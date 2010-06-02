@@ -440,11 +440,6 @@ Ref SimpleFont::Write( File *file, const FontSubsetInfo *subset ) const
 			++i )
 			glyphs.push_back( FT_Get_Char_Index( m_impl->face, *i ) ) ;
 
-		// sort and unique to make sure no duplicated glyph index
-		std::sort( glyphs.begin(), glyphs.end() ) ;
-		glyphs.erase( std::unique( glyphs.begin(), glyphs.end() ),
-			glyphs.end() ) ;
-
 		// used chars are sorted accending
 		if ( !ch.empty() )
 		{

@@ -396,10 +396,14 @@ void Sfnt::GenerateTable(
 	PDF_ASSERT( m_impl->loca.size() ==
 		static_cast<std::size_t>(m_impl->face->num_glyphs + 1U) ) ;
 	
-	// sort the glyhs indices
+	// sort and unique the glyhs indices to make sure no duplicated glyph index
 	std::vector<long> sorted_glyphs( glyphs, glyphs + size ) ;
+	sorted_glyphs.push_back( 0 ) ;
 	std::sort( sorted_glyphs.begin(), sorted_glyphs.end(),
 		std::greater<unsigned>() ) ;
+	sorted_glyphs.erase(
+		std::unique( sorted_glyphs.begin(), sorted_glyphs.end() ),
+		sorted_glyphs.end() ) ;
 	
 	// the original complete glyf table
 	std::vector<uchar> src_glyf = ReadTable( FindTable( TTAG_glyf ) ) ;
