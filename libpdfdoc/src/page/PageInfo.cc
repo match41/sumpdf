@@ -48,14 +48,14 @@ namespace
 */
 PageInfo::PageInfo( PageTree *parent )
 	: m_parent( parent )
-	, m_res( new RealResources( parent == 0 ? 0 : parent->Resource() ) )
+	, m_res( parent == 0 ? 0 : parent->Resource() )
 	, m_rotate( 0 )
 {
 }
 
 PageInfo::PageInfo( FontDb *fontdb )
 	: m_parent( 0 )
-	, m_res( new RealResources( fontdb ) )
+	, m_res( new RealResources( fontdb ), false )
 	, m_media_box( default_page_size )
 	, m_crop_box( m_media_box )
 	, m_rotate( 0 )
@@ -64,14 +64,12 @@ PageInfo::PageInfo( FontDb *fontdb )
 
 PageInfo::~PageInfo( )
 {
-	PDF_ASSERT( m_res != 0 ) ;
-	m_res->Release() ;
 }
 
 void PageInfo::Read( DictReader& dict )
 {
 	PDF_ASSERT( dict.GetFile() != 0 ) ;
-	PDF_ASSERT( m_res != 0 ) ;
+	PDF_ASSERT( m_res.get() != 0 ) ;
 
 	// media box
 	if ( !dict.Detach( "MediaBox", m_media_box ) && m_parent != 0 )
@@ -85,10 +83,8 @@ void PageInfo::Read( DictReader& dict )
 	PDF_ASSERT( pool != 0 ) ;
 	
 	// reading the resources
-	RealResources *res = dict.Create( "Resources",
-		boost::bind( &PageInfo::ReadResource, this, _1 ), m_res ) ;
-	if ( res != 0 )
-		m_res = res ;
+	dict.Create( "Resources", boost::bind( &PageInfo::ReadResource, this, _1 ),
+		m_res ) ;
 
 	if ( !dict.Detach( "Rotate", m_rotate ) && m_parent != 0 )
 		m_rotate = m_parent->Rotation( ) ;
@@ -107,16 +103,16 @@ void PageInfo::Write(
 	const FontSubsetInfo	*ss ) const
 {
 	PDF_ASSERT( file != 0 ) ;
-	PDF_ASSERT( m_res != 0 ) ;
+	PDF_ASSERT( m_res.get() != 0 ) ;
 	
 	ElementPool *pool = file->Pool() ;
 	PDF_ASSERT( pool != 0 ) ;
 	
-	Ref ref = pool->Find( m_res ) ;
+	Ref ref = pool->Find( m_res.get() ) ;
 	if ( ref == Ref() )
 	{
 		ref = m_res->Write( file, ss ) ;
-		pool->Add( ref, m_res ) ;
+		pool->Add( ref, m_res.get() ) ;
 	}
 	
 	// write resources as an indirect reference
@@ -138,14 +134,14 @@ void PageInfo::Write(
 
 RealResources* PageInfo::Resource( )
 {
-	PDF_ASSERT( m_res != 0 ) ;
-	return m_res ;
+	PDF_ASSERT( m_res.get() != 0 ) ;
+	return m_res.get() ;
 }
 
 const RealResources* PageInfo::Resource( ) const
 {
-	PDF_ASSERT( m_res != 0 ) ;
-	return m_res ;
+	PDF_ASSERT( m_res.get() != 0 ) ;
+	return m_res.get() ;
 }
 
 RealResources* PageInfo::CreateNewResource( )
@@ -157,9 +153,8 @@ RealResources* PageInfo::CreateNewResource( )
 
 void PageInfo::ReplaceResource( RealResources *res )
 {
-	PDF_ASSERT( m_res != 0 ) ;
-	m_res->Release( ) ;
-	m_res = res ;
+	PDF_ASSERT( m_res.get() != 0 ) ;
+	m_res.reset( res ) ;
 }
 
 PageTree* PageInfo::Parent( )

@@ -32,8 +32,7 @@
 #include "core/Object.hh"
 #include "core/Dictionary.hh"
 #include "core/Ref.hh"
-
-//#include "util/Util.hh"
+#include "util/RefPtr.hh"
 
 #include <utility>
 #include <vector>
@@ -115,6 +114,21 @@ public :
 			original->Release() ;
 		
 		return result ;
+	}
+
+	template <typename Element, typename Func>
+	bool Create( const Name& name, Func func,
+		boost::intrusive_ptr<Element>& result )
+	{
+		Element *tmp = 0 ;
+		tmp = Create( name, func, tmp ) ;
+		if ( tmp != 0 )
+		{
+			result.reset( tmp ) ;
+			return true ;
+		}
+		else
+			return false ;
 	}
 	
 	template <typename T, typename Iterator>

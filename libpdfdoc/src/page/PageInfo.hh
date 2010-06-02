@@ -27,6 +27,7 @@
 #define __PDF_PAGEINFO_HH_EADER_INCLUDED__
 
 #include "util/Rect.hh"
+#include "util/RefPtr.hh"
 
 namespace pdf {
 
@@ -71,7 +72,7 @@ private :
 
 private :
 	PageTree		*m_parent ;
-	RealResources	*m_res ;
+	boost::intrusive_ptr<RealResources>	m_res ;
 	
 	Rect		m_media_box ;
 	Rect		m_crop_box ;
