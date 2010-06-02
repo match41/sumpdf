@@ -109,18 +109,8 @@ void PageTree::Read( DictReader& dict )
 	if ( !dict.Detach( "Kids", pages ) )
 		throw ParseError( "no children in page tree" ) ;
 
-	ElementPool *pool = file->Pool( ) ;
 	for ( std::size_t i = 0 ; i < pages->size() ; ++i )
-	{
-		DictReader d ;
-		pages.Detach<DictReader>( i, d ) ;
-		
-		PageNode *p = CreateChild( d ) ;
-		PDF_ASSERT( p != 0 ) ;
-		
-		if ( pages[i].Is<Ref>() )
-			pool->Add( pages[i], p ) ;
-	}
+		pages.Create( i, boost::bind( &PageTree::CreateChild, this, _1 ) ) ;
 
 	// leaf count is required
 	if ( !dict.Detach( "Count", m_count ) )

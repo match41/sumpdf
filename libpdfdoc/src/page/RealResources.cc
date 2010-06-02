@@ -74,6 +74,15 @@ RealResources::RealResources( FontDb *font_db )
     m_proc_set.push_back( Name( "Text" ) ) ;
 }
 
+RealResources* RealResources::Create(
+	const RealResources		*parent,
+	DictReader& 			self )
+{
+	RealResources *res = new RealResources( parent ) ;
+	res->Read( self ) ;
+	return res ;
+}
+
 void RealResources::Read( DictReader& self )
 {
 	ReadStateDict( self ) ;

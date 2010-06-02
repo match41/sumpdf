@@ -50,6 +50,9 @@ class Ref ;
 class PageNode : public RefCounter
 {
 public :
+	typedef DictReader BaseType ;
+
+public :
 	virtual ~PageNode( ) ;
 
 	virtual void Read( DictReader& dict ) = 0 ; 

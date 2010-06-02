@@ -26,9 +26,10 @@
 #ifndef __PDF_ARRAYREADER_HH_EADER_INCLUDED__
 #define __PDF_ARRAYREADER_HH_EADER_INCLUDED__
 
-#include "core/Array.hh"
-
+#include "ElementPool.hh"
 #include "File.hh"
+
+#include "core/Array.hh"
 
 namespace pdf {
 
@@ -71,6 +72,42 @@ public :
 		return T() ;	
 	}
 
+	template <typename Func>
+	typename Func::result_type Create( std::size_t i, Func func )
+	{
+		typename Func::result_type dummy = 0 ;
+		return Create( i, func, dummy ) ;
+	}
+
+	template <typename Element, typename Func>
+	Element* Create( std::size_t i, Func func, Element *original )
+	{
+		ElementPool *pool = m_file ? m_file->Pool() : 0 ;
+		Element *result = 0 ;
+		
+		// it's good if it's a reference to something already in the pool
+		if ( i < m_array.size() && m_array[i].Is<Ref>() && pool != 0 &&
+		     pool->Acquire( m_array[i], result ) )
+		{
+		}
+
+		// otherwise we need to create it and maybe add it in the pool
+		else if ( i < m_array.size() )
+		{
+			typename Element::BaseType temp ;
+			bool is_ref = m_array[i].Is<Ref>() ;
+			Detach( i, temp ) ;
+			result = func( temp ) ;
+			
+			if ( is_ref && pool != 0 && result != 0 )
+				pool->Add( m_array[i], result ) ;
+		}
+	
+		if ( result != 0 && original != 0 )
+			original->Release() ;
+		
+		return result ;
+	}
 
 	// pointer-like operations for dictionary
 	Array* operator->() ;

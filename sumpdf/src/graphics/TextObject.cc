@@ -77,11 +77,11 @@ public :
 		return true ;
 	}
 	
-	void drawPixmap( const QRectF & r, const QPixmap & pm, const QRectF & sr )
+	void drawPixmap( const QRectF& r, const QPixmap & pm, const QRectF & sr )
 	{
 	}
 	
-	void drawPolygon( const QPointF * points, int pointCount, PolygonDrawMode mode )
+	void drawPolygon( const QPointF *points, int pointCount, PolygonDrawMode mode )
 	{
 	}
 	
@@ -110,9 +110,6 @@ public :
 			offset += met.width(ch) ;
 			new TextLineObject( line, m_owner ) ;
 		}
-		
-		double iwidth = item.width() ;
-		double diff = iwidth - offset ;
 	}
 	
 	Type type() const
