@@ -67,8 +67,8 @@ public :
 	const PageNode* GetLeaf( std::size_t index ) const ;
 	void AppendLeaf( RealPage *child ) ;
 	void AddLeaf( std::size_t index, RealPage *child ) ;
-	RealResources* GetResource( ) ;
-	const RealResources* GetResource( ) const ;
+	RealResources* Resource( ) ;
+	const RealResources* Resource( ) const ;
 	
 	Rect MediaBox( ) const ;
 	Rect CropBox( ) const ;

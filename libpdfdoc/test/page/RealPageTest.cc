@@ -132,7 +132,7 @@ void RealPageTest::TestWrite( )
 
 	pdf::TextState ts ;
 	ts.ChangeFont( 12.0, f ) ;
-	p->GetResource()->AddFont( f ) ;
+	p->Resource()->AddFont( f ) ;
 
 	MockFile file ;
 	pdf::Ref link = file.AllocLink( ) ;
@@ -158,7 +158,7 @@ void RealPageTest::TestDecode( )
 
 	pdf::TextState ts ;
 	ts.ChangeFont( 12.0, f ) ;
-	p->GetResource()->AddFont( f ) ;
+	p->Resource()->AddFont( f ) ;
 
 	// visitor
 	struct V : public MockGraphicsVisitor

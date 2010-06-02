@@ -168,14 +168,14 @@ RealPage* RealPage::GetLeaf( std::size_t index )
 	return index == 0 ? this : 0 ;
 }
 
-RealResources* RealPage::GetResource( )
+RealResources* RealPage::Resource( )
 {
-	return m_pinfo.GetResource() ;
+	return m_pinfo.Resource() ;
 }
 
-const RealResources* RealPage::GetResource( ) const
+const RealResources* RealPage::Resource( ) const
 {
-	return m_pinfo.GetResource() ;
+	return m_pinfo.Resource() ;
 }
 
 int RealPage::Rotation( ) const
@@ -188,7 +188,7 @@ void RealPage::VisitGraphics( GraphicsVisitor *visitor ) const
 	ContentStream cs(
 		m_cstrs.begin(),
 		m_cstrs.end(),
-		m_pinfo.GetResource(),
+		m_pinfo.Resource(),
 		visitor ) ;
 	
 	cs.Decode( ) ;
@@ -197,14 +197,15 @@ void RealPage::VisitGraphics( GraphicsVisitor *visitor ) const
 void RealPage::WriteGraphic(
 	const Graphics	*gfx,
 	std::ostream& 	os,
-	GraphicsState& 	gs )
+	GraphicsState& 	gs,
+	RealResources	*res )
 {
 	PDF_ASSERT( gfx != 0 ) ;
 
 	if ( gfx->Transform() != Matrix() )
 		os << "q " << gfx->Transform() << " cm\n" ;
 
-	gfx->Print( os, m_pinfo.GetResource(), gs ) ;
+	gfx->Print( os, res, gs ) ;
 	
 	if ( gfx->Transform() != Matrix() )
 		os << "Q\n" ;
@@ -220,14 +221,16 @@ void RealPage::SetContent( const std::vector<Graphics*>& gfx )
 	// clear the resource dictionary first. the fonts/images will be
 	// added to the resource dictionary when calling Graphics::Print().
 //	m_pinfo.GetResource()->Clear( ) ;
+	RealResources *res = m_pinfo.CreateNewResource() ;
 
 	using namespace boost ;
 	std::for_each(
 		gfx.begin(),
 		gfx.end(),
-		bind( &RealPage::WriteGraphic, this, _1, ref(os), ref(gs) ) ) ;
+		bind( &RealPage::WriteGraphic, this, _1, ref(os), ref(gs), res ) ) ;
 
 	os.flush() ;
+	m_pinfo.ReplaceResource( res ) ;
 
 	// throw away the existing resources and start over
 	Clear( ) ;

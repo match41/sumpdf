@@ -237,14 +237,14 @@ const PageNode* PageTree::GetLeaf( std::size_t index ) const
 	return 0 ;
 }
 
-RealResources* PageTree::GetResource( )
+RealResources* PageTree::Resource( )
 {
-	return m_pinfo.GetResource() ;
+	return m_pinfo.Resource() ;
 }
 
-const RealResources* PageTree::GetResource( ) const
+const RealResources* PageTree::Resource( ) const
 {
-	return m_pinfo.GetResource() ;
+	return m_pinfo.Resource() ;
 }
 
 // TODO: unimplemented

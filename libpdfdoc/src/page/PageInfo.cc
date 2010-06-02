@@ -48,7 +48,7 @@ namespace
 */
 PageInfo::PageInfo( PageTree *parent )
 	: m_parent( parent )
-	, m_res( new RealResources( parent == 0 ? 0 : parent->GetResource() ) )
+	, m_res( new RealResources( parent == 0 ? 0 : parent->Resource() ) )
 	, m_rotate( 0 )
 {
 }
@@ -99,7 +99,7 @@ void PageInfo::Read( DictReader& dict )
 			// free our own first
 			m_res->Release( ) ;
 		
-			m_res = m_parent->GetResource() ;
+			m_res = m_parent->Resource() ;
 			m_res->AddRef( ) ;
 		}
 	}
@@ -143,16 +143,29 @@ void PageInfo::Write(
     	dict.insert( "Rotate", m_rotate ) ;
 }
 
-RealResources* PageInfo::GetResource( )
+RealResources* PageInfo::Resource( )
 {
 	PDF_ASSERT( m_res != 0 ) ;
 	return m_res ;
 }
 
-const RealResources* PageInfo::GetResource( ) const
+const RealResources* PageInfo::Resource( ) const
 {
 	PDF_ASSERT( m_res != 0 ) ;
 	return m_res ;
+}
+
+RealResources* PageInfo::CreateNewResource( )
+{
+	PDF_ASSERT( m_parent != 0 ) ;
+	return new RealResources( m_parent->Resource() ) ;
+}
+
+void PageInfo::ReplaceResource( RealResources *res )
+{
+	PDF_ASSERT( m_res != 0 ) ;
+	m_res->Release( ) ;
+	m_res = res ;
 }
 
 PageTree* PageInfo::Parent( )

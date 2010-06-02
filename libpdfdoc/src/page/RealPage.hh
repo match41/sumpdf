@@ -71,8 +71,8 @@ public :
 	
 	RealPage* GetLeaf( std::size_t index ) ;
 	
-	RealResources* GetResource( ) ;
-	const RealResources* GetResource( ) const ;
+	RealResources* Resource( ) ;
+	const RealResources* Resource( ) const ;
 
 	int Rotation( ) const ;
 	
@@ -90,7 +90,8 @@ private :
 	void WriteGraphic(
 		const Graphics	*gfx,
 		std::ostream& 	os,
-		GraphicsState& 	gs ) ;
+		GraphicsState& 	gs,
+		RealResources	*res ) ;
 
 private :
 	PageInfo			m_pinfo ;

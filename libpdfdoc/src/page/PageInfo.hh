@@ -53,8 +53,11 @@ public :
 	void Read( DictReader& dict ) ;
 	void Write( Dictionary& dict, File *file, const FontSubsetInfo *ss ) const ;
 
-	RealResources* GetResource( ) ;
-	const RealResources* GetResource( ) const ;
+	RealResources* Resource( ) ;
+	const RealResources* Resource( ) const ;
+
+	RealResources* CreateNewResource( ) ;
+	void ReplaceResource( RealResources *res ) ;
 
 	PageTree* Parent( ) ;
 
