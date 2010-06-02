@@ -69,7 +69,7 @@ PageInfo::~PageInfo( )
 void PageInfo::Read( DictReader& dict )
 {
 	PDF_ASSERT( dict.GetFile() != 0 ) ;
-	PDF_ASSERT( m_res.get() != 0 ) ;
+	PDF_ASSERT( m_res != 0 ) ;
 
 	// media box
 	if ( !dict.Detach( "MediaBox", m_media_box ) && m_parent != 0 )
@@ -82,9 +82,17 @@ void PageInfo::Read( DictReader& dict )
 	ElementPool *pool = dict.GetFile()->Pool( ) ;
 	PDF_ASSERT( pool != 0 ) ;
 	
-	// reading the resources
-	dict.Create( "Resources", boost::bind( &PageInfo::ReadResource, this, _1 ),
-		m_res ) ;
+	// try reading the resources
+	RealResources *res = dict.Create( "Resources",
+		boost::bind( &PageInfo::ReadResource, this, _1 ) ) ;
+	
+	// if no resource, use parent or creates an empty one if no parent
+	if ( res == 0 )
+		res = m_parent != 0 ? m_parent->Resource() : CreateNewResource( ) ;
+	
+	// replace the old resources
+	PDF_ASSERT( res != 0 ) ;
+	m_res = res ;
 
 	if ( !dict.Detach( "Rotate", m_rotate ) && m_parent != 0 )
 		m_rotate = m_parent->Rotation( ) ;
@@ -103,7 +111,7 @@ void PageInfo::Write(
 	const FontSubsetInfo	*ss ) const
 {
 	PDF_ASSERT( file != 0 ) ;
-	PDF_ASSERT( m_res.get() != 0 ) ;
+	PDF_ASSERT( m_res != 0 ) ;
 	
 	ElementPool *pool = file->Pool() ;
 	PDF_ASSERT( pool != 0 ) ;
@@ -134,13 +142,13 @@ void PageInfo::Write(
 
 RealResources* PageInfo::Resource( )
 {
-	PDF_ASSERT( m_res.get() != 0 ) ;
+	PDF_ASSERT( m_res != 0 ) ;
 	return m_res.get() ;
 }
 
 const RealResources* PageInfo::Resource( ) const
 {
-	PDF_ASSERT( m_res.get() != 0 ) ;
+	PDF_ASSERT( m_res != 0 ) ;
 	return m_res.get() ;
 }
 
@@ -153,7 +161,7 @@ RealResources* PageInfo::CreateNewResource( )
 
 void PageInfo::ReplaceResource( RealResources *res )
 {
-	PDF_ASSERT( m_res.get() != 0 ) ;
+	PDF_ASSERT( m_res != 0 ) ;
 	m_res.reset( res ) ;
 }
 

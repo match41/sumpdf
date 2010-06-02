@@ -73,8 +73,8 @@ void ElementPoolTest::TestAddAcquire( )
 	CPPUNIT_ASSERT( subject.Has( Ref(100,0) ) ) ;
 	CPPUNIT_ASSERT( !subject.Has( Ref(101,0) ) ) ;
 	
-	Telement1 *rc2 = new Telement1 ;
-	CPPUNIT_ASSERT( subject.Acquire( Ref(100,0), rc2 ) ) ;
+	Telement1 *rc2 = subject.Acquire<Telement1>( Ref(100,0) ) ;
+	CPPUNIT_ASSERT( rc2 != 0 ) ;
 	PDFUT_ASSERT_EQUAL( rc2, rc1 ) ;
 	PDFUT_ASSERT_EQUAL( rc1->UseCount(), 2U ) ;
 	
@@ -93,8 +93,7 @@ void ElementPoolTest::TestAcquireFail( )
 	Telement1 *rc1 = new Telement1 ;
 	subject.Add( Ref(100,0), rc1 ) ;
 	
-	Telement2 *rc2 = 0 ;
-	CPPUNIT_ASSERT_THROW( subject.Acquire( Ref(100,0), rc2 ), std::bad_cast ) ;
+	CPPUNIT_ASSERT_THROW( subject.Acquire<Telement2>( Ref(100,0) ), std::bad_cast ) ;
 	CPPUNIT_ASSERT_THROW( subject.Find<Telement2>( Ref(100,0) ), std::bad_cast ) ;
 }
 

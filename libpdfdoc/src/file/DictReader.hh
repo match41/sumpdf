@@ -23,8 +23,8 @@
     \author	Nestal Wan
 */
 
-#ifndef __PDF_DICTREADER_HH_EADER_INCLUDED__
-#define __PDF_DICTREADER_HH_EADER_INCLUDED__
+#ifndef __PDF_DICTREADER_HEADER_INCLUDED__
+#define __PDF_DICTREADER_HEADER_INCLUDED__
 
 #include "File.hh"
 #include "ElementPool.hh"
@@ -32,14 +32,13 @@
 #include "core/Object.hh"
 #include "core/Dictionary.hh"
 #include "core/Ref.hh"
-#include "util/RefPtr.hh"
 
 #include <utility>
 #include <vector>
 
+#include <boost/type_traits.hpp>
+ 
 namespace pdf {
-
-template <typename T> struct NewPtr ;
 
 ///	brief description
 /**	\internal
@@ -66,41 +65,33 @@ public :
 	template <typename Func>
 	typename Func::result_type Create( const Name& name, Func func )
 	{
-		typename Func::result_type dummy = 0 ;
-		return Create( name, func, dummy ) ;
+		typename Func::result_type r = 0 ;
+		
+		Dictionary::iterator i = m_dict.find( name ) ;
+		if ( i != m_dict.end() )
+		{
+			r = Create( i, func ) ;
+			if ( r != 0 )
+				m_dict.erase( i ) ;
+		}
+		return r ;
 	}
 	
 	template <typename Func>
 	typename Func::result_type Create( Dictionary::iterator i, Func func )
 	{
-		typename Func::result_type dummy = 0 ;
-		return Create( i, func, dummy ) ;
-	}
-	
-	template <typename Element, typename Func>
-	Element* Create( const Name& name, Func func, Element *original )
-	{
-		Dictionary::iterator i = m_dict.find(name) ;
-		Element *e = Create( i, func, original ) ;
-		if ( e != 0 && i != m_dict.end() )
-			m_dict.erase(i) ;
-		return e ;
-	}
-	
-	template <typename Element, typename Func>
-	Element* Create( Dictionary::iterator i, Func func, Element *original )
-	{
+		typedef typename boost::remove_pointer<typename Func::result_type>::type
+			Element ;
+		
 		ElementPool *pool = m_file ? m_file->Pool() : 0 ;
 		Element *result = 0 ;
 		
 		// it's good if it's a reference to something already in the pool
-		if ( i != m_dict.end() && i->second.Is<Ref>() && pool != 0 &&
-		     pool->Acquire( i->second, result ) )
-		{
-		}
+		if ( i != m_dict.end() && i->second.Is<Ref>() && pool != 0 )
+			result = pool->Acquire<Element>( i->second ) ;
 
 		// otherwise we need to create it and maybe add it in the pool
-		else if ( i != m_dict.end() )
+		if ( result == 0 && i != m_dict.end() )
 		{
 			typename Element::BaseType temp ;
 			bool is_ref = SwapAt( i, temp ) ;
@@ -109,26 +100,8 @@ public :
 			if ( is_ref && pool != 0 && result != 0 )
 				pool->Add( i->second, result ) ;
 		}
-	
-		if ( result != 0 && original != 0 )
-			original->Release() ;
 		
 		return result ;
-	}
-
-	template <typename Element, typename Func>
-	bool Create( const Name& name, Func func,
-		boost::intrusive_ptr<Element>& result )
-	{
-		Element *tmp = 0 ;
-		tmp = Create( name, func, tmp ) ;
-		if ( tmp != 0 )
-		{
-			result.reset( tmp ) ;
-			return true ;
-		}
-		else
-			return false ;
 	}
 	
 	template <typename T, typename Iterator>

@@ -57,8 +57,8 @@ void RealImage::Init( Dictionary& dict, File *file )
 {
 	DictReader dr( dict, file ) ;
 	
-	m_space.reset( dr.Create( "ColorSpace",
-		boost::bind( NewPtr<RealColorSpace>(), _1, file ), m_space.get() ) ) ;
+	m_space = dr.Create( "ColorSpace",
+		boost::bind( NewPtr<RealColorSpace>(), _1, file ) ) ;
 
 	if (!dr.Detach( "Width", 			m_width )	||
 		!dr.Detach( "Height",			m_height )	||

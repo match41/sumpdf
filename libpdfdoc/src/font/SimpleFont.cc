@@ -218,7 +218,7 @@ SimpleFont::~SimpleFont( )
 	std::for_each(
 		m_impl->glyphs.begin(),
 		m_impl->glyphs.end(),
-		boost::bind<void>( DeletePtr(),
+		boost::bind( DeletePtr(),
 			boost::bind( &Impl::GlyphMap::value_type::second, _1 ) ) ) ;
 	
 	PDF_ASSERT( m_impl->face != 0 ) ;

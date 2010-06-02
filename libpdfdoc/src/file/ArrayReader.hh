@@ -86,13 +86,11 @@ public :
 		Element *result = 0 ;
 		
 		// it's good if it's a reference to something already in the pool
-		if ( i < m_array.size() && m_array[i].Is<Ref>() && pool != 0 &&
-		     pool->Acquire( m_array[i], result ) )
-		{
-		}
+		if ( i < m_array.size() && m_array[i].Is<Ref>() && pool != 0 )
+			result = pool->Acquire<Element>( m_array[i] ) ;
 
 		// otherwise we need to create it and maybe add it in the pool
-		else if ( i < m_array.size() )
+		if ( result == 0 && i < m_array.size() )
 		{
 			typename Element::BaseType temp ;
 			bool is_ref = m_array[i].Is<Ref>() ;

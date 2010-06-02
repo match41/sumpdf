@@ -41,24 +41,6 @@ class ElementPool
 {
 public :
 	ElementPool( ) ;
-
-	template <typename Element>
-	bool Acquire( const Ref& link, Element* &element )
-	{
-		MapType::left_iterator i = m_pool.left.find( link ) ;
-		if ( i != m_pool.left.end() )
-		{
-			if ( element != 0 )
-				element->Release( ) ;
-			
-			element = &dynamic_cast<Element&>(*i->second) ;
-			element->AddRef() ;
-
-			return true ;
-		}
-		else
-			return false ;
-	}
 	
 	template <typename Element>
 	Element* Find( const Ref& key )
