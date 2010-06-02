@@ -67,6 +67,9 @@ public :
 	int Rotation( ) const ;
 
 private :
+	RealResources* ReadResource( DictReader& dict ) ;
+
+private :
 	PageTree		*m_parent ;
 	RealResources	*m_res ;
 	

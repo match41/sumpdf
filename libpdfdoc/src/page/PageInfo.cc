@@ -85,27 +85,20 @@ void PageInfo::Read( DictReader& dict )
 	PDF_ASSERT( pool != 0 ) ;
 	
 	// reading the resources
-	Ref link = dict["Resources"].To<Ref>( std::nothrow ) ;
-	if ( !pool->Acquire( link, m_res ) )  
-	{
-		DictReader res_dict ;
-		if ( dict.Detach( "Resources", res_dict ) )
-		{
-			m_res->Read( res_dict ) ;
-			pool->Add( link, m_res ) ; 
-		}
-		else if ( m_parent != 0 )
-		{
-			// free our own first
-			m_res->Release( ) ;
-		
-			m_res = m_parent->Resource() ;
-			m_res->AddRef( ) ;
-		}
-	}
-	
+	RealResources *res = dict.Create( "Resources",
+		boost::bind( &PageInfo::ReadResource, this, _1 ), m_res ) ;
+	if ( res != 0 )
+		m_res = res ;
+
 	if ( !dict.Detach( "Rotate", m_rotate ) && m_parent != 0 )
 		m_rotate = m_parent->Rotation( ) ;
+}
+
+RealResources* PageInfo::ReadResource( DictReader& dict )
+{
+	RealResources *res = CreateNewResource( ) ;
+	res->Read( dict ) ;
+	return res ;
 }
 
 void PageInfo::Write(
@@ -157,8 +150,9 @@ const RealResources* PageInfo::Resource( ) const
 
 RealResources* PageInfo::CreateNewResource( )
 {
-	PDF_ASSERT( m_parent != 0 ) ;
-	return new RealResources( m_parent->Resource() ) ;
+	PDF_ASSERT( m_parent != 0 || m_res != 0 ) ;
+	return m_parent != 0 ? new RealResources( m_parent->Resource() )
+		: new RealResources( m_res->FontDatabase( ) ) ;
 }
 
 void PageInfo::ReplaceResource( RealResources *res )

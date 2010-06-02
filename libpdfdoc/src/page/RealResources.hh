@@ -87,6 +87,8 @@ public :
 
 	void Clear( ) ;
 
+	FontDb* FontDatabase( ) ;
+
 private :
 	void ReadFontDict( DictReader& self ) ;
 	Ref WriteFontDict( File *file, const FontSubsetInfo *ss ) const ;

@@ -220,4 +220,9 @@ void RealResources::Clear( )
 	m_xobjs.Clear( ) ;
 }
 
+FontDb* RealResources::FontDatabase( )
+{
+	return m_font_db ;
+}
+
 } // end of namespace
