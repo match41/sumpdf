@@ -76,8 +76,11 @@ private :
 class LIBPDFDOC_API BadType : public Exception
 {
 public :
-	BadType( const std::type_info& from, const std::type_info& to,
-	         const std::string& err ) ;
+	BadType(
+		const std::type_info&	from,
+		const std::type_info&	to,
+		const std::string&		err,
+		const std::string&		obj = std::string() ) ;
 } ;
 
 ///	Parse error exception.

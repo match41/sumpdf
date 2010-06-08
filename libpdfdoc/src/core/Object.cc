@@ -284,7 +284,7 @@ const T& Object::As( ) const
 	}
 	catch ( std::exception& e )
 	{
-		throw BadType( TypeID(), typeid(T), e.what() ) ;
+		throw BadType( TypeID(), typeid(T), e.what(), DumpString() ) ;
 	}
 }
 
@@ -301,7 +301,7 @@ T& Object::As( )
 	}
 	catch ( std::exception& e )
 	{
-		throw BadType( TypeID(), typeid(T), e.what() ) ;
+		throw BadType( TypeID(), typeid(T), e.what(), DumpString() ) ;
 	}
 }
 
@@ -744,6 +744,13 @@ bool operator!=( const Object& obj1, const Object& obj2 )
 bool operator<( const Object& obj1, const Object& obj2 )
 {
 	return obj1.m_obj < obj2.m_obj ;
+}
+
+std::string Object::DumpString() const
+{
+	std::ostringstream oss ;
+	oss << *this ;
+	return oss.str() ;
 }
 
 } // end of namespace

@@ -34,6 +34,7 @@
 
 namespace pdf {
 
+class ArrayReader ;
 class File ;
 class Object ;
 
@@ -62,6 +63,8 @@ public :
 
 private :
 	static Color::Space	NameToSpace( const std::string& name ) ;
+
+	bool DetachBase( ArrayReader& array ) ;
 
 private :
 	// color space enum. if space is index, this is the color space of the

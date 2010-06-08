@@ -264,6 +264,8 @@ public :
 
 	const std::type_info& TypeID( ) const ;
 
+	std::string DumpString() const ;
+
 private :
 	// private function called only by non-template members,
 	// so it can be defined in the cpp file.

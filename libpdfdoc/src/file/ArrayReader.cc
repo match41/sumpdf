@@ -30,6 +30,8 @@
 #include "stream/Stream.hh"
 #include "util/Rect.hh"
 
+#include <boost/format.hpp>
+
 namespace pdf {
 
 /**	constructor
@@ -60,12 +62,21 @@ bool ArrayReader::Detach( std::size_t idx, T& result )
 {
 	if ( idx < m_array.size() )
 	{
-		Object& obj = m_array[idx] ;
-		if ( obj.Is<Ref>() )
-			result = m_file->ReadObj( obj.As<Ref>() ).As<T>() ;
-		else
-			std::swap( result, obj.As<T>() ) ;
-		return true ;
+		try
+		{
+			Object& obj = m_array[idx] ;
+			if ( obj.Is<Ref>() )
+				result = m_file->ReadObj( obj.As<Ref>() ).As<T>() ;
+			else
+				std::swap( result, obj.As<T>() ) ;
+			return true ;
+		}
+		catch ( Exception& e )
+		{
+			e.Add( boost::format( "while detaching index \"%1%\" from array." )
+				% idx ) ;
+			throw ;
+		}
 	}
 	else
 		return false ;

@@ -17,39 +17,58 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	ColorSpaceTest.hh
-    \brief	definition the ColorSpaceTest class
-    \date	May 22, 2010
-    \author	Nestal Wan
+/**	\file	RealColorSpaceTest.cc
+	\brief	implementation of the ColorSpaceTest class
+	\date	May 22, 2010
+	\author	Nestal Wan
 */
 
-#ifndef __PDFUT_COLORSPACETEST_HH_EADER_INCLUDED__
-#define __PDFUT_COLORSPACETEST_HH_EADER_INCLUDED__
+#include "RealColorSpaceTest.hh"
 
-#include <cppunit/TestFixture.h>
+#include "core/Array.hh"
+#include "core/Name.hh"
+#include "graphics/RealColorSpace.hh"
 
-#include <cppunit/extensions/HelperMacros.h>
+#include "util/Util.hh"
+
+#include "mock/Assert.hh"
+#include "mock/MockFile.hh"
 
 namespace pdfut {
 
-class ColorSpaceTest : public CppUnit::TestFixture
+using namespace pdf ;
+
+RealColorSpaceTest::RealColorSpaceTest( )
 {
-public :
-	ColorSpaceTest( ) ;
+}
 
-	// declare suit function
-	CPPUNIT_TEST_SUITE( ColorSpaceTest ) ;
-		CPPUNIT_TEST( Test ) ;
-	CPPUNIT_TEST_SUITE_END();
+void RealColorSpaceTest::setUp( )
+{
+}
 
-public :
-	void setUp( ) ;
-	void tearDown( ) ;
+void RealColorSpaceTest::tearDown( )
+{
+}
 
-private :
-	void Test( ) ;
-} ;
+void RealColorSpaceTest::Test( )
+{
+	const char s[] = "\0\xff\0\xff\0\0" ;
+	std::string ss(s, Count(s) ) ;
+
+	Object a[] = { Name("Indexed"), Name("DeviceRGB"), 1, ss } ;
+	MockFile file ;
+	Object src(( Array(a) )) ;
+
+	RealColorSpace subject( src, &file ) ;
+	PDFUT_ASSERT_EQUAL( subject.IsIndex(), true ) ;
+	PDFUT_ASSERT_EQUAL( subject.Get(), Color::rgb ) ;
+	PDFUT_ASSERT_EQUAL( subject.Lookup(0), Color( 0,   1.0, 0 ) ) ;
+	PDFUT_ASSERT_EQUAL( subject.Lookup(1), Color( 1.0, 0,   0 ) ) ;
+	PDFUT_ASSERT_EQUAL( subject.Lookup(2), Color() ) ;
+}
+
+void RealColorSpaceTest::TestRecursive( )
+{
+}
 
 } // end of namespace
-
-#endif // COLORSPACETEST_HH_

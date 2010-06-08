@@ -35,6 +35,7 @@
 #include "util/Rect.hh"
 
 #include <boost/bind.hpp>
+#include <boost/format.hpp>
 
 namespace pdf {
 
@@ -124,13 +125,22 @@ bool DictReader::SwapAt( Dictionary::iterator i, T& result )
 	PDF_ASSERT( i != m_dict.end( ) ) ;
 	
 	Object& obj = i->second ;
-	
-	bool is_ref = obj.Is<Ref>() ; 
-	if ( is_ref && m_file != 0 )
-		m_file->ReadType( obj, result ) ;
-	else
-		std::swap( obj.As<T>(), result ) ;
-	return is_ref ;
+
+	try
+	{
+		bool is_ref = obj.Is<Ref>() ; 
+		if ( is_ref && m_file != 0 )
+			m_file->ReadType( obj, result ) ;
+		else
+			std::swap( obj.As<T>(), result ) ;
+		return is_ref ;
+	}
+	catch ( Exception& e )
+	{
+		e.Add( boost::format( "while detaching name \"%1%\" from dictionary." )
+			% i->first ) ;
+		throw ;
+	}
 }
 
 template bool DictReader::SwapAt( Dictionary::iterator, Dictionary& ) ;

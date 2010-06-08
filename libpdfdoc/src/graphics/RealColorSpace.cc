@@ -100,6 +100,12 @@ RealColorSpace::~RealColorSpace( )
 {
 }
 
+bool RealColorSpace::DetachBase( ArrayReader& array )
+{
+	Name base ;
+	return array.Detach( 1, base ) ;
+}
+
 bool RealColorSpace::IsIndex( ) const
 {
 	return m_map.get() != 0 ;

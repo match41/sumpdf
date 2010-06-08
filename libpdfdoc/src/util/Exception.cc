@@ -104,12 +104,15 @@ std::string Exception::GetBacktrace( ) const
 BadType::BadType(
 	const std::type_info& 	from,
 	const std::type_info& 	to,
-	const std::string& 		err )
+	const std::string& 		err,
+	const std::string&		obj )
 	: Exception( boost::format( "Cannot convert \"%1%\" object to \"%2%\". "
-	                            "exception: \"%3%\"" )
+	                            "exception: \"%3%\"\n"
+	                            "object: %4%" )
 	             % Demangle( from.name() )
 	             % Demangle( to.name() )
-	             % err )
+	             % err
+	             % obj )
 {
 }
 

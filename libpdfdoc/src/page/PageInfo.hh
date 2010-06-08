@@ -23,8 +23,8 @@
     \author	Nestal Wan
 */
 
-#ifndef __PDF_PAGEINFO_HH_EADER_INCLUDED__
-#define __PDF_PAGEINFO_HH_EADER_INCLUDED__
+#ifndef __PDF_PAGEINFO_HEADER_INCLUDED__
+#define __PDF_PAGEINFO_HEADER_INCLUDED__
 
 #include "util/Rect.hh"
 #include "util/RefPtr.hh"
