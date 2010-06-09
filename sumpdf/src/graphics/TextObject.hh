@@ -55,6 +55,7 @@ public :
 	Graphics* Write( ) const ;
 
 	GraphicsState Format( ) const ;
+	QString ObjectType( ) const ;
 
 protected :
 	bool OnChangeState( const GraphicsState& new_gs ) ;

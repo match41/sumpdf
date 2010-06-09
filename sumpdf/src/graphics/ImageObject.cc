@@ -118,4 +118,9 @@ bool ImageObject::OnChangeState( const GraphicsState& new_gs )
 	return false ;
 }
 
+QString ImageObject::ObjectType( ) const
+{
+	return tr( "Image" ) ;
+}
+
 } // end of namespace

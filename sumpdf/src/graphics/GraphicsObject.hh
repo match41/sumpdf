@@ -74,6 +74,7 @@ public :
 		QWidget 						*widget ) = 0 ; 
 
 	virtual void BuildPopMenu( QMenu *menu ) ;
+	virtual QString ObjectType( ) const = 0 ;
 
 protected :
 	virtual bool OnChangeState( const GraphicsState& new_gs ) = 0 ;

@@ -270,5 +270,9 @@ GraphicsState TextObject::Format( ) const
 	return GraphicsState() ;
 }
 
+QString TextObject::ObjectType( ) const
+{
+	return tr( "Text" ) ;
+}
 
 } // end of namespace

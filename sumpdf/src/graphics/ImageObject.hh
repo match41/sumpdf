@@ -57,6 +57,8 @@ public :
 		const QStyleOptionGraphicsItem	*option,
 		QWidget 						*widget ) ; 
 
+	QString ObjectType( ) const ;
+
 protected :
 	bool OnChangeState( const GraphicsState& new_gs ) ;
 

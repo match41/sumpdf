@@ -60,7 +60,7 @@ GraphicsObject::GraphicsObject( QGraphicsItem *parent  )
 
 int GraphicsObject::rowCount( const QModelIndex& parent ) const
 {
-	return 6 ;
+	return 7 ;
 }
 
 int GraphicsObject::columnCount( const QModelIndex& parent ) const
@@ -76,12 +76,13 @@ QVariant GraphicsObject::data( const QModelIndex& index, int role ) const
 		{
 			switch ( index.row() )
 			{
-			case 0: return tr( "Transform" ) ;
-			case 1: return tr( "Position" ) ;
-			case 2: return tr( "Font" ) ;
-			case 3: return tr( "Size" ) ;
-			case 4: return tr( "Fill Colour" ) ;
-			case 5: return tr( "Stroke Colour" ) ;
+			case 0: return tr( "Type" ) ;
+			case 1: return tr( "Transform" ) ;
+			case 2: return tr( "Position" ) ;
+			case 3: return tr( "Font" ) ;
+			case 4: return tr( "Size" ) ;
+			case 5: return tr( "Fill Colour" ) ;
+			case 6: return tr( "Stroke Colour" ) ;
 			}
 		}
 		else
@@ -94,22 +95,24 @@ QVariant GraphicsObject::data( const QModelIndex& index, int role ) const
 			QTransform t = transform() ;
 			switch ( index.row() )
 			{
+			case 0: return ObjectType( ) ;
+			
 			// matrix
-			case 0: return QString( "%1 %2 %3 %4 %5 %6" )
+			case 1: return QString( "%1 %2 %3 %4 %5 %6" )
 				% t.m11() % t.m12() % t.m21() % t.m22() % t.m31() % t.m32() ;
 
 			// position
-			case 1: return QString( "%1, %2" ) % pos().x() % pos().y() ;
+			case 2: return QString( "%1, %2" ) % pos().x() % pos().y() ;
 			
 			// font name
-			case 2: return (font != 0 ? font->BaseName().c_str() : "") ;
+			case 3: return (font != 0 ? font->BaseName().c_str() : "") ;
 			
 			// font size
-			case 3: return gs.Text().FontSize( ) ;
+			case 4: return gs.Text().FontSize( ) ;
 			
-			case 4: return (format("%1%") % gs.FillColor()).str().c_str();
+			case 5: return (format("%1%") % gs.FillColor()).str().c_str();
 			
-			case 5: return (format("%1%") % gs.StrokeColor()).str().c_str();
+			case 6: return (format("%1%") % gs.StrokeColor()).str().c_str();
 			}
 		}
 	}
