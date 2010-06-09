@@ -194,4 +194,9 @@ bool GraphicsObject::setData(
 	return false;
 }
 
+void GraphicsObject::BuildPopMenu( QMenu *menu )
+{
+	
+}
+
 } // end of namespace

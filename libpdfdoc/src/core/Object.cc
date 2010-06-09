@@ -48,6 +48,7 @@
 #include <stdexcept>
 
 #include <iostream>
+#include <sstream>
 
 #ifdef __GNUC__
 template class boost::variant<
