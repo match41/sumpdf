@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>24</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="m_menu_file">
@@ -48,6 +48,7 @@
     </property>
     <addaction name="m_action_font"/>
     <addaction name="m_action_viewsrc"/>
+    <addaction name="m_action_append"/>
    </widget>
    <addaction name="m_menu_file"/>
    <addaction name="m_menu_edit"/>
@@ -240,6 +241,11 @@
    </property>
    <property name="text">
     <string>Pointer Tool</string>
+   </property>
+  </action>
+  <action name="m_action_append">
+   <property name="text">
+    <string>Append Page</string>
    </property>
   </action>
  </widget>

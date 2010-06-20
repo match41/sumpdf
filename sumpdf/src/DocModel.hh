@@ -72,6 +72,8 @@ public :
 	std::size_t PageCount( ) const ;
 
 	Page* GetPage( std::size_t idx ) ;
+	void AppendPage( ) ;
+
 	void AddText( const QFont& font, double size, const QPointF& pos,
 		const QString& text, const QColor c = QColor(0,0,0) ) ;
 

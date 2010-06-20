@@ -145,6 +145,12 @@ Page* DocModel::GetPage( std::size_t idx )
 	return m_doc->GetPage( idx ) ;
 }
 
+void DocModel::AppendPage( )
+{
+	m_doc->AppendPage( ) ;
+	m_pages.push_back( 0 ) ;
+}
+
 QGraphicsScene* DocModel::GoToPage( std::size_t page )
 {
 	PDF_ASSERT( page < m_doc->PageCount() ) ;
@@ -164,14 +170,14 @@ QGraphicsScene* DocModel::GoToPage( std::size_t page )
 		scene->setBackgroundBrush( Qt::gray ) ;
 		
 		connect(
-			scene, 
+			scene,
 			SIGNAL( selectionChanged() ),
 			this,
 			SLOT( OnSelectionChanged() ) ) ;
 
 		Page *p = m_doc->GetPage( m_current_page ) ;
 		PDF_ASSERT( p != 0 ) ;
-		
+
 		// add a white solid box to represent the page
 		Rect rect = p->MediaBox() ;
 		QGraphicsRectItem *rect_item = scene->addRect( ToQRectF( rect ) ) ;
@@ -179,7 +185,7 @@ QGraphicsScene* DocModel::GoToPage( std::size_t page )
 
 		PageLoader loader( scene ) ;
 		p->VisitGraphics( &loader ) ;
-		
+
 		m_pages[m_current_page] = scene ;
 	}
 	

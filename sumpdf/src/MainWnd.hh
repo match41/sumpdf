@@ -89,6 +89,7 @@ public slots :
 	void OnSelectionChanged( ) ;
 	void OnChanged( const QList<QRectF>& ) ;
 	void OnViewSource( ) ;
+	void OnAppendPage( ) ;
 
 //	void InsertText( QPointF pos, double fontsize );
 
