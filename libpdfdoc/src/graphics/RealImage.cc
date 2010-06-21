@@ -34,6 +34,7 @@
 #include "stream/Stream.hh"
 
 #include "util/Debug.hh"
+#include "util/Exception.hh"
 #include "util/Util.hh"
 
 #include <boost/bind.hpp>
@@ -49,8 +50,16 @@ namespace pdf {
 RealImage::RealImage( Stream& str, File *file )
 	: m_is_jpeg( str.FilterName() != Name() )
 {
-	Init( str.Self(), file ) ;
-	str.CopyData( m_bytes ) ;
+	try
+	{
+		Init( str.Self(), file ) ;
+		str.CopyData( m_bytes ) ;
+	}
+	catch ( Exception& e )
+	{
+		e.Add( "Exception thrown for RealImage" ) ;
+		throw ;
+	}
 }
 
 void RealImage::Init( Dictionary& dict, File *file )

@@ -28,6 +28,7 @@
 
 #include "graphics/ColorSpace.hh"
 #include "util/RefCounter.hh"
+#include "util/RefPtr.hh"
 
 #include <memory>
 #include <string>

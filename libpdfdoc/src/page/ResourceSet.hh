@@ -29,9 +29,11 @@
 #include "core/Dictionary.hh"
 #include "core/Name.hh"
 #include "file/DictReader.hh"
+#include "util/Exception.hh"
 
 #include <boost/bimap.hpp>
 #include <boost/bimap/set_of.hpp>
+#include <boost/format.hpp>
 
 namespace pdf {
 
@@ -69,8 +71,17 @@ public :
 	{
 		for ( Dictionary::iterator i = dict->begin(); i != dict->end(); ++i )
 		{
-			T *e = dict.Create( i, func ) ;
-			m_map.insert( typename Map::value_type( i->first, e ) );
+			try
+			{
+				T *e = dict.Create( i, func ) ;
+				m_map.insert( typename Map::value_type( i->first, e ) );
+			}
+			catch ( Exception& e )
+			{
+				e.Add( boost::format( "Exception thrown when loading %1%" )
+					% i->first ) ;
+				throw ;
+			}
 		}
 	}
 

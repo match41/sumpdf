@@ -30,10 +30,10 @@
 
 #include "core/Array.hh"
 #include "core/Name.hh"
+#include "util/Debug.hh"
 
 #include <boost/format.hpp>
 
-#include <cassert>
 #include <cstring>
 #include <iostream>
 
@@ -47,7 +47,7 @@ DeflateFilter::Error::Error( const char *func, const char *msg )
 DeflateFilter::DeflateFilter( std::auto_ptr<StreamFilter> src )
 	: m_src( src )
 {
-	assert( m_src.get() != 0 ) ;
+	PDF_ASSERT( m_src.get() != 0 ) ;
 	std::memset( &m_decomp.z,	0, sizeof(m_decomp.z) ) ;
 	std::memset( &m_comp.z, 	0, sizeof(m_comp.z) ) ;
 
@@ -62,15 +62,15 @@ DeflateFilter::DeflateFilter( std::auto_ptr<StreamFilter> src )
 
 DeflateFilter::~DeflateFilter( )
 {
-	deflateEnd( &m_comp.z ) ;
-	inflateEnd( &m_decomp.z ) ;
+	::deflateEnd( &m_comp.z ) ;
+	::inflateEnd( &m_decomp.z ) ;
 }
 
 std::size_t DeflateFilter::Read( unsigned char *data, std::size_t size )
 {
-	assert( data != 0 ) ;
-	assert( size > 0 ) ;
-	assert( m_decomp.z.avail_in <= m_decomp.buf.size() ) ;
+	PDF_ASSERT( data != 0 ) ;
+	PDF_ASSERT( size > 0 ) ;
+	PDF_ASSERT( m_decomp.z.avail_in <= m_decomp.buf.size() ) ;
 	
 	int result = Z_OK ;
 	std::size_t offset = 0 ;
@@ -88,11 +88,13 @@ std::size_t DeflateFilter::Read( unsigned char *data, std::size_t size )
 		    
 		    m_decomp.z.next_in	= &m_decomp.buf[0] ;
 		    m_decomp.z.avail_in	= m_decomp.buf.size( ) ;
+std::cout << "avai = " << m_decomp.z.avail_in << std::endl ;
 		}
 
-		assert( m_decomp.z.avail_in <= m_decomp.buf.size() ) ;
-		assert( m_decomp.z.next_in  != 0 ) ;
-		
+		PDF_ASSERT( m_decomp.z.avail_in <= m_decomp.buf.size() ) ;
+		PDF_ASSERT( m_decomp.z.next_in  != 0 ) ;
+std::cout << "size = " << size << std::endl ;
+std::cout << "offset = " << offset << std::endl ;
 		m_decomp.z.next_out		= data + offset ;
 		m_decomp.z.avail_out	= size - offset ;
 		result = ::inflate( &m_decomp.z, Z_SYNC_FLUSH ) ;
@@ -108,9 +110,10 @@ std::size_t DeflateFilter::Read( unsigned char *data, std::size_t size )
 		}
 		else
 		{
-			throw StreamError(
-				"inflate() error: " +
-				( m_comp.z.msg != 0  ? std::string( m_comp.z.msg ) : "" ) ); 
+			throw StreamError( boost::format( "inflate() error %2%: %1%" )
+				% (m_comp.z.msg != 0  ? std::string( m_comp.z.msg ) :
+					"unknown" )
+				% result ) ; 
 		}
 	} while ( result == Z_OK && m_decomp.z.avail_in == 0 ) ;
 
@@ -124,7 +127,7 @@ std::size_t DeflateFilter::Write( const unsigned char *data, std::size_t size )
 
 	m_is_need_flush	= true ;
 
-	assert( m_comp.z.avail_in == 0 ) ;
+	PDF_ASSERT( m_comp.z.avail_in == 0 ) ;
 	m_comp.z.next_in	= const_cast<unsigned char*>( data ) ;
 	m_comp.z.avail_in	= size ;
 
@@ -158,7 +161,7 @@ std::size_t DeflateFilter::Write( const unsigned char *data, std::size_t size )
 
 void DeflateFilter::Flush( )
 {
-	assert( m_comp.z.avail_in == 0 ) ;
+	PDF_ASSERT( m_comp.z.avail_in == 0 ) ;
 
 	if ( m_is_need_flush )
 	{
