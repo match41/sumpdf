@@ -45,7 +45,7 @@ class XObject : public RefCounter
 public :
 	typedef Stream BaseType ;
 
-	virtual Graphics* CreateRenderedObject(
+	virtual Graphics* CreateLink(
 		const GraphicsState&	gs,
 		const Matrix&			ctm ) const = 0 ;
 } ;

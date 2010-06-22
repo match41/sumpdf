@@ -32,7 +32,6 @@
 #include "page/ResourcesDict.hh"
 #include "util/Debug.hh"
 
-#include <cassert>
 #include <iostream>
 
 namespace pdf {
@@ -68,7 +67,7 @@ void TextState::Leading( double val )
 
 void TextState::ChangeFont( double size, Font *font )
 {
-	assert( font != 0 ) ;
+	PDF_ASSERT( font != 0 ) ;
 
 	m_font_size	= size ;
 	m_font		= font ;
@@ -142,8 +141,9 @@ std::ostream& TextState::Print(
 	PDF_ASSERT( res != 0 ) ;
 	PDF_ASSERT( m_font == 0 || dynamic_cast<BaseFont*>(m_font) != 0 ) ;
 
-	if ( m_font_size	!= prev.m_font_size ||
-		 m_font			!= prev.m_font )
+	if ( ( m_font_size	!= prev.m_font_size ||
+		   m_font		!= prev.m_font )	&&
+		   m_font		!= 0 )
 	{
 		Name fname = res->AddFont( static_cast<BaseFont*>(m_font) ) ;
 		PDF_ASSERT( !fname.empty( ) ) ;

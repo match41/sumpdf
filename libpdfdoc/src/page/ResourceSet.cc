@@ -27,6 +27,8 @@
 
 #include "file/DictReader.hh"
 
+#include "util/Debug.hh"
+
 #include <boost/bind.hpp>
 
 #include <sstream>
@@ -74,6 +76,8 @@ T* ResourceSet<T>::Find( const Name& name ) const
 template <typename T>
 Name ResourceSet<T>::Add( T *t )
 {
+	PDF_ASSERT( t != 0 ) ;
+
 	// first, see if the font is already added
 	using namespace boost ;
 	typename Map::right_iterator it = m_map.right.find( t ) ;

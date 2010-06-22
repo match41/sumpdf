@@ -34,6 +34,7 @@
 #include "graphics/RealPath.hh"
 #include "graphics/RealText.hh"
 #include "graphics/ExtGraphicsLink.hh"
+#include "graphics/TextState.hh"
 #include "graphics/XObject.hh"
 #include "stream/Stream.hh"
 
@@ -134,10 +135,7 @@ void ContentStream::Decode( Stream& str )
 	std::istream src( str.InStreamBuf() ) ;
 	std::vector<Object> args ;
 	
-	ContentOp		op ;
-	GraphicsState	gstate ;
-
-//	Clock clock ;
+	ContentOp	op ;
 
 	while ( src >> op )
 	{
@@ -186,13 +184,19 @@ void ContentStream::Oncm( ContentOp& op, std::istream& )
 
 void ContentStream::OnQ( ContentOp&, std::istream& )
 {
+	std::cout << "Q1 font = " << (void*)m_state.gs.Text().FontFace() << std::endl ;
+
 	m_state = m_state_stack.top( ) ;
 	m_state_stack.pop( ) ;
+
+	std::cout << "Q2 font = " << (void*)m_state.gs.Text().FontFace() << std::endl ;
 }
 
 void ContentStream::Onq( ContentOp&, std::istream& )
 {
+	std::cout << "q1 font = " << (void*)m_state.gs.Text().FontFace() << std::endl ;
 	m_state_stack.push( m_state ) ;
+	std::cout << "q2 font = " << (void*)m_state.gs.Text().FontFace() << std::endl ;
 }
 
 void ContentStream::Onm( ContentOp& op, std::istream& )
@@ -234,7 +238,7 @@ void ContentStream::OnDoXObject( ContentOp& op, std::istream& is )
 		XObject *xo = m_res->FindXObject( op[0].As<Name>() ) ;
 		if ( xo != 0 )
 		{
-			m_current = xo->CreateRenderedObject( m_state.gs, m_state.ctm ) ;
+			m_current = xo->CreateLink( m_state.gs, m_state.ctm ) ;
 			OnEndObject( op, is ) ;
 		}
 	}

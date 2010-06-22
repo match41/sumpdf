@@ -57,7 +57,7 @@ public :
 
 	std::istream& ReadInlineImage( std::istream& is ) ;
 
-	Graphics* CreateRenderedObject(
+	Graphics* CreateLink(
 		const GraphicsState&	gs,
 		const Matrix&			ctm ) const ;
 
