@@ -23,8 +23,8 @@
     \author	Nestal Wan
 */
 
-#ifndef __PDF_GRAPHICSOBJECT_HH_EADER_INCLUDED__
-#define __PDF_GRAPHICSOBJECT_HH_EADER_INCLUDED__
+#ifndef __PDF_GRAPHICSOBJECT_HEADER_INCLUDED__
+#define __PDF_GRAPHICSOBJECT_HEADER_INCLUDED__
 
 #include <QAbstractGraphicsShapeItem>
 #include <QAbstractTableModel>
@@ -72,6 +72,9 @@ public :
 		QPainter 						*painter,
 		const QStyleOptionGraphicsItem	*option,
 		QWidget 						*widget ) = 0 ; 
+
+	virtual void BuildPopMenu( QMenu *menu ) ;
+	virtual QString ObjectType( ) const = 0 ;
 
 protected :
 	virtual bool OnChangeState( const GraphicsState& new_gs ) = 0 ;

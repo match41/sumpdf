@@ -198,4 +198,9 @@ bool PathObject::OnChangeState( const GraphicsState& new_gs )
 	return false ;
 }
 
+QString PathObject::ObjectType( ) const
+{
+	return tr( "Path" ) ;
+}
+
 } // end of namespace
