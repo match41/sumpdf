@@ -124,17 +124,8 @@ void RealPath::Print(
 {
 	PDF_ASSERT( m_ops.size() == m_pt_index.size() ) ;
 
-	os << "q\n" ;
-
 //	if ( m_state != gs )
 		m_state.Print( os, res, gs ) ;
-
-//	if ( m_ctm != trans )
-	{
-		os	<< m_ctm.M11() << ' ' << m_ctm.M12() << ' '
-			<< m_ctm.M21() << ' ' << m_ctm.M22() << ' '
-			<< m_ctm.Dx()  << ' ' << m_ctm.Dy( ) << " cm\n" ; 
-	}
 
 	std::size_t pt_idx = 0 ;
 	for ( std::vector<PathSegment::Op>::const_iterator i = m_ops.begin() ;
@@ -163,8 +154,6 @@ void RealPath::Print(
 		os << "n\n" ;
 	else
 		throw Exception( "??" ) ;
-
-	os << "Q\n" ;
 }
 
 void RealPath::Visit( GraphicsVisitor *visitor )
