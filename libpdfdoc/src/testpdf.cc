@@ -47,7 +47,7 @@ int main( int argc, char **argv )
 	pdf::Doc *doc = pdf::CreateDoc( ) ;
 	if ( argc >= 2 )
 	{
-/*		try
+		try
 		{
 			doc->Read( argv[1] ) ;
 		}
@@ -55,8 +55,10 @@ int main( int argc, char **argv )
 		{
 			std::cout << e.what() ;
 			return -1 ;
-		}*/
+		}
 	}
+	return 0 ;
+	
 //	pdf::Page *p = doc->AppendPage( ) ;
 	pdf::Page *p = doc->GetPage( 0 ) ;
 	if ( argc >= 3 )
