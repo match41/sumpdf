@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2009 by Nestal Wan                                      *
+ *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,60 +17,69 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/*!
-	\file	BufferedFilter.hh
-	\brief	definition the BufferedFilter class
-	\date	Thu Apr 2 2009
+/**	\file	PredictFilterTest.cc
+	\brief	implementation of the PredictFilterTest class
+	\date	Jun 25, 2010
 	\author	Nestal Wan
 */
 
-#ifndef __PDF_BUFFERED_FILTER_HEADER_INCLUDED__
-#define __PDF_BUFFERED_FILTER_HEADER_INCLUDED__
+#include "PredictFilterTest.hh"
 
-#include "StreamFilter.hh"
+#include "stream/PredictFilter.hh"
+#include "stream/BufferedFilter.hh"
 
-#include <vector>
+#include "util/Util.hh"
 
-namespace pdf {
+#include "mock/Assert.hh"
 
-/*!	\brief	stream filter with whole data in memory
-	\ingroup	filter
+#include <iostream>
+#include <iomanip>
 
-	The BufferedFilter is a StreamFilter with all its data in memory. It stores
-	a chunk of memory and an current read pointer.
-*/
-class BufferedFilter : public StreamFilter
+namespace pdfut {
+
+using namespace pdf ;
+
+PredictFilterTest::PredictFilterTest( )
 {
-public :
-	BufferedFilter( ) ;
+}
 
-	template <typename InputIt>
-	BufferedFilter( InputIt first, InputIt last )
-		: m_buf( first, last )
-		, m_offset( 0 )
+void PredictFilterTest::setUp( )
+{
+}
+
+void PredictFilterTest::tearDown( )
+{
+}
+
+void PredictFilterTest::Test( )
+{
+	const unsigned char data[] =
 	{
-	}
-
-	explicit BufferedFilter( std::vector<unsigned char>& buf ) ;
-	explicit BufferedFilter( const char *str ) ;
-
-	// compiler generated copy constructor is good enough 
-
-	std::size_t Read( unsigned char *data, std::size_t size ) ;
-	std::size_t Write( const unsigned char *data, std::size_t size ) ;
-	void Rewind( ) ;
-	std::size_t Length( ) const ;
-	Object NameChain( ) const ;
-	StreamFilter* Clone( ) const ;
-	StreamFilter* GetInner( ) ;
-	void Flush( ) ;
-	Name RawFormat( ) const ;
+		0x02, 0x01, 0x00, 0x10, 0x00, 0x02, 0x00, 0x02, 
+		0x55, 0x00, 0x02, 0x00, 0x01, 0x13, 0x00, 0x02, 
+		0x00, 0x01, 0xdc, 0x00, 0x02, 0x00, 0x01, 0xb3, 
+		0x00, 0x02, 0x00, 0xfb, 0x6d, 0x00, 0x02, 0x01, 
+		0x00, 0xa3, 0x00, 0x02, 0x00, 0x00, 0x00, 0x01, 
+		0x02, 0x00, 0x00, 0x00, 0x01, 0x02, 0xff, 0x01, 
+		0xab, 0xfe, 
+	} ;
+	std::auto_ptr<StreamFilter> src(
+		new BufferedFilter( Begin(data), End(data) ) ) ;
 	
-private :
-	std::vector<unsigned char>	m_buf ;		//!< chunk of data in memory
-	std::size_t					m_offset ;	//!< current read position
-} ;
+	PredictFilter subject( src, 4 ) ;
+	
+	std::vector<unsigned char> raw( 4 ) ;
+	subject.Read( &raw[0], raw.size() ) ;
+	
+	for ( std::size_t i = 0 ; i < raw.size() ; i++ )
+	{
+		if ( i % 8 == 0 && i > 0 )
+			std::cout << std::endl ;
+		std::cout << "0x" << std::hex << std::setw(2) << std::setfill('0') 
+			<< (int)raw[i] << ", " ;
+	}
+	std::cout << std::endl ;
+
+}
 
 } // end of namespace
-
-#endif

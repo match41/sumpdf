@@ -327,10 +327,11 @@ void RealFile::ReadXRef( std::size_t offset, Dictionary& trailer )
 	std::string line ;
 	if ( ReadLine( *m_in, line ) )
 	{
-std::cout << "here? " << line << std::endl ;
+		// PDF 1.4 or below uses cross reference table
 		if ( line == "xref" )
 			ReadXRefTable( trailer ) ;
 		
+		// PDF 1.5 or above can use cross reference streams
 		else
 			ReadXRefStream( offset, trailer ) ;
 	}
@@ -348,6 +349,20 @@ void RealFile::ReadXRefStream( std::size_t offset, Dictionary& trailer )
 	Stream& s = obj.As<Stream>() ;
 	
 	std::cout << "read: " << s.Self() << std::endl ;
+	
+	std::vector<unsigned char> raw ;
+	s.CopyData( raw ) ;
+	
+	for ( std::size_t i = 0 ; i < raw.size() ; i++ )
+	{
+		if ( i % 8 == 0 && i > 0 )
+			std::cout << std::endl ;
+		std::cout << "0x" << std::hex << std::setw(2) << std::setfill('0') 
+			<< (int)raw[i] << ", " ;
+	}
+	std::cout << std::endl ;
+	
+	throw ParseError( "PDF 1.5 object streams are not supported yet" ) ;
 }
 
 void RealFile::ReadXRefTable( Dictionary& trailer )

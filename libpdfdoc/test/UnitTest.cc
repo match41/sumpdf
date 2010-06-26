@@ -45,6 +45,7 @@
 #include "stream/InStreamBufAdaptorTest.hh"
 #include "stream/OutStreamBufAdaptorTest.hh"
 #include "stream/RawFilterTest.hh"
+#include "stream/PredictFilterTest.hh"
 #include "page/RealResourcesTest.hh"
 #include "page/RealPageTest.hh"
 #include "page/ContentStreamTest.hh"
@@ -122,6 +123,7 @@ int main( int argc, char **argv )
 	runner.addTest( InStreamBufAdaptorTest::suite( ) ) ;
 	runner.addTest( OutStreamBufAdaptorTest::suite( ) ) ;
 	runner.addTest( RawFilterTest::suite( ) ) ;
+	runner.addTest( PredictFilterTest::suite( ) ) ;
 	runner.addTest( MatrixTest::suite( ) ) ;
 	runner.addTest( RealDocTest::suite( ) ) ;
 
