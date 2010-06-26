@@ -68,10 +68,11 @@ void PredictFilterTest::Test( )
 	
 	PredictFilter subject( src, 4 ) ;
 	
-	std::vector<unsigned char> raw( 4 ) ;
-	subject.Read( &raw[0], raw.size() ) ;
+	std::vector<unsigned char> raw( 100 ) ;
+	std::size_t count = subject.Read( &raw[0], raw.size() ) ;
+	PDFUT_ASSERT_EQUAL( count, 40U ) ;
 	
-	for ( std::size_t i = 0 ; i < raw.size() ; i++ )
+	for ( std::size_t i = 0 ; i < count ; i++ )
 	{
 		if ( i % 8 == 0 && i > 0 )
 			std::cout << std::endl ;

@@ -56,7 +56,7 @@ public :
 	Name RawFormat( ) const ;
 
 private :
-	void FillBuffer( ) ;
+	bool FillBuffer( ) ;
 
 private :
 	const std::auto_ptr<StreamFilter>	m_src ;

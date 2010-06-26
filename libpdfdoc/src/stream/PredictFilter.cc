@@ -33,6 +33,9 @@
 #include <algorithm>
 #include <cstring>
 
+#include <iostream>
+#include <iomanip>
+
 namespace pdf {
 
 /**	constructor
@@ -52,21 +55,22 @@ std::size_t PredictFilter::Read( unsigned char *data, std::size_t size )
 	{
 		PDF_ASSERT( m_idx <= m_buffer.size() ) ;
 	
-		if ( m_idx == m_buffer.size() )
-			FillBuffer( ) ;
+		if ( m_idx == m_buffer.size() && !FillBuffer( ) )
+			break ;
 		
 		if ( m_idx < m_buffer.size() )
 		{
+std::cout << "buffer size = " << m_buffer.size() - m_idx << std::endl ;
 			std::size_t n = std::min( m_buffer.size() - m_idx, size - count ) ;
 			std::memcpy( data + count, &m_buffer[m_idx], n ) ;
-			
+std::cout << "read " << n << " bytes" << std::endl ;
 			count += n ;
 			m_idx += n ;
 		}
 		else
 			throw ParseError( "unexpected end of stream" ) ;
 	}
-	return 0 ;
+	return count ;
 }
 
 std::size_t PredictFilter::Write( const unsigned char *data, std::size_t size )
@@ -104,14 +108,18 @@ Name PredictFilter::RawFormat( ) const
 	return m_src->RawFormat() ;
 }
 
-void PredictFilter::FillBuffer( )
+bool PredictFilter::FillBuffer( )
 {
+std::cout << "fill buffer" << std::endl ;
 	PDF_ASSERT( m_idx == m_buffer.size() ) ;
 	
 	std::vector<unsigned char> prev( m_buffer ) ;
 	
+	// try to read one row of data
 	std::vector<unsigned char> tmp( m_buffer.size() + 1 ) ;
-	m_src->Read( &tmp[0], tmp.size() ) ;
+	std::size_t r = m_src->Read( &tmp[0], tmp.size() ) ;
+	if ( r != tmp.size() )
+		return false ;
 	
 	for ( std::size_t i = 0 ; i < m_buffer.size() ; i++ )
 	{
@@ -124,7 +132,9 @@ void PredictFilter::FillBuffer( )
 				break ;
 		}
 	}
+	
 	m_idx = 0 ;
+	return true ;
 }
 
 StreamFilter* PredictFilter::Clone( ) const
