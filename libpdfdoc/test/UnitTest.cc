@@ -79,6 +79,7 @@ int main( int argc, char **argv )
 	using namespace pdfut ;
 
 	CppUnit::TextUi::TestRunner runner;
+	runner.addTest( PredictFilterTest::suite( ) ) ;
 	runner.addTest( RealColorSpaceTest::suite( ) ) ;
 	runner.addTest( ResourceSetTest::suite( ) ) ;
 	runner.addTest( StreamTest::suite( ) ) ;
@@ -123,7 +124,6 @@ int main( int argc, char **argv )
 	runner.addTest( InStreamBufAdaptorTest::suite( ) ) ;
 	runner.addTest( OutStreamBufAdaptorTest::suite( ) ) ;
 	runner.addTest( RawFilterTest::suite( ) ) ;
-	runner.addTest( PredictFilterTest::suite( ) ) ;
 	runner.addTest( MatrixTest::suite( ) ) ;
 	runner.addTest( RealDocTest::suite( ) ) ;
 

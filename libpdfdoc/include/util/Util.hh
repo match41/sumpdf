@@ -30,8 +30,9 @@
 #define __PDF_UTIL_HEADER_INCLUDED__
 
 #include <cstddef>
-#include <utility>
+#include <iosfwd>
 #include <string>
+#include <utility>
 
 namespace pdf {
 
@@ -137,6 +138,8 @@ struct NewPtr
 		return new T(a1, a2, a3) ;
 	}
 } ;
+
+std::ostream& PrintHex( std::ostream& os, const void *buf, std::size_t size ) ;
 
 #ifdef WIN32
 #define strcasecmp _stricmp

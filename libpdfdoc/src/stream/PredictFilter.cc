@@ -60,10 +60,9 @@ std::size_t PredictFilter::Read( unsigned char *data, std::size_t size )
 		
 		if ( m_idx < m_buffer.size() )
 		{
-std::cout << "buffer size = " << m_buffer.size() - m_idx << std::endl ;
 			std::size_t n = std::min( m_buffer.size() - m_idx, size - count ) ;
 			std::memcpy( data + count, &m_buffer[m_idx], n ) ;
-std::cout << "read " << n << " bytes" << std::endl ;
+
 			count += n ;
 			m_idx += n ;
 		}
@@ -110,7 +109,6 @@ Name PredictFilter::RawFormat( ) const
 
 bool PredictFilter::FillBuffer( )
 {
-std::cout << "fill buffer" << std::endl ;
 	PDF_ASSERT( m_idx == m_buffer.size() ) ;
 	
 	std::vector<unsigned char> prev( m_buffer ) ;

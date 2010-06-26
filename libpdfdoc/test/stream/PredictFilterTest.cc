@@ -33,7 +33,7 @@
 #include "mock/Assert.hh"
 
 #include <iostream>
-#include <iomanip>
+#include <cstring>
 
 namespace pdfut {
 
@@ -63,6 +63,16 @@ void PredictFilterTest::Test( )
 		0x02, 0x00, 0x00, 0x00, 0x01, 0x02, 0xff, 0x01, 
 		0xab, 0xfe, 
 	} ;
+	
+	const unsigned char expected[] =
+	{
+		0x01, 0x00, 0x10, 0x00, 0x01, 0x02, 0x65, 0x00, 
+		0x01, 0x03, 0x78, 0x00, 0x01, 0x04, 0x54, 0x00, 
+		0x01, 0x05, 0x07, 0x00, 0x01, 0x00, 0x74, 0x00, 
+		0x02, 0x00, 0x17, 0x00, 0x02, 0x00, 0x17, 0x01, 
+		0x02, 0x00, 0x17, 0x02, 0x01, 0x01, 0xc2, 0x00,
+	} ;
+	
 	std::auto_ptr<StreamFilter> src(
 		new BufferedFilter( Begin(data), End(data) ) ) ;
 	
@@ -71,16 +81,7 @@ void PredictFilterTest::Test( )
 	std::vector<unsigned char> raw( 100 ) ;
 	std::size_t count = subject.Read( &raw[0], raw.size() ) ;
 	PDFUT_ASSERT_EQUAL( count, 40U ) ;
-	
-	for ( std::size_t i = 0 ; i < count ; i++ )
-	{
-		if ( i % 8 == 0 && i > 0 )
-			std::cout << std::endl ;
-		std::cout << "0x" << std::hex << std::setw(2) << std::setfill('0') 
-			<< (int)raw[i] << ", " ;
-	}
-	std::cout << std::endl ;
-
+	CPPUNIT_ASSERT( std::memcmp( &raw[0], expected, 40U ) == 0 ) ;
 }
 
 } // end of namespace

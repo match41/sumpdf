@@ -32,6 +32,7 @@
 #include "RawFilter.hh"
 #include "InStreamBufAdaptor.hh"
 #include "OutStreamBufAdaptor.hh"
+#include "PredictFilter.hh"
 
 #include "core/Array.hh"
 #include "core/Dictionary.hh"
@@ -279,7 +280,20 @@ void Stream::Swap( Stream& str )
 void Stream::CreateFilter( const Name& filter, const Object& parms )
 {
 	if ( filter == Name( "FlateDecode" ) )
+	{
 		m_data->filter.reset( new DeflateFilter( m_data->filter ) ) ;
+		
+		if ( parms.Is<Dictionary>() )
+		{
+			const Dictionary& dict = parms.As<Dictionary>() ;
+			std::cout << "decode param is " << dict << std::endl ;
+			
+			if ( dict["Predictor"].Is<int>() &&
+				 dict["Predictor"].As<int>() > 10 )
+				m_data->filter.reset( new PredictFilter(
+					m_data->filter, dict["Columns"].As<int>() ) ) ;
+		}
+	}
 	else
 		m_data->filter.reset( new MockStreamFilter( m_data->filter, filter ) ) ;
 }
