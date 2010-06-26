@@ -134,7 +134,7 @@ Stream::Stream( std::streambuf *file, std::streamoff offset,
 	
 	m_data->filter.reset( new RawFilter( file, offset, m_self["Length"] ) ) ;
 
-	ApplyFilter( dict["Filter"] ) ;
+	ApplyFilter( dict["Filter"], dict["DecodeParms"] ) ;
 
 	PDF_ASSERT( m_data->filter->GetInner()->Length() == m_self["Length"] ) ;
 	PDF_ASSERT( m_self["Filter"].Is<Array>() ||
@@ -158,7 +158,7 @@ Stream::Stream( std::vector<unsigned char>& data, const Object& filter )
 	m_data->dirty = true ;
 
 	m_data->filter.reset( new BufferedFilter( data ) ) ;
-	ApplyFilter( filter ) ;
+	ApplyFilter( filter, Object::NullObj() ) ;
 	InitFilter( ) ;
 	
 	PDF_ASSERT( filter == m_data->filter->NameChain() ) ;
@@ -193,20 +193,25 @@ void Stream::InitFilter( )
 
 	Object types other than Name and Array will be ignored.
 */
-void Stream::ApplyFilter( const Object& filter )
+void Stream::ApplyFilter( const Object& filter, const Object& parms )
 {
 	PDF_ASSERT( m_data->filter.get() != 0 ) ;
 
-	if ( filter.Is<Array>() )
+	if ( filter.Is<Array>() && (parms.Is<Array>() || parms.Is<void>()) )
 	{
-		const Array& filters = filter.As<Array>() ;
-		std::for_each(
-			filters.begin( ),
-			filters.end( ),
-		    boost::bind( &Stream::CreateFilter, this, _1 ) ) ;
+		const Array& filters	= filter.As<Array>() ;
+		const Array& parms_arr	= parms.Is<Array>()
+			? parms.As<Array>()
+			: Array( filters.size() ) ;
+
+		if ( filters.size() != parms_arr.size() )
+			throw ParseError( "filter and parameters size mismatch" ) ;
+		
+		for ( std::size_t i = 0 ; i < filters.size() ; i++ )
+			CreateFilter( filters[i], parms_arr[i] ) ;
 	}
-	else if ( filter.Is<Name>() )
-		CreateFilter( filter ) ;
+	else if ( filter.Is<Name>() && (parms.Is<Dictionary>() || parms.Is<void>()))
+		CreateFilter( filter, parms ) ;
 }
 
 /**	\brief	Get the stream dictionary.
@@ -271,7 +276,7 @@ void Stream::Swap( Stream& str )
 	std::swap( m_data, str.m_data ) ;
 }
 
-void Stream::CreateFilter( const Name& filter )
+void Stream::CreateFilter( const Name& filter, const Object& parms )
 {
 	if ( filter == Name( "FlateDecode" ) )
 		m_data->filter.reset( new DeflateFilter( m_data->filter ) ) ;
