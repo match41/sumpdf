@@ -28,7 +28,7 @@
 #include "graphics/GraphicsVisitor.hh"
 #include "graphics/Path.hh"
 #include "graphics/Text.hh"
-#include "graphics/TextLine.hh"
+#include "graphics/RealTextLine.hh"
 
 #include "page/ContentStream.hh"
 #include "page/MockResources.hh"
@@ -86,14 +86,11 @@ void ContentStreamTest::TestCID( )
 				Matrix::Translation( 72.0,  769.89) ) ;
 		
 			PDFUT_ASSERT_EQUAL( text->Count(), 7U ) ;
-			Text::iterator i = text->begin() ;
-			CPPUNIT_ASSERT( i != text->end() ) ;
+			
+			TextLine *i = text->At(0) ;
 			PDFUT_ASSERT_EQUAL( i->Transform(),
 				Matrix::Translation( 61.77, -63.35) ) ;
 			PDFUT_ASSERT_EQUAL( i->Text(), std::wstring(L"1SectionTitle") ) ;
-			
-			++i ;
-			CPPUNIT_ASSERT( i != text->end() ) ;
 		}
 	} v ;
 

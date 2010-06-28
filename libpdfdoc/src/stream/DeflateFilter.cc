@@ -31,6 +31,7 @@
 #include "core/Array.hh"
 #include "core/Name.hh"
 #include "util/Debug.hh"
+#include "util/Util.hh"
 
 #include <boost/format.hpp>
 
@@ -81,6 +82,10 @@ std::size_t DeflateFilter::Read( unsigned char *data, std::size_t size )
 	    {
 			m_decomp.buf.resize( m_buf_size ) ;
 			m_decomp.buf.resize( m_src->Read( &m_decomp.buf[0], m_buf_size ) ) ;
+			
+			std::cout << "input:\n" ;
+			PrintHex( std::cout, &m_decomp.buf[0], m_decomp.buf.size() ) ;
+			std::cout << "---" << std::endl ;
 
 		    // no more input to be read. return number of byte read so far
 		    if ( m_decomp.buf.empty( ) )
@@ -108,6 +113,8 @@ std::size_t DeflateFilter::Read( unsigned char *data, std::size_t size )
 		}
 		else
 		{
+			PrintHex( std::cerr, m_decomp.z.next_in, m_decomp.z.avail_in ) ;
+		
 			throw StreamError( boost::format( "inflate() error %2%: %1%" )
 				% (m_comp.z.msg != 0  ? std::string( m_comp.z.msg ) :
 					"unknown" )

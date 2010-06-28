@@ -22,7 +22,7 @@
 #include "libpdfdoc.hh"
 #include "font/Font.hh"
 #include "graphics/Text.hh"
-#include "graphics/TextLine.hh"
+#include "graphics/RealTextLine.hh"
 #include "graphics/TextState.hh"
 #include "page/Page.hh"
 

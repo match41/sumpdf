@@ -27,7 +27,7 @@
 
 #include "core/Array.hh"
 #include "core/Name.hh"
-#include "graphics/TextLine.hh"
+#include "graphics/RealTextLine.hh"
 #include "graphics/TextState.hh"
 #include "util/Matrix.hh"
 
@@ -54,7 +54,7 @@ void TextLineTest::TestPrint( )
 	Name fname = res.AddFont( &font ) ;
 	
 	TextState ts( 12.0, &font ) ;
-	TextLine subject( (GraphicsState(ts)), (Matrix()) ) ;
+	RealTextLine subject( (GraphicsState(ts)), (Matrix()) ) ;
 	subject.AppendText( L"hello---" ) ;
 	subject.AppendSpace( 100 ) ;
 	subject.AppendText( L"world???" ) ;

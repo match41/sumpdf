@@ -29,6 +29,8 @@
 
 #define LIBPDFDOC_API 
 
+#include <string>
+
 /**	\mainpage	libpdfdoc Library Documentation
 
 	libpdfdoc is a library for reading and writing PDF files. It is part of the
@@ -74,10 +76,12 @@ delete doc ;
 namespace pdf {
 
 class Doc ;
+class GraphicsState ;
+class Matrix ;
 class Page ;
 class Path ;
 class Text ;
-class GraphicsState ;
+class TextLine ;
 
 LIBPDFDOC_API Doc*  CreateDoc( ) ;
 
@@ -85,6 +89,10 @@ LIBPDFDOC_API const char* Version( ) ;
 
 LIBPDFDOC_API Text* CreateText( const GraphicsState& ts ) ;
 LIBPDFDOC_API Path* CreatePath( const GraphicsState& ts ) ;
+LIBPDFDOC_API TextLine* CreateTextLine(
+	const GraphicsState& 	state,		
+	const Matrix&			transform,
+	const std::wstring&		text		= std::wstring() ) ;
 
 } // end of namespace
 

@@ -23,8 +23,8 @@
     \author	Nestal Wan
 */
 
-#ifndef __PDF_PAGELOADER_HH_EADER_INCLUDED__
-#define __PDF_PAGELOADER_HH_EADER_INCLUDED__
+#ifndef __PDF_PAGELOADER_HEADER_INCLUDED__
+#define __PDF_PAGELOADER_HEADER_INCLUDED__
 
 #include <graphics/GraphicsVisitor.hh>
 
@@ -52,7 +52,7 @@ public :
 	void VisitGraphicsLink( ExtGraphicsLink<GraphicsGroup> *g ) ;
 
 private :
-	void LoadTextLine( QGraphicsItem *parent, const TextLine& line ) ;
+	void LoadTextLine( QGraphicsItem *parent, const TextLine *line ) ;
 	void SetTransform( Graphics *gfx, QGraphicsItem *go ) ;
 
 private :

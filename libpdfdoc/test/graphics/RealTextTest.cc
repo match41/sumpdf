@@ -85,7 +85,7 @@ void RealTextTest::TestTdCmd( )
 	PDFUT_ASSERT_EQUAL( t.front().Transform(), Matrix::Translation(400,1100) ) ;
 	
 	RealText exp( gs ) ;
-	exp.back() = TextLine( gs, Matrix::Translation(400, 1100) ) ;
+	exp.back() = RealTextLine( gs, Matrix::Translation(400, 1100) ) ;
 	PDFUT_ASSERT_EQUAL( t, exp ) ;
 }
 
@@ -166,7 +166,7 @@ void RealTextTest::TestTJ( )
 	PDFUT_ASSERT_EQUAL( t.Count(), 1U ) ;
 	PDFUT_ASSERT_EQUAL( t.front().Format(), gs ) ;
 	
-	const TextLine& line = t.front() ;
+	const RealTextLine& line = t.front() ;
 	PDFUT_ASSERT_EQUAL( line.Width(), 60.0 ) ;
 
 	// double font size and a new TextLine object should be generated
@@ -236,7 +236,7 @@ void RealTextTest::TestName( )
 
 	PDFUT_ASSERT_EQUAL( subject.Count(), 1U ) ;
 	
-	TextLine line = subject.front() ;
+	RealTextLine line = subject.front() ;
 	PDFUT_ASSERT_EQUAL( line.Format(), gs ) ;
 	PDFUT_ASSERT_EQUAL( line.Transform(), Matrix() ) ;
 	

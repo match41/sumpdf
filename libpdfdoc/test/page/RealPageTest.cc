@@ -171,7 +171,7 @@ void RealPageTest::TestDecode( )
 			CPPUNIT_ASSERT( t != 0 ) ;
 			PDFUT_ASSERT_EQUAL( t->Count(), 2U ) ;
 			
-			const pdf::Matrix& m = t->begin()->Transform() ;
+			const pdf::Matrix& m = t->At(0)->Transform() ;
 			if ( m_count == 0 )
 			{
 				PDFUT_ASSERT_EQUAL( m.Dx(), 120 ) ;

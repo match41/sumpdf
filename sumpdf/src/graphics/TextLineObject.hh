@@ -31,13 +31,15 @@
 #include <QRectF>
 
 #include <graphics/CharVisitor.hh>
+#include <graphics/GraphicsState.hh>
 
-#include <graphics/TextLine.hh>
+#include <memory>
 
 namespace pdf {
 
 class Matrix ;
 class GraphicsState ;
+class TextLine ;
 
 ///	brief description
 /**	The GlyphGroup class represents
@@ -47,7 +49,14 @@ class TextLineObject :
 	private CharVisitor
 {
 public :
-	explicit TextLineObject( const TextLine& blk, QGraphicsItem *parent = 0 ) ;
+	explicit TextLineObject( const TextLine *blk, QGraphicsItem *parent = 0 ) ;
+	TextLineObject(
+		const GraphicsState&	format,
+		const Matrix&			transform,
+		const QString&			text,
+		QGraphicsItem 			*parent = 0 ) ;
+
+	~TextLineObject( ) ;
 
 	void OnChar(
 		wchar_t 			ch,
@@ -57,7 +66,7 @@ public :
 
 	GraphicsState Format( ) const ;
 	
-	TextLine GetLine( ) const ;
+	std::auto_ptr<TextLine> GetLine( ) const ;
 	
 	// virtual functions for QGraphicsItem
 	QRectF boundingRect( ) const ;
@@ -67,8 +76,8 @@ public :
 		QWidget 						*widget ) ; 
 	
 private :
-	TextLine		m_line ;
-	QRectF			m_bound ;
+	std::auto_ptr<TextLine>	m_line ;
+	QRectF					m_bound ;
 } ;
 
 } // end of namespace

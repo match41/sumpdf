@@ -38,7 +38,7 @@
 #include "font/FontSubsetInfo.hh"
 #include "graphics/GraphicsVisitor.hh"
 #include "graphics/Text.hh"
-#include "graphics/TextLine.hh"
+#include "graphics/RealTextLine.hh"
 #include "graphics/TextState.hh"
 
 #include "page/RealPage.hh"
@@ -255,11 +255,14 @@ std::vector<wchar_t> Catalog::FontSubset::GetUsedChars(const BaseFont *f) const
 
 void Catalog::FontSubset::VisitText( Text *text )
 {
-	for ( Text::iterator i = text->begin() ; i != text->end() ; ++i )
+//	for ( Text::iterator i = text->begin() ; i != text->end() ; ++i )
+	for ( std::size_t i = 0 ; i < text->Count() ; i++ )
 	{
-		const std::wstring& text = i->Text() ;
+		TextLine *line = text->At( i ) ;
+	
+		const std::wstring& text = line->Text() ;
 		const BaseFont* font = static_cast<BaseFont*>(
-			i->Format().Text().FontFace() ) ;
+			line->Format().Text().FontFace() ) ;
 		
 		CharSet& cs = m_used_chars[font] ;
 		cs.insert( text.begin(), text.end() ) ;

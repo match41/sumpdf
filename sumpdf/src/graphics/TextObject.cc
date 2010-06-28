@@ -29,11 +29,13 @@
 #include "TextLineObject.hh"
 #include "Util.hh"
 
+#include <libpdfdoc.hh>
 #include <graphics/Text.hh>
 #include <graphics/TextLine.hh>
 #include <graphics/TextState.hh>
 #include <graphics/Color.hh>
 #include <util/Debug.hh>
+#include <util/Matrix.hh>
 
 #include <QColor>
 #include <QDebug>
@@ -103,12 +105,16 @@ public :
 		double offset = 0 ;
 		foreach( QChar ch, item.text() )
 		{
-			TextLine line( gs,
-				Matrix::Translation( pos.x() + offset, -pos.y() ), 
-				ToWStr( QString(ch) ) ) ;
+//			std::auto_ptr<TextLine> line( CreateTextLine( gs,
+//				Matrix::Translation( pos.x() + offset, -pos.y() ), 
+//				ToWStr( QString(ch) ) ) ) ;
 
+			new TextLineObject( gs,
+				Matrix::Translation( pos.x() + offset, -pos.y() ),
+				QString(ch),
+				m_owner ) ;
+			
 			offset += met.width(ch) ;
-			new TextLineObject( line, m_owner ) ;
 		}
 	}
 	
@@ -248,13 +254,13 @@ Graphics* TextObject::Write( ) const
 		TextLineObject *line = dynamic_cast<TextLineObject*>( item ) ;
 		PDF_ASSERT( line->Format().FontFace() != 0 ) ;
 
-		TextLine tline( line->GetLine() ) ;
-		tline.SetTransform(
+		std::auto_ptr<TextLine> tline = line->GetLine() ;
+		tline->SetTransform(
 			Matrix::Translation( x(), y() ) * 
 			Matrix::Translation( line->x(), line->y() ) *
-			tline.Transform() ) ;
+			tline->Transform() ) ;
 
-		t->AddLine( tline ) ;
+		t->AddLine( tline.get() ) ;
 	}
 	
 	return t ;
