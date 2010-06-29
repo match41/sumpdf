@@ -33,7 +33,7 @@
 #include "graphics/Color.hh"
 #include "graphics/GraphicsState.hh"
 #include "graphics/Text.hh"
-#include "graphics/TextLine.hh"
+#include "graphics/RealTextLine.hh"
 
 #include "mock/Assert.hh"
 #include "mock/MockGraphicsVisitor.hh"
@@ -88,10 +88,11 @@ void RealDocTest::TestReadColour( )
 			CPPUNIT_ASSERT( text != 0 ) ;
 			CPPUNIT_ASSERT( text->Count() > 0 ) ;
 
-			for ( Text::iterator i = text->begin() ; i != text->end() ; ++i )
-				m_lines.push_back( *i ) ;
+//			for ( Text::iterator i = text->begin() ; i != text->end() ; ++i )
+			for ( std::size_t i = 0 ; i < text->Count() ; i++ )
+				m_lines.push_back( dynamic_cast<const RealTextLine&>(*text->At(i)) ) ;
 		}
-		std::vector<TextLine> m_lines ;
+		std::vector<RealTextLine> m_lines ;
 	} v ;
 	
 	page1->VisitGraphics( &v ) ;

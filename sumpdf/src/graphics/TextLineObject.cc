@@ -48,14 +48,32 @@ namespace pdf {
 
 /**	constructor
 */
-TextLineObject::TextLineObject( const TextLine& blk, QGraphicsItem *parent )
+TextLineObject::TextLineObject( const TextLine *blk, QGraphicsItem *parent )
 	: QAbstractGraphicsShapeItem( parent )
-	, m_line( blk )
+	, m_line( blk->Clone() )
 {
-	m_line.VisitChars( this ) ;
+	m_line->VisitChars( this ) ;
 	m_bound = childrenBoundingRect( ) ;
 	
-	setTransform( ToQtMatrix( m_line.Transform() ) ) ;
+	setTransform( ToQtMatrix( m_line->Transform() ) ) ;
+}
+
+TextLineObject::TextLineObject(
+	const GraphicsState&	format,
+	const Matrix&			transform,
+	const QString&			text,
+	QGraphicsItem 			*parent )
+	: QAbstractGraphicsShapeItem( parent )
+	, m_line( CreateTextLine( format, transform, ToWStr(text) ) )
+{
+	m_line->VisitChars( this ) ;
+	m_bound = childrenBoundingRect( ) ;
+	
+	setTransform( ToQtMatrix( m_line->Transform() ) ) ;
+}
+
+TextLineObject::~TextLineObject( )
+{
 }
 
 void TextLineObject::OnChar(
@@ -67,7 +85,7 @@ void TextLineObject::OnChar(
 	GlyphGraphicsItem *item = new GlyphGraphicsItem( glyph, this ) ;
 
 	// colors
-	QtGraphicsState gs( m_line.Format() ) ;
+	QtGraphicsState gs( m_line->Format() ) ;
 	item->setBrush( gs.Brush() ) ;
 	
 	// set glyph offset
@@ -79,15 +97,18 @@ void TextLineObject::OnChar(
 
 GraphicsState TextLineObject::Format( ) const
 {
-	return m_line.Format() ;
+	PDF_ASSERT( m_line.get() != 0 ) ;
+	return m_line->Format() ;
 }
 
-TextLine TextLineObject::GetLine( ) const
+// TODO: create text line by the children glyphs
+std::auto_ptr<TextLine> TextLineObject::GetLine( ) const
 {
-	PDF_ASSERT( m_line.Format().FontFace() != 0 ) ;
+	PDF_ASSERT( m_line.get() != 0 ) ;
+	PDF_ASSERT( m_line->Format().FontFace() != 0 ) ;
 	
-	TextLine line( m_line ) ;
-	line.SetTransform( Matrix::Translation( x(), y() ) * m_line.Transform() ) ;
+	std::auto_ptr<TextLine> line( m_line->Clone() ) ;
+	line->SetTransform( Matrix::Translation( x(), y() ) * m_line->Transform() );
 	return line ;
 }
 

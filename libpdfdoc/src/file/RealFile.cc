@@ -277,10 +277,16 @@ Stream RealFile::ReadStream( Dictionary& dict )
 	char ch ;
 	if ( !m_in->get( ch ) || ( ch != '\r' && ch != '\n' ) )
 		throw ParseError( "no newline after stream" ) ;
-	
+
+std::cout << "char after stream = " << (int)ch << std::endl ;
+
 	if ( ch == '\r' && m_in->peek() == '\n' )
 		m_in->get( ch ) ;
-	
+
+std::cout << "char after stream2 = " << (int)ch << std::endl ;
+
+std::cout << "char after stream3 = " << (int)m_in->peek() << std::endl ;
+
 	// Length may be indirect object
 	Object length = dict["Length"] ;
 	if ( length.Is<Ref>() )
@@ -289,6 +295,8 @@ Stream RealFile::ReadStream( Dictionary& dict )
 		dict.Set( "Length", ReadObj( length ) ) ;
 		m_in->seekg( pos ) ;
 	}
+
+std::cout << "char after stream3 = " << (int)m_in->peek() << std::endl ;
 
 	return Stream( m_in->rdbuf(), m_in->tellg( ), dict ) ;
 }
@@ -353,14 +361,7 @@ void RealFile::ReadXRefStream( std::size_t offset, Dictionary& trailer )
 	std::vector<unsigned char> raw ;
 	s.CopyData( raw ) ;
 	
-	for ( std::size_t i = 0 ; i < raw.size() ; i++ )
-	{
-		if ( i % 8 == 0 && i > 0 )
-			std::cout << std::endl ;
-		std::cout << "0x" << std::hex << std::setw(2) << std::setfill('0') 
-			<< (int)raw[i] << ", " ;
-	}
-	std::cout << std::endl ;
+	PrintHex( std::cout, &raw[0], raw.size() ) ;
 	
 	throw ParseError( "PDF 1.5 object streams are not supported yet" ) ;
 }

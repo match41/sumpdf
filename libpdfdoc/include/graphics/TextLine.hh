@@ -17,77 +17,53 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**
-    \file	TextLine.hh
+/**	\file	TextLine.hh
     \brief	definition the TextLine class
-    \date	Jan 4, 2010
+    \date	Jun 28, 2010
     \author	Nestal Wan
 */
 
 #ifndef __PDF_TEXTLINE_HEADER_INCLUDED__
 #define __PDF_TEXTLINE_HEADER_INCLUDED__
 
-#include "libpdfdoc.hh"
-
-#include "GraphicsState.hh"
-#include "util/Matrix.hh"
-
-#include <iosfwd>
-#include <map>
 #include <string>
-#include <vector>
 
 namespace pdf {
 
 class CharVisitor ;
-
-class RealResources ;
+class GraphicsState ;
+class Matrix ;
 
 ///	brief description
-/**	\ingroup graphics
-
-	The TextLine class represent a unit of text. Within a text line, the text
-	matrix (e.g. position) and the text state will not change. In other words,
-	the text line contains the text, matrix and the text state. 
+/**	\internal
+	The TextLine class represents
 */
-class LIBPDFDOC_API TextLine
+class TextLine
 {
 public :
-	explicit TextLine(
-		const GraphicsState& 	state		= GraphicsState(),		
-		const Matrix&			transform	= Matrix(),
-		const std::wstring&		text		= std::wstring() ) ;
+	virtual ~TextLine( ) ;
 
-	// uses default generated copy constructor
+	virtual TextLine* Clone( ) const = 0 ;
 
-	const Matrix& Transform() const ;
-	void SetTransform( const Matrix& t ) ;
-	bool IsEmpty( ) const ;
+	virtual const Matrix& Transform() const = 0 ;
+	virtual void SetTransform( const Matrix& t ) = 0 ;
+	virtual bool IsEmpty( ) const = 0 ;
 
-	void AppendText( const std::wstring& text ) ;
+	virtual void AppendText( const std::wstring& text ) = 0 ;
 
-	void AppendSpace( double width ) ;
-
-	std::ostream& Print(
-		std::ostream& 	os,
-		Matrix&			current,
-		GraphicsState& 	prev_gs,
-		ResourcesDict	*res ) const ;
-
-	bool operator==( const TextLine& rhs ) const ;
-	bool operator!=( const TextLine& rhs ) const ;
+	virtual void AppendSpace( double width ) = 0 ;
 
 	/// Returns the text state of the text line.
-	const GraphicsState& Format() const ;
-	void SetFormat( const GraphicsState& fmt ) ;
+	virtual const GraphicsState& Format() const = 0 ;
+	virtual void SetFormat( const GraphicsState& fmt ) = 0 ;
 
 	///	Returns the unicode string of the text line.
-	const std::wstring& Text() const ;
+	virtual const std::wstring& Text() const = 0 ;
 	
 	///	Returns the width of the text line in text space units.
-	double Width( ) const ;
+	virtual double Width( ) const = 0 ;
 	
-	double Height( ) const ;
+	virtual double Height( ) const = 0 ;
 	
 	///	Walkthrough all characters in the text line.
 	/**	This function will call CharVisitor::OnChar() for each character it
@@ -96,42 +72,7 @@ public :
 		\param	v	An implementation of the CharVisitor interface. Its
 					OnChar() member function will be called.
 	*/
-	void VisitChars( CharVisitor *v ) const ;
-	
-	friend std::ostream& operator<<( std::ostream& os, const TextLine& t ) ;
-
-private :
-	std::ostream& PrintText( std::ostream& os ) const ;
-
-	std::string EncodeText(
-		std::wstring::const_iterator first,
-		std::wstring::const_iterator last ) const ;
-
-private :
-	/// The text matrix.
-	Matrix			m_trans ;
-	
-	///	The text state.
-	GraphicsState	m_state ;
-	
-	///	The text string.
-	std::wstring	m_text ;
-
-	///	Represent a space inside the text line.
-	/**	The TJ command can be used to specify a horizontal (or vertical, 
-		depending on text direction) displacement of current text base point.
-	*/
-	struct Space
-	{
-		std::size_t	index ;
-		double		width ;
-	} ;
-	
-	///	A collection of spaces.
-	/**	In this vector, the index field will be monotonically increasing to
-		allow fast binary search.
-	*/
-	std::vector<Space>	m_space ;
+	virtual void VisitChars( CharVisitor *v ) const = 0 ;
 } ;
 
 } // end of namespace

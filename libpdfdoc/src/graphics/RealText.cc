@@ -79,61 +79,41 @@ const RealText::HandlerMap::Map RealText::HandlerMap::m_map(
 /**	constructor
 */
 RealText::RealText( const GraphicsState& gs, const Matrix& ctm )
-	: m_lines( 1, TextLine( gs ) )
+	: m_lines( 1, RealTextLine( gs ) )
 	, m_state( gs )
 	, m_offset( 0 )
 	, m_transform( ctm )
 {
 }
 
-RealText::iterator RealText::begin()
+const RealTextLine* RealText::At( std::size_t idx ) const
 {
-	return m_lines.begin( ) ;
+	return &m_lines[idx] ;
 }
 
-RealText::iterator RealText::end()
+RealTextLine* RealText::At( std::size_t idx )
 {
-	return m_lines.end( ) ;
+	return &m_lines[idx] ;
 }
 
-RealText::const_iterator RealText::begin() const
-{
-	return m_lines.begin( ) ;
-}
-
-RealText::const_iterator RealText::end() const
-{
-	return m_lines.end( ) ;
-}
-
-TextLine& RealText::front()
+RealTextLine& RealText::front()
 {
 	return m_lines.front() ;
 }
 
-TextLine& RealText::back()
+RealTextLine& RealText::back()
 {
 	return m_lines.back() ;
 }
 
-const TextLine& RealText::front() const
+const RealTextLine& RealText::front() const
 {
 	return m_lines.front() ;
 }
 
-const TextLine& RealText::back() const
+const RealTextLine& RealText::back() const
 {
 	return m_lines.back() ;
-}
-
-const TextLine& RealText::at( std::size_t idx ) const
-{
-	return m_lines.at(idx) ;
-}
-
-TextLine& RealText::at( std::size_t idx )
-{
-	return m_lines.at(idx) ;
 }
 
 void RealText::OnCommand( ContentOp& op, const ResourcesDict *res )
@@ -146,7 +126,7 @@ void RealText::OnCommand( ContentOp& op, const ResourcesDict *res )
 	
 	else if ( GraphicsState::IsGSCommand( op.Operator() ) )
 	{
-		TextLine& current = m_lines.back() ;
+		RealTextLine& current = m_lines.back() ;
 		
 		// state changed
 		bool is_changed = m_state.OnCommand( op, res ) ;
@@ -158,14 +138,19 @@ void RealText::OnCommand( ContentOp& op, const ResourcesDict *res )
 			else
 			{
 				Matrix temp = m_text_mat ;
-				m_lines.push_back( TextLine(
+				m_lines.push_back( RealTextLine(
 					m_state, temp.Translate( m_offset, 0 ) ) ) ;
 			}
 		}
 	}
 }
 
-void RealText::AddLine( const TextLine& line )
+void RealText::AddLine( const TextLine *line )
+{
+	AddLine( dynamic_cast<const RealTextLine&>(*line) ) ;
+}
+
+void RealText::AddLine( const RealTextLine& line )
 {
 	PDF_ASSERT( !m_lines.empty() ) ;
 
@@ -179,7 +164,7 @@ void RealText::AddLine( const TextLine& line )
 void RealText::AddLine( double x, double y, const std::wstring& text )
 {
 	Matrix temp = m_text_mat ;
-	TextLine line( m_state, temp.Translate(x,y) ) ;
+	RealTextLine line( m_state, temp.Translate(x,y) ) ;
 	line.AppendText( text ) ;
 	return AddLine( line ) ;
 }
@@ -209,7 +194,7 @@ void RealText::Print(
 	std::for_each(
 		m_lines.begin(),
 		m_lines.end(),
-		bind( &TextLine::Print, _1, ref(os), ref(mat), ref(gs), res ) ) ;
+		bind( &RealTextLine::Print, _1, ref(os), ref(mat), ref(gs), res ) ) ;
 
 	os << "ET\n" ;
 }
@@ -219,9 +204,9 @@ std::ostream& operator<<( std::ostream& os, const RealText& t )
 {
 	os << "<RealText>\n" ;
 	std::copy(
-		t.begin(),
-		t.end(),
-		std::ostream_iterator<TextLine>(os, "\n" ) ) ;
+		t.m_lines.begin(),
+		t.m_lines.end(),
+		std::ostream_iterator<RealTextLine>(os, "\n" ) ) ;
 	os << "</RealText>\n" ;
 	return os ;
 }
@@ -233,7 +218,7 @@ void RealText::OnTd( ContentOp& op, const ResourcesDict * )
 		m_text_mat.Translate( op[0], op[1] ) ;
 		m_offset = 0 ;
 
-		AddLine( TextLine( m_state, m_text_mat ) ) ;
+		AddLine( RealTextLine( m_state, m_text_mat ) ) ;
 	}
 }
 
@@ -247,7 +232,7 @@ void RealText::OnTD( ContentOp& op, const ResourcesDict * )
 		m_text_mat.Translate( op[0], ty ) ; 
 		m_offset = 0 ;
 		
-		AddLine( TextLine( m_state, m_text_mat ) ) ;
+		AddLine( RealTextLine( m_state, m_text_mat ) ) ;
 	}
 }
 
@@ -261,7 +246,7 @@ void RealText::OnTm( ContentOp& op, const ResourcesDict * )
 		
 		m_offset = 0.0 ;
 		
-		AddLine( TextLine( m_state, m_text_mat ) ) ;
+		AddLine( RealTextLine( m_state, m_text_mat ) ) ;
 	}
 }
 
@@ -270,7 +255,7 @@ void RealText::OnTstar( ContentOp& , const ResourcesDict * )
 	m_text_mat.Translate( 0, -m_state.Text().Leading() ) ;
 	m_offset = 0 ;
 	
-	AddLine( TextLine( m_state, m_text_mat ) ) ;
+	AddLine( RealTextLine( m_state, m_text_mat ) ) ;
 }
 
 ///	Shows a Text string
@@ -280,7 +265,7 @@ void RealText::OnTj( ContentOp& op, const ResourcesDict * )
 	
 	if ( op.Count() >= 1 )
 	{
-		TextLine& current = m_lines.back() ;
+		RealTextLine& current = m_lines.back() ;
 		
 		// must set the font properly before showing text
 		Font *font = current.Format().FontFace() ;
@@ -326,7 +311,7 @@ void RealText::OnTJ( ContentOp& op, const ResourcesDict * )
 	PDF_ASSERT( !m_lines.empty() ) ;
 	
 	// current line
-	TextLine& current = m_lines.back() ;
+	RealTextLine& current = m_lines.back() ;
 
 	double offset = 0.0 ;
 

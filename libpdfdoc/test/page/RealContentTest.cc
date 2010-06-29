@@ -62,13 +62,13 @@ void RealContentTest::TestWrite( )
 	
 	Text *t = subject.AddText( ts ) ;
 	Matrix tm( 1,0,0,1, 100, 200 ) ;
-	TextLine line( 0, 0, (GraphicsState(ts)), tm ) ;
+	RealTextLine line( 0, 0, (GraphicsState(ts)), tm ) ;
 	line.AppendText( L"Hello World!\n" ) ;
 	line.AppendText( L"This is line 2\n" ) ;
 	t->AddLine( line ) ;
 
 	Matrix tm2( 1,0,0,1, 100, 400 ) ;
-	TextLine line2( 0, 0, (GraphicsState(ts)), tm2 ) ;
+	RealTextLine line2( 0, 0, (GraphicsState(ts)), tm2 ) ;
 	line2.AppendText( L"Hello World2!\n" ) ;
 	line2.AppendText( L"This is line 3\n" ) ;
 	t->AddLine( line2 ) ;
@@ -96,7 +96,7 @@ void RealContentTest::TestRead( )
 	TextState ts ;
 	ts.SetFont( 14.0, &font ) ;
 	Matrix tm( 1,0,0,1, 0, 0 ) ;
-	TextLine tl( 0, 0, (GraphicsState(ts)), tm ) ;
+	RealTextLine tl( 0, 0, (GraphicsState(ts)), tm ) ;
 	tl.AppendText( L"Hello World!" ) ;
 	
 	const Text *text = dynamic_cast<const Text*>( subject.Item(0) ) ;

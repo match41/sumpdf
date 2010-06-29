@@ -30,7 +30,7 @@
 
 #include "core/Token.hh"
 #include "graphics/GraphicsState.hh"
-#include "graphics/TextLine.hh"
+#include "graphics/RealTextLine.hh"
 
 #include <map>
 
@@ -58,22 +58,17 @@ public :
 		ResourcesDict	*res,
 		GraphicsState&	gs ) const ;
 
-	iterator begin() ;
-	iterator end() ;
+	const RealTextLine* At( std::size_t idx ) const ;
+	RealTextLine* At( std::size_t idx ) ;
 	
-	const_iterator begin() const ;
-	const_iterator end() const ;
+	RealTextLine& front() ;
+	RealTextLine& back() ;
+	const RealTextLine& front() const ;
+	const RealTextLine& back() const ;
 	
-	TextLine& front() ;
-	TextLine& back() ;
-	TextLine& at( std::size_t idx ) ;
-	const TextLine& front() const ;
-	const TextLine& back() const ;
-	const TextLine& at( std::size_t idx ) const ;
-
 	std::size_t Count( ) const ;
 	
-	void AddLine( const TextLine& line ) ;
+	void AddLine( const TextLine *line ) ;
 	void AddLine( double x, double y, const std::wstring& text ) ;
 	
 	void Visit( GraphicsVisitor *visitor ) ;
@@ -87,6 +82,8 @@ public :
 	void Transform( const Matrix& mat ) ;
 
 private :
+	void AddLine( const RealTextLine& line ) ;
+	
 	/// command handler
 	struct HandlerMap ;
 
@@ -104,9 +101,11 @@ private :
 	
 	std::wstring DecodeString( const std::string& s, Font *font ) ;
 
+	friend std::ostream& operator<<( std::ostream& os, const RealText& t ) ;
+
 private :
 	///	Lines inside this text object
-	std::vector<TextLine>	m_lines ;
+	std::vector<RealTextLine>	m_lines ;
 	
 	///	Current graphics state
 	GraphicsState	m_state ;
@@ -121,8 +120,6 @@ private :
 	
 	Matrix			m_transform ;
 } ;
-
-std::ostream& operator<<( std::ostream& os, const RealText& t ) ;
 
 } // end of namespace
 

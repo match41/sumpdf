@@ -29,6 +29,7 @@
 #include "RealDoc.hh"
 #include "graphics/RealPath.hh"
 #include "graphics/RealText.hh"
+#include "graphics/RealTextLine.hh"
 
 namespace pdf {
 
@@ -61,5 +62,14 @@ Path* CreatePath( const GraphicsState& gs )
 {
 	return new RealPath( gs ) ;
 }
+
+TextLine* CreateTextLine(
+	const GraphicsState& 	state,		
+	const Matrix&			transform,
+	const std::wstring&		text )
+{
+	return new RealTextLine( state, transform, text ) ;
+}
+
 
 } // end of namespace

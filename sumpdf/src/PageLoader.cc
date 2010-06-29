@@ -37,6 +37,7 @@
 #include <graphics/PathSegment.hh>
 #include <graphics/Text.hh>
 #include <util/Debug.hh>
+#include <util/Matrix.hh>
 
 // Qt headers
 #include <QGraphicsScene>
@@ -65,13 +66,15 @@ void PageLoader::VisitText( Text *text )
 	g->setTransform( ToQtMatrix( text->Transform() ) ) ;
 	SetTransform( text, g ) ;
 	
-	std::for_each( text->begin(), text->end(),
-		boost::bind( &PageLoader::LoadTextLine, this, g, _1 ) ) ;
+//	std::for_each( text->begin(), text->end(),
+//		boost::bind( &PageLoader::LoadTextLine, this, g, _1 ) ) ;
+	for ( std::size_t i = 0 ; i < text->Count() ; i++ )
+		LoadTextLine( g, text->At(i) ) ;
 	
 	m_scene->addItem( g ) ;
 }
 
-void PageLoader::LoadTextLine( QGraphicsItem *parent, const TextLine& line )
+void PageLoader::LoadTextLine( QGraphicsItem *parent, const TextLine *line )
 {
 	PDF_ASSERT( m_scene != 0 ) ;
 	

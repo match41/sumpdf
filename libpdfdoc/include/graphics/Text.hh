@@ -46,26 +46,19 @@ class GraphicsVisitor ;
 class Text : virtual public Graphics
 {
 public :
-	typedef	std::vector<TextLine>::iterator			iterator ;
-	typedef	std::vector<TextLine>::const_iterator	const_iterator ;
-
-public :
 	virtual ~Text( ) ;
 
 	///	\name Iterator access members
 	//@{
 	///	Iterator access to the underlying text lines
-	virtual iterator begin() = 0 ;
-	virtual iterator end() = 0 ;
-	
-	virtual const_iterator begin() const = 0 ;
-	virtual const_iterator end() const = 0 ;
+	virtual const TextLine* At( std::size_t idx ) const = 0 ;
+	virtual TextLine* At( std::size_t idx ) = 0 ;
 	//@}
 	
 	virtual std::size_t Count( ) const = 0 ;
 	
 	///	Add a new line to the text object.
-	virtual void AddLine( const TextLine& line ) = 0 ;
+	virtual void AddLine( const TextLine *line ) = 0 ;
 	
 	/// Add a new line with coordinate and text.
 	virtual void AddLine( double x, double y, const std::wstring& text ) = 0 ;

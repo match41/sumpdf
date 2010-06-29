@@ -106,6 +106,7 @@ set( GRAPICS_HDRS	${GRAPICS_DIR}/RealText.hh
 					${GRAPICS_DIR}/RealPath.hh
 					${GRAPICS_DIR}/RealImage.hh
 					${GRAPICS_DIR}/XObject.hh
+					${GRAPICS_DIR}/RealTextLine.hh
 					${GRAPICS_DIR}/RealGraphicsGroup.hh
 					${GRAPICS_DIR}/RealColorSpace.hh )
 
@@ -244,6 +245,7 @@ set( GRAPICS_SRCS	${GRAPICS_DIR}/Graphics.cc
 					${GRAPICS_DIR}/RealGraphicsGroup.cc
 					${GRAPICS_DIR}/CharVisitor.cc
 					${GRAPICS_DIR}/TextLine.cc
+					${GRAPICS_DIR}/RealTextLine.cc
 					${GRAPICS_DIR}/TextState.cc
 					${GRAPICS_DIR}/Color.cc
 					${GRAPICS_DIR}/ColorSpace.cc

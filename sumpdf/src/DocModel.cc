@@ -269,12 +269,12 @@ void DocModel::AddText(
 	gs.Text().ChangeFont( size, f ) ;
 	gs.FillColor(FromQColor(c));	// set text color
 
-	TextLine line( gs,
-		Matrix::Translation( pos.x(), pos.y() ), 
-		ToWStr( text ) ) ;
+//	std::auto_ptr<TextLine> line( CreateTextLine( gs,
+//		Matrix::Translation( pos.x(), pos.y() ), 
+//		ToWStr( text ) ) ) ;
 
 	TextObject *to = new TextObject ;
-	new TextLineObject( line, to ) ;
+	new TextLineObject( gs, Matrix::Translation(pos.x(), pos.y()), text, to ) ;
 
 	m_pages[m_current_page]->addItem( to ) ;
 }
