@@ -55,6 +55,7 @@ RealDoc::RealDoc( )
 	: m_catalog( new Catalog( m_fonts.Database() ) )
 {
 	AppendPage( ) ;
+	m_info.SetCreator( "libpdfdoc " VERSION ) ;
 }
 
 /**	The destructor will delete all the elements contained. It traverses the

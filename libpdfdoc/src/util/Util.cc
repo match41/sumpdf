@@ -28,7 +28,7 @@
 
 #include <cassert>
 
-#ifndef __GNUC__
+#ifdef __GNUC__
 #include <cxxabi.h>
 #endif
 
@@ -40,7 +40,7 @@ namespace pdf {
 
 std::string Demangle( const char *name )
 {
-#ifndef __GNUC__
+#ifdef __GNUC__
 	assert( name != 0 ) ;
 
 	char *cname = abi::__cxa_demangle( name, 0, 0, 0 ) ;
