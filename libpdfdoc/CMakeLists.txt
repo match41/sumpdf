@@ -422,7 +422,11 @@ SOURCE_GROUP( "font"		FILES ${FONT_SRCS}		${FONT_HDRS} )
 SOURCE_GROUP( "image"		FILES ${IMG_SRCS}  		${IMG_HDRS} )
 SOURCE_GROUP( "stream"		FILES ${STRM_SRCS}		${STRM_HDRS} )
 SOURCE_GROUP( "base"		FILES ${BASE_SRCS}		${BASE_HDRS} )
-SOURCE_GROUP( "include"		FILES ${INCLUDE_HDRS} )
+SOURCE_GROUP( "include"		FILES ${INCLUDE_HDRS}
+							${FONT_INC_HDRS}
+							${PAGE_INC_HDRS}
+							${GFX_INC_HDRS}
+							${UTIL_INC_HDRS} )
 
 ###############################################################################
 # unix specific libraries

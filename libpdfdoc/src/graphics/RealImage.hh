@@ -51,6 +51,7 @@ class RealImage : public Image, public XObject
 public :
 	explicit RealImage( std::istream& is ) ;
 	RealImage( Stream& str, File *file ) ;
+	~RealImage( ) ;
 
 	std::size_t Width( ) const ;
 	std::size_t Height( ) const ;

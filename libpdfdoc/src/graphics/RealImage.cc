@@ -138,6 +138,10 @@ std::cout << "got ID" << std::endl ;
 	std::cout << "premature finish" << std::endl ;
 }
 
+RealImage::~RealImage( )
+{
+}
+
 std::size_t RealImage::Width( ) const
 {
 	return m_width ;
