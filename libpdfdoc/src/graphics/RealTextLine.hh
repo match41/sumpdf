@@ -70,7 +70,7 @@ public :
 
 	void AppendSpace( double width ) ;
 
-	void AddChar( double xpos, wchar_t ch ) ;
+	void AppendText( double xpos, const std::wstring& text ) ;
 	
 	std::ostream& Print(
 		std::ostream& 	os,

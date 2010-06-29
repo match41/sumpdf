@@ -141,7 +141,9 @@ std::auto_ptr<TextLine> TextLineObject::GetLine( ) const
 		const GlyphGraphicsItem *glyph =
 			dynamic_cast<const GlyphGraphicsItem*>( item ) ;
 		
-		line->AddChar( glyph->pos().x(), glyph->Char().unicode() ) ;
+		line->AppendText(
+			glyph->pos().x(),
+			std::wstring(1, glyph->Char().unicode()) ) ;
 	}
 	
 	return line ;

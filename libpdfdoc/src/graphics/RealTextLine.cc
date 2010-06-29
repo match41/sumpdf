@@ -93,8 +93,10 @@ void RealTextLine::AppendText( const std::wstring& text )
 		m_text.insert( m_text.end(), text.begin(), text.end() ) ;
 }
 
-void RealTextLine::AddChar( double xpos, wchar_t ch )
+void RealTextLine::AppendText( double xpos, const std::wstring& text )
 {
+	PDF_ASSERT( m_state.FontFace() != 0 ) ;
+
 	// calculate the space need to be advanced
 	double adv = xpos - Width() ;
 	if ( adv != 0 )
@@ -102,7 +104,7 @@ void RealTextLine::AddChar( double xpos, wchar_t ch )
 	
 	PDF_ASSERT_EQUAL( Width(), xpos ) ;
 
-	m_text.push_back( ch ) ;
+	AppendText( text ) ;
 }
 
 std::ostream& RealTextLine::Print(
