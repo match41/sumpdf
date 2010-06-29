@@ -58,7 +58,7 @@ public :
 
 	~TextLineObject( ) ;
 
-	void AddChar( wchar_t ch, double offset ) ;
+	void AddChar( double offset, wchar_t ch ) ;
 	void AddString( const QString& str ) ;
 
 	GraphicsState Format( ) const ;
@@ -80,9 +80,8 @@ private :
 		const TextState&	state ) ; 
 	
 private :
-	std::auto_ptr<TextLine>	m_line ;
-//	GraphicsState	m_format ;
-	QRectF			m_bound ;
+	GraphicsState	m_format ;
+	mutable QRectF	m_bound ;
 } ;
 
 } // end of namespace

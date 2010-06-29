@@ -70,6 +70,8 @@ public :
 
 	void AppendSpace( double width ) ;
 
+	void AddChar( double xpos, wchar_t ch ) ;
+	
 	std::ostream& Print(
 		std::ostream& 	os,
 		Matrix&			current,

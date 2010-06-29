@@ -53,7 +53,8 @@ namespace pdf {
 */
 TextLineObject::TextLineObject( const TextLine *blk, QGraphicsItem *parent )
 	: QAbstractGraphicsShapeItem( parent )
-	, m_line( blk->Clone() )
+//	, m_line( blk->Clone() )
+	, m_format( blk->Format() )
 {
 	blk->VisitChars( this ) ;
 	m_bound = childrenBoundingRect( ) ;
@@ -67,12 +68,19 @@ TextLineObject::TextLineObject(
 	const QString&			text,
 	QGraphicsItem 			*parent )
 	: QAbstractGraphicsShapeItem( parent )
-	, m_line( CreateTextLine( format, transform, ToWStr(text) ) )
+	, m_format( format )
 {
-	m_line->VisitChars( this ) ;
+	if ( !text.isEmpty() )
+	{
+		std::auto_ptr<TextLine> line( CreateTextLine( format, transform,
+			ToWStr(text) ) ) ;
+
+		line->VisitChars( this ) ;
+	}
+	
 	m_bound = childrenBoundingRect( ) ;
 	
-	setTransform( ToQtMatrix( m_line->Transform() ) ) ;
+	setTransform( ToQtMatrix( transform ) ) ;
 }
 
 TextLineObject::~TextLineObject( )
@@ -92,7 +100,7 @@ void TextLineObject::OnChar(
 	GlyphGraphicsItem *item = new GlyphGraphicsItem( glyph, ch, this ) ;
 
 	// colors
-	QtGraphicsState gs( m_line->Format() ) ;
+	QtGraphicsState gs( m_format ) ;
 	item->setBrush( gs.Brush() ) ;
 	
 	// set glyph offset
@@ -104,49 +112,47 @@ void TextLineObject::OnChar(
 
 GraphicsState TextLineObject::Format( ) const
 {
-	PDF_ASSERT( m_line.get() != 0 ) ;
-	return m_line->Format() ;
+	return m_format ;
 }
 
-void TextLineObject::AddChar( wchar_t ch, double offset )
+void TextLineObject::AddChar( double offset, wchar_t ch )
 {
-	const Font	*font	= Format().FontFace() ;
+	PDF_ASSERT( m_format.FontFace() != 0 ) ;
+	
+	const Font	*font	= m_format.FontFace() ;
 	const Glyph	*glyph	= (font != 0) ? font->GetGlyph( ch ) : 0 ;
 	
 	if ( glyph != 0 )
-	{
 		OnChar( ch, offset, glyph, Format().Text() ) ;
-		
-		m_line->AppendText( std::wstring(1, ch) ) ;
-		m_line->AppendSpace( -offset * Format().Text().ScaleFactor() ) ;
-	}
 
-	m_bound = childrenBoundingRect( ) ;
+	m_bound = QRect( ) ;
 }
 
-// TODO: create text line by the children glyphs
 std::auto_ptr<TextLine> TextLineObject::GetLine( ) const
 {
-	PDF_ASSERT( m_line.get() != 0 ) ;
-	PDF_ASSERT( m_line->Format().FontFace() != 0 ) ;
+	PDF_ASSERT( m_format.FontFace() != 0 ) ;
+	
+	std::auto_ptr<TextLine> line( CreateTextLine(
+		m_format,
+		Matrix::Translation( x(), y() ) * FromQtMatrix(transform()) ) ) ;
 	
 	foreach ( const QGraphicsItem *item, childItems() )
 	{
 		const GlyphGraphicsItem *glyph =
 			dynamic_cast<const GlyphGraphicsItem*>( item ) ;
 		
-		double dx = glyph->pos().x() ;
-		qDebug() << "dx = " << dx ;
+		line->AddChar( glyph->pos().x(), glyph->Char().unicode() ) ;
 	}
 	
-	std::auto_ptr<TextLine> line( m_line->Clone() ) ;
-	line->SetTransform( Matrix::Translation( x(), y() ) * m_line->Transform() );
 	return line ;
 }
 
 // virtual functions for QGraphicsItem
 QRectF TextLineObject::boundingRect( ) const
 {
+	if ( m_bound.isNull() )
+		m_bound = childrenBoundingRect( ) ;
+
 	return m_bound ;
 }
 

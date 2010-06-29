@@ -110,12 +110,7 @@ public :
 		double offset = 0 ;
 		foreach( QChar ch, item.text() )
 		{
-/*			new TextLineObject( gs,
-				Matrix::Translation( pos.x() + offset, -pos.y() ),
-				QString(ch),
-				m_owner ) ;
-*/
-			line->AddChar( ch.unicode(), offset ) ;
+			line->AddChar( offset, ch.unicode() ) ;
 			
 			offset += met.width(ch) ;
 		}

@@ -53,6 +53,8 @@ public :
 
 	virtual void AppendSpace( double width ) = 0 ;
 
+	virtual void AddChar( double xpos, wchar_t ch ) = 0 ;
+
 	/// Returns the text state of the text line.
 	virtual const GraphicsState& Format() const = 0 ;
 	virtual void SetFormat( const GraphicsState& fmt ) = 0 ;

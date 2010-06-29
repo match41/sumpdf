@@ -93,6 +93,18 @@ void RealTextLine::AppendText( const std::wstring& text )
 		m_text.insert( m_text.end(), text.begin(), text.end() ) ;
 }
 
+void RealTextLine::AddChar( double xpos, wchar_t ch )
+{
+	// calculate the space need to be advanced
+	double adv = xpos - Width() ;
+	if ( adv != 0 )
+		AppendSpace( -adv ) ;
+	
+	PDF_ASSERT_EQUAL( Width(), xpos ) ;
+
+	m_text.push_back( ch ) ;
+}
+
 std::ostream& RealTextLine::Print(
 	std::ostream& 	os,
 	Matrix&			current,
@@ -279,8 +291,6 @@ std::cout << "can't find char_code in font " << font->BaseName() << " = " << (un
 
 void RealTextLine::AppendSpace( double width )
 {
-//	PDF_ASSERT( m_space.empty() || m_space
-	
 	// no text, just translate the matrix
 	if ( m_text.empty() )
 	{

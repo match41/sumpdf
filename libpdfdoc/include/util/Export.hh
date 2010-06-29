@@ -30,10 +30,18 @@
 #define __PDF_EXPORT_HEADER_INCLUDED__
 
 #ifdef PDFDOC_DLL
-	#ifdef pdfdoc_EXPORTS
-		#define LIBPDFDOC_API __declspec(dllexport) 
-	#else
-		#define LIBPDFDOC_API __declspec(dllimport) 
+	#ifdef WIN32
+		#ifdef pdfdoc_EXPORTS
+			#define LIBPDFDOC_API __declspec(dllexport) 
+		#else
+			#define LIBPDFDOC_API __declspec(dllimport) 
+		#endif
+	#elif defined __GNUC__
+		#ifdef pdfdoc_EXPORTS
+			#define LIBPDFDOC_API __attribute__((visibility("default")))
+		#else
+			#define LIBPDFDOC_API 
+		#endif
 	#endif
 #else
 	#define LIBPDFDOC_API
