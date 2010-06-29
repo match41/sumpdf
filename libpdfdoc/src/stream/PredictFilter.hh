@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2009 by Nestal Wan                                      *
+ *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,60 +17,55 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/*!
-	\file	BufferedFilter.hh
-	\brief	definition the BufferedFilter class
-	\date	Thu Apr 2 2009
-	\author	Nestal Wan
+/**	\file	PredictFilter.hh
+    \brief	definition the PredictFilter class
+    \date	Jun 25, 2010
+    \author	Nestal Wan
 */
 
-#ifndef __PDF_BUFFERED_FILTER_HEADER_INCLUDED__
-#define __PDF_BUFFERED_FILTER_HEADER_INCLUDED__
+#ifndef __PDF_PREDICTFILTER_HEADER_INCLUDED__
+#define __PDF_PREDICTFILTER_HEADER_INCLUDED__
 
 #include "StreamFilter.hh"
 
+#include <memory>
 #include <vector>
 
 namespace pdf {
 
-/*!	\brief	stream filter with whole data in memory
-	\ingroup	filter
+class Object ;
 
-	The BufferedFilter is a StreamFilter with all its data in memory. It stores
-	a chunk of memory and an current read pointer.
+///	brief description
+/**	\internal
+	The PredictFilter class represents
 */
-class BufferedFilter : public StreamFilter
+class PredictFilter : public StreamFilter
 {
 public :
-	BufferedFilter( ) ;
-
-	template <typename InputIt>
-	BufferedFilter( InputIt first, InputIt last )
-		: m_buf( first, last )
-		, m_offset( 0 )
-	{
-	}
-
-	explicit BufferedFilter( std::vector<unsigned char>& buf ) ;
-	explicit BufferedFilter( const char *str ) ;
-
-	// compiler generated copy constructor is good enough 
+	explicit PredictFilter( std::auto_ptr<StreamFilter> src, std::size_t col ) ;
 
 	std::size_t Read( unsigned char *data, std::size_t size ) ;
 	std::size_t Write( const unsigned char *data, std::size_t size ) ;
+	void Flush( ) ;
 	void Rewind( ) ;
 	std::size_t Length( ) const ;
 	Object NameChain( ) const ;
 	StreamFilter* Clone( ) const ;
 	StreamFilter* GetInner( ) ;
-	void Flush( ) ;
-	Name RawFormat( ) const ;
 	
+	Name RawFormat( ) const ;
+
 private :
-	std::vector<unsigned char>	m_buf ;		//!< chunk of data in memory
-	std::size_t					m_offset ;	//!< current read position
+	bool FillBuffer( ) ;
+
+private :
+	const std::auto_ptr<StreamFilter>	m_src ;
+
+	// data that is suppose to return by Read()
+	std::vector<unsigned char>			m_buffer ;
+	std::size_t							m_idx ;
 } ;
 
 } // end of namespace
 
-#endif
+#endif // PREDICTFILTER_HH_

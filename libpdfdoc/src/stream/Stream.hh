@@ -111,8 +111,8 @@ public :
 private :
 	void CopyOnWrite( ) ;
 
-	void ApplyFilter( const Object& filter ) ;
-	void CreateFilter( const Name& filter ) ;
+	void ApplyFilter( const Object& filter, const Object& parms ) ;
+	void CreateFilter( const Name& filter, const Object& parms ) ;
     std::size_t CopyRawData( std::streambuf *buf ) const ;
     void InitFilter( ) ;
 

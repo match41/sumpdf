@@ -45,6 +45,7 @@
 #include "stream/InStreamBufAdaptorTest.hh"
 #include "stream/OutStreamBufAdaptorTest.hh"
 #include "stream/RawFilterTest.hh"
+#include "stream/PredictFilterTest.hh"
 #include "page/RealResourcesTest.hh"
 #include "page/RealPageTest.hh"
 #include "page/ContentStreamTest.hh"
@@ -78,6 +79,7 @@ int main( int argc, char **argv )
 	using namespace pdfut ;
 
 	CppUnit::TextUi::TestRunner runner;
+	runner.addTest( PredictFilterTest::suite( ) ) ;
 	runner.addTest( RealColorSpaceTest::suite( ) ) ;
 	runner.addTest( ResourceSetTest::suite( ) ) ;
 	runner.addTest( StreamTest::suite( ) ) ;

@@ -46,7 +46,7 @@ public :
 	std::size_t Count( ) const ;
 	const Graphics* At( std::size_t idx ) const ;
 
-	Graphics* CreateRenderedObject(
+	Graphics* CreateLink(
 		const GraphicsState&	gs,
 		const Matrix&			ctm ) const ;
 } ;

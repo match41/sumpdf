@@ -17,44 +17,71 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	RealGraphicsGroup.cc
-	\brief	implementation of the RealGraphicsGroup class
-	\date	May 23, 2010
+/**	\file	PredictFilterTest.cc
+	\brief	implementation of the PredictFilterTest class
+	\date	Jun 25, 2010
 	\author	Nestal Wan
 */
 
-#include "RealGraphicsGroup.hh"
-#include "graphics/ExtGraphicsLink.hh"
+#include "PredictFilterTest.hh"
 
-#include "stream/Stream.hh"
+#include "stream/PredictFilter.hh"
+#include "stream/BufferedFilter.hh"
+
+#include "util/Util.hh"
+
+#include "mock/Assert.hh"
 
 #include <iostream>
+#include <cstring>
 
-namespace pdf {
+namespace pdfut {
 
-/**	constructor
+using namespace pdf ;
+
+PredictFilterTest::PredictFilterTest( )
+{
+}
+
+void PredictFilterTest::setUp( )
+{
+}
+
+void PredictFilterTest::tearDown( )
+{
+}
+
+void PredictFilterTest::Test( )
+{
+	const unsigned char data[] =
+	{
+		0x02, 0x01, 0x00, 0x10, 0x00, 0x02, 0x00, 0x02, 
+		0x55, 0x00, 0x02, 0x00, 0x01, 0x13, 0x00, 0x02, 
+		0x00, 0x01, 0xdc, 0x00, 0x02, 0x00, 0x01, 0xb3, 
+		0x00, 0x02, 0x00, 0xfb, 0x6d, 0x00, 0x02, 0x01, 
+		0x00, 0xa3, 0x00, 0x02, 0x00, 0x00, 0x00, 0x01, 
+		0x02, 0x00, 0x00, 0x00, 0x01, 0x02, 0xff, 0x01, 
+		0xab, 0xfe, 
+	} ;
 	
-*/
-RealGraphicsGroup::RealGraphicsGroup( Stream& src, File * )
-{
-//	src.CopyData( std::cout.rdbuf() ) ;
-}
-
-std::size_t RealGraphicsGroup::Count( ) const
-{
-	return 0 ;
-}
-
-const Graphics* RealGraphicsGroup::At( std::size_t idx ) const
-{
-	return 0 ;
-}
-
-Graphics* RealGraphicsGroup::CreateLink(
-	const GraphicsState&	gs,
-	const Matrix&			ctm ) const
-{
-	return new ExtGraphicsLink<GraphicsGroup>( gs, ctm, this ) ;
+	const unsigned char expected[] =
+	{
+		0x01, 0x00, 0x10, 0x00, 0x01, 0x02, 0x65, 0x00, 
+		0x01, 0x03, 0x78, 0x00, 0x01, 0x04, 0x54, 0x00, 
+		0x01, 0x05, 0x07, 0x00, 0x01, 0x00, 0x74, 0x00, 
+		0x02, 0x00, 0x17, 0x00, 0x02, 0x00, 0x17, 0x01, 
+		0x02, 0x00, 0x17, 0x02, 0x01, 0x01, 0xc2, 0x00,
+	} ;
+	
+	std::auto_ptr<StreamFilter> src(
+		new BufferedFilter( Begin(data), End(data) ) ) ;
+	
+	PredictFilter subject( src, 4 ) ;
+	
+	std::vector<unsigned char> raw( 100 ) ;
+	std::size_t count = subject.Read( &raw[0], raw.size() ) ;
+	PDFUT_ASSERT_EQUAL( count, 40U ) ;
+	CPPUNIT_ASSERT( std::memcmp( &raw[0], expected, 40U ) == 0 ) ;
 }
 
 } // end of namespace

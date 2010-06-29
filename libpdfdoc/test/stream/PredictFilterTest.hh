@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2009 by Nestal Wan                                      *
+ *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,60 +17,39 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/*!
-	\file	BufferedFilter.hh
-	\brief	definition the BufferedFilter class
-	\date	Thu Apr 2 2009
-	\author	Nestal Wan
+/**	\file	PredictFilterTest.hh
+    \brief	definition the PredictFilterTest class
+    \date	Jun 25, 2010
+    \author	Nestal Wan
 */
 
-#ifndef __PDF_BUFFERED_FILTER_HEADER_INCLUDED__
-#define __PDF_BUFFERED_FILTER_HEADER_INCLUDED__
+#ifndef __PDFUT_PREDICTFILTERTEST_HEADER_INCLUDED__
+#define __PDFUT_PREDICTFILTERTEST_HEADER_INCLUDED__
 
-#include "StreamFilter.hh"
+#include <cppunit/TestFixture.h>
 
-#include <vector>
+#include <cppunit/extensions/HelperMacros.h>
 
-namespace pdf {
+namespace pdfut {
 
-/*!	\brief	stream filter with whole data in memory
-	\ingroup	filter
-
-	The BufferedFilter is a StreamFilter with all its data in memory. It stores
-	a chunk of memory and an current read pointer.
-*/
-class BufferedFilter : public StreamFilter
+class PredictFilterTest : public CppUnit::TestFixture
 {
 public :
-	BufferedFilter( ) ;
+	PredictFilterTest( ) ;
 
-	template <typename InputIt>
-	BufferedFilter( InputIt first, InputIt last )
-		: m_buf( first, last )
-		, m_offset( 0 )
-	{
-	}
+	// declare suit function
+	CPPUNIT_TEST_SUITE( PredictFilterTest ) ;
+		CPPUNIT_TEST( Test ) ;
+	CPPUNIT_TEST_SUITE_END();
 
-	explicit BufferedFilter( std::vector<unsigned char>& buf ) ;
-	explicit BufferedFilter( const char *str ) ;
+public :
+	void setUp( ) ;
+	void tearDown( ) ;
 
-	// compiler generated copy constructor is good enough 
-
-	std::size_t Read( unsigned char *data, std::size_t size ) ;
-	std::size_t Write( const unsigned char *data, std::size_t size ) ;
-	void Rewind( ) ;
-	std::size_t Length( ) const ;
-	Object NameChain( ) const ;
-	StreamFilter* Clone( ) const ;
-	StreamFilter* GetInner( ) ;
-	void Flush( ) ;
-	Name RawFormat( ) const ;
-	
 private :
-	std::vector<unsigned char>	m_buf ;		//!< chunk of data in memory
-	std::size_t					m_offset ;	//!< current read position
+	void Test( ) ;
 } ;
 
 } // end of namespace
 
-#endif
+#endif // PREDICTFILTERTEST_HH_

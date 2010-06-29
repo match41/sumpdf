@@ -97,6 +97,7 @@ MainWnd::MainWnd( QWidget *parent )
 	connect( m_action_first_pg,	SIGNAL(triggered()),	this, SLOT(OnFirstPage()) );
 	connect( m_action_last_pg, 	SIGNAL(triggered()),	this, SLOT(OnLastPage()) );
 	connect( m_action_viewsrc, 	SIGNAL(triggered()),	this, SLOT(OnViewSource()) );
+	connect( m_action_append, 	SIGNAL(triggered()), 	this, SLOT(OnAppendPage()) );
 
 	connect( m_doc, SIGNAL( SelectionChanged() ),
 			 this, SLOT( OnSelectionChanged() ) );
@@ -159,6 +160,7 @@ void MainWnd::OnNew( )
 	m_view->setScene( 0 ) ;
 	m_doc->New( ) ;
 	m_view->setScene( m_doc->CurrentScene() ) ;
+	GoToPage( 0 );
 }
 
 void MainWnd::OnChanged( const QList<QRectF>& region )
@@ -326,6 +328,12 @@ void MainWnd::OnViewSource( )
 		TextDlg dlg( reinterpret_cast<char*>(&c[0]), this ) ;
 		dlg.exec() ;
 	}
+}
+
+void MainWnd::OnAppendPage( )
+{
+	m_doc->AppendPage( ) ;
+	GoToPage( m_doc->PageCount() - 1 ) ;
 }
 
 void MainWnd::ConnectToolbarSignals( )

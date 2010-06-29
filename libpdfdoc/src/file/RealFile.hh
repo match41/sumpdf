@@ -86,7 +86,10 @@ private :
 	void BasicRead( const Ref& link, T& result ) ;
 
 	void ReadXRef( std::size_t offset, Dictionary& trailer ) ;
+	void ReadXRefTable( Dictionary& trailer ) ;
+	void ReadXRefStream( std::size_t offset, Dictionary& trailer ) ;
 	std::size_t ReadXRefOffset( ) ;
+	bool ReadNextObj( Object& obj ) ;
 
 	bool ReadTrailer( Dictionary& trailer, std::size_t& offset ) ;
 	static std::istream& ReadLine( std::istream& is, std::string& line ) ;

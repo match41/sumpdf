@@ -34,6 +34,7 @@
 #include "graphics/RealPath.hh"
 #include "graphics/RealText.hh"
 #include "graphics/ExtGraphicsLink.hh"
+#include "graphics/TextState.hh"
 #include "graphics/XObject.hh"
 #include "stream/Stream.hh"
 
@@ -134,10 +135,7 @@ void ContentStream::Decode( Stream& str )
 	std::istream src( str.InStreamBuf() ) ;
 	std::vector<Object> args ;
 	
-	ContentOp		op ;
-	GraphicsState	gstate ;
-
-//	Clock clock ;
+	ContentOp	op ;
 
 	while ( src >> op )
 	{
@@ -234,7 +232,7 @@ void ContentStream::OnDoXObject( ContentOp& op, std::istream& is )
 		XObject *xo = m_res->FindXObject( op[0].As<Name>() ) ;
 		if ( xo != 0 )
 		{
-			m_current = xo->CreateRenderedObject( m_state.gs, m_state.ctm ) ;
+			m_current = xo->CreateLink( m_state.gs, m_state.ctm ) ;
 			OnEndObject( op, is ) ;
 		}
 	}

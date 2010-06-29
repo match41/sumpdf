@@ -152,7 +152,7 @@ std::size_t RealImage::Height( ) const
 	return m_height ;
 }
 
-Graphics* RealImage::CreateRenderedObject(
+Graphics* RealImage::CreateLink(
 	const GraphicsState&	gs,
 	const Matrix&			ctm ) const
 {

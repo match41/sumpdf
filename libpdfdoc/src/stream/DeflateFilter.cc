@@ -88,13 +88,11 @@ std::size_t DeflateFilter::Read( unsigned char *data, std::size_t size )
 		    
 		    m_decomp.z.next_in	= &m_decomp.buf[0] ;
 		    m_decomp.z.avail_in	= m_decomp.buf.size( ) ;
-std::cout << "avai = " << m_decomp.z.avail_in << std::endl ;
 		}
 
 		PDF_ASSERT( m_decomp.z.avail_in <= m_decomp.buf.size() ) ;
 		PDF_ASSERT( m_decomp.z.next_in  != 0 ) ;
-std::cout << "size = " << size << std::endl ;
-std::cout << "offset = " << offset << std::endl ;
+
 		m_decomp.z.next_out		= data + offset ;
 		m_decomp.z.avail_out	= size - offset ;
 		result = ::inflate( &m_decomp.z, Z_SYNC_FLUSH ) ;

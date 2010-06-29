@@ -130,15 +130,24 @@ void RealFile::ReadType( const Ref& link, Object& obj )
 	// use at() because it will check bounding
 	std::size_t offset = m_objs.at( link.ID() ) ;
 	m_in->seekg( offset ) ;
-	
+
+	if ( !ReadNextObj( obj ) )
+	{
+		std::ostringstream ss ;
+		ss << "cannot read object ID " << link
+		   << " offset: " << std::hex << offset
+		   /*<< " current token: \"" << objstr.Get() << "\""*/ ;
+		throw ParseError( ss.str() ) ;
+	}
+}
+
+bool RealFile::ReadNextObj( Object& obj )
+{
 	std::size_t id, gen ;
 	
 	Token objstr ;
 	
-	if ( (*m_in >> id >> gen >> objstr)	&&
-		 objstr.Get()	== "obj"	&&
-	     link.ID()		== id		&&
-	     link.Gen()		== gen )
+	if ( (*m_in >> id >> gen >> objstr)	&& objstr.Get()	== "obj" )
 	{
 		// read the underlying object
 		Object r ;
@@ -149,12 +158,12 @@ void RealFile::ReadType( const Ref& link, Object& obj )
 			if ( objstr.Get() == "endobj" )
 			{
 				obj.Swap( r ) ;
-				return ;
+				return true ;
 			}
 			else if ( objstr.Get() == "stream" )
 			{
 				obj = ReadStream( r.As<Dictionary>() ) ;
-				return ;
+				return true ;
 			}
 			
 			// if the objstr is neither "endobj" nor "stream", it will
@@ -162,11 +171,7 @@ void RealFile::ReadType( const Ref& link, Object& obj )
 		}
 	}
 
-	std::ostringstream ss ;
-	ss << "cannot read object ID " << link
-	   << " offset: " << std::hex << offset
-	   << " current token: \"" << objstr.Get() << "\"" ;
-	throw ParseError( ss.str() ) ;
+	return false ;
 }
 
 template <typename T>
@@ -284,7 +289,7 @@ Stream RealFile::ReadStream( Dictionary& dict )
 		dict.Set( "Length", ReadObj( length ) ) ;
 		m_in->seekg( pos ) ;
 	}
-	
+
 	return Stream( m_in->rdbuf(), m_in->tellg( ), dict ) ;
 }
 
@@ -317,14 +322,55 @@ void RealFile::ReadXRef( std::size_t offset, Dictionary& trailer )
 {
 	PDF_ASSERT( m_in != 0 ) ;
 	m_in->seekg( offset, std::ios::beg ) ;
-	
+
 	// reading xref	
 	std::string line ;
-	if ( !ReadLine( *m_in, line ) || line != "xref" )
+	if ( ReadLine( *m_in, line ) )
+	{
+		// PDF 1.4 or below uses cross reference table
+		if ( line == "xref" )
+			ReadXRefTable( trailer ) ;
+		
+		// PDF 1.5 or above can use cross reference streams
+		else
+			ReadXRefStream( offset, trailer ) ;
+	}
+	else
 		throw ParseError( "can't read xref marker" ) ;
+}
+
+void RealFile::ReadXRefStream( std::size_t offset, Dictionary& trailer )
+{
+	PDF_ASSERT( m_in != 0 ) ;
+	m_in->seekg( offset, std::ios::beg ) ;
 	
+	Object obj ;
+	ReadNextObj( obj ) ;
+	Stream& s = obj.As<Stream>() ;
+	
+	std::cout << "read: " << s.Self() << std::endl ;
+	
+	std::vector<unsigned char> raw ;
+	s.CopyData( raw ) ;
+	
+	for ( std::size_t i = 0 ; i < raw.size() ; i++ )
+	{
+		if ( i % 8 == 0 && i > 0 )
+			std::cout << std::endl ;
+		std::cout << "0x" << std::hex << std::setw(2) << std::setfill('0') 
+			<< (int)raw[i] << ", " ;
+	}
+	std::cout << std::endl ;
+	
+	throw ParseError( "PDF 1.5 object streams are not supported yet" ) ;
+}
+
+void RealFile::ReadXRefTable( Dictionary& trailer )
+{
 	while ( true )
 	{
+		std::string line ;
+		
 		// start ID and number of object
 		std::size_t start, count ;
 		if ( ReadLine( *m_in, line ) )

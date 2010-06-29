@@ -202,8 +202,10 @@ void RealPage::WriteGraphic(
 {
 	PDF_ASSERT( gfx != 0 ) ;
 
+	// no need to write one more space before "cm" because there will be a
+	// space after printing a matrix
 	if ( gfx->Transform() != Matrix() )
-		os << "q " << gfx->Transform() << " cm\n" ;
+		os << "q " << gfx->Transform() << "cm\n" ;
 
 	gfx->Print( os, res, gs ) ;
 	

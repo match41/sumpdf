@@ -49,6 +49,7 @@ namespace
 PageInfo::PageInfo( PageTree *parent )
 	: m_parent( parent )
 	, m_res( parent == 0 ? 0 : parent->Resource() )
+	, m_media_box( default_page_size )
 	, m_rotate( 0 )
 {
 }
