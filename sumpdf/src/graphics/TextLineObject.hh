@@ -58,11 +58,8 @@ public :
 
 	~TextLineObject( ) ;
 
-	void OnChar(
-		wchar_t 			ch,
-		double				offset,
-		const Glyph			*glyph,
-		const TextState&	state ) ; 
+	void AddChar( wchar_t ch, double offset ) ;
+	void AddString( const QString& str ) ;
 
 	GraphicsState Format( ) const ;
 	
@@ -74,10 +71,18 @@ public :
 		QPainter 						*painter,
 		const QStyleOptionGraphicsItem	*option,
 		QWidget 						*widget ) ; 
+
+private :
+	void OnChar(
+		wchar_t 			ch,
+		double				offset,
+		const Glyph			*glyph,
+		const TextState&	state ) ; 
 	
 private :
 	std::auto_ptr<TextLine>	m_line ;
-	QRectF					m_bound ;
+//	GraphicsState	m_format ;
+	QRectF			m_bound ;
 } ;
 
 } // end of namespace

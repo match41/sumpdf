@@ -29,19 +29,22 @@
 #include "QtGraphicsState.hh"
 #include "Util.hh"
 
+// libpdfdoc headers
+#include <libpdfdoc.hh>
+#include <font/Font.hh>
 #include <graphics/Color.hh>
 #include <graphics/TextLine.hh>
 #include <graphics/TextState.hh>
-
-#include <font/Font.hh>
 #include <util/Debug.hh>
 #include <util/Matrix.hh>
 
+// Qt headers
 #include <QBrush>
 #include <QColor>
 #include <QDebug>
 #include <QPen>
 
+// boost headers
 #include <boost/format.hpp>
 
 namespace pdf {
@@ -52,10 +55,10 @@ TextLineObject::TextLineObject( const TextLine *blk, QGraphicsItem *parent )
 	: QAbstractGraphicsShapeItem( parent )
 	, m_line( blk->Clone() )
 {
-	m_line->VisitChars( this ) ;
+	blk->VisitChars( this ) ;
 	m_bound = childrenBoundingRect( ) ;
 	
-	setTransform( ToQtMatrix( m_line->Transform() ) ) ;
+	setTransform( ToQtMatrix( blk->Transform() ) ) ;
 }
 
 TextLineObject::TextLineObject(
@@ -76,13 +79,17 @@ TextLineObject::~TextLineObject( )
 {
 }
 
+void TextLineObject::AddString( const QString& str )
+{
+}
+
 void TextLineObject::OnChar(
 	wchar_t 			ch,
 	double				offset,
 	const Glyph			*glyph,
 	const TextState&	state ) 
 {
-	GlyphGraphicsItem *item = new GlyphGraphicsItem( glyph, this ) ;
+	GlyphGraphicsItem *item = new GlyphGraphicsItem( glyph, ch, this ) ;
 
 	// colors
 	QtGraphicsState gs( m_line->Format() ) ;
@@ -101,11 +108,36 @@ GraphicsState TextLineObject::Format( ) const
 	return m_line->Format() ;
 }
 
+void TextLineObject::AddChar( wchar_t ch, double offset )
+{
+	const Font	*font	= Format().FontFace() ;
+	const Glyph	*glyph	= (font != 0) ? font->GetGlyph( ch ) : 0 ;
+	
+	if ( glyph != 0 )
+	{
+		OnChar( ch, offset, glyph, Format().Text() ) ;
+		
+		m_line->AppendText( std::wstring(1, ch) ) ;
+		m_line->AppendSpace( -offset * Format().Text().ScaleFactor() ) ;
+	}
+
+	m_bound = childrenBoundingRect( ) ;
+}
+
 // TODO: create text line by the children glyphs
 std::auto_ptr<TextLine> TextLineObject::GetLine( ) const
 {
 	PDF_ASSERT( m_line.get() != 0 ) ;
 	PDF_ASSERT( m_line->Format().FontFace() != 0 ) ;
+	
+	foreach ( const QGraphicsItem *item, childItems() )
+	{
+		const GlyphGraphicsItem *glyph =
+			dynamic_cast<const GlyphGraphicsItem*>( item ) ;
+		
+		double dx = glyph->pos().x() ;
+		qDebug() << "dx = " << dx ;
+	}
 	
 	std::auto_ptr<TextLine> line( m_line->Clone() ) ;
 	line->SetTransform( Matrix::Translation( x(), y() ) * m_line->Transform() );

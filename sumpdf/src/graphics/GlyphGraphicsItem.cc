@@ -64,9 +64,11 @@ struct GlyphGraphicsItem::Render : public Outline
 
 /**	constructor
 */
-GlyphGraphicsItem::GlyphGraphicsItem(const Glyph *glyph, QGraphicsItem *parent)
+GlyphGraphicsItem::GlyphGraphicsItem( const Glyph *glyph,
+	QChar ch, QGraphicsItem *parent)
 	: QGraphicsPathItem( parent )
 	, m_glyph( glyph )
+	, m_char( ch )
 {
 	QPainterPath path( QPointF ( 0.0, 0.0 ) ) ;
 	Render r ;
@@ -76,6 +78,11 @@ GlyphGraphicsItem::GlyphGraphicsItem(const Glyph *glyph, QGraphicsItem *parent)
 	setBrush( QColor(0, 0, 0) ) ;
 	setPen( QPen( Qt::NoPen ) ) ;
 	setPath( path ) ;
+}
+
+QChar GlyphGraphicsItem::Char( ) const
+{
+	return m_char ;
 }
 
 } // end of namespace

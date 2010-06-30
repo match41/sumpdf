@@ -41,13 +41,17 @@ class Glyph ;
 class GlyphGraphicsItem : public QGraphicsPathItem
 {
 public :
-	explicit GlyphGraphicsItem( const Glyph *glyph, QGraphicsItem *parent ) ;
+	explicit GlyphGraphicsItem( const Glyph *glyph,
+		QChar ch, QGraphicsItem *parent ) ;
+
+	QChar Char( ) const ;
 	
 private :
 	struct Render ;
 
 private :
 	const Glyph	*m_glyph ;
+	QChar		m_char ;
 } ;
 
 } // end of namespace

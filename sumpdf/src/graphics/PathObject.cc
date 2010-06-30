@@ -28,6 +28,7 @@
 #include "Util.hh"
 
 // libpdfdoc headers
+#include <libpdfdoc.hh>
 #include <graphics/Path.hh>
 #include <graphics/PathSegment.hh>
 #include <util/Debug.hh>

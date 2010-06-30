@@ -23,8 +23,10 @@
     \author	Nestal Wan
 */
 
-#ifndef __PDF_PATHSEGMENT_HH_EADER_INCLUDED__
-#define __PDF_PATHSEGMENT_HH_EADER_INCLUDED__
+#ifndef __PDF_PATHSEGMENT_HEADER_INCLUDED__
+#define __PDF_PATHSEGMENT_HEADER_INCLUDED__
+
+#include "util/Export.hh"
 
 #include <cstddef>
 #include <iosfwd>
@@ -36,7 +38,7 @@ namespace pdf {
 	A path is made up of path segments. Each segment can be a straight line
 	or a cubic Bezier curve.
 */
-class PathSegment
+class LIBPDFDOC_API PathSegment
 {
 public :
 	enum Op { move, line, cubic123, cubic23, cubic13, close } ;

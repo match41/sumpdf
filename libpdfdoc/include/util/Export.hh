@@ -1,4 +1,4 @@
-/***************************************************************************\
+/***************************************************************************
  *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
@@ -15,39 +15,28 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
-\***************************************************************************/
+ ***************************************************************************/
 
-/**	\file	ColorSpace.hh
-    \brief	definition the ColorSpace class
-    \date	May 24, 2010
-    \author	Nestal Wan
+/*!
+	\file	Export.hh
+	\brief	definitions of the export macros
+	\date	Wed Jun 30 2010
+	\author	Nestal Wan
+	
+	This file contains some utility functions that is not PDF specific.
 */
 
-#ifndef __PDF_COLORSPACE_HEADER_INCLUDED__
-#define __PDF_COLORSPACE_HEADER_INCLUDED__
+#ifndef __PDF_EXPORT_HEADER_INCLUDED__
+#define __PDF_EXPORT_HEADER_INCLUDED__
 
-#include "util/Export.hh"
+#ifdef PDFDOC_DLL
+	#ifdef pdfdoc_EXPORTS
+		#define LIBPDFDOC_API __declspec(dllexport) 
+	#else
+		#define LIBPDFDOC_API __declspec(dllimport) 
+	#endif
+#else
+	#define LIBPDFDOC_API
+#endif
 
-#include "Color.hh"
-
-namespace pdf {
-
-///	brief description
-/**	\internal
-	The ColorSpace class represents
-*/
-class ColorSpace
-{
-public :
-	virtual ~ColorSpace( ) ;
-	
-	virtual bool IsIndex( ) const = 0 ;
-	virtual Color Lookup( unsigned val ) const = 0 ;
-	virtual std::size_t ColorCount( ) const = 0 ;
-	
-	virtual Color::Space Get() const = 0 ;
-} ;
-
-} // end of namespace
-
-#endif // COLORSPACE_HH_
+#endif

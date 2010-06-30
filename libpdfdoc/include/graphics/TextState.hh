@@ -24,8 +24,10 @@
     \author	Nestal Wan
 */
 
-#ifndef __PDF_TEXTFORMAT_HH_EADER_INCLUDED__
-#define __PDF_TEXTFORMAT_HH_EADER_INCLUDED__
+#ifndef __PDF_TEXTFORMAT_HEADER_INCLUDED__
+#define __PDF_TEXTFORMAT_HEADER_INCLUDED__
+
+#include "util/Export.hh"
 
 #include <string>
 #include <iosfwd>
@@ -40,7 +42,7 @@ class ResourcesDict ;
 	This class represents the text state of a PDF file. It contains properties
 	like font size, spacing and other parameters affecting text appearance.
 */
-class TextState
+class LIBPDFDOC_API TextState
 {
 public :
 	explicit TextState( double size = 0, Font *font = 0 ) ;

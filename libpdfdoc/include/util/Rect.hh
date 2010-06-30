@@ -27,7 +27,7 @@
 #ifndef __PDF_RECT_HEADER_INCLUDED__
 #define __PDF_RECT_HEADER_INCLUDED__
 
-#include "libpdfdoc.hh"
+#include "util/Export.hh"
 
 #include <iosfwd>
 

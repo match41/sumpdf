@@ -97,6 +97,11 @@ public :
 		gs.Text().ChangeFont( QFontInfo(item.font()).pixelSize(), f ) ;
 		gs.FillColor( m_color ) ;
 
+		TextLineObject *line = new TextLineObject( gs,
+			Matrix::Translation( pos.x(), -pos.y() ),
+			QString(),
+			m_owner ) ;
+
 		// the way Qt calculate character width is less accurate that us
 		// so we can't just make a text line with the whole string.
 		// we need to break it down into character and ask Qt the width
@@ -105,14 +110,12 @@ public :
 		double offset = 0 ;
 		foreach( QChar ch, item.text() )
 		{
-//			std::auto_ptr<TextLine> line( CreateTextLine( gs,
-//				Matrix::Translation( pos.x() + offset, -pos.y() ), 
-//				ToWStr( QString(ch) ) ) ) ;
-
-			new TextLineObject( gs,
+/*			new TextLineObject( gs,
 				Matrix::Translation( pos.x() + offset, -pos.y() ),
 				QString(ch),
 				m_owner ) ;
+*/
+			line->AddChar( ch.unicode(), offset ) ;
 			
 			offset += met.width(ch) ;
 		}
