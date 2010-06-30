@@ -53,6 +53,7 @@ public slots:
 	void OnSelectTextTool( ) ;
 	void OnSelectZoomTool( ) ;
 	void DeleteSelection( ) ;
+	void AddImage( ) ;
 
 protected :
 	void mousePressEvent( QMouseEvent *event ) ;

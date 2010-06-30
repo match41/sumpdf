@@ -30,6 +30,7 @@
 
 #include "graphics/TextObject.hh"
 #include "graphics/TextLineObject.hh"
+#include "graphics/ImageObject.hh"
 
 // libpdfdoc headers
 #include <Doc.hh>
@@ -261,7 +262,7 @@ void DocModel::AddText(
 	const QString&	text, 
 	const QColor	c )
 {
-	Font *f = CreatePdfFont( font ) ;
+	Font *f = CreateFont( font ) ;
 
 	PDF_ASSERT( f != 0 ) ;
 
@@ -269,17 +270,13 @@ void DocModel::AddText(
 	gs.Text().ChangeFont( size, f ) ;
 	gs.FillColor(FromQColor(c));	// set text color
 
-//	std::auto_ptr<TextLine> line( CreateTextLine( gs,
-//		Matrix::Translation( pos.x(), pos.y() ), 
-//		ToWStr( text ) ) ) ;
-
 	TextObject *to = new TextObject ;
 	new TextLineObject( gs, Matrix::Translation(pos.x(), pos.y()), text, to ) ;
 
 	m_pages[m_current_page]->addItem( to ) ;
 }
 
-Font* DocModel::CreatePdfFont( const QFont& font )
+Font* DocModel::CreateFont( const QFont& font )
 {
 #if defined(Q_WS_X11) || defined(Q_WS_QWS)
 	return m_doc->CreateSimpleFont( font.freetypeFace() ) ;
@@ -299,6 +296,10 @@ Font* DocModel::CreatePdfFont( const QFont& font )
 	
 	return m_doc->CreateSimpleFont( &result[0], fsize ) ;
 #endif
+}
+
+void DocModel::AddImage( const QImage& path )
+{
 }
 
 } // end of namespace

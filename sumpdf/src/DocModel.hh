@@ -32,11 +32,12 @@
 #include <memory>
 #include <vector>
 
-class QFont ;
-class QString ;
-class QPointF ;
-class QGraphicsScene ;
 class QColor ;
+class QFont ;
+class QGraphicsScene ;
+class QImage ;
+class QPointF ;
+class QString ;
 class QTextDocument ;
 
 namespace pdf {
@@ -79,7 +80,9 @@ public :
 
 	void AddText( const QPointF& pos, QTextDocument *doc ) ;
 
-	Font* CreatePdfFont( const QFont& font ) ;
+	void AddImage( const QImage& path ) ;
+
+	Font* CreateFont( const QFont& font ) ;
 
 signals :
 	void SelectionChanged() ;

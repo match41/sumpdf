@@ -63,6 +63,13 @@ ImageObject::ImageObject(
 	setTransform( m ) ;
 }
 
+// TODO: implement proper construction from external
+ImageObject::ImageObject( const QImage& image, QGraphicsItem *parent )
+	: GraphicsObject( parent )
+	, m_child( 0 )
+{
+}
+
 QImage ImageObject::ToQImage( const Image *img )
 {
 	if ( img->IsJpeg() )

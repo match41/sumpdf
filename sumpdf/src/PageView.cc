@@ -38,13 +38,14 @@
 // Qt headers
 #include <QGraphicsItem>
 #include <QDebug>
+#include <QFileDialog>
+#include <QImage>
 #include <QMouseEvent>
 #include <QStatusBar>
 #include <QTransform>
 #include <QMenu>
 
 #include <limits>
-
 
 namespace pdf {
 
@@ -85,7 +86,8 @@ void PageView::OnPointerRightClick( QMouseEvent *event )
 	OnPointerLeftClick( event ) ;
 
 	std::auto_ptr<QMenu> menu( new QMenu( this ) ) ;
-	menu->addAction( "Delete", this, SLOT(DeleteSelection()) ) ;
+	menu->addAction( tr("Delete"),			this, SLOT(DeleteSelection()) ) ;
+	menu->addAction( tr("Add Image..."),	this, SLOT(AddImage()) ) ;
 	menu->popup( event->globalPos() ) ;
 	menu->exec( ) ;
 }
@@ -243,6 +245,14 @@ void PageView::OnSelectZoomTool( )
 	
 	// TODO: use ":/images/Magnifying_glass_icon.svg" but smaller
 	viewport()->setCursor( Qt::CrossCursor ) ;
+}
+
+void PageView::AddImage( )
+{
+	QString img = QFileDialog::getOpenFileName( this, tr("Add Image"),
+		QString(), tr("Images (*.png *.xpm *.jpg)") ) ;
+	if ( !img.isNull() )
+		m_doc->AddImage( QImage(img) ) ;
 }
 
 } // end of namespace

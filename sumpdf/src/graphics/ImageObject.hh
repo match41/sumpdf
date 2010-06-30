@@ -48,6 +48,8 @@ public :
 	explicit ImageObject( const ExtGraphicsLink<Image> *link,
 		QGraphicsItem *parent = 0 ) ;
 
+	explicit ImageObject( const QImage& image, QGraphicsItem *parent = 0 ) ;
+
 	GraphicsState Format() const ;
 	Graphics* Write( ) const ;
 
