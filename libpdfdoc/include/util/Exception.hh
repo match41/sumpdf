@@ -46,7 +46,7 @@ namespace pdf {
 /**	\ingroup exception
 	This class is the base class for all exception class in libpdfdoc.
 */
-class LIBPDFDOC_API Exception : public std::exception
+class Exception : public std::exception
 {
 public :
 	explicit Exception( const std::string& err ) ;
@@ -73,7 +73,7 @@ private :
 	underlying data to a specific type. The what() member function will
 	describe the expected and actual type of the data.
 */
-class LIBPDFDOC_API BadType : public Exception
+class BadType : public Exception
 {
 public :
 	BadType(
@@ -88,7 +88,7 @@ public :
 	This exception will be thrown when there is a parse error when reading
 	a PDF file.
 */
-class LIBPDFDOC_API ParseError : public Exception
+class ParseError : public Exception
 {
 public :
 	explicit ParseError( const std::string& err ) ;

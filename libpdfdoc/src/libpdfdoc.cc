@@ -41,29 +41,29 @@ namespace pdf {
 	\return	a pointer to the Doc interface of the PDF document object. Clients
 			must delete it after use.
 */
-Doc*  CreateDoc( )
+LIBPDFDOC_API Doc*  CreateDoc( )
 {
 	return new RealDoc ;
 }
 
 /// Exported function to get the version string of libpdfdoc.
-const char* Version( )
+LIBPDFDOC_API const char* Version( )
 {
 	static const char version[] = VERSION ;
 	return version ;
 }
 
-Text* CreateText( const GraphicsState& ts )
+LIBPDFDOC_API Text* CreateText( const GraphicsState& ts )
 {
 	return new RealText( ts ) ;
 }
 
-Path* CreatePath( const GraphicsState& gs )
+LIBPDFDOC_API Path* CreatePath( const GraphicsState& gs )
 {
 	return new RealPath( gs ) ;
 }
 
-TextLine* CreateTextLine(
+LIBPDFDOC_API TextLine* CreateTextLine(
 	const GraphicsState& 	state,		
 	const Matrix&			transform,
 	const std::wstring&		text )

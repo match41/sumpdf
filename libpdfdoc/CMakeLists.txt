@@ -323,8 +323,7 @@ set( FONT_SRCS		${FONT_DIR}/Font.cc
 					${FONT_DIR}/subset/Endian.cc )
 
 set( BASE_SRCS		src/Doc.cc
-					src/RealDoc.cc
-					src/libpdfdoc.cc )
+					src/RealDoc.cc )
 
 ###############################################################################
 # unix specific sources
@@ -410,8 +409,8 @@ set( SRCS	${BASE_SRCS}
 ###############################################################################
 # libpdfdoc library
 ###############################################################################
-#add_library( pdfdoc SHARED ${SRCS} )
-add_library( pdfdoc_static STATIC ${SRCS} ${HDRS} )
+add_library( pdfdoc			SHARED	${SRCS} ${HDRS} src/libpdfdoc.cc )
+add_library( pdfdoc_static	STATIC	${SRCS} ${HDRS} src/libpdfdoc.cc )
 
 ###############################################################################
 # source groups
@@ -463,20 +462,21 @@ endif ( WIN32 )
 ###############################################################################
 # all libraries
 ###############################################################################
-target_link_libraries( pdfdoc_static
-                       ${ZLIB_LIBRARIES}
-                       ${FREETYPE_LIBRARIES}
-                       ${OPT_LIBS} )
+set( PDFDOC_LIBS	${ZLIB_LIBRARIES}
+					${FREETYPE_LIBRARIES}
+					${OPT_LIBS} )
+
+target_link_libraries( pdfdoc_static	${PDFDOC_LIBS} )
+target_link_libraries( pdfdoc			${PDFDOC_LIBS} )
 
 ###############################################################################
 # compiler settings
 ###############################################################################
 
 # to enable export in DLL
-add_definitions(-DDLL_EXPORTS)
-
-# for unit test to find test data
-add_definitions(-DTEST_DATA_DIR="${libpdfdoc_SOURCE_DIR}/test/testdata/")
+#add_definitions(-DDLL_EXPORTS)
+set_property( TARGET pdfdoc
+	PROPERTY COMPILE_DEFINITIONS PDFDOC_DLL )
 
 # for including header files in the project
 add_definitions(-DSRC_DIR="${libpdfdoc_SOURCE_DIR}/src/")
@@ -623,6 +623,12 @@ endif ( FREETYPE_FOUND )
 
 add_executable( unittest ${UT_SRCS} test/UnitTest.cc )
 target_link_libraries( unittest pdfdoc_static ${CPPUNIT_LIBRARY} )
+
+# for unit test to find test data
+#add_definitions(-DTEST_DATA_DIR="${libpdfdoc_SOURCE_DIR}/test/testdata/")
+set_property( TARGET unittest testpdf
+	PROPERTY COMPILE_DEFINITIONS
+		TEST_DATA_DIR="${libpdfdoc_SOURCE_DIR}/test/testdata/" )
 
 # MSVC has stupid warnings on STD
 if ( MSVC )

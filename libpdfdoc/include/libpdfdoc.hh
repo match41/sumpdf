@@ -27,7 +27,15 @@
 #ifndef __LIB_PDF_DOC_HEADER_INCLUDED__
 #define __LIB_PDF_DOC_HEADER_INCLUDED__
 
-#define LIBPDFDOC_API 
+#ifdef PDFDOC_DLL
+	#ifdef pdfdoc_EXPORTS
+		#define LIBPDFDOC_API __declspec(dllexport) 
+	#else
+		#define LIBPDFDOC_API __declspec(dllimport) 
+	#endif
+#else
+	#define LIBPDFDOC_API
+#endif
 
 #include <string>
 
