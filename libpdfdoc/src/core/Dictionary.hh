@@ -103,7 +103,7 @@ public :
 	T Extract( const Name& name, const T& t = T() ) const
 	{
 		const_iterator i = find( name ) ;
-		return i != end() && i->second.Is<T>() ? i->second : t ;
+		return i != end() && i->second.Is<T>() ? i->second.To<T>() : t ;
 	}
 
 private :

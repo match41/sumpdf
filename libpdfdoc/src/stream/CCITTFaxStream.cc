@@ -30,6 +30,7 @@
 #include "core/Name.hh"
 
 #include <cstdlib>
+#include <climits>
 
 namespace xpdf {
 
@@ -37,11 +38,11 @@ using namespace pdf ;
 
 namespace
 {
-	const bool gTrue = true ;
-	const bool gFalse = false ;
+	const bool gTrue	= true ;
+	const bool gFalse	= false ;
 
-	#define gmallocn std::calloc
-	#define gfree std::free
+	#define gmallocn	std::calloc
+	#define gfree		std::free
 
 	int getPos( ... )
 	{
