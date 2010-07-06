@@ -45,6 +45,7 @@
 #include "util/Util.hh"
 
 #include <boost/bind.hpp>
+#include <boost/foreach.hpp>
 
 #include <algorithm>
 #include <iostream>
@@ -240,8 +241,12 @@ void RealPage::SetContent( const std::vector<Graphics*>& gfx )
 
 void RealPage::GetRawContent( std::vector<unsigned char>& out ) const
 {
-	if ( m_cstrs.size() == 1 )
-		m_cstrs.front().CopyData( out ) ;
+	BOOST_FOREACH( const Stream& s, m_cstrs )
+	{
+		std::vector<unsigned char> buf ;
+		s.CopyData( buf ) ;
+		out.insert( out.end(), buf.begin(), buf.end() ) ;
+	}
 }
 
 void RealPage::SetRawContent( const unsigned char *data, std::size_t size )

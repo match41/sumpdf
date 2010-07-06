@@ -27,6 +27,7 @@
 #include "Stream.hh"
 
 #include "BufferedFilter.hh"
+#include "CCITTFaxStream.hh"
 #include "DeflateFilter.hh"
 #include "MockStreamFilter.hh"
 #include "RawFilter.hh"
@@ -297,9 +298,36 @@ void Stream::CreateFilter( const Name& filter, const Object& parms )
 					m_data->filter, dict["Columns"].As<int>() ) ) ;
 		}
 	}
+	else if ( filter == Name( "CCITTFaxDecode" ) )
+		CreateCCITTFilter( parms ) ;
 	else
 		m_data->filter.reset( new MockStreamFilter( m_data->filter, filter ) ) ;
 }
+
+void Stream::CreateCCITTFilter( const Object& parms )
+{
+	int k = 0, col = 1728, row = 0 ;
+	bool end_of_line = false, byte_align = false, end_of_block = true,
+		black1 = false ;
+	
+	if ( parms.Is<Dictionary>() )
+	{
+		const Dictionary& dict = parms.As<Dictionary>() ;
+				
+		std::cout << "decode param is " << dict << std::endl ;
+		k				= dict.Extract( "K", k ) ;
+		end_of_line		= dict.Extract( "EndOfLine",		end_of_line ) ;
+		col				= dict.Extract( "Columns",			col ) ;
+		row				= dict.Extract( "Rows",				row ) ;
+		byte_align		= dict.Extract( "EncodedByteAlign",	byte_align ) ;
+		end_of_block	= dict.Extract( "EndOfBlock",		end_of_block ) ;
+		black1			= dict.Extract( "BlackIs1",			black1 ) ;
+	}
+
+	m_data->filter.reset( new xpdf::CCITTFaxStream( m_data->filter, k,
+		end_of_line, byte_align, col, row, end_of_block, black1 ) ) ;
+}
+
 
 /// copy data only, without the dictionary
 Stream Stream::Clone( ) const

@@ -45,9 +45,13 @@ class ExceptionDlg : public QDialog, private Ui::ExceptionDlgUI
 
 public :
 	explicit ExceptionDlg( const Exception& e, QWidget *parent = 0 ) ;
+	explicit ExceptionDlg( const char *what, QWidget *parent = 0 ) ;
 
 public slots :
 	void OnCopy( ) ;
+
+private :
+	void Init( ) ;
 
 private :
 	QString	m_what ;

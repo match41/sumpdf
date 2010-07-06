@@ -44,6 +44,21 @@ ExceptionDlg::ExceptionDlg( const Exception& e, QWidget *parent )
 	m_msg_edit->setPlainText( e.ErrorMessage().c_str() ) ;
 	m_bt_edit->setPlainText( e.GetBacktrace().c_str() ) ;
 	
+	Init( ) ;
+}
+
+ExceptionDlg::ExceptionDlg( const char *what, QWidget *parent ) :
+	QDialog( parent ),
+	m_what( what )
+{
+	setupUi( this ) ;
+	
+	m_msg_edit->setPlainText( m_what ) ;
+	Init( ) ;
+}
+
+void ExceptionDlg::Init( )
+{	
 	connect( m_ok_button,	SIGNAL(clicked()), this, SLOT(accept() ) ) ;
 	connect( m_copy_button,	SIGNAL(clicked()), this, SLOT(OnCopy() ) ) ;
 }

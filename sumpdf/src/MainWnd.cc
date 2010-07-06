@@ -197,6 +197,16 @@ void MainWnd::OpenFile( const QString& file )
 		ExceptionDlg dlg( e, this ) ;
 		dlg.exec() ;
 	}
+	catch ( std::exception& e )
+	{
+		ExceptionDlg dlg( e.what(), this ) ;
+		dlg.exec() ;
+	}
+	catch ( ... )
+	{
+		ExceptionDlg dlg( "unknown exception", this ) ;
+		dlg.exec() ;
+	}
 }
 
 void MainWnd::GoToPage( std::size_t page )
