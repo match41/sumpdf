@@ -127,7 +127,7 @@ void ContentStream::Decode( )
 void ContentStream::Decode( Stream& str )
 {
 	PDF_ASSERT( m_res != 0 ) ;
-	PDF_ASSERT( m_current == 0 ) ;
+//	PDF_ASSERT( m_current == 0 ) ;
 
 	// rewind to stream start for reading
 	str.Rewind( ) ;
