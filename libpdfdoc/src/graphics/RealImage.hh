@@ -63,6 +63,7 @@ public :
 		const Matrix&			ctm ) const ;
 
 	ColorSpace*	Space( ) const ;
+	std::size_t Depth( ) const ;
 
 	std::size_t ByteCount() const ;
 	const unsigned char* Pixels() const ;
