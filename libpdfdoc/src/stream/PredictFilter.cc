@@ -84,7 +84,7 @@ void PredictFilter::Flush( )
 
 void PredictFilter::Rewind( )
 {
-	m_src->Length( ) ;
+	m_src->Rewind( ) ;
 }
 
 std::size_t PredictFilter::Length( ) const
