@@ -33,7 +33,7 @@
 #include "core/Array.hh"
 #include "core/Object.hh"
 #include "core/Token.hh"
-#include "util/Util.hh"
+#include "util/CArray.hh"
 #include "stream/Stream.hh"
 
 #include "mock/Assert.hh"

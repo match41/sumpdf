@@ -36,10 +36,10 @@
 #include "page/ContentOp.hh"
 #include "page/ResourcesDict.hh"
 
+#include "util/CArray.hh"
 #include "util/Debug.hh"
 #include "util/Exception.hh"
 #include "util/Matrix.hh"
-#include "util/Util.hh"
 
 #include <boost/format.hpp>
 

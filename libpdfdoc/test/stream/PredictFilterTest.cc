@@ -28,7 +28,7 @@
 #include "stream/PredictFilter.hh"
 #include "stream/BufferedFilter.hh"
 
-#include "util/Util.hh"
+#include "util/CArray.hh"
 
 #include "mock/Assert.hh"
 

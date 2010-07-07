@@ -30,7 +30,7 @@
 
 #include "mock/Assert.hh"
 
-#include "util/Util.hh"
+#include "util/CArray.hh"
 
 #include <fstream>
 #include <iterator>

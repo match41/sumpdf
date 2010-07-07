@@ -29,7 +29,7 @@
 #include "graphics/GraphicsState.hh"
 
 #include "util/Debug.hh"
-#include "util/Util.hh"
+#include "util/Functional.hh"
 
 #include <iostream>
 

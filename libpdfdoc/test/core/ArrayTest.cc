@@ -28,7 +28,7 @@
 
 #include "core/Array.hh"
 #include "core/Dictionary.hh"
-#include "util/Util.hh"
+#include "util/CArray.hh"
 
 #include "core/Token.hh"
 

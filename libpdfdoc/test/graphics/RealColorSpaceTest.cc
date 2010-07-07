@@ -29,7 +29,7 @@
 #include "core/Name.hh"
 #include "graphics/RealColorSpace.hh"
 
-#include "util/Util.hh"
+#include "util/CArray.hh"
 
 #include "mock/Assert.hh"
 #include "mock/MockFile.hh"

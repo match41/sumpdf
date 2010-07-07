@@ -25,7 +25,7 @@
 
 #include "CodeMap.hh"
 
-#include "util/Util.hh"
+#include "util/CArray.hh"
 
 #include <boost/bimap.hpp>
 #include <boost/bimap/set_of.hpp>

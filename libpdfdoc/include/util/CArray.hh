@@ -17,64 +17,71 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	FontException.cc
-	\brief	implementation of the FontException class
-	\date	Jan 23, 2010
-	\author	Nestal Wan
+/**	\file	CArray.hh
+    \brief	definition the C array helper functions class
+    \date	Jul 7, 2010
+    \author	Nestal Wan
 */
 
-#include "FontException.hh"
+#ifndef __PDF_CARRAY_HH_EADER_INCLUDED__
+#define __PDF_CARRAY_HH_EADER_INCLUDED__
 
-#include "util/CArray.hh"
-
-// freetype headers
-#include <ft2build.h>
-#include FT_FREETYPE_H
-
-#include <boost/format.hpp>
-
-#include <map>
-
-// setup freetype error table
-#undef __FTERRORS_H__
-#define FT_ERRORDEF( e, v, s )  std::pair<const int, const char*>( e, s ),
-#define FT_ERROR_START_LIST     {
-#define FT_ERROR_END_LIST       };
+#include <cstddef>
 
 namespace pdf {
 
-namespace
-{
-	const std::pair<const int, const char*> ft_errors[] =
-	#include FT_ERRORS_H
+/*!	\brief	get the begin iterator from an array
+	\internal
+	
+	This function returns the begin "iterator" of an array. It is useful to
+	treat an array like an STL container.
+	
+	For example:
+\code
+int array[10] = { 1, 2, 3, 4, 5 } ;
+std::vector<int> v ;
+std::copy( Begin(array), End(array), std::back_inserter( v ) ;
+\endcode
 
-	const std::map<int, const char*> ft_error_map(
-		Begin(ft_errors), End(ft_errors) ) ;
-}
-
-/**	constructor
+	\param	array	reference to the array
+	\return	the begin iterator of the array. i.e. \a array itself
+	\sa End(), Count()
 */
-FontException::FontException( const std::string& msg )
-	: Exception( msg )
+template <typename T, std::size_t n>
+T* Begin( T (&array)[n] )
 {
+	return array ;
 }
 
-FontException::FontException( boost::format fmt )
-	: Exception( fmt )
+/*!	\brief	get the end iterator from an array
+	\internal
+	
+	This function returns the end "iterator" of an array. It is useful to
+	treat an array like an STL container.
+	
+	\param	array	reference to the array
+	\return	the end iterator of the array. i.e. \a array+n
+	\sa Begin(), Count()
+*/
+template <typename T, std::size_t n>
+T* End( T (&array)[n] )
 {
+	return array + n ;
 }
 
-FontException::FontException( const std::string& msg, int fterror )
-	: Exception( msg + ": " + LookUpFtError( fterror ) )
-{
-}
+/*!	\brief	get the number of elements in the array
+	\internal
 
-std::string FontException::LookUpFtError( int fterror )
+	This function will return the number of elements in the array.
+	\return	the number of elements in the array
+	\sa Begin(), End()
+*/
+template <typename T, std::size_t n>
+std::size_t Count( T (&array)[n] )
 {
-	std::map<int, const char*>::const_iterator i = ft_error_map.find( fterror );
-	return i != ft_error_map.end()
-		? std::string(i->second != 0 ? i->second : "" )
-		: std::string() ;
+	return n ;
 }
 
 } // end of namespace
+
+#endif // CARRAY_HH_

@@ -33,9 +33,10 @@
 #include "file/File.hh"
 #include "stream/Stream.hh"
 
+#include "util/CArray.hh"
 #include "util/Debug.hh"
 #include "util/Exception.hh"
-#include "util/Util.hh"
+#include "util/Functional.hh"
 
 #include <boost/bind.hpp>
 

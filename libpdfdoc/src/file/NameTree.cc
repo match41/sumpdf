@@ -32,7 +32,8 @@
 #include "core/Dictionary.hh"
 #include "core/Ref.hh"
 
-#include "util/Util.hh"
+#include "util/CArray.hh"
+#include "util/Functional.hh"
 
 #include <boost/bind.hpp>
 

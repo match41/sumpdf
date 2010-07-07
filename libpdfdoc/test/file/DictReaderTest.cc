@@ -32,7 +32,7 @@
 #include "mock/Assert.hh"
 #include "mock/MockFile.hh"
 
-#include "util/Util.hh"
+#include "util/CArray.hh"
 
 #include <algorithm>
 

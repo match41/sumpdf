@@ -48,9 +48,10 @@
 #include "file/File.hh"
 #include "file/DictReader.hh"
 
+#include "util/CArray.hh"
 #include "util/Debug.hh"
+#include "util/Functional.hh"
 #include "util/RefPtr.hh"
-#include "util/Util.hh"
 
 // boost library
 #include <boost/bind.hpp>

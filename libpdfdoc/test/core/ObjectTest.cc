@@ -33,7 +33,7 @@
 
 #include "stream/Stream.hh"
 
-#include "util/Util.hh"
+#include "util/CArray.hh"
 
 #include "mock/Assert.hh"
 

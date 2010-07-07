@@ -32,7 +32,7 @@
 #include "page/ContentOp.hh"
 #include "page/MockResources.hh"
 #include "util/Matrix.hh"
-#include "util/Util.hh"
+#include "util/CArray.hh"
 
 #include "mock/Assert.hh"
 #include "mock/MockFont.hh"

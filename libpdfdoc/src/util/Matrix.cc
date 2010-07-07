@@ -26,7 +26,7 @@
 
 #include "util/Matrix.hh"
 
-#include "util/Util.hh"
+#include "util/CArray.hh"
 
 #include <algorithm>
 #include <iterator>

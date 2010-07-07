@@ -35,7 +35,7 @@
 #include "font/BaseFont.hh"
 #include "graphics/RealImage.hh"
 #include "stream/Stream.hh"
-#include "util/Util.hh"
+#include "util/Functional.hh"
 #include "util/Debug.hh"
 
 #include <boost/bind.hpp>

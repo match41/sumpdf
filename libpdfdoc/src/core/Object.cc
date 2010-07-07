@@ -35,7 +35,7 @@
 
 #include "util/Debug.hh"
 #include "util/Rect.hh"
-#include "util/Util.hh"
+#include "util/CArray.hh"
 
 #include <boost/variant/apply_visitor.hpp>
 

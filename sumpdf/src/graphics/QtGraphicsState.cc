@@ -27,8 +27,8 @@
 
 #include "Util.hh"
 
+#include <util/CArray.hh>
 #include <util/Debug.hh>
-#include <util/Util.hh>
 
 #include <QBrush>
 #include <QColor>

@@ -32,7 +32,7 @@
 #include "mock/MockFile.hh"
 #include "mock/MockFont.hh"
 
-#include "util/Util.hh"
+#include "util/Functional.hh"
 
 namespace pdfut {
 

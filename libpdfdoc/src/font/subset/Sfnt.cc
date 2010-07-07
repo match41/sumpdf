@@ -33,7 +33,7 @@
 // headers from other packages
 #include "font/FontException.hh"
 #include "util/Debug.hh"
-#include "util/Util.hh"
+#include "util/CArray.hh"
 
 // freetype headers
 #include <ft2build.h>

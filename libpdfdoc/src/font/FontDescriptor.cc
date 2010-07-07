@@ -35,7 +35,7 @@
 #include "file/DictReader.hh"
 #include "stream/Stream.hh"
 
-#include "util/Util.hh"
+#include "util/CArray.hh"
 #include "util/Debug.hh"
 
 // freetype headers

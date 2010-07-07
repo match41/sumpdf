@@ -27,7 +27,7 @@
 #include "TokenTest.hh"
 
 #include "core/Token.hh"
-#include "util/Util.hh"
+#include "util/CArray.hh"
 
 #include "mock/Assert.hh"
 

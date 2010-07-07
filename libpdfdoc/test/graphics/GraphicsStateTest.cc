@@ -36,7 +36,7 @@
 #include "mock/Assert.hh"
 #include "mock/MockFont.hh"
 
-#include "util/Util.hh"
+#include "util/CArray.hh"
 
 namespace pdfut {
 

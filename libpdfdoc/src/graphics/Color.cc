@@ -26,7 +26,7 @@
 #include "graphics/Color.hh"
 
 #include "util/Debug.hh"
-#include "util/Util.hh"
+#include "util/CArray.hh"
 
 #include <ostream>
 #include <iterator>

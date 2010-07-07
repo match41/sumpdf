@@ -36,7 +36,7 @@
 #include "font/FontEncoding.hh"
 #include "page/ContentOp.hh"
 #include "util/Debug.hh"
-#include "util/Util.hh"
+#include "util/CArray.hh"
 
 #include <boost/bind.hpp>
 

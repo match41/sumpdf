@@ -42,7 +42,7 @@
 #include <graphics/Text.hh>
 #include <page/Page.hh>
 #include <util/Debug.hh>
-#include <util/Util.hh>
+#include <util/Functional.hh>
 #include <util/Matrix.hh>
 #include <util/Rect.hh>
 #include <graphics/Color.hh>
