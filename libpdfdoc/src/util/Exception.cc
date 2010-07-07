@@ -25,6 +25,7 @@
 */
 
 #include "util/Exception.hh"
+#include "util/Util.hh"
 
 #include "Backtrace.hh"
 
