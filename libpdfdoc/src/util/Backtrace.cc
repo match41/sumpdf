@@ -29,15 +29,23 @@
 #include "SymbolInfo.hh"
 #include "util/CArray.hh"
 
-#include <sstream>
 #include <algorithm>
+#include <cstring>
+#include <sstream>
 
 namespace pdf {
 
-Backtrace::Backtrace( std::size_t skip )
-	: m_count( SymbolInfo::Instance()->Backtrace(m_stack, Count(m_stack) )),
-	  m_skip( std::min( skip, m_count ) )
+Backtrace::Backtrace( std::size_t skip ) :
+	m_count( SymbolInfo::Instance()->Backtrace(m_stack, Count(m_stack) )),
+	m_skip( std::min( skip, m_count ) )
 {
+}
+
+Backtrace::Backtrace( const Backtrace& bt ) :
+	m_count( bt.m_count ),
+	m_skip( bt.m_skip )
+{
+	std::memcpy( m_stack, bt.m_stack, m_count * sizeof(m_stack[0]) ) ;
 }
 
 /*!	\brief	operator<< for printing backtraces

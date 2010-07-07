@@ -26,7 +26,6 @@
 
 #include "util/Exception.hh"
 
-#include "util/Util.hh"
 #include "Backtrace.hh"
 
 #include <boost/format.hpp>
@@ -34,71 +33,43 @@
 #include <cstdlib>
 #include <iterator>
 #include <sstream>
-#include <sstream>
 
 namespace pdf {
 
-struct Exception::Impl
-{
-	std::string		what ;
-	bool			what_dirty ;
-	
-	std::vector<std::string>	msgs ;
-	Backtrace					backtrace ;
-} ;
-
 Exception::Exception( boost::format fmt )
-	: m_impl( new Impl )
 {
-	Add( fmt.str() ) ;
+	*this << BacktraceInfo(Backtrace()) << ErrorMsg( fmt.str() ) ;
 }
 
 Exception::Exception( const std::string& str )
-	: m_impl( new Impl )
 {
-	Add( str ) ;
-}
-
-Exception::~Exception() throw ()
-{
+	*this << BacktraceInfo(Backtrace()) << ErrorMsg( str ) ;
 }
 
 void Exception::Add( const std::string& err )
 {
-	m_impl->msgs.push_back( err ) ;
-	m_impl->what_dirty = true ;
+	*this << ErrorMsg( err ) ;
 }
 
 void Exception::Add( boost::format fmt )
 {
-	Add( fmt.str() ) ;
-}
-
-const char* Exception::what( ) const throw()
-{
-	if ( m_impl->what_dirty )
-	{
-		std::ostringstream oss ;
-		std::copy( m_impl->msgs.begin(), m_impl->msgs.end(),
-			std::ostream_iterator<std::string>( oss, "\n" ) ) ;
-		oss << "Backtrace:\n" << m_impl->backtrace.ToString() ;
-		m_impl->what = oss.str() ;
-		m_impl->what_dirty = false ;
-	}
-	return m_impl->what.c_str() ;
+	*this << ErrorMsg( fmt.str() ) ;
 }
 
 std::string Exception::ErrorMessage( ) const
 {
-	std::ostringstream oss ;
-	std::copy( m_impl->msgs.begin(), m_impl->msgs.end(),
-		std::ostream_iterator<std::string>( oss, "\n" ) ) ;
-	return oss.str() ;
+	if( const std::string *err = boost::get_error_info<ErrorMsg>(*this) )
+		return *err ;
+	else
+		return std::string() ;
 }
 
 std::string Exception::GetBacktrace( ) const
 {
-	return m_impl->backtrace.ToString() ;
+	if( const Backtrace *err = boost::get_error_info<BacktraceInfo>(*this) )
+		return err->ToString() ;
+	else
+		return std::string() ;
 }
 
 BadType::BadType(

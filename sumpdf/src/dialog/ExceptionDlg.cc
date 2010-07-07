@@ -40,7 +40,7 @@ ExceptionDlg::ExceptionDlg( const Exception& e, QWidget *parent )
 	, m_what( e.what() )
 {
 	setupUi( this ) ;
-	
+
 	m_msg_edit->setPlainText( e.ErrorMessage().c_str() ) ;
 	m_bt_edit->setPlainText( e.GetBacktrace().c_str() ) ;
 	

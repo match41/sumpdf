@@ -27,15 +27,17 @@
 #ifndef __PDF_EXCEPTION_HEADER_INCLUDED__
 #define __PDF_EXCEPTION_HEADER_INCLUDED__
 
-#include "libpdfdoc.hh"
+#include "util/Export.hh"
 
 #include <boost/format/format_fwd.hpp>
+#include <boost/exception.hpp>
 
 #include <iosfwd>
 #include <typeinfo>
 #include <exception>
+#include <string>
 
-#include <boost/shared_ptr.hpp>
+//#include <boost/shared_ptr.hpp>
 
 namespace pdf {
 
@@ -46,26 +48,24 @@ namespace pdf {
 /**	\ingroup exception
 	This class is the base class for all exception class in libpdfdoc.
 */
-class Exception : public std::exception
+class Exception :
+	virtual public std::exception,
+	virtual public boost::exception
 {
 public :
 	explicit Exception( const std::string& err ) ;
 	explicit Exception( boost::format fmt ) ;
 
-	~Exception() throw () ;
-
 	void Add( const std::string& err ) ;
 	void Add( boost::format fmt ) ;
-	
-	const char* what( ) const throw() ;
 
 	std::string ErrorMessage( ) const ;
 	std::string GetBacktrace( ) const ;
-
-private :
-	struct Impl ;
-	boost::shared_ptr<Impl>	m_impl ;
 } ;
+
+class Backtrace ;
+typedef boost::error_info<struct BacktraceTag, Backtrace>	BacktraceInfo ;
+typedef boost::error_info<struct ErrMsgTag, std::string>	ErrorMsg ;
 
 ///	Invalid type exception.
 /**	\ingroup exception

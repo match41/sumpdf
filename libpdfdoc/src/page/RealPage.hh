@@ -42,6 +42,7 @@ namespace pdf {
 class Dictionary ;
 class RealResources ;
 class File ;
+class GraphicsState ;
 
 /*!	\brief	real implementation of a page
 	

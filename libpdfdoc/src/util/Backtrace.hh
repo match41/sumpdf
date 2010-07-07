@@ -49,6 +49,8 @@ class Backtrace
 {
 public :
 	explicit Backtrace( std::size_t skip = 2 ) ;
+	Backtrace( const Backtrace& bt ) ;
+	
 	friend std::ostream& operator<<( std::ostream& os,
 	                                 const pdf::Backtrace& bt ) ;
 
