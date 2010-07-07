@@ -98,6 +98,13 @@ public :
 	bool operator<( const Dictionary& dict ) const ;
 	
 	bool Set( const Name& key, const Object& value ) ;
+	
+	template <typename T>
+	T Extract( const Name& name, const T& t = T() ) const
+	{
+		const_iterator i = find( name ) ;
+		return i != end() && i->second.Is<T>() ? i->second : t ;
+	}
 
 private :
 	static bool IsGoodObject( const Object& obj ) ;

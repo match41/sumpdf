@@ -140,7 +140,8 @@ set( STRM_HDRS		${STRM_DIR}/Stream.hh
 					${STRM_DIR}/MockStreamFilter.hh
 					${STRM_DIR}/InStreamBufAdaptor.hh
 					${STRM_DIR}/OutStreamBufAdaptor.hh
-					${STRM_DIR}/PredictFilter.hh )
+					${STRM_DIR}/PredictFilter.hh
+					${STRM_DIR}/CCITTFaxStream.hh )
 
 set( UTIL_HDRS  	${UTIL_DIR}/Export.hh
 					${UTIL_DIR}/SymbolInfo.hh
@@ -282,7 +283,8 @@ set( STRM_SRCS		${STRM_DIR}/Stream.cc
 					${STRM_DIR}/MockStreamFilter.cc
 					${STRM_DIR}/InStreamBufAdaptor.cc
 					${STRM_DIR}/OutStreamBufAdaptor.cc
-					${STRM_DIR}/PredictFilter.cc )
+					${STRM_DIR}/PredictFilter.cc
+					${STRM_DIR}/CCITTFaxStream.cc )
 
 set( UTIL_SRCS  	${UTIL_DIR}/Rect.cc
 					${UTIL_DIR}/Util.cc

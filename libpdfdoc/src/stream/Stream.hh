@@ -113,6 +113,8 @@ private :
 
 	void ApplyFilter( const Object& filter, const Object& parms ) ;
 	void CreateFilter( const Name& filter, const Object& parms ) ;
+		void CreateCCITTFilter( const Object& parms ) ;
+	
     std::size_t CopyRawData( std::streambuf *buf ) const ;
     void InitFilter( ) ;
 
