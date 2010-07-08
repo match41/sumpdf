@@ -73,12 +73,23 @@ QImage ImageObject::ToQImage( const Image *img )
 	}
 	else
 	{
-		QImage tmp( img->Pixels(), img->Width(), img->Height(), img->Width(),
-			QImage::Format_Indexed8 ) ;
+		QImage::Format fmt = QImage::Format_Invalid ;
+		switch ( img->Depth() )
+		{
+			case 8 : fmt = QImage::Format_Indexed8 ; break ;
+			case 1 : fmt = QImage::Format_Mono ; break ;
+			default : break ;
+		}
+
+		std::size_t bits_in_row = img->Width() * img->Depth() ;
+		std::size_t bytes_in_row = bits_in_row / 8 + (bits_in_row % 8 == 0 ? 0 : 1) ;
+
+		QImage tmp( img->Pixels(), img->Width(), img->Height(), bytes_in_row, fmt ) ;
 			
-		if ( img->Space() != 0 )
+		if ( img->Space() != 0 && fmt == QImage::Format_Indexed8 )
 		{
 			tmp.setColorCount( img->Space()->ColorCount() ) ;
+		
 			QVector<QRgb> cmap ;
 			for ( std::size_t j = 0 ; j < img->Space()->ColorCount() ; ++j )
 				cmap.push_back( ToQColor(img->Space()->Lookup(j)).rgb() ) ;

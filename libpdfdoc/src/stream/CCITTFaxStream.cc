@@ -26,8 +26,10 @@
 #include "CCITTFaxStream.hh"
 
 #include "Stream-CCITT.h"
-#include "core/Object.hh"
+
+#include "core/Array.hh"
 #include "core/Name.hh"
+#include "core/Object.hh"
 
 #include <cstdlib>
 
@@ -70,7 +72,8 @@ std::size_t CCITTFaxStream::Read( unsigned char *data, std::size_t size )
 
 std::size_t CCITTFaxStream::Write( const unsigned char *data, std::size_t size )
 {
-	throw -1 ;
+	// write is not supported. pretend to be working.
+	return size ;
 }
 
 void CCITTFaxStream::Flush( )
@@ -84,7 +87,20 @@ std::size_t CCITTFaxStream::Length( ) const
 
 Object CCITTFaxStream::NameChain( ) const
 {
-	return m_src->NameChain() ;
+	Object name = m_src->NameChain( ) ;
+	if ( name.Is<Array>( ) )
+	{
+		Array arr ;
+		arr.push_back( Name( "CCITTFaxDecode" ) ) ;
+		
+		const Array& old = name.As<Array>( ) ;
+		arr.insert( arr.end(), old.begin(), old.end() ) ;
+		return Object( arr ) ;
+	}
+	else if ( name.Is<void>() )
+		return Name( "CCITTFaxDecode" ) ;
+	else
+		throw Exception( "invalid filter" ) ;
 }
 
 StreamFilter* CCITTFaxStream::Clone( ) const
