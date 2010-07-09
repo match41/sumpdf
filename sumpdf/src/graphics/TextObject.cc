@@ -89,7 +89,7 @@ public :
 	
 	void drawTextItem( const QPointF& pos, const QTextItem& item )
 	{
-		Font *f = m_doc->CreateFont( item.font() ) ;
+		Font *f = m_doc->NewFont( item.font() ) ;
 
 		PDF_ASSERT( f != 0 ) ;
 

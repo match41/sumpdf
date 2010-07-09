@@ -82,7 +82,7 @@ public :
 
 	void AddImage( const QImage& path ) ;
 
-	Font* CreateFont( const QFont& font ) ;
+	Font* NewFont( const QFont& font ) ;
 
 signals :
 	void SelectionChanged() ;

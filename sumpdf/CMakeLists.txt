@@ -156,7 +156,11 @@ endif ( WIN32 )
 
 # MSVC has stupid warnings on STD
 if ( MSVC )
-	add_definitions( -D_SCL_SECURE_NO_WARNINGS )
+	add_definitions(
+		-D_SCL_SECURE_NO_WARNINGS
+		-DNOMINMAX
+		-D_CRT_SECURE_NO_WARNINGS )
+	
 	set_target_properties( sumpdf
 		PROPERTIES COMPILE_FLAGS "/wd4345 /wd4819 /Zc:wchar_t-" )
 endif ( MSVC )
