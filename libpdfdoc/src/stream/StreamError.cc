@@ -26,20 +26,6 @@
 
 #include "StreamError.hh"
 
-#include <boost/format.hpp>
-
 namespace pdf {
-
-/**	constructor
-*/
-StreamError::StreamError( const std::string& msg )
-	: Exception( msg )
-{
-}
-
-StreamError::StreamError( boost::format fmt )
-	: Exception( fmt )
-{
-}
 
 } // end of namespace

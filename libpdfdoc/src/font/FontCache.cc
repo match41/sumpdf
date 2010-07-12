@@ -52,7 +52,7 @@ BaseFont* FontCache::GetFont( FT_FaceRec_ *face )
 {
 	const char *psname = FT_Get_Postscript_Name( face ) ;
 	if ( psname == 0 )
-		throw FontException( "font type not supported" ) ;
+		throw Unsupported() << expt::ErrMsg( "font type not supported" ) ;
 
 	FontMap::iterator i = m_fonts.find( psname ) ;
 	if ( i != m_fonts.end() )
@@ -78,7 +78,7 @@ BaseFont* FontCache::GetFont( const unsigned char *data, std::size_t size )
 
 	const char *psname = FT_Get_Postscript_Name( face ) ;
 	if ( psname == 0 )
-		throw FontException( "font type not supported" ) ;
+		throw Unsupported() << expt::ErrMsg( "font type not supported" ) ;
 
 	FontMap::iterator i = m_fonts.find( psname ) ;
 	if ( i != m_fonts.end() )

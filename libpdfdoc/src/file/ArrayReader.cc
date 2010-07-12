@@ -73,8 +73,7 @@ bool ArrayReader::Detach( std::size_t idx, T& result )
 		}
 		catch ( Exception& e )
 		{
-			e.Add( boost::format( "while detaching index \"%1%\" from array." )
-				% idx ) ;
+			e << expt::Index( idx ) ;
 			throw ;
 		}
 	}

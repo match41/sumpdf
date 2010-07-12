@@ -124,8 +124,7 @@ void RealPath::Print(
 {
 	PDF_ASSERT( m_ops.size() == m_pt_index.size() ) ;
 
-//	if ( m_state != gs )
-		m_state.Print( os, res, gs ) ;
+	m_state.Print( os, res, gs ) ;
 
 	std::size_t pt_idx = 0 ;
 	for ( std::vector<PathSegment::Op>::const_iterator i = m_ops.begin() ;
@@ -153,7 +152,7 @@ void RealPath::Print(
 	else if ( !m_stroke	&& !m_fill )
 		os << "n\n" ;
 	else
-		throw Exception( "??" ) ;
+		throw Exception() << expt::ErrMsg( "unknown paint command" ) ;
 }
 
 void RealPath::Visit( GraphicsVisitor *visitor )

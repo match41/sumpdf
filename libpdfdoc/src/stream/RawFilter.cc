@@ -65,7 +65,7 @@ StreamFilter* RawFilter::Clone( ) const
 	std::size_t c = m_file->sgetn( reinterpret_cast<char*>( &buf[0] ),
 	                               m_length ) ;
 	if ( c != m_length )
-		throw StreamError( "cannot read from file" ) ;
+		throw StreamError() << expt::ErrMsg( "cannot read from file" ) ;
 	
 	return new BufferedFilter( buf ) ;
 }

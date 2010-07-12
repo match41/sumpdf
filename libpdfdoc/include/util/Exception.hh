@@ -32,7 +32,6 @@
 #include <boost/format/format_fwd.hpp>
 #include <boost/exception.hpp>
 
-#include <iosfwd>
 #include <typeinfo>
 #include <exception>
 #include <string>
@@ -41,6 +40,8 @@
 
 namespace pdf {
 
+class Backtrace ;
+
 /**	\defgroup	exception	Exception Classes
 */
 
@@ -48,24 +49,21 @@ namespace pdf {
 /**	\ingroup exception
 	This class is the base class for all exception class in libpdfdoc.
 */
-class Exception :
+struct Exception :
 	virtual public std::exception,
 	virtual public boost::exception
 {
-public :
-	explicit Exception( const std::string& err ) ;
-	explicit Exception( boost::format fmt ) ;
-
-	void Add( const std::string& err ) ;
-	void Add( boost::format fmt ) ;
-
-	std::string ErrorMessage( ) const ;
-	std::string GetBacktrace( ) const ;
+	Exception( ) ;
 } ;
 
-class Backtrace ;
-typedef boost::error_info<struct BacktraceTag, Backtrace>	BacktraceInfo ;
-typedef boost::error_info<struct ErrMsgTag, std::string>	ErrorMsg ;
+struct FileError	: virtual Exception {} ;
+
+///	Parse error exception.
+/**	\ingroup exception
+	This exception will be thrown when there is a parse error when reading
+	a PDF file.
+*/
+struct ParseError	: virtual Exception {} ;
 
 ///	Invalid type exception.
 /**	\ingroup exception
@@ -73,27 +71,50 @@ typedef boost::error_info<struct ErrMsgTag, std::string>	ErrorMsg ;
 	underlying data to a specific type. The what() member function will
 	describe the expected and actual type of the data.
 */
-class BadType : public Exception
-{
-public :
-	BadType(
-		const std::type_info&	from,
-		const std::type_info&	to,
-		const std::string&		err,
-		const std::string&		obj = std::string() ) ;
-} ;
+struct BadType 		: virtual Exception {} ;
 
-///	Parse error exception.
-/**	\ingroup exception
-	This exception will be thrown when there is a parse error when reading
-	a PDF file.
-*/
-class ParseError : public Exception
+struct Unsupported	: virtual Exception {} ;
+
+// Exception informations
+namespace expt
 {
-public :
-	explicit ParseError( const std::string& err ) ;
-	explicit ParseError( boost::format fmt ) ;
-} ;
+	// back-trace information. should be present for all exceptions
+	typedef boost::error_info<struct BacktraceTag, Backtrace>	BacktraceInfo ;
+
+	// generic error message
+	typedef boost::error_info<struct MsgTag, std::string>		ErrMsg ;
+
+	// formatted error message
+	typedef boost::error_info<struct FmtMsgTag, boost::format>	FormattedMsg ;
+
+	// errno as in C
+	typedef boost::error_info<struct ErrorNumberTag, int>		ErrorNumber ;
+
+	// the filename of the file that caused the error
+	typedef boost::error_info<struct FileNameTag, std::string>	FileName ;
+
+	// the source type for the type conversion that caused the error
+	typedef boost::error_info<struct SrcTypeTag, std::string>	SourceType ;
+	
+	// the destination type for the type conversion that caused the error
+	typedef boost::error_info<struct DestTypeTag, std::string>	DestType ;
+
+	// ID of the PDF object that caused the error
+	typedef boost::error_info<struct ObjectIDTag, std::size_t>	ObjID ;
+
+	// offset of the file
+	typedef boost::error_info<struct OffsetTag, std::size_t>	Offset ;
+
+	// token
+	typedef boost::error_info<struct TokenTag, std::string>		Token ;
+
+	// index to an array
+	typedef boost::error_info<struct IndexTag, std::size_t>		Index ;
+
+	// name
+	typedef boost::error_info<struct NameTag, std::string>		Name ;
+
+}
 
 } // end of namespace
 

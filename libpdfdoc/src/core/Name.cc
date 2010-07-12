@@ -73,7 +73,7 @@ std::istream& operator>>( std::istream& src, Name& name )
 std::ostream& operator<<( std::ostream& os, const Name& name )
 {
 	if ( name.m_name.empty( ) )
-		throw ParseError( "cannot write empty name" ) ;
+		throw ParseError() << expt::ErrMsg( "cannot write empty name" ) ;
 
 	return os << '/' << name.m_name ;
 }

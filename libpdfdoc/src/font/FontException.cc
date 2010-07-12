@@ -52,29 +52,17 @@ namespace
 		Begin(ft_errors), End(ft_errors) ) ;
 }
 
-/**	constructor
-*/
-FontException::FontException( const std::string& msg )
-	: Exception( msg )
+namespace expt
 {
-}
-
-FontException::FontException( boost::format fmt )
-	: Exception( fmt )
-{
-}
-
-FontException::FontException( const std::string& msg, int fterror )
-	: Exception( msg + ": " + LookUpFtError( fterror ) )
-{
-}
-
-std::string FontException::LookUpFtError( int fterror )
-{
-	std::map<int, const char*>::const_iterator i = ft_error_map.find( fterror );
-	return i != ft_error_map.end()
-		? std::string(i->second != 0 ? i->second : "" )
-		: std::string() ;
+	std::string LookUpFtError( int fterror )
+	{
+		std::map<int, const char*>::const_iterator i =
+			ft_error_map.find( fterror );
+		
+		return i != ft_error_map.end()
+			? std::string(i->second != 0 ? i->second : "" )
+			: std::string() ;
+	}
 }
 
 } // end of namespace

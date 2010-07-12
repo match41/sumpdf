@@ -37,6 +37,14 @@
 
 namespace pdf {
 
+class Backtrace ;
+typedef boost::error_info<struct ErrMsgTag, std::string>	ErrorMsg ;
+
+Exception::Exception( )
+{
+	*this << expt::BacktraceInfo( Backtrace() ) ;
+}
+/*
 Exception::Exception( boost::format fmt )
 {
 	*this << BacktraceInfo(Backtrace()) << ErrorMsg( fmt.str() ) ;
@@ -97,5 +105,6 @@ ParseError::ParseError( boost::format fmt )
 	: Exception( fmt )
 {
 }
+*/
 
 } // end of namespace

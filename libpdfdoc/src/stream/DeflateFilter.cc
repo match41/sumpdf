@@ -40,11 +40,6 @@
 
 namespace pdf {
 
-DeflateFilter::Error::Error( const char *func, const char *msg )
-	: Exception( boost::format( "%1% error: %2%" ) % msg )
-{
-}
-
 DeflateFilter::DeflateFilter( std::auto_ptr<StreamFilter> src )
 	: m_src( src )
 {
@@ -53,9 +48,9 @@ DeflateFilter::DeflateFilter( std::auto_ptr<StreamFilter> src )
 	std::memset( &m_comp.z, 	0, sizeof(m_comp.z) ) ;
 
 	if ( ::inflateInit( &m_decomp.z ) != Z_OK )
-		throw Error( "inflateInit(): ", m_decomp.z.msg ) ;
+		throw Error() << expt::ErrMsg( m_decomp.z.msg ) ;
 	if ( ::deflateInit( &m_comp.z, 9 ) != Z_OK )
-		throw Error( "deflateInit(): ", m_decomp.z.msg ) ;
+		throw Error() << expt::ErrMsg( m_comp.z.msg ) ;
 
     m_decomp.buf.reserve( m_buf_size ) ;
 	m_comp.buf.resize( m_buf_size ) ;
@@ -115,7 +110,8 @@ std::size_t DeflateFilter::Read( unsigned char *data, std::size_t size )
 		{
 			PrintHex( std::cerr, m_decomp.z.next_in, m_decomp.z.avail_in ) ;
 		
-			throw StreamError( boost::format( "inflate() error %2%: %1%" )
+			throw StreamError()
+				<< expt::FormattedMsg( boost::format( "inflate() error %2%: %1%" )
 				% (m_comp.z.msg != 0  ? std::string( m_comp.z.msg ) :
 					"unknown" )
 				% result ) ; 
@@ -157,8 +153,9 @@ std::size_t DeflateFilter::Write( const unsigned char *data, std::size_t size )
 			}
 		}
 		else
-			throw StreamError(
-				boost::format( "deflate() error: %1%" ) % m_comp.z.msg ); 
+			throw StreamError()
+				<< expt::FormattedMsg(
+					boost::format( "deflate() error: %1%" ) % m_comp.z.msg ); 
 	}
 	
 	return offset ;
@@ -202,7 +199,8 @@ void DeflateFilter::Rewind( )
 
 	using boost::format ;
 	if ( ::inflateReset( &m_decomp.z ) != Z_OK )
-		throw ParseError( format("inflateReset() error: %1%") % m_decomp.z.msg); 
+		throw ParseError()
+			<< expt::FormattedMsg( format("inflateReset() error: %1%") % m_decomp.z.msg); 
 }
 
 std::size_t DeflateFilter::Length( ) const
@@ -231,7 +229,7 @@ Object DeflateFilter::NameChain( ) const
 	else if ( name.Is<void>() )
 		return Name( "FlateDecode" ) ;
 	else
-		throw Exception( "invalid filter" ) ;
+		throw Exception() << expt::ErrMsg( "invalid filter" ) ;
 }
 
 StreamFilter* DeflateFilter::GetInner( )

@@ -65,11 +65,7 @@ public :
 	
 	void Flush( ) ;
 	
-	class Error : public Exception
-	{
-	public :
-		Error( const char *func, const char *msg ) ;
-	} ;
+	struct Error : virtual Exception {} ;
 
 	Name RawFormat( ) const ;
 

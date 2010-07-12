@@ -136,7 +136,7 @@ Color::Space RealColorSpace::NameToSpace( const std::string& name )
 	else if ( name == "DeviceCMYK" )
 		return Color::cmyk ;
 	else
-		throw Exception( "unknown color space name" ) ;
+		throw Exception() << expt::ErrMsg( "unknown color space name" ) ;
 }
 
 std::size_t RealColorSpace::ColorCount( ) const

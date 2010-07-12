@@ -94,12 +94,12 @@ RealGlyph::RealGlyph( unsigned idx, FT_Face face )
 	// in small font we don't have hinting
 	FT_Error error = FT_Load_Glyph( face, idx, FT_LOAD_NO_SCALE ) ;
 	if ( error != 0 )
-		throw FontException(
+		throw FontException() << expt::FormattedMsg(
 			boost::format( "cannot load glyph %1%" ) % idx ) ;
 
 	error = FT_Get_Glyph( face->glyph, &m_glyph ) ;
 	if ( error != 0 )
-		throw FontException(
+		throw FontException() << expt::FormattedMsg(
 			boost::format( "cannot copy glyph %1%" ) % idx ) ;
 
 	m_met = face->glyph->metrics ;

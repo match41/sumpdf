@@ -285,7 +285,11 @@ const T& Object::As( ) const
 	}
 	catch ( std::exception& e )
 	{
-		throw BadType( TypeID(), typeid(T), e.what(), DumpString() ) ;
+		throw BadType()
+			<< expt::SourceType( TypeID().name() )
+			<< expt::DestType( TypeID().name() )
+			<< expt::ErrMsg( e.what() )
+			<< expt::Token( DumpString() ) ;
 	}
 }
 
@@ -302,7 +306,11 @@ T& Object::As( )
 	}
 	catch ( std::exception& e )
 	{
-		throw BadType( TypeID(), typeid(T), e.what(), DumpString() ) ;
+		throw BadType()
+			<< expt::SourceType( TypeID().name() )
+			<< expt::DestType( typeid(T).name() )
+			<< expt::ErrMsg( e.what() )
+			<< expt::Token( DumpString() ) ;
 	}
 }
 

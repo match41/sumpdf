@@ -135,7 +135,7 @@ Sfnt::Sfnt( FT_FaceRec_ *face )
 	m_impl->head = reinterpret_cast<TT_Header*>(
 		FT_Get_Sfnt_Table( m_impl->face, ft_sfnt_head ) ) ;
 	if ( m_impl->head == 0 )
-		throw FontException( "head table not loaded yet" ) ;
+		throw FontException() << expt::ErrMsg( "head table not loaded yet" ) ;
 	
 	// the value from the table should match with freetype
 	PDF_ASSERT( m_impl->head->Units_Per_EM == m_impl->face->units_per_EM ) ;
@@ -154,8 +154,11 @@ std::vector<uchar> Sfnt::ReadTable( const Table& tab ) const
 	unsigned long size = tab.length ;
 	FT_Error e = FT_Load_Sfnt_Table( m_impl->face, tab.tag, 0, &table[0],
 		&size ) ;
+		
 	if ( e != 0 || size != tab.length )
-		throw FontException( "cannot load table" ) ;
+		throw FontException()
+			<< expt::ErrMsg( "cannot load table" )
+			<< expt::Name( TagName( tab.tag ) ) ;
 	
 	return table ;
 }
@@ -192,7 +195,9 @@ void Sfnt::LoadLocation( )
 
 		// offset must be monotonic increasing
 		if ( !m_impl->loca.empty() && offset < m_impl->loca.back() )
-			throw FontException( "invalid glyph offset in loca table" ) ;
+			throw FontException()
+				<< expt::ErrMsg( "invalid glyph offset in loca table" )
+				<< expt::Offset( offset ) ;
 
 		m_impl->loca.push_back( offset ) ;
 	}
@@ -205,7 +210,9 @@ void Sfnt::LoadTableInfo( )
 	unsigned long count = sizeof(tmp) ;
 	FT_Error e = FT_Load_Sfnt_Table( m_impl->face, 0, 0, tmp, &count ) ;
 	if ( e != 0 || count != sizeof(tmp) )
-		throw FontException( "can't load truetype font" ) ;
+		throw FontException()
+			<< expt::ErrMsg( "can't load truetype font" )
+			<< expt::FTError( e ) ;
 
 	// the first 4 byte is called "scaler type", which should be 0x00010000
 	// the next 2 byte is the number of table in the file. we want this
@@ -220,7 +227,9 @@ void Sfnt::LoadTableInfo( )
 	count = table_dir.size() ;
 	e = FT_Load_Sfnt_Table( m_impl->face, 0, 12, &table_dir[0], &count ) ;
 	if ( e != 0 )
-		throw FontException( "can't load truetype font" ) ;
+		throw FontException()
+			<< expt::ErrMsg( "can't load truetype font" )
+			<< expt::FTError( e ) ;
 	ReadStream dir_str( &table_dir[0], table_dir.size() ) ;
 
 	Impl::TableVec& tables = m_impl->tables ;
@@ -299,7 +308,7 @@ u32 Sfnt::WriteSubset(
 		Count( required_tables ) : m_impl->tables.size() ) ;
 	
 	if ( table_used >= Count(entry_selectors) )
-		throw FontException( "too many tables" ) ;
+		throw FontException() << expt::ErrMsg( "too many tables" ) ;
 	
 	int selector = entry_selectors[table_used];
 
@@ -347,7 +356,7 @@ void Sfnt::CopyTable( std::streambuf *s, const Table& tab ) const
 	if ( tab.tag == TTAG_head )
 	{
 		if ( data.size() < 8 + sizeof(u32) )
-			throw FontException( "head table too small" ) ;
+			throw FontException() << expt::ErrMsg( "head table too small" ) ;
 		
 		// overwrite checksum adjustmemt to zero
 		std::memset( &data[8], 0, sizeof(u32) ) ;
@@ -381,8 +390,9 @@ Sfnt::Table Sfnt::FindTable( u32 tag ) const
 		PDF_ASSERT( i->second != 0 ) ;
 		return *i->second ;
 	}
-	throw FontException( boost::format(
-		"required table \"%1%\" not found!" ) % TagName( tag ) ) ;
+	throw FontException()
+		<< expt::ErrMsg( "required table not found!" )
+		<< expt::Name( TagName( tag ) ) ;
 }
 
 void Sfnt::GenerateTable(
@@ -485,7 +495,8 @@ void Sfnt::CopyGlyph(
 				glyph_size ) ;
 		
 		if ( static_cast<std::size_t>( count ) != glyph_size )
-			throw FontException( "cannot write to destination glyf table" ) ;
+			throw FontException()
+				<< expt::ErrMsg( "cannot write to destination glyf table" ) ;
 	}
 }
 
@@ -609,7 +620,7 @@ u32 Sfnt::WriteTableDirectory(
 	}
 	
 	if ( head_offset == 0 )
-		throw FontException( "missing head table" ) ;
+		throw FontException() << expt::ErrMsg( "missing head table" ) ;
 	
 	return head_offset ;
 }

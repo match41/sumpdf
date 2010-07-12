@@ -137,8 +137,7 @@ bool DictReader::SwapAt( Dictionary::iterator i, T& result )
 	}
 	catch ( Exception& e )
 	{
-		e.Add( boost::format( "while detaching name \"%1%\" from dictionary." )
-			% i->first ) ;
+		e << expt::Name( i->first.Str() ) ;
 		throw ;
 	}
 }

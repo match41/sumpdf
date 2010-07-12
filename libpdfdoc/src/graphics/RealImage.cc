@@ -58,7 +58,7 @@ RealImage::RealImage( Stream& str, File *file )
 	}
 	catch ( Exception& e )
 	{
-		e.Add( "Exception thrown for RealImage" ) ;
+//		e.Add( "Exception thrown for RealImage" ) ;
 		throw ;
 	}
 }
@@ -73,7 +73,8 @@ void RealImage::Init( Dictionary& dict, File *file )
 	if (!dr.Detach( "Width", 			m_width )	||
 		!dr.Detach( "Height",			m_height )	||
 		!dr.Detach( "BitsPerComponent",	m_depth )	)
-		throw Exception( "invalid image without width or height" ) ;
+		throw Exception()
+			<< expt::ErrMsg( "invalid image without width or height" ) ;
 }
 
 RealImage::RealImage( std::istream& is )

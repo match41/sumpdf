@@ -60,7 +60,7 @@ std::istream& Token::PeekPrefix( std::istream& is, Token& prefix )
 			int ich2 = is.peek() ;
 			
 			if ( !is.putback( ich ) )
-				throw ParseError( "cannot putback!" ) ;
+				throw ParseError() << expt::ErrMsg( "cannot putback!" ) ;
 			
 			if (  ich2 != std::char_traits<char>::eof() )
 			{

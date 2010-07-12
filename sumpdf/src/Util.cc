@@ -149,7 +149,7 @@ QColor ToQColor( const Color& c )
 			result.setRgbF( c.Gray(), c.Gray(), c.Gray() ) ;
 			break ;
 		default :
-			throw Exception( "unsupported colour space" ) ;
+			throw Exception() << expt::ErrMsg( "unsupported colour space" ) ;
 	}
 	return result ;
 }

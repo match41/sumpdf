@@ -44,12 +44,14 @@ namespace pdf {
 CompositeFont::CompositeFont( DictReader& dict, FontDb *ft )
 {
 	if ( !dict.Detach( "BaseFont", m_base_font ) )
-		throw FontException( "missing BaseFont in Type0 font dictionary" ) ;
+		throw FontException()
+			<< expt::ErrMsg( "missing BaseFont in Type0 font dictionary" ) ;
 	
 	ArrayReader descendant ;
 	if ( !dict.Detach( "DescendantFonts", descendant ) ||
 		descendant->size() == 0 )
-		throw FontException("missing DescendantFonts in Type0 font dictionary");
+		throw FontException()
+			<< expt::ErrMsg( "missing DescendantFonts in Type0 font dictionary");
 
 	DictReader cidfont ;
 	descendant.Detach( 0, cidfont ) ;

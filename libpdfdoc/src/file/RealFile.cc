@@ -66,7 +66,7 @@ RealFile::RealFile( std::istream *is )
 		std::ostringstream oss ;
 		oss << "object count mismatch: trailer: " << obj_count
 		    << " xref: " << m_objs.size() ;
-		throw ParseError( oss.str() ) ;
+		throw ParseError() << expt::ErrMsg( oss.str() ) ;
 	}
 }
 
@@ -131,17 +131,18 @@ void RealFile::ReadType( const Ref& link, Object& obj )
 	std::size_t offset = m_objs.at( link.ID() ) ;
 	m_in->seekg( offset ) ;
 
-	if ( !ReadNextObj( obj ) )
+	try
 	{
-		std::ostringstream ss ;
-		ss << "cannot read object ID " << link
-		   << " offset: " << std::hex << offset
-		   /*<< " current token: \"" << objstr.Get() << "\""*/ ;
-		throw ParseError( ss.str() ) ;
+		ReadNextObj( obj ) ;
+	}
+	catch ( ParseError& e )
+	{
+		e << expt::ObjID( link.ID() ) << expt::Offset( offset ) ;
+		throw ;
 	}
 }
 
-bool RealFile::ReadNextObj( Object& obj )
+void RealFile::ReadNextObj( Object& obj )
 {
 	std::size_t id, gen ;
 	
@@ -158,12 +159,12 @@ bool RealFile::ReadNextObj( Object& obj )
 			if ( objstr.Get() == "endobj" )
 			{
 				obj.Swap( r ) ;
-				return true ;
+				return ;
 			}
 			else if ( objstr.Get() == "stream" )
 			{
 				obj = ReadStream( r.As<Dictionary>() ) ;
-				return true ;
+				return ;
 			}
 			
 			// if the objstr is neither "endobj" nor "stream", it will
@@ -171,7 +172,7 @@ bool RealFile::ReadNextObj( Object& obj )
 		}
 	}
 
-	return false ;
+	throw ParseError() << expt::Token( objstr.Get() ) ;
 }
 
 template <typename T>
@@ -205,11 +206,8 @@ void RealFile::BasicRead( const Ref& link, T& result )
 		}
 	}
 	
-	std::ostringstream ss ;
-	ss << "cannot read object ID " << link
-	   << " offset: 0x" << std::setfill('0') << std::setw(8) << std::hex << offset
-	   << " current token: \"" << objstr.Get() << "\"" ;
-	throw ParseError( ss.str() ) ;
+	throw ParseError() << expt::ObjID( link.ID() ) << expt::Offset( offset )
+		<< expt::Token( objstr.Get() ) ;
 }
 
 void RealFile::ReadType( const Ref& link, bool& value )
@@ -276,16 +274,10 @@ Stream RealFile::ReadStream( Dictionary& dict )
 
 	char ch ;
 	if ( !m_in->get( ch ) || ( ch != '\r' && ch != '\n' ) )
-		throw ParseError( "no newline after stream" ) ;
-
-std::cout << "char after stream = " << (int)ch << std::endl ;
+		throw ParseError() << expt::ErrMsg( "no newline after stream" ) ;
 
 	if ( ch == '\r' && m_in->peek() == '\n' )
 		m_in->get( ch ) ;
-
-std::cout << "char after stream2 = " << (int)ch << std::endl ;
-
-std::cout << "char after stream3 = " << (int)m_in->peek() << std::endl ;
 
 	// Length may be indirect object
 	Object length = dict["Length"] ;
@@ -295,8 +287,6 @@ std::cout << "char after stream3 = " << (int)m_in->peek() << std::endl ;
 		dict.Set( "Length", ReadObj( length ) ) ;
 		m_in->seekg( pos ) ;
 	}
-
-std::cout << "char after stream3 = " << (int)m_in->peek() << std::endl ;
 
 	return Stream( m_in->rdbuf(), m_in->tellg( ), dict ) ;
 }
@@ -344,7 +334,7 @@ void RealFile::ReadXRef( std::size_t offset, Dictionary& trailer )
 			ReadXRefStream( offset, trailer ) ;
 	}
 	else
-		throw ParseError( "can't read xref marker" ) ;
+		throw ParseError() << expt::ErrMsg( "can't read xref marker" ) ;
 }
 
 void RealFile::ReadXRefStream( std::size_t offset, Dictionary& trailer )
@@ -356,14 +346,15 @@ void RealFile::ReadXRefStream( std::size_t offset, Dictionary& trailer )
 	ReadNextObj( obj ) ;
 	Stream& s = obj.As<Stream>() ;
 	
-	std::cout << "read: " << s.Self() << std::endl ;
+std::cout << "read: " << s.Self() << std::endl ;
 	
 	std::vector<unsigned char> raw ;
 	s.CopyData( raw ) ;
 	
 	PrintHex( std::cout, &raw[0], raw.size() ) ;
 	
-	throw ParseError( "PDF 1.5 object streams are not supported yet" ) ;
+	throw ParseError()
+		<< expt::ErrMsg( "PDF 1.5 object streams are not supported yet" ) ;
 }
 
 void RealFile::ReadXRefTable( Dictionary& trailer )
@@ -382,10 +373,14 @@ void RealFile::ReadXRefTable( Dictionary& trailer )
 		
 			std::istringstream ss ( line ) ;
 			if ( !( ss >> start >> count ) )
-				throw std::runtime_error( "can't read object count in xref" ) ;
+				throw ParseError()
+					<< expt::Token( line )
+					<< expt::ErrMsg( "can't read object count in xref" ) ;
 		}
 		else
-			throw std::runtime_error( "can't read object count in xref" ) ;
+			throw ParseError()
+				<< expt::Token( line )
+				<< expt::ErrMsg( "can't read object count in xref" ) ;
 		
 		if ( start + count > m_objs.size() )
 			m_objs.resize( start + count ) ;
@@ -401,7 +396,9 @@ void RealFile::ReadXRefTable( Dictionary& trailer )
 				m_objs[start+index] = obj_offset ;
 	
 			else
-				throw ParseError( "can't read object offset in xref" ) ;
+				throw ParseError()
+					<< expt::Token( line )
+					<< expt::ErrMsg( "can't read object count in xref" ) ;
 			
 			index++ ;
 		}
@@ -461,7 +458,7 @@ std::size_t RealFile::ReadXRefOffset( )
 		    return offset ;
 	    }
 	}
-	throw ParseError( "can't read xref offset" ) ;
+	throw ParseError() << expt::ErrMsg( "can't read xref offset" ) ;
 }
 
 std::istream& RealFile::ReadLine( std::istream& is, std::string& line )

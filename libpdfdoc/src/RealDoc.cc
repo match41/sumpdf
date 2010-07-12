@@ -35,6 +35,7 @@
 #include "font/BaseFont.hh"
 
 #include "util/Debug.hh"
+#include "util/Exception.hh"
 
 // freetype headers
 #include <ft2build.h>
@@ -42,6 +43,7 @@
 
 #include <sstream>
 #include <stdexcept>
+#include <cerrno>
 
 #include <iostream>
 
@@ -70,7 +72,9 @@ void RealDoc::Read( const std::string& filename )
 {
 	m_readfs.open( filename.c_str(), std::ios::in | std::ios::binary ) ;
 	if ( !m_readfs )
-		throw std::runtime_error( "cannot open file " + filename ) ;
+		throw FileError( )
+			<< expt::ErrorNumber( errno )
+			<< expt::FileName( filename ) ;
 
 	// read the cross reference of the PDF file
 	RealFile file( &m_readfs ) ;
@@ -91,7 +95,9 @@ void RealDoc::Write( const std::string& filename ) const
 {
 	std::ofstream fs( filename.c_str(), std::ios::out | std::ios::binary ) ;
 	if ( !fs )
-		throw std::runtime_error( "cannot open file " + filename ) ;
+		throw FileError( )
+			<< expt::ErrorNumber( errno )
+			<< expt::FileName( filename ) ;
 
 	RealFile file( &fs ) ;
 	file.WriteTrailer(
