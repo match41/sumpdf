@@ -89,41 +89,8 @@ RealImage::RealImage( std::istream& is )
 		if ( key.Is<Token>() && key.As<Token>().Get() == "ID" )
 		{
 std::cout << "got ID" << std::endl ;
-			while ( is )
-			{
-				int ich = is.rdbuf()->sgetc() ;
-				if ( ich == std::istream::traits_type::eof() )
-				{
-					std::cout << "EOF!" << std::endl ;
-					return ;
-				}
-
-				char ch = std::istream::traits_type::to_char_type(ich) ;
-
-				if ( ch == 'E' )
-				{
-					is.rdbuf()->sbumpc() ;
-					
-					int ich2 = is.rdbuf()->sgetc() ;
-					if ( ich2 == std::istream::traits_type::eof() )
-					{
-						std::cout << "EOF!" << std::endl ;
-						return ;
-					}
-					
-					if ( std::istream::traits_type::to_char_type(ich2) == 'I' )
-					{
-						std::cout << "finished inline image" << std::endl ;
-						std::cout << "width = " << m_width << " height = "
-						<< m_height << "\n" << dict << std::endl ;
-						Init( dict, 0 ) ;
-						return ;
-					}
-				}
-				
-				m_bytes.push_back( ch ) ;
-				is.rdbuf()->sbumpc() ;
-			}
+			ReadContent( dict, is ) ;
+			return ;
 		}
 		else if ( key.Is<Name>() )
 		{
@@ -137,7 +104,46 @@ std::cout << "got ID" << std::endl ;
 			}
 		}
 	}
-	std::cout << "premature finish" << std::endl ;
+	throw Exception() << expt::ErrMsg( "premature finish" ) ;
+}
+
+void RealImage::ReadContent( Dictionary& dict, std::istream& is )
+{
+	while ( is )
+	{
+		int ich = is.rdbuf()->sgetc() ;
+		if ( ich == std::istream::traits_type::eof() )
+		{
+			std::cout << "EOF!" << std::endl ;
+			return ;
+		}
+
+		char ch = std::istream::traits_type::to_char_type(ich) ;
+
+		if ( ch == 'E' )
+		{
+			is.rdbuf()->sbumpc() ;
+			
+			int ich2 = is.rdbuf()->sgetc() ;
+			if ( ich2 == std::istream::traits_type::eof() )
+			{
+				std::cout << "EOF!" << std::endl ;
+				return ;
+			}
+			
+			if ( std::istream::traits_type::to_char_type(ich2) == 'I' )
+			{
+				std::cout << "finished inline image" << std::endl ;
+				std::cout << "width = " << m_width << " height = "
+				<< m_height << "\n" << dict << std::endl ;
+				Init( dict, 0 ) ;
+				return ;
+			}
+		}
+		
+		m_bytes.push_back( ch ) ;
+		is.rdbuf()->sbumpc() ;
+	}
 }
 
 RealImage::~RealImage( )

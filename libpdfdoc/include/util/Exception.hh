@@ -30,13 +30,12 @@
 #include "util/Export.hh"
 
 #include <boost/format/format_fwd.hpp>
-#include <boost/exception.hpp>
+#include <boost/exception/exception.hpp>
+#include <boost/exception/info.hpp>
 
 #include <typeinfo>
 #include <exception>
 #include <string>
-
-//#include <boost/shared_ptr.hpp>
 
 namespace pdf {
 
