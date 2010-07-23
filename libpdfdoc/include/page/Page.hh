@@ -77,6 +77,9 @@ public :
 	
 	virtual void SetRawContent(
 		const unsigned char *data, std::size_t size ) = 0 ;
+
+	virtual void AddInlineImage( std::size_t width, std::size_t height,
+		const std::string& file ) = 0 ;
 } ;
 
 } // end of namespace

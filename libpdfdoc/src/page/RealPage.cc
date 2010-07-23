@@ -48,7 +48,9 @@
 #include <boost/foreach.hpp>
 
 #include <algorithm>
+#include <fstream>
 #include <iostream>
+#include <iterator>
 #include <stdexcept>
 
 namespace pdf {
@@ -257,6 +259,42 @@ void RealPage::SetRawContent( const unsigned char *data, std::size_t size )
 	
 	// throw away the existing resources and start over
 	Clear( ) ;
+	m_cstrs.push_back( str ) ;
+}
+
+void RealPage::AddInlineImage( std::size_t width, std::size_t height,
+		const std::string& file )
+{
+	std::ostringstream bi ;
+	bi	<< width/10 << " 0 0 " << height/10 << " 0 0 cm\n"
+		<< "BI\n"
+		<< "/W "	<< width	<< "\n"
+		<< "/H "	<< height	<< "\n"
+		<< "/CS "	<< "/RGB"	<< "\n"
+		<< "/BPC "	<< "8"		<< "\n"
+		<< "/F "	<< "/DCT"	<< "\n"
+		<< "ID\n" ;
+
+	std::string bis = bi.str() ;
+
+	Stream str ;
+	str.Append( reinterpret_cast<unsigned char*>(&bis[0]), bis.size() ) ;
+	
+	// read the whole file and put it in the stream
+	std::ifstream fstr( file.c_str(), std::ios::binary | std::ios::in ) ;
+	std::vector<char> fdata(
+		(std::istreambuf_iterator<char>( fstr ) ),
+		(std::istreambuf_iterator<char>() ) ) ;
+	
+	std::size_t i = fdata.size() ;
+	str.Append( reinterpret_cast<unsigned char*>(&fdata[0]), fdata.size() ) ;
+	
+	// end of image marker
+	str.Append( reinterpret_cast<unsigned char*>("\nEI\n"), 4 ) ;
+	
+	str.Flush( ) ;
+	
+	// append the stream to the existing one
 	m_cstrs.push_back( str ) ;
 }
 

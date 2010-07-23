@@ -77,6 +77,9 @@ public :
 
 	int Rotation( ) const ;
 	
+	void AddInlineImage( std::size_t width, std::size_t height,
+		const std::string& file ) ;
+	
 	void VisitGraphics( GraphicsVisitor *visitor ) const ;
 	void SetContent( const std::vector<Graphics*>& gfx ) ;
 

@@ -98,7 +98,7 @@ std::vector<unsigned char> Win32FontDb::FindFont(
 	
 	// TODO: should call FormatMessage() actually
 	if ( hfont == NULL )
-		throw FontException( "Win32 CreateFont() error" ) ;
+		throw FontException( ) << expt::ErrMsg( "Win32 CreateFont() error" ) ;
 	
 	SelectObject( hdc, (HGDIOBJ)hfont ) ;
 	DWORD size = GetFontData( hdc, 0, 0, 0, 0 ) ;
@@ -109,13 +109,13 @@ std::vector<unsigned char> Win32FontDb::FindFont(
 		return result ;
 	}
 	DWORD e = GetLastError() ;
-    throw FontException( boost::format( "cannot GetFontData(): %1%" )
+    throw FontException() << expt::FormattedMsg( boost::format( "cannot GetFontData(): %1%" )
         % e ) ;
 }
 
 std::string Win32FontDb::FindFontPath( FT_FaceRec_ *ref )
 {
-	throw FontException( "FontFont( FT_Face ) is not supported" ) ;
+	throw FontException( ) << expt::ErrMsg( "FontFont( FT_Face ) is not supported" ) ;
 }
 
 } // end of namespace

@@ -45,7 +45,7 @@
 int main( int argc, char **argv )
 {
 	pdf::Doc *doc = pdf::CreateDoc( ) ;
-	if ( argc >= 2 )
+/*	if ( argc >= 2 )
 	{
 		try
 		{
@@ -58,17 +58,18 @@ int main( int argc, char **argv )
 		}
 	}
 	return 0 ;
-	
-//	pdf::Page *p = doc->AppendPage( ) ;
-	pdf::Page *p = doc->GetPage( 0 ) ;
+*/	
+	pdf::Page *p = doc->AppendPage( ) ;
+//	pdf::Page *p = doc->GetPage( 0 ) ;
 	if ( argc >= 3 )
 	{
-		std::ifstream file( argv[2] ) ;
+/*		std::ifstream file( argv[2] ) ;
 		std::vector<unsigned char> buf(
 			(std::istreambuf_iterator<char>( file )),
 			(std::istreambuf_iterator<char>()) ) ;
 		
-		p->SetRawContent( &buf[0], buf.size() ) ;
+		p->SetRawContent( &buf[0], buf.size() ) ;*/
+		p->AddInlineImage( 3154, 4731, "e:\\IMG_0689.JPG" ) ;
 	}
 	else
 	{
