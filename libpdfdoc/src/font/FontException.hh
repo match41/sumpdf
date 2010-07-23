@@ -33,15 +33,15 @@ namespace pdf {
 ///	brief description
 /**	The FontException class represents
 */
-class FontException : public Exception
+struct FontException : virtual Exception {} ;
+
+namespace expt
 {
-public :
-	explicit FontException( const std::string& msg ) ;
-	explicit FontException( boost::format fmt ) ;
-	FontException( const std::string& msg, int fterror ) ;
+	// back-trace information. should be present for all exceptions
+	typedef boost::error_info<struct FtErrTag, int>	FTError ;
 	
-	static std::string LookUpFtError( int fterror ) ;
-} ;
+	std::string LookUpFtError( int fterror ) ;
+}
 
 } // end of namespace
 

@@ -64,7 +64,8 @@ Type GetType( FT_FaceRec_ *face )
 			return type2 ;
 	}
 	else
-		throw FontException( "unknown font type: " + std::string(format) ) ;
+		throw FontException()
+			<< expt::ErrMsg( "unknown font type: " + std::string(format) ) ;
 }
 
 Weight ParseWeight( const char *str )

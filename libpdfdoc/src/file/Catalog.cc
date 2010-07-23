@@ -115,13 +115,14 @@ Catalog::Catalog( const Ref& link, File *file, FontDb *fontdb )
 	if ( !self.Detach( "Type", type ) || type != "Catalog" )
 	{
 		using boost::format ;
-		throw ParseError( format("invalid catalog type: %1%") % type ) ;
+		throw ParseError()
+			<< expt::FormattedMsg( format("invalid catalog type: %1%") % type ) ;
 	}
 
 	// page tree is mandatory
 	DictReader tree ;
 	if ( !self.Detach( "Pages", tree ) )
-		throw ParseError( "no page tree in catalog" ) ;
+		throw ParseError() << expt::ErrMsg( "no page tree in catalog" ) ;
 	
 	// root page tree has no parent
 	m_tree = new PageTree( fontdb ) ;

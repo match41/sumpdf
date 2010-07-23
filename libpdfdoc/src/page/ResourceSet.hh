@@ -66,6 +66,9 @@ public :
 	typedef typename Map::left_const_iterator	iterator ;
 	
 public :
+	// back-trace information. should be present for all exceptions
+	typedef boost::error_info<struct KeyTag, Name>	Key ;
+
 	template <typename Func>
 	void MassProduce( DictReader& dict, Func func )
 	{
@@ -78,8 +81,7 @@ public :
 			}
 			catch ( Exception& e )
 			{
-				e.Add( boost::format( "Exception thrown when loading %1%" )
-					% i->first ) ;
+				e << Key( i->first ) ;
 				throw ;
 			}
 		}

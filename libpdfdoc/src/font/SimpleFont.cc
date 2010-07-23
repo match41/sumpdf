@@ -154,12 +154,13 @@ SimpleFont::SimpleFont( DictReader& reader, FontDb *font_db )
 		
 		// base font is absent in type 3 fonts
 		if ( m_impl->type == font::type0 )
-			throw FontException( "Type0 font is not supported yet" ) ;
+			throw Unsupported()
+				<< expt::ErrMsg( "Type0 font is not supported yet" ) ;
 			
 		if ( m_impl->type != font::type3 )
 		{
 			if ( !reader.Detach( "BaseFont", m_impl->base_font ) )
-				throw FontException( "no BaseFont for font" ) ;
+				throw FontException() << expt::ErrMsg( "no BaseFont for font" );
 		}
 		
 		reader.Detach( "FirstChar",	m_impl->first_char ) ;
@@ -179,10 +180,11 @@ SimpleFont::SimpleFont( DictReader& reader, FontDb *font_db )
 		else if ( m_impl->type != font::type3 )
 		{
 			if ( !InitWithStdFont( m_impl->base_font.Str(), font_db )  )
-				throw FontException( "no font name. can't load font" ) ;
+				throw FontException()
+					<< expt::ErrMsg( "no font name. can't load font" ) ;
 		}
 		else
-			throw FontException( "no descriptor?" ) ;
+			throw FontException() << expt::ErrMsg( "no descriptor?" ) ;
 		
 		if ( reader.Detach( "ToUnicode",	m_impl->to_unicode ) )
 		{
@@ -192,9 +194,12 @@ SimpleFont::SimpleFont( DictReader& reader, FontDb *font_db )
 	}
 	catch ( Exception& e )
 	{
-		e.Add( boost::format(
-			"cannot read font:\n%1%\n"
-			"Font Dictionary: %2%\n" ) % e.what() % *reader ) ;
+		std::ostringstream os ;
+		os << *reader ;
+		e << expt::Token( os.str() ) ;
+//		e.Add( boost::format(
+//			"cannot read font:\n%1%\n"
+//			"Font Dictionary: %2%\n" ) % e.what() % *reader ) ;
 		throw ;
 	}
 	
@@ -373,16 +378,18 @@ void SimpleFont::LoadGlyphs( )
 			FT_LOAD_NO_SCALE ) ;
 		
 		if ( error != 0 )
-			throw FontException(
-				boost::format( "cannot load glyph %2% from %1%" )
-				% BaseName() % char_code ) ;
+			throw FontException()
+				<< expt::ErrMsg( "cannot load glyph from font: %1%" )
+				<< expt::Name( BaseName() )
+				<< expt::Index( char_code ) ;
 
 		FT_Glyph glyph ;
 		error = FT_Get_Glyph( m_impl->face->glyph, &glyph ) ;
 		if ( error != 0 )
-			throw FontException(
-				boost::format( "cannot copy glyph %2% from %1%" )
-				% BaseName() % char_code ) ;
+			throw FontException()
+				<< expt::ErrMsg( "cannot copy glyph" )
+				<< expt::Name( BaseName() )
+				<< expt::Index( char_code ) ;
 
 		if ( glyph->format != FT_GLYPH_FORMAT_OUTLINE )
 			std::cerr	<< "font " << BaseName() << " has a non-outline glyph"
@@ -501,7 +508,9 @@ font::Type SimpleFont::SubType( const Name& name )
 	    name ) ;
 	    
 	if ( ptr == pdf::End( m_font_types ) )
-		throw FontException( boost::format("unknown font type: %1%") % name) ;
+		throw FontException()
+			<< expt::ErrMsg( "unknown font type" )
+			<< expt::Name( name.Str() ) ;
 
 	return static_cast<font::Type>( ptr - pdf::Begin( m_font_types ) ) ;
 }

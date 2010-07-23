@@ -252,7 +252,7 @@ bool GraphicsState::OnCommand( ContentOp& op, const ResourcesDict *res )
 	}
 	catch ( Exception& e )
 	{
-		e.Add( boost::format( "Error when parsing \"%1%\"" ) % op ) ;
+//		e.Add( boost::format( "Error when parsing \"%1%\"" ) % op ) ;
 		throw ;
 	}
 }

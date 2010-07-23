@@ -35,11 +35,8 @@ namespace pdf {
 
 	The StreamError class represent
 */
-class StreamError : public Exception
+struct StreamError : virtual Exception
 {
-public :
-	explicit StreamError( const std::string& msg ) ;
-	explicit StreamError( boost::format fmt ) ;
 } ;
 
 } // end of namespace

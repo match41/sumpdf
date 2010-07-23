@@ -115,7 +115,7 @@ void Function::ReadType0( DictReader& dict, Stream& data )
 	
 	// BitsPerSample is required
 	if ( !dict.Detach( "BitsPerSample", m_impl->bits_per_sample ) )
-		throw ParseError( "unknown function bits per sample" ) ;
+		throw ParseError() << expt::ErrMsg("unknown function bits per sample") ;
 	
 	// Order is optional. default value is 1.
 	if ( !dict.Detach( "Order", m_impl->order ) )
@@ -157,16 +157,16 @@ void Function::ReadCommon( DictReader& dict )
 	
 	// type is required
 	if ( !dict.Detach( "FunctionType", m_impl->type ) )
-		throw ParseError( "unknown function type" ) ;
+		throw ParseError() << expt::ErrMsg( "unknown function type" ) ;
 
 	// domain is also required
 	if ( !dict.Detach( "Domain", m_impl->domain ) )
-		throw ParseError( "unknown function domain" ) ;
+		throw ParseError() << expt::ErrMsg( "unknown function domain" ) ;
 		
 	// range is required for type 0 and 4 functions
 	if ( !dict.Detach( "Range", m_impl->range ) &&
 	     (m_impl->type == 0 || m_impl->type == 4)  )
-		throw ParseError( "unknown function range" ) ;
+		throw ParseError() << expt::ErrMsg( "unknown function range" ) ;
 }
 
 void Function::WriteCommon( Dictionary& dict, File *file )

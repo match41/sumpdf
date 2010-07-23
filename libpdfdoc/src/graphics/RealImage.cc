@@ -58,7 +58,7 @@ RealImage::RealImage( Stream& str, File *file )
 	}
 	catch ( Exception& e )
 	{
-		e.Add( "Exception thrown for RealImage" ) ;
+//		e.Add( "Exception thrown for RealImage" ) ;
 		throw ;
 	}
 }
@@ -77,7 +77,8 @@ void RealImage::Init( Dictionary& dict, File *file )
 	if (!dr.Detach( "Width", 			m_width )	||
 		!dr.Detach( "Height",			m_height )	||
 		!dr.Detach( "BitsPerComponent",	m_depth )	)
-		throw Exception( "invalid image without width or height" ) ;
+		throw Exception()
+			<< expt::ErrMsg( "invalid image without width or height" ) ;
 }
 
 RealImage::RealImage( std::istream& is )
@@ -91,36 +92,9 @@ RealImage::RealImage( std::istream& is )
 	{
 		if ( key.Is<Token>() && key.As<Token>().Get() == "ID" )
 		{
-			while ( is )
-			{
-				int ich = is.rdbuf()->sgetc() ;
-				if ( ich == std::istream::traits_type::eof() )
-				{
-					return ;
-				}
-
-				char ch = std::istream::traits_type::to_char_type(ich) ;
-
-				if ( ch == 'E' )
-				{
-					is.rdbuf()->sbumpc() ;
-					
-					int ich2 = is.rdbuf()->sgetc() ;
-					if ( ich2 == std::istream::traits_type::eof() )
-					{
-						return ;
-					}
-					
-					if ( std::istream::traits_type::to_char_type(ich2) == 'I' )
-					{
-						Init( dict, 0 ) ;
-						return ;
-					}
-				}
-				
-				m_bytes.push_back( ch ) ;
-				is.rdbuf()->sbumpc() ;
-			}
+std::cout << "got ID" << std::endl ;
+			ReadContent( dict, is ) ;
+			return ;
 		}
 		else if ( key.Is<Name>() )
 		{
@@ -133,6 +107,46 @@ RealImage::RealImage( std::istream& is )
 				dict.insert( ExpandAbbv(key.As<Name>()), value ) ;
 			}
 		}
+	}
+	throw Exception() << expt::ErrMsg( "premature finish" ) ;
+}
+
+void RealImage::ReadContent( Dictionary& dict, std::istream& is )
+{
+	while ( is )
+	{
+		int ich = is.rdbuf()->sgetc() ;
+		if ( ich == std::istream::traits_type::eof() )
+		{
+			std::cout << "EOF!" << std::endl ;
+			return ;
+		}
+
+		char ch = std::istream::traits_type::to_char_type(ich) ;
+
+		if ( ch == 'E' )
+		{
+			is.rdbuf()->sbumpc() ;
+			
+			int ich2 = is.rdbuf()->sgetc() ;
+			if ( ich2 == std::istream::traits_type::eof() )
+			{
+				std::cout << "EOF!" << std::endl ;
+				return ;
+			}
+			
+			if ( std::istream::traits_type::to_char_type(ich2) == 'I' )
+			{
+				std::cout << "finished inline image" << std::endl ;
+				std::cout << "width = " << m_width << " height = "
+				<< m_height << "\n" << dict << std::endl ;
+				Init( dict, 0 ) ;
+				return ;
+			}
+		}
+		
+		m_bytes.push_back( ch ) ;
+		is.rdbuf()->sbumpc() ;
 	}
 }
 

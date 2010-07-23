@@ -67,7 +67,7 @@ std::size_t PredictFilter::Read( unsigned char *data, std::size_t size )
 			m_idx += n ;
 		}
 		else
-			throw ParseError( "unexpected end of stream" ) ;
+			throw ParseError() << expt::ErrMsg( "unexpected end of stream" ) ;
 	}
 	return count ;
 }

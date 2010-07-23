@@ -220,7 +220,8 @@ void FontDescriptor::Read( DictReader& reader )
 		if ( !prog_reader.Detach( "Length1", m_length1 ) ||
 			 !prog_reader.Detach( "Length2", m_length2 ) ||
 			 !prog_reader.Detach( "Length3", m_length3 ) )
-			throw FontException( "missing length for type 1 font" ) ; 
+			throw FontException()
+				<< expt::ErrMsg( "missing length for type 1 font" ) ; 
 	}
 
 	// truetype font program is embbeded in the "FontFile2" stream
@@ -364,8 +365,9 @@ Ref FontDescriptor::Write(
 				prog_key = "FontFile3" ;
 			}
 			else
-				throw FontException(
-					boost::format( "unsupported font type %1%" ) % type ) ;
+				throw Unsupported( )
+					<< expt::ErrMsg( "unsupported font type" )
+					<< expt::Index( type ) ;
 			
 			self.insert( prog_key, file->WriteObj( s ) ) ;
 		}

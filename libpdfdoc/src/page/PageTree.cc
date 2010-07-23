@@ -89,7 +89,7 @@ PageNode* PageTree::CreateChild( DictReader& d )
 		p->Read( d ) ;
 	}
 	else
-		throw ParseError( "invalid page type" ) ;
+		throw ParseError() << expt::ErrMsg( "invalid page type" ) ;
 
 	return p ;
 }
@@ -107,14 +107,14 @@ void PageTree::Read( DictReader& dict )
 
 	ArrayReader pages ;
 	if ( !dict.Detach( "Kids", pages ) )
-		throw ParseError( "no children in page tree" ) ;
+		throw ParseError() << expt::ErrMsg( "no children in page tree" ) ;
 
 	for ( std::size_t i = 0 ; i < pages->size() ; ++i )
 		pages.Create( i, boost::bind( &PageTree::CreateChild, this, _1 ) ) ;
 
 	// leaf count is required
 	if ( !dict.Detach( "Count", m_count ) )
-		throw ParseError( "cannot get leaf count in page node" ) ;
+		throw ParseError() << expt::ErrMsg( "cannot get leaf count in page node" ) ;
 }
 
 void PageTree::Write(

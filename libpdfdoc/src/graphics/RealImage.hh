@@ -77,6 +77,8 @@ private :
 
 	static Name ExpandAbbv( const Name& name ) ;
 
+	void ReadContent( Dictionary& dict, std::istream& is ) ;
+
 private :
 	std::size_t		m_width ;
 	std::size_t		m_height ;

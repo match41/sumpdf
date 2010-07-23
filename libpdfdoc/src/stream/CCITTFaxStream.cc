@@ -53,7 +53,7 @@ namespace
 
 	void error( ... )
 	{
-		throw -1 ;
+		throw Exception() ;
 	}
 }
 
@@ -101,7 +101,7 @@ Object CCITTFaxStream::NameChain( ) const
 	else if ( name.Is<void>() )
 		return Name( "CCITTFaxDecode" ) ;
 	else
-		throw Exception( "invalid filter" ) ;
+		throw Exception() << expt::ErrMsg( "invalid filter" ) ;
 }
 
 StreamFilter* CCITTFaxStream::Clone( ) const

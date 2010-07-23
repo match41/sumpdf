@@ -1119,7 +1119,7 @@ BuildInEncoding::Encoding BuildInEncoding::Parse( const Name& name )
 	else if ( name == "StandardEncoding" )
 		return standard ;
 	else
-		throw FontException( "invalid encoding" ) ;
+		throw FontException() << expt::ErrMsg( "invalid encoding" ) ;
 }
 
 Object BuildInEncoding::Write( File * ) const

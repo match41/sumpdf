@@ -64,8 +64,9 @@ std::istream& operator>>( std::istream& src, Array& array )
 
 	Token t ;
 	if ( Token::PeekPrefix( src, t ) && t.Get() != "[" )
-		throw ParseError( format("array not start with \"[\" but \"%1%\"")
-			% t.Get( ) ) ;
+		throw ParseError()
+			<< expt::ErrMsg( "array not start with \"[\"")
+			<< expt::Token( t.Get( ) ) ;
 
 	// dump the "[" token
 	src >> t ;
@@ -77,7 +78,8 @@ std::istream& operator>>( std::istream& src, Array& array )
 		if ( src >> obj )
 		{
 			if ( obj.Is<Stream>() )
-				throw ParseError( "streams must be indirect objects" ) ;
+				throw ParseError()
+					<< expt::ErrMsg( "streams must be indirect objects" ) ;
 				
 			temp.m_array.push_back( obj ) ;
 		}

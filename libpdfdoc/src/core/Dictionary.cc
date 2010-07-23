@@ -186,8 +186,9 @@ std::istream& operator>>( std::istream& src, Dictionary& dict )
 
 	Token t ;
 	if ( Token::PeekPrefix( src, t ) && t.Get() != "<<" )
-		throw ParseError( format("dictionary not start with \"<<\" but \"%1%\"")
-			% t.Get( ) ) ;
+		throw ParseError()
+			<< expt::ErrMsg( "dictionary not start with \"<<\"")
+			<< expt::Token( t.Get( ) ) ;
 	
 	// dump the "<<" token
 	src >> t ;
@@ -231,7 +232,8 @@ std::ostream& operator<<( std::ostream& os, const Dictionary& dict )
 		}
 		catch ( Exception& e )
 		{
-			e.Add( boost::format( "cannot write \"%1%\"" ) % i->first ) ;
+			e	<< expt::ErrMsg( "cannot write dictionary element" )
+				<< expt::Name( i->first.Str() ) ; 
 			throw ;
 		}
 	}

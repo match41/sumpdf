@@ -134,9 +134,8 @@ Stream::Stream( std::streambuf *file, std::streamoff offset,
 	PDF_ASSERT( m_self.find( "Length" ) != m_self.end() ) ;
 	PDF_ASSERT( m_self["Length"].Is<int>() ) ;
 
-file->pubseekpos( offset, std::ios::in ) ;
-std::cout << "char after seek = " << file->sgetc() << std::endl ;
-
+	file->pubseekpos( offset, std::ios::in ) ;
+	
 	m_data->filter.reset( new RawFilter( file, offset, m_self["Length"] ) ) ;
 
 	ApplyFilter( dict["Filter"], dict["DecodeParms"] ) ;
@@ -210,7 +209,8 @@ void Stream::ApplyFilter( const Object& filter, const Object& parms )
 			: Array( filters.size() ) ;
 
 		if ( filters.size() != parms_arr.size() )
-			throw ParseError( "filter and parameters size mismatch" ) ;
+			throw ParseError()
+				<< expt::ErrMsg( "filter and parameters size mismatch" ) ;
 		
 		for ( std::size_t i = 0 ; i < filters.size() ; i++ )
 			CreateFilter( filters[i], parms_arr[i] ) ;

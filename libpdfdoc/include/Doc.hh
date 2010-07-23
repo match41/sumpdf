@@ -154,6 +154,8 @@ public :
 	
 	virtual const DocInfo* Info( ) const = 0 ;
 	virtual DocInfo* Info( ) = 0 ;
+	
+	// exception objects
 } ;
 
 } // end of namespace

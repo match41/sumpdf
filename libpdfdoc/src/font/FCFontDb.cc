@@ -98,19 +98,19 @@ namespace
 
 		FcChar8 *filename ;
 		if ( FcPatternGetString(matched, FC_FILE, 0, &filename ) != FcResultMatch )
-			throw FontException( "cannot find font " + base_name ) ;
+			throw FontException() << expt::ErrMsg( "cannot find font " + base_name ) ;
 
 		const char *file = reinterpret_cast<const char*>( filename ) ;
 		if ( file == 0 )
-			throw FontException( "cannot find font " + base_name ) ;
+			throw FontException() << expt::ErrMsg( "cannot find font " + base_name ) ;
 
 		int idx ;
 		if ( FcPatternGetInteger( matched, FC_INDEX, 0, &idx ) != FcResultMatch )
-			throw FontException( "cannot find font " + base_name ) ;
+			throw FontException() << expt::ErrMsg( "cannot find font " + base_name ) ;
 
 		// TODO: how to embed font with index != 0?
 		if ( idx != 0 )
-			throw FontException( "font collection is not supported yet" ) ;
+			throw Unsupported() << expt::ErrMsg( "font collection is not supported yet" ) ;
 
 		std::ifstream fs( file, std::ios::binary | std::ios::in ) ;
 		std::vector<unsigned char> prog(
@@ -119,7 +119,7 @@ namespace
 		
 		using boost::format ;
 		if ( prog.empty() )
-			throw FontException( format("font file %1% is empty") % file ) ;
+			throw FontException() << expt::FormattedMsg( format("font file %1% is empty") % file ) ;
 		
 		return prog ;
 	}
@@ -152,7 +152,7 @@ std::vector<unsigned char> FCFontDb::FindFont(
 		FC_SCALABLE,	FcTypeBool,		true,
 	    NULL ) ;
 	if ( sans == 0 )
-		throw FontException( "cannot create font pattern" ) ;
+		throw FontException() << expt::ErrMsg( "cannot create font pattern" ) ;
 
 	return MatchFont( sans, base_name ) ;
 }
@@ -174,11 +174,11 @@ std::string FCFontDb::FindFontPath( FT_FaceRec_ *ref )
 
 	FcChar8 *filename ;
 	if ( FcPatternGetString(matched, FC_FILE, 0, &filename ) != FcResultMatch )
-		throw FontException( "cannot find font" ) ;
+		throw FontException() << expt::ErrMsg( "cannot find font" ) ;
 
 	const char *file = reinterpret_cast<const char*>( filename ) ;
 	if ( file == 0 )
-		throw FontException( "cannot find font" ) ;
+		throw FontException() << expt::ErrMsg( "cannot find font" ) ;
 
 	return file ;
 }
