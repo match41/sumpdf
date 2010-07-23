@@ -33,6 +33,7 @@
 #include "file/RealFile.hh"
 
 #include "font/BaseFont.hh"
+#include "graphics/RealImage.hh"
 
 #include "util/Debug.hh"
 
@@ -126,6 +127,11 @@ Font* RealDoc::CreateSimpleFont( FT_FaceRec_ *face )
 Font* RealDoc::CreateSimpleFont( const unsigned char *data, std::size_t size )
 {
 	return m_fonts.GetFont( data, size ) ;
+}
+
+Image* RealDoc::LoadImage( const std::string& filename )
+{
+	return new RealImage( filename ) ;
 }
 
 Page* RealDoc::AddPage( std::size_t index )

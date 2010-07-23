@@ -33,9 +33,10 @@ struct FT_FaceRec_ ;
 
 namespace pdf {
 
-class Page ;
-class Font ;
 class DocInfo ;
+class Font ;
+class Image ;
+class Page ;
 
 /*!	\brief	Base class for documents.
 	
@@ -148,6 +149,8 @@ public :
 		const unsigned char		*data,
 		std::size_t 			size ) = 0 ;
 	//@}
+	
+	virtual Image* LoadImage( const std::string& filename ) = 0 ;
 	
 	virtual const DocInfo* Info( ) const = 0 ;
 	virtual DocInfo* Info( ) = 0 ;

@@ -71,12 +71,13 @@ public :
 	Font* CreateSimpleFont( FT_FaceRec_ *face ) ;
 	Font* CreateSimpleFont( const unsigned char	*data, std::size_t size ) ;
 
+	Image* LoadImage( const std::string& filename ) ;
+
 	const DocInfo* Info( ) const ;
 	DocInfo* Info( ) ;
 
 private :
 	//! font database for loading the font files.
-//	std::auto_ptr<FontDb>	m_font_db ;
 	FontCache				m_fonts ;
 
 	//! Catalog of the document

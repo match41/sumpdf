@@ -63,6 +63,10 @@ RealImage::RealImage( Stream& str, File *file )
 	}
 }
 
+RealImage::RealImage( const std::string& filename )
+{
+}
+
 void RealImage::Init( Dictionary& dict, File *file )
 {
 	DictReader dr( dict, file ) ;

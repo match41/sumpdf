@@ -31,8 +31,9 @@
 
 #include "util/RefPtr.hh"
 
-#include <vector>
 #include <iosfwd>
+#include <string>
+#include <vector>
 
 namespace pdf {
 
@@ -50,6 +51,7 @@ class RealImage : public Image, public XObject
 {
 public :
 	explicit RealImage( std::istream& is ) ;
+	explicit RealImage( const std::string& filename ) ;
 	RealImage( Stream& str, File *file ) ;
 	~RealImage( ) ;
 
