@@ -58,7 +58,7 @@ RealImage::RealImage( Stream& str, File *file )
 	}
 	catch ( Exception& e )
 	{
-//		e.Add( "Exception thrown for RealImage" ) ;
+		e << expt::ErrMsg( "Exception thrown for RealImage" ) ;
 		throw ;
 	}
 }
