@@ -266,7 +266,7 @@ void RealPage::AddInlineImage( std::size_t width, std::size_t height,
 		const std::string& file )
 {
 	std::ostringstream bi ;
-	bi	<< width/10 << " 0 0 " << height/10 << " 0 0 cm\n"
+	bi	<< width/2 << " 0 0 " << height/2 << " 0 0 cm\n"
 		<< "BI\n"
 		<< "/W "	<< width	<< "\n"
 		<< "/H "	<< height	<< "\n"
@@ -286,11 +286,10 @@ void RealPage::AddInlineImage( std::size_t width, std::size_t height,
 		(std::istreambuf_iterator<char>( fstr ) ),
 		(std::istreambuf_iterator<char>() ) ) ;
 	
-	std::size_t i = fdata.size() ;
 	str.Append( reinterpret_cast<unsigned char*>(&fdata[0]), fdata.size() ) ;
 	
 	// end of image marker
-	str.Append( reinterpret_cast<unsigned char*>("\nEI\n"), 4 ) ;
+	str.Append( reinterpret_cast<const unsigned char*>("\nEI\n"), 4 ) ;
 	
 	str.Flush( ) ;
 	

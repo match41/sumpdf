@@ -69,7 +69,7 @@ int main( int argc, char **argv )
 			(std::istreambuf_iterator<char>()) ) ;
 		
 		p->SetRawContent( &buf[0], buf.size() ) ;*/
-		p->AddInlineImage( 3154, 4731, "e:\\IMG_0689.JPG" ) ;
+		p->AddInlineImage( std::atoi(argv[2]), std::atoi(argv[3]), argv[1] ) ;
 	}
 	else
 	{
