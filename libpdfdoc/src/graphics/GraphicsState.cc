@@ -200,11 +200,11 @@ void GraphicsState::PrintColors(
 	ResourcesDict			*res,
 	const GraphicsState&	prev ) const
 {
-	Color::Space ssp = m_impl->strk_color.ColorSpace() ;
-	Color::Space fsp = m_impl->fill_color.ColorSpace() ;
+	ColorSpec ssp = m_impl->strk_color.Spec() ;
+	ColorSpec fsp = m_impl->fill_color.Spec() ;
 
-	PDF_ASSERT( ssp >= Color::rgb && ssp <= Color::cmyk ) ;
-	PDF_ASSERT( fsp >= Color::rgb && fsp <= Color::cmyk ) ;
+	PDF_ASSERT( ssp >= gfx::rgb && ssp <= gfx::cmyk ) ;
+	PDF_ASSERT( fsp >= gfx::rgb && fsp <= gfx::cmyk ) ;
 
 	static const std::string strk_ops[]	= { "RG", "G", "K" } ;
 	static const std::string fill_ops[]	= { "rg", "g", "k" } ;

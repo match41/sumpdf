@@ -26,26 +26,24 @@
 #ifndef __PDF_COLORSPACE_HEADER_INCLUDED__
 #define __PDF_COLORSPACE_HEADER_INCLUDED__
 
-#include "util/Export.hh"
-
-#include "Color.hh"
+#include "ColorSpec.hh"
 
 namespace pdf {
 
+class ColorMap ;
+
 ///	brief description
 /**	\internal
-	The ColorSpace class represents
+	The ColorSpace class represents a color space in the PDF document. It is
+	part of the graphics states. It is also used by images.
 */
 class ColorSpace
 {
 public :
 	virtual ~ColorSpace( ) ;
 	
-	virtual bool IsIndex( ) const = 0 ;
-	virtual Color Lookup( unsigned val ) const = 0 ;
-	virtual std::size_t ColorCount( ) const = 0 ;
-	
-	virtual Color::Space Get() const = 0 ;
+	virtual ColorSpec	Spec() const = 0 ;
+	virtual ColorMap*	Map( ) const = 0 ; 
 } ;
 
 } // end of namespace

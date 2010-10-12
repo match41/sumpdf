@@ -26,6 +26,8 @@
 #ifndef __PDF_COLOUR_HEADER_INCLUDED__
 #define __PDF_COLOUR_HEADER_INCLUDED__
 
+#include "ColorSpec.hh"
+
 #include <cstddef>
 #include <iosfwd>
 
@@ -38,13 +40,6 @@ namespace pdf {
 class Color
 {
 public :
-	enum Space
-	{
-		rgb,
-		gray,
-		cmyk
-	} ;
-
 	typedef const double* iterator ;
 
 public :
@@ -60,13 +55,13 @@ public :
 	/// CMYK colour
 	Color( double c, double m, double y, double k ) ;
 	
-	Color( Space cs, double *channel ) ;
-	Color( Space cs, unsigned char *channel ) ;
+	Color( ColorSpec cs, double *channel ) ;
+	Color( ColorSpec cs, const unsigned char *channel ) ;
 	
-	Space ColorSpace( ) const ;
+	ColorSpec Spec( ) const ;
 
 	std::size_t ChannelCount( ) const ;
-	static std::size_t ChannelCount( Space sp ) ;
+	static std::size_t ChannelCount( ColorSpec sp ) ;
 
 	/// grayscale
 	void AssignGray( double gray ) ;
@@ -104,8 +99,8 @@ public :
 	unsigned Quad() const ;
 
 private :
-	Space	m_cs ;
-	double	m_channel[4] ;
+	ColorSpec	m_cs ;
+	double		m_channel[4] ;
 } ;
 
 std::ostream& operator<<( std::ostream& os, const Color& t ) ;

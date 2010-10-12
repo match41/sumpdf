@@ -28,6 +28,8 @@
 #include "core/Array.hh"
 #include "core/Name.hh"
 #include "graphics/RealColorSpace.hh"
+#include "graphics/Color.hh"
+#include "graphics/ColorMap.hh"
 
 #include "util/CArray.hh"
 
@@ -57,14 +59,14 @@ void RealColorSpaceTest::Test( )
 
 	Object a[] = { Name("Indexed"), Name("DeviceRGB"), 1, ss } ;
 	MockFile file ;
-	Object src(( Array(a) )) ;
+	Object src( (Array(a)) ) ;
 
 	RealColorSpace subject( src, &file ) ;
-	PDFUT_ASSERT_EQUAL( subject.IsIndex(), true ) ;
-	PDFUT_ASSERT_EQUAL( subject.Get(), Color::rgb ) ;
-	PDFUT_ASSERT_EQUAL( subject.Lookup(0), Color( 0,   1.0, 0 ) ) ;
-	PDFUT_ASSERT_EQUAL( subject.Lookup(1), Color( 1.0, 0,   0 ) ) ;
-	PDFUT_ASSERT_EQUAL( subject.Lookup(2), Color() ) ;
+	CPPUNIT_ASSERT( subject.Map() != 0 ) ;
+	PDFUT_ASSERT_EQUAL( subject.Map()->Base(), gfx::rgb ) ;
+	PDFUT_ASSERT_EQUAL( subject.Map()->LookUp(0), Color( 0,   1.0, 0 ) ) ;
+	PDFUT_ASSERT_EQUAL( subject.Map()->LookUp(1), Color( 1.0, 0,   0 ) ) ;
+	PDFUT_ASSERT_EQUAL( subject.Map()->LookUp(2), Color() ) ;
 }
 
 void RealColorSpaceTest::TestRecursive( )

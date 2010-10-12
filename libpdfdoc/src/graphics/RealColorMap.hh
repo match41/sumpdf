@@ -17,62 +17,45 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	RealColorSpace.cc
-	\brief	implementation of the ColorSpace class
-	\date	May 21, 2010
-	\author	Nestal Wan
+/**	\file	RealColorMap.hh
+    \brief	definition the RealColorMap class
+    \date	Oct 12, 2010
+    \author	Nestal Wan
 */
 
-#include "RealColorSpace.hh"
+#ifndef __PDF_REALCOLORMAP_HH_EADER_INCLUDED__
+#define __PDF_REALCOLORMAP_HH_EADER_INCLUDED__
 
-#include "RealColorMap.hh"
+#include "graphics/ColorMap.hh"
+#include "util/RefCounter.hh"
 
-#include "core/Object.hh"
-#include "util/Exception.hh"
-#include "util/Debug.hh"
-
-#include <iostream>
+#include <vector>
 
 namespace pdf {
 
-/**	constructor
-	
+class File ;
+class Array ;
+
+///	brief description
+/**	\internal
+	The RealColorMap class represents
 */
-RealColorSpace::RealColorSpace( ColorSpec sp )
-	: m_space( sp )
+class RealColorMap : public ColorMap, public RefCounter
 {
-}
+public :
+	RealColorMap( ) ;
+	RealColorMap( Array& obj, File *file ) ;
+	RealColorMap( const Color *map, std::size_t size ) ;
 
-RealColorSpace::RealColorSpace( Object& obj, File *file )
-	: m_space( gfx::none )
-{
-	if ( obj.Is<Name>() )
-		m_space = ParseSpec( obj.As<Name>().Str() ) ;
-	
-	else if ( obj.Is<Array>() )
-	{
-		m_map = new RealColorMap( obj.As<Array>(), file ) ;
-	}
-}
+	Color LookUp( unsigned char idx ) const ;
+	std::size_t Count( ) const ;
+	ColorSpec Base( ) const ;
 
-RealColorSpace::RealColorSpace( const Color *map, std::size_t size )
-	: m_space( gfx::none )
-	, m_map( new RealColorMap( map, size ) )
-{
-}
-
-RealColorSpace::~RealColorSpace( )
-{
-}
-
-ColorSpec RealColorSpace::Spec() const
-{
-	return m_space ;
-}
-
-ColorMap*	RealColorSpace::Map( ) const
-{
-	return m_map ;
-}
+private :
+	ColorSpec 					m_base ;
+	std::vector<unsigned char>	m_comp ;
+} ;
 
 } // end of namespace
+
+#endif // REALCOLORMAP_HH_

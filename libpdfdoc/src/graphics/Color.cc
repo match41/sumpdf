@@ -48,7 +48,7 @@ namespace
 }
 
 Color::Color( )
-	: m_cs( gray )
+	: m_cs( gfx::gray )
 {
 	std::fill( Begin(m_channel), End(m_channel), 0.0 ) ;
 }
@@ -68,27 +68,27 @@ Color::Color( double c, double m, double y, double k )
 	AssignCMYK( c, m, y, k ) ;
 }
 
-Color::Color( Space cs, double *channel )
+Color::Color( ColorSpec cs, double *channel )
 	: m_cs( cs )
 {
 	std::copy( channel, channel + ChannelCount(cs), m_channel ) ;
 }
 
-Color::Color( Space cs, unsigned char *channel )
+Color::Color( ColorSpec cs, const unsigned char *channel )
 	: m_cs( cs )
 {
 	std::transform( channel, channel + ChannelCount(cs), m_channel,
 		ByteToDouble ) ;
 }
 
-Color::Space Color::ColorSpace( ) const
+ColorSpec Color::Spec( ) const
 {
 	return m_cs ;
 }
 
 void Color::AssignGray( double gray_val )
 {
-	m_cs = gray ;
+	m_cs = gfx::gray ;
 	m_channel[0] = gray_val ;
 	m_channel[1] = 0.0 ;
 	m_channel[2] = 0.0 ;
@@ -97,7 +97,7 @@ void Color::AssignGray( double gray_val )
 
 void Color::AssignRGB( double r, double g, double b )
 {
-	m_cs = rgb ;
+	m_cs = gfx::rgb ;
 	m_channel[0] = r ;
 	m_channel[1] = g ;
 	m_channel[2] = b ;
@@ -106,7 +106,7 @@ void Color::AssignRGB( double r, double g, double b )
 
 void Color::AssignCMYK( double c, double m, double y, double k )
 {
-	m_cs = cmyk ;
+	m_cs = gfx::cmyk ;
 	m_channel[0] = c ;
 	m_channel[1] = m ;
 	m_channel[2] = y ;
@@ -115,49 +115,49 @@ void Color::AssignCMYK( double c, double m, double y, double k )
 
 double Color::Red( ) const
 {
-	PDF_ASSERT( m_cs == rgb ) ;
+	PDF_ASSERT( m_cs == gfx::rgb ) ;
 	return m_channel[0] ;
 }
 
 double Color::Green( ) const
 {
-	PDF_ASSERT( m_cs == rgb ) ;
+	PDF_ASSERT( m_cs == gfx::rgb ) ;
 	return m_channel[1] ;
 }
 
 double Color::Blue( ) const
 {
-	PDF_ASSERT( m_cs == rgb ) ;
+	PDF_ASSERT( m_cs == gfx::rgb ) ;
 	return m_channel[2] ;
 }
 
 double Color::Cyan( ) const
 {
-	PDF_ASSERT( m_cs == cmyk ) ;
+	PDF_ASSERT( m_cs == gfx::cmyk ) ;
 	return m_channel[0] ;
 }
 
 double Color::Magenta( ) const
 {
-	PDF_ASSERT( m_cs == cmyk ) ;
+	PDF_ASSERT( m_cs == gfx::cmyk ) ;
 	return m_channel[1] ;
 }
 
 double Color::Yellow( ) const
 {
-	PDF_ASSERT( m_cs == cmyk ) ;
+	PDF_ASSERT( m_cs == gfx::cmyk ) ;
 	return m_channel[2] ;
 }
 
 double Color::Black( ) const
 {
-	PDF_ASSERT( m_cs != cmyk ) ;
+	PDF_ASSERT( m_cs != gfx::cmyk ) ;
 	return m_channel[3] ;
 }
 
 double Color::Gray( ) const
 {
-	PDF_ASSERT( m_cs == gray ) ;
+	PDF_ASSERT( m_cs == gfx::gray ) ;
 	return m_channel[0] ;
 }
 
@@ -176,14 +176,14 @@ std::size_t Color::ChannelCount( ) const
 	return ChannelCount( m_cs ) ;
 }
 
-std::size_t Color::ChannelCount( Space sp )
+std::size_t Color::ChannelCount( ColorSpec sp )
 {
 	static const std::size_t count[] =
 	{
 		3, 1, 4
 	} ;
 	
-	PDF_ASSERT( sp >= rgb && sp <= cmyk ) ; 
+	PDF_ASSERT( sp >= gfx::rgb && sp <= gfx::cmyk ) ; 
 	return count[sp] ;
 }
 
@@ -199,11 +199,12 @@ bool Color::operator!=( const Color& colour ) const
 
 std::ostream& operator<<( std::ostream& os, const Color& t )
 {
-	switch ( t.ColorSpace() )
+	switch ( t.Spec() )
 	{
-		case Color::rgb:	os << "RGB(" ; break ;
-		case Color::gray:	os << "Gray(" ; break ;
-		case Color::cmyk:	os << "CMYK(" ; break ;
+		case gfx::rgb:	os << "RGB(" ; break ;
+		case gfx::gray:	os << "Gray(" ; break ;
+		case gfx::cmyk:	os << "CMYK(" ; break ;
+		default: PDF_ASSERT( false ) ; break ;
 	}
 	
 	std::copy( t.begin(), t.end(), std::ostream_iterator<double>( os, " " ) ) ;
@@ -214,7 +215,7 @@ std::ostream& operator<<( std::ostream& os, const Color& t )
 unsigned Color::Quad() const
 {
 	unsigned char comp[4] = {} ;
-	std::transform( m_channel, m_channel+4, comp, DoubleToByte ) ;
+	std::transform( Begin(m_channel), End(m_channel), comp, DoubleToByte ) ;
 	return (comp[3] << 24) | (comp[2] << 16) | (comp[1] << 8) | comp[0] ;
 }
 

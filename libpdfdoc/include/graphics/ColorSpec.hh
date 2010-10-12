@@ -17,62 +17,40 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	RealColorSpace.cc
-	\brief	implementation of the ColorSpace class
-	\date	May 21, 2010
-	\author	Nestal Wan
+/**	\file	ColorSpec.hh
+    \brief	definition the ColorSpec class
+    \date	Oct 12, 2010
+    \author	Nestal Wan
 */
 
-#include "RealColorSpace.hh"
+#ifndef __PDF_COLORSPEC_HH_EADER_INCLUDED__
+#define __PDF_COLORSPEC_HH_EADER_INCLUDED__
 
-#include "RealColorMap.hh"
-
-#include "core/Object.hh"
-#include "util/Exception.hh"
-#include "util/Debug.hh"
-
-#include <iostream>
+#include <string>
 
 namespace pdf {
 
-/**	constructor
-	
-*/
-RealColorSpace::RealColorSpace( ColorSpec sp )
-	: m_space( sp )
+namespace gfx
 {
-}
-
-RealColorSpace::RealColorSpace( Object& obj, File *file )
-	: m_space( gfx::none )
-{
-	if ( obj.Is<Name>() )
-		m_space = ParseSpec( obj.As<Name>().Str() ) ;
-	
-	else if ( obj.Is<Array>() )
+	///	brief description
+	/**	The ColorSpec enum represents how to specify colors. It is different
+		from a color space which is more complicated.
+	*/
+	enum ColorSpec
 	{
-		m_map = new RealColorMap( obj.As<Array>(), file ) ;
-	}
+		rgb,
+		gray,
+		cmyk,
+		
+		none
+	} ;
 }
 
-RealColorSpace::RealColorSpace( const Color *map, std::size_t size )
-	: m_space( gfx::none )
-	, m_map( new RealColorMap( map, size ) )
-{
-}
+using gfx::ColorSpec ;
 
-RealColorSpace::~RealColorSpace( )
-{
-}
-
-ColorSpec RealColorSpace::Spec() const
-{
-	return m_space ;
-}
-
-ColorMap*	RealColorSpace::Map( ) const
-{
-	return m_map ;
-}
+ColorSpec ParseSpec( const std::string& name ) ;
+const std::string& SpecName( ColorSpec spec ) ;
 
 } // end of namespace
+
+#endif // COLORSPEC_HH_

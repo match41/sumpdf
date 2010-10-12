@@ -30,12 +30,13 @@
 #include "util/RefCounter.hh"
 #include "util/RefPtr.hh"
 
-#include <memory>
-#include <string>
+#include "graphics/ColorSpec.hh"
+
+#include <cstddef>
 
 namespace pdf {
 
-class ArrayReader ;
+class Color ;
 class File ;
 class Object ;
 
@@ -49,32 +50,19 @@ public :
 	typedef Object BaseType ;
 
 public :
-	explicit RealColorSpace( Color::Space sp = Color::rgb ) ;
+	explicit RealColorSpace( ColorSpec sp = gfx::rgb ) ;
 	RealColorSpace( Object& obj, File *file ) ;
 	RealColorSpace( const Color *map, std::size_t size ) ;
 	~RealColorSpace( ) ;
 	
-	bool IsIndex( ) const ;
-	Color Lookup( unsigned val ) const ;
-	std::size_t ColorCount( ) const ;
+	ColorSpec	Spec() const ;
+	ColorMap*	Map( ) const ; 
 	
-	Color::Space Get() const ;
-	
-	friend std::ostream& operator<<( std::ostream& os, const RealColorSpace& cs ) ;
+//	friend std::ostream& operator<<( std::ostream& os, const RealColorSpace& cs ) ;
 
 private :
-	static Color::Space	NameToSpace( const std::string& name ) ;
-
-	bool DetachBase( ArrayReader& array ) ;
-
-private :
-	// color space enum. if space is index, this is the color space of the
-	// color map
-	Color::Space		m_space ;
-
-	// color map. only valid when space is index
-	struct	Map ;
-	std::auto_ptr<Map>	m_map ;
+	ColorSpec		m_space ;
+	ColorMap		*m_map ;
 } ;
 
 } // end of namespace

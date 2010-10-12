@@ -80,14 +80,31 @@ private :
 	void ReadContent( Dictionary& dict, std::istream& is ) ;
 
 private :
+	/// Define the format of the pixels in the image.
+	enum PixFormat
+	{
+		/// The buffer actually stores the raw bytes read from the image file.
+		raw,
+		
+		/// The pixel format is a standard color space, i.e. a Color::Space.
+		standard,
+		
+		/// The pixel format is defined by a colormap. It is called an Indexed
+		/// color space in PDF.
+		colormap,
+		
+		/// Others. Not used yet
+		custom
+	} ;
+	
+	PixFormat		m_format ;
+
 	std::size_t		m_width ;
 	std::size_t		m_height ;
 	std::size_t		m_depth ;
 	
 	std::vector<unsigned char>				m_bytes ;
 	boost::intrusive_ptr<RealColorSpace>	m_space ;
-	
-	bool			m_is_jpeg ;
 } ;
 
 } // end of namespace

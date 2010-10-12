@@ -17,62 +17,34 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	RealColorSpace.cc
-	\brief	implementation of the ColorSpace class
-	\date	May 21, 2010
+/**	\file	ColorSpec.cc
+	\brief	implementation of the ColorSpec class
+	\date	Oct 12, 2010
 	\author	Nestal Wan
 */
 
-#include "RealColorSpace.hh"
+#include "graphics/ColorSpec.hh"
 
-#include "RealColorMap.hh"
-
-#include "core/Object.hh"
 #include "util/Exception.hh"
-#include "util/Debug.hh"
-
-#include <iostream>
 
 namespace pdf {
 
-/**	constructor
-	
-*/
-RealColorSpace::RealColorSpace( ColorSpec sp )
-	: m_space( sp )
+ColorSpec ParseSpec( const std::string& name )
 {
+	if ( name == "DeviceGray" )
+		return gfx::gray ;
+	else if ( name == "DeviceRGB" )
+		return gfx::rgb ;
+	else if ( name == "DeviceCMYK" )
+		return gfx::cmyk ;
+	else
+		throw Exception() << expt::ErrMsg( "invalid color spec name" ) ;
 }
 
-RealColorSpace::RealColorSpace( Object& obj, File *file )
-	: m_space( gfx::none )
+const std::string& SpecName( ColorSpec spec )
 {
-	if ( obj.Is<Name>() )
-		m_space = ParseSpec( obj.As<Name>().Str() ) ;
-	
-	else if ( obj.Is<Array>() )
-	{
-		m_map = new RealColorMap( obj.As<Array>(), file ) ;
-	}
-}
-
-RealColorSpace::RealColorSpace( const Color *map, std::size_t size )
-	: m_space( gfx::none )
-	, m_map( new RealColorMap( map, size ) )
-{
-}
-
-RealColorSpace::~RealColorSpace( )
-{
-}
-
-ColorSpec RealColorSpace::Spec() const
-{
-	return m_space ;
-}
-
-ColorMap*	RealColorSpace::Map( ) const
-{
-	return m_map ;
+	static const std::string s ;
+	return s ;
 }
 
 } // end of namespace

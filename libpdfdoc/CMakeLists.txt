@@ -108,7 +108,8 @@ set( GRAPICS_HDRS	${GRAPICS_DIR}/RealText.hh
 					${GRAPICS_DIR}/XObject.hh
 					${GRAPICS_DIR}/RealTextLine.hh
 					${GRAPICS_DIR}/RealGraphicsGroup.hh
-					${GRAPICS_DIR}/RealColorSpace.hh )
+					${GRAPICS_DIR}/RealColorSpace.hh
+					${GRAPICS_DIR}/RealColorMap.hh )
 
 set( FILE_HDRS		${FILE_DIR}/RealFile.hh
 					${FILE_DIR}/File.hh
@@ -207,7 +208,9 @@ set( GFX_INC_HDRS	${INCLUDE_DIR}/graphics/Graphics.hh
 					${INCLUDE_DIR}/graphics/CharVisitor.hh
 					${INCLUDE_DIR}/graphics/TextLine.hh
 					${INCLUDE_DIR}/graphics/Color.hh
-					${INCLUDE_DIR}/graphics/ColorSpace.hh )
+					${INCLUDE_DIR}/graphics/ColorSpace.hh
+					${INCLUDE_DIR}/graphics/ColorSpec.hh
+					${INCLUDE_DIR}/graphics/ColorMap.hh )
 
 set( UTIL_INC_HDRS	${INCLUDE_DIR}/util/Exception.hh
 					${INCLUDE_DIR}/util/Debug.hh
@@ -251,6 +254,9 @@ set( GRAPICS_SRCS	${GRAPICS_DIR}/Graphics.cc
 					${GRAPICS_DIR}/Color.cc
 					${GRAPICS_DIR}/ColorSpace.cc
 					${GRAPICS_DIR}/RealColorSpace.cc
+					${GRAPICS_DIR}/ColorSpec.cc
+					${GRAPICS_DIR}/ColorMap.cc
+					${GRAPICS_DIR}/RealColorMap.cc
 					${GRAPICS_DIR}/CreateXObject.cc )
 
 set( FILE_SRCS		${FILE_DIR}/RealFile.cc

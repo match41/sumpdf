@@ -49,7 +49,7 @@ namespace pdf {
 	
 */
 RealImage::RealImage( Stream& str, File *file )
-	: m_is_jpeg( str.FilterName() != Name() )
+	: m_format( str.FilterName() != Name() ? raw : standard)
 {
 	try
 	{
@@ -81,8 +81,10 @@ void RealImage::Init( Dictionary& dict, File *file )
 			<< expt::ErrMsg( "invalid image without width or height" ) ;
 }
 
+/// Reading inline image
 RealImage::RealImage( std::istream& is )
-	: m_width( 0 )
+	: m_format( standard )
+	, m_width( 0 )
 	, m_height( 0 )
 {
 	Dictionary dict ;
@@ -92,7 +94,6 @@ RealImage::RealImage( std::istream& is )
 	{
 		if ( key.Is<Token>() && key.As<Token>().Get() == "ID" )
 		{
-std::cout << "got ID" << std::endl ;
 			ReadContent( dict, is ) ;
 			return ;
 		}
@@ -176,9 +177,9 @@ Graphics* RealImage::CreateLink(
 	return new ExtGraphicsLink<Image>( gs, ctm, this ) ;
 }
 
-ColorSpace*	RealImage::Space( ) const
+ColorSpace* RealImage::Space( ) const
 {
-	return m_space.get() ;
+	return m_space.get( ) ;
 }
 
 std::size_t RealImage::ByteCount() const
@@ -193,7 +194,7 @@ const unsigned char* RealImage::Pixels() const
 
 bool RealImage::IsJpeg( ) const
 {
-	return m_is_jpeg ;
+	return m_format == raw ;
 }
 
 Name RealImage::ExpandAbbv( const Name& name )

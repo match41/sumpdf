@@ -27,6 +27,8 @@
 
 #include "Util.hh"
 
+#include <graphics/Color.hh>
+#include <graphics/ColorMap.hh>
 #include <graphics/ColorSpace.hh>
 #include <graphics/ExtGraphicsLink.hh>
 #include <graphics/GraphicsState.hh>
@@ -95,11 +97,16 @@ QImage ImageObject::ToQImage( const Image *img )
 			
 		if ( img->Space() != 0 && fmt == QImage::Format_Indexed8 )
 		{
-			tmp.setColorCount( img->Space()->ColorCount() ) ;
+			PDF_ASSERT( img->Space()->Spec() == gfx::none ) ;
+		
+			ColorMap *map = img->Space()->Map( ) ;
+			PDF_ASSERT( map != 0 ) ;
+		
+			tmp.setColorCount( map->Count() ) ;
 		
 			QVector<QRgb> cmap ;
-			for ( std::size_t j = 0 ; j < img->Space()->ColorCount() ; ++j )
-				cmap.push_back( ToQColor(img->Space()->Lookup(j)).rgb() ) ;
+			for ( std::size_t j = 0 ; j < map->Count() ; ++j )
+				cmap.push_back( ToQColor(map->LookUp(j)).rgb() ) ;
 				
 			tmp.setColorTable(cmap) ;
 		}

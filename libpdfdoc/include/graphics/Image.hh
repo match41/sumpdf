@@ -45,7 +45,7 @@ public :
 	virtual std::size_t Width( ) const = 0 ;
 	virtual std::size_t Height( ) const = 0 ;
 
-	virtual ColorSpace*	Space( ) const = 0 ;
+	virtual ColorSpace* Space( ) const = 0 ;
 	virtual std::size_t Depth( ) const = 0 ;
 
 	virtual std::size_t ByteCount() const = 0 ;

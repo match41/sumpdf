@@ -79,14 +79,14 @@ void GraphicsStateTest::TestColourCommand( )
 	ContentOp op( Token("CS"), Begin(args), End(args) ) ;
 	subject.OnCommand( op, &res ) ;
 	
-	PDFUT_ASSERT_EQUAL( subject.StrokeColor().ColorSpace(), Color::rgb ) ;
+	PDFUT_ASSERT_EQUAL( subject.StrokeColor().Spec(), gfx::rgb ) ;
 	PDFUT_ASSERT_EQUAL( subject.StrokeColor(), Color(0.0, 0.0, 0.0) ) ;
 
 	Object args2[] = { 1.0, 0.0, 0.0 } ;
 	ContentOp op2( Token("RG"), Begin(args2), End(args2) ) ;
 	subject.OnCommand( op2, &res ) ;
 
-	PDFUT_ASSERT_EQUAL( subject.StrokeColor().ColorSpace(), Color::rgb ) ;
+	PDFUT_ASSERT_EQUAL( subject.StrokeColor().Spec(), gfx::rgb ) ;
 	PDFUT_ASSERT_EQUAL( subject.StrokeColor(), Color(1.0, 0.0, 0.0) ) ;
 	
 	GraphicsState prev ;

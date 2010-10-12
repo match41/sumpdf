@@ -17,62 +17,21 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	RealColorSpace.cc
-	\brief	implementation of the ColorSpace class
-	\date	May 21, 2010
+/**	\file	ColorMap.cc
+	\brief	implementation of the ColorMap class
+	\date	Oct 12, 2010
 	\author	Nestal Wan
 */
 
-#include "RealColorSpace.hh"
-
-#include "RealColorMap.hh"
-
-#include "core/Object.hh"
-#include "util/Exception.hh"
-#include "util/Debug.hh"
-
-#include <iostream>
+#include "graphics/ColorMap.hh"
 
 namespace pdf {
 
 /**	constructor
 	
 */
-RealColorSpace::RealColorSpace( ColorSpec sp )
-	: m_space( sp )
+ColorMap::~ColorMap( )
 {
-}
-
-RealColorSpace::RealColorSpace( Object& obj, File *file )
-	: m_space( gfx::none )
-{
-	if ( obj.Is<Name>() )
-		m_space = ParseSpec( obj.As<Name>().Str() ) ;
-	
-	else if ( obj.Is<Array>() )
-	{
-		m_map = new RealColorMap( obj.As<Array>(), file ) ;
-	}
-}
-
-RealColorSpace::RealColorSpace( const Color *map, std::size_t size )
-	: m_space( gfx::none )
-	, m_map( new RealColorMap( map, size ) )
-{
-}
-
-RealColorSpace::~RealColorSpace( )
-{
-}
-
-ColorSpec RealColorSpace::Spec() const
-{
-	return m_space ;
-}
-
-ColorMap*	RealColorSpace::Map( ) const
-{
-	return m_map ;
 }
 
 } // end of namespace

@@ -137,15 +137,15 @@ Color FromQColor( const QColor& color )
 QColor ToQColor( const Color& c )
 {
 	QColor result ;
-	switch ( c.ColorSpace() )
+	switch ( c.Spec() )
 	{
-		case Color::rgb :
+		case gfx::rgb :
 			result.setRgbF( c.Red(), c.Green(), c.Blue() ) ;
 			break ;
-		case Color::cmyk :
+		case gfx::cmyk :
 			result.setCmykF( c.Cyan(), c.Magenta(), c.Yellow(), c.Black() ) ;
 			break ;
-		case Color::gray :
+		case gfx::gray :
 			result.setRgbF( c.Gray(), c.Gray(), c.Gray() ) ;
 			break ;
 		default :
