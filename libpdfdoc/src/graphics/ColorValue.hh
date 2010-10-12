@@ -17,80 +17,66 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	RealColorSpace.cc
-	\brief	implementation of the ColorSpace class
-	\date	May 21, 2010
-	\author	Nestal Wan
+/**	\file	ColorValue.hh
+    \brief	definition the ColorValue class
+    \date	Oct 12, 2010
+    \author	Nestal Wan
 */
 
-#include "RealColorSpace.hh"
+#ifndef __PDF_COLORVALUE_HH_EADER_INCLUDED__
+#define __PDF_COLORVALUE_HH_EADER_INCLUDED__
 
-#include "RealColorMap.hh"
+#include "util/RefPtr.hh"
 
-#include "core/Object.hh"
-#include "util/Exception.hh"
-#include "util/Debug.hh"
-
-#include <iostream>
+#include <iosfwd>
 
 namespace pdf {
 
-/**	constructor
-	
+class Color ;
+class ColorSpace ;
+class ColorValue ;
+class Name ;
+
+///	brief description
+/**	\internal
+	The ColorValue class represents
 */
-RealColorSpace::RealColorSpace( ColorSpec sp )
-	: m_space( sp )
-	, m_map( 0 )
+class ColorValue
 {
-}
+public :
+	typedef const double* iterator ;
 
-RealColorSpace::RealColorSpace( Object& obj, File *file )
-	: m_space( gfx::none )
-	, m_map( 0 )
-{
-	if ( obj.Is<Name>() )
-		m_space = ParseSpec( obj.As<Name>().Str() ) ;
-	
-	else if ( obj.Is<Array>() )
-	{
-		m_map = new RealColorMap( obj.As<Array>(), file ) ;
-	}
-}
+public :
+	ColorValue( ) ;
+	ColorValue( const ColorValue& cs ) ;
+	explicit ColorValue( const ColorSpace *space, double v1 = 0 ) ;
+	ColorValue( const ColorSpace *space, double v1, double v2 ) ;
+	ColorValue( const ColorSpace *space, double v1, double v2, double v3 ) ;
+	ColorValue( const ColorSpace *space, double v1, double v2, double v3,
+		double v4 );
+	explicit ColorValue( const Name& cs ) ;
+	explicit ColorValue( const Color& color ) ;
 
-RealColorSpace::RealColorSpace( const Color *map, std::size_t size )
-	: m_space( gfx::none )
-	, m_map( new RealColorMap( map, size ) )
-{
-}
+	ColorValue& operator=( const ColorValue& c ) ;
+	void Swap( ColorValue& c ) ;
 
-RealColorSpace::~RealColorSpace( )
-{
-}
+	bool operator==( const ColorValue& val ) const ;
+	bool operator!=( const ColorValue& val ) const ;
 
-ColorSpec RealColorSpace::Spec() const
-{
-	return m_space ;
-}
+	Color Get() const ;
+	const ColorSpace* Space() const ;
 
-ColorMap* RealColorSpace::Map( ) const
-{
-	return m_space == gfx::none ? m_map : 0 ;
-}
+	iterator begin( ) const ;
+	iterator end( ) const ;
 
-bool RealColorSpace::IsEqual( const ColorSpace *sp ) const
-{
-	PDF_ASSERT( sp != 0 ) ;
+private :
+	const ColorSpace	*m_space ;
+	double				m_value[4] ;
+} ;
 
-	if ( m_space == sp->Spec() )
-	{
-		// color map is the same if present
-		if ( m_map != 0 && m_map != sp->Map() )
-			return false ;
-	
-		return true ;
-	}
-	else
-		return false ;
-}
+// no need to access members directly
+std::ostream& operator<<( std::ostream& os, const ColorValue& v ) ;
 
 } // end of namespace
+
+#endif // COLORVALUE_HH_

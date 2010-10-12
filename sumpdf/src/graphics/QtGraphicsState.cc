@@ -27,6 +27,7 @@
 
 #include "Util.hh"
 
+#include <graphics/Color.hh>
 #include <util/CArray.hh>
 #include <util/Debug.hh>
 

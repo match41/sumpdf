@@ -68,7 +68,7 @@ Color::Color( double c, double m, double y, double k )
 	AssignCMYK( c, m, y, k ) ;
 }
 
-Color::Color( ColorSpec cs, double *channel )
+Color::Color( ColorSpec cs, const double *channel )
 	: m_cs( cs )
 {
 	std::copy( channel, channel + ChannelCount(cs), m_channel ) ;

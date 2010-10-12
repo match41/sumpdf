@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2009 by Nestal Wan                                      *
+ *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,41 +15,54 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- \***************************************************************************/
+\***************************************************************************/
 
-/**
-	\file	RefCounter.hh
-	\brief	definition the RefCountObj class
-	\date	Dec 11, 2009
-	\author	nestal
+/**	\file	ColorSpaces.cc
+	\brief	implementation of the ColorSpaces class
+	\date	Oct 13, 2010
+	\author	Nestal Wan
 */
 
-#ifndef __PDF_REFCOUNTOBJ_HEADER_INCLUDED__
-#define __PDF_REFCOUNTOBJ_HEADER_INCLUDED__
+#include "graphics/ColorSpaces.hh"
 
-#include "util/ReferenceCountable.hh"
+#include "RealColorSpace.hh"
 
-#include <cstddef>
+#include "util/Exception.hh"
 
 namespace pdf {
+namespace gfx {
 
-///	\internal	Reference counting helper class
-class RefCounter : public ReferenceCountable
+const ColorSpace* RGB( )
 {
-protected :
-	RefCounter( ) ;
-	virtual ~RefCounter( ) ;
+	static const RealColorSpace cs( rgb ) ;
+	return &cs ;
+}
 
-public :
-	virtual void AddRef( ) ;
-	virtual bool Release( ) ;
-	
-	virtual std::size_t UseCount( ) const ;
+const ColorSpace* Grayscale( )
+{
+	static const RealColorSpace cs( gray ) ;
+	return &cs ;
+}
 
-private :
-	std::size_t	m_count ;
-} ;
+const ColorSpace* CMYK( )
+{
+	static const RealColorSpace cs( cmyk ) ;
+	return &cs ;
+}
 
-} // end of namespace
+const ColorSpace* ParseColorSpace( const std::string& name )
+{
+	return ParseColorSpace( ParseSpec( name ) ) ;
+}
+const ColorSpace* ParseColorSpace( ColorSpec spec )
+{
+	switch ( spec )
+	{
+	case rgb:	return RGB() ;
+	case gray:	return Grayscale() ;
+	case cmyk:	return CMYK() ;
+	default:	throw Exception() << expt::ErrMsg( "invalid color spec" ) ;
+	}
+}
 
-#endif // REFCOUNTOBJ_H_
+} } // end of namespace

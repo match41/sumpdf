@@ -55,7 +55,7 @@ public :
 	/// CMYK colour
 	Color( double c, double m, double y, double k ) ;
 	
-	Color( ColorSpec cs, double *channel ) ;
+	Color( ColorSpec cs, const double *channel ) ;
 	Color( ColorSpec cs, const unsigned char *channel ) ;
 	
 	ColorSpec Spec( ) const ;

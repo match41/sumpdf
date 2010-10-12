@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2009 by Nestal Wan                                      *
+ *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,41 +15,36 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- \***************************************************************************/
+\***************************************************************************/
 
-/**
-	\file	RefCounter.hh
-	\brief	definition the RefCountObj class
-	\date	Dec 11, 2009
-	\author	nestal
+/**	\file	ReferenceCountable.hh
+    \brief	definition the ReferenceCountable class
+    \date	Oct 12, 2010
+    \author	Nestal Wan
 */
 
-#ifndef __PDF_REFCOUNTOBJ_HEADER_INCLUDED__
-#define __PDF_REFCOUNTOBJ_HEADER_INCLUDED__
-
-#include "util/ReferenceCountable.hh"
+#ifndef __PDF_REFERENCECOUNTABLE_HH_EADER_INCLUDED__
+#define __PDF_REFERENCECOUNTABLE_HH_EADER_INCLUDED__
 
 #include <cstddef>
 
 namespace pdf {
 
-///	\internal	Reference counting helper class
-class RefCounter : public ReferenceCountable
+///	brief description
+/**	\internal
+	The ReferenceCountable class represents
+*/
+class ReferenceCountable
 {
-protected :
-	RefCounter( ) ;
-	virtual ~RefCounter( ) ;
-
 public :
-	virtual void AddRef( ) ;
-	virtual bool Release( ) ;
+	virtual ~ReferenceCountable( ) ;
 	
-	virtual std::size_t UseCount( ) const ;
-
-private :
-	std::size_t	m_count ;
+	virtual void AddRef( ) = 0 ;
+	virtual bool Release( ) = 0 ;
+	
+	virtual std::size_t UseCount( ) const = 0 ;
 } ;
 
 } // end of namespace
 
-#endif // REFCOUNTOBJ_H_
+#endif // REFERENCECOUNTABLE_HH_

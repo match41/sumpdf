@@ -30,15 +30,31 @@
 
 namespace pdf
 {
-	class RefCounter ;
+	class ReferenceCountable ;
 }
 
 namespace boost
 {
-	void intrusive_ptr_add_ref( pdf::RefCounter *p ) ;
+	void intrusive_ptr_add_ref( pdf::ReferenceCountable *p ) ;
 	
-	void intrusive_ptr_release( pdf::RefCounter *p ) ;
+	void intrusive_ptr_release( pdf::ReferenceCountable *p ) ;
 
 } // end of namespace
+
+namespace pdf
+{
+	template <typename T>
+	class RefPtr : public boost::intrusive_ptr<T>
+	{
+	public :
+		RefPtr( T *t = 0 ) : boost::intrusive_ptr<T>( t )
+		{
+		}
+		
+		RefPtr( const RefPtr& r ) : boost::intrusive_ptr<T>( r )
+		{
+		}
+	} ;
+}
 
 #endif // REFPTR_HH_

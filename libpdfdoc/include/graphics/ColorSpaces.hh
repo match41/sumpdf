@@ -1,5 +1,5 @@
 /***************************************************************************\
- *   Copyright (C) 2009 by Nestal Wan                                      *
+ *   Copyright (C) 2006 by Nestal Wan                                      *
  *   me@nestal.net                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,41 +15,34 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- \***************************************************************************/
+\***************************************************************************/
 
-/**
-	\file	RefCounter.hh
-	\brief	definition the RefCountObj class
-	\date	Dec 11, 2009
-	\author	nestal
+/**	\file	ColorSpaces.hh
+    \brief	definition the ColorSpaces class
+    \date	Oct 13, 2010
+    \author	Nestal Wan
 */
 
-#ifndef __PDF_REFCOUNTOBJ_HEADER_INCLUDED__
-#define __PDF_REFCOUNTOBJ_HEADER_INCLUDED__
+#ifndef __PDF_COLORSPACES_HH_EADER_INCLUDED__
+#define __PDF_COLORSPACES_HH_EADER_INCLUDED__
 
-#include "util/ReferenceCountable.hh"
+#include "ColorSpec.hh"
 
-#include <cstddef>
+#include <string>
 
 namespace pdf {
 
-///	\internal	Reference counting helper class
-class RefCounter : public ReferenceCountable
+class ColorSpace ;
+
+namespace gfx
 {
-protected :
-	RefCounter( ) ;
-	virtual ~RefCounter( ) ;
-
-public :
-	virtual void AddRef( ) ;
-	virtual bool Release( ) ;
-	
-	virtual std::size_t UseCount( ) const ;
-
-private :
-	std::size_t	m_count ;
-} ;
+	const ColorSpace* RGB( ) ;
+	const ColorSpace* Grayscale( ) ;
+	const ColorSpace* CMYK( ) ;
+	const ColorSpace* ParseColorSpace( ColorSpec spec ) ;
+	const ColorSpace* ParseColorSpace( const std::string& name ) ;
+}
 
 } // end of namespace
 
-#endif // REFCOUNTOBJ_H_
+#endif // COLORSPACES_HH_

@@ -58,11 +58,11 @@ public :
 	ColorSpec	Spec() const ;
 	ColorMap*	Map( ) const ; 
 	
-//	friend std::ostream& operator<<( std::ostream& os, const RealColorSpace& cs ) ;
+	bool		IsEqual( const ColorSpace *sp ) const ;
 
 private :
-	ColorSpec		m_space ;
-	ColorMap		*m_map ;
+	ColorSpec	m_space ;
+	ColorMap	*m_map ;
 } ;
 
 } // end of namespace

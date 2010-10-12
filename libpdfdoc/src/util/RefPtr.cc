@@ -23,16 +23,16 @@
 	\author	Nestal Wan
 */
 
-#include "util/RefCounter.hh"
+#include "util/ReferenceCountable.hh"
 
 namespace boost {
 
-void intrusive_ptr_add_ref( pdf::RefCounter *p )
+void intrusive_ptr_add_ref( pdf::ReferenceCountable *p )
 {
 	p->AddRef( ) ;
 }
 
-void intrusive_ptr_release( pdf::RefCounter *p )
+void intrusive_ptr_release( pdf::ReferenceCountable *p )
 {
 	p->Release( ) ;
 }

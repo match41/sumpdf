@@ -78,7 +78,7 @@ void GraphicsStateTest::TestColourCommand( )
 	Object args[] = { Name( "DeviceRGB" ) } ;
 	ContentOp op( Token("CS"), Begin(args), End(args) ) ;
 	subject.OnCommand( op, &res ) ;
-	
+
 	PDFUT_ASSERT_EQUAL( subject.StrokeColor().Spec(), gfx::rgb ) ;
 	PDFUT_ASSERT_EQUAL( subject.StrokeColor(), Color(0.0, 0.0, 0.0) ) ;
 
@@ -88,7 +88,7 @@ void GraphicsStateTest::TestColourCommand( )
 
 	PDFUT_ASSERT_EQUAL( subject.StrokeColor().Spec(), gfx::rgb ) ;
 	PDFUT_ASSERT_EQUAL( subject.StrokeColor(), Color(1.0, 0.0, 0.0) ) ;
-	
+
 	GraphicsState prev ;
 	std::ostringstream oss ;
 	subject.Print( oss, &res, prev ) ;

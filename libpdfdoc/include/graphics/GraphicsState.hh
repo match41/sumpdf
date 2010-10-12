@@ -34,6 +34,7 @@
 namespace pdf {
 
 class Color ;
+class ColorValue ;
 class ContentOp ;
 class DictReader ;
 class Font ;
@@ -95,10 +96,10 @@ public :
 
 	void SetValue( const Name& name, const Object& val ) ;
 	
-	const Color& StrokeColor( ) const ;
+	Color StrokeColor( ) const ;
 	bool StrokeColor( const Color& color ) ;
 	
-	const Color& FillColor( ) const ;
+	Color FillColor( ) const ;
 	bool FillColor( const Color& color ) ;
 
 	std::vector<int> DashPattern() const ;
@@ -136,7 +137,7 @@ private :
 		const GraphicsState&	prev ) const ;
 
 	enum ColorType { strk_color, fill_color } ;
-	bool ChangeColor( ColorType type, const Color& color ) ;
+	bool ChangeColor( ColorType type, const ColorValue& color ) ;
 	bool SetColorSpace( ColorType type, const Name& cs ) ;
 
 private :

@@ -26,6 +26,8 @@
 #include "graphics/GraphicsState.hh"
 
 #include "graphics/Color.hh"
+#include "graphics/ColorValue.hh"
+#include "graphics/RealColorSpace.hh"
 #include "graphics/TextState.hh"
 
 #include "core/Object.hh"
@@ -91,8 +93,9 @@ struct GraphicsState::Impl
 {
 	TextState		text ;
 	
-	Color			strk_color, fill_color ;
-	
+	// colors[strk_color], colors[fill_color] for stroke color and fill color
+	ColorValue 		strk_color, fill_color ;
+		
 	double			line_width ;
 	PenCapStyle		pen_cap ;
 	LineJoinStyle	line_join ;
@@ -130,24 +133,6 @@ struct GraphicsState::Impl
 		const std::string&				op,
 		std::ostream&					os ) ;
 } ;
-
-template <>
-bool GraphicsState::Impl::PrintField(
-	const GraphicsState::Impl&		prev,
-	Color GraphicsState::Impl::*	field,
-	const std::string&				op,
-	std::ostream&					os )
-{
-	if ( this->*field != prev.*field )
-	{
-		std::copy( (this->*field).begin(), (this->*field).end(),
-			std::ostream_iterator<double>( os, " " ) ) ;
-		os << op << '\n' ;
-		return true ;
-	}
-	else
-		return false ;
-}
 
 template <typename T>
 bool GraphicsState::Impl::PrintField(
@@ -200,15 +185,15 @@ void GraphicsState::PrintColors(
 	ResourcesDict			*res,
 	const GraphicsState&	prev ) const
 {
-	ColorSpec ssp = m_impl->strk_color.Spec() ;
-	ColorSpec fsp = m_impl->fill_color.Spec() ;
+	ColorSpec ssp = m_impl->strk_color.Space()->Spec() ;
+	ColorSpec fsp = m_impl->fill_color.Space()->Spec() ;
 
 	PDF_ASSERT( ssp >= gfx::rgb && ssp <= gfx::cmyk ) ;
 	PDF_ASSERT( fsp >= gfx::rgb && fsp <= gfx::cmyk ) ;
 
 	static const std::string strk_ops[]	= { "RG", "G", "K" } ;
 	static const std::string fill_ops[]	= { "rg", "g", "k" } ;
-	
+
 	m_impl->PrintField( *prev.m_impl, &Impl::strk_color, strk_ops[ssp], os ) ;
 	m_impl->PrintField( *prev.m_impl, &Impl::fill_color, fill_ops[fsp], os ) ;
 }
@@ -418,14 +403,14 @@ void GraphicsState::SetValue( const Name& name, const Object& val )
 		m_impl->pen_cap = static_cast<PenCapStyle>(val.To<int>()) ;
 }
 
-const Color& GraphicsState::StrokeColor( ) const
+Color GraphicsState::StrokeColor( ) const
 {
-	return m_impl->strk_color ;
+	return m_impl->strk_color.Get() ;
 }
 
-const Color& GraphicsState::FillColor( ) const
+Color GraphicsState::FillColor( ) const
 {
-	return m_impl->fill_color ;
+	return m_impl->fill_color.Get() ;
 }
 
 bool GraphicsState::OnCS( ContentOp& op, const ResourcesDict *res )
@@ -437,17 +422,17 @@ bool GraphicsState::OnCS( ContentOp& op, const ResourcesDict *res )
 
 bool GraphicsState::StrokeColor( const Color& color )
 {
-	return ChangeColor( strk_color, color ) ;
+	return ChangeColor( strk_color, ColorValue(color) ) ;
 }
 
 bool GraphicsState::FillColor( const Color& color )
 {
-	return ChangeColor( fill_color, color ) ;
+	return ChangeColor( fill_color, ColorValue(color) ) ;
 }
 
-bool GraphicsState::ChangeColor( ColorType type, const Color& color )
+bool GraphicsState::ChangeColor( ColorType type, const ColorValue& color )
 {
-	Color Impl::*colors[] = { &Impl::strk_color, &Impl::fill_color } ;
+	ColorValue Impl::*colors[] = { &Impl::strk_color, &Impl::fill_color } ;
 	
 	if ( m_impl.get()->*colors[type] != color )
 	{
@@ -463,15 +448,7 @@ bool GraphicsState::ChangeColor( ColorType type, const Color& color )
 
 bool GraphicsState::SetColorSpace( ColorType type, const Name& cs )
 {
-	Color temp ;
-	if ( cs == "DeviceGray" )
-		temp.AssignGray( 0.0 ) ;
-	else if ( cs == "DeviceRGB" )
-		temp.AssignRGB( 0.0, 0.0, 0.0 ) ;
-	else if ( cs == "DeviceCMYK" )
-		temp.AssignCMYK( 0.0, 0.0, 0.0, 0.0 ) ;
-
-	return ChangeColor( type, temp ) ;
+	return ChangeColor( type, ColorValue( cs ) ) ;
 }
 
 bool GraphicsState::Oncs( ContentOp& op, const ResourcesDict *res )
@@ -484,42 +461,42 @@ bool GraphicsState::Oncs( ContentOp& op, const ResourcesDict *res )
 bool GraphicsState::OnG( ContentOp& op, const ResourcesDict *res )
 {
 	return op.Count() >= 1 ?
-		ChangeColor( strk_color, Color( op[0].To<double>() ) ):
+		ChangeColor( strk_color, ColorValue( Color( op[0].To<double>() ) ) ):
 		false ;
 }
 
 bool GraphicsState::Ong( ContentOp& op, const ResourcesDict *res )
 {
 	return op.Count() >= 1 ?
-		ChangeColor( fill_color, Color( op[0].To<double>() ) ):
+		ChangeColor( fill_color, ColorValue( Color( op[0].To<double>() ) ) ):
 		false ;
 }
 
 bool GraphicsState::OnRG( ContentOp& op, const ResourcesDict *res )
 {
 	return op.Count() >= 3 ?
-		ChangeColor( strk_color, Color( op[0], op[1], op[2] ) ) :
+		ChangeColor( strk_color, ColorValue( Color( op[0], op[1], op[2] ) ) ) :
 		false ;
 }
 
 bool GraphicsState::Onrg( ContentOp& op, const ResourcesDict *res )
 {
 	return op.Count() >= 3 ?
-		ChangeColor( fill_color, Color( op[0], op[1], op[2] )):
+		ChangeColor( fill_color, ColorValue( Color( op[0], op[1], op[2] )) ):
 		false ;
 }
 
 bool GraphicsState::OnK( ContentOp& op, const ResourcesDict *res )
 {
 	return op.Count() >= 4 ?
-		ChangeColor( strk_color, Color( op[0], op[1], op[2], op[3] ) ) :
+		ChangeColor( strk_color, ColorValue( Color( op[0], op[1], op[2], op[3] ) ) ) :
 		false ;
 }
 
 bool GraphicsState::Onk( ContentOp& op, const ResourcesDict *res )
 {
 	return op.Count() >= 4 ?
-		ChangeColor( fill_color, Color( op[0], op[1], op[2], op[3] ) ) :
+		ChangeColor( fill_color, ColorValue( Color( op[0], op[1], op[2], op[3] ) ) ) :
 		false ;
 }
 

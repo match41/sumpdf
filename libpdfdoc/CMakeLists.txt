@@ -109,7 +109,8 @@ set( GRAPICS_HDRS	${GRAPICS_DIR}/RealText.hh
 					${GRAPICS_DIR}/RealTextLine.hh
 					${GRAPICS_DIR}/RealGraphicsGroup.hh
 					${GRAPICS_DIR}/RealColorSpace.hh
-					${GRAPICS_DIR}/RealColorMap.hh )
+					${GRAPICS_DIR}/RealColorMap.hh
+					${GRAPICS_DIR}/ColorValue.hh )
 
 set( FILE_HDRS		${FILE_DIR}/RealFile.hh
 					${FILE_DIR}/File.hh
@@ -209,6 +210,7 @@ set( GFX_INC_HDRS	${INCLUDE_DIR}/graphics/Graphics.hh
 					${INCLUDE_DIR}/graphics/TextLine.hh
 					${INCLUDE_DIR}/graphics/Color.hh
 					${INCLUDE_DIR}/graphics/ColorSpace.hh
+					${INCLUDE_DIR}/graphics/ColorSpaces.hh
 					${INCLUDE_DIR}/graphics/ColorSpec.hh
 					${INCLUDE_DIR}/graphics/ColorMap.hh )
 
@@ -216,6 +218,7 @@ set( UTIL_INC_HDRS	${INCLUDE_DIR}/util/Exception.hh
 					${INCLUDE_DIR}/util/Debug.hh
 					${INCLUDE_DIR}/util/Rect.hh
 					${INCLUDE_DIR}/util/Matrix.hh
+					${INCLUDE_DIR}/util/ReferenceCountable.hh
 					${INCLUDE_DIR}/util/Util.hh )
 
 ###############################################################################
@@ -253,10 +256,12 @@ set( GRAPICS_SRCS	${GRAPICS_DIR}/Graphics.cc
 					${GRAPICS_DIR}/TextState.cc
 					${GRAPICS_DIR}/Color.cc
 					${GRAPICS_DIR}/ColorSpace.cc
+					${GRAPICS_DIR}/ColorSpaces.cc
 					${GRAPICS_DIR}/RealColorSpace.cc
 					${GRAPICS_DIR}/ColorSpec.cc
 					${GRAPICS_DIR}/ColorMap.cc
 					${GRAPICS_DIR}/RealColorMap.cc
+					${GRAPICS_DIR}/ColorValue.cc
 					${GRAPICS_DIR}/CreateXObject.cc )
 
 set( FILE_SRCS		${FILE_DIR}/RealFile.cc
@@ -299,6 +304,7 @@ set( UTIL_SRCS  	${UTIL_DIR}/Rect.cc
 					${UTIL_DIR}/RefCounter.cc
 					${UTIL_DIR}/RefPtr.cc
 					${UTIL_DIR}/Debug.cc
+					${UTIL_DIR}/ReferenceCountable.cc
 					${UTIL_DIR}/Matrix.cc )
 
 set( IMG_SRCS  		${IMG_DIR}/Pixmap.cc )
