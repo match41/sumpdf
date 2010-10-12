@@ -119,11 +119,13 @@ typename ResourceSet<T>::iterator ResourceSet<T>::end( ) const
 // instantiations
 
 #include "font/BaseFont.hh"
+#include "graphics/RealColorSpace.hh"
 #include "graphics/XObject.hh"
 #include "ExtGState.hh" 
 namespace pdf
 {
 	template class ResourceSet<BaseFont> ;
+	template class ResourceSet<RealColorSpace> ;
 	template class ResourceSet<XObject> ;
 	template class ResourceSet<ExtGState> ;
 }

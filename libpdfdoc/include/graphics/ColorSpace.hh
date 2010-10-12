@@ -30,6 +30,7 @@
 
 namespace pdf {
 
+class Color ;
 class ColorMap ;
 
 ///	brief description
@@ -45,6 +46,7 @@ public :
 	virtual ColorSpec	Spec() const = 0 ;
 	virtual ColorMap*	Map( ) const = 0 ;
 	virtual bool		IsEqual( const ColorSpace *sp ) const = 0 ;
+	virtual Color		DefaultColor() const = 0 ;
 } ;
 
 } // end of namespace

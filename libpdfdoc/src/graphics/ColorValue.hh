@@ -48,8 +48,8 @@ public :
 
 public :
 	ColorValue( ) ;
-	ColorValue( const ColorValue& cs ) ;
-	explicit ColorValue( const ColorSpace *space, double v1 = 0 ) ;
+	ColorValue( const ColorSpace *space ) ;
+	ColorValue( const ColorSpace *space, double v1 ) ;
 	ColorValue( const ColorSpace *space, double v1, double v2 ) ;
 	ColorValue( const ColorSpace *space, double v1, double v2, double v3 ) ;
 	ColorValue( const ColorSpace *space, double v1, double v2, double v3,
@@ -57,7 +57,7 @@ public :
 	explicit ColorValue( const Name& cs ) ;
 	explicit ColorValue( const Color& color ) ;
 
-	ColorValue& operator=( const ColorValue& c ) ;
+//	ColorValue& operator=( const ColorValue& c ) ;
 	void Swap( ColorValue& c ) ;
 
 	bool operator==( const ColorValue& val ) const ;
@@ -68,6 +68,8 @@ public :
 
 	iterator begin( ) const ;
 	iterator end( ) const ;
+	
+	void SetToDefault( ) ;
 
 private :
 	const ColorSpace	*m_space ;

@@ -50,6 +50,7 @@ class Font ;
 class FontDb ;
 class FontSubsetInfo ;
 class DictReader ;
+class RealColorSpace ;
 class RealImage ;
 class Object ;
 class Ref ;
@@ -94,16 +95,17 @@ private :
 	Ref WriteFontDict( File *file, const FontSubsetInfo *ss ) const ;
 
 	void ReadStateDict( DictReader& self ) ;
-
 	void ReadXObject( DictReader& self ) ;
+	void ReadColorSpace( DictReader& self ) ;
 
 private :
 	const RealResources	*const m_parent ;
 	FontDb				*m_font_db ;
 
-	ResourceSet<BaseFont>	m_fonts ;
-	ResourceSet<XObject>	m_xobjs ;
-	ResourceSet<ExtGState>	m_states ;
+	ResourceSet<BaseFont>		m_fonts ;
+	ResourceSet<XObject>		m_xobjs ;
+	ResourceSet<ExtGState>		m_states ;
+	ResourceSet<RealColorSpace>	m_color_spaces ;
 
 	std::vector<Name>	m_proc_set ;
 } ;

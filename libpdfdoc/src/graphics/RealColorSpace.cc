@@ -28,6 +28,7 @@
 #include "RealColorMap.hh"
 
 #include "core/Object.hh"
+#include "graphics/Color.hh"
 #include "util/Exception.hh"
 #include "util/Debug.hh"
 
@@ -40,21 +41,19 @@ namespace pdf {
 */
 RealColorSpace::RealColorSpace( ColorSpec sp )
 	: m_space( sp )
-	, m_map( 0 )
 {
 }
 
 RealColorSpace::RealColorSpace( Object& obj, File *file )
 	: m_space( gfx::none )
-	, m_map( 0 )
 {
 	if ( obj.Is<Name>() )
 		m_space = ParseSpec( obj.As<Name>().Str() ) ;
 	
 	else if ( obj.Is<Array>() )
-	{
-		m_map = new RealColorMap( obj.As<Array>(), file ) ;
-	}
+		m_map.reset( new RealColorMap( obj.As<Array>(), file ) ) ;
+	else
+		throw Exception() << expt::ErrMsg( "invalid color space" ) ;
 }
 
 RealColorSpace::RealColorSpace( const Color *map, std::size_t size )
@@ -74,7 +73,7 @@ ColorSpec RealColorSpace::Spec() const
 
 ColorMap* RealColorSpace::Map( ) const
 {
-	return m_space == gfx::none ? m_map : 0 ;
+	return m_space == gfx::none ? m_map.get() : 0 ;
 }
 
 bool RealColorSpace::IsEqual( const ColorSpace *sp ) const
@@ -84,13 +83,28 @@ bool RealColorSpace::IsEqual( const ColorSpace *sp ) const
 	if ( m_space == sp->Spec() )
 	{
 		// color map is the same if present
-		if ( m_map != 0 && m_map != sp->Map() )
+		if ( m_map.get() != 0 && m_map.get() != sp->Map() )
 			return false ;
 	
 		return true ;
 	}
 	else
 		return false ;
+}
+
+Color RealColorSpace::DefaultColor() const
+{
+	static const double channels[] = { 0, 0, 0, 1 } ;
+	switch ( m_space )
+	{
+	case gfx::rgb:
+	case gfx::gray:
+	case gfx::cmyk:		return Color( m_space, channels ) ;
+	case gfx::none:
+		PDF_ASSERT( m_map.get() != 0 ) ;
+		PDF_ASSERT( m_map->Count() > 0 ) ;
+		return m_map->LookUp(0) ;
+	}
 }
 
 } // end of namespace

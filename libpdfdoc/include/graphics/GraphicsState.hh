@@ -138,7 +138,8 @@ private :
 
 	enum ColorType { strk_color, fill_color } ;
 	bool ChangeColor( ColorType type, const ColorValue& color ) ;
-	bool SetColorSpace( ColorType type, const Name& cs ) ;
+	bool SetColorSpace( ColorType type, const Name& cs,
+		const ResourcesDict *res ) ;
 
 private :
 	struct Impl ;

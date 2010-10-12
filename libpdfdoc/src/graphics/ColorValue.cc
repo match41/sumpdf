@@ -49,15 +49,16 @@ ColorValue::ColorValue( )
 	m_value[0] = 0 ;
 }
 
-ColorValue::ColorValue( const ColorValue& cs )
-	: m_space( cs.m_space )
+ColorValue::ColorValue( const ColorSpace *space )
+	: m_space( space )
 {
-	std::copy( cs.begin(), cs.end(), m_value ) ;
+	SetToDefault() ;
 }
 
 ColorValue::ColorValue( const ColorSpace *space, double v1 )
 	: m_space( space )
 {
+	PDF_ASSERT( space != 0 ) ;
 	PDF_ASSERT( Color::ChannelCount( space->Spec() ) == 1 ) ;
 	m_value[0] = v1 ;
 }
@@ -65,6 +66,7 @@ ColorValue::ColorValue( const ColorSpace *space, double v1 )
 ColorValue::ColorValue( const ColorSpace *space, double v1, double v2 )
 	: m_space( space )
 {
+	PDF_ASSERT( space != 0 ) ;
 	PDF_ASSERT( Color::ChannelCount( space->Spec() ) == 2 ) ;
 	m_value[0] = v1 ;
 	m_value[1] = v2 ;
@@ -74,6 +76,7 @@ ColorValue::ColorValue( const ColorSpace *space, double v1, double v2,
 	double v3 )
 	: m_space( space )
 {
+	PDF_ASSERT( space != 0 ) ;
 	PDF_ASSERT( Color::ChannelCount( space->Spec() ) == 3 ) ;
 	m_value[0] = v1 ;
 	m_value[1] = v2 ;
@@ -84,6 +87,7 @@ ColorValue::ColorValue( const ColorSpace *space, double v1, double v2, double v3
 	double v4 )
 	: m_space( space )
 {
+	PDF_ASSERT( space != 0 ) ;
 	PDF_ASSERT( Color::ChannelCount( space->Spec() ) == 4 ) ;
 	m_value[0] = v1 ;
 	m_value[1] = v2 ;
@@ -103,17 +107,26 @@ ColorValue::ColorValue( const Color& color )
 	std::copy( color.begin(), color.end(), m_value ) ;
 }
 
+/*
 ColorValue& ColorValue::operator=( const ColorValue& c )
 {
 	ColorValue temp( c ) ;
 	Swap( temp ) ;
 	return *this ;
 }
+*/
 
 void ColorValue::Swap( ColorValue& c )
 {
 	std::swap( c.m_space, m_space ) ;
 	std::swap_ranges( Begin(m_value), End(m_value), Begin(c.m_value) ) ;
+}
+
+void ColorValue::SetToDefault( )
+{
+	PDF_ASSERT( m_space != 0 ) ;
+	Color c = m_space->DefaultColor() ;
+	std::copy( c.begin(), c.end(), m_value ) ;
 }
 
 Color ColorValue::Get() const

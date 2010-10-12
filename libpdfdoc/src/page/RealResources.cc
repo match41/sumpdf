@@ -34,6 +34,7 @@
 #include "file/ElementPool.hh"
 #include "font/BaseFont.hh"
 #include "graphics/RealImage.hh"
+#include "graphics/RealColorSpace.hh"
 #include "stream/Stream.hh"
 #include "util/Functional.hh"
 #include "util/Debug.hh"
@@ -52,6 +53,7 @@ RealResources::RealResources( const RealResources *parent )
 	, m_fonts( "F" )
 	, m_xobjs( "X" )
 	, m_states( "S" )
+	, m_color_spaces( "CS" )
 	, m_proc_set( 1, Name( "PDF" ) )
 {
 	PDF_ASSERT( parent != 0 ) ;
@@ -67,6 +69,7 @@ RealResources::RealResources( FontDb *font_db )
 	, m_fonts( "F" )
 	, m_xobjs( "X" )
 	, m_states( "S" )
+	, m_color_spaces( "CS" )
 	, m_proc_set( 1, Name( "PDF" ) )
 {
 	PDF_ASSERT( m_font_db != 0 ) ;
@@ -93,6 +96,7 @@ void RealResources::Read( DictReader& self )
 
 	ReadFontDict( self ) ;
 	ReadXObject( self ) ;
+	ReadColorSpace( self ) ;
 }
 
 void RealResources::ReadXObject( DictReader& self )
@@ -106,6 +110,20 @@ void RealResources::ReadXObject( DictReader& self )
 		m_xobjs.Clear( ) ;
 		m_xobjs.MassProduce( xobjs,
 			boost::bind( &CreateXObject, _1, self.GetFile() ) ) ;
+	}
+}
+
+void RealResources::ReadColorSpace( DictReader& self )
+{
+	PDF_ASSERT( self.GetFile() != 0 ) ;
+	PDF_ASSERT( self.GetFile()->Pool() != 0 ) ;
+
+	DictReader cs ;
+	if ( self.Detach( "ColorSpace",	cs ) )
+	{
+		m_color_spaces.Clear( ) ;
+		m_color_spaces.MassProduce( cs,
+			boost::bind( NewPtr<RealColorSpace>(), _1, self.GetFile() ) ) ;
 	}
 }
 

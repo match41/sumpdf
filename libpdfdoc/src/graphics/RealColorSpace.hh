@@ -26,13 +26,13 @@
 #ifndef __PDF_REAL_COLOR_SPACE_HEADER_INCLUDED__
 #define __PDF_REAL_COLOR_SPACE_HEADER_INCLUDED__
 
-#include "graphics/ColorSpace.hh"
 #include "util/RefCounter.hh"
-#include "util/RefPtr.hh"
+#include "graphics/ColorSpace.hh"
 
 #include "graphics/ColorSpec.hh"
 
 #include <cstddef>
+#include <memory>
 
 namespace pdf {
 
@@ -44,7 +44,7 @@ class Object ;
 /**	\internal
 	The ColorSpace class represents
 */
-class RealColorSpace : public ColorSpace, public RefCounter
+class RealColorSpace : public RefCounter, public ColorSpace 
 {
 public :
 	typedef Object BaseType ;
@@ -57,12 +57,13 @@ public :
 	
 	ColorSpec	Spec() const ;
 	ColorMap*	Map( ) const ; 
+	Color		DefaultColor() const ;
 	
 	bool		IsEqual( const ColorSpace *sp ) const ;
 
 private :
-	ColorSpec	m_space ;
-	ColorMap	*m_map ;
+	ColorSpec				m_space ;
+	std::auto_ptr<ColorMap>	m_map ;
 } ;
 
 } // end of namespace

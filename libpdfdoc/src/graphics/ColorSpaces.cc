@@ -61,7 +61,7 @@ const ColorSpace* ParseColorSpace( ColorSpec spec )
 	case rgb:	return RGB() ;
 	case gray:	return Grayscale() ;
 	case cmyk:	return CMYK() ;
-	default:	throw Exception() << expt::ErrMsg( "invalid color spec" ) ;
+	default:	return 0 ;
 	}
 }
 

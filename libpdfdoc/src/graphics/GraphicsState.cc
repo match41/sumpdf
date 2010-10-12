@@ -416,7 +416,7 @@ Color GraphicsState::FillColor( ) const
 bool GraphicsState::OnCS( ContentOp& op, const ResourcesDict *res )
 {
 	return op.Count() >= 1 ?
-		SetColorSpace( strk_color, op[0].As<Name>() ) :
+		SetColorSpace( strk_color, op[0].As<Name>(), res ) :
 		false ;
 }
 
@@ -446,7 +446,8 @@ bool GraphicsState::ChangeColor( ColorType type, const ColorValue& color )
 		return false ;
 }
 
-bool GraphicsState::SetColorSpace( ColorType type, const Name& cs )
+bool GraphicsState::SetColorSpace( ColorType type, const Name& cs,
+	const ResourcesDict *res )
 {
 	return ChangeColor( type, ColorValue( cs ) ) ;
 }
@@ -454,7 +455,7 @@ bool GraphicsState::SetColorSpace( ColorType type, const Name& cs )
 bool GraphicsState::Oncs( ContentOp& op, const ResourcesDict *res )
 {
 	return op.Count() >= 1 ?
-		SetColorSpace( fill_color, op[0].As<Name>() ) :
+		SetColorSpace( fill_color, op[0].As<Name>(), res ) :
 		false ;
 }
 
