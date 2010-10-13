@@ -114,6 +114,7 @@ void RealPageTest::TestNormal( )
 	pdf::Dictionary dummy ;
 	file.AddObj( Ref( 713, 0 ), dummy ) ;
 	file.AddObj( Ref( 721, 0 ), dummy ) ;
+	file.AddObj( Ref( 708, 0 ), Name( "DeviceCMYK" ) ) ;
 	
 	pdf::Object obj( d ) ;
 	pdf::RealPage *p  = new pdf::RealPage( m_root ) ;

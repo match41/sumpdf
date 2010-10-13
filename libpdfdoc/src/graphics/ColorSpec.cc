@@ -38,7 +38,7 @@ ColorSpec ParseSpec( const std::string& name )
 	else if ( name == "DeviceCMYK" )
 		return gfx::cmyk ;
 	else
-		throw Exception() << expt::ErrMsg( "invalid color spec name" ) ;
+		throw Exception() << expt::ErrMsg( "invalid color spec name: " + name ) ;
 }
 
 const std::string& SpecName( ColorSpec spec )
