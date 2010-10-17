@@ -104,7 +104,9 @@ namespace pdf
 {
 	class Image ;
 	template class ExtGraphicsLink<Image> ;
+	template class ObjectAppearance<Image> ;
 	
 	class GraphicsGroup ;
 	template class ExtGraphicsLink<GraphicsGroup> ;
+	template class ObjectAppearance<GraphicsGroup> ;
 }

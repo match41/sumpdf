@@ -95,13 +95,13 @@ void PageLoader::VisitPath( Path *path )
 	m_scene->addItem( p ) ;
 }
 
-void PageLoader::VisitGraphicsLink( ExtGraphicsLink<Image> *img )
+void PageLoader::VisitGraphicsLink( ObjectAppearance<Image> *img )
 {
 	PDF_ASSERT( m_scene != 0 ) ;
 	m_scene->addItem( new ImageObject( img ) ) ;
 }
 
-void PageLoader::VisitGraphicsLink( ExtGraphicsLink<GraphicsGroup> *g )
+void PageLoader::VisitGraphicsLink( ObjectAppearance<GraphicsGroup> *g )
 {
 }
 

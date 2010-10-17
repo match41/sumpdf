@@ -48,8 +48,8 @@ public :
 	void VisitText( Text *text ) ;
 	void VisitGraphics( Graphics *gfx ) ;
 	void VisitPath( Path *path ) ;
-	void VisitGraphicsLink( ExtGraphicsLink<Image> *img ) ;
-	void VisitGraphicsLink( ExtGraphicsLink<GraphicsGroup> *g ) ;
+	void VisitGraphicsLink( ObjectAppearance<Image> *img ) ;
+	void VisitGraphicsLink( ObjectAppearance<GraphicsGroup> *g ) ;
 
 private :
 	void LoadTextLine( QGraphicsItem *parent, const TextLine *line ) ;

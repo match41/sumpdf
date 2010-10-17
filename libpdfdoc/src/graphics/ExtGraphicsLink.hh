@@ -17,56 +17,60 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**
-    \file	Text.hh
-    \brief	definition the Text class
-    \date	Jan 4, 2010
+/**	\file	ExtGraphicsLink.hh
+    \brief	definition the Image class
+    \date	May 11, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_TEXT_HH_EADER_INCLUDED__
-#define __PDF_TEXT_HH_EADER_INCLUDED__
+#ifndef __PDF_EXT_GRAPHICS_LINK_HEADER_INCLUDED__
+#define __PDF_EXT_GRAPHICS_LINK_HEADER_INCLUDED__
 
-#include "Graphics.hh"
+#include "graphics/ObjectAppearance.hh"
 
-#include <string>
-#include <vector>
+#include "graphics/GraphicsState.hh"
+#include "util/Matrix.hh"
 
 namespace pdf {
 
-class TextLine ;
-class GraphicsVisitor ;
-
-///	Text objects.
+///	A link to a graphics object external to the page content.
 /**	\ingroup graphics
-	The Text class represent a PDF text object. It is the stuff enclosed by
-	a BT...ET operators in the content stream of a page. It consists of a number
-	of text lines.
+	In a PDF document, there may be some graphics objects that are not stored
+	in the page content. These objects includes images and PDF forms. The
+	ExtGraphicsLink class is a link to these external object in the page.
+	Multiple links to these external objects can appear in the PDF document
+	or even in the same page, but only one copy will be save to file.
+	
+	Currently, only images are supported.
 */
-class Text : public Graphics
+template <typename T>
+class ExtGraphicsLink : public ObjectAppearance<T>
 {
 public :
-	virtual ~Text( ) ;
+	ExtGraphicsLink( const GraphicsState& gs, const Matrix& ctm, const T *t ) ;
+	~ExtGraphicsLink( ) ;
 
-	///	\name Iterator access members
-	//@{
-	///	Iterator access to the underlying text lines
-	virtual const TextLine* At( std::size_t idx ) const = 0 ;
-	virtual TextLine* At( std::size_t idx ) = 0 ;
-	//@}
-	
-	virtual std::size_t Count( ) const = 0 ;
-	
-	///	Add a new line to the text object.
-	virtual void AddLine( const TextLine *line ) = 0 ;
-	
-	/// Add a new line with coordinate and text.
-	virtual void AddLine( double x, double y, const std::wstring& text ) = 0 ;
+	void OnCommand( ContentOp& op, const ResourcesDict *res ) ;
 
-	///	Visitor rebound function.
-	virtual void Visit( GraphicsVisitor *visitor ) = 0 ;
+	Matrix Transform( ) const ;
+	void Transform( const Matrix& mat ) ;
+	void Print(
+		std::ostream&	os,
+		ResourcesDict	*res,
+		GraphicsState&	gs ) const ;
+	void Visit( GraphicsVisitor *visitor ) ;
+	
+	GraphicsState GetState( ) const ;
+
+	const T* Get( ) const ;
+
+private :
+	Matrix			m_transform ;
+	GraphicsState	m_gs ;
+	
+	const T	*m_obj ;
 } ;
 
 } // end of namespace
 
-#endif // TEXT_HH_
+#endif // IMAGE_HH_

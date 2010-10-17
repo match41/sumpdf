@@ -106,6 +106,7 @@ set( GRAPICS_HDRS	${GRAPICS_DIR}/RealText.hh
 					${GRAPICS_DIR}/RealPath.hh
 					${GRAPICS_DIR}/RealImage.hh
 					${GRAPICS_DIR}/XObject.hh
+					${GRAPICS_DIR}/ExtGraphicsLink.hh
 					${GRAPICS_DIR}/RealTextLine.hh
 					${GRAPICS_DIR}/RealGraphicsGroup.hh
 					${GRAPICS_DIR}/RealColorSpace.hh
@@ -203,7 +204,6 @@ set( GFX_INC_HDRS	${INCLUDE_DIR}/graphics/Graphics.hh
 					${INCLUDE_DIR}/graphics/Path.hh
 					${INCLUDE_DIR}/graphics/Image.hh
 					${INCLUDE_DIR}/graphics/GraphicsGroup.hh
-					${INCLUDE_DIR}/graphics/ExtGraphicsLink.hh
 					${INCLUDE_DIR}/graphics/PathSegment.hh
 					${INCLUDE_DIR}/graphics/TextState.hh
 					${INCLUDE_DIR}/graphics/CharVisitor.hh
@@ -218,7 +218,6 @@ set( UTIL_INC_HDRS	${INCLUDE_DIR}/util/Exception.hh
 					${INCLUDE_DIR}/util/Debug.hh
 					${INCLUDE_DIR}/util/Rect.hh
 					${INCLUDE_DIR}/util/Matrix.hh
-					${INCLUDE_DIR}/util/ReferenceCountable.hh
 					${INCLUDE_DIR}/util/Util.hh )
 
 ###############################################################################

@@ -36,7 +36,7 @@ class QImage ;
 namespace pdf {
 
 class Image ;
-template <typename T> class ExtGraphicsLink ;
+template <typename T> class ObjectAppearance ;
 
 ///	brief description
 /**	\internal
@@ -45,7 +45,7 @@ template <typename T> class ExtGraphicsLink ;
 class ImageObject : public GraphicsObject
 {
 public :
-	explicit ImageObject( const ExtGraphicsLink<Image> *link,
+	explicit ImageObject( const ObjectAppearance<Image> *link,
 		QGraphicsItem *parent = 0 ) ;
 
 	explicit ImageObject( const QImage& image, QGraphicsItem *parent = 0 ) ;

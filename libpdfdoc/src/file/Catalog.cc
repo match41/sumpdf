@@ -80,8 +80,8 @@ public :
 	void VisitText( Text *text ) ;
 	void VisitGraphics( Graphics *text ) ;
 	void VisitPath( Path *path ) ;
-	void VisitGraphicsLink( ExtGraphicsLink<Image> *img ) ;
-	void VisitGraphicsLink( ExtGraphicsLink<GraphicsGroup> *g ) ;
+	void VisitGraphicsLink( ObjectAppearance<Image> *img ) ;
+	void VisitGraphicsLink( ObjectAppearance<GraphicsGroup> *g ) ;
 	
 private :
 	typedef std::set<wchar_t> CharSet ;

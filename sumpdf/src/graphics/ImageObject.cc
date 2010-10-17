@@ -30,9 +30,10 @@
 #include <graphics/Color.hh>
 #include <graphics/ColorMap.hh>
 #include <graphics/ColorSpace.hh>
-#include <graphics/ExtGraphicsLink.hh>
+#include <graphics/ObjectAppearance.hh>
 #include <graphics/GraphicsState.hh>
 #include <graphics/Image.hh>
+#include <util/Matrix.hh>
 
 #include <util/Debug.hh>
 
@@ -46,7 +47,7 @@ namespace pdf {
 	
 */
 ImageObject::ImageObject(
-	const ExtGraphicsLink<Image>	*link,
+	const ObjectAppearance<Image>	*link,
 	QGraphicsItem					*parent )
 	: GraphicsObject( parent )
 	, m_child( 0 )

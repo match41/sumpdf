@@ -17,56 +17,30 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**
-    \file	Text.hh
-    \brief	definition the Text class
-    \date	Jan 4, 2010
+/**	\file	ObjectAppearance.hh
+    \brief	definition the ObjectAppearance class
+    \date	Oct 17, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_TEXT_HH_EADER_INCLUDED__
-#define __PDF_TEXT_HH_EADER_INCLUDED__
+#ifndef __PDF_OBJECTAPPEARANCE_HH_EADER_INCLUDED__
+#define __PDF_OBJECTAPPEARANCE_HH_EADER_INCLUDED__
 
 #include "Graphics.hh"
 
-#include <string>
-#include <vector>
-
 namespace pdf {
 
-class TextLine ;
-class GraphicsVisitor ;
-
-///	Text objects.
-/**	\ingroup graphics
-	The Text class represent a PDF text object. It is the stuff enclosed by
-	a BT...ET operators in the content stream of a page. It consists of a number
-	of text lines.
+///	brief description
+/**	\internal
+	The ObjectAppearance class represents
 */
-class Text : public Graphics
+template <typename T>
+class ObjectAppearance : public Graphics
 {
 public :
-	virtual ~Text( ) ;
-
-	///	\name Iterator access members
-	//@{
-	///	Iterator access to the underlying text lines
-	virtual const TextLine* At( std::size_t idx ) const = 0 ;
-	virtual TextLine* At( std::size_t idx ) = 0 ;
-	//@}
-	
-	virtual std::size_t Count( ) const = 0 ;
-	
-	///	Add a new line to the text object.
-	virtual void AddLine( const TextLine *line ) = 0 ;
-	
-	/// Add a new line with coordinate and text.
-	virtual void AddLine( double x, double y, const std::wstring& text ) = 0 ;
-
-	///	Visitor rebound function.
-	virtual void Visit( GraphicsVisitor *visitor ) = 0 ;
+	virtual const T* Get( ) const = 0 ;
 } ;
 
 } // end of namespace
 
-#endif // TEXT_HH_
+#endif // OBJECTAPPEARANCE_HH_

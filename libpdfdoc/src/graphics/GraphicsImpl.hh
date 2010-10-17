@@ -17,60 +17,38 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	ExtGraphicsLink.hh
-    \brief	definition the Image class
-    \date	May 11, 2010
+/**	\file	GraphicsImpl.hh
+    \brief	definition the GraphicsImpl class
+    \date	Oct 17, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_EXT_GRAPHICS_LINK_HEADER_INCLUDED__
-#define __PDF_EXT_GRAPHICS_LINK_HEADER_INCLUDED__
+#ifndef __PDF_GRAPHICSIMPL_HH_EADER_INCLUDED__
+#define __PDF_GRAPHICSIMPL_HH_EADER_INCLUDED__
 
-#include "Graphics.hh"
-
-#include "GraphicsState.hh"
-#include "util/Matrix.hh"
+#include <iosfwd>
 
 namespace pdf {
 
-///	A link to a graphics object external to the page content.
-/**	\ingroup graphics
-	In a PDF document, there may be some graphics objects that are not stored
-	in the page content. These objects includes images and PDF forms. The
-	ExtGraphicsLink class is a link to these external object in the page.
-	Multiple links to these external objects can appear in the PDF document
-	or even in the same page, but only one copy will be save to file.
-	
-	Currently, only images are supported.
+class ContentOp ;
+class GraphicsState ;
+class ResourcesDict ;
+
+///	brief description
+/**	\internal
+	The GraphicsImpl class represents
 */
-template <typename T>
-class ExtGraphicsLink : public Graphics
+class GraphicsImpl
 {
 public :
-	ExtGraphicsLink( const GraphicsState& gs, const Matrix& ctm, const T *t ) ;
-	~ExtGraphicsLink( ) ;
+	virtual void OnCommand( ContentOp& op, const ResourcesDict *res ) = 0 ;
 
-	void OnCommand( ContentOp& op, const ResourcesDict *res ) ;
-
-	Matrix Transform( ) const ;
-	void Transform( const Matrix& mat ) ;
-	void Print(
+	virtual void Print(
 		std::ostream&	os,
 		ResourcesDict	*res,
-		GraphicsState&	gs ) const ;
-	void Visit( GraphicsVisitor *visitor ) ;
-	
-	GraphicsState GetState( ) const ;
-
-	const T* Get( ) const ;
-
-private :
-	Matrix			m_transform ;
-	GraphicsState	m_gs ;
-	
-	const T	*m_obj ;
+		GraphicsState&	gs ) const = 0 ;
 } ;
 
 } // end of namespace
 
-#endif // IMAGE_HH_
+#endif // GRAPHICSIMPL_HH_
