@@ -40,6 +40,7 @@
 #include "file/DictReader.hh"
 #include "file/ElementPool.hh"
 #include "graphics/Graphics.hh"
+#include "graphics/GraphicsImpl.hh"
 #include "util/Debug.hh"
 #include "util/Rect.hh"
 #include "util/Util.hh"
@@ -210,7 +211,9 @@ void RealPage::WriteGraphic(
 	if ( gfx->Transform() != Matrix() )
 		os << "q " << gfx->Transform() << "cm\n" ;
 
-	gfx->Print( os, res, gs ) ;
+	const GraphicsImpl *impl = &dynamic_cast<const GraphicsImpl&>( *gfx ) ;
+	if ( impl != 0 )
+		impl->Print( os, res, gs ) ;
 	
 	if ( gfx->Transform() != Matrix() )
 		os << "Q\n" ;

@@ -50,7 +50,7 @@ const Graphics* RealGraphicsGroup::At( std::size_t idx ) const
 	return 0 ;
 }
 
-Graphics* RealGraphicsGroup::CreateLink(
+GraphicsImpl* RealGraphicsGroup::CreateLink(
 	const GraphicsState&	gs,
 	const Matrix&			ctm ) const
 {

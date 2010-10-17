@@ -27,15 +27,12 @@
 #ifndef __PDF_GRAPHICS_HH_EADER_INCLUDED__
 #define __PDF_GRAPHICS_HH_EADER_INCLUDED__
 
-#include <iosfwd>
 #include <cstddef>
 
 namespace pdf {
 
-class ContentOp ;
 class GraphicsVisitor ;
 class GraphicsState ;
-class ResourcesDict ;
 class Matrix ;
 
 /**	\defgroup	graphics Graphics
@@ -83,15 +80,8 @@ class Graphics
 public :
 	virtual ~Graphics( ) ;
 	
-	virtual void OnCommand( ContentOp& op, const ResourcesDict *res ) = 0 ;
-
 	virtual Matrix Transform( ) const = 0 ;
 	virtual void Transform( const Matrix& mat ) = 0 ;
-
-	virtual void Print(
-		std::ostream&	os,
-		ResourcesDict	*res,
-		GraphicsState&	gs ) const = 0 ;
 
 	virtual void Visit( GraphicsVisitor *visitor ) = 0 ;
 	

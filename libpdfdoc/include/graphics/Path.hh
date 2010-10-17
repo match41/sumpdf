@@ -40,7 +40,7 @@ class Matrix ;
 	The Path class represents shapes, trajectories, and regions of all sorts.
 	They are used to draw lines, define the shapes of filled areas.
 */
-class Path : public Graphics
+class Path : virtual public Graphics
 {
 public :
 	enum	FillMode { winding, odd_even } ;

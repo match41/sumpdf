@@ -28,6 +28,7 @@
 #include "ContentOp.hh"
 #include "ResourcesDict.hh"
 
+#include "graphics/GraphicsImpl.hh"
 #include "graphics/GraphicsState.hh"
 #include "graphics/GraphicsVisitor.hh"
 #include "graphics/RealImage.hh"
@@ -128,7 +129,6 @@ void ContentStream::Decode( )
 void ContentStream::Decode( Stream& str )
 {
 	PDF_ASSERT( m_res != 0 ) ;
-//	PDF_ASSERT( m_current == 0 ) ;
 
 	// rewind to stream start for reading
 	str.Rewind( ) ;

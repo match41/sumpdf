@@ -46,11 +46,11 @@ void MockGraphicsVisitor::VisitPath( Path * )
 {
 }
 
-void MockGraphicsVisitor::VisitGraphicsLink( ExtGraphicsLink<Image> * )
+void MockGraphicsVisitor::VisitGraphicsLink( ObjectAppearance<Image> * )
 {
 }
 
-void MockGraphicsVisitor::VisitGraphicsLink( ExtGraphicsLink<GraphicsGroup> * )
+void MockGraphicsVisitor::VisitGraphicsLink( ObjectAppearance<GraphicsGroup> * )
 {
 }
 

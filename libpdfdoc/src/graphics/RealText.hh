@@ -27,6 +27,7 @@
 #define __PDF_REALTEXT_HEADER_INCLUDED__
 
 #include "graphics/Text.hh"
+#include "GraphicsImpl.hh"
 
 #include "core/Token.hh"
 #include "graphics/GraphicsState.hh"
@@ -44,7 +45,7 @@ class ResourcesDict ;
 /**	The RealText class represents a text object in a page. It is created for
 	each BT/ET commands pair. It contains a number of text lines.
 */
-class RealText : public Text
+class RealText : public Text, public GraphicsImpl
 {
 public :
 	explicit RealText(

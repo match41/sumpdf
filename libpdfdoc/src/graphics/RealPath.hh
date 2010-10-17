@@ -27,6 +27,7 @@
 #define __PDF_REALPATH_HH_EADER_INCLUDED__
 
 #include "graphics/Path.hh"
+#include "graphics/GraphicsImpl.hh"
 
 #include "graphics/GraphicsState.hh"
 #include "graphics/PathSegment.hh"
@@ -41,7 +42,7 @@ namespace pdf {
 /**	\internal
 	The RealPath class represents
 */
-class RealPath : public Path
+class RealPath : public Path, public GraphicsImpl
 {
 public :
 	explicit RealPath( const GraphicsState& gs, const Matrix& ctm = Matrix() ) ;

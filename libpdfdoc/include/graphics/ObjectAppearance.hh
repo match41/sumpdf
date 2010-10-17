@@ -35,7 +35,7 @@ namespace pdf {
 	The ObjectAppearance class represents
 */
 template <typename T>
-class ObjectAppearance : public Graphics
+class ObjectAppearance : virtual public Graphics
 {
 public :
 	virtual const T* Get( ) const = 0 ;

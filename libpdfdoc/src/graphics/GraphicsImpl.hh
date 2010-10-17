@@ -26,6 +26,8 @@
 #ifndef __PDF_GRAPHICSIMPL_HH_EADER_INCLUDED__
 #define __PDF_GRAPHICSIMPL_HH_EADER_INCLUDED__
 
+#include "graphics/Graphics.hh"
+
 #include <iosfwd>
 
 namespace pdf {
@@ -38,7 +40,7 @@ class ResourcesDict ;
 /**	\internal
 	The GraphicsImpl class represents
 */
-class GraphicsImpl
+class GraphicsImpl : virtual public Graphics
 {
 public :
 	virtual void OnCommand( ContentOp& op, const ResourcesDict *res ) = 0 ;

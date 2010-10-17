@@ -278,11 +278,11 @@ void Catalog::FontSubset::VisitPath( Path *path )
 {
 }
 
-void Catalog::FontSubset::VisitGraphicsLink( ExtGraphicsLink<Image> *img )
+void Catalog::FontSubset::VisitGraphicsLink( ObjectAppearance<Image> *img )
 {
 }
 
-void Catalog::FontSubset::VisitGraphicsLink( ExtGraphicsLink<GraphicsGroup> *g )
+void Catalog::FontSubset::VisitGraphicsLink( ObjectAppearance<GraphicsGroup> *g )
 {
 }
 

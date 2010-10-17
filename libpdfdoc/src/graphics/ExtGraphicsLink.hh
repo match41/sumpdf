@@ -27,6 +27,7 @@
 #define __PDF_EXT_GRAPHICS_LINK_HEADER_INCLUDED__
 
 #include "graphics/ObjectAppearance.hh"
+#include "GraphicsImpl.hh"
 
 #include "graphics/GraphicsState.hh"
 #include "util/Matrix.hh"
@@ -44,7 +45,7 @@ namespace pdf {
 	Currently, only images are supported.
 */
 template <typename T>
-class ExtGraphicsLink : public ObjectAppearance<T>
+class ExtGraphicsLink : public ObjectAppearance<T>, public GraphicsImpl
 {
 public :
 	ExtGraphicsLink( const GraphicsState& gs, const Matrix& ctm, const T *t ) ;

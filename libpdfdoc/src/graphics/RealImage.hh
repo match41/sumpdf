@@ -63,7 +63,7 @@ public :
 
 	std::istream& ReadInlineImage( std::istream& is ) ;
 
-	Graphics* CreateLink(
+	GraphicsImpl* CreateLink(
 		const GraphicsState&	gs,
 		const Matrix&			ctm ) const ;
 
