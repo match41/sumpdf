@@ -33,9 +33,12 @@ namespace pdf {
 
 class ColorSpace ;
 
-///	An image.
+///	Represents an image that can be added to a page.
 /**	\ingroup graphics
-	The Image class represents
+	The Image class represents an image in a PDF document. It is used to be
+	added to a Page. Since the same image can be added to multiple pages (or
+	even the same page), each appearance is represented by a ExtGraphicsLink
+	object.
 */
 class Image
 {

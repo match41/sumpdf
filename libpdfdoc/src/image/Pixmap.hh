@@ -31,9 +31,17 @@
 
 namespace img {
 
-/*!	\brief	image interface
+/**	\brief	An abstraction of an array of pixels
 	
-	This is the image interface. It provides an abstraction on images.
+	This interface represents an array of pixels. It is used by libpdfdoc as
+	an independent way to transfer and store image data. It cannot be directly
+	added to a page in a document, but it can be used with Doc::AddImage()
+	to produce an Image object, which can be added to a page.
+	
+	Clients of libpdfdoc can inherit this interface can provide there own image
+	class. Out of the box libpdfdoc supports PNG and JPEG optionally. Clients
+	can derive this class and use their own toolkit to implement it. For
+	example, Sumpdf uses the Qt image classes to support more image formats.  
 */
 class Pixmap
 {
