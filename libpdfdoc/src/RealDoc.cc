@@ -135,11 +135,6 @@ Font* RealDoc::CreateSimpleFont( const unsigned char *data, std::size_t size )
 	return m_fonts.GetFont( data, size ) ;
 }
 
-Image* RealDoc::LoadImage( const std::string& filename )
-{
-	return new RealImage( filename ) ;
-}
-
 Page* RealDoc::AddPage( std::size_t index )
 {
 	return 0 ;
@@ -217,6 +212,11 @@ void RealDoc::Info_::SetField(const Name& name, const std::string& value)
 		m_dict.erase( name ) ;
 	else
 		m_dict.Set( name, value ) ;
+}
+
+Image* RealDoc::AddImage( img::Pixmap *img )
+{
+	return 0 ;
 }
 
 } // end of namespace

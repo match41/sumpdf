@@ -63,7 +63,14 @@ RealImage::RealImage( Stream& str, File *file )
 	}
 }
 
-RealImage::RealImage( const std::string& filename )
+RealImage::RealImage( std::size_t width, std::size_t height, std::size_t depth,
+	ColorSpec spec, const unsigned char *pixels, std::size_t size )
+	: m_format( standard )
+	, m_width( width )
+	, m_height( height )
+	, m_depth( depth )
+	, m_bytes( pixels, pixels + size )
+	, m_space( new RealColorSpace( spec ) )
 {
 }
 

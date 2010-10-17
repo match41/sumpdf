@@ -31,6 +31,11 @@
 
 struct FT_FaceRec_ ;
 
+namespace img
+{
+	class Pixmap ;
+}
+
 namespace pdf {
 
 class DocInfo ;
@@ -130,12 +135,12 @@ public :
 	virtual Page* GetPage( std::size_t index ) = 0 ;
 	//@}
 	
-	/*!	\name	Resources Functions
+	/**	\name	Resources Functions
 		These functions provide interfaces to accessing the resources of the
 		document.
 	*/
 	//@{
-	/*!	\brief	Create a font to be used with the document.
+	/**	\brief	Create a font to be used with the document.
 	
 		This function creates a new font object that only this document
 		can use.
@@ -150,7 +155,17 @@ public :
 		std::size_t 			size ) = 0 ;
 	//@}
 	
-	virtual Image* LoadImage( const std::string& filename ) = 0 ;
+	/// Add an image to the document.
+	/**	Call this function to add an image \a img to the document for later use.
+		The \a img must be an object created by new. After adding the image to
+		the document, the image will be owned by the document, i.e. the caller
+		does not need to delete it.
+		\param	img		the image to be added. It will be owned by the document
+						after adding.
+		\return	A newly created Image object. It can be added to a Page of the
+				document later.
+	*/
+	virtual Image* AddImage( img::Pixmap *img ) = 0 ;
 	
 	virtual const DocInfo* Info( ) const = 0 ;
 	virtual DocInfo* Info( ) = 0 ;

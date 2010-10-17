@@ -29,6 +29,7 @@
 #include "graphics/Image.hh"
 #include "XObject.hh"
 
+#include "graphics/ColorSpec.hh"
 #include "util/RefPtr.hh"
 
 #include <iosfwd>
@@ -42,6 +43,7 @@ class Dictionary ;
 class Name ;
 class Object ;
 class Stream ;
+class Pixmap ;
 
 ///	brief description
 /**	\internal
@@ -51,7 +53,8 @@ class RealImage : public Image, public XObject
 {
 public :
 	explicit RealImage( std::istream& is ) ;
-	explicit RealImage( const std::string& filename ) ;
+	RealImage( std::size_t width, std::size_t height, std::size_t depth,
+		ColorSpec spec, const unsigned char *pixels, std::size_t size ) ;
 	RealImage( Stream& str, File *file ) ;
 	~RealImage( ) ;
 

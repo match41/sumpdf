@@ -71,10 +71,10 @@ public :
 	Font* CreateSimpleFont( FT_FaceRec_ *face ) ;
 	Font* CreateSimpleFont( const unsigned char	*data, std::size_t size ) ;
 
-	Image* LoadImage( const std::string& filename ) ;
-
 	const DocInfo* Info( ) const ;
 	DocInfo* Info( ) ;
+	
+	Image* AddImage( img::Pixmap *img ) ;
 
 private :
 	//! font database for loading the font files.
