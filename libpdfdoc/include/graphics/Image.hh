@@ -37,7 +37,7 @@ class ColorSpace ;
 /**	\ingroup graphics
 	The Image class represents an image in a PDF document. It is used to be
 	added to a Page. Since the same image can be added to multiple pages (or
-	even the same page), each appearance is represented by a ExtGraphicsLink
+	even the same page), each appearance is represented by a ObjectAppearance
 	object.
 */
 class Image

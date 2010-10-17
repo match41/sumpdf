@@ -36,9 +36,9 @@ class ContentOp ;
 class GraphicsState ;
 class ResourcesDict ;
 
-///	brief description
+///	Implementation detail of a Graphics object.
 /**	\internal
-	The GraphicsImpl class represents
+	Basically, all graphics object must implement this interface.
 */
 class GraphicsImpl : virtual public Graphics
 {
