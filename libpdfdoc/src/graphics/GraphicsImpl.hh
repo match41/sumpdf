@@ -38,7 +38,10 @@ class ResourcesDict ;
 
 ///	Implementation detail of a Graphics object.
 /**	\internal
-	Basically, all graphics object must implement this interface.
+	Basically, all graphics object must implement this interface. This interface
+	contains functions that should be part of the Graphics interface. However,
+	these functions are not suppose to be expose to the clients of the library.
+	As a result, they are moved to this interface.
 */
 class GraphicsImpl : virtual public Graphics
 {
