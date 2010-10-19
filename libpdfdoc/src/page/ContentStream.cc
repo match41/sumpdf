@@ -153,7 +153,7 @@ void ContentStream::ProcessCommand( ContentOp& op, std::istream& is )
 		(this->*(i->second))( op, is ) ;
 	}
 	else if ( m_current != 0 )
-		m_current->OnCommand( op, m_res ) ;
+		m_current->QueryImplementation()->OnCommand( op, m_res ) ;
 	else
 		m_state.gs.OnCommand( op, m_res ) ;
 }
@@ -199,13 +199,13 @@ void ContentStream::Onm( ContentOp& op, std::istream& )
 	if ( m_current == 0 )
 		m_current = new RealPath( m_state.gs, m_state.ctm ) ;
 
-	m_current->OnCommand( op, m_res ) ;
+	m_current->QueryImplementation()->OnCommand( op, m_res ) ;
 }
 
 void ContentStream::OnPaintPath( ContentOp& op, std::istream& is )
 {
 	if ( m_current != 0 )
-		m_current->OnCommand( op, m_res ) ;
+		m_current->QueryImplementation()->OnCommand( op, m_res ) ;
 	OnEndObject( op, is ) ;
 }
 

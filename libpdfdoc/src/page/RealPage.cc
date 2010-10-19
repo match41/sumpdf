@@ -211,7 +211,7 @@ void RealPage::WriteGraphic(
 	if ( gfx->Transform() != Matrix() )
 		os << "q " << gfx->Transform() << "cm\n" ;
 
-	const GraphicsImpl *impl = &dynamic_cast<const GraphicsImpl&>( *gfx ) ;
+	const GraphicsImpl *impl = gfx->QueryImplementation() ;
 	if ( impl != 0 )
 		impl->Print( os, res, gs ) ;
 	

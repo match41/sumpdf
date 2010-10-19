@@ -43,7 +43,7 @@ class GraphicsVisitor ;
 	a BT...ET operators in the content stream of a page. It consists of a number
 	of text lines.
 */
-class Text : virtual public Graphics
+class Text : public Graphics
 {
 public :
 	virtual ~Text( ) ;

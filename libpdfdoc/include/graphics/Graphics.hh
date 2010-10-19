@@ -31,6 +31,7 @@
 
 namespace pdf {
 
+class GraphicsImpl ;
 class GraphicsVisitor ;
 class GraphicsState ;
 class Matrix ;
@@ -86,6 +87,9 @@ public :
 	virtual void Visit( GraphicsVisitor *visitor ) = 0 ;
 	
 	virtual GraphicsState GetState( ) const = 0 ;
+	
+	virtual GraphicsImpl* QueryImplementation( ) = 0 ;
+	virtual const GraphicsImpl* QueryImplementation( ) const = 0 ;
 } ;
 
 } // end of namespace

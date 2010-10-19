@@ -363,4 +363,19 @@ bool RealPath::SetStyle( bool fill, bool stroke, FillMode fill_mode )
 	return changed ;
 }
 
+GraphicsImpl* RealPath::QueryImplementation( )
+{
+	return this ;
+}
+
+const GraphicsImpl* RealPath::QueryImplementation( ) const
+{
+	return this ;
+}
+
+Graphics* RealPath::Interface( )
+{
+	return this ;
+}
+
 } // end of namespace

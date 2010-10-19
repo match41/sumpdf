@@ -382,4 +382,19 @@ void RealText::Transform( const Matrix& mat )
 	m_transform = mat ;
 }
 
+GraphicsImpl* RealText::QueryImplementation( )
+{
+	return this ;
+}
+
+const GraphicsImpl* RealText::QueryImplementation( ) const
+{
+	return this ;
+}
+
+Graphics* RealText::Interface( )
+{
+	return this ;
+}
+
 } // end of namespace

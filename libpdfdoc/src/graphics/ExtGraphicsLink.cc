@@ -97,6 +97,24 @@ const T* ExtGraphicsLink<T>::Get( ) const
 	return m_obj ;
 }
 
+template <typename T>
+GraphicsImpl* ExtGraphicsLink<T>::QueryImplementation( )
+{
+	return this ;
+}
+
+template <typename T>
+const GraphicsImpl* ExtGraphicsLink<T>::QueryImplementation( ) const
+{
+	return this ;
+}
+
+template <typename T>
+Graphics* ExtGraphicsLink<T>::Interface( )
+{
+	return this ;
+}
+
 } // end of namespace
 
 // explicit instantiation

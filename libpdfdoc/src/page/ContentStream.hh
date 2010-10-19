@@ -36,7 +36,7 @@
 namespace pdf {
 
 class ContentOp ;
-class GraphicsImpl ;
+class Graphics ;
 class GraphicsVisitor ;
 class Image ;
 class ResourcesDict ;
@@ -96,7 +96,7 @@ private :
 
 	//@{
 	/// Context information for decoding the graphics objects
-	GraphicsImpl		*m_current ;
+	Graphics			*m_current ;
 	std::stack<State>	m_state_stack ;
 	//@}
 	

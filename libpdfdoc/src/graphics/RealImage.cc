@@ -177,7 +177,7 @@ std::size_t RealImage::Depth( ) const
 	return m_depth ;
 }
 
-GraphicsImpl* RealImage::CreateLink(
+Graphics* RealImage::CreateLink(
 	const GraphicsState&	gs,
 	const Matrix&			ctm ) const
 {

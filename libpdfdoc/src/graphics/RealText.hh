@@ -82,6 +82,10 @@ public :
 	Matrix Transform() const ;
 	void Transform( const Matrix& mat ) ;
 
+	GraphicsImpl* QueryImplementation( ) ;
+	const GraphicsImpl* QueryImplementation( ) const ;
+	Graphics* Interface( ) ;
+
 private :
 	void AddLine( const RealTextLine& line ) ;
 	

@@ -31,7 +31,7 @@
 namespace pdf {
 
 class File ;
-class GraphicsImpl ;
+class Graphics ;
 class Matrix ;
 class GraphicsState ;
 class Stream ;
@@ -45,7 +45,7 @@ class XObject : public RefCounter
 public :
 	typedef Stream BaseType ;
 
-	virtual GraphicsImpl* CreateLink(
+	virtual Graphics* CreateLink(
 		const GraphicsState&	gs,
 		const Matrix&			ctm ) const = 0 ;
 } ;

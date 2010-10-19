@@ -56,6 +56,10 @@ public :
 	void Visit( GraphicsVisitor *visitor ) ;
 	GraphicsState GetState( ) const ;
 	
+	GraphicsImpl* QueryImplementation( ) ;
+	const GraphicsImpl* QueryImplementation( ) const ;
+	Graphics* Interface( ) ;
+
 	// Path virtual functions
 	std::size_t Count( ) const ;
 	PathSegment Segment( std::size_t index ) const ;

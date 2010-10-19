@@ -32,6 +32,7 @@
 
 namespace pdf {
 
+class Graphics ;
 class ContentOp ;
 class GraphicsState ;
 class ResourcesDict ;
@@ -43,7 +44,7 @@ class ResourcesDict ;
 	these functions are not suppose to be expose to the clients of the library.
 	As a result, they are moved to this interface.
 */
-class GraphicsImpl : virtual public Graphics
+class GraphicsImpl
 {
 public :
 	virtual void OnCommand( ContentOp& op, const ResourcesDict *res ) = 0 ;
@@ -52,6 +53,8 @@ public :
 		std::ostream&	os,
 		ResourcesDict	*res,
 		GraphicsState&	gs ) const = 0 ;
+
+	virtual Graphics* Interface( ) = 0 ;
 } ;
 
 } // end of namespace

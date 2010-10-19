@@ -65,6 +65,10 @@ public :
 
 	const T* Get( ) const ;
 
+	GraphicsImpl* QueryImplementation( ) ;
+	const GraphicsImpl* QueryImplementation( ) const ;
+	Graphics* Interface( ) ;
+
 private :
 	Matrix			m_transform ;
 	GraphicsState	m_gs ;
