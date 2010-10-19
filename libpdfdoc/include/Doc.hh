@@ -17,8 +17,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.			   *
  ***************************************************************************/
 
-/*!
-	\file	Doc.hh
+/**	\file	Doc.hh
 	\brief	definition the Doc class
 	\date	Fri Apr 11 2008
 	\author	Nestal Wan
@@ -43,25 +42,26 @@ class Font ;
 class Image ;
 class Page ;
 
-/*!	\brief	Base class for documents.
-	
-	This class represents a PDF document. It is an abstract class that
-	all functions are pure virtual. It has functions to read and write
+///	PDF document class.
+/**	This class represents a PDF document. It is the main object that clients
+	need to work with PDF documents. It has functions to read and write
 	the PDF document from and to a file, as well as functions to manipulate
 	the structure of the document like inserting or removing a page.
+	
+	
 */
 class Doc
 {
 public :
 	virtual ~Doc( ) ;
 
-	/*!	\name	File I/O functions
-		File input/output functions
+	/**	\name	File I/O functions
+		Functions reading from and writing to files. Call these functions to
+		read a PDF document from a file, or write the PDF document to a file.
 	*/
 	//@{
-	/*! \brief  Read a PDF document from a file
-	
-		This function reads a PDF document from a file. It will not read
+	///	Read a PDF document from a file
+	/**	This function reads a PDF document from a file. It will not read
 		all data from the file. It will only read the trailer and cross
 		reference table to know the structure of the PDF document. Page
 		contents will be read on-demand.
@@ -78,16 +78,18 @@ public :
 		\param  filename	The name of file to be read from. It must be
 							readable, but not nesscarrily writable.
 		\throw	ParseError	is thrown when there is parser error in the PDF
-							file.
+							file. The file cannot be read.
 		\sa		Write()
 	*/
 	virtual void Read( const std::string& filename ) = 0 ;
 	
-	/*!	\brief	Write the PDF document to a file
-	
-		This function writes the PDF document to a file. The file should not be
+	///	Write the PDF document to a file
+	/**	This function writes the PDF document to a file. The file should not be
 		the one that is specified in Read(). During Write(), all page content
-		of the PDF document will be read and saved in \a filename .
+		of the PDF document will be read and saved in \a filename.
+		
+		As Write() is a constant member function. It can be called multiple
+		times without changing the content of the document.
 		
 		\param	filename	The name of the file to be written to. If it does
 							not exist, it will be created. It must be writable.
@@ -98,11 +100,12 @@ public :
 	virtual void Write( const std::string& filename ) const = 0 ;
 	//@}
 	
-	/*!	\name	Page Accessing Functions
+	/**	\name	Page Accessing Functions
 		These functions allow adding and remove pages from the document.
 	*/
 	//@{
-	/*! Add a page to the document. This function creates a new page and add
+	/// Append a page at the end of the document.
+	/** Add a page to the document. This function creates a new page and add
 		it to the document. The page will be appended at the end of the
 		document. The pointer to the newly added page will be returned and
 		the caller can put content to the new page.
@@ -140,14 +143,20 @@ public :
 		document.
 	*/
 	//@{
-	/**	\brief	Create a font to be used with the document.
-	
-		This function creates a new font object that only this document
-		can use.
+	///	Create a font to be used with the document.
+	/**	This is a factory function creates a new font object for use with this
+		PDF document. The font object can be used with the TextState objects
+		to specify the font of a text object in a page.
+		
+		\note Only this document can use the font object. Moreover, if the
+			  document which created the font object is destroyed, the font
+			  object will be also destroyed as well.
+		 
 		\param	name	the name of the font, e.g. "Arial"
 		\return	A pointer to the newly created font object. The pointer pointed
 				by it will be invalidated after the document is destroyed. The
 				caller does not need to delete it after use. 
+		\sa		Font, Page, TextState
 	*/
 	virtual Font* CreateSimpleFont( FT_FaceRec_ *face ) = 0 ;
 	virtual Font* CreateSimpleFont(

@@ -39,23 +39,41 @@ class GraphicsVisitor ;
 
 ///	Text objects.
 /**	\ingroup graphics
-	The Text class represent a PDF text object. It is the stuff enclosed by
-	a BT...ET operators in the content stream of a page. It consists of a number
-	of text lines.
+	The Text class represent a PDF text object. A text object in a page contains
+	a group of text string with different formats. There is no limit on how
+	much text can be included in a Text object. It is completely up to the
+	application which generated the PDF file.
+	
+	A Text object can contain multiple TextLine objects. Each TextLine object
+	represent a number of characters with the same format (i.e. TextState) and
+	position (i.e. transformation). As mentioned above, the PDF generator
+	application defines how to group TextLine in Text objects. Technically, a
+	Text object contains all the stuff enclosed by a BT...ET operators in the
+	content stream of a page.
+	
+	The order of the TextLine in a Text object will not affect their absolute
+	position in the page. It will only affect the order of rendering. In
+	general, lines defined first will be rendered first. In other words,
+	objects rendered subsequently may be overwritten by later objects if they
+	are overlapped.
 */
 class Text : public Graphics
 {
 public :
 	virtual ~Text( ) ;
 
-	///	\name Iterator access members
+	///	\name Access to TextLine 
+	/**	These functions provide random access to the underlying text lines. The
+		order of the TextLine will be the same as their appearance in the PDF
+		file.
+	*/
 	//@{
-	///	Iterator access to the underlying text lines
 	virtual const TextLine* At( std::size_t idx ) const = 0 ;
 	virtual TextLine* At( std::size_t idx ) = 0 ;
-	//@}
 	
+	///	Return the number of TextLine objects in the Text object.
 	virtual std::size_t Count( ) const = 0 ;
+	//@}
 	
 	///	Add a new line to the text object.
 	virtual void AddLine( const TextLine *line ) = 0 ;
