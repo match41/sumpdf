@@ -27,10 +27,12 @@
 
 #include "core/Name.hh"
 #include "core/Object.hh"
-#include "graphics/ExtGraphicsLink.hh"
-#include "graphics/RealColorSpace.hh"
 #include "file/DictReader.hh"
 #include "file/File.hh"
+#include "graphics/Color.hh"
+#include "graphics/ExtGraphicsLink.hh"
+#include "graphics/RealColorSpace.hh"
+#include "image/JFIF.hh"
 #include "stream/Stream.hh"
 
 #include "util/CArray.hh"
@@ -121,6 +123,33 @@ RealImage::RealImage( std::istream& is )
 
 void RealImage::ReadContent( Dictionary& dict, std::istream& is )
 {
+	Init( dict, 0 ) ;
+
+	if ( dict["Filter"] == Object(Name("DCTDecode")) )
+	{
+		img::JFIF jfif( is.rdbuf(), &m_bytes ) ;
+		std::cout << "size = " << jfif.Size() << std::endl ;
+	}
+	else
+	{
+		PDF_ASSERT( m_width > 0 ) ;
+		PDF_ASSERT( m_height > 0 ) ;
+		PDF_ASSERT( m_space != 0 ) ;
+std::cout << "width = " << m_width << " height = " << m_height << " depth = " << m_depth << " space = " << m_space->Spec() << std::endl ;
+		std::size_t size = m_width * m_height * m_depth/8 * Color::ChannelCount( m_space->Spec() ) ;
+std::cout << "size = " << size << std::endl ;
+		m_bytes.resize( size ) ;
+		is.rdbuf()->sgetn( reinterpret_cast<char*>(&m_bytes[0]), size ) ;
+	}
+
+/*	char ei[2] = {} ;
+	is.rdbuf()->sgetn( ei, sizeof(ei) ) ;
+	if ( ei[0] == 'E' && ei[1] == 'I' )
+	{
+	}
+	else
+		std::cout << "corrupt image: " << ei[0] << ei[1] << std::endl ;
+*/
 	while ( is )
 	{
 		int ich = is.rdbuf()->sgetc() ;
@@ -145,10 +174,9 @@ void RealImage::ReadContent( Dictionary& dict, std::istream& is )
 			
 			if ( std::istream::traits_type::to_char_type(ich2) == 'I' )
 			{
-				std::cout << "finished inline image" << std::endl ;
+				std::cout << "finished inline image: " << m_bytes.size() << std::endl ;
 				std::cout << "width = " << m_width << " height = "
-				<< m_height << "\n" << dict << std::endl ;
-				Init( dict, 0 ) ;
+				<< m_height << "\n" << std::endl ;
 				return ;
 			}
 		}

@@ -27,6 +27,7 @@
 #define __PDF_JFIF_HH_EADER_INCLUDED__
 
 #include <iosfwd>
+#include <vector>
 
 namespace img {
 
@@ -37,7 +38,7 @@ namespace img {
 class JFIF
 {
 public :
-	explicit JFIF( std::streambuf *buf ) ;
+	explicit JFIF( std::streambuf *src, std::vector<unsigned char> *buf = 0 ) ;
 	
 	std::size_t Size( ) const ;
 
@@ -45,7 +46,8 @@ private :
 	unsigned short ReadBigEndlian( ) const ;
 
 private :
-	std::streambuf	*m_src ;
+	std::streambuf				*m_src ;
+	std::vector<unsigned char>	*m_buf ;
 } ;
 
 } // end of namespace

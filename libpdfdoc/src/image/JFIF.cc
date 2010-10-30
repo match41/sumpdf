@@ -69,8 +69,9 @@ using namespace pdf ;
 /**	constructor
 	
 */
-JFIF::JFIF( std::streambuf *buf )
-	: m_src ( buf )
+JFIF::JFIF( std::streambuf *src, std::vector<unsigned char> *buf )
+	: m_src ( src )
+	, m_buf ( buf )
 {
 }
 
@@ -82,6 +83,8 @@ std::size_t JFIF::Size( ) const
 	while ( (c = m_src->sbumpc()) != ttype::eof() )
 	{
 		offset++ ;
+		if ( m_buf != 0 )
+			m_buf->push_back( ttype::to_char_type( c ) ) ;
 	
 		// JPEG marker??
 		if ( c == marker )
@@ -90,6 +93,8 @@ std::size_t JFIF::Size( ) const
 			if ( (m = m_src->sbumpc()) != ttype::eof() )
 			{
 				offset++ ;
+				if ( m_buf != 0 )
+					m_buf->push_back( ttype::to_char_type( m ) ) ;
 			
 				// SOI: start of image
 				if ( m == SOI )
