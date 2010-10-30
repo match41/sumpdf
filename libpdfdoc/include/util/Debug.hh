@@ -53,6 +53,20 @@ namespace pdf
 			<< "\nActual value: " << t1 ;
 		AssertFail( ss.str().c_str(), file, line ) ;
 	}
+	
+	namespace debug
+	{
+		// output stream to put debug messages
+		std::ostream& Trace() ;
+		void EnableTrace() ;
+		void DisableTrace() ;
+		
+		struct Tracer
+		{
+			Tracer()	{ EnableTrace(); }
+			~Tracer()	{ DisableTrace(); }
+		} ;
+	}
 }
 
 #define PDF_ASSERT( expr )				\

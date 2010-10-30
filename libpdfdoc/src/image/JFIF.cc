@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
-\***************************************************************************/
+\************************************************debug::EnableTrace() ;***************************/
 
 /**	\file	JFIF.cc
 	\brief	implementation of the JFIF class
@@ -30,7 +30,6 @@
 
 #include <boost/cstdint.hpp>
 #include <streambuf>
-#include <iostream>
 
 using boost::uint16_t ;
 
@@ -65,6 +64,8 @@ const inttype TEM		= 0x01 ;
 
 namespace img {
 
+using namespace pdf ;
+
 /**	constructor
 	
 */
@@ -75,7 +76,7 @@ JFIF::JFIF( std::streambuf *buf )
 
 std::size_t JFIF::Size( ) const
 {
-	std::size_t offset = 0 ;
+	std::size_t offset = 0, start = 0 ;
 
 	inttype c ;
 	while ( (c = m_src->sbumpc()) != ttype::eof() )
@@ -93,34 +94,39 @@ std::size_t JFIF::Size( ) const
 				// SOI: start of image
 				if ( m == SOI )
 				{
-					std::cout << "found SOI at " << std::dec << offset << std::endl ;
+					debug::Trace() << "found SOI at " << std::dec << offset << std::endl ;
+					
+					// one marker has 2 bytes
+					PDF_ASSERT( offset >= 2 ) ;
+					start = offset - 2 ;
 				}
 				
 				// EOI: end of image
 				else if ( m == EOI )
 				{
-					std::cout << "found EOI at " << std::dec << offset << std::endl ;
+					debug::Trace() << "found EOI at " << std::dec << offset << std::endl ;
+					return offset - start ;
 				}
 				
 				else if ( m >= RST0 && m <= RST7 )
 				{
-					std::cout << "found RST" << std::endl ;
+					debug::Trace() << "found RST" << std::endl ;
 				}
 				
 				else if ( m == TEM )
 				{
-					std::cout << "found TEM" << std::endl ;
+					debug::Trace() << "found TEM" << std::endl ;
 				}
 				
 				// other markers. need to read size and skip it
 				else
 				{
-					std::cout << "found marker 0x" << std::hex << m << std::endl ;
+					debug::Trace() << "found marker 0x" << std::hex << m << std::endl ;
 				
 					uint16_t size ;
 					if ( ReadBigEndian( m_src, size ) )
 					{
-						std::cout << "skipping " << std::dec << size << " bytes" << std::endl ; 
+						debug::Trace() << "skipping " << std::dec << size << " bytes" << std::endl ; 
 						m_src->pubseekoff( size - sizeof(uint16_t), std::ios::cur ) ;
 						
 						offset += size ;
@@ -130,6 +136,7 @@ std::size_t JFIF::Size( ) const
 		}
 	}
 
+	// cannot find EOI marker.
 	return 0 ;
 }
 

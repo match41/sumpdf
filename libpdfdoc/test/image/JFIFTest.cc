@@ -28,10 +28,12 @@
 #include "image/JFIF.hh"
 
 #include "mock/Assert.hh"
+#include "util/Debug.hh"
 
 namespace pdfut {
 
 using namespace img ;
+using namespace pdf ;
 
 JFIFTest::JFIFTest( )
 {
@@ -39,10 +41,12 @@ JFIFTest::JFIFTest( )
 
 void JFIFTest::setUp( )
 {
+//	debug::EnableTrace() ;
 }
 
 void JFIFTest::tearDown( )
 {
+	debug::DisableTrace() ;
 }
 
 void JFIFTest::Test( )
@@ -53,7 +57,7 @@ void JFIFTest::Test( )
 
 	CPPUNIT_ASSERT( src ) ;
 	JFIF subject( src.rdbuf() ) ;
-	subject.Size() ;
+	PDFUT_ASSERT_EQUAL( subject.Size(), 360U ) ;
 }
 
 } // end of namespace

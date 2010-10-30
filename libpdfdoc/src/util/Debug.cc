@@ -28,6 +28,7 @@
 #include "Backtrace.hh"
 
 #include <iostream>
+#include <fstream>
 #include <cstdlib>
 
 namespace pdf {
@@ -41,4 +42,32 @@ void AssertFail( const char *text, const char *file, unsigned line )
 	std::abort( ) ;
 }
 
-} // end of namespace
+namespace debug {
+
+bool has_trace = false ;
+
+// output stream to put debug messages
+std::ostream& Trace()
+{
+	if ( has_trace )
+		return std::cout ;
+	else
+	{
+		static std::ofstream os ;
+		return os ;
+	}
+}
+
+void EnableTrace()
+{
+	has_trace = true ;
+}
+
+void DisableTrace()
+{
+	has_trace = false ;
+}
+
+} // end of namespace debug
+
+} // end of namespace pdf
