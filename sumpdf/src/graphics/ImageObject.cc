@@ -40,6 +40,7 @@
 #include <QGraphicsPixmapItem>
 #include <QImage>
 #include <QPainter>
+#include <QDebug>
 
 namespace pdf {
 
@@ -84,24 +85,35 @@ QImage ImageObject::ToQImage( const Image *img )
 	else
 	{
 		QImage::Format fmt = QImage::Format_Invalid ;
+		
+		ColorSpace *space = img->Space() ;
+		PDF_ASSERT( space != 0 ) ;
+		
 		switch ( img->Depth() )
 		{
-			case 8 : fmt = QImage::Format_Indexed8 ; break ;
-			case 1 : fmt = QImage::Format_Mono ; break ;
+			case 8 :
+				if ( space->Spec() == gfx::rgb )
+					fmt = QImage::Format_RGB888;
+				else if ( space->Map() != 0 )
+					fmt = QImage::Format_Indexed8 ; 
+				break ;
+			
+			case 1 : fmt = QImage::Format_Mono ;		break ;
 			default : break ;
 		}
 
-		std::size_t bits_in_row = img->Width() * img->Depth() ;
+		std::size_t bits_in_row = img->Width() * img->Depth() *
+			Color::ChannelCount( space->Spec() ) ;
 		std::size_t bytes_in_row = bits_in_row / 8 + (bits_in_row % 8 == 0 ? 0 : 1) ;
 
 		QImage tmp( img->Pixels(), img->Width(), img->Height(), bytes_in_row, fmt ) ;
 			
 		if ( img->Space() != 0 && fmt == QImage::Format_Indexed8 )
 		{
-			PDF_ASSERT( img->Space()->Spec() == gfx::none ) ;
-		
+qDebug() << "space = " << img->Space()->Spec() ;
 			ColorMap *map = img->Space()->Map( ) ;
 			PDF_ASSERT( map != 0 ) ;
+			PDF_ASSERT( img->Space()->Spec() == gfx::none ) ;
 		
 			tmp.setColorCount( map->Count() ) ;
 		
