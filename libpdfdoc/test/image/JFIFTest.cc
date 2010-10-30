@@ -17,42 +17,43 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	WriteStream.cc
-	\brief	implementation of the WriteStream class
-	\date	Apr 10, 2010
+/**	\file	JFIFTest.cc
+	\brief	implementation of the JFIFTest class
+	\date	Oct 30, 2010
 	\author	Nestal Wan
 */
 
-#include "WriteStream.hh"
+#include "JFIFTest.hh"
 
-#include "Types.hh"
-#include "util/Endian.hh"
+#include "image/JFIF.hh"
 
-// boost headers
-#include <boost/detail/endian.hpp>
+#include "mock/Assert.hh"
 
-namespace pdf {
+namespace pdfut {
 
-/**	constructor
-	
-*/
-WriteStream::WriteStream( std::streambuf *buf )
-	: m_buf( buf )
+using namespace img ;
+
+JFIFTest::JFIFTest( )
 {
 }
 
-template <typename T>
-WriteStream& WriteStream::operator<<( T v )
+void JFIFTest::setUp( )
 {
-#ifdef BOOST_LITTLE_ENDIAN
-	v = SwapByte( v ) ;
-#endif
-	m_buf->sputn( reinterpret_cast<const char*>(&v), sizeof(v) ) ;
-
-	return *this ;
 }
 
-template WriteStream& WriteStream::operator<<( u32 v ) ;
-template WriteStream& WriteStream::operator<<( u16 v ) ;
+void JFIFTest::tearDown( )
+{
+}
+
+void JFIFTest::Test( )
+{
+	std::ifstream src(
+		(std::string(TEST_DATA_DIR) + "3x3bgr.jpg").c_str(),
+		std::ios::in | std::ios::binary ) ;
+
+	CPPUNIT_ASSERT( src ) ;
+	JFIF subject( src.rdbuf() ) ;
+	subject.Size() ;
+}
 
 } // end of namespace

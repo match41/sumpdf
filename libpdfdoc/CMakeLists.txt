@@ -150,11 +150,13 @@ set( UTIL_HDRS  	${UTIL_DIR}/Export.hh
 					${UTIL_DIR}/SymbolInfo.hh
 					${UTIL_DIR}/Backtrace.hh
 					${UTIL_DIR}/RefCounter.hh
-					${UTIL_DIR}/RefPtr.hh )
+					${UTIL_DIR}/RefPtr.hh
+					${UTIL_DIR}/Endian.hh )
 					
 set( IMG_HDRS  		${IMG_DIR}/Pixmap.hh
 					${IMG_DIR}/PngImage.hh
-					${IMG_DIR}/JpegImage.hh )
+					${IMG_DIR}/JpegImage.hh
+					${IMG_DIR}/JFIF.hh )
 
 set( FONT_HDRS		${FONT_DIR}/Types.hh
 					${FONT_DIR}/BaseFont.hh 
@@ -175,8 +177,7 @@ set( FONT_HDRS		${FONT_DIR}/Types.hh
 					${FONT_DIR}/subset/Sfnt.hh
 					${FONT_DIR}/subset/Types.hh
 					${FONT_DIR}/subset/ReadStream.hh
-					${FONT_DIR}/subset/WriteStream.hh
-					${FONT_DIR}/subset/Endian.hh )
+					${FONT_DIR}/subset/WriteStream.hh )
 
 set( BASE_HDRS		src/RealDoc.hh )
 
@@ -304,9 +305,11 @@ set( UTIL_SRCS  	${UTIL_DIR}/Rect.cc
 					${UTIL_DIR}/RefPtr.cc
 					${UTIL_DIR}/Debug.cc
 					${UTIL_DIR}/ReferenceCountable.cc
-					${UTIL_DIR}/Matrix.cc )
+					${UTIL_DIR}/Matrix.cc
+					${UTIL_DIR}/Endian.cc )
 
-set( IMG_SRCS  		${IMG_DIR}/Pixmap.cc )
+set( IMG_SRCS  		${IMG_DIR}/Pixmap.cc
+					${IMG_DIR}/JFIF.cc )
 
 set( FONT_SRCS		${FONT_DIR}/Font.cc
                     ${FONT_DIR}/SimpleFont.cc
@@ -332,8 +335,7 @@ set( FONT_SRCS		${FONT_DIR}/Font.cc
 					${FONT_DIR}/FontSubsetInfo.cc
 					${FONT_DIR}/subset/Sfnt.cc
 					${FONT_DIR}/subset/ReadStream.cc
-					${FONT_DIR}/subset/WriteStream.cc
-					${FONT_DIR}/subset/Endian.cc )
+					${FONT_DIR}/subset/WriteStream.cc )
 
 set( BASE_SRCS		src/Doc.cc
 					src/RealDoc.cc )
@@ -621,6 +623,8 @@ set( UT_SRCS	test/core/TokenTest.cc
 				test/mock/MockFontDb.cc
 				test/mock/MockGraphicsVisitor.cc
 				test/RealDocTest.cc
+				
+				test/image/JFIFTest.cc
 )
 
 if ( PNG_FOUND )

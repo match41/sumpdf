@@ -17,90 +17,32 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	Endian.cc
+/**	\file	Endian.hh
     \brief	definition the Endian class
     \date	Apr 10, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_ENDIAN_CC_EADER_INCLUDED__
-#define __PDF_ENDIAN_CC_EADER_INCLUDED__
+#ifndef __PDF_ENDIAN_HEADER_INCLUDED__
+#define __PDF_ENDIAN_HEADER_INCLUDED__
 
-#include "Endian.hh"
-#include "Types.hh"
-
-// boost headers
-#include <boost/detail/endian.hpp>
-
-#include <cstring>
-#include <algorithm>
-
-#ifdef _MSC_VER
-#include <intrin.h>
-#endif
-
-namespace pdf {
-
-#ifdef __GNUC__
-
-template <>
-u32 SwapByte( u32 t )
+namespace pdf
 {
-	return __builtin_bswap32( t ) ;
-}
+	template <typename T>
+	T SwapByte( T t ) ;
 
-#elif _MSC_VER
+	template <typename T>
+	T ToBigEndian( T value ) ;
 
-template <>
-u32 SwapByte( u32 t )
-{
-	return _byteswap_ulong( t ) ;
-}
+	template <typename T>
+	T ToLittleEndian( T value ) ;
 
-// for others
-#else
-
-template <>
-u32 SwapByte( u32 t )
-{
-	uchar *p = reinterpret_cast<uchar*>( &t ) ;
-	std::swap( p[0], p[3] ) ;
-	std::swap( p[1], p[2] ) ;
-	return t ;
-}
-
-#endif
-
-template <>
-u16 SwapByte( u16 t )
-{
-	return ((t & 0xff) << 8 ) | (t >> 8) ;
-}
-
-template <typename T>
-void WriteBigEndian( T value, unsigned char *ptr )
-{
-#ifdef BOOST_LITTLE_ENDIAN
-	value = SwapByte( value ) ;
-#endif
-	std::memcpy( ptr, &value, sizeof(value) ) ;
-}
-
-template void WriteBigEndian( u32 value, unsigned char *ptr ) ;
-template void WriteBigEndian( u16 value, unsigned char *ptr ) ;
-
-template <typename T>
-T ReadBigEndian( const unsigned char *ptr )
-{
-	T value ;
-	std::memcpy( &value, ptr, sizeof(value) ) ;
-
-#ifdef BOOST_LITTLE_ENDIAN
-	value = SwapByte( value ) ;
-#endif
-	return value ;
-}
+	template <typename T>
+	void WriteBigEndian( T value, unsigned char *ptr ) ;
+	
+	template <typename T>
+	T ReadBigEndian( const unsigned char *ptr ) ;
 
 } // end of namespace
 
-#endif // ENDIAN_CC_
+#endif // ENDIAN_HH_

@@ -17,26 +17,37 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	Endian.hh
-    \brief	definition the Endian class
-    \date	Apr 10, 2010
+/**	\file	JFIF.hh
+    \brief	definition the JFIF class
+    \date	Oct 30, 2010
     \author	Nestal Wan
 */
 
-#ifndef __PDF_ENDIAN_HEADER_INCLUDED__
-#define __PDF_ENDIAN_HEADER_INCLUDED__
+#ifndef __PDF_JFIF_HH_EADER_INCLUDED__
+#define __PDF_JFIF_HH_EADER_INCLUDED__
 
-namespace pdf
+#include <iosfwd>
+
+namespace img {
+
+///	brief description
+/**	\internal
+	The JFIF class represents
+*/
+class JFIF
 {
-	template <typename T>
-	T SwapByte( T t ) ;
-
-	template <typename T>
-	void WriteBigEndian( T value, unsigned char *ptr ) ;
+public :
+	explicit JFIF( std::streambuf *buf ) ;
 	
-	template <typename T>
-	T ReadBigEndian( const unsigned char *ptr ) ;
+	std::size_t Size( ) const ;
+
+private :
+	unsigned short ReadBigEndlian( ) const ;
+
+private :
+	std::streambuf	*m_src ;
+} ;
 
 } // end of namespace
 
-#endif // ENDIAN_HH_
+#endif // JFIF_HH_

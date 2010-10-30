@@ -17,42 +17,39 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	WriteStream.cc
-	\brief	implementation of the WriteStream class
-	\date	Apr 10, 2010
-	\author	Nestal Wan
+/**	\file	JFIFTest.hh
+    \brief	definition the JFIFTest class
+    \date	Oct 30, 2010
+    \author	Nestal Wan
 */
 
-#include "WriteStream.hh"
+#ifndef __PDFUT_JFIFTEST_HH_EADER_INCLUDED__
+#define __PDFUT_JFIFTEST_HH_EADER_INCLUDED__
 
-#include "Types.hh"
-#include "util/Endian.hh"
+#include <cppunit/TestFixture.h>
 
-// boost headers
-#include <boost/detail/endian.hpp>
+#include <cppunit/extensions/HelperMacros.h>
 
-namespace pdf {
+namespace pdfut {
 
-/**	constructor
-	
-*/
-WriteStream::WriteStream( std::streambuf *buf )
-	: m_buf( buf )
+class JFIFTest : public CppUnit::TestFixture
 {
-}
+public :
+	JFIFTest( ) ;
 
-template <typename T>
-WriteStream& WriteStream::operator<<( T v )
-{
-#ifdef BOOST_LITTLE_ENDIAN
-	v = SwapByte( v ) ;
-#endif
-	m_buf->sputn( reinterpret_cast<const char*>(&v), sizeof(v) ) ;
+	// declare suit function
+	CPPUNIT_TEST_SUITE( JFIFTest ) ;
+		CPPUNIT_TEST( Test ) ;
+	CPPUNIT_TEST_SUITE_END();
 
-	return *this ;
-}
+public :
+	void setUp( ) ;
+	void tearDown( ) ;
 
-template WriteStream& WriteStream::operator<<( u32 v ) ;
-template WriteStream& WriteStream::operator<<( u16 v ) ;
+private :
+	void Test( ) ;
+} ;
 
 } // end of namespace
+
+#endif // JFIFTEST_HH_

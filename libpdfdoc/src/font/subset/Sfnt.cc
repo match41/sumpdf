@@ -26,14 +26,14 @@
 #include "Sfnt.hh"
 
 // headers in the same package
-#include "Endian.hh"
 #include "ReadStream.hh"
 #include "WriteStream.hh"
 
 // headers from other packages
 #include "font/FontException.hh"
-#include "util/Debug.hh"
 #include "util/CArray.hh"
+#include "util/Debug.hh"
+#include "util/Endian.hh"
 
 // freetype headers
 #include <ft2build.h>

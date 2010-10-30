@@ -35,7 +35,7 @@ class GraphicsState ;
 class Matrix ;
 
 ///	brief description
-/**	\internal
+/**	\ingroup graphics
 	The TextLine class represents
 */
 class TextLine

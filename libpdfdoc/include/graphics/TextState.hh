@@ -17,8 +17,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**
-    \file	TextState.hh
+/**	\file	TextState.hh
     \brief	definition the TextFormat class
     \date	Jan 4, 2010
     \author	Nestal Wan

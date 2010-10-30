@@ -72,6 +72,7 @@
 #include "page/ExtGStateTest.hh"
 #include "image/PngImageTest.hh"
 #include "image/JpegImageTest.hh"
+#include "image/JFIFTest.hh"
 #include "util/MatrixTest.hh"
 
 int main( int argc, char **argv )
@@ -119,6 +120,7 @@ int main( int argc, char **argv )
 #ifdef HAVE_JPEG
 	runner.addTest( JpegImageTest::suite( ) ) ;
 #endif
+	runner.addTest( JFIFTest::suite( ) ) ;
 	runner.addTest( DictReaderTest::suite( ) ) ;
 	runner.addTest( DeflateFilterTest::suite( ) ) ;
 	runner.addTest( InStreamBufAdaptorTest::suite( ) ) ;

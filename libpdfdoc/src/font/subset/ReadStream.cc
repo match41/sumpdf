@@ -25,8 +25,8 @@
 
 #include "ReadStream.hh"
 
-#include "Endian.hh"
 #include "Types.hh"
+#include "util/Endian.hh"
 
 // boost headers
 #include <boost/detail/endian.hpp>
