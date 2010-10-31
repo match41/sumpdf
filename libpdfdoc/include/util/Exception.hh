@@ -53,8 +53,6 @@ struct Exception :
 	virtual public boost::exception
 {
 	Exception( ) ;
-	
-	std::string BackTrace() const ;
 } ;
 
 struct FileError	: virtual Exception {} ;

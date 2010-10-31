@@ -39,84 +39,10 @@
 namespace pdf {
 
 class Backtrace ;
-typedef boost::error_info<struct ErrMsgTag, std::string>	ErrorMsg ;
 
 Exception::Exception( )
 {
 	*this << expt::BacktraceInfo( Backtrace() ) ;
 }
-
-std::string Exception::BackTrace() const
-{
-	if ( const Backtrace *bt =
-		boost::get_error_info<expt::BacktraceInfo>(*this) )
-		return bt->ToString() ;
-
-	else
-		return std::string() ;
-}
-
-/*
-Exception::Exception( boost::format fmt )
-{
-	*this << BacktraceInfo(Backtrace()) << ErrorMsg( fmt.str() ) ;
-}
-
-Exception::Exception( const std::string& str )
-{
-	*this << BacktraceInfo(Backtrace()) << ErrorMsg( str ) ;
-}
-
-void Exception::Add( const std::string& err )
-{
-	*this << ErrorMsg( err ) ;
-}
-
-void Exception::Add( boost::format fmt )
-{
-	*this << ErrorMsg( fmt.str() ) ;
-}
-
-std::string Exception::ErrorMessage( ) const
-{
-	if( const std::string *err = boost::get_error_info<ErrorMsg>(*this) )
-		return *err ;
-	else
-		return std::string() ;
-}
-
-std::string Exception::GetBacktrace( ) const
-{
-	if( const Backtrace *err = boost::get_error_info<BacktraceInfo>(*this) )
-		return err->ToString() ;
-	else
-		return std::string() ;
-}
-
-BadType::BadType(
-	const std::type_info& 	from,
-	const std::type_info& 	to,
-	const std::string& 		err,
-	const std::string&		obj )
-	: Exception( boost::format( "Cannot convert \"%1%\" object to \"%2%\". "
-	                            "exception: \"%3%\"\n"
-	                            "object: %4%" )
-	             % Demangle( from.name() )
-	             % Demangle( to.name() )
-	             % err
-	             % obj )
-{
-}
-
-ParseError::ParseError( const std::string& err )
-	: Exception( err )
-{
-}
-
-ParseError::ParseError( boost::format fmt )
-	: Exception( fmt )
-{
-}
-*/
 
 } // end of namespace

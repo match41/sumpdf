@@ -44,19 +44,19 @@ ExceptionDlg::ExceptionDlg( const Exception& e, QWidget *parent )
 {
 	setupUi( this ) ;
 
-//	m_msg_edit->setPlainText( e.ErrorMessage().c_str() ) ;
-	m_bt_edit->setPlainText( e.BackTrace().c_str() ) ;
+	using namespace expt ;
+	using namespace boost ;
 	
-	if ( const boost::format *fmt = boost::get_error_info<expt::FormattedMsg>(e) )
-	{
-		m_msg_edit->setPlainText( fmt->str().c_str() ) ;
-	}
+	std::string msg ;
+	if ( const format *fmt = get_error_info<FormattedMsg>(e) )
+		msg = fmt->str() ;
+	else if ( const std::string *s = get_error_info<ErrMsg>(e) )
+		msg = *s ;
 	else
-	{
-		m_msg_edit->setPlainText( boost::diagnostic_information(e).c_str() ) ;
-	}
+		msg = e.what() ;
 	
-	
+	m_msg_edit->setPlainText( msg.c_str() ) ;
+	m_bt_edit->setPlainText( diagnostic_information(e).c_str() ) ;
 	
 	Init( ) ;
 }

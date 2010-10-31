@@ -65,6 +65,7 @@
 
 // boost headers
 #include <boost/bind.hpp>
+#include <boost/exception/diagnostic_information.hpp> 
 
 // stdc++ headers
 #include <algorithm>
@@ -204,7 +205,9 @@ void MainWnd::OpenFile( const QString& file )
 	}
 	catch ( ... )
 	{
-		ExceptionDlg dlg( "unknown exception", this ) ;
+		std::string s = boost::current_exception_diagnostic_information() ;
+		
+		ExceptionDlg dlg( s.c_str(), this ) ;
 		dlg.exec() ;
 	}
 }

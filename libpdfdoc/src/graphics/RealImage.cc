@@ -53,16 +53,8 @@ namespace pdf {
 RealImage::RealImage( Stream& str, File *file )
 	: m_format( str.FilterName() != Name() ? raw : standard)
 {
-	try
-	{
-		Init( str.Self(), file ) ;
-		str.CopyData( m_bytes ) ;
-	}
-	catch ( Exception& e )
-	{
-		e << expt::ErrMsg( "Exception thrown for RealImage" ) ;
-		throw ;
-	}
+	Init( str.Self(), file ) ;
+	str.CopyData( m_bytes ) ;
 }
 
 RealImage::RealImage( std::size_t width, std::size_t height, std::size_t depth,
