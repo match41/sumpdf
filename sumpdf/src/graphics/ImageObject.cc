@@ -107,8 +107,6 @@ QImage ImageObject::ToQImage( const Image *img )
 			space->ChannelCount() ;
 		std::size_t bytes_in_row = bits_in_row / 8 + (bits_in_row % 8 == 0 ? 0 : 1) ;
 
-std::cout << "size = " << img->ByteCount() << " " << bytes_in_row << std::endl ;
-
 		QImage tmp( img->Pixels(), img->Width(), img->Height(), bytes_in_row, fmt ) ;
 
 		if ( img->Space() != 0 && fmt == QImage::Format_Indexed8 )

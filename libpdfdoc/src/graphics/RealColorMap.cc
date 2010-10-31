@@ -25,8 +25,7 @@
 
 #include "RealColorMap.hh"
 
-#include "util/Debug.hh"
-#include "util/Exception.hh"
+#include "core/Object.hh"
 
 #include "graphics/Color.hh"
 #include "graphics/RealColorSpace.hh"
@@ -62,10 +61,9 @@ RealColorMap::RealColorMap( const Color *map, std::size_t size )
 
 RealColorMap::RealColorMap( Array& obj, File *file )
 {
-debug::Tracer a ;
 	ArrayReader ar( obj, file ) ;
 	
-	Array copy( obj ) ;
+	using namespace boost ;
 	
 	Name name ;
 	int hival ;
@@ -76,8 +74,10 @@ debug::Tracer a ;
 		ar.Detach( 3, lookup )	&&
 		(lookup.Is<std::string>() || lookup.Is<Stream>() ) )
 	{
-		m_base = ar.Create( 1, boost::bind( NewPtr<RealColorSpace>(), _1, file ) ) ;
-		m_comp.resize( (hival + 1) * Color::ChannelCount(m_base->Spec()) ) ;
+		m_base = ar.Create( 1, bind( NewPtr<RealColorSpace>(), _1, file ) ) ;
+		PDF_ASSERT( m_base != 0 ) ;
+		
+		m_comp.resize( (hival + 1) * m_base->ChannelCount() ) ;
 		
 		if ( lookup.Is<std::string>() )
 		{
@@ -93,7 +93,6 @@ debug::Tracer a ;
 	}
 	else
 	{
-debug::Trace() << "name = " << name << " loopkup = " << lookup << std::endl ;
 		throw Exception() << expt::ErrMsg( "invalid color map" ) ;
 	}
 }

@@ -37,6 +37,7 @@
 
 namespace pdf {
 
+class Array ;
 class Color ;
 class File ;
 class Object ;
@@ -63,6 +64,11 @@ public :
 	std::size_t	ChannelCount() const ;
 	
 	bool		IsEqual( const ColorSpace *sp ) const ;
+
+private :
+	bool IsValid() const ;
+	void FromObject( Object& obj, File *file ) ;
+	void FromArray( Array& array, File *file ) ;
 
 private :
 	ColorSpec				m_space ;

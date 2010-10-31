@@ -30,6 +30,7 @@
 #include "core/Array.hh"
 #include "core/Object.hh"
 #include "file/ArrayReader.hh"
+#include "file/DictReader.hh"
 #include "graphics/Color.hh"
 #include "stream/Stream.hh"
 #include "util/Exception.hh"
@@ -50,44 +51,9 @@ RealColorSpace::RealColorSpace( ColorSpec sp )
 RealColorSpace::RealColorSpace( Object& obj, File *file )
 	: m_space( gfx::none )
 {
-	debug::Tracer tracer;
+	FromObject( obj, file ) ;
 
-	if ( obj.Is<Name>() )
-		m_space = ParseSpec( obj.As<Name>().Str() ) ;
-	
-	else if ( obj.Is<Array>() )
-	{
-		Array& a = obj.As<Array>() ;
-		if ( a.empty() )
-			throw Exception() << expt::ErrMsg( "empty array in color space" ) ;
-		
-		Name name = a[0].As<Name>() ;
-		if ( name == "Indexed" )
-			m_map.reset( new RealColorMap( obj.As<Array>(), file ) ) ;
-		
-		else if ( name == "ICCBased" && a.size() >= 2 )
-		{
-			ArrayReader ar( a, file ) ;
-			Stream profile ;
-			if ( ar.Detach( 1, profile ) )
-			{
-				debug::Trace() << "profile = " << profile.Self() << std::endl ;
-				const Dictionary& pdict = profile.Self() ;
-				Name alt = pdict["Alternate"].As<Name>() ;
-				debug::Trace() << "alt = " << alt << std::endl ;
-				
-				m_space = ParseSpec( alt.Str() ) ;
-				debug::Trace() << "space = " << m_space << std::endl ;
-			}
-		}
-		
-		else
-			debug::Trace() << "unknown cs name: " << name << std::endl ;
-		
-		if ( m_space == gfx::none && m_map.get() == 0 )
-			throw Exception() << expt::ErrMsg( "unsupported color space" ) ;
-	}
-	else
+	if ( !IsValid() )
 		throw Exception() << expt::ErrMsg( "invalid color space" ) ;
 }
 
@@ -99,6 +65,41 @@ RealColorSpace::RealColorSpace( const Color *map, std::size_t size )
 
 RealColorSpace::~RealColorSpace( )
 {
+}
+
+void RealColorSpace::FromObject( Object& obj, File *file )
+{
+	if ( obj.Is<Name>() )
+		m_space = ParseSpec( obj.As<Name>().Str() ) ;
+	
+	else if ( obj.Is<Array>() )
+		FromArray( obj.As<Array>(), file ) ;
+}
+
+void RealColorSpace::FromArray( Array& array, File *file )
+{
+	if ( array.empty() )
+		throw Exception() << expt::ErrMsg( "empty array in color space" ) ;
+	
+	Name name = array[0].As<Name>() ;
+	if ( name == "Indexed" )
+		m_map.reset( new RealColorMap( array, file ) ) ;
+	
+	else if ( name == "ICCBased" && array.size() >= 2 )
+	{
+		ArrayReader ar( array, file ) ;
+		Stream profile ;
+		if ( ar.Detach( 1, profile ) )
+		{
+			// ICC profile is not supported yet
+			// treat the color space as specified in "Alternate"
+			DictReader dr( profile.Self(), file ) ;
+			Object alt ;
+			
+			if ( dr.Detach( "Alternate", alt ) )
+				FromObject( alt, file ) ;
+		}
+	}
 }
 
 ColorSpec RealColorSpace::Spec() const
@@ -145,6 +146,11 @@ Color RealColorSpace::DefaultColor() const
 std::size_t	RealColorSpace::ChannelCount() const
 {
 	return m_map.get() != 0 ? 1 : Color::ChannelCount( m_space ) ;
+}
+
+bool RealColorSpace::IsValid() const
+{
+	return m_space != gfx::none || m_map.get() != 0 ;
 }
 
 } // end of namespace
