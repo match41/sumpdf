@@ -67,6 +67,11 @@ const GraphicsState::HandlerMap::Map::value_type
 	// text state commands
 	std::make_pair( "Tf",	&GraphicsState::OnTf ),
 	std::make_pair( "TL",	&GraphicsState::OnTL ),
+	std::make_pair( "Tc",	&GraphicsState::OnTc ),
+	std::make_pair( "Tw",	&GraphicsState::OnTw ),
+	std::make_pair( "Tz",	&GraphicsState::OnTz ),
+	std::make_pair( "Tr",	&GraphicsState::OnTr ),
+	std::make_pair( "Ts",	&GraphicsState::OnTs ),
 
 	// colour space commands
 	std::make_pair( "CS",	&GraphicsState::OnCS ),
@@ -238,7 +243,7 @@ bool GraphicsState::OnCommand( ContentOp& op, const ResourcesDict *res )
 	}
 	catch ( Exception& e )
 	{
-//		e.Add( boost::format( "Error when parsing \"%1%\"" ) % op ) ;
+		e << expt::ContentOpInfo( op ) ;
 		throw ;
 	}
 }
@@ -272,7 +277,7 @@ bool GraphicsState::OnTf( ContentOp& op, const ResourcesDict *res )
 	return false ;
 }
 
-bool GraphicsState::OnTL( ContentOp& op, const ResourcesDict *res )
+bool GraphicsState::OnTL( ContentOp& op, const ResourcesDict * )
 {
 	if ( op.Count() > 0 && op[0].IsNumber() )
 	{
@@ -283,6 +288,61 @@ bool GraphicsState::OnTL( ContentOp& op, const ResourcesDict *res )
 	else
 		return false ;
 }
+
+bool GraphicsState::OnTc( ContentOp& op, const ResourcesDict * )
+{
+	if ( op.Count() > 0 && op[0].IsNumber() )
+	{
+		CopyOnWrite( ) ;
+		m_impl->text.CharSpace( op[0].To<double>() ) ;
+		return true ;
+	}
+	else
+		return false ;
+}
+
+bool GraphicsState::OnTw( ContentOp& op, const ResourcesDict * )
+{
+	if ( op.Count() > 0 && op[0].IsNumber() )
+	{
+		CopyOnWrite( ) ;
+		m_impl->text.WordSpace( op[0].To<double>() ) ;
+		return true ;
+	}
+	else
+		return false ;
+}
+
+bool GraphicsState::OnTz( ContentOp& op, const ResourcesDict * )
+{
+	if ( op.Count() > 0 && op[0].IsNumber() )
+	{
+		CopyOnWrite( ) ;
+		m_impl->text.HScale( op[0].To<double>() ) ;
+		return true ;
+	}
+	else
+		return false ;
+}
+
+bool GraphicsState::OnTr( ContentOp& , const ResourcesDict * )
+{
+	// current not supported yet
+	return false ;
+}
+
+bool GraphicsState::OnTs( ContentOp& op, const ResourcesDict * )
+{
+	if ( op.Count() > 0 && op[0].IsNumber() )
+	{
+		CopyOnWrite( ) ;
+		m_impl->text.TextRise( op[0].To<double>() ) ;
+		return true ;
+	}
+	else
+		return false ;
+}
+
 
 Font* GraphicsState::FontFace( ) const
 {

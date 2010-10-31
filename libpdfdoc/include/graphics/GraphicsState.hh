@@ -27,6 +27,7 @@
 #define __PDF_GRAPHICSSTATE_HEADER_INCLUDED__
 
 #include <boost/shared_ptr.hpp>
+#include <boost/exception/info.hpp>
 
 #include <iosfwd>
 #include <vector>
@@ -111,6 +112,11 @@ private :
 	// text state command handlers
 	bool OnTf( ContentOp& op, const ResourcesDict *res ) ;
 	bool OnTL( ContentOp& op, const ResourcesDict *res ) ;
+	bool OnTc( ContentOp& op, const ResourcesDict *res ) ;
+	bool OnTw( ContentOp& op, const ResourcesDict *res ) ;
+	bool OnTz( ContentOp& op, const ResourcesDict *res ) ;
+	bool OnTr( ContentOp& op, const ResourcesDict *res ) ;
+	bool OnTs( ContentOp& op, const ResourcesDict *res ) ;
 	
 	// color space command handlers
 	bool OnCS( ContentOp& op, const ResourcesDict *res ) ;
@@ -145,6 +151,12 @@ private :
 	struct Impl ;
 	boost::shared_ptr<Impl>	m_impl ;
 } ;
+
+// Exception informations
+namespace expt
+{
+	typedef boost::error_info<struct ContentOpTag, ContentOp>	ContentOpInfo ;
+}
 
 } // end of namespace
 
