@@ -24,8 +24,8 @@
     \author	Nestal Wan
 */
 
-#ifndef __PDF_TEXT_HH_EADER_INCLUDED__
-#define __PDF_TEXT_HH_EADER_INCLUDED__
+#ifndef __PDF_TEXT_HEADER_INCLUDED__
+#define __PDF_TEXT_HEADER_INCLUDED__
 
 #include "Graphics.hh"
 
@@ -68,7 +68,10 @@ public :
 		file.
 	*/
 	//@{
+	/// Random access to text lines. 
 	virtual const TextLine* At( std::size_t idx ) const = 0 ;
+	
+	/// Random access to text lines.
 	virtual TextLine* At( std::size_t idx ) = 0 ;
 	
 	///	Return the number of TextLine objects in the Text object.
@@ -76,6 +79,9 @@ public :
 	//@}
 	
 	///	Add a new line to the text object.
+	/**	This function adds a new line to the text object. The newly added line
+		will be appended to the end of the text object.
+	*/
 	virtual void AddLine( const TextLine *line ) = 0 ;
 	
 	/// Add a new line with coordinate and text.

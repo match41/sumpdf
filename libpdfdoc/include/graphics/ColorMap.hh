@@ -23,8 +23,8 @@
     \author	Nestal Wan
 */
 
-#ifndef __PDF_COLORMAP_HH_EADER_INCLUDED__
-#define __PDF_COLORMAP_HH_EADER_INCLUDED__
+#ifndef __PDF_COLORMAP_HEADER_INCLUDED__
+#define __PDF_COLORMAP_HEADER_INCLUDED__
 
 #include "ColorSpec.hh"
 
@@ -35,17 +35,21 @@ namespace pdf {
 class Color ;
 class ColorSpace ;
 
-///	brief description
-/**	\internal
-	The ColorMap class represents
+///	Color Map class.
+/**	The ColorMap class represents a color map to be used in a color space.
 */
 class ColorMap
 {
 public :
 	virtual ~ColorMap( ) ;
 	
+	/// Lookup a color by its index in the color map.
 	virtual Color LookUp( unsigned char idx ) const = 0 ;
+	
+	/// Number of colors in this color map.
 	virtual std::size_t Count( ) const = 0 ;
+	
+	/// The base color space of this color map.
 	virtual ColorSpace* Base( ) const = 0 ;
 } ;
 

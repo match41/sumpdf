@@ -33,9 +33,8 @@ namespace pdf {
 class Color ;
 class ColorMap ;
 
-///	brief description
-/**	\internal
-	The ColorSpace class represents a color space in the PDF document. It is
+///	Color space interface.
+/**	The ColorSpace class represents a color space in the PDF document. It is
 	part of the graphics states. It is also used by images.
 */
 class ColorSpace
@@ -43,10 +42,27 @@ class ColorSpace
 public :
 	virtual ~ColorSpace( ) ;
 	
+	/// Color representation. RGB, CMYK or grayscale.
+	/**	The ColorSpec enum specifies the color representation. It can be RGB,
+		CMYK or grayscale. For color spaces defined by a color map, it will
+		be gfx::none.
+	*/
 	virtual ColorSpec	Spec() const = 0 ;
+	
+	/// Color map associated with this color space.
 	virtual ColorMap*	Map( ) const = 0 ;
+	
+	/// Check if two color spaces are equal.
 	virtual bool		IsEqual( const ColorSpace *sp ) const = 0 ;
+	
+	/// Default color of this color space.
+	/**	If the color space was changed in a graphics state, the default color
+		will be applied to it.
+		\sa	GraphicsState		
+	*/
 	virtual Color		DefaultColor() const = 0 ;
+	
+	/// Returns the number of color channels in this color space.
 	virtual std::size_t	ChannelCount() const = 0 ;
 } ;
 
