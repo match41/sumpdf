@@ -91,13 +91,38 @@ void RealColorSpace::FromArray( Array& array, File *file )
 		Stream profile ;
 		if ( ar.Detach( 1, profile ) )
 		{
+			DictReader dr( profile.Self(), file ) ;
+			
+			std::size_t channel_count = 0 ;
+			if ( !dr.Detach( "N", channel_count ) )			
+				throw Exception() << expt::ErrMsg( "number of channel is "
+					"required for ICCBased color space" ) ;
+			
 			// ICC profile is not supported yet
 			// treat the color space as specified in "Alternate"
-			DictReader dr( profile.Self(), file ) ;
 			Object alt ;
-			
 			if ( dr.Detach( "Alternate", alt ) )
+			{
 				FromObject( alt, file ) ;
+				
+				if ( Color::ChannelCount(m_space) != channel_count )
+					throw Exception() << expt::ErrMsg( "number of channel in "
+						"ICCBased color space not match with alternate" ) ;
+			}
+			// alternate color space is missing, use RGB, CMKY or gray depends
+			// on number of channel
+			else
+			{
+				switch ( channel_count )
+				{
+				case 1: m_space = gfx::gray; 	break ;
+				case 3: m_space = gfx::rgb; 	break ;
+				case 4: m_space = gfx::cmyk; 	break ;
+				default:
+					throw Exception() << expt::ErrMsg( "invalid number of "
+						"channel in ICCBased color space" ) ;
+				}
+			}
 		}
 	}
 }

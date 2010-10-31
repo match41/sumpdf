@@ -40,6 +40,7 @@ public :
 	// declare suit function
 	CPPUNIT_TEST_SUITE( RealColorSpaceTest ) ;
 		CPPUNIT_TEST( Test ) ;
+		CPPUNIT_TEST( TestICCAlternate ) ;
 		CPPUNIT_TEST( TestRecursive ) ;
 	CPPUNIT_TEST_SUITE_END();
 
@@ -50,6 +51,7 @@ public :
 private :
 	void Test( ) ;
 	void TestRecursive( ) ;
+	void TestICCAlternate( ) ;
 } ;
 
 } // end of namespace

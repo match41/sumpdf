@@ -26,10 +26,12 @@
 #include "RealColorSpaceTest.hh"
 
 #include "core/Array.hh"
+#include "core/Dictionary.hh"
 #include "core/Name.hh"
 #include "graphics/RealColorSpace.hh"
 #include "graphics/Color.hh"
 #include "graphics/ColorMap.hh"
+#include "stream/Stream.hh"
 
 #include "util/CArray.hh"
 
@@ -67,6 +69,27 @@ void RealColorSpaceTest::Test( )
 	PDFUT_ASSERT_EQUAL( subject.Map()->LookUp(0), Color( 0,   1.0, 0 ) ) ;
 	PDFUT_ASSERT_EQUAL( subject.Map()->LookUp(1), Color( 1.0, 0,   0 ) ) ;
 	PDFUT_ASSERT_EQUAL( subject.Map()->LookUp(2), Color() ) ;
+}
+
+void RealColorSpaceTest::TestICCAlternate( )
+{
+	std::istringstream iss( "Hello" ) ;
+	Dictionary sdict ;
+	sdict.insert( "Alternate", Name("DeviceRGB") ) ;
+	sdict.insert( "Length", iss.str().size() ) ;
+	sdict.insert( "N", 3 ) ;
+	Stream s( iss.rdbuf(), 0, sdict ) ;
+
+	MockFile file ;
+	Ref link = file.AllocLink() ;
+	file.AddObj( link, s ) ;
+
+	Object a[] = { Name("ICCBased"), link } ;
+	Object src( (Array(a)) ) ;
+	
+	RealColorSpace subject( src, &file ) ;
+	PDFUT_ASSERT_EQUAL( subject.Map(), static_cast<void*>(0) ) ;
+	PDFUT_ASSERT_EQUAL( subject.Spec(), gfx::rgb ) ;
 }
 
 void RealColorSpaceTest::TestRecursive( )
