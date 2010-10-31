@@ -39,6 +39,7 @@ namespace pdf {
 
 class Array ;
 class Color ;
+class Dictionary ;
 class File ;
 class Object ;
 class RealColorSpace ;
@@ -69,6 +70,7 @@ private :
 	bool IsValid() const ;
 	void FromObject( Object& obj, File *file ) ;
 	void FromArray( Array& array, File *file ) ;
+	void CreateICCProfile( Dictionary& dict, File *file ) ;
 
 private :
 	ColorSpec				m_space ;
