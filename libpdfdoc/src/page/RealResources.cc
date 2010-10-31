@@ -230,6 +230,14 @@ Name RealResources::FindXObject( const XObject *xobj ) const
 		( m_parent != 0 ? m_parent->FindXObject( xobj ) : Name() ) ;
 }
 
+ColorSpace* RealResources::FindColorSpace( const Name& name ) const
+{
+	PDF_ASSERT( UseCount() > 0 ) ;
+	
+	ColorSpace *f = const_cast<RealColorSpace*>( m_color_spaces.Find( name ) ) ;
+	return f != 0 ? f : ( m_parent != 0 ? m_parent->FindColorSpace( name ) : 0 ) ;
+}
+
 /// Throw everything away and start over.
 void RealResources::Clear( )
 {

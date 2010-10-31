@@ -104,7 +104,7 @@ QImage ImageObject::ToQImage( const Image *img )
 		}
 
 		std::size_t bits_in_row = img->Width() * img->Depth() *
-			Color::ChannelCount( space->Spec() ) ;
+			space->ChannelCount() ;
 		std::size_t bytes_in_row = bits_in_row / 8 + (bits_in_row % 8 == 0 ? 0 : 1) ;
 
 std::cout << "size = " << img->ByteCount() << " " << bytes_in_row << std::endl ;

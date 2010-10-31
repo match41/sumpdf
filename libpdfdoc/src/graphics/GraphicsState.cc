@@ -27,6 +27,7 @@
 
 #include "graphics/Color.hh"
 #include "graphics/ColorValue.hh"
+#include "graphics/ColorSpaces.hh"
 #include "graphics/RealColorSpace.hh"
 #include "graphics/TextState.hh"
 
@@ -446,10 +447,14 @@ bool GraphicsState::ChangeColor( ColorType type, const ColorValue& color )
 		return false ;
 }
 
-bool GraphicsState::SetColorSpace( ColorType type, const Name& cs,
+bool GraphicsState::SetColorSpace( ColorType type, const Name& cs_name,
 	const ResourcesDict *res )
 {
-	return ChangeColor( type, ColorValue( cs ) ) ;
+	const ColorSpace *cs = gfx::ParseColorSpace( cs_name.Str() ) ;
+	if ( cs == 0 )
+		cs = res->FindColorSpace( cs_name ) ;
+	
+	return cs != 0 ? ChangeColor( type, cs ) : false ;
 }
 
 bool GraphicsState::Oncs( ContentOp& op, const ResourcesDict *res )

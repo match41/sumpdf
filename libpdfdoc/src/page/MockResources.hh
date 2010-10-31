@@ -55,6 +55,8 @@ public :
 	void Add( const Name& name, BaseFont *font ) ;
 	void Add( const Name& name, XObject *xo ) ;
 
+	ColorSpace* FindColorSpace( const Name& name ) const ;
+
 private :
 	std::map<Name, BaseFont*>	m_font_map ;
 	std::map<Name, XObject*>	m_xobj_map ;

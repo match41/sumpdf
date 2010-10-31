@@ -29,10 +29,14 @@
 #include "graphics/ColorMap.hh"
 #include "util/RefCounter.hh"
 
+#include "util/RefPtr.hh"
+
 #include <vector>
 
 namespace pdf {
 
+class ColorSpace ;
+class RealColorSpace ;
 class File ;
 class Array ;
 
@@ -49,11 +53,11 @@ public :
 
 	Color LookUp( unsigned char idx ) const ;
 	std::size_t Count( ) const ;
-	ColorSpec Base( ) const ;
+	ColorSpace* Base( ) const ;
 
 private :
-	ColorSpec 					m_base ;
-	std::vector<unsigned char>	m_comp ;
+	boost::intrusive_ptr<RealColorSpace>	m_base ;
+	std::vector<unsigned char>				m_comp ;
 } ;
 
 } // end of namespace

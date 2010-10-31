@@ -27,8 +27,11 @@
 
 #include "RealColorMap.hh"
 
+#include "core/Array.hh"
 #include "core/Object.hh"
+#include "file/ArrayReader.hh"
 #include "graphics/Color.hh"
+#include "stream/Stream.hh"
 #include "util/Exception.hh"
 #include "util/Debug.hh"
 
@@ -47,11 +50,43 @@ RealColorSpace::RealColorSpace( ColorSpec sp )
 RealColorSpace::RealColorSpace( Object& obj, File *file )
 	: m_space( gfx::none )
 {
+	debug::Tracer tracer;
+
 	if ( obj.Is<Name>() )
 		m_space = ParseSpec( obj.As<Name>().Str() ) ;
 	
 	else if ( obj.Is<Array>() )
-		m_map.reset( new RealColorMap( obj.As<Array>(), file ) ) ;
+	{
+		Array& a = obj.As<Array>() ;
+		if ( a.empty() )
+			throw Exception() << expt::ErrMsg( "empty array in color space" ) ;
+		
+		Name name = a[0].As<Name>() ;
+		if ( name == "Indexed" )
+			m_map.reset( new RealColorMap( obj.As<Array>(), file ) ) ;
+		
+		else if ( name == "ICCBased" && a.size() >= 2 )
+		{
+			ArrayReader ar( a, file ) ;
+			Stream profile ;
+			if ( ar.Detach( 1, profile ) )
+			{
+				debug::Trace() << "profile = " << profile.Self() << std::endl ;
+				const Dictionary& pdict = profile.Self() ;
+				Name alt = pdict["Alternate"].As<Name>() ;
+				debug::Trace() << "alt = " << alt << std::endl ;
+				
+				m_space = ParseSpec( alt.Str() ) ;
+				debug::Trace() << "space = " << m_space << std::endl ;
+			}
+		}
+		
+		else
+			debug::Trace() << "unknown cs name: " << name << std::endl ;
+		
+		if ( m_space == gfx::none && m_map.get() == 0 )
+			throw Exception() << expt::ErrMsg( "unsupported color space" ) ;
+	}
 	else
 		throw Exception() << expt::ErrMsg( "invalid color space" ) ;
 }
@@ -105,6 +140,11 @@ Color RealColorSpace::DefaultColor() const
 		PDF_ASSERT( m_map->Count() > 0 ) ;
 		return m_map->LookUp(0) ;
 	}
+}
+
+std::size_t	RealColorSpace::ChannelCount() const
+{
+	return m_map.get() != 0 ? 1 : Color::ChannelCount( m_space ) ;
 }
 
 } // end of namespace

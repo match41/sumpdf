@@ -33,6 +33,7 @@
 namespace pdf {
 
 class Color ;
+class ColorSpace ;
 
 ///	brief description
 /**	\internal
@@ -45,7 +46,7 @@ public :
 	
 	virtual Color LookUp( unsigned char idx ) const = 0 ;
 	virtual std::size_t Count( ) const = 0 ;
-	virtual ColorSpec Base( ) const = 0 ;
+	virtual ColorSpace* Base( ) const = 0 ;
 } ;
 
 } // end of namespace

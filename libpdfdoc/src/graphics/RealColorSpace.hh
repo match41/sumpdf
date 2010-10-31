@@ -30,6 +30,7 @@
 #include "graphics/ColorSpace.hh"
 
 #include "graphics/ColorSpec.hh"
+#include "util/RefPtr.hh"
 
 #include <cstddef>
 #include <memory>
@@ -39,6 +40,7 @@ namespace pdf {
 class Color ;
 class File ;
 class Object ;
+class RealColorSpace ;
 
 ///	brief description
 /**	\internal
@@ -58,6 +60,7 @@ public :
 	ColorSpec	Spec() const ;
 	ColorMap*	Map( ) const ; 
 	Color		DefaultColor() const ;
+	std::size_t	ChannelCount() const ;
 	
 	bool		IsEqual( const ColorSpace *sp ) const ;
 

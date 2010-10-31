@@ -73,4 +73,9 @@ XObject* MockResources::FindXObject( const Name& name ) const
 	return 0 ;
 }
 
+ColorSpace* MockResources::FindColorSpace( const Name& name ) const
+{
+	return 0 ;
+}
+
 } // end of namespace

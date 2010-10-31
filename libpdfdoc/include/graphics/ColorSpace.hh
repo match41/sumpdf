@@ -47,6 +47,7 @@ public :
 	virtual ColorMap*	Map( ) const = 0 ;
 	virtual bool		IsEqual( const ColorSpace *sp ) const = 0 ;
 	virtual Color		DefaultColor() const = 0 ;
+	virtual std::size_t	ChannelCount() const = 0 ;
 } ;
 
 } // end of namespace

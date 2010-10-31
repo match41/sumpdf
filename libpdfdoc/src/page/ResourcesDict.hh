@@ -28,6 +28,7 @@
 
 namespace pdf {
 
+class ColorSpace ;
 class Name ;
 class BaseFont ;
 class XObject ;
@@ -48,6 +49,7 @@ public :
 	virtual Name AddXObject( XObject *xobj ) = 0 ;
 	virtual Name FindXObject( const XObject *xobj ) const = 0 ;
 	virtual XObject* FindXObject( const Name& name ) const = 0 ;
+	virtual ColorSpace* FindColorSpace( const Name& name ) const = 0 ;
 } ;
 
 } // end of namespace

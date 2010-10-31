@@ -86,6 +86,8 @@ public :
 	XObject* FindXObject( const Name& name ) const ;
 	Name FindXObject( const XObject *xobj ) const ;
 
+	ColorSpace* FindColorSpace( const Name& name ) const ;
+
 	void Clear( ) ;
 
 	FontDb* FontDatabase( ) ;

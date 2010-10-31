@@ -63,7 +63,7 @@ void RealColorSpaceTest::Test( )
 
 	RealColorSpace subject( src, &file ) ;
 	CPPUNIT_ASSERT( subject.Map() != 0 ) ;
-	PDFUT_ASSERT_EQUAL( subject.Map()->Base(), gfx::rgb ) ;
+	PDFUT_ASSERT_EQUAL( subject.Map()->Base()->Spec(), gfx::rgb ) ;
 	PDFUT_ASSERT_EQUAL( subject.Map()->LookUp(0), Color( 0,   1.0, 0 ) ) ;
 	PDFUT_ASSERT_EQUAL( subject.Map()->LookUp(1), Color( 1.0, 0,   0 ) ) ;
 	PDFUT_ASSERT_EQUAL( subject.Map()->LookUp(2), Color() ) ;

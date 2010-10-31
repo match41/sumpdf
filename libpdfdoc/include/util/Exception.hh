@@ -112,7 +112,6 @@ namespace expt
 
 	// name
 	typedef boost::error_info<struct NameTag, std::string>		Name ;
-
 }
 
 } // end of namespace

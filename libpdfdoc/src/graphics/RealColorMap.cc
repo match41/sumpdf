@@ -29,10 +29,14 @@
 #include "util/Exception.hh"
 
 #include "graphics/Color.hh"
+#include "graphics/RealColorSpace.hh"
 #include "file/ArrayReader.hh"
 #include "stream/Stream.hh"
-#include "util/Exception.hh"
 #include "util/Debug.hh"
+#include "util/Exception.hh"
+#include "util/Functional.hh"
+
+#include <boost/bind.hpp>
 
 #include <cstring>
 
@@ -47,7 +51,8 @@ RealColorMap::RealColorMap( )
 
 
 RealColorMap::RealColorMap( const Color *map, std::size_t size )
-	: m_base( size > 0 && map != 0 ? map[0].Spec() : gfx::none )
+	: m_base( new RealColorSpace(
+		size > 0 && map != 0 ? map[0].Spec() : gfx::none ) )
 {
 	for ( std::size_t i = 0 ; i < size ; ++i )
 	{
@@ -57,20 +62,22 @@ RealColorMap::RealColorMap( const Color *map, std::size_t size )
 
 RealColorMap::RealColorMap( Array& obj, File *file )
 {
+debug::Tracer a ;
 	ArrayReader ar( obj, file ) ;
 	
-	Name name, base ;
+	Array copy( obj ) ;
+	
+	Name name ;
 	int hival ;
 	Object lookup ;
-	
+
 	if (ar.Detach( 0, name )	&& name.Str() == "Indexed"	&&
-		ar.Detach( 1, base )	&&
 		ar.Detach( 2, hival )	&& hival <= 255	&& hival >= 0 &&
 		ar.Detach( 3, lookup )	&&
 		(lookup.Is<std::string>() || lookup.Is<Stream>() ) )
 	{
-		m_base = ParseSpec( base.Str() ) ;
-		m_comp.resize( (hival + 1) * Color::ChannelCount(m_base) ) ;
+		m_base = ar.Create( 1, boost::bind( NewPtr<RealColorSpace>(), _1, file ) ) ;
+		m_comp.resize( (hival + 1) * Color::ChannelCount(m_base->Spec()) ) ;
 		
 		if ( lookup.Is<std::string>() )
 		{
@@ -85,26 +92,32 @@ RealColorMap::RealColorMap( Array& obj, File *file )
 		}
 	}
 	else
+	{
+debug::Trace() << "name = " << name << " loopkup = " << lookup << std::endl ;
 		throw Exception() << expt::ErrMsg( "invalid color map" ) ;
+	}
 }
 
 Color RealColorMap::LookUp( unsigned char val ) const
 {
-	std::size_t count = Color::ChannelCount( m_base ) ;
+	PDF_ASSERT( m_base != 0 ) ;
+
+	std::size_t count = Color::ChannelCount( m_base->Spec() ) ;
 	if ( (val+1) * count <= m_comp.size() )
-		return Color( m_base, &m_comp[val*count] ) ;
+		return Color( m_base->Spec(), &m_comp[val*count] ) ;
 	else
 		return Color() ;
 }
 
 std::size_t RealColorMap::Count( ) const
 {
-	return m_comp.size() / Color::ChannelCount( m_base ) ;
+	PDF_ASSERT( m_base != 0 ) ;
+	return m_comp.size() / Color::ChannelCount( m_base->Spec() ) ;
 }
 
-ColorSpec RealColorMap::Base( ) const
+ColorSpace* RealColorMap::Base( ) const
 {
-	return m_base ;
+	return m_base.get() ;
 }
 
 } // end of namespace
