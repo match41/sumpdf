@@ -424,7 +424,7 @@ set( SRCS	${BASE_SRCS}
 ###############################################################################
 # libpdfdoc library
 ###############################################################################
-add_library( pdfdoc			SHARED	${SRCS} ${HDRS} src/libpdfdoc.cc )
+#add_library( pdfdoc			SHARED	${SRCS} ${HDRS} src/libpdfdoc.cc )
 add_library( pdfdoc_static	STATIC	${SRCS} ${HDRS} src/libpdfdoc.cc )
 
 ###############################################################################
@@ -482,7 +482,7 @@ set( PDFDOC_LIBS	${ZLIB_LIBRARIES}
 					${OPT_LIBS} )
 
 target_link_libraries( pdfdoc_static	${PDFDOC_LIBS} )
-target_link_libraries( pdfdoc			${PDFDOC_LIBS} )
+#target_link_libraries( pdfdoc			${PDFDOC_LIBS} )
 
 ###############################################################################
 # compiler settings
@@ -490,8 +490,8 @@ target_link_libraries( pdfdoc			${PDFDOC_LIBS} )
 
 # to enable export in DLL
 #add_definitions(-DDLL_EXPORTS)
-set_property( TARGET pdfdoc
-	PROPERTY COMPILE_DEFINITIONS PDFDOC_DLL )
+#set_property( TARGET pdfdoc
+#	PROPERTY COMPILE_DEFINITIONS PDFDOC_DLL )
 
 # for including header files in the project
 add_definitions(-DSRC_DIR="${libpdfdoc_SOURCE_DIR}/src/")

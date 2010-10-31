@@ -31,6 +31,8 @@
 #include "stream/RawFilter.hh"
 #include "stream/BufferedFilter.hh"
 
+#include "mock/Assert.hh"
+
 #include <vector>
 #include <fstream>
 #include <iterator>
@@ -95,7 +97,6 @@ void DeflateFilterTest::TestReset( )
 		
 		count = subject.Read( buf, sizeof( buf ) - 1 ) ;
 	}
-
 }
 
 void DeflateFilterTest::TestName( )
@@ -129,6 +130,37 @@ void DeflateFilterTest::TestWrite( )
 	CPPUNIT_ASSERT( ::uncompress( rev, &rsize, &out[0], out.size() ) == Z_OK ) ;
 	CPPUNIT_ASSERT( rsize == sizeof(text) ) ;
 	CPPUNIT_ASSERT( std::memcmp( rev, text, rsize ) == 0 ) ;
+}
+/*
+void DeflateFilterTest::TestUnknownLength( )
+{
+	unsigned char src[] =
+	{
+		0x78, 0x9C, 0x63, 0x64, 0x40, 0x02, 0x8C, 0x44, 0x72, 0xFE, 0xFF,
+		0xFF, 0x4F, 0x2A, 0x07, 0x00, 0x6E, 0xDD, 0x0B, 0xFD
+	} ;
+
+	unsigned long srclen = sizeof(src), destlen = 0 ;
+	int r = puff( 0, &destlen, src, &srclen ) ;
+	std::cout << "puff = " << r << " " << destlen << std::endl ;
+}
+*/
+
+void DeflateFilterTest::TestExcessData( )
+{
+	unsigned char src[1000] =
+	{
+		0x78, 0x9C, 0x63, 0xFC, 0xFF, 0xFF, 0x3F, 0x03, 0x03, 0x03, 0x23, 0x23,
+		0x23, 0x03, 0x0C, 0x40, 0x45, 0xA8, 0x27, 0x01, 0x00, 0xD3, 0x54, 0x17,
+		0xF9,
+	} ;
+	
+	pdf::BufferedFilter *raw = new pdf::BufferedFilter(src, src + sizeof(src)) ;
+	pdf::DeflateFilter subject(( StreamFilterPtr(raw) )) ;
+
+	unsigned char buf[1000] ;
+	std::size_t count = subject.Read( buf, sizeof( buf ) ) ;
+	PDFUT_ASSERT_EQUAL( count, 100UL ) ;
 }
 
 void DeflateFilterTest::setUp( )

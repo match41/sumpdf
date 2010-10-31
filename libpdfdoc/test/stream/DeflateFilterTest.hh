@@ -31,7 +31,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-/*!	\brief	brief description
+/**	\brief	brief description
 	
 	this class represents
 */
@@ -46,6 +46,7 @@ public :
 		CPPUNIT_TEST( TestReset ) ;
 		CPPUNIT_TEST( TestName ) ;
 		CPPUNIT_TEST( TestWrite ) ;
+		CPPUNIT_TEST( TestExcessData ) ;
 	CPPUNIT_TEST_SUITE_END( ) ;
 
 public :
@@ -57,6 +58,7 @@ private :
 	void TestReset( ) ;
 	void TestName( ) ;
 	void TestWrite( ) ;
+	void TestExcessData( ) ;
 
 private :
 	std::vector<unsigned char>	m_original, m_compressed ;

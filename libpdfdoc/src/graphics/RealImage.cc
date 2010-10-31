@@ -39,10 +39,10 @@
 #include "util/Debug.hh"
 #include "util/Exception.hh"
 #include "util/Functional.hh"
+#include "util/Util.hh"
 
 #include <boost/bind.hpp>
 
-#include <iostream>
 #include <map>
 
 namespace pdf {
@@ -123,39 +123,18 @@ RealImage::RealImage( std::istream& is )
 
 void RealImage::ReadContent( Dictionary& dict, std::istream& is )
 {
-	Init( dict, 0 ) ;
-
-	if ( dict["Filter"] == Object(Name("DCTDecode")) )
-	{
-		img::JFIF jfif( is.rdbuf(), &m_bytes ) ;
-		std::cout << "size = " << jfif.Size() << std::endl ;
-	}
-	else
-	{
-		PDF_ASSERT( m_width > 0 ) ;
-		PDF_ASSERT( m_height > 0 ) ;
-		PDF_ASSERT( m_space != 0 ) ;
-std::cout << "width = " << m_width << " height = " << m_height << " depth = " << m_depth << " space = " << m_space->Spec() << std::endl ;
-		std::size_t size = m_width * m_height * m_depth/8 * Color::ChannelCount( m_space->Spec() ) ;
-std::cout << "size = " << size << std::endl ;
-		m_bytes.resize( size ) ;
-		is.rdbuf()->sgetn( reinterpret_cast<char*>(&m_bytes[0]), size ) ;
-	}
-
-/*	char ei[2] = {} ;
-	is.rdbuf()->sgetn( ei, sizeof(ei) ) ;
-	if ( ei[0] == 'E' && ei[1] == 'I' )
-	{
-	}
-	else
-		std::cout << "corrupt image: " << ei[0] << ei[1] << std::endl ;
-*/
+	// skip space
+	if ( is.rdbuf()->sgetc() == ' ' )
+		is.rdbuf()->sbumpc() ;
+	
+	std::vector<unsigned char> tmp ;
+	
 	while ( is )
 	{
 		int ich = is.rdbuf()->sgetc() ;
 		if ( ich == std::istream::traits_type::eof() )
 		{
-			std::cout << "EOF!" << std::endl ;
+			debug::Trace() << "EOF!" << std::endl ;
 			return ;
 		}
 
@@ -168,20 +147,33 @@ std::cout << "size = " << size << std::endl ;
 			int ich2 = is.rdbuf()->sgetc() ;
 			if ( ich2 == std::istream::traits_type::eof() )
 			{
-				std::cout << "EOF!" << std::endl ;
+				debug::Trace() << "EOF!" << std::endl ;
 				return ;
 			}
 			
-			if ( std::istream::traits_type::to_char_type(ich2) == 'I' )
+			char ch2 = std::istream::traits_type::to_char_type(ich2) ;
+			if ( ch2 == 'I' )
 			{
-				std::cout << "finished inline image: " << m_bytes.size() << std::endl ;
-				std::cout << "width = " << m_width << " height = "
-				<< m_height << "\n" << std::endl ;
+				debug::Trace() << "finished inline image" << std::endl ;
+				debug::Trace()
+					<< "width = " << m_width << " height = "
+					<< m_height << "\n" << dict << std::endl ;
+				
+				Stream str( tmp, dict["Filter"] ) ;
+				str.CopyData( m_bytes ) ;
+
+				Init( dict, 0 ) ;
 				return ;
 			}
+			else
+			{
+				tmp.push_back( ch ) ;
+				tmp.push_back( ch2 ) ;
+			}
 		}
+		else
+			tmp.push_back( ch ) ;
 		
-		m_bytes.push_back( ch ) ;
 		is.rdbuf()->sbumpc() ;
 	}
 }

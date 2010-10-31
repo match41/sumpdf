@@ -78,9 +78,7 @@ std::size_t DeflateFilter::Read( unsigned char *data, std::size_t size )
 			m_decomp.buf.resize( m_buf_size ) ;
 			m_decomp.buf.resize( m_src->Read( &m_decomp.buf[0], m_buf_size ) ) ;
 			
-//			std::cout << "input:\n" ;
-//			PrintHex( std::cout, &m_decomp.buf[0], m_decomp.buf.size() ) ;
-//			std::cout << "---" << std::endl ;
+			PrintHex( debug::Trace(), &m_decomp.buf[0], m_decomp.buf.size() ) ;
 
 		    // no more input to be read. return number of byte read so far
 		    if ( m_decomp.buf.empty( ) )
@@ -108,7 +106,7 @@ std::size_t DeflateFilter::Read( unsigned char *data, std::size_t size )
 		}
 		else
 		{
-			PrintHex( std::cerr, m_decomp.z.next_in, m_decomp.z.avail_in ) ;
+			PrintHex( debug::Trace(), m_decomp.z.next_in, m_decomp.z.avail_in ) ;
 		
 			throw StreamError()
 				<< expt::FormattedMsg( boost::format( "inflate() error %2%: %1%" )
