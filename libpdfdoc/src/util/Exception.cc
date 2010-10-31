@@ -30,6 +30,7 @@
 #include "Backtrace.hh"
 
 #include <boost/format.hpp>
+#include <boost/exception/all.hpp>
 
 #include <cstdlib>
 #include <iterator>
@@ -44,6 +45,17 @@ Exception::Exception( )
 {
 	*this << expt::BacktraceInfo( Backtrace() ) ;
 }
+
+std::string Exception::BackTrace() const
+{
+	if ( const Backtrace *bt =
+		boost::get_error_info<expt::BacktraceInfo>(*this) )
+		return bt->ToString() ;
+
+	else
+		return std::string() ;
+}
+
 /*
 Exception::Exception( boost::format fmt )
 {

@@ -30,6 +30,9 @@
 #include <QApplication>
 #include <QClipboard>
 
+#include <boost/exception/all.hpp>
+#include <boost/format.hpp>
+
 namespace pdf {
 
 /**	constructor
@@ -42,7 +45,18 @@ ExceptionDlg::ExceptionDlg( const Exception& e, QWidget *parent )
 	setupUi( this ) ;
 
 //	m_msg_edit->setPlainText( e.ErrorMessage().c_str() ) ;
-//	m_bt_edit->setPlainText( e.GetBacktrace().c_str() ) ;
+	m_bt_edit->setPlainText( e.BackTrace().c_str() ) ;
+	
+	if ( const boost::format *fmt = boost::get_error_info<expt::FormattedMsg>(e) )
+	{
+		m_msg_edit->setPlainText( fmt->str().c_str() ) ;
+	}
+	else
+	{
+		m_msg_edit->setPlainText( boost::diagnostic_information(e).c_str() ) ;
+	}
+	
+	
 	
 	Init( ) ;
 }
