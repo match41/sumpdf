@@ -38,12 +38,14 @@
 
 namespace pdf {
 
-class RealColorSpace ;
 class Dictionary ;
+class File ;
 class Name ;
 class Object ;
-class Stream ;
 class Pixmap ;
+class RealColorSpace ;
+class Ref ;
+class Stream ;
 
 ///	brief description
 /**	\internal
@@ -56,7 +58,9 @@ public :
 	RealImage( std::size_t width, std::size_t height, std::size_t depth,
 		ColorSpec spec, const unsigned char *pixels, std::size_t size ) ;
 	RealImage( Stream& str, File *file ) ;
-	~RealImage( ) ;
+	virtual ~RealImage( ) ;
+
+	Ref Write( File *file ) const ;
 
 	std::size_t Width( ) const ;
 	std::size_t Height( ) const ;

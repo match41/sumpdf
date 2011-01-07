@@ -17,8 +17,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	ColorSpace.hh
-    \brief	definition the ColorSpace class
+/**	\file	RealColorSpace.hh
+    \brief	definition the RealColorSpace class
     \date	May 21, 2010
     \author	Nestal Wan
 */
@@ -42,11 +42,11 @@ class Color ;
 class Dictionary ;
 class File ;
 class Object ;
-class RealColorSpace ;
+class Ref ;
 
-///	brief description
+///	brief Color space implementation
 /**	\internal
-	The ColorSpace class represents
+	The RealColorSpace class is a concrete implementation of a color space.
 */
 class RealColorSpace : public RefCounter, public ColorSpace 
 {
@@ -57,7 +57,9 @@ public :
 	explicit RealColorSpace( ColorSpec sp = gfx::rgb ) ;
 	RealColorSpace( Object& obj, File *file ) ;
 	RealColorSpace( const Color *map, std::size_t size ) ;
-	~RealColorSpace( ) ;
+	virtual ~RealColorSpace( ) ;
+	
+	Ref Write( File *file ) const ;
 	
 	ColorSpec	Spec() const ;
 	ColorMap*	Map( ) const ; 

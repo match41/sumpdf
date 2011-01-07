@@ -49,6 +49,9 @@ public :
 	virtual ~Path( ) ;
 	
 	/// Returns the number of segment in the path
+	/**	As a path is made up of a number of path segments. This function returns
+		the number of path segments that composes this object.
+	*/
 	virtual std::size_t Count( ) const = 0 ;
 	
 	/// Returns the segment for the specified index. 

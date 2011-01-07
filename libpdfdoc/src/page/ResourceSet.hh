@@ -41,7 +41,9 @@ class DictReader ;
 
 ///	brief description
 /**	\internal
-	The ResourceSet class represents
+	The ResourceSet class represents a set of resources with the same type.
+	
+	\param	T	the type of the resource. must inherit from RefCounter
 */
 template <typename T>
 class ResourceSet

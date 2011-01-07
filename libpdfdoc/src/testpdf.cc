@@ -45,7 +45,7 @@
 int main( int argc, char **argv )
 {
 	pdf::Doc *doc = pdf::CreateDoc( ) ;
-/*	if ( argc >= 2 )
+	if ( argc >= 2 )
 	{
 		try
 		{
@@ -57,8 +57,7 @@ int main( int argc, char **argv )
 			return -1 ;
 		}
 	}
-	return 0 ;
-*/	
+	
 	pdf::Page *p = doc->AppendPage( ) ;
 //	pdf::Page *p = doc->GetPage( 0 ) ;
 	if ( argc >= 3 )

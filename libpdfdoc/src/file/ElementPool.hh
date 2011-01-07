@@ -37,6 +37,11 @@ namespace pdf {
 
 class RefCounter ;
 
+///	brief A pool of elements.
+/**	\internal
+	A pool of elements which make up the PDF document. Elements are higher
+	level than PDF objects. It represents a higher level abstractions. 
+*/
 class ElementPool
 {
 public :

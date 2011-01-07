@@ -133,8 +133,36 @@ Ref RealResources::Write( File *file, const FontSubsetInfo *subset ) const
     
 	dict.insert( "ProcSet",	m_proc_set ) ;
 	dict.insert( "Font",	WriteFontDict( file, subset ) ) ;
+	dict.insert( "XObject",	WriteXObject( file ) ) ;
 
     return file->WriteObj( dict ) ;
+}
+
+Ref RealResources::WriteXObject( File *file ) const
+{
+	PDF_ASSERT( file != 0 ) ;
+	PDF_ASSERT( file->Pool() != 0 ) ;
+
+	ElementPool *pool = file->Pool( ) ;
+	Dictionary dict ;
+
+	for ( ResourceSet<XObject>::iterator i = m_xobjs.begin() ;
+		i != m_xobjs.end() ; ++i)
+	{
+		PDF_ASSERT( i->second != 0 ) ;
+	
+		Ref link = pool->Find( i->second ) ;
+		if ( link == Ref() )
+		{
+std::cout << "writing xobj: " << i->first << std::endl ;
+			link = i->second->Write( file ) ;
+			pool->Add( link, i->second ) ;
+		}
+		
+		dict.insert( std::make_pair( i->first, link ) ) ;
+	}
+	
+	return file->WriteObj( dict ) ;
 }
 
 void RealResources::ReadStateDict( DictReader& self )

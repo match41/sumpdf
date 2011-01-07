@@ -43,6 +43,8 @@ class RealGraphicsGroup : public GraphicsGroup, public XObject
 public :
 	RealGraphicsGroup( Stream&, File * ) ;
 
+	Ref Write( File *file ) const ;
+
 	std::size_t Count( ) const ;
 	const Graphics* At( std::size_t idx ) const ;
 

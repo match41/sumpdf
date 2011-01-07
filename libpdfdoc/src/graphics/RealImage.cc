@@ -27,6 +27,7 @@
 
 #include "core/Name.hh"
 #include "core/Object.hh"
+#include "core/Ref.hh"
 #include "file/DictReader.hh"
 #include "file/File.hh"
 #include "graphics/Color.hh"
@@ -246,6 +247,11 @@ Name RealImage::ExpandAbbv( const Name& name )
 	static const NameMap mp( Begin(map_val), End(map_val) ) ;
 	NameMap::const_iterator i = mp.find( name ) ;
 	return i != mp.end() ? i->second : name ;
+}
+
+Ref RealImage::Write( File *file ) const
+{
+	return Ref() ;
 }
 
 } // end of namespace

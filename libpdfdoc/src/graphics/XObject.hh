@@ -32,8 +32,9 @@ namespace pdf {
 
 class File ;
 class Graphics ;
-class Matrix ;
 class GraphicsState ;
+class Ref ;
+class Matrix ;
 class Stream ;
 
 ///	brief description
@@ -48,6 +49,8 @@ public :
 	virtual Graphics* CreateLink(
 		const GraphicsState&	gs,
 		const Matrix&			ctm ) const = 0 ;
+
+	virtual Ref Write( File *file ) const = 0 ;
 } ;
 
 XObject* CreateXObject( Stream& s, File *file ) ;

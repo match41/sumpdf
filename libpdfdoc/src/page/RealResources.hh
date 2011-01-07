@@ -100,6 +100,8 @@ private :
 	void ReadXObject( DictReader& self ) ;
 	void ReadColorSpace( DictReader& self ) ;
 
+	Ref WriteXObject( File *file ) const ;
+
 private :
 	const RealResources	*const m_parent ;
 	FontDb				*m_font_db ;

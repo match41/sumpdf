@@ -29,6 +29,7 @@
 
 #include "core/Array.hh"
 #include "core/Object.hh"
+#include "core/Ref.hh"
 #include "file/ArrayReader.hh"
 #include "file/DictReader.hh"
 #include "graphics/Color.hh"
@@ -65,6 +66,11 @@ RealColorSpace::RealColorSpace( const Color *map, std::size_t size )
 
 RealColorSpace::~RealColorSpace( )
 {
+}
+
+Ref RealColorSpace::Write( File *file ) const
+{
+	return Ref() ;
 }
 
 void RealColorSpace::FromObject( Object& obj, File *file )

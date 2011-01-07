@@ -57,4 +57,9 @@ Graphics* RealGraphicsGroup::CreateLink(
 	return new ExtGraphicsLink<GraphicsGroup>( gs, ctm, this ) ;
 }
 
+Ref RealGraphicsGroup::Write( File *file ) const
+{
+	return Ref() ;
+}
+
 } // end of namespace
