@@ -38,6 +38,7 @@ namespace pdf {
 RealGraphicsGroup::RealGraphicsGroup( Stream& src, File * )
 {
 //	src.CopyData( std::cout.rdbuf() ) ;
+	// not yet implemented
 }
 
 std::size_t RealGraphicsGroup::Count( ) const

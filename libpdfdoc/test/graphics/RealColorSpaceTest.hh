@@ -42,6 +42,7 @@ public :
 		CPPUNIT_TEST( Test ) ;
 		CPPUNIT_TEST( TestICCAlternate ) ;
 		CPPUNIT_TEST( TestRecursive ) ;
+		CPPUNIT_TEST( TestWrite ) ;
 	CPPUNIT_TEST_SUITE_END();
 
 public :
@@ -52,6 +53,7 @@ private :
 	void Test( ) ;
 	void TestRecursive( ) ;
 	void TestICCAlternate( ) ;
+	void TestWrite( ) ;
 } ;
 
 } // end of namespace

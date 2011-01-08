@@ -54,6 +54,20 @@ void RealColorSpaceTest::tearDown( )
 {
 }
 
+void RealColorSpaceTest::TestWrite( )
+{
+	// default is RGB
+	RealColorSpace subject ;
+	PDFUT_ASSERT_EQUAL( subject.Spec(), gfx::rgb ) ;
+	
+	MockFile file ;
+	Ref r = subject.Write( &file ) ;
+	
+	Name n ;
+	file.ReadType( r, n ) ;
+	PDFUT_ASSERT_EQUAL( n, "DeviceRGB" ) ;
+}
+
 void RealColorSpaceTest::Test( )
 {
 	const char s[] = "\0\xff\0\xff\0\0" ;
