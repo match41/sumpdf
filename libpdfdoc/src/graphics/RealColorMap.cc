@@ -53,9 +53,19 @@ RealColorMap::RealColorMap( const Color *map, std::size_t size )
 	: m_base( new RealColorSpace(
 		size > 0 && map != 0 ? map[0].Spec() : gfx::none ) )
 {
-	for ( std::size_t i = 0 ; i < size ; ++i )
+	// both equal to 0 is OK, otherwise both must not equal to 0.
+	PDF_ASSERT( map  != 0 || size == 0 ) ;
+	PDF_ASSERT( size != 0 || map  == 0 ) ;
+
+	if ( size > 0 )
 	{
-		
+		m_comp.resize( size * map[0].ChannelCount() ) ;
+	
+		for ( std::size_t i = 0 ; i < size ; ++i )
+		{
+			PDF_ASSERT( map[i].Spec() == map[0].Spec() ) ;
+			map[i].GetAsRawByte( &m_comp[i*map[i].ChannelCount()] ) ;
+		}
 	}
 }
 

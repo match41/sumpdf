@@ -17,50 +17,40 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	RealColorMap.hh
-    \brief	definition the RealColorMap class
-    \date	Oct 12, 2010
-    \author	Nestal Wan
+/**	\file	RealColorMapTest.cc
+	\brief	implementation of the RealColorMapTest class
+	\date	Jan 9, 2011
+	\author	Nestal Wan
 */
 
-#ifndef __PDF_REALCOLORMAP_HH_EADER_INCLUDED__
-#define __PDF_REALCOLORMAP_HH_EADER_INCLUDED__
+#include "RealColorMapTest.hh"
 
-#include "graphics/ColorMap.hh"
-#include "util/RefCounter.hh"
+#include "graphics/RealColorMap.hh"
 
-#include "RealColorSpace.hh"
-#include "util/RefPtr.hh"
+#include "graphics/Color.hh"
+#include "util/CArray.hh"
+#include "mock/Assert.hh"
 
-#include <vector>
+namespace pdfut {
 
-namespace pdf {
+using namespace pdf ;
 
-class ColorSpace ;
-class RealColorSpace ;
-class File ;
-class Array ;
-
-///	brief description
-/**	\internal
-	The RealColorMap class represents
-*/
-class RealColorMap : public ColorMap, public RefCounter
+RealColorMapTest::RealColorMapTest( )
 {
-public :
-	RealColorMap( ) ;
-	RealColorMap( Array& obj, File *file ) ;
-	RealColorMap( const Color *map, std::size_t size ) ;
+}
 
-	Color LookUp( unsigned char idx ) const ;
-	std::size_t Count( ) const ;
-	ColorSpace* Base( ) const ;
+void RealColorMapTest::setUp( )
+{
+}
 
-private :
-	boost::intrusive_ptr<RealColorSpace>	m_base ;
-	std::vector<unsigned char>				m_comp ;
-} ;
+void RealColorMapTest::tearDown( )
+{
+}
+
+void RealColorMapTest::TestReadWrite( )
+{
+	Color c[] = { Color(), Color(1.0) } ;
+	RealColorMap subject( c, Count(c) ) ;
+}
 
 } // end of namespace
-
-#endif // REALCOLORMAP_HH_

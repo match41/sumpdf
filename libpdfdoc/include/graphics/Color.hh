@@ -97,6 +97,7 @@ public :
 	iterator end( ) const ;
 	
 	unsigned Quad() const ;
+	void GetAsRawByte( unsigned char *bytes ) const ;
 
 private :
 	ColorSpec	m_cs ;

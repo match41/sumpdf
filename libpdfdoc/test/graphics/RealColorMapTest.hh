@@ -17,50 +17,39 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 \***************************************************************************/
 
-/**	\file	RealColorMap.hh
-    \brief	definition the RealColorMap class
-    \date	Oct 12, 2010
+/**	\file	RealColorMapTest.hh
+    \brief	definition the RealColorMapTest class
+    \date	Jan 9, 2011
     \author	Nestal Wan
 */
 
-#ifndef __PDF_REALCOLORMAP_HH_EADER_INCLUDED__
-#define __PDF_REALCOLORMAP_HH_EADER_INCLUDED__
+#ifndef __PDFUT_REALCOLORMAPTEST_HH_EADER_INCLUDED__
+#define __PDFUT_REALCOLORMAPTEST_HH_EADER_INCLUDED__
 
-#include "graphics/ColorMap.hh"
-#include "util/RefCounter.hh"
+#include <cppunit/TestFixture.h>
 
-#include "RealColorSpace.hh"
-#include "util/RefPtr.hh"
+#include <cppunit/extensions/HelperMacros.h>
 
-#include <vector>
+namespace pdfut {
 
-namespace pdf {
-
-class ColorSpace ;
-class RealColorSpace ;
-class File ;
-class Array ;
-
-///	brief description
-/**	\internal
-	The RealColorMap class represents
-*/
-class RealColorMap : public ColorMap, public RefCounter
+class RealColorMapTest : public CppUnit::TestFixture
 {
 public :
-	RealColorMap( ) ;
-	RealColorMap( Array& obj, File *file ) ;
-	RealColorMap( const Color *map, std::size_t size ) ;
+	RealColorMapTest( ) ;
 
-	Color LookUp( unsigned char idx ) const ;
-	std::size_t Count( ) const ;
-	ColorSpace* Base( ) const ;
+	// declare suit function
+	CPPUNIT_TEST_SUITE( RealColorMapTest ) ;
+		CPPUNIT_TEST( TestReadWrite ) ;
+	CPPUNIT_TEST_SUITE_END();
+
+public :
+	void setUp( ) ;
+	void tearDown( ) ;
 
 private :
-	boost::intrusive_ptr<RealColorSpace>	m_base ;
-	std::vector<unsigned char>				m_comp ;
+	void TestReadWrite( ) ;
 } ;
 
 } // end of namespace
 
-#endif // REALCOLORMAP_HH_
+#endif // REALCOLORMAPTEST_HH_

@@ -48,7 +48,6 @@ const std::string& SpecName( ColorSpec spec )
 	static const std::string map[] = {"DeviceRGB", "DeviceGray", "DeviceCMYK"} ;
 	static const std::string empty ;
 
-std::cout << "spec is " << spec << std::endl ;
 	return spec >= gfx::rgb && spec < gfx::none ? map[spec] : empty ;
 }
 

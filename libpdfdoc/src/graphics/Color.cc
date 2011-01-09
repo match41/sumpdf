@@ -215,8 +215,21 @@ std::ostream& operator<<( std::ostream& os, const Color& t )
 unsigned Color::Quad() const
 {
 	unsigned char comp[4] = {} ;
-	std::transform( Begin(m_channel), End(m_channel), comp, DoubleToByte ) ;
+	
+	PDF_ASSERT( sizeof(comp) >= ChannelCount() ) ;
+	GetAsRawByte( comp ) ;
+	
 	return (comp[3] << 24) | (comp[2] << 16) | (comp[1] << 8) | comp[0] ;
+}
+
+/*!	Get the color channels as raw bytes. The format is the same as 
+	constructor.
+	\param	bytes	Pointer to a buffer to store the output. Must have
+					ChannelCount() bytes.
+*/
+void Color::GetAsRawByte( unsigned char *bytes ) const
+{
+	std::transform( Begin(m_channel), End(m_channel), bytes, DoubleToByte ) ;
 }
 
 } // end of namespace

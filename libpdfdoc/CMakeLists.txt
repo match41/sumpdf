@@ -586,6 +586,7 @@ set( UT_SRCS	test/core/TokenTest.cc
 				test/graphics/GraphicsStateTest.cc
 				test/graphics/RealPathTest.cc
 				test/graphics/RealColorSpaceTest.cc
+				test/graphics/RealColorMapTest.cc
 				
 				test/stream/StreamTest.cc
 				test/stream/RawFilterTest.cc
