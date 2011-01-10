@@ -39,6 +39,7 @@
 #include <boost/bind.hpp>
 
 #include <cstring>
+#include <iostream>
 
 namespace pdf {
 

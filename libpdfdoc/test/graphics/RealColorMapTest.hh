@@ -40,6 +40,7 @@ public :
 	// declare suit function
 	CPPUNIT_TEST_SUITE( RealColorMapTest ) ;
 		CPPUNIT_TEST( TestReadWrite ) ;
+		CPPUNIT_TEST( TestReadRGB ) ;
 	CPPUNIT_TEST_SUITE_END();
 
 public :
@@ -48,6 +49,7 @@ public :
 
 private :
 	void TestReadWrite( ) ;
+	void TestReadRGB( ) ;
 } ;
 
 } // end of namespace

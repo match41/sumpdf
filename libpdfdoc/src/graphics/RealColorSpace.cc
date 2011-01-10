@@ -75,7 +75,8 @@ Ref RealColorSpace::Write( File *file ) const
 	if ( m_map.get() == 0 )
 		return file->WriteObj( Name( SpecName(m_space) ) ) ;
 	
-	return Ref() ;
+	else
+		return Ref() ;
 }
 
 void RealColorSpace::FromObject( Object& obj, File *file )

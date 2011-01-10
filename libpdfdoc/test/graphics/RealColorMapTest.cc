@@ -26,12 +26,15 @@
 #include "RealColorMapTest.hh"
 
 #include "graphics/RealColorMap.hh"
-
 #include "graphics/Color.hh"
+
+#include "core/Array.hh"
+#include "core/Object.hh"
 #include "util/CArray.hh"
 #include "mock/Assert.hh"
 #include "mock/MockFile.hh"
 
+#include <fstream>
 #include <iostream>
 
 namespace pdfut {
@@ -66,6 +69,25 @@ void RealColorMapTest::TestReadWrite( )
 	PDFUT_ASSERT_EQUAL( sub2.Count(), 2U ) ;
 	PDFUT_ASSERT_EQUAL( sub2.LookUp(0), Color() ) ;
 	PDFUT_ASSERT_EQUAL( sub2.LookUp(1), Color(1.0) ) ;
+}
+
+void RealColorMapTest::TestReadRGB( )
+{
+	std::ifstream is( (TEST_DATA_DIR + std::string("colormap")).c_str() ) ;
+	Object str ;
+	CPPUNIT_ASSERT( is >> str ) ;
+	CPPUNIT_ASSERT( str.Is<std::string>() ) ;
+	
+	MockFile file ;
+	Object objs[] = { Name( "Indexed" ), Name( "DeviceRGB" ), 254, str } ;
+	Array ar( Begin(objs), End(objs) ), ar2(ar) ;
+	
+	RealColorMap sub( ar, &file ) ;
+	PDFUT_ASSERT_EQUAL( sub.LookUp(0), Color( 1.0, 1.0, 1.0 ) ) ;
+	
+	MockFile outfile ;
+	Ref r = sub.Write( &outfile ) ;
+//	PDFUT_ASSERT_EQUAL( outfile.ReadObj(r), Object(ar2) ) ;
 }
 
 } // end of namespace
