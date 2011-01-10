@@ -30,6 +30,9 @@
 #include "graphics/Color.hh"
 #include "util/CArray.hh"
 #include "mock/Assert.hh"
+#include "mock/MockFile.hh"
+
+#include <iostream>
 
 namespace pdfut {
 
@@ -51,6 +54,18 @@ void RealColorMapTest::TestReadWrite( )
 {
 	Color c[] = { Color(), Color(1.0) } ;
 	RealColorMap subject( c, Count(c) ) ;
+	
+	MockFile file ;
+	Ref r = subject.Write( &file ) ;
+	
+	Object o = file.ReadObj( r ) ;
+	
+	CPPUNIT_ASSERT( o.Is<pdf::Array>() ) ;
+	
+	RealColorMap sub2( o.As<pdf::Array>(), &file ) ;
+	PDFUT_ASSERT_EQUAL( sub2.Count(), 2U ) ;
+	PDFUT_ASSERT_EQUAL( sub2.LookUp(0), Color() ) ;
+	PDFUT_ASSERT_EQUAL( sub2.LookUp(1), Color(1.0) ) ;
 }
 
 } // end of namespace

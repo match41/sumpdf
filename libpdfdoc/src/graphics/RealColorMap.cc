@@ -25,6 +25,7 @@
 
 #include "RealColorMap.hh"
 
+#include "core/Ref.hh"
 #include "core/Object.hh"
 
 #include "graphics/Color.hh"
@@ -53,10 +54,9 @@ RealColorMap::RealColorMap( const Color *map, std::size_t size )
 	: m_base( new RealColorSpace(
 		size > 0 && map != 0 ? map[0].Spec() : gfx::none ) )
 {
-	// both equal to 0 is OK, otherwise both must not equal to 0.
-	PDF_ASSERT( map  != 0 || size == 0 ) ;
-	PDF_ASSERT( size != 0 || map  == 0 ) ;
-
+	if ( size == 0 )
+		throw Exception() << expt::ErrMsg( "no color in colormap" ) ;
+	
 	if ( size > 0 )
 	{
 		m_comp.resize( size * map[0].ChannelCount() ) ;
@@ -105,6 +105,23 @@ RealColorMap::RealColorMap( Array& obj, File *file )
 	{
 		throw Exception() << expt::ErrMsg( "invalid color map" ) ;
 	}
+}
+
+Ref RealColorMap::Write( File *file ) const
+{
+	Array dest ;
+	dest.push_back( Name( "Indexed" ) ) ;
+	
+	// to avoid recursion, the spec of the color space is written instead
+	PDF_ASSERT( m_base->Spec() != gfx::none ) ;
+	dest.push_back( Name( SpecName(m_base->Spec()) ) ) ;
+
+	// assume at least one color in the map
+	PDF_ASSERT( Count() > 1 ) ;
+	dest.push_back( Count() - 1 ) ;
+	dest.push_back( std::string(m_comp.begin(), m_comp.end()) ) ;
+
+	return file->WriteObj( dest ) ;
 }
 
 Color RealColorMap::LookUp( unsigned char val ) const

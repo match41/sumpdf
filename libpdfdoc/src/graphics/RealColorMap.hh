@@ -36,10 +36,11 @@
 
 namespace pdf {
 
-class ColorSpace ;
-class RealColorSpace ;
-class File ;
 class Array ;
+class ColorSpace ;
+class File ;
+class RealColorSpace ;
+class Ref ;
 
 ///	brief description
 /**	\internal
@@ -55,6 +56,8 @@ public :
 	Color LookUp( unsigned char idx ) const ;
 	std::size_t Count( ) const ;
 	ColorSpace* Base( ) const ;
+	
+	Ref Write( File *file ) const ;
 
 private :
 	boost::intrusive_ptr<RealColorSpace>	m_base ;

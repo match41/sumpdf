@@ -131,8 +131,9 @@ void ContentStream::Decode( Stream& str )
 {
 	PDF_ASSERT( m_res != 0 ) ;
 
-	std::ofstream tmp( "page", std::ios::out|std::ios::binary ) ;
-	str.CopyData( tmp.rdbuf() ) ;
+	// for debug only
+//	std::ofstream tmp( "page", std::ios::out|std::ios::binary ) ;
+//	str.CopyData( tmp.rdbuf() ) ;
 
 	// rewind to stream start for reading
 	str.Rewind( ) ;

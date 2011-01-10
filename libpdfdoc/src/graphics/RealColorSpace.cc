@@ -73,7 +73,7 @@ Ref RealColorSpace::Write( File *file ) const
 	PDF_ASSERT( file != 0 ) ;
 
 	if ( m_map.get() == 0 )
-		return file->WriteObj( Name(SpecName(m_space) ) ) ;
+		return file->WriteObj( Name( SpecName(m_space) ) ) ;
 	
 	return Ref() ;
 }
